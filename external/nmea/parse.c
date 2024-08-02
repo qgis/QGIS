@@ -366,14 +366,14 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nmea_trace_buff( buff, buff_sz );
 
   // Check if SIGNAL_ID is present
-  signal_id_ptr = strchr(buff, '*');
-  if (signal_id_ptr && signal_id_ptr[-1] == ',') {
+  signal_id_ptr = strchr( buff, '*' );
+  if ( signal_id_ptr && signal_id_ptr[-1] == ',' ) {
     has_signal_id = 1;
   }
   
-  if (has_signal_id) {
+  if ( has_signal_id ) {
     // SIGNAL_ID is present NMEA 4.10
-    nsen = nmea_scanf(buff, buff_sz,
+    nsen = nmea_scanf( buff, buff_sz,
                       "$G%CGSV,%d,%d,%d,"
                       "%d,%d,%d,%d,"
                       "%d,%d,%d,%d,"
@@ -388,7 +388,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
                       &( pack->signal_id ) );
   } else {
     // SIGNAL_ID is not present
-    nsen = nmea_scanf(buff, buff_sz,
+    nsen = nmea_scanf( buff, buff_sz,
                       "$G%CGSV,%d,%d,%d,"
                       "%d,%d,%d,%d,"
                       "%d,%d,%d,%d,"
@@ -406,8 +406,8 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nsat = ( nsat + NMEA_SATINPACK > pack->sat_count ) ? pack->sat_count - nsat : NMEA_SATINPACK;
   nsat = nsat * 4 + 3 /* first three sentence`s */;
 
-  int expected_nsen = has_signal_id ? (NMEA_SATINPACK * 4 + 4) : (NMEA_SATINPACK * 4 + 3);
-  if (nsen - 1 < nsat || nsen - 1 > expected_nsen) {
+  int expected_nsen = has_signal_id ? ( NMEA_SATINPACK * 4 + 4 ) : ( NMEA_SATINPACK * 4 + 3 );
+  if ( nsen - 1 < nsat || nsen - 1 > expected_nsen ) {
   {
     nmea_error( "G?GSV parse error!" );
     return 0;
