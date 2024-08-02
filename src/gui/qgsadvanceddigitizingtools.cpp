@@ -73,6 +73,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1X->setToolTip( tr( "X coordinate" ) );
   mCircle1X->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle1X->setMaximum( std::numeric_limits<double>::max() );
+  mCircle1X->setClearValue( 0.0 );
   connect( mCircle1X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1X, 1, 1 );
 
@@ -83,6 +84,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Y->setToolTip( tr( "Y coordinate" ) );
   mCircle1Y->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle1Y->setMaximum( std::numeric_limits<double>::max() );
+  mCircle1Y->setClearValue( 0.0 );
   connect( mCircle1Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1Y, 2, 1 );
 
@@ -119,6 +121,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2X->setToolTip( tr( "X coordinate" ) );
   mCircle2X->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle2X->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2X->setClearValue( 0.0 );
   connect( mCircle2X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2X, 5, 1 );
 
@@ -129,6 +132,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2Y->setToolTip( tr( "Y coordinate" ) );
   mCircle2Y->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle2Y->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2Y->setClearValue( 0.0 );
   connect( mCircle2Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2Y, 6, 1 );
 
@@ -209,9 +213,12 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::canvasMoveEvent( QgsMapMouseE
   if ( !mP1.isEmpty() )
   {
     mP1Closest = QgsGeometryUtils::distance2D( QgsPoint( mP1 ), QgsPoint( event->mapPoint() ) ) < QgsGeometryUtils::distance2D( QgsPoint( mP2 ), QgsPoint( event->mapPoint() ) );
+    event->setMapPoint( mP1Closest ? mP1 : mP2 );
   }
-
-  event->setAccepted( false );
+  else
+  {
+    event->setAccepted( false );
+  }
 }
 
 void QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMouseEvent *event )
@@ -219,6 +226,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::canvasReleaseEvent( QgsMapMou
   if ( event->button() == Qt::RightButton )
   {
     deleteLater();
+    mCadDockWidget->updateCadPaintItem();
     event->setAccepted( false );
     return;
   }
@@ -318,6 +326,7 @@ bool QgsAdvancedDigitizingCirclesIntersectionTool::eventFilter( QObject *obj, QE
       if ( keyEvent->key() == Qt::Key_Escape )
       {
         deleteLater();
+        mCadDockWidget->updateCadPaintItem();
       }
     }
   }
