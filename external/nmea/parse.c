@@ -376,34 +376,34 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   {
     // SIGNAL_ID is present NMEA 4.10
     nsen = nmea_scanf( buff, buff_sz,
-                      "$G%CGSV,%d,%d,%d,"
-                      "%d,%d,%d,%d,"
-                      "%d,%d,%d,%d,"
-                      "%d,%d,%d,%d,"
-                      "%d,%d,%d,%d,%d*",
-                      &( pack->pack_type ),
-                      &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
-                      &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
-                      &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
-                      &( pack->sat_data[2].id ), &( pack->sat_data[2].elv ), &( pack->sat_data[2].azimuth ), &( pack->sat_data[2].sig ),
-                      &( pack->sat_data[3].id ), &( pack->sat_data[3].elv ), & (pack->sat_data[3].azimuth ), &( pack->sat_data[3].sig ),
-                      &( pack->signal_id ) );
+                       "$G%CGSV,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,%d*",
+                       &( pack->pack_type ),
+                       &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
+                       &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
+                       &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
+                       &( pack->sat_data[2].id ), &( pack->sat_data[2].elv ), &( pack->sat_data[2].azimuth ), &( pack->sat_data[2].sig ),
+                       &( pack->sat_data[3].id ), &( pack->sat_data[3].elv ), & (pack->sat_data[3].azimuth ), &( pack->sat_data[3].sig ),
+                       &( pack->signal_id ) );
   }
   else
   {
     // SIGNAL_ID is not present
     nsen = nmea_scanf( buff, buff_sz,
-                      "$G%CGSV,%d,%d,%d,"
-                      "%d,%d,%d,%d,"
-                      "%d,%d,%d,%d,"
-                      "%d,%d,%d,%d,"
-                      "%d,%d,%d,%d*",
-                      &( pack->pack_type ),
-                      &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
-                      &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
-                      &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
-                      &( pack->sat_data[2].id ), &( pack->sat_data[2].elv ), &( pack->sat_data[2].azimuth ), &( pack->sat_data[2].sig ),
-                      &( pack->sat_data[3].id ), &( pack->sat_data[3].elv ), &( pack->sat_data[3].azimuth ), &( pack->sat_data[3].sig ) );
+                       "$G%CGSV,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d*",
+                       &( pack->pack_type ),
+                       &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
+                       &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
+                       &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
+                       &( pack->sat_data[2].id ), &( pack->sat_data[2].elv ), &( pack->sat_data[2].azimuth ), &( pack->sat_data[2].sig ),
+                       &( pack->sat_data[3].id ), &( pack->sat_data[3].elv ), &( pack->sat_data[3].azimuth ), &( pack->sat_data[3].sig ) );
   }
 
   nsat = ( pack->pack_index - 1 ) * NMEA_SATINPACK;
