@@ -1583,44 +1583,60 @@ void QgsAdvancedDigitizingDockWidget::processCanvasMoveEvent( QgsMapMouseEvent *
 
 void QgsAdvancedDigitizingDockWidget::processCanvasReleaseEvent( QgsMapMouseEvent *event )
 {
-  if ( alignToSegment( event ) )
+  if ( event->button() == Qt::RightButton )
   {
-    event->setAccepted( false );
-    return;
-  }
-
-  if ( mCurrentTool )
-  {
-    mCurrentTool->canvasReleaseEvent( event );
-    if ( !event->isAccepted() )
+    if ( mCurrentTool )
     {
+      mCurrentTool->canvasReleaseEvent( event );
+      if ( !event->isAccepted() )
+      {
+        return;
+      }
+    }
+    clear();
+  }
+  else
+  {
+    applyConstraints( event ); // updates event's map point
+    if ( alignToSegment( event ) )
+    {
+      event->setAccepted( false );
       return;
     }
-    else
+
+    if ( mCurrentTool )
     {
-      // update the point list
-      QgsPoint point( event->mapPoint() );
-      point.setZ( QgsMapToolEdit::defaultZValue() );
-      point.setM( QgsMapToolEdit::defaultMValue() );
+      mCurrentTool->canvasReleaseEvent( event );
+      if ( !event->isAccepted() )
+      {
+        return;
+      }
+      else
+      {
+        // update the point list
+        QgsPoint point( event->mapPoint() );
+        point.setZ( QgsMapToolEdit::defaultZValue() );
+        point.setM( QgsMapToolEdit::defaultMValue() );
 
-      if ( mLockZButton->isChecked() )
-      {
-        point.setZ( QLocale().toDouble( mZLineEdit->text() ) );
+        if ( mLockZButton->isChecked() )
+        {
+          point.setZ( QLocale().toDouble( mZLineEdit->text() ) );
+        }
+        if ( mLockMButton->isChecked() )
+        {
+          point.setM( QLocale().toDouble( mMLineEdit->text() ) );
+        }
+        updateCurrentPoint( point );
       }
-      if ( mLockMButton->isChecked() )
-      {
-        point.setM( QLocale().toDouble( mMLineEdit->text() ) );
-      }
-      updateCurrentPoint( point );
     }
-  }
 
-  addPoint( event->mapPoint() );
-  releaseLocks( false );
+    addPoint( event->mapPoint() );
+    releaseLocks( false );
 
-  if ( constructionMode() )
-  {
-    event->setAccepted( false );
+    if ( constructionMode() )
+    {
+      event->setAccepted( false );
+    }
   }
 }
 
@@ -1698,6 +1714,11 @@ bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent *e )
 
 void QgsAdvancedDigitizingDockWidget::clear()
 {
+  if ( mCurrentTool )
+  {
+    mCurrentTool->deleteLater();
+  }
+
   if ( !mConstructionGuideLine.isEmpty() )
   {
     mConstructionGuideLine.clear();
@@ -1731,6 +1752,11 @@ void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
       {
         mConstructionGuidesLayer->dataProvider()->deleteFeatures( QgsFeatureIds() << mConstructionGuideId );
         mConstructionGuideLine.clear();
+      }
+
+      if ( mCurrentTool )
+      {
+        mCurrentTool->deleteLater();
       }
 
       break;
@@ -1793,7 +1819,11 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
   {
     case Qt::Key_Escape:
     {
-      if ( type == QEvent::KeyPress && mConstructionMode && mConstructionGuideLine.numPoints() >= 2 )
+      if ( type == QEvent::KeyPress && mCurrentTool )
+      {
+        mCurrentTool->deleteLater();
+      }
+      else if ( type == QEvent::KeyPress && mConstructionMode && mConstructionGuideLine.numPoints() >= 2 )
       {
         mConstructionGuidesLayer->dataProvider()->deleteFeatures( QgsFeatureIds() << mConstructionGuideId );
         mConstructionGuideLine.clear();

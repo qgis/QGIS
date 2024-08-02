@@ -138,6 +138,8 @@ class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvanc
     void canvasReleaseEvent( QgsMapMouseEvent *event ) override;
 
   private:
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+
     void processParameters();
 
     void drawCircle( QPainter *painter, double x, double y, double distance );
