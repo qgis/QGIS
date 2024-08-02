@@ -359,6 +359,13 @@ class CORE_EXPORT QgsAnnotationItem
      */
     bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 
+    /**
+     * Renders the item's callout.
+     *
+     * The item must have valid callout() set.
+     *
+     * \since QGIS 3.40
+     */
     void renderCallout( QgsRenderContext &context, const QRectF &rect, double angle, QgsCallout::QgsCalloutContext &calloutContext, QgsFeedback *feedback );
 
   private:
