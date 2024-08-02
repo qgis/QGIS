@@ -99,6 +99,7 @@ typedef struct _nmeaGPGSV
   int     sat_count;  //!< Total number of satellites in view
   char    pack_type;  //!< P=GPS - S=SBas - N=generic - L=GLONAS - A=GALILEO - B=BEIDOU - Q=QZSS
   nmeaSATELLITE sat_data[NMEA_SATINPACK];
+  char    signal_id;  //!< NMEA v4.1 - ID of the ranging signal
 
 } nmeaGPGSV;
 
