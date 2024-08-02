@@ -165,8 +165,9 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
             # no dups detected or overwrite is allowed
             url = '/MetaSearch/%s/url' % conn_name
+            type_ = '/MetaSearch/%s/catalog-type' % conn_name
             self.settings.setValue(url, catalog.attrib.get('url'))
-            self.settings.setValue(url, catalog.attrib.get('catalog-type', 'OGC CSW 2.0.2'))
+            self.settings.setValue(type_, catalog.attrib.get('catalog-type', 'OGC CSW 2.0.2'))
 
     def accept(self):
         """accept connections"""
