@@ -354,6 +354,13 @@ Reads common properties from the base class from the given DOM ``element``.
 %End
 
     void renderCallout( QgsRenderContext &context, const QRectF &rect, double angle, QgsCallout::QgsCalloutContext &calloutContext, QgsFeedback *feedback );
+%Docstring
+Renders the item's callout.
+
+The item must have valid :py:func:`~QgsAnnotationItem.callout` set.
+
+.. versionadded:: 3.40
+%End
 
   private:
     QgsAnnotationItem( const QgsAnnotationItem &other );
