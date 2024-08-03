@@ -365,13 +365,21 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  // Check if SIGNAL_ID is present
-  signal_id_ptr = strchr( buff, '*' );
-  if ( signal_id_ptr && signal_id_ptr[-1] == ',' ) 
+  // Count the number of fields in the sentence
+  const char *ptr = buff;
+  int field_count = 1;
+  while ( ( ptr = strchr( ptr, ',' ) ) != NULL ) 
+  {
+    field_count++;
+    ptr++;
+  }
+
+  // Check if the number of fields is even, indicating the presence of SIGNAL_ID
+  if ( field_count % 2 == 0 ) 
   {
     has_signal_id = 1;
   }
-  
+
   if ( has_signal_id ) 
   {
     // SIGNAL_ID is present NMEA 4.10
