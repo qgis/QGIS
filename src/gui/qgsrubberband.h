@@ -187,7 +187,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets the width of the line. Stroke width for polygon.
      *  \param width The width for any lines painted for this rubberband
      */
-    void setWidth( int width );
+    void setWidth( double width );
 
     /**
      * Returns the current width of the line or stroke width for polygon.
@@ -218,12 +218,12 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Sets the size of the point icons
      */
-    void setIconSize( int iconSize );
+    void setIconSize( double iconSize );
 
     /**
      * Returns the current icon size of the point icons.
      */
-    int iconSize() const { return mIconSize; }
+    double iconSize() const { return mIconSize; }
 
     /**
      * Sets the style of the line
@@ -449,7 +449,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     QPen mSecondaryPen;
 
     //! The size of the icon for points.
-    int mIconSize = 5;
+    double mIconSize = 5;
 
     //! Icon to be shown.
     IconType mIconType = ICON_CIRCLE;
