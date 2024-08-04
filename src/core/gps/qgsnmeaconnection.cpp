@@ -371,11 +371,12 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
         mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
       }
     }
-    else
+    else if ( result.status == 'V' )
     {
       mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Invalid );
       mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Invalid;
     }
+    // for other cases: quality and qualityIndicator read by GGA
   }
 
   if ( result.navstatus == 'S' )
