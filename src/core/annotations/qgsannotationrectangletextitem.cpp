@@ -26,6 +26,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
+#include "qgsapplication.h"
+#include "qgscalloutsregistry.h"
 
 QgsAnnotationRectangleTextItem::QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds )
   : QgsAnnotationItem()
@@ -45,7 +47,7 @@ QString QgsAnnotationRectangleTextItem::type() const
   return QStringLiteral( "recttext" );
 }
 
-void QgsAnnotationRectangleTextItem::render( QgsRenderContext &context, QgsFeedback * )
+void QgsAnnotationRectangleTextItem::render( QgsRenderContext &context, QgsFeedback *feedback )
 {
   QgsRectangle bounds = mBounds;
   if ( context.coordinateTransform().isValid() )
@@ -69,6 +71,12 @@ void QgsAnnotationRectangleTextItem::render( QgsRenderContext &context, QgsFeedb
     mBackgroundSymbol->startRender( context );
     mBackgroundSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
     mBackgroundSymbol->stopRender( context );
+  }
+
+  if ( callout() )
+  {
+    QgsCallout::QgsCalloutContext calloutContext;
+    renderCallout( context, painterBounds, 0, calloutContext, feedback );
   }
 
   const double marginLeft = context.convertToPainterUnits( mMargins.left(), mMarginUnit );
@@ -140,13 +148,26 @@ bool QgsAnnotationRectangleTextItem::writeXml( QDomElement &element, QDomDocumen
 
 QList<QgsAnnotationItemNode> QgsAnnotationRectangleTextItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
-  return
+  QList<QgsAnnotationItemNode> res =
   {
     QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
     QgsAnnotationItemNode( QgsVertexId( 0, 0, 1 ), QgsPointXY( mBounds.xMaximum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
     QgsAnnotationItemNode( QgsVertexId( 0, 0, 2 ), QgsPointXY( mBounds.xMaximum(), mBounds.yMaximum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
     QgsAnnotationItemNode( QgsVertexId( 0, 0, 3 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMaximum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
   };
+
+  QgsPointXY calloutNodePoint;
+  if ( !calloutAnchor().isEmpty() )
+  {
+    calloutNodePoint = calloutAnchor().asPoint();
+  }
+  else
+  {
+    calloutNodePoint = mBounds.center();
+  }
+  res.append( QgsAnnotationItemNode( QgsVertexId( 1, 0, 0 ), calloutNodePoint, Qgis::AnnotationItemNodeType::CalloutHandle ) );
+
+  return res;
 }
 
 Qgis::AnnotationItemEditOperationResult QgsAnnotationRectangleTextItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
@@ -156,35 +177,47 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectangleTextItem::applyEdi
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
-      switch ( moveOperation->nodeId().vertex )
+      if ( moveOperation->nodeId().part == 0 )
       {
-        case 0:
-          mBounds = QgsRectangle( moveOperation->after().x(),
-                                  moveOperation->after().y(),
-                                  mBounds.xMaximum(),
-                                  mBounds.yMaximum() );
-          break;
-        case 1:
-          mBounds = QgsRectangle( mBounds.xMinimum(),
-                                  moveOperation->after().y(),
-                                  moveOperation->after().x(),
-                                  mBounds.yMaximum() );
-          break;
-        case 2:
-          mBounds = QgsRectangle( mBounds.xMinimum(),
-                                  mBounds.yMinimum(),
-                                  moveOperation->after().x(),
-                                  moveOperation->after().y() );
-          break;
-        case 3:
-          mBounds = QgsRectangle( moveOperation->after().x(),
-                                  mBounds.yMinimum(),
-                                  mBounds.xMaximum(),
-                                  moveOperation->after().y() );
-          break;
-        default:
-          break;
+        switch ( moveOperation->nodeId().vertex )
+        {
+          case 0:
+            mBounds = QgsRectangle( moveOperation->after().x(),
+                                    moveOperation->after().y(),
+                                    mBounds.xMaximum(),
+                                    mBounds.yMaximum() );
+            break;
+          case 1:
+            mBounds = QgsRectangle( mBounds.xMinimum(),
+                                    moveOperation->after().y(),
+                                    moveOperation->after().x(),
+                                    mBounds.yMaximum() );
+            break;
+          case 2:
+            mBounds = QgsRectangle( mBounds.xMinimum(),
+                                    mBounds.yMinimum(),
+                                    moveOperation->after().x(),
+                                    moveOperation->after().y() );
+            break;
+          case 3:
+            mBounds = QgsRectangle( moveOperation->after().x(),
+                                    mBounds.yMinimum(),
+                                    mBounds.xMaximum(),
+                                    moveOperation->after().y() );
+            break;
+          default:
+            break;
+        }
       }
+      else
+      {
+        setCalloutAnchor( QgsGeometry::fromPoint( moveOperation->after() ) );
+        if ( !callout() )
+        {
+          setCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+        }
+      }
+
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
@@ -212,30 +245,38 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectangleTextItem::
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
-      QgsRectangle modifiedBounds = mBounds;
-      switch ( moveOperation->nodeId().vertex )
+      if ( moveOperation->nodeId().part == 0 )
       {
-        case 0:
-          modifiedBounds.setXMinimum( moveOperation->after().x() );
-          modifiedBounds.setYMinimum( moveOperation->after().y() );
-          break;
-        case 1:
-          modifiedBounds.setXMaximum( moveOperation->after().x() );
-          modifiedBounds.setYMinimum( moveOperation->after().y() );
-          break;
-        case 2:
-          modifiedBounds.setXMaximum( moveOperation->after().x() );
-          modifiedBounds.setYMaximum( moveOperation->after().y() );
-          break;
-        case 3:
-          modifiedBounds.setXMinimum( moveOperation->after().x() );
-          modifiedBounds.setYMaximum( moveOperation->after().y() );
-          break;
-        default:
-          break;
-      }
+        QgsRectangle modifiedBounds = mBounds;
+        switch ( moveOperation->nodeId().vertex )
+        {
+          case 0:
+            modifiedBounds.setXMinimum( moveOperation->after().x() );
+            modifiedBounds.setYMinimum( moveOperation->after().y() );
+            break;
+          case 1:
+            modifiedBounds.setXMaximum( moveOperation->after().x() );
+            modifiedBounds.setYMinimum( moveOperation->after().y() );
+            break;
+          case 2:
+            modifiedBounds.setXMaximum( moveOperation->after().x() );
+            modifiedBounds.setYMaximum( moveOperation->after().y() );
+            break;
+          case 3:
+            modifiedBounds.setXMinimum( moveOperation->after().x() );
+            modifiedBounds.setYMaximum( moveOperation->after().y() );
+            break;
+          default:
+            break;
+        }
 
-      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
+        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
+      }
+      else
+      {
+        QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
+      }
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
@@ -324,7 +365,13 @@ QgsAnnotationRectangleTextItem *QgsAnnotationRectangleTextItem::clone() const
 
 QgsRectangle QgsAnnotationRectangleTextItem::boundingBox() const
 {
-  return mBounds;
+  QgsRectangle bounds = mBounds;
+  if ( callout() && !calloutAnchor().isEmpty() )
+  {
+    QgsGeometry anchor = calloutAnchor();
+    bounds.combineExtentWith( anchor.boundingBox() );
+  }
+  return bounds;
 }
 
 void QgsAnnotationRectangleTextItem::setBounds( const QgsRectangle &bounds )
@@ -354,7 +401,8 @@ void QgsAnnotationRectangleTextItem::setFrameSymbol( QgsFillSymbol *symbol )
 
 Qgis::AnnotationItemFlags QgsAnnotationRectangleTextItem::flags() const
 {
-  return Qgis::AnnotationItemFlag::SupportsReferenceScale;
+  return Qgis::AnnotationItemFlag::SupportsReferenceScale
+         | Qgis::AnnotationItemFlag::SupportsCallouts;
 }
 
 QgsTextFormat QgsAnnotationRectangleTextItem::format() const
