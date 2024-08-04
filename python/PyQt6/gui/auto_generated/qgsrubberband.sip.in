@@ -121,7 +121,7 @@ Set to an invalid color to avoid drawing the secondary stroke.
 Returns the current secondary stroke color.
 %End
 
-    void setWidth( int width );
+    void setWidth( double width );
 %Docstring
 Sets the width of the line. Stroke width for polygon.
 
@@ -157,12 +157,12 @@ Calling this function automatically calls setIcon(ICON_SVG)
 Returns the current icon type to highlight point geometries.
 %End
 
-    void setIconSize( int iconSize );
+    void setIconSize( double iconSize );
 %Docstring
 Sets the size of the point icons
 %End
 
-    int iconSize() const;
+    double iconSize() const;
 %Docstring
 Returns the current icon size of the point icons.
 %End

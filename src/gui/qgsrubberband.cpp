@@ -75,9 +75,9 @@ void QgsRubberBand::setSecondaryStrokeColor( const QColor &color )
   mSecondaryPen.setColor( color );
 }
 
-void QgsRubberBand::setWidth( int width )
+void QgsRubberBand::setWidth( double width )
 {
-  mPen.setWidth( width );
+  mPen.setWidthF( width );
 }
 
 void QgsRubberBand::setIcon( IconType icon )
@@ -92,7 +92,7 @@ void QgsRubberBand::setSvgIcon( const QString &path, QPoint drawOffset )
   mSvgOffset = drawOffset;
 }
 
-void QgsRubberBand::setIconSize( int iconSize )
+void QgsRubberBand::setIconSize( double iconSize )
 {
   mIconSize = iconSize;
 }
@@ -508,7 +508,7 @@ void QgsRubberBand::paint( QPainter *p )
       if ( i == 0 && iterations > 1 )
       {
         // first iteration with multi-pen painting, so use secondary pen
-        mSecondaryPen.setWidth( mPen.width() + QgsGuiUtils::scaleIconSize( 2 ) );
+        mSecondaryPen.setWidthF( mPen.widthF() + QgsGuiUtils::scaleIconSize( 2 ) );
         p->setBrush( Qt::NoBrush );
         p->setPen( mSecondaryPen );
       }
@@ -587,11 +587,11 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
             break;
 
           case ICON_FULL_BOX:
-            p->drawRect( static_cast< int>( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
+            p->drawRect( QRectF( static_cast< int>( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize ) );
             break;
 
           case ICON_CIRCLE:
-            p->drawEllipse( static_cast< int >( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
+            p->drawEllipse( QRectF( static_cast< int >( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize ) );
             break;
 
           case ICON_DIAMOND:
@@ -654,7 +654,7 @@ void QgsRubberBand::updateRect()
   }
 #endif
 
-  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
+  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.widthF() ); // in canvas units
 
   QgsRectangle r;  // in canvas units
   for ( const QgsPolygonXY &poly : std::as_const( mPoints ) )
