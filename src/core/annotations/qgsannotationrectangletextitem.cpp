@@ -96,7 +96,7 @@ void QgsAnnotationRectangleTextItem::render( QgsRenderContext &context, QgsFeedb
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
   QgsTextRenderer::drawText( innerRect, 0,
                              QgsTextRenderer::convertQtHAlignment( mAlignment ),
-                             displayText.split( '\n' ), context, mTextFormat, true,
+                             mTextFormat.allowHtmlFormatting() ? QStringList{displayText }: displayText.split( '\n' ), context, mTextFormat, true,
                              QgsTextRenderer::convertQtVAlignment( mAlignment ),
                              Qgis::TextRendererFlag::WrapLines );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, prevWorkaroundFlag );
