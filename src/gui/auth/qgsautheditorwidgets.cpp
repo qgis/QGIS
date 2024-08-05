@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsautheditorwidgets.h"
+#include "qgsauthconfigurationstoragedb.h"
 #include "ui_qgsauthmethodplugins.h"
 
 #include <QAction>
@@ -147,6 +148,8 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
            this, &QgsAuthEditorWidgets::authMessageLog );
 
+  const bool isReadOnly { ! QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly() };
+
   // set up utility actions menu
   mActionImportAuthenticationConfigs = new QAction( tr( "Import Authentication Configurations from File…" ), this );
   mActionExportSelectedAuthenticationConfigs = new QAction( tr( "Export Selected Authentication Configurations to File…" ), this );
@@ -176,14 +179,25 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionPasswordHelperLoggingEnable->setCheckable( true );
   mActionPasswordHelperLoggingEnable->setChecked( QgsApplication::authManager()->passwordHelperLoggingEnabled() );
 
-  connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::importAuthenticationConfigs );
+  if ( ! isReadOnly )
+  {
+    connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::importAuthenticationConfigs );
+    connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::resetMasterPassword );
+    connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::removeAuthenticationConfigs );
+    connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthEditorWidgets::eraseAuthenticationDatabase );
+  }
+  else
+  {
+    mActionImportAuthenticationConfigs->setEnabled( false );
+    mActionResetMasterPassword->setEnabled( false );
+    mActionRemoveAuthConfigs->setEnabled( false );
+    mActionEraseAuthDatabase->setEnabled( false );
+  }
+
   connect( mActionExportSelectedAuthenticationConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::exportSelectedAuthenticationConfigs );
   connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::setMasterPassword );
   connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::clearCachedMasterPassword );
-  connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::resetMasterPassword );
   connect( mActionClearCachedAuthConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::clearCachedAuthenticationConfigs );
-  connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::removeAuthenticationConfigs );
-  connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthEditorWidgets::eraseAuthenticationDatabase );
 
   connect( mActionPasswordHelperSync, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperSync );
   connect( mActionPasswordHelperDelete, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperDelete );

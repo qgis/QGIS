@@ -91,6 +91,59 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     virtual bool initialize() { return true; }
 
     /**
+     * Returns the last error message.
+     */
+    virtual QString lastError() const;
+
+    /**
+     * Returns TRUE is the storage is ready to be used.
+     * \note This method is called by the authentication manager before using the storage.
+     */
+    virtual bool isReady() const = 0;
+
+    /**
+     * Returns the capabilities of the storage.
+     */
+    Qgis::AuthConfigurationStorageCapabilities capabilities() const;
+
+    /**
+     * Returns the settings of the storage.
+     */
+    QMap<QString, QString> settings() const;
+
+    /**
+     * Returns a map with the keys and localized descriptions of the settings accepted by the storage.
+     */
+    virtual QMap<QString, QString> settingsParams() const = 0;
+
+    /**
+     * Returns TRUE if the storage is encrypted.
+     */
+    bool isEncrypted() const;
+
+    /**
+     * Returns TRUE if the storage is enabled.
+     */
+    bool isEnabled() const;
+
+    /**
+     * Set the storage enabled status to \a enabled.
+     * \note This is a user-controlled setting: the storage may be enabled but not ready to be used.
+     */
+    void setEnabled( bool enabled );
+
+
+    /**
+     * Utility method to unset all editing capabilities.
+     */
+    virtual void setReadOnly( bool readOnly );
+
+    /**
+     * Returns TRUE if the storage is read-only, FALSE otherwise.
+     */
+    virtual bool isReadOnly() const;
+
+    /**
      * Returns a mapping of authentication configurations available from this storage.
      * \param allowedMethods Optional filter to return only configurations for specific authentication methods.
      */
@@ -323,47 +376,6 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      */
     virtual bool clearMethodConfigs() = 0;
 
-    /**
-     * Returns the last error message.
-     */
-    virtual QString lastError() const;
-
-    /**
-     * Returns TRUE is the storage is ready to be used.
-     * \note This method is called by the authentication manager before using the storage.
-     */
-    virtual bool isReady() const = 0;
-
-    /**
-     * Returns the capabilities of the storage.
-     */
-    Qgis::AuthConfigurationStorageCapabilities capabilities() const;
-
-    /**
-     * Returns the settings of the storage.
-     */
-    QMap<QString, QString> settings() const;
-
-    /**
-     * Returns a map with the keys and localized descriptions of the settings accepted by the storage.
-     */
-    virtual QMap<QString, QString> settingsParams() const = 0;
-
-    /**
-     * Returns TRUE if the storage is encrypted.
-     */
-    bool isEncrypted() const;
-
-    /**
-     * Returns TRUE if the storage is enabled.
-     */
-    bool isEnabled() const;
-
-    /**
-     * Set the storage enabled status to \a enabled.
-     * \note This is a user-controlled setting: the storage may be enabled but not ready to be used.
-     */
-    void setEnabled( bool enabled );
 
   signals:
 
@@ -399,6 +411,11 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * Emitted when the storage auth settings table was changed.
      */
     void authSettingsChanged();
+
+    /**
+     * Emitted when the storage read-only status was changed.
+     */
+    void readOnlyChanged( bool readOnly );
 
 
 #ifndef QT_NO_SSL
@@ -467,6 +484,11 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * Store whether the storage is enabled.
      */
     bool mIsEnabled = true;
+
+    /**
+     * Store whether the storage is read-only.
+     */
+    bool mIsReadOnly = false;
 
 };
 

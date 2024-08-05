@@ -41,6 +41,7 @@ QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString
   // Debug print all connection settings
   QgsDebugMsgLevel( QStringLiteral( "Auth db connection settings: driver=%1, database='%2', host=%3, port=%4, user='%5', schema=%6, options=%7" )
                     .arg( mDriver, mDatabase, mHost, mPort, mUser, mConnectOptions, mConfiguration.value( QStringLiteral( "schema" ) ) ), 2 );
+
 }
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QString &uri )
@@ -234,14 +235,19 @@ bool QgsAuthConfigurationStorageDb::initialize()
   }
   else
   {
-    if ( !createCertTables() || !createConfigTables() )
+    if ( !isReadOnly() && ( !createCertTables() || !createConfigTables() ) )
     {
       setError( tr( "Auth db initialization FAILED: %1" ).arg( lastError() ), Qgis::MessageLevel::Critical );
       mIsReady = false;
       return false;
     }
+
     mIsReady = true;
     checkCapabilities();
+    connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool )
+    {
+      checkCapabilities();
+    } );
     return true;
   }
 }
@@ -1571,17 +1577,6 @@ QString QgsAuthConfigurationStorageDb::quotedQualifiedIdentifier( const QString 
       return authDatabaseConnection().driver()->escapeIdentifier( schema, QSqlDriver::TableName ) + QStringLiteral( "." ) + authDatabaseConnection().driver()->escapeIdentifier( name, QSqlDriver::TableName );
     }
   }
-}
-
-void QgsAuthConfigurationStorageDb::setReadOnly( bool readOnly )
-{
-  mIsReadOnly = readOnly;
-  checkCapabilities();
-}
-
-bool QgsAuthConfigurationStorageDb::isReadOnly() const
-{
-  return mIsReadOnly;
 }
 
 QString QgsAuthConfigurationStorageDb::name() const

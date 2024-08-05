@@ -168,6 +168,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static bool isFilesystemBasedDatabase( const QString &uri );
 
     /**
+     * Transitional proxy to the first ready storage of database type.
+     * Exposes the old SQLite local API from the new storage API.
+     * \note not available in Python bindings
+     */
+    QgsAuthConfigurationStorageDb *defaultDbStorage() const SIP_SKIP;
+
+    /**
      * Returns the authentication database connection URI.
      * \since QGIS 3.40
      */
@@ -914,12 +921,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
 #endif
 
     QString authPasswordHelperKeyName() const;
-
-    /**
-     * Transitional proxy to the first ready storage of database type.
-     * Exposes the old SQLite local API from the new storage API.
-     */
-    QgsAuthConfigurationStorageDb *defaultDbStorage() const;
 
     /**
      * Returns the first ready storage with the given \a capability or NULL if none available.

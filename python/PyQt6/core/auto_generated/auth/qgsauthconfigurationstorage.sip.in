@@ -77,6 +77,65 @@ Initializes the storage.
    This method is called by the authentication manager when the storage is added to the manager.
 %End
 
+    virtual QString lastError() const;
+%Docstring
+Returns the last error message.
+%End
+
+    virtual bool isReady() const = 0;
+%Docstring
+Returns ``True`` is the storage is ready to be used.
+
+.. note::
+
+   This method is called by the authentication manager before using the storage.
+%End
+
+    Qgis::AuthConfigurationStorageCapabilities capabilities() const;
+%Docstring
+Returns the capabilities of the storage.
+%End
+
+    QMap<QString, QString> settings() const;
+%Docstring
+Returns the settings of the storage.
+%End
+
+    virtual QMap<QString, QString> settingsParams() const = 0;
+%Docstring
+Returns a map with the keys and localized descriptions of the settings accepted by the storage.
+%End
+
+    bool isEncrypted() const;
+%Docstring
+Returns ``True`` if the storage is encrypted.
+%End
+
+    bool isEnabled() const;
+%Docstring
+Returns ``True`` if the storage is enabled.
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Set the storage enabled status to ``enabled``.
+
+.. note::
+
+   This is a user-controlled setting: the storage may be enabled but not ready to be used.
+%End
+
+
+    virtual void setReadOnly( bool readOnly );
+%Docstring
+Utility method to unset all editing capabilities.
+%End
+
+    virtual bool isReadOnly() const;
+%Docstring
+Returns ``True`` if the storage is read-only, ``False`` otherwise.
+%End
+
     virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const = 0;
 %Docstring
 Returns a mapping of authentication configurations available from this storage.
@@ -383,53 +442,6 @@ Remove all authentications configurations from the storage.
    This method does not remove certificate and other assets.
 %End
 
-    virtual QString lastError() const;
-%Docstring
-Returns the last error message.
-%End
-
-    virtual bool isReady() const = 0;
-%Docstring
-Returns ``True`` is the storage is ready to be used.
-
-.. note::
-
-   This method is called by the authentication manager before using the storage.
-%End
-
-    Qgis::AuthConfigurationStorageCapabilities capabilities() const;
-%Docstring
-Returns the capabilities of the storage.
-%End
-
-    QMap<QString, QString> settings() const;
-%Docstring
-Returns the settings of the storage.
-%End
-
-    virtual QMap<QString, QString> settingsParams() const = 0;
-%Docstring
-Returns a map with the keys and localized descriptions of the settings accepted by the storage.
-%End
-
-    bool isEncrypted() const;
-%Docstring
-Returns ``True`` if the storage is encrypted.
-%End
-
-    bool isEnabled() const;
-%Docstring
-Returns ``True`` if the storage is enabled.
-%End
-
-    void setEnabled( bool enabled );
-%Docstring
-Set the storage enabled status to ``enabled``.
-
-.. note::
-
-   This is a user-controlled setting: the storage may be enabled but not ready to be used.
-%End
 
   signals:
 
@@ -472,6 +484,11 @@ Emitted when the storage master password table was changed.
 Emitted when the storage auth settings table was changed.
 %End
 
+    void readOnlyChanged( bool readOnly );
+%Docstring
+Emitted when the storage read-only status was changed.
+%End
+
 
 
     void certIdentityChanged();
@@ -512,6 +529,7 @@ Set the last error message to ``error`` with message level ``level``.
 Returns the logger tag for the storage.
 The default implementation returns the literal "Auth storage" followed by the storage name.
 %End
+
 
 
 

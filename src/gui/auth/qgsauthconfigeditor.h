@@ -124,6 +124,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
+    bool mIsReadOnly = false;
 };
 
 #endif // QGSAUTHCONFIGEDITOR_H

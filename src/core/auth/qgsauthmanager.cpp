@@ -267,8 +267,8 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath )
   }
   else if ( ! mAuthDatabaseConnectionUri.isEmpty() )
   {
-    // For safety reasons we don't allow writing on shared storages, plugins may override this behavior by
-    // registering their own storage
+    // For safety reasons we don't allow writing on potentially shared storages by default, plugins may override
+    // this behavior by registering their own storage subclass or by explicitly setting read-only to false.
     QgsAuthConfigurationStorageDb *storage = new QgsAuthConfigurationStorageDb( mAuthDatabaseConnectionUri );
     if ( !QgsAuthManager::isFilesystemBasedDatabase( mAuthDatabaseConnectionUri ) )
     {
