@@ -100,62 +100,62 @@ QgsField AttributeField::toQgsField() const
   QMetaType::Type fieldType;
   switch ( type )
   {
-    case QgsHanaDataTypes::Bit:
-    case QgsHanaDataTypes::Boolean:
+    case QgsHanaDataType::Bit:
+    case QgsHanaDataType::Boolean:
       fieldType = QMetaType::Type::Bool;
       break;
-    case QgsHanaDataTypes::TinyInt:
-    case QgsHanaDataTypes::SmallInt:
-    case QgsHanaDataTypes::Integer:
+    case QgsHanaDataType::TinyInt:
+    case QgsHanaDataType::SmallInt:
+    case QgsHanaDataType::Integer:
       fieldType = isSigned ? QMetaType::Type::Int : QMetaType::Type::UInt;
       break;
-    case QgsHanaDataTypes::BigInt:
+    case QgsHanaDataType::BigInt:
       fieldType = isSigned ? QMetaType::Type::LongLong : QMetaType::Type::ULongLong;
       break;
-    case QgsHanaDataTypes::Numeric:
-    case QgsHanaDataTypes::Decimal:
-    case QgsHanaDataTypes::Double:
-    case QgsHanaDataTypes::Float:
-    case QgsHanaDataTypes::Real:
+    case QgsHanaDataType::Numeric:
+    case QgsHanaDataType::Decimal:
+    case QgsHanaDataType::Double:
+    case QgsHanaDataType::Float:
+    case QgsHanaDataType::Real:
       fieldType = QMetaType::Type::Double;
       break;
-    case QgsHanaDataTypes::Char:
-    case QgsHanaDataTypes::WChar:
+    case QgsHanaDataType::Char:
+    case QgsHanaDataType::WChar:
       fieldType = ( size == 1 ) ? QMetaType::Type::QChar : QMetaType::Type::QString;
       break;
-    case QgsHanaDataTypes::VarChar:
-    case QgsHanaDataTypes::WVarChar:
-    case QgsHanaDataTypes::LongVarChar:
-    case QgsHanaDataTypes::WLongVarChar:
+    case QgsHanaDataType::VarChar:
+    case QgsHanaDataType::WVarChar:
+    case QgsHanaDataType::LongVarChar:
+    case QgsHanaDataType::WLongVarChar:
     // There are two options how to treat ST_GEOMETRY columns that are attributes:
     // 1. Type is QMetaType::Type::QString. The value is provided as WKT and editable.
     // 2. Type is QMetaType::Type::QByteArray. The value is in WKB format and uneditable.
-    case QgsHanaDataTypes::Geometry:
+    case QgsHanaDataType::Geometry:
     // There are two options how to treat REAL_VECTOR columns that are attributes:
     // 1. Type is QMetaType::Type::QString. The value has string representation in the format '[1.0,3.2,0.6]'.
     // 2. Type is QMetaType::Type::QByteArray. The value has fvecs representation and uneditable.
-    case QgsHanaDataTypes::RealVector:
+    case QgsHanaDataType::RealVector:
       fieldType = QMetaType::Type::QString;
       break;
-    case QgsHanaDataTypes::Binary:
-    case QgsHanaDataTypes::VarBinary:
-    case QgsHanaDataTypes::LongVarBinary:
+    case QgsHanaDataType::Binary:
+    case QgsHanaDataType::VarBinary:
+    case QgsHanaDataType::LongVarBinary:
       fieldType = QMetaType::Type::QByteArray;
       break;
-    case QgsHanaDataTypes::Date:
-    case QgsHanaDataTypes::TypeDate:
+    case QgsHanaDataType::Date:
+    case QgsHanaDataType::TypeDate:
       fieldType = QMetaType::Type::QDate;
       break;
-    case QgsHanaDataTypes::Time:
-    case QgsHanaDataTypes::TypeTime:
+    case QgsHanaDataType::Time:
+    case QgsHanaDataType::TypeTime:
       fieldType = QMetaType::Type::QTime;
       break;
-    case QgsHanaDataTypes::Timestamp:
-    case QgsHanaDataTypes::TypeTimestamp:
+    case QgsHanaDataType::Timestamp:
+    case QgsHanaDataType::TypeTimestamp:
       fieldType = QMetaType::Type::QDateTime;
       break;
     default:
-      throw QgsHanaException( QString( "Field type '%1' is not supported" ).arg( QString::number( type ) ) );
+      throw QgsHanaException( QString( "Field type '%1' is not supported" ).arg( QString::number( static_cast<int>( type ) ) ) );
   }
 
   QgsField field = QgsField( name, fieldType, typeName, size, precision, comment, QMetaType::Type::UnknownType );
@@ -169,7 +169,7 @@ QgsField AttributeField::toQgsField() const
     field.setConstraints( constraints );
   }
 
-  if ( type == QgsHanaDataTypes::Geometry )
+  if ( type == QgsHanaDataType::Geometry )
     field.setMetadata( Qgis::FieldMetadataProperty::CustomProperty, srid );
 
   return field;
@@ -770,12 +770,15 @@ void QgsHanaConnection::readQueryFields( const QString &schemaName, const QStrin
       field.tableName = QString::fromStdU16String( rsmd->getTableName( i ) );
       field.name = QString::fromStdU16String( rsmd->getColumnName( i ) );
       field.typeName = QString::fromStdU16String( rsmd->getColumnTypeName( i ) );
-      field.type = rsmd->getColumnType( i );
+      field.type = QgsHanaDataTypeUtils::fromInt( rsmd->getColumnType( i ) );
       field.isSigned = rsmd->isSigned( i );
       field.isNullable = rsmd->isNullable( i );
       field.isAutoIncrement = rsmd->isAutoIncrement( i );
       field.size = static_cast<int>( rsmd->getColumnLength( i ) );
       field.precision = static_cast<int>( rsmd->getScale( i ) );
+
+      if ( field.type == QgsHanaDataType::Unknown )
+        throw QgsHanaException( QString( "Type of the column '%1' is unknown" ).arg( field.name ) );
 
       if ( !schema.isEmpty() )
       {
@@ -834,21 +837,21 @@ void QgsHanaConnection::readTableFields( const QString &schemaName, const QStrin
       field.schemaName = rsColumns->getString( 2/*TABLE_SCHEM*/ );
       field.tableName = rsColumns->getString( 3/*TABLE_NAME*/ );
       field.name = rsColumns->getString( 4/*COLUMN_NAME*/ );
-      field.type = rsColumns->getShort( 5/*DATA_TYPE*/ );
+      field.type = QgsHanaDataTypeUtils::fromInt( rsColumns->getShort( 5/*DATA_TYPE*/ ) );
       field.typeName =  rsColumns->getString( 6/*TYPE_NAME*/ );
-      if ( field.type == QgsHanaDataTypes::Unknown )
+      if ( field.type == QgsHanaDataType::Unknown )
         throw QgsHanaException( QString( "Type of the column '%1' is unknown" ).arg( field.name ) );
       field.size = rsColumns->getInt( 7/*COLUMN_SIZE*/ );
       field.precision = static_cast<int>( rsColumns->getShort( 9/*DECIMAL_DIGITS*/ ) );
-      field.isSigned = field.type == QgsHanaDataTypes::SmallInt || field.type == QgsHanaDataTypes::Integer ||
-                       field.type == QgsHanaDataTypes::BigInt || field.type == QgsHanaDataTypes::Decimal ||
-                       field.type == QgsHanaDataTypes::Numeric || field.type == QgsHanaDataTypes::Real ||
-                       field.type == QgsHanaDataTypes::Float || field.type == QgsHanaDataTypes::Double;
+      field.isSigned = field.type == QgsHanaDataType::SmallInt || field.type == QgsHanaDataType::Integer ||
+                       field.type == QgsHanaDataType::BigInt || field.type == QgsHanaDataType::Decimal ||
+                       field.type == QgsHanaDataType::Numeric || field.type == QgsHanaDataType::Real ||
+                       field.type == QgsHanaDataType::Float || field.type == QgsHanaDataType::Double;
       QString isNullable = rsColumns->getString( 18/*IS_NULLABLE*/ );
       field.isNullable = ( isNullable == QLatin1String( "YES" ) || isNullable == QLatin1String( "TRUE" ) );
       field.isAutoIncrement = isColumnAutoIncrement( field.name );
       field.isUnique = isColumnUnique( field.name );
-      if ( field.type == QgsHanaDataTypes::Geometry )
+      if ( field.type == QgsHanaDataType::Geometry )
         field.srid = getColumnSrid( schemaName, tableName, field.name );
       field.comment = rsColumns->getString( 12/*REMARKS*/ );
 
@@ -923,10 +926,10 @@ QStringList QgsHanaConnection::getPrimaryKeyCandidates( const QgsHanaLayerProper
   QgsHanaResultSetRef rsColumns = getColumns( layerProperty.schemaName, layerProperty.tableName, QStringLiteral( "%" ) );
   while ( rsColumns->next() )
   {
-    int dataType = rsColumns->getValue( 5/*DATA_TYPE */ ).toInt();
+    QgsHanaDataType dataType = QgsHanaDataTypeUtils::fromInt( rsColumns->getValue( 5/*DATA_TYPE */ ).toInt() );
     // We exclude ST_GEOMETRY, REAL_VECTOR and LOB columns
-    if ( dataType == QgsHanaDataTypes::Geometry || dataType == QgsHanaDataTypes::RealVector ||
-         dataType == QgsHanaDataTypes::LongVarBinary || dataType == QgsHanaDataTypes::LongVarChar || dataType == QgsHanaDataTypes::WLongVarChar )
+    if ( dataType == QgsHanaDataType::Geometry || dataType == QgsHanaDataType::RealVector ||
+         dataType == QgsHanaDataType::LongVarBinary || dataType == QgsHanaDataType::LongVarChar || dataType == QgsHanaDataType::WLongVarChar )
       continue;
     ret << rsColumns->getValue( 4/*COLUMN_NAME */ ).toString();
   }
