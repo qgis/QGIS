@@ -30,26 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QToolBar" name="mToolBar">
-     <addaction name="mActionUndo"/>
-     <addaction name="mActionRedo"/>
-     <addaction name="mActionCut"/>
-     <addaction name="mActionCopy"/>
-     <addaction name="mActionPaste"/>
-     <addaction name="separator"/>
-     <addaction name="mActionBold"/>
-     <addaction name="mActionItalic"/>
-     <addaction name="mActionUnderline"/>
-     <addaction name="mActionStrikeOut"/>
-     <addaction name="mActionBulletList"/>
-     <addaction name="mActionOrderedList"/>
-     <addaction name="mActionDecreaseIndent"/>
-     <addaction name="mActionIncreaseIndent"/>
-     <addaction name="separator"/>
-     <addaction name="mActionInsertLink"/>
-     <addaction name="mActionInsertImage"/>
-     <addaction name="mActionEditSource"/>
-    </widget>
+    <widget class="QToolBar" name="mToolBar"/>
    </item>
    <item>
     <widget class="QStackedWidget" name="mStackedWidget">
@@ -70,7 +51,7 @@
        <item>
         <widget class="QgsImageDropTextEdit" name="mTextEdit">
          <property name="autoFormatting">
-          <set>QTextEdit::AutoNone</set>
+          <set>QTextEdit::AutoFormattingFlag::AutoNone</set>
          </property>
          <property name="tabChangesFocus">
           <bool>true</bool>
