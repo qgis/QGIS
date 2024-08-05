@@ -27,9 +27,34 @@ and retrieving and setting the documents via HTML formatted strings.
 %End
   public:
 
+    enum class Mode
+    {
+      QTextDocument,
+      QgsTextRenderer,
+      PlainText,
+    };
+
     QgsRichTextEditor( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsRichTextEditor, with the specified ``parent`` widget.
+%End
+
+    Mode mode() const;
+%Docstring
+Returns the widget's mode, which defines which formatting options are exposed in the widget.
+
+.. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.40
+%End
+
+    void setMode( Mode mode );
+%Docstring
+Sets the widget's ``mode``, which defines which formatting options are exposed in the widget.
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.40
 %End
 
     QString toPlainText() const;
