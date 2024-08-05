@@ -175,7 +175,6 @@ void QgsRichTextEditor::setMode( Mode mode )
   mToolBar->addAction( mActionCut );
   mToolBar->addAction( mActionCopy );
   mToolBar->addAction( mActionPaste );
-  mToolBar->addSeparator();
 
   // font size
   mFontSizeCombo = new QComboBox();
@@ -190,6 +189,7 @@ void QgsRichTextEditor::setMode( Mode mode )
 
   if ( mode != Mode::PlainText )
   {
+    mToolBar->addSeparator();
     mToolBar->addWidget( mFontSizeCombo );
     mToolBar->addAction( mActionBold );
     mToolBar->addAction( mActionItalic );

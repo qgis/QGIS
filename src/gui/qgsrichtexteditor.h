@@ -111,6 +111,13 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     QString toHtml() const;
 
     /**
+     * Returns the widget's QTextEditor control.
+     *
+     * \since QGIS 3.40
+     */
+    QTextEdit *textEdit() { return mTextEdit; }
+
+    /**
      * Returns a reference to the QTextDocument shown in the widget.
      */
     QTextDocument *document() { return mTextEdit->document(); }

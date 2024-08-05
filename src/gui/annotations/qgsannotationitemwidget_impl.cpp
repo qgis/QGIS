@@ -324,6 +324,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
   vLayout->addWidget( mTextFormatWidget );
   mTextFormatWidgetContainer->setLayout( vLayout );
 
+  mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
   mSpinTextAngle->setClearValue( 0 );
@@ -336,10 +337,14 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
   mTextFormatWidget->setDockMode( dockMode() );
   connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
   {
+    mTextEdit->setMode(
+      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+    );
+
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mTextEdit, &QPlainTextEdit::textChanged, this, [ = ]
+  connect( mTextEdit, &QgsRichTextEditor::textChanged, this, [ = ]
   {
     if ( !mBlockChangedSignal )
       emit itemChanged();
@@ -373,12 +378,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
 {
   QgsAnnotationPointTextItem *newItem = mItem->clone();
-  newItem->setFormat( mTextFormatWidget->format() );
-  newItem->setText( mTextEdit->toPlainText() );
-  newItem->setAngle( mSpinTextAngle->value() );
-  newItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
-  newItem->setAlignment( mAlignmentComboBox->currentAlignment() );
-  mPropertiesWidget->updateItem( newItem );
+  updateItem( newItem );
   return newItem;
 }
 
@@ -386,11 +386,13 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationPointTextItem *pointTextItem = dynamic_cast< QgsAnnotationPointTextItem * >( item ) )
   {
+    mBlockChangedSignal = true;
     pointTextItem->setFormat( mTextFormatWidget->format() );
-    pointTextItem->setText( mTextEdit->toPlainText() );
+    pointTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
     pointTextItem->setAngle( mSpinTextAngle->value() );
     pointTextItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
     pointTextItem->setAlignment( mAlignmentComboBox->currentAlignment() );
+    mBlockChangedSignal = false;
     mPropertiesWidget->updateItem( pointTextItem );
   }
 }
@@ -412,7 +414,7 @@ void QgsAnnotationPointTextItemWidget::setContext( const QgsSymbolWidgetContext 
 
 void QgsAnnotationPointTextItemWidget::focusDefaultWidget()
 {
-  mTextEdit->selectAll();
+  mTextEdit->textEdit()->selectAll();
   mTextEdit->setFocus();
 }
 
@@ -428,7 +430,8 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
-  mTextEdit->setPlainText( mItem->text() );
+  mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
+  mTextEdit->setText( mItem->text() );
   mSpinTextAngle->setValue( mItem->angle() );
   mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( mItem->rotationMode() ) ) );
   mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
@@ -440,7 +443,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -456,7 +459,7 @@ void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
     expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+      mTextEdit->textEdit()->insertPlainText( "[%" + expression + "%]" );
     }
   }
 }
@@ -477,15 +480,20 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
   vLayout->addWidget( mTextFormatWidget );
   mTextFormatWidgetContainer->setLayout( vLayout );
 
+  mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
   mTextFormatWidget->setDockMode( dockMode() );
   connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
   {
+    mTextEdit->setMode(
+      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+    );
+
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mTextEdit, &QPlainTextEdit::textChanged, this, [ = ]
+  connect( mTextEdit, &QgsRichTextEditor::textChanged, this, [ = ]
   {
     if ( !mBlockChangedSignal )
       emit itemChanged();
@@ -518,14 +526,7 @@ QgsAnnotationLineTextItemWidget::~QgsAnnotationLineTextItemWidget() = default;
 QgsAnnotationItem *QgsAnnotationLineTextItemWidget::createItem()
 {
   QgsAnnotationLineTextItem *newItem = mItem->clone();
-  newItem->setFormat( mTextFormatWidget->format() );
-  newItem->setText( mTextEdit->toPlainText() );
-
-  newItem->setOffsetFromLine( mSpinOffset->value() );
-  newItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
-  newItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
-
-  mPropertiesWidget->updateItem( newItem );
+  updateItem( newItem );
   return newItem;
 }
 
@@ -533,13 +534,15 @@ void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationLineTextItem *lineTextItem = dynamic_cast< QgsAnnotationLineTextItem * >( item ) )
   {
+    mBlockChangedSignal = true;
     lineTextItem->setFormat( mTextFormatWidget->format() );
-    lineTextItem->setText( mTextEdit->toPlainText() );
+    lineTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
 
     lineTextItem->setOffsetFromLine( mSpinOffset->value() );
     lineTextItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
     lineTextItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
 
+    mBlockChangedSignal = false;
     mPropertiesWidget->updateItem( lineTextItem );
   }
 }
@@ -561,7 +564,7 @@ void QgsAnnotationLineTextItemWidget::setContext( const QgsSymbolWidgetContext &
 
 void QgsAnnotationLineTextItemWidget::focusDefaultWidget()
 {
-  mTextEdit->selectAll();
+  mTextEdit->textEdit()->selectAll();
   mTextEdit->setFocus();
 }
 
@@ -575,7 +578,8 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
-  mTextEdit->setPlainText( mItem->text() );
+  mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
+  mTextEdit->setText( mItem->text() );
   mPropertiesWidget->setItem( mItem.get() );
 
   mSpinOffset->setValue( mItem->offsetFromLine() );
@@ -589,7 +593,7 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -605,7 +609,7 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
     expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+      mTextEdit->textEdit()->insertPlainText( "[%" + expression + "%]" );
     }
   }
 }
@@ -641,14 +645,22 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   vLayout->addWidget( mTextFormatWidget );
   mTextFormatWidgetContainer->setLayout( vLayout );
 
+  mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight | Qt::AlignJustify );
   mVerticalAlignmentComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
 
   mTextFormatWidget->setDockMode( dockMode() );
-  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
-  connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [this]
+  {
+    mTextEdit->setMode(
+      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+    );
+
+    onWidgetChanged();
+  } );
+  connect( mTextEdit, &QgsRichTextEditor::textChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked );
   connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
@@ -675,8 +687,9 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationRectangleTextItem *rectTextItem = dynamic_cast< QgsAnnotationRectangleTextItem * >( item ) )
   {
+    mBlockChangedSignal = true;
     rectTextItem->setFormat( mTextFormatWidget->format() );
-    rectTextItem->setText( mTextEdit->toPlainText() );
+    rectTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
     rectTextItem->setAlignment( mAlignmentComboBox->currentAlignment() | mVerticalAlignmentComboBox->currentAlignment() );
 
     rectTextItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
@@ -689,6 +702,7 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
                                           mSpinRightMargin->value(),
                                           mSpinBottomMargin->value() ) );
     rectTextItem->setMarginsUnit( mMarginUnitWidget->unit() );
+    mBlockChangedSignal = false;
 
     mPropertiesWidget->updateItem( rectTextItem );
   }
@@ -725,7 +739,7 @@ QgsExpressionContext QgsAnnotationRectangleTextItemWidget::createExpressionConte
 
 void QgsAnnotationRectangleTextItemWidget::focusDefaultWidget()
 {
-  mTextEdit->selectAll();
+  mTextEdit->textEdit()->selectAll();
   mTextEdit->setFocus();
 }
 
@@ -741,7 +755,8 @@ bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
-  mTextEdit->setPlainText( mItem->text() );
+  mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
+  mTextEdit->setText( mItem->text() );
   mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
   mVerticalAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignVertical_Mask );
   mPropertiesWidget->setItem( mItem.get() );
@@ -773,7 +788,7 @@ void QgsAnnotationRectangleTextItemWidget::onWidgetChanged()
 
 void QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
   QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), createExpressionContext() );
 
@@ -783,7 +798,7 @@ void QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked()
     expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+      mTextEdit->textEdit()->insertPlainText( "[%" + expression + "%]" );
     }
   }
 }
