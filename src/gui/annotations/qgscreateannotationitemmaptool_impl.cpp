@@ -110,7 +110,10 @@ void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event
 
   std::unique_ptr< QgsAnnotationPointTextItem > createdItem = std::make_unique< QgsAnnotationPointTextItem >( tr( "Text" ), layerPoint );
   createdItem->setAlignment( Qt::AlignLeft );
-  createdItem->setFormat( QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling ) );
+  QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
+  // default to HTML formatting
+  format.setAllowHtmlFormatting( true );
+  createdItem->setFormat( format );
   // newly created point text items default to using symbology reference scale at the current map scale
   createdItem->setUseSymbologyReferenceScale( true );
   createdItem->setSymbologyReferenceScale( canvas()->scale() );
@@ -428,6 +431,12 @@ void QgsCreateRectangleTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *e
     cadDockWidget()->clearPoints();
 
     std::unique_ptr< QgsAnnotationRectangleTextItem > createdItem = std::make_unique< QgsAnnotationRectangleTextItem >( tr( "Text" ), QgsRectangle( point1, point2 ) );
+
+    QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
+    // default to HTML formatting
+    format.setAllowHtmlFormatting( true );
+    createdItem->setFormat( format );
+
     // newly created rect text items default to using symbology reference scale at the current map scale
     createdItem->setUseSymbologyReferenceScale( true );
     createdItem->setSymbologyReferenceScale( canvas()->scale() );
@@ -499,7 +508,10 @@ void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
     if ( !lineSymbol )
       lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
 
-    createdItem->setFormat( QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling ) );
+    QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
+    // default to HTML formatting
+    format.setAllowHtmlFormatting( true );
+    createdItem->setFormat( format );
 
     // newly created point text items default to using symbology reference scale at the current map scale
     createdItem->setUseSymbologyReferenceScale( true );
