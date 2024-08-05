@@ -142,6 +142,7 @@ The standard authentication database file in ~/.qgis3/ or defined location
 Returns the ``True`` if the ``uri`` is a filesystem-based database (SQLite).
 %End
 
+
     const QString authenticationDatabaseUri() const;
 %Docstring
 Returns the authentication database connection URI.
