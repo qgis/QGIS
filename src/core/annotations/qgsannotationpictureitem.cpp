@@ -29,7 +29,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsunittypes.h"
-
+#include "qgscalloutsregistry.h"
 
 #include <QFileInfo>
 
@@ -62,14 +62,15 @@ Qgis::AnnotationItemFlags QgsAnnotationPictureItem::flags() const
   switch ( mSizeMode )
   {
     case Qgis::AnnotationPictureSizeMode::SpatialBounds:
-      return Qgis::AnnotationItemFlags();
+      return Qgis::AnnotationItemFlag::SupportsCallouts;
     case Qgis::AnnotationPictureSizeMode::FixedSize:
-      return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;;
+      return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
+             | Qgis::AnnotationItemFlag::SupportsCallouts;
   }
   BUILTIN_UNREACHABLE
 }
 
-void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback * )
+void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback *feedback )
 {
   QgsRectangle bounds = mBounds;
   if ( context.coordinateTransform().isValid() )
@@ -117,6 +118,12 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback * 
     mBackgroundSymbol->startRender( context );
     mBackgroundSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
     mBackgroundSymbol->stopRender( context );
+  }
+
+  if ( callout() )
+  {
+    QgsCallout::QgsCalloutContext calloutContext;
+    renderCallout( context, painterBounds, 0, calloutContext, feedback );
   }
 
   bool fitsInCache = false;
@@ -223,12 +230,14 @@ bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &doc
   return true;
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotationItemEditContext & ) const
+QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotationItemEditContext &context ) const
 {
+  QList<QgsAnnotationItemNode> res;
   switch ( mSizeMode )
   {
     case Qgis::AnnotationPictureSizeMode::SpatialBounds:
-      return
+    {
+      res =
       {
         QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
         QgsAnnotationItemNode( QgsVertexId( 0, 0, 1 ), QgsPointXY( mBounds.xMaximum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
@@ -236,11 +245,40 @@ QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotat
         QgsAnnotationItemNode( QgsVertexId( 0, 0, 3 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMaximum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
       };
 
+      QgsPointXY calloutNodePoint;
+      if ( !calloutAnchor().isEmpty() )
+      {
+        calloutNodePoint = calloutAnchor().asPoint();
+      }
+      else
+      {
+        calloutNodePoint = mBounds.center();
+      }
+      res.append( QgsAnnotationItemNode( QgsVertexId( 1, 0, 0 ), calloutNodePoint, Qgis::AnnotationItemNodeType::CalloutHandle ) );
+
+      return res;
+    }
+
     case Qgis::AnnotationPictureSizeMode::FixedSize:
-      return
+    {
+      res =
       {
         QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mBounds.center(), Qgis::AnnotationItemNodeType::VertexHandle )
       };
+
+      QgsPointXY calloutNodePoint;
+      if ( !calloutAnchor().isEmpty() )
+      {
+        calloutNodePoint = calloutAnchor().asPoint();
+      }
+      else
+      {
+        calloutNodePoint = QgsPointXY( context.currentItemBounds().xMinimum(), context.currentItemBounds().yMinimum() );
+      }
+      res.append( QgsAnnotationItemNode( QgsVertexId( 1, 0, 0 ), calloutNodePoint, Qgis::AnnotationItemNodeType::CalloutHandle ) );
+
+      return res;
+    }
   }
   BUILTIN_UNREACHABLE
 }
@@ -252,49 +290,61 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( Q
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
-      switch ( mSizeMode )
+      if ( moveOperation->nodeId().part == 0 )
       {
-        case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+        switch ( mSizeMode )
         {
-          switch ( moveOperation->nodeId().vertex )
+          case Qgis::AnnotationPictureSizeMode::SpatialBounds:
           {
-            case 0:
-              mBounds = QgsRectangle( moveOperation->after().x(),
-                                      moveOperation->after().y(),
-                                      mBounds.xMaximum(),
-                                      mBounds.yMaximum() );
-              break;
-            case 1:
-              mBounds = QgsRectangle( mBounds.xMinimum(),
-                                      moveOperation->after().y(),
-                                      moveOperation->after().x(),
-                                      mBounds.yMaximum() );
-              break;
-            case 2:
-              mBounds = QgsRectangle( mBounds.xMinimum(),
-                                      mBounds.yMinimum(),
-                                      moveOperation->after().x(),
-                                      moveOperation->after().y() );
-              break;
-            case 3:
-              mBounds = QgsRectangle( moveOperation->after().x(),
-                                      mBounds.yMinimum(),
-                                      mBounds.xMaximum(),
-                                      moveOperation->after().y() );
-              break;
-            default:
-              break;
+            switch ( moveOperation->nodeId().vertex )
+            {
+              case 0:
+                mBounds = QgsRectangle( moveOperation->after().x(),
+                                        moveOperation->after().y(),
+                                        mBounds.xMaximum(),
+                                        mBounds.yMaximum() );
+                break;
+              case 1:
+                mBounds = QgsRectangle( mBounds.xMinimum(),
+                                        moveOperation->after().y(),
+                                        moveOperation->after().x(),
+                                        mBounds.yMaximum() );
+                break;
+              case 2:
+                mBounds = QgsRectangle( mBounds.xMinimum(),
+                                        mBounds.yMinimum(),
+                                        moveOperation->after().x(),
+                                        moveOperation->after().y() );
+                break;
+              case 3:
+                mBounds = QgsRectangle( moveOperation->after().x(),
+                                        mBounds.yMinimum(),
+                                        mBounds.xMaximum(),
+                                        moveOperation->after().y() );
+                break;
+              default:
+                break;
+            }
+            return Qgis::AnnotationItemEditOperationResult::Success;
           }
-          return Qgis::AnnotationItemEditOperationResult::Success;
-        }
 
-        case Qgis::AnnotationPictureSizeMode::FixedSize:
-        {
-          mBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(),
-                    mBounds.width(),
-                    mBounds.height() );
-          return Qgis::AnnotationItemEditOperationResult::Success;
+          case Qgis::AnnotationPictureSizeMode::FixedSize:
+          {
+            mBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(),
+                      mBounds.width(),
+                      mBounds.height() );
+            return Qgis::AnnotationItemEditOperationResult::Success;
+          }
         }
+      }
+      else if ( moveOperation->nodeId().part == 1 )
+      {
+        setCalloutAnchor( QgsGeometry::fromPoint( moveOperation->after() ) );
+        if ( !callout() )
+        {
+          setCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+        }
+        return Qgis::AnnotationItemEditOperationResult::Success;
       }
       break;
     }
@@ -323,40 +373,48 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
-      switch ( mSizeMode )
+      if ( moveOperation->nodeId().part == 0 )
       {
-        case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+        switch ( mSizeMode )
         {
-          QgsRectangle modifiedBounds = mBounds;
-          switch ( moveOperation->nodeId().vertex )
+          case Qgis::AnnotationPictureSizeMode::SpatialBounds:
           {
-            case 0:
-              modifiedBounds.setXMinimum( moveOperation->after().x() );
-              modifiedBounds.setYMinimum( moveOperation->after().y() );
-              break;
-            case 1:
-              modifiedBounds.setXMaximum( moveOperation->after().x() );
-              modifiedBounds.setYMinimum( moveOperation->after().y() );
-              break;
-            case 2:
-              modifiedBounds.setXMaximum( moveOperation->after().x() );
-              modifiedBounds.setYMaximum( moveOperation->after().y() );
-              break;
-            case 3:
-              modifiedBounds.setXMinimum( moveOperation->after().x() );
-              modifiedBounds.setYMaximum( moveOperation->after().y() );
-              break;
-            default:
-              break;
+            QgsRectangle modifiedBounds = mBounds;
+            switch ( moveOperation->nodeId().vertex )
+            {
+              case 0:
+                modifiedBounds.setXMinimum( moveOperation->after().x() );
+                modifiedBounds.setYMinimum( moveOperation->after().y() );
+                break;
+              case 1:
+                modifiedBounds.setXMaximum( moveOperation->after().x() );
+                modifiedBounds.setYMinimum( moveOperation->after().y() );
+                break;
+              case 2:
+                modifiedBounds.setXMaximum( moveOperation->after().x() );
+                modifiedBounds.setYMaximum( moveOperation->after().y() );
+                break;
+              case 3:
+                modifiedBounds.setXMinimum( moveOperation->after().x() );
+                modifiedBounds.setYMaximum( moveOperation->after().y() );
+                break;
+              default:
+                break;
+            }
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
           }
-          return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );;
+          case Qgis::AnnotationPictureSizeMode::FixedSize:
+          {
+            const QgsRectangle currentBounds = context.currentItemBounds();
+            const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(), currentBounds.width(), currentBounds.height() );
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+          }
         }
-        case Qgis::AnnotationPictureSizeMode::FixedSize:
-        {
-          const QgsRectangle currentBounds = context.currentItemBounds();
-          const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(), currentBounds.width(), currentBounds.height() );
-          return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
-        }
+      }
+      else
+      {
+        QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
       }
       break;
     }
@@ -457,15 +515,26 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
 
 QgsRectangle QgsAnnotationPictureItem::boundingBox() const
 {
+  QgsRectangle bounds;
   switch ( mSizeMode )
   {
     case Qgis::AnnotationPictureSizeMode::SpatialBounds:
-      return mBounds;
+    {
+      bounds = mBounds;
+      break;
+    }
 
     case Qgis::AnnotationPictureSizeMode::FixedSize:
-      return QgsRectangle( mBounds.center(), mBounds.center() );
+      bounds = QgsRectangle( mBounds.center(), mBounds.center() );
+      break;
   }
-  BUILTIN_UNREACHABLE
+
+  if ( callout() && !calloutAnchor().isEmpty() )
+  {
+    QgsGeometry anchor = calloutAnchor();
+    bounds.combineExtentWith( anchor.boundingBox() );
+  }
+  return bounds;
 }
 
 QgsRectangle QgsAnnotationPictureItem::boundingBox( QgsRenderContext &context ) const
@@ -501,7 +570,14 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox( QgsRenderContext &context ) 
       const QgsPointXY bottomRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.bottom() );
 
       const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
-      return context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
+      QgsRectangle textRect = context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
+
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        QgsGeometry anchor = calloutAnchor();
+        textRect.combineExtentWith( anchor.boundingBox() );
+      }
+      return textRect;
     }
   }
   BUILTIN_UNREACHABLE
