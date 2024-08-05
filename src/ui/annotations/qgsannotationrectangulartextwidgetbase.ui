@@ -129,18 +129,18 @@
       <string>Insert/Edit Expression…</string>
      </property>
      <property name="popupMode">
-      <enum>QToolButton::MenuButtonPopup</enum>
+      <enum>QToolButton::ToolButtonPopupMode::MenuButtonPopup</enum>
      </property>
      <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextOnly</enum>
+      <enum>Qt::ToolButtonStyle::ToolButtonTextOnly</enum>
      </property>
      <property name="arrowType">
-      <enum>Qt::DownArrow</enum>
+      <enum>Qt::ArrowType::DownArrow</enum>
      </property>
     </widget>
    </item>
    <item row="0" column="0" colspan="2">
-    <widget class="QPlainTextEdit" name="mTextEdit">
+    <widget class="QgsRichTextEditor" name="mTextEdit" native="true">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -314,7 +314,7 @@
          </size>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
+         <enum>Qt::FocusPolicy::StrongFocus</enum>
         </property>
        </widget>
       </item>
@@ -334,14 +334,25 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsAlignmentComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsalignmentcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsRichTextEditor</class>
+   <extends>QWidget</extends>
+   <header>qgsrichtexteditor.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -354,11 +365,6 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsAlignmentComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsalignmentcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
