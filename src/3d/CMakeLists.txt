@@ -71,6 +71,7 @@ set(QGIS_3D_SRCS
   materials/qgsmetalroughmaterialsettings.cpp
   materials/qgsnullmaterialsettings.cpp
   materials/qgsphongmaterialsettings.cpp
+  materials/qgsphongtexturedmaterial.cpp
   materials/qgsphongtexturedmaterialsettings.cpp
   materials/qgssimplelinematerialsettings.cpp
 
@@ -163,6 +164,7 @@ set(QGIS_3D_HDRS
   materials/qgsmetalroughmaterialsettings.h
   materials/qgsnullmaterialsettings.h
   materials/qgsphongmaterialsettings.h
+  materials/qgsphongtexturedmaterial.h
   materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h
 
