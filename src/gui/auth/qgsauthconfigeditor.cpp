@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthconfigeditor.h"
+#include "qgsauthconfigurationstoragedb.h"
 #include "ui_qgsauthconfigeditor.h"
 
 #include <QMenu>
@@ -26,6 +27,29 @@
 #include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
 #include "qgsapplication.h"
+
+
+///@cond PRIVATE
+
+class QgsReadOnlySqlTableModel : public QSqlTableModel
+{
+  public:
+    QgsReadOnlySqlTableModel( QObject *parent = nullptr, QSqlDatabase db = QSqlDatabase() )
+      : QSqlTableModel( parent, db )
+    {
+    }
+
+    Qt::ItemFlags flags( const QModelIndex &index ) const override
+    {
+      Qt::ItemFlags flags = QSqlTableModel::flags( index );
+      if ( index.column() == 0 )
+        flags &= ~Qt::ItemIsEditable;
+      return flags;
+    }
+};
+
+
+///@endcond
 
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )
@@ -49,9 +73,24 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     setShowUtilitiesButton( showUtilities );
 
     Q_NOWARN_DEPRECATED_PUSH
-    mConfigModel = new QSqlTableModel( this, QgsApplication::authManager()->authDatabaseConnection() );
-    mConfigModel->setTable( QgsApplication::authManager()->methodConfigTableName() );
+    const QSqlDatabase connection { QgsApplication::authManager()->authDatabaseConnection() };
     Q_NOWARN_DEPRECATED_POP
+
+    mIsReadOnly = ! QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly();
+    if ( mIsReadOnly )
+    {
+      mConfigModel = new QgsReadOnlySqlTableModel( this, connection );
+      btnAddConfig->setEnabled( false );
+      btnEditConfig->setEnabled( false );
+      btnRemoveConfig->setEnabled( false );
+      tableViewConfigs->setEditTriggers( QAbstractItemView::EditTrigger::NoEditTriggers );
+    }
+    else
+    {
+      mConfigModel = new QSqlTableModel( this, connection );
+    }
+    mConfigModel->setTable( QgsApplication::authManager()->methodConfigTableName() );
+
     mConfigModel->select();
 
     mConfigModel->setHeaderData( 0, Qt::Horizontal, tr( "ID" ) );
@@ -77,9 +116,6 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     connect( tableViewConfigs->selectionModel(), &QItemSelectionModel::selectionChanged,
              this, &QgsAuthConfigEditor::selectionChanged );
 
-    connect( tableViewConfigs, &QAbstractItemView::doubleClicked,
-             this, &QgsAuthConfigEditor::btnEditConfig_clicked );
-
     if ( mRelayMessages )
     {
       connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
@@ -101,27 +137,56 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all Authentication Configurations…" ), this );
     mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase Authentication Database…" ), this );
 
-    connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::importAuthenticationConfigs );
     connect( mActionExportSelectedAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::exportSelectedAuthenticationConfigs );
     connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::setMasterPassword );
     connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedMasterPassword );
-    connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::resetMasterPassword );
     connect( mActionClearCachedAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedAuthenticationConfigs );
-    connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::removeAuthenticationConfigs );
-    connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthConfigEditor::eraseAuthenticationDatabase );
+
+    if ( ! mIsReadOnly )
+    {
+      connect( tableViewConfigs, &QAbstractItemView::doubleClicked, this, &QgsAuthConfigEditor::btnEditConfig_clicked );
+
+      connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::importAuthenticationConfigs );
+      connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::resetMasterPassword );
+      connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::removeAuthenticationConfigs );
+      connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthConfigEditor::eraseAuthenticationDatabase );
+    }
+    else
+    {
+      mActionImportAuthenticationConfigs->setEnabled( false );
+      mActionSetMasterPassword->setEnabled( false );
+      mActionClearCachedMasterPassword->setEnabled( false );
+      mActionResetMasterPassword->setEnabled( false );
+      mActionClearCachedAuthConfigs->setEnabled( false );
+      mActionRemoveAuthConfigs->setEnabled( false );
+      mActionEraseAuthDatabase->setEnabled( false );
+    }
 
     mAuthUtilitiesMenu = new QMenu( this );
-    mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
-    mAuthUtilitiesMenu->addAction( mActionClearCachedMasterPassword );
-    mAuthUtilitiesMenu->addAction( mActionResetMasterPassword );
-    mAuthUtilitiesMenu->addSeparator();
+
+    if ( ! mIsReadOnly )
+    {
+      mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
+      mAuthUtilitiesMenu->addAction( mActionClearCachedMasterPassword );
+      mAuthUtilitiesMenu->addAction( mActionResetMasterPassword );
+      mAuthUtilitiesMenu->addSeparator();
+    }
+
     mAuthUtilitiesMenu->addAction( mActionClearCachedAuthConfigs );
-    mAuthUtilitiesMenu->addAction( mActionRemoveAuthConfigs );
+
+    if ( ! mIsReadOnly )
+      mAuthUtilitiesMenu->addAction( mActionRemoveAuthConfigs );
+
     mAuthUtilitiesMenu->addSeparator();
-    mAuthUtilitiesMenu->addAction( mActionImportAuthenticationConfigs );
+
+    if ( ! mIsReadOnly )
+      mAuthUtilitiesMenu->addAction( mActionImportAuthenticationConfigs );
+
     mAuthUtilitiesMenu->addAction( mActionExportSelectedAuthenticationConfigs );
     mAuthUtilitiesMenu->addSeparator();
-    mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
+
+    if ( ! mIsReadOnly )
+      mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
 
     btnAuthUtilities->setMenu( mAuthUtilitiesMenu );
     lblAuthConfigDb->setVisible( false );
@@ -239,9 +304,12 @@ void QgsAuthConfigEditor::selectionChanged( const QItemSelection &selected, cons
 
 void QgsAuthConfigEditor::checkSelection()
 {
-  const bool hasselection = tableViewConfigs->selectionModel()->selection().length() > 0;
-  btnEditConfig->setEnabled( hasselection );
-  btnRemoveConfig->setEnabled( hasselection );
+  if ( !mIsReadOnly )
+  {
+    const bool hasselection = tableViewConfigs->selectionModel()->selection().length() > 0;
+    btnEditConfig->setEnabled( hasselection );
+    btnRemoveConfig->setEnabled( hasselection );
+  }
 }
 
 void QgsAuthConfigEditor::btnAddConfig_clicked()

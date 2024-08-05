@@ -52,6 +52,16 @@ QgsAuthConfigurationStorage::QgsAuthConfigurationStorage( const QMap<QString, QS
 #endif
 }
 
+void QgsAuthConfigurationStorage::setReadOnly( bool readOnly )
+{
+  mIsReadOnly = readOnly;
+  emit readOnlyChanged( readOnly );
+}
+
+bool QgsAuthConfigurationStorage::isReadOnly() const
+{
+  return mIsReadOnly;
+}
 
 
 QString QgsAuthConfigurationStorage::lastError() const
