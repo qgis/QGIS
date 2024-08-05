@@ -94,6 +94,7 @@ class TestQgs3DRendering : public QgsTest
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
     void testFilteredExtrudedPolygons();
+    void testShadowEffect();
     void testDepthBuffer();
     void testAmbientOcclusion();
     void testDebugMap();
@@ -1525,6 +1526,55 @@ void TestQgs3DRendering::testFilteredExtrudedPolygons()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_filtered", "polygon3d_extrusion_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
+void TestQgs3DRendering::testShadowEffect()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings();
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsDirectionalLightSettings defaultDirectionalLight;
+  mapSettings->setLightSources( {defaultDirectionalLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::black );
+  materialSettings.setDiffuse( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  QgsShadowSettings shadowSettings;
+  shadowSettings.setRenderShadows( true );
+  shadowSettings.setSelectedDirectionalLight( 0 );
+  shadowSettings.setMaximumShadowRenderingDistance( 1500 );
+  shadowSettings.setShadowMapResolution( 8192 );
+  mapSettings->setShadowSettings( shadowSettings );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 220, 0, 250 ), 125, 55, -35 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete mapSettings;
+  delete scene;
+
+  QGSVERIFYIMAGECHECK( "shadow_effect", "shadow_effect", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
 void TestQgs3DRendering::testAmbientOcclusion()
 {
   // =============================================
@@ -1556,6 +1606,14 @@ void TestQgs3DRendering::testAmbientOcclusion()
   defaultPointLight.setConstantAttenuation( 0 );
   mapSettings.setLightSources( {defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
 
   // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
