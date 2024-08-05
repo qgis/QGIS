@@ -28,29 +28,6 @@
 #include "qgsauthguiutils.h"
 #include "qgsapplication.h"
 
-
-///@cond PRIVATE
-
-class QgsReadOnlySqlTableModel : public QSqlTableModel
-{
-  public:
-    QgsReadOnlySqlTableModel( QObject *parent = nullptr, QSqlDatabase db = QSqlDatabase() )
-      : QSqlTableModel( parent, db )
-    {
-    }
-
-    Qt::ItemFlags flags( const QModelIndex &index ) const override
-    {
-      Qt::ItemFlags flags = QSqlTableModel::flags( index );
-      if ( index.column() == 0 )
-        flags &= ~Qt::ItemIsEditable;
-      return flags;
-    }
-};
-
-
-///@endcond
-
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )
   , mRelayMessages( relayMessages )
@@ -79,7 +56,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     mIsReadOnly = ! QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly();
     if ( mIsReadOnly )
     {
-      mConfigModel = new QgsReadOnlySqlTableModel( this, connection );
+      mConfigModel = new QSqlTableModel( this, connection );
       btnAddConfig->setEnabled( false );
       btnEditConfig->setEnabled( false );
       btnRemoveConfig->setEnabled( false );
