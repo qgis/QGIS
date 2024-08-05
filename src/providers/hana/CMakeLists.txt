@@ -7,6 +7,7 @@ set (HANA_SRCS
   qgshanaconnectionpool.cpp
   qgshanaconnectionstringbuilder.cpp
   qgshanadataitems.cpp
+  qgshanadatatypes.cpp
   qgshanadriver.cpp
   qgshanaexpressioncompiler.cpp
   qgshanafeatureiterator.cpp

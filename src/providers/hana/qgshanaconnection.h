@@ -18,6 +18,7 @@
 #define QGSHANACONNECTION_H
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgshanadatatypes.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanatablemodel.h"
 #include "qgshanaresultset.h"
@@ -30,7 +31,7 @@ struct AttributeField
   QString schemaName;
   QString tableName;
   QString name;
-  short type = 0;
+  QgsHanaDataType type = QgsHanaDataType::Unknown;
   int srid = -1;
   QString typeName;
   int size = 0;
