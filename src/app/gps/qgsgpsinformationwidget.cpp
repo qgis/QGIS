@@ -476,8 +476,8 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject::instance(), QgsPointXY( info.longitude, info.latitude ),
         QgsCoordinateReferenceSystem(), 8, formattedX, formattedY );
 
-    mTxtLatitude->setText( formattedX );
-    mTxtLongitude->setText( formattedY );
+    mTxtLatitude->setText( formattedY );
+    mTxtLongitude->setText( formattedX );
 
     mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 3 ) );
     mTxtAltitudeDiff->setText( tr( "%1 m" ).arg( info.elevation_diff, 0, 'f', 3 ) );
