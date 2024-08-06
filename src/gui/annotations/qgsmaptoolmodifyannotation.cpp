@@ -149,7 +149,9 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
       {
         const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
 
-        QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
+        QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y(),
+            event->pixelPoint().x() - mMoveStartPointPixels.x(),
+            event->pixelPoint().y() - mMoveStartPointPixels.y() );
         std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResultsV2( &operation, context ) );
         if ( operationResults )
         {
@@ -233,6 +235,7 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
           } );
 
           mMoveStartPointCanvasCrs = mapPoint;
+          mMoveStartPointPixels = event->pixelPoint();
           mMoveStartPointLayerCrs = toLayerCoordinates( layer, mMoveStartPointCanvasCrs );
           if ( mHoverRubberBand )
             mHoverRubberBand->hide();
@@ -291,7 +294,9 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
         {
           const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
 
-          QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
+          QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y(),
+              event->pixelPoint().x() - mMoveStartPointPixels.x(),
+              event->pixelPoint().y() - mMoveStartPointPixels.y() );
           switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
