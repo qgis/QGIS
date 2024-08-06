@@ -85,6 +85,12 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
 
   checkCapabilities();
 
+  // Recompute capabilities if needed
+  connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool )
+  {
+    checkCapabilities();
+  } );
+
   return true;
 }
 
@@ -142,6 +148,8 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
     return;
   }
 
+  const bool readOnly { isReadOnly() };
+
   mIsReadOnly = mIsReadOnly && fileInfo.isWritable();
   QgsAuthConfigurationStorageDb::checkCapabilities();
 
@@ -153,6 +161,13 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
     mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy, false );
     mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity, false );
     mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig, false );
+  }
+
+  // We need to emit the signal without repeating the check
+  if ( mIsReadOnly != readOnly )
+  {
+    mIsReadOnly = readOnly;
+    whileBlocking( this )->setReadOnly( !readOnly );
   }
 
 }
