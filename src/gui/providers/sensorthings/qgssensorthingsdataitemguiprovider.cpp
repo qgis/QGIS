@@ -33,6 +33,10 @@ void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item,
     connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsSensorThingsConnectionItem * > stConnectionItems = QgsDataItem::filteredItems<QgsSensorThingsConnectionItem>( selection );
     QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [stConnectionItems, context]
@@ -82,6 +86,25 @@ void QgsSensorThingsDataItemGuiProvider::editConnection( QgsDataItem *item )
 
   item->parent()->refreshConnections();
 }
+
+void QgsSensorThingsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  const QgsSensorThingsProviderConnection::Data connection = QgsSensorThingsProviderConnection::connection( connectionName );
+  const QStringList connections = QgsSensorThingsProviderConnection::sTreeSensorThingsConnections->items();
+
+  int i = 0;
+  QString newConnectionName( connectionName );
+  while ( connections.contains( newConnectionName ) )
+  {
+    ++i;
+    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
+  }
+
+  QgsSensorThingsProviderConnection::addConnection( newConnectionName, connection );
+  item->parent()->refreshConnections();
+}
+
 
 void QgsSensorThingsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
