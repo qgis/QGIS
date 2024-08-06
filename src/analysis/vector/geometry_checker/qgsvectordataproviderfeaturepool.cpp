@@ -153,7 +153,7 @@ void QgsVectorDataProviderFeaturePool::updateFeature( QgsFeature &feature )
     }
   } );
 
-  refreshCache( feature );
+  refreshCache( feature, origFeature );
 }
 
 void QgsVectorDataProviderFeaturePool::deleteFeature( QgsFeatureId fid )

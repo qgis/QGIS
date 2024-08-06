@@ -171,10 +171,13 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Changes a feature in the cache and the spatial index.
      * To be used by implementations of ``updateFeature``.
      *
+     * \param feature the new feature to put in the cache and index
+     * \param origFeature the original feature to remove from the index
+     *
      * \note This method can safely be called from a different thread vs the object's creation thread or
      * the original layer's thread.
      */
-    void refreshCache( QgsFeature feature );
+    void refreshCache( QgsFeature feature, const QgsFeature origFeature );
 
     /**
      * Removes a feature from the cache and the spatial index.
