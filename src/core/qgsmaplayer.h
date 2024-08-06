@@ -2333,7 +2333,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 #ifndef SIP_RUN
 
     /**
-     * Returns an HTML fragment containing general  metadata information, for use
+     * Returns an HTML fragment containing general metadata information, for use
      * in the htmlMetadata() method.
      *
      * \note Not available in Python bindings.
@@ -2341,6 +2341,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.22
      */
     QString generalHtmlMetadata() const;
+
+    /**
+     * Returns an HTML fragment containing custom property information, for use
+     * in the htmlMetadata() method.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.40
+     */
+    QString customPropertyHtmlMetadata() const;
 #endif
 
 #ifndef SIP_RUN

@@ -572,6 +572,8 @@ QString QgsVectorTileLayer::htmlMetadata() const
           htmlFormatter.historySectionHtml( ) %
           QStringLiteral( "<br>\n" ) %
 
+          customPropertyHtmlMetadata() %
+
           QStringLiteral( "\n</body>\n</html>\n" );
 
   return info;
