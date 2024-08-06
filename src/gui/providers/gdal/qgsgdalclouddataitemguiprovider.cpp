@@ -34,6 +34,10 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
     connect( actionEdit, &QAction::triggered, this, [providerItem] { editConnection( providerItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [providerItem] { duplicateConnection( providerItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsGdalCloudConnectionItem * > stConnectionItems = QgsDataItem::filteredItems<QgsGdalCloudConnectionItem>( selection );
     QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [stConnectionItems, item, context]
@@ -116,6 +120,32 @@ void QgsGdalCloudDataItemGuiProvider::editConnection( QgsGdalCloudConnectionItem
     cloudItem->refresh();
   else
     item->refresh();
+}
+
+void QgsGdalCloudDataItemGuiProvider::duplicateConnection( QgsGdalCloudConnectionItem *item )
+{
+  QgsGdalCloudProviderItem *cloudItem = qobject_cast< QgsGdalCloudProviderItem * >( item->parent() );
+  if ( !cloudItem )
+    return;
+
+  QgsGdalCloudRootItem *rootItem = qobject_cast< QgsGdalCloudRootItem * >( cloudItem->parent() );
+  if ( !rootItem )
+    return;
+
+  const QString connectionName = item->name();
+  const QgsGdalCloudProviderConnection::Data connection = QgsGdalCloudProviderConnection::connection( connectionName );
+  const QStringList connections = QgsGdalCloudProviderConnection::sTreeConnectionCloud->items();
+
+  int i = 0;
+  QString newConnectionName( connectionName );
+  while ( connections.contains( newConnectionName ) )
+  {
+    ++i;
+    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ) .arg( i );
+  }
+
+  QgsGdalCloudProviderConnection::addConnection( newConnectionName, connection );
+  cloudItem->refresh();
 }
 
 void QgsGdalCloudDataItemGuiProvider::newConnection( QgsDataItem *item, const QgsGdalUtils::VsiNetworkFileSystemDetails &driver )
