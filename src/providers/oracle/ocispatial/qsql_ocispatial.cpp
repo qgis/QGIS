@@ -1961,7 +1961,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
     // we may now populate column with data
     for ( uint row = 0; row < col.recordCount; ++row )
     {
-      const QVariant &val = boundValues.at( i ).toList().at( static_cast<int>( row ) );
+      const QVariant val = boundValues.at( i ).toList().at( static_cast<int>( row ) );
 
       if ( val.isNull() )
       {
