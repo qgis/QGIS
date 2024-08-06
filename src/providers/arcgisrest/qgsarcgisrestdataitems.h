@@ -232,15 +232,38 @@ class QgsArcGisRestParentLayerItem : public QgsDataItem
 };
 
 /**
- * Represents a ArcGIS REST "Feature Service" layer item.
+ * Represents a ArcGIS REST layer item.
  */
-class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
+class QgsArcGisRestLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 
   public:
 
-    QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsHttpHeaders &headers,
+    QgsArcGisRestLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs,
+                            Qgis::BrowserLayerType layerType, const QString &providerId );
+
+    /**
+     * Returns the CRS for the layer.
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+  private:
+
+    QgsCoordinateReferenceSystem mCrs;
+};
+
+
+/**
+ * Represents a ArcGIS REST "Feature Service" layer item.
+ */
+class QgsArcGisFeatureServiceLayerItem : public QgsArcGisRestLayerItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers,
                                       const QString urlPrefix, Qgis::BrowserLayerType geometryType );
 
 };
@@ -249,12 +272,12 @@ class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
  * Represents a ArcGIS REST "Map Service" (or "Image Service") layer item.
  */
 
-class QgsArcGisMapServiceLayerItem : public QgsLayerItem
+class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
 {
     Q_OBJECT
 
   public:
-    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &id, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
     QString supportedFormats() const { return mSupportedFormats; }
 
