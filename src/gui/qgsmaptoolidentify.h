@@ -310,6 +310,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
                                  const QgsCoordinateReferenceSystem &mapVertCrs,
                                  const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, bool showTransformedZ, QMap< QString, QString > &derivedAttributes );
 
+    static void formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y, const QgsCoordinateReferenceSystem &mapCrs, int coordinatePrecision );
     void formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y ) const;
 
     // Last geometry (point or polygon) in map CRS

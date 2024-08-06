@@ -25,6 +25,7 @@ from qgis.core import (
     QgsProfileSnapContext,
     QgsProviderRegistry,
     QgsUnitTypes,
+    QgsCoordinateReferenceSystem
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -443,6 +444,68 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
                              color_tolerance=2,
                              allowed_mismatch=20)
         )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def test_vertical_transformation_4979_to_4985(self):
+        pcl = QgsPointCloudLayer(
+            self.get_test_data_path('point_clouds/ept/rgb16/ept.json').as_posix(), 'test', 'ept')
+
+        self.assertTrue(pcl.isValid())
+        pcl.setCrs(QgsCoordinateReferenceSystem('EPSG:4979'))
+        self.assertEqual(pcl.crs3D().authid(), 'EPSG:4979')
+
+        pcl.elevationProperties().setMaximumScreenError(30)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (7.37810825606327025 2.69442638932088574, 7.44718273878368908 2.71100426469523947)')
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:4985'))
+
+        req.setTolerance(0.005)
+        generator = pcl.createProfileGenerator(req)
+
+        context = QgsProfileGenerationContext()
+        context.setMapUnitsPerDistancePixel(0.50)
+
+        self.assertTrue(generator.generateProfile(context))
+        results = generator.takeResults()
+        self.assertEqual(self.round_dict(results.distanceToHeightMap(), 3),
+                         {0.013: -5.409, 0.064: -5.41})
+
+        self.assertCountEqual([g.asWkt(3) for g in results.asGeometries()],
+                              ['PointZ (7.39 2.7 -5.409)', 'PointZ (7.44 2.71 -5.41)'])
+        self.assertAlmostEqual(results.zRange().lower(), -5.40999, 4)
+        self.assertAlmostEqual(results.zRange().upper(), -5.40920, 4)
+
+        features = results.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0].layerIdentifier, pcl.id())
+        self.assertEqual(features[0].geometry.asWkt(3),
+                         'PointZ (7.39 2.7 -5.409)')
+        self.assertEqual(features[-1].layerIdentifier, pcl.id())
+        self.assertEqual(features[-1].geometry.asWkt(3),
+                         'PointZ (7.44 2.71 -5.41)')
+
+        features = results.asFeatures(Qgis.ProfileExportType.Profile2D)
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0].layerIdentifier, pcl.id())
+        self.assertEqual(features[0].geometry.asWkt(3),
+                         'Point (0.013 -5.409)')
+        self.assertEqual(features[-1].layerIdentifier, pcl.id())
+        self.assertEqual(features[-1].geometry.asWkt(3),
+                         'Point (0.064 -5.41)')
+
+        features = results.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable)
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0].layerIdentifier, pcl.id())
+        self.assertAlmostEqual(features[0].attributes['distance'], 0.012704944, 4)
+        self.assertAlmostEqual(features[0].attributes['elevation'], -5.409209, 4)
+        self.assertEqual(features[0].geometry.asWkt(3), 'PointZ (7.39 2.7 -5.409)')
+        self.assertEqual(features[-1].geometry.asWkt(3), 'PointZ (7.44 2.71 -5.41)')
+        self.assertAlmostEqual(features[-1].attributes['distance'], 0.063658039178, 4)
+        self.assertAlmostEqual(features[-1].attributes['elevation'], -5.409997397, 4)
 
 
 if __name__ == '__main__':

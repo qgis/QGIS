@@ -22,6 +22,7 @@
 #include "ui_qgspointcloudelevationpropertieswidgetbase.h"
 
 class QgsPointCloudLayer;
+class QgsProjectionSelectionWidget;
 
 class QgsPointCloudElevationPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsPointCloudElevationPropertiesWidgetBase
 {
@@ -40,9 +41,12 @@ class QgsPointCloudElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
 
     void onChanged();
     void shiftPointCloudZAxis();
+    void updateVerticalCrsOptions();
+
   private:
 
     QgsPointCloudLayer *mLayer = nullptr;
+    QgsProjectionSelectionWidget *mVerticalCrsWidget = nullptr;
     bool mBlockUpdates = false;
 
 };
