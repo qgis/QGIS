@@ -129,6 +129,10 @@ Set the storage enabled status to ``enabled``.
     virtual void setReadOnly( bool readOnly );
 %Docstring
 Utility method to unset all editing capabilities.
+
+.. note::
+
+   This method does not alter existing capabilities, make sure subclasses recompute capabilities if needed.
 %End
 
     virtual bool isReadOnly() const;

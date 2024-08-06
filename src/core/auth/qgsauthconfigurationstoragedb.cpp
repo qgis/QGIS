@@ -244,10 +244,13 @@ bool QgsAuthConfigurationStorageDb::initialize()
 
     mIsReady = true;
     checkCapabilities();
+
+    // Recompute capabilities if needed
     connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool )
     {
       checkCapabilities();
     } );
+
     return true;
   }
 }

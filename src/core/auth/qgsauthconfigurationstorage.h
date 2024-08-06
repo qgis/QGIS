@@ -135,6 +135,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
 
     /**
      * Utility method to unset all editing capabilities.
+     * \note This method does not alter existing capabilities, make sure subclasses recompute capabilities if needed.
      */
     virtual void setReadOnly( bool readOnly );
 

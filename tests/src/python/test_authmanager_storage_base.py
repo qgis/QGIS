@@ -80,13 +80,9 @@ class TestAuthManagerStorageBase():
         self.assertEqual(storage.settings()['database'], self.storage.settings()['database'])
         self.assertEqual(storage.settings()['driver'], self.storage.settings()['driver'])
 
-    def testAuthStoragePermissions(self):
-        """Checks that the auth manager default DB storage is read only"""
+    def _assert_readonly(self, storage):
 
-        auth_manager = QgsApplication.authManager()
-        auth_manager.ensureInitialized()
-        registry = QgsApplication.authConfigurationStorageRegistry()
-        storage = registry.readyStorages()[0]
+        self.assertTrue(storage.isReadOnly())
 
         self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadConfiguration))
         self.assertFalse(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteConfiguration))
@@ -114,6 +110,54 @@ class TestAuthManagerStorageBase():
         self.assertFalse(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.CreateCertificateTrustPolicy))
 
         self.assertFalse(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ClearStorage))
+
+    def _assert_readwrite(self, storage):
+
+        self.assertFalse(storage.isReadOnly())
+
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadConfiguration))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteConfiguration))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateConfiguration))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.CreateConfiguration))
+
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadSetting))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteSetting))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateSetting))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.CreateSetting))
+
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteCertificateIdentity))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateCertificateIdentity))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.CreateCertificateIdentity))
+
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadSslCertificateCustomConfig))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteSslCertificateCustomConfig))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateSslCertificateCustomConfig))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.CreateSslCertificateCustomConfig))
+
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ReadCertificateTrustPolicy))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.DeleteCertificateTrustPolicy))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateCertificateTrustPolicy))
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.CreateCertificateTrustPolicy))
+
+        self.assertTrue(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ClearStorage))
+
+    def testAuthStoragePermissions(self):
+        """Checks that the auth manager default DB storage permissions are set correctly"""
+
+        auth_manager = QgsApplication.authManager()
+        auth_manager.ensureInitialized()
+        registry = QgsApplication.authConfigurationStorageRegistry()
+        storage = registry.readyStorages()[0]
+
+        if not auth_manager.isFilesystemBasedDatabase(self.storage_uri):
+            self._assert_readonly(storage)
+            storage.setReadOnly(False)
+            self._assert_readwrite(storage)
+        else:
+            self._assert_readwrite(storage)
+            storage.setReadOnly(True)
+            self._assert_readonly(storage)
 
     def testAuthConfigs(self):
 
