@@ -30,6 +30,16 @@ void QgsAnnotationItemEditContext::setCurrentItemBounds( const QgsRectangle &bou
   mCurrentItemBounds = bounds;
 }
 
+QgsRenderContext QgsAnnotationItemEditContext::renderContext() const
+{
+  return mRenderContext;
+}
+
+void QgsAnnotationItemEditContext::setRenderContext( const QgsRenderContext &context )
+{
+  mRenderContext = context;
+}
+
 
 //
 // QgsAbstractAnnotationItemEditOperation

@@ -49,9 +49,24 @@ class CORE_EXPORT QgsAnnotationItemEditContext
      */
     void setCurrentItemBounds( const QgsRectangle &bounds );
 
+    /**
+     * Returns the render context associated with the edit operation.
+     *
+     * \see setRenderContext()
+     */
+    QgsRenderContext renderContext() const;
+
+    /**
+     * Sets the render \a context associated with the edit operation.
+     *
+     * \see renderContext()
+     */
+    void setRenderContext( const QgsRenderContext &context );
+
   private:
 
     QgsRectangle mCurrentItemBounds;
+    QgsRenderContext mRenderContext;
 
 };
 

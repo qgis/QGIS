@@ -38,6 +38,20 @@ Sets the current rendered ``bounds`` of the item, in the annotation layer's CRS.
 .. seealso:: :py:func:`currentItemBounds`
 %End
 
+    QgsRenderContext renderContext() const;
+%Docstring
+Returns the render context associated with the edit operation.
+
+.. seealso:: :py:func:`setRenderContext`
+%End
+
+    void setRenderContext( const QgsRenderContext &context );
+%Docstring
+Sets the render ``context`` associated with the edit operation.
+
+.. seealso:: :py:func:`renderContext`
+%End
+
 };
 
 class QgsAbstractAnnotationItemEditOperation
