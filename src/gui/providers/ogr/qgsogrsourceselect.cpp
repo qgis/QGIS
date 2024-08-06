@@ -62,7 +62,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Standalone )
   {
     this->layout()->setSizeConstraint( QLayout::SetNoConstraint );
   }

@@ -652,7 +652,7 @@ QMenu *QgsMeshDatasetGroupTreeView::createContextMenu()
 
   switch ( item->datasetGroupType() )
   {
-    case QgsMeshDatasetGroup::None:
+    case QgsMeshDatasetGroup::Unknown:
       break;
     case QgsMeshDatasetGroup::Persistent:
       break;

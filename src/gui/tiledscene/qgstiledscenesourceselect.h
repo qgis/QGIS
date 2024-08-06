@@ -39,7 +39,7 @@ class QgsTiledSceneSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
   public:
     //! Constructor
-    QgsTiledSceneSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsTiledSceneSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
     //! Determines the layers the user selected
     void addButtonClicked() override;

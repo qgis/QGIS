@@ -72,7 +72,7 @@ class CORE_EXPORT QgsProviderRegistry
        * as GUI for individual "Add XXX layer" buttons in the main window.
        * Likely not used in live code anymore.
        */
-      None,
+      Standalone,
 
       /**
        * Used for the data source manager dialog where the widget is embedded as the main content
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsProviderRegistry
      * responsible for deleting the returned widget.
      * \deprecated QGIS 3.10 - use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead
      */
-    Q_DECL_DEPRECATED QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) SIP_DEPRECATED;
 
     /**
      * Returns list of data item providers of the provider

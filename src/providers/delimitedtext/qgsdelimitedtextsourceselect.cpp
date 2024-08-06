@@ -173,7 +173,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   mFileWidget->setFilePath( QString() );
   txtLayerName->setText( QString() );
 
-  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
   {
     accept();
   }

@@ -35,7 +35,7 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     Q_OBJECT
   public:
     //! Constructor
-    QgsAbstractDbSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsAbstractDbSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
   protected:
     //! Sets the source model for the table and optionally a delegate

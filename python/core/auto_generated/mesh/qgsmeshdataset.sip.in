@@ -638,7 +638,7 @@ Abstract class that represents a dataset group
 
     enum Type
     {
-      None,
+      Unknown,
       Persistent,
       Memory,
       Virtual,
