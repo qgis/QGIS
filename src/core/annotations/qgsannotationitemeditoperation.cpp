@@ -92,10 +92,12 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationDelet
 // QgsAnnotationItemEditOperationTranslateItem
 //
 
-QgsAnnotationItemEditOperationTranslateItem::QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY )
+QgsAnnotationItemEditOperationTranslateItem::QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY, double translatePixelsX, double translatePixelsY )
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mTranslateX( translateX )
   , mTranslateY( translateY )
+  , mTranslatePixelsX( translatePixelsX )
+  , mTranslatePixelsY( translatePixelsY )
 {
 
 }

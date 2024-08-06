@@ -128,6 +128,7 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
 
     QgsPointXY mMoveStartPointCanvasCrs;
     QgsPointXY mMoveStartPointLayerCrs;
+    QgsPointXY mMoveStartPointPixels;
 
     bool mRefreshSelectedItemAfterRedraw = false;
 
