@@ -494,7 +494,7 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
       emit addLayer( Qgis::LayerType::Vector, def.toString(), layerName, QStringLiteral( "virtual" ) );
     }
   }
-  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
   {
     accept();
   }

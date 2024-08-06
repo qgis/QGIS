@@ -61,7 +61,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
   public:
 
     //! Constructor
-    QgsArcGisRestSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsArcGisRestSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
     //! Destructor
     ~QgsArcGisRestSourceSelect() override;

@@ -74,7 +74,7 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     QgsHanaSourceSelect(
       QWidget *parent = nullptr,
       Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-      QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+      QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
     ~QgsHanaSourceSelect() override;
     //! Populate the connection list combo box

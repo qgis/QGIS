@@ -599,7 +599,7 @@ class CORE_EXPORT QgsMeshDatasetGroup
      */
     enum Type
     {
-      None, //! Generic type used for non typed dataset group
+      Unknown, //! Generic type used for non typed dataset group
       Persistent, //! Dataset group store in a file
       Memory, //! Temporary dataset group in memory
       Virtual, //! Virtual Dataset group defined by a formula
@@ -1065,7 +1065,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QString mUserName;
     QString mOriginalName;
     QString mSourceName;
-    QgsMeshDatasetGroup::Type mDatasetGroupType = QgsMeshDatasetGroup::None;
+    QgsMeshDatasetGroup::Type mDatasetGroupType = QgsMeshDatasetGroup::Unknown;
     QString mDescription;
 
     bool mIsVector = false;
