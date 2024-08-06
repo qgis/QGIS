@@ -235,6 +235,9 @@ QgsWkbTypes.MultiCurve.__doc__ = "MultiCurve"
 QgsWkbTypes.MultiSurface = Qgis.WkbType.MultiSurface
 QgsWkbTypes.MultiSurface.is_monkey_patched = True
 QgsWkbTypes.MultiSurface.__doc__ = "MultiSurface"
+QgsWkbTypes.PolyhedralSurface = Qgis.WkbType.PolyhedralSurface
+QgsWkbTypes.PolyhedralSurface.is_monkey_patched = True
+QgsWkbTypes.PolyhedralSurface.__doc__ = "PolyhedralSurface"
 QgsWkbTypes.NoGeometry = Qgis.WkbType.NoGeometry
 QgsWkbTypes.NoGeometry.is_monkey_patched = True
 QgsWkbTypes.NoGeometry.__doc__ = "No geometry"
@@ -277,6 +280,9 @@ QgsWkbTypes.MultiCurveZ.__doc__ = "MultiCurveZ"
 QgsWkbTypes.MultiSurfaceZ = Qgis.WkbType.MultiSurfaceZ
 QgsWkbTypes.MultiSurfaceZ.is_monkey_patched = True
 QgsWkbTypes.MultiSurfaceZ.__doc__ = "MultiSurfaceZ"
+QgsWkbTypes.PolyhedralSurfaceZ = Qgis.WkbType.PolyhedralSurfaceZ
+QgsWkbTypes.PolyhedralSurfaceZ.is_monkey_patched = True
+QgsWkbTypes.PolyhedralSurfaceZ.__doc__ = "PolyhedralSurfaceZ"
 QgsWkbTypes.PointM = Qgis.WkbType.PointM
 QgsWkbTypes.PointM.is_monkey_patched = True
 QgsWkbTypes.PointM.__doc__ = "PointM"
@@ -316,6 +322,9 @@ QgsWkbTypes.MultiCurveM.__doc__ = "MultiCurveM"
 QgsWkbTypes.MultiSurfaceM = Qgis.WkbType.MultiSurfaceM
 QgsWkbTypes.MultiSurfaceM.is_monkey_patched = True
 QgsWkbTypes.MultiSurfaceM.__doc__ = "MultiSurfaceM"
+QgsWkbTypes.PolyhedralSurfaceM = Qgis.WkbType.PolyhedralSurfaceM
+QgsWkbTypes.PolyhedralSurfaceM.is_monkey_patched = True
+QgsWkbTypes.PolyhedralSurfaceM.__doc__ = "PolyhedralSurfaceM"
 QgsWkbTypes.PointZM = Qgis.WkbType.PointZM
 QgsWkbTypes.PointZM.is_monkey_patched = True
 QgsWkbTypes.PointZM.__doc__ = "PointZM"
@@ -352,6 +361,9 @@ QgsWkbTypes.MultiCurveZM.__doc__ = "MultiCurveZM"
 QgsWkbTypes.MultiSurfaceZM = Qgis.WkbType.MultiSurfaceZM
 QgsWkbTypes.MultiSurfaceZM.is_monkey_patched = True
 QgsWkbTypes.MultiSurfaceZM.__doc__ = "MultiSurfaceZM"
+QgsWkbTypes.PolyhedralSurfaceZM = Qgis.WkbType.PolyhedralSurfaceZM
+QgsWkbTypes.PolyhedralSurfaceZM.is_monkey_patched = True
+QgsWkbTypes.PolyhedralSurfaceZM.__doc__ = "PolyhedralSurfaceM"
 QgsWkbTypes.TriangleZM = Qgis.WkbType.TriangleZM
 QgsWkbTypes.TriangleZM.is_monkey_patched = True
 QgsWkbTypes.TriangleZM.__doc__ = "TriangleZM"
@@ -415,6 +427,7 @@ a different mode.
 * ``CurvePolygon``: CurvePolygon
 * ``MultiCurve``: MultiCurve
 * ``MultiSurface``: MultiSurface
+* ``PolyhedralSurface``: PolyhedralSurface
 * ``NoGeometry``: No geometry
 * ``PointZ``: PointZ
 * ``LineStringZ``: LineStringZ
@@ -429,6 +442,7 @@ a different mode.
 * ``CurvePolygonZ``: CurvePolygonZ
 * ``MultiCurveZ``: MultiCurveZ
 * ``MultiSurfaceZ``: MultiSurfaceZ
+* ``PolyhedralSurfaceZ``: PolyhedralSurfaceZ
 * ``PointM``: PointM
 * ``LineStringM``: LineStringM
 * ``PolygonM``: PolygonM
@@ -442,6 +456,7 @@ a different mode.
 * ``CurvePolygonM``: CurvePolygonM
 * ``MultiCurveM``: MultiCurveM
 * ``MultiSurfaceM``: MultiSurfaceM
+* ``PolyhedralSurfaceM``: PolyhedralSurfaceM
 * ``PointZM``: PointZM
 * ``LineStringZM``: LineStringZM
 * ``PolygonZM``: PolygonZM
@@ -454,6 +469,7 @@ a different mode.
 * ``CurvePolygonZM``: CurvePolygonZM
 * ``MultiCurveZM``: MultiCurveZM
 * ``MultiSurfaceZM``: MultiSurfaceZM
+* ``PolyhedralSurfaceZM``: PolyhedralSurfaceM
 * ``TriangleZM``: TriangleZM
 * ``Point25D``: Point25D
 * ``LineString25D``: LineString25D

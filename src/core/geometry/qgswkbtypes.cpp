@@ -92,6 +92,11 @@ Q_GLOBAL_STATIC_WITH_ARGS( WkbEntries, sWkbEntries, (
   { Qgis::WkbType::CurvePolygonZ, WkbEntry( QLatin1String( "CurvePolygonZ" ), false, Qgis::WkbType::MultiSurfaceZ, Qgis::WkbType::CurvePolygonZ, Qgis::WkbType::CurvePolygon, Qgis::GeometryType::Polygon, true, false ) },
   { Qgis::WkbType::CurvePolygonM, WkbEntry( QLatin1String( "CurvePolygonM" ), false, Qgis::WkbType::MultiSurfaceM, Qgis::WkbType::CurvePolygonM, Qgis::WkbType::CurvePolygon, Qgis::GeometryType::Polygon, false, true ) },
   { Qgis::WkbType::CurvePolygonZM, WkbEntry( QLatin1String( "CurvePolygonZM" ), false, Qgis::WkbType::MultiSurfaceZM, Qgis::WkbType::CurvePolygonZM, Qgis::WkbType::CurvePolygon, Qgis::GeometryType::Polygon, true, true ) },
+  //polyhedralsurface
+  { Qgis::WkbType::PolyhedralSurface, WkbEntry( QLatin1String( "PolyhedralSurface" ), false, Qgis::WkbType::MultiPolygon, Qgis::WkbType::PolyhedralSurface, Qgis::WkbType::PolyhedralSurface, Qgis::GeometryType::Polygon, false, false ) },
+  { Qgis::WkbType::PolyhedralSurfaceZ, WkbEntry( QLatin1String( "PolyhedralSurfaceZ" ), false, Qgis::WkbType::MultiPolygonZ, Qgis::WkbType::PolyhedralSurfaceZ, Qgis::WkbType::PolyhedralSurface, Qgis::GeometryType::Polygon, true, false ) },
+  { Qgis::WkbType::PolyhedralSurfaceM, WkbEntry( QLatin1String( "PolyhedralSurfaceM" ), false, Qgis::WkbType::MultiPolygonM, Qgis::WkbType::PolyhedralSurfaceM, Qgis::WkbType::PolyhedralSurface, Qgis::GeometryType::Polygon, false, true ) },
+  { Qgis::WkbType::PolyhedralSurfaceZM, WkbEntry( QLatin1String( "PolyhedralSurfaceZM" ), false, Qgis::WkbType::MultiPolygonZM, Qgis::WkbType::PolyhedralSurfaceZM, Qgis::WkbType::PolyhedralSurface, Qgis::GeometryType::Polygon, true, true ) },
   //multipoint
   { Qgis::WkbType::MultiPoint, WkbEntry( QLatin1String( "MultiPoint" ), true, Qgis::WkbType::MultiPoint, Qgis::WkbType::Point, Qgis::WkbType::MultiPoint, Qgis::GeometryType::Point, false, false ) },
   { Qgis::WkbType::MultiPointZ, WkbEntry( QLatin1String( "MultiPointZ" ), true, Qgis::WkbType::MultiPointZ, Qgis::WkbType::PointZ, Qgis::WkbType::MultiPoint, Qgis::GeometryType::Point, true, false ) },
@@ -161,6 +166,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::LineString: return QObject::tr( "LineString" );
     case Qgis::WkbType::Polygon: return QObject::tr( "Polygon" );
     case Qgis::WkbType::Triangle: return QObject::tr( "Triangle" );
+    case Qgis::WkbType::PolyhedralSurface: return QObject::tr( "PolyhedralSurface" );
     case Qgis::WkbType::MultiPoint: return QObject::tr( "MultiPoint" );
     case Qgis::WkbType::MultiLineString: return QObject::tr( "MultiLine" );
     case Qgis::WkbType::MultiPolygon: return QObject::tr( "MultiPolygon" );
@@ -175,6 +181,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::LineStringZ: return QObject::tr( "LineStringZ" );
     case Qgis::WkbType::PolygonZ: return QObject::tr( "PolygonZ" );
     case Qgis::WkbType::TriangleZ: return QObject::tr( "TriangleZ" );
+    case Qgis::WkbType::PolyhedralSurfaceZ: return QObject::tr( "PolyhedralSurfaceZ" );
     case Qgis::WkbType::MultiPointZ: return QObject::tr( "MultiPointZ" );
     case Qgis::WkbType::MultiLineStringZ: return QObject::tr( "MultiLineZ" );
     case Qgis::WkbType::MultiPolygonZ: return QObject::tr( "MultiPolygonZ" );
@@ -188,6 +195,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::LineStringM: return QObject::tr( "LineStringM" );
     case Qgis::WkbType::PolygonM: return QObject::tr( "PolygonM" );
     case Qgis::WkbType::TriangleM: return QObject::tr( "TriangleM" );
+    case Qgis::WkbType::PolyhedralSurfaceM: return QObject::tr( "PolyhedralSurfaceM" );
     case Qgis::WkbType::MultiPointM: return QObject::tr( "MultiPointM" );
     case Qgis::WkbType::MultiLineStringM: return QObject::tr( "MultiLineStringM" );
     case Qgis::WkbType::MultiPolygonM: return QObject::tr( "MultiPolygonM" );
@@ -200,6 +208,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::PointZM: return QObject::tr( "PointZM" );
     case Qgis::WkbType::LineStringZM: return QObject::tr( "LineStringZM" );
     case Qgis::WkbType::PolygonZM: return QObject::tr( "PolygonZM" );
+    case Qgis::WkbType::PolyhedralSurfaceZM: return QObject::tr( "PolyhedralSurfaceZM" );
     case Qgis::WkbType::MultiPointZM: return QObject::tr( "MultiPointZM" );
     case Qgis::WkbType::MultiLineStringZM: return QObject::tr( "MultiLineZM" );
     case Qgis::WkbType::MultiPolygonZM: return QObject::tr( "MultiPolygonZM" );

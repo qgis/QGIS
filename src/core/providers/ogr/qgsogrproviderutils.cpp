@@ -1823,6 +1823,15 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( Qgis::WkbType type 
     case Qgis::WkbType::TriangleZM:
       return wkbTriangleZM;
 
+    case Qgis::WkbType::PolyhedralSurface:
+      return wkbPolyhedralSurface;
+    case Qgis::WkbType::PolyhedralSurfaceZ:
+      return wkbPolyhedralSurfaceZ;
+    case Qgis::WkbType::PolyhedralSurfaceM:
+      return wkbPolyhedralSurfaceM;
+    case Qgis::WkbType::PolyhedralSurfaceZM:
+      return wkbPolyhedralSurfaceZM;
+
     case Qgis::WkbType::NoGeometry:
       return wkbNone;
 
@@ -1944,6 +1953,15 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbTriangleZM:
       return Qgis::WkbType::TriangleZM;
 
+    case wkbPolyhedralSurface:
+      return Qgis::WkbType::PolyhedralSurface;
+    case wkbPolyhedralSurfaceZ:
+      return Qgis::WkbType::PolyhedralSurfaceZ;
+    case wkbPolyhedralSurfaceM:
+      return Qgis::WkbType::PolyhedralSurfaceM;
+    case wkbPolyhedralSurfaceZM:
+      return Qgis::WkbType::PolyhedralSurfaceZM;
+
     case wkbPoint25D:
       return Qgis::WkbType::Point25D;
     case wkbLineString25D:
@@ -1974,10 +1992,6 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbTINZ:
     case wkbTINM:
     case wkbTINZM:
-    case wkbPolyhedralSurface:
-    case wkbPolyhedralSurfaceZ:
-    case wkbPolyhedralSurfaceM:
-    case wkbPolyhedralSurfaceZM:
       return Qgis::WkbType::Unknown; // unsupported types
   }
   return Qgis::WkbType::Unknown;
