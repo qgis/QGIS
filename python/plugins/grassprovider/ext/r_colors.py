@@ -31,6 +31,12 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     if txtRules and rules:
         return False, alg.tr("You need to set either inline rules or a rules file!")
 
+    rules_or_txtRules = bool(txtRules or rules)
+    color = bool(alg.parameterAsEnum(parameters, 'color', context))
+    raster = bool(alg.parameterAsString(parameters, 'raster', context))
+    if not sum([rules_or_txtRules, color, raster]) == 1:
+        return False, alg.tr("The color table, color rules and raster map parameters are mutually exclusive. You need to set one and only one of them!")
+
     return True, None
 
 
@@ -63,6 +69,9 @@ def processCommand(alg, parameters, context, feedback):
             tempRules.write(txtRules)
         alg.removeParameter('txtrules')
         parameters['rules'] = tempRulesName
+
+    if alg.parameterAsEnum(parameters, 'color', context) == 0:
+        alg.removeParameter('color')
 
     alg.processCommand(parameters, context, feedback, True)
 
