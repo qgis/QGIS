@@ -1250,7 +1250,7 @@ void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection
 
 QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabilities() const
 {
-  return FileBasedUris | SaveLayerMetadata;
+  return FileBasedUris | SaveLayerMetadata | ParallelCreateProvider;
 }
 
 ///@endcond
