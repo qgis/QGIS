@@ -319,7 +319,7 @@ void TestQgsCurvePolygon::testSetExteriorRing()
   QVERIFY( poly.is3D() );
   QVERIFY( !poly.isMeasure() );
   QCOMPARE( poly.wkbType(), Qgis::WkbType::CurvePolygonZ );
-  QCOMPARE( poly.wktTypeStr(), QString( "CurvePolygonZ" ) );
+  QCOMPARE( poly.wktTypeStr(), QString( "CurvePolygon Z" ) );
   QCOMPARE( poly.geometryType(), QString( "CurvePolygon" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( poly.exteriorRing() ) ), *ext );
   QCOMPARE( poly.interiorRing( 0 )->wkbType(), Qgis::WkbType::CircularStringZ );
@@ -333,7 +333,7 @@ void TestQgsCurvePolygon::testSetExteriorRing()
   QVERIFY( !poly.is3D() );
   QVERIFY( poly.isMeasure() );
   QCOMPARE( poly.wkbType(), Qgis::WkbType::CurvePolygonM );
-  QCOMPARE( poly.wktTypeStr(), QString( "CurvePolygonM" ) );
+  QCOMPARE( poly.wktTypeStr(), QString( "CurvePolygon M" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( poly.exteriorRing() ) ), *ext );
   QCOMPARE( poly.interiorRing( 0 )->wkbType(), Qgis::WkbType::CircularStringM );
 
@@ -346,7 +346,7 @@ void TestQgsCurvePolygon::testSetExteriorRing()
   QVERIFY( poly.is3D() );
   QVERIFY( poly.isMeasure() );
   QCOMPARE( poly.wkbType(), Qgis::WkbType::CurvePolygonZM );
-  QCOMPARE( poly.wktTypeStr(), QString( "CurvePolygonZM" ) );
+  QCOMPARE( poly.wktTypeStr(), QString( "CurvePolygon ZM" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( poly.exteriorRing() ) ), *ext );
   QCOMPARE( poly.interiorRing( 0 )->wkbType(), Qgis::WkbType::CircularStringZM );
 }

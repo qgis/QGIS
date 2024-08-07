@@ -70,8 +70,8 @@ class TestQgsRasterLayerProfileGenerator(QgisTestCase):
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].layerIdentifier, rl.id())
         self.assertEqual(features[0].geometry.constGet().numPoints(), 1394)
-        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[0].geometry.constGet().pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
         features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
         self.assertEqual(len(features), 1)
@@ -85,8 +85,8 @@ class TestQgsRasterLayerProfileGenerator(QgisTestCase):
         self.assertEqual(features[0].layerIdentifier, rl.id())
         self.assertAlmostEqual(features[0].attributes['distance'], 0, 0)
         self.assertAlmostEqual(features[0].attributes['elevation'], 154.0, 0)
-        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'Point Z (-345800 6631600 100)')
         self.assertAlmostEqual(features[-1].attributes['distance'], 3392.69, -1)
         self.assertAlmostEqual(features[-1].attributes['elevation'], 99.0, 0)
 
@@ -130,8 +130,8 @@ class TestQgsRasterLayerProfileGenerator(QgisTestCase):
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].layerIdentifier, rl.id())
         self.assertEqual(features[0].geometry.constGet().numPoints(), 341)
-        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[0].geometry.constGet().pointN(340).asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(340).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
         features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
         self.assertEqual(len(features), 1)
@@ -145,8 +145,8 @@ class TestQgsRasterLayerProfileGenerator(QgisTestCase):
         self.assertEqual(features[0].layerIdentifier, rl.id())
         self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 2)
         self.assertAlmostEqual(features[0].attributes['elevation'], 154.0, 2)
-        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'Point Z (-345800 6631600 100)')
         self.assertAlmostEqual(features[-1].attributes['distance'], 3393.2639, 2)
         self.assertAlmostEqual(features[-1].attributes['elevation'], 99.0, 2)
 

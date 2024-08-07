@@ -141,7 +141,7 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
   QVERIFY( mls.is3D() );
   QVERIFY( !mls.isMeasure() );
   QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZ );
-  QCOMPARE( mls.wktTypeStr(), QString( "MultiLineStringZ" ) );
+  QCOMPARE( mls.wktTypeStr(), QString( "MultiLineString Z" ) );
   QCOMPARE( mls.geometryType(), QString( "MultiLineString" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( mls.geometryN( 0 ) ) ), part );
 
@@ -153,7 +153,7 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
   QVERIFY( !mls.is3D() );
   QVERIFY( mls.isMeasure() );
   QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringM );
-  QCOMPARE( mls.wktTypeStr(), QString( "MultiLineStringM" ) );
+  QCOMPARE( mls.wktTypeStr(), QString( "MultiLineString M" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( mls.geometryN( 0 ) ) ), part );
 
   mls.clear();
@@ -164,7 +164,7 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
   QVERIFY( mls.is3D() );
   QVERIFY( mls.isMeasure() );
   QCOMPARE( mls.wkbType(), Qgis::WkbType::MultiLineStringZM );
-  QCOMPARE( mls.wktTypeStr(), QString( "MultiLineStringZM" ) );
+  QCOMPARE( mls.wktTypeStr(), QString( "MultiLineString ZM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( mls.geometryN( 0 ) ) ), part );
 
   //add another part
@@ -741,10 +741,10 @@ void TestQgsMultiLineString::toCurveType()
   QCOMPARE( curveType->numGeometries(), 2 );
 
   const QgsCompoundCurve *curve = static_cast< const QgsCompoundCurve * >( curveType->geometryN( 0 ) );
-  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurveZM ((5 50 1 4, 6 61 3 5))" ) );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurve ZM ((5 50 1 4, 6 61 3 5))" ) );
 
   curve = static_cast< const QgsCompoundCurve * >( curveType->geometryN( 1 ) );
-  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurveZM ((5 50 1 4, 6 61 3 5))" ) );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurve ZM ((5 50 1 4, 6 61 3 5))" ) );
 }
 
 void TestQgsMultiLineString::toFromWKT()

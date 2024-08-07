@@ -581,7 +581,7 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWithZM()
   utils.mouseClick( 0, 2, Qt::RightButton );
 
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
-            QStringLiteral( "LineStringZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)" ) );
+            QStringLiteral( "LineString ZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)" ) );
 }
 
 void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()

@@ -417,7 +417,7 @@ void TestQgsMultiPoint::addGeometryWithZM()
   QVERIFY( mp.is3D() );
   QVERIFY( !mp.isMeasure() );
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZ );
-  QCOMPARE( mp.wktTypeStr(), QString( "MultiPointZ" ) );
+  QCOMPARE( mp.wktTypeStr(), QString( "MultiPoint Z" ) );
   QCOMPARE( mp.geometryType(), QString( "MultiPoint" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), part );
 
@@ -428,7 +428,7 @@ void TestQgsMultiPoint::addGeometryWithZM()
   QVERIFY( !mp.is3D() );
   QVERIFY( mp.isMeasure() );
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointM );
-  QCOMPARE( mp.wktTypeStr(), QString( "MultiPointM" ) );
+  QCOMPARE( mp.wktTypeStr(), QString( "MultiPoint M" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), part );
 
   mp.clear();
@@ -438,7 +438,7 @@ void TestQgsMultiPoint::addGeometryWithZM()
   QVERIFY( mp.is3D() );
   QVERIFY( mp.isMeasure() );
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPointZM );
-  QCOMPARE( mp.wktTypeStr(), QString( "MultiPointZM" ) );
+  QCOMPARE( mp.wktTypeStr(), QString( "MultiPoint ZM" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( mp.geometryN( 0 ) ) ), part );
 }
 
@@ -948,7 +948,7 @@ void TestQgsMultiPoint::filterVertices()
   mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 11, 0, 4, 8 ) );
   mp.filterVertices( filter );
 
-  QCOMPARE( mp.asWkt( 2 ), QStringLiteral( "MultiPointZM ((3 0 4 8),(1 0 4 8))" ) );
+  QCOMPARE( mp.asWkt( 2 ), QStringLiteral( "MultiPoint ZM ((3 0 4 8),(1 0 4 8))" ) );
 }
 
 void TestQgsMultiPoint::vertexIterator()

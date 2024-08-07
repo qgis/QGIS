@@ -814,7 +814,7 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         f = next(vl.getFeatures())
         self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.MultiPolygonZ)
         self.assertEqual(f.geometry().constGet().asWkt(),
-                         'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
+                         'MultiPolygon Z (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
 
     def testShzSupport(self):
         ''' Test support for single layer compressed shapefiles (.shz) '''
@@ -1006,29 +1006,29 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
     def testReadingLayerGeometryTypes(self):
 
         tests = [(osgeo.ogr.wkbPoint, 'Point (0 0)', QgsWkbTypes.Type.Point, 'Point (0 0)'),
-                 (osgeo.ogr.wkbPoint25D, 'Point Z (0 0 1)', QgsWkbTypes.Type.PointZ, 'PointZ (0 0 1)'),
-                 (osgeo.ogr.wkbPointM, 'Point M (0 0 1)', QgsWkbTypes.Type.PointM, 'PointM (0 0 1)'),
-                 (osgeo.ogr.wkbPointZM, 'Point ZM (0 0 1 2)', QgsWkbTypes.Type.PointZM, 'PointZM (0 0 1 2)'),
+                 (osgeo.ogr.wkbPoint25D, 'Point Z (0 0 1)', QgsWkbTypes.Type.PointZ, 'Point Z (0 0 1)'),
+                 (osgeo.ogr.wkbPointM, 'Point M (0 0 1)', QgsWkbTypes.Type.PointM, 'Point M (0 0 1)'),
+                 (osgeo.ogr.wkbPointZM, 'Point ZM (0 0 1 2)', QgsWkbTypes.Type.PointZM, 'Point ZM (0 0 1 2)'),
                  (osgeo.ogr.wkbLineString, 'LineString (0 0, 1 1)', QgsWkbTypes.Type.MultiLineString, 'MultiLineString ((0 0, 1 1))'),
-                 (osgeo.ogr.wkbLineString25D, 'LineString Z (0 0 10, 1 1 10)', QgsWkbTypes.Type.MultiLineStringZ, 'MultiLineStringZ ((0 0 10, 1 1 10))'),
-                 (osgeo.ogr.wkbLineStringM, 'LineString M (0 0 10, 1 1 10)', QgsWkbTypes.Type.MultiLineStringM, 'MultiLineStringM ((0 0 10, 1 1 10))'),
-                 (osgeo.ogr.wkbLineStringZM, 'LineString ZM (0 0 10 20, 1 1 10 20)', QgsWkbTypes.Type.MultiLineStringZM, 'MultiLineStringZM ((0 0 10 20, 1 1 10 20))'),
+                 (osgeo.ogr.wkbLineString25D, 'LineString Z (0 0 10, 1 1 10)', QgsWkbTypes.Type.MultiLineStringZ, 'MultiLineString Z ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbLineStringM, 'LineString M (0 0 10, 1 1 10)', QgsWkbTypes.Type.MultiLineStringM, 'MultiLineString M ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbLineStringZM, 'LineString ZM (0 0 10 20, 1 1 10 20)', QgsWkbTypes.Type.MultiLineStringZM, 'MultiLineString ZM ((0 0 10 20, 1 1 10 20))'),
                  (osgeo.ogr.wkbPolygon, 'Polygon ((0 0,0 1,1 1,0 0))', QgsWkbTypes.Type.MultiPolygon, 'MultiPolygon (((0 0, 0 1, 1 1, 0 0)))'),
-                 (osgeo.ogr.wkbPolygon25D, 'Polygon Z ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.Type.MultiPolygonZ, 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
-                 (osgeo.ogr.wkbPolygonM, 'Polygon M ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.Type.MultiPolygonM, 'MultiPolygonM (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
-                 (osgeo.ogr.wkbPolygonZM, 'Polygon ZM ((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20))', QgsWkbTypes.Type.MultiPolygonZM, 'MultiPolygonZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
+                 (osgeo.ogr.wkbPolygon25D, 'Polygon Z ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.Type.MultiPolygonZ, 'MultiPolygon Z (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbPolygonM, 'Polygon M ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.Type.MultiPolygonM, 'MultiPolygon M (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbPolygonZM, 'Polygon ZM ((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20))', QgsWkbTypes.Type.MultiPolygonZM, 'MultiPolygon ZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
                  (osgeo.ogr.wkbMultiPoint, 'MultiPoint (0 0,1 1)', QgsWkbTypes.Type.MultiPoint, 'MultiPoint ((0 0),(1 1))'),
-                 (osgeo.ogr.wkbMultiPoint25D, 'MultiPoint Z ((0 0 10), (1 1 10))', QgsWkbTypes.Type.MultiPointZ, 'MultiPointZ ((0 0 10),(1 1 10))'),
-                 (osgeo.ogr.wkbMultiPointM, 'MultiPoint M ((0 0 10), (1 1 10))', QgsWkbTypes.Type.MultiPointM, 'MultiPointM ((0 0 10),(1 1 10))'),
-                 (osgeo.ogr.wkbMultiPointZM, 'MultiPoint ZM ((0 0 10 20), (1 1 10 20))', QgsWkbTypes.Type.MultiPointZM, 'MultiPointZM ((0 0 10 20),(1 1 10 20))'),
+                 (osgeo.ogr.wkbMultiPoint25D, 'MultiPoint Z ((0 0 10), (1 1 10))', QgsWkbTypes.Type.MultiPointZ, 'MultiPoint Z ((0 0 10),(1 1 10))'),
+                 (osgeo.ogr.wkbMultiPointM, 'MultiPoint M ((0 0 10), (1 1 10))', QgsWkbTypes.Type.MultiPointM, 'MultiPoint M ((0 0 10),(1 1 10))'),
+                 (osgeo.ogr.wkbMultiPointZM, 'MultiPoint ZM ((0 0 10 20), (1 1 10 20))', QgsWkbTypes.Type.MultiPointZM, 'MultiPoint ZM ((0 0 10 20),(1 1 10 20))'),
                  (osgeo.ogr.wkbMultiLineString, 'MultiLineString ((0 0, 1 1))', QgsWkbTypes.Type.MultiLineString, 'MultiLineString ((0 0, 1 1))'),
-                 (osgeo.ogr.wkbMultiLineString25D, 'MultiLineString Z ((0 0 10, 1 1 10))', QgsWkbTypes.Type.MultiLineStringZ, 'MultiLineStringZ ((0 0 10, 1 1 10))'),
-                 (osgeo.ogr.wkbMultiLineStringM, 'MultiLineString M ((0 0 10, 1 1 10))', QgsWkbTypes.Type.MultiLineStringM, 'MultiLineStringM ((0 0 10, 1 1 10))'),
-                 (osgeo.ogr.wkbMultiLineStringZM, 'MultiLineString ZM ((0 0 10 20, 1 1 10 20))', QgsWkbTypes.Type.MultiLineStringZM, 'MultiLineStringZM ((0 0 10 20, 1 1 10 20))'),
+                 (osgeo.ogr.wkbMultiLineString25D, 'MultiLineString Z ((0 0 10, 1 1 10))', QgsWkbTypes.Type.MultiLineStringZ, 'MultiLineString Z ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbMultiLineStringM, 'MultiLineString M ((0 0 10, 1 1 10))', QgsWkbTypes.Type.MultiLineStringM, 'MultiLineString M ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbMultiLineStringZM, 'MultiLineString ZM ((0 0 10 20, 1 1 10 20))', QgsWkbTypes.Type.MultiLineStringZM, 'MultiLineString ZM ((0 0 10 20, 1 1 10 20))'),
                  (osgeo.ogr.wkbMultiPolygon, 'MultiPolygon (((0 0,0 1,1 1,0 0)))', QgsWkbTypes.Type.MultiPolygon, 'MultiPolygon (((0 0, 0 1, 1 1, 0 0)))'),
-                 (osgeo.ogr.wkbMultiPolygon25D, 'MultiPolygon Z (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.Type.MultiPolygonZ, 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
-                 (osgeo.ogr.wkbMultiPolygonM, 'MultiPolygon M (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.Type.MultiPolygonM, 'MultiPolygonM (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
-                 (osgeo.ogr.wkbMultiPolygonZM, 'MultiPolygon ZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))', QgsWkbTypes.Type.MultiPolygonZM, 'MultiPolygonZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
+                 (osgeo.ogr.wkbMultiPolygon25D, 'MultiPolygon Z (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.Type.MultiPolygonZ, 'MultiPolygon Z (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbMultiPolygonM, 'MultiPolygon M (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.Type.MultiPolygonM, 'MultiPolygon M (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbMultiPolygonZM, 'MultiPolygon ZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))', QgsWkbTypes.Type.MultiPolygonZM, 'MultiPolygon ZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
                  ]
         for ogr_type, wkt, qgis_type, expected_wkt in tests:
 

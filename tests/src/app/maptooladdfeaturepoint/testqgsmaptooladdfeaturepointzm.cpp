@@ -128,7 +128,7 @@ void TestQgsMapToolAddFeaturePointZM::testPointZM()
 
   QCOMPARE( mLayerPointZM->featureCount(), ( long )2 );
 
-  QString wkt = "PointZM (4 0 123 333)";
+  QString wkt = "Point ZM (4 0 123 333)";
   QCOMPARE( mLayerPointZM->getFeature( newFid ).geometry().asWkt(), wkt );
 
   mLayerPointZM->undoStack()->undo();
@@ -142,7 +142,7 @@ void TestQgsMapToolAddFeaturePointZM::testPointZM()
   utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   newFid = utils.newFeatureId( oldFids );
 
-  wkt = "PointZM (6 6 345 123)";
+  wkt = "Point ZM (6 6 345 123)";
   QCOMPARE( mLayerPointZM->getFeature( newFid ).geometry().asWkt(), wkt );
 
   mLayerPointZM->undoStack()->undo();
