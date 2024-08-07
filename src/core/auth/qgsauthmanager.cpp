@@ -3851,13 +3851,11 @@ bool QgsAuthManager::reencryptAuthenticationIdentity(
   // Loop through all storages with capability ReadCertificateIdentity and reencrypt the identity
   const QList<QgsAuthConfigurationStorage *> storages { authConfigurationStorageRegistry()->readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity ) };
 
-  bool found { false };
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
     if ( storage->certIdentityExists( identid ) )
     {
-      found = true;
       if ( ! storage->isEncrypted() )
       {
         return true;
@@ -3880,8 +3878,7 @@ bool QgsAuthManager::reencryptAuthenticationIdentity(
   {
     emit messageLog( tr( "Could not connect to any default storage." ), authManTag(), Qgis::MessageLevel::Critical );
   }
-
-  if ( ! found )
+  else
   {
     emit messageLog( tr( "Reencrypt FAILED, could not find identity (id: %1)" ).arg( identid ), authManTag(), Qgis::MessageLevel::Critical );
   }
