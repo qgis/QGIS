@@ -910,6 +910,35 @@ transferred to the callout.
 .. seealso:: :py:func:`fillSymbol`
 %End
 
+    QgsMarkerSymbol *markerSymbol();
+%Docstring
+Returns the marker symbol used to render the callout endpoint.
+
+May be ``None``, if no endpoint marker will be used.
+
+The marker will always be rendered below the fill symbol for the callout.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setMarkerSymbol`
+
+.. versionadded:: 3.40
+%End
+
+    void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+Sets the marker ``symbol`` used to render the callout endpoint. Ownership of ``symbol`` is
+transferred to the callout.
+
+Set to ``None`` to disable the endpoint marker.
+
+The marker will always be rendered below the fill symbol for the callout.
+
+.. seealso:: :py:func:`markerSymbol`
+
+.. versionadded:: 3.40
+%End
+
     double offsetFromAnchor() const;
 %Docstring
 Returns the offset distance from the anchor point at which to start the line. Units are specified through :py:func:`~QgsBalloonCallout.offsetFromAnchorUnit`.

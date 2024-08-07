@@ -23,6 +23,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 
 QgsExpressionContext QgsCalloutWidget::createExpressionContext() const
 {
@@ -565,7 +566,14 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *pare
   mCalloutFillStyleButton->setDialogTitle( tr( "Balloon Symbol" ) );
   mCalloutFillStyleButton->registerExpressionContextGenerator( this );
 
+  mMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
+  mMarkerSymbolButton->setDialogTitle( tr( "Marker Symbol" ) );
+  mMarkerSymbolButton->registerExpressionContextGenerator( this );
+  mMarkerSymbolButton->setShowNull( true );
+  mMarkerSymbolButton->setToNull();
+
   mCalloutFillStyleButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
+  mMarkerSymbolButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
   mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
                                          << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
@@ -593,6 +601,7 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *pare
   connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBalloonCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
 
   connect( mCalloutFillStyleButton, &QgsSymbolButton::changed, this, &QgsBalloonCalloutWidget::fillSymbolChanged );
+  connect( mMarkerSymbolButton, &QgsSymbolButton::changed, this, &QgsBalloonCalloutWidget::markerSymbolChanged );
 
   connect( mSpinBottomMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
@@ -691,6 +700,10 @@ void QgsBalloonCalloutWidget::setCallout( const QgsCallout *callout )
   whileBlocking( mCornerRadiusSpin )->setValue( mCallout->cornerRadius() );
 
   whileBlocking( mCalloutFillStyleButton )->setSymbol( mCallout->fillSymbol()->clone() );
+  if ( QgsMarkerSymbol *marker = mCallout->markerSymbol() )
+    whileBlocking( mMarkerSymbolButton )->setSymbol( marker->clone() );
+  else
+    whileBlocking( mMarkerSymbolButton )->setToNull();
 
   whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
 
@@ -739,6 +752,12 @@ void QgsBalloonCalloutWidget::offsetFromAnchorChanged()
 void QgsBalloonCalloutWidget::fillSymbolChanged()
 {
   mCallout->setFillSymbol( mCalloutFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+  emit changed();
+}
+
+void QgsBalloonCalloutWidget::markerSymbolChanged()
+{
+  mCallout->setMarkerSymbol( mMarkerSymbolButton->isNull() ? nullptr : mMarkerSymbolButton->clonedSymbol< QgsMarkerSymbol >() );
   emit changed();
 }
 

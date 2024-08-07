@@ -252,6 +252,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
     void offsetFromAnchorUnitWidgetChanged();
     void offsetFromAnchorChanged();
     void fillSymbolChanged();
+    void markerSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
     void mCalloutBlendComboBox_currentIndexChanged( int index );
 
