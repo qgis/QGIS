@@ -124,6 +124,7 @@ void QgsMapToolModifyAnnotation::deactivate()
 
 void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 {
+  mLastHoverPoint = event->originalPixelPoint();
   event->snapPoint();
   mSnapIndicator->setMatch( event->mapPointMatch() );
 
@@ -137,73 +138,7 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
   {
     case Action::NoAction:
     {
-      QgsRectangle searchRect = QgsRectangle( mapPoint.x(), mapPoint.y(), mapPoint.x(), mapPoint.y() );
-      searchRect.grow( searchRadiusMU( canvas() ) );
-
-      const QgsRenderedItemResults *renderedItemResults = canvas()->renderedItemResults( false );
-      if ( !renderedItemResults )
-      {
-        clearHoveredItem();
-        return;
-      }
-
-      const QList<const QgsRenderedAnnotationItemDetails *> items = renderedItemResults->renderedAnnotationItemsInBounds( searchRect );
-      if ( items.empty() )
-      {
-        clearHoveredItem();
-        return;
-      }
-
-      // find closest item
-      QgsRectangle itemBounds;
-      const QgsRenderedAnnotationItemDetails *closestItem = findClosestItemToPoint( mapPoint, items, itemBounds );
-      if ( !closestItem )
-      {
-        clearHoveredItem();
-        return;
-      }
-
-      if ( closestItem->itemId() != mHoveredItemId || closestItem->layerId() != mHoveredItemLayerId )
-      {
-        setHoveredItem( closestItem, itemBounds );
-      }
-
-      // track hovered node too!... here we want to identify the closest node to the cursor position
-      QgsAnnotationItemNode hoveredNode;
-      if ( closestItem->itemId() == mSelectedItemId && closestItem->layerId() == mSelectedItemLayerId )
-      {
-        double currentNodeDistance = std::numeric_limits< double >::max();
-        mHoveredItemNodesSpatialIndex->intersects( searchRect, [&hoveredNode, &currentNodeDistance, &mapPoint, this]( int index )-> bool
-        {
-          const QgsAnnotationItemNode &thisNode = mHoveredItemNodes.at( index );
-          const double nodeDistance = thisNode.point().sqrDist( mapPoint );
-          if ( nodeDistance < currentNodeDistance )
-          {
-            hoveredNode = thisNode;
-            currentNodeDistance = nodeDistance;
-          }
-          return true;
-        } );
-      }
-
-      if ( hoveredNode.point().isEmpty() )
-      {
-        // no hovered node
-        if ( mHoveredNodeRubberBand )
-          mHoveredNodeRubberBand->hide();
-        setCursor( mHoveredItemId == mSelectedItemId && mHoveredItemLayerId == mSelectedItemLayerId ? Qt::OpenHandCursor : Qt::ArrowCursor );
-      }
-      else
-      {
-        if ( !mHoveredNodeRubberBand )
-          createHoveredNodeBand();
-
-        mHoveredNodeRubberBand->reset( Qgis::GeometryType::Point );
-        mHoveredNodeRubberBand->addPoint( hoveredNode.point() );
-        mHoveredNodeRubberBand->show();
-
-        setCursor( Qt::ArrowCursor );
-      }
+      setHoveredItemFromPoint( mapPoint );
       break;
     }
 
@@ -574,7 +509,16 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
 
 void QgsMapToolModifyAnnotation::onCanvasRefreshed()
 {
-  if ( mRefreshSelectedItemAfterRedraw )
+  bool needsSelectedItemRefresh = mRefreshSelectedItemAfterRedraw;
+  if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
+  {
+    if ( item->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
+    {
+      needsSelectedItemRefresh = true;
+    }
+  }
+
+  if ( needsSelectedItemRefresh )
   {
     const QgsRenderedItemResults *renderedItemResults = canvas()->renderedItemResults( false );
     if ( !renderedItemResults )
@@ -603,6 +547,12 @@ void QgsMapToolModifyAnnotation::onCanvasRefreshed()
       mSelectedRubberBand->copyPointsFrom( mHoverRubberBand );
       mSelectedRubberBand->show();
     }
+  }
+  else
+  {
+    // recheck for hovered item at new mouse point
+    const QgsPointXY mapPoint = canvas()->mapSettings().mapToPixel().toMapCoordinates( mLastHoverPoint );
+    setHoveredItemFromPoint( mapPoint );
   }
   mRefreshSelectedItemAfterRedraw = false;
 }
@@ -785,6 +735,77 @@ QgsAnnotationItem *QgsMapToolModifyAnnotation::annotationItemFromId( const QStri
 {
   QgsAnnotationLayer *layer = annotationLayerFromId( layerId );
   return layer ? layer->item( itemId ) : nullptr;
+}
+
+void QgsMapToolModifyAnnotation::setHoveredItemFromPoint( const QgsPointXY &mapPoint )
+{
+  QgsRectangle searchRect = QgsRectangle( mapPoint.x(), mapPoint.y(), mapPoint.x(), mapPoint.y() );
+  searchRect.grow( searchRadiusMU( canvas() ) );
+
+  const QgsRenderedItemResults *renderedItemResults = canvas()->renderedItemResults( false );
+  if ( !renderedItemResults )
+  {
+    clearHoveredItem();
+    return;
+  }
+
+  const QList<const QgsRenderedAnnotationItemDetails *> items = renderedItemResults->renderedAnnotationItemsInBounds( searchRect );
+  if ( items.empty() )
+  {
+    clearHoveredItem();
+    return;
+  }
+
+  // find closest item
+  QgsRectangle itemBounds;
+  const QgsRenderedAnnotationItemDetails *closestItem = findClosestItemToPoint( mapPoint, items, itemBounds );
+  if ( !closestItem )
+  {
+    clearHoveredItem();
+    return;
+  }
+
+  if ( closestItem->itemId() != mHoveredItemId || closestItem->layerId() != mHoveredItemLayerId )
+  {
+    setHoveredItem( closestItem, itemBounds );
+  }
+
+  // track hovered node too!... here we want to identify the closest node to the cursor position
+  QgsAnnotationItemNode hoveredNode;
+  if ( closestItem->itemId() == mSelectedItemId && closestItem->layerId() == mSelectedItemLayerId )
+  {
+    double currentNodeDistance = std::numeric_limits< double >::max();
+    mHoveredItemNodesSpatialIndex->intersects( searchRect, [&hoveredNode, &currentNodeDistance, &mapPoint, this]( int index )-> bool
+    {
+      const QgsAnnotationItemNode &thisNode = mHoveredItemNodes.at( index );
+      const double nodeDistance = thisNode.point().sqrDist( mapPoint );
+      if ( nodeDistance < currentNodeDistance )
+      {
+        hoveredNode = thisNode;
+        currentNodeDistance = nodeDistance;
+      }
+      return true;
+    } );
+  }
+
+  if ( hoveredNode.point().isEmpty() )
+  {
+    // no hovered node
+    if ( mHoveredNodeRubberBand )
+      mHoveredNodeRubberBand->hide();
+    setCursor( mHoveredItemId == mSelectedItemId && mHoveredItemLayerId == mSelectedItemLayerId ? Qt::OpenHandCursor : Qt::ArrowCursor );
+  }
+  else
+  {
+    if ( !mHoveredNodeRubberBand )
+      createHoveredNodeBand();
+
+    mHoveredNodeRubberBand->reset( Qgis::GeometryType::Point );
+    mHoveredNodeRubberBand->addPoint( hoveredNode.point() );
+    mHoveredNodeRubberBand->show();
+
+    setCursor( Qt::ArrowCursor );
+  }
 }
 
 void QgsMapToolModifyAnnotation::clearHoveredItem()
