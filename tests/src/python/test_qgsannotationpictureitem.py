@@ -74,6 +74,9 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setFixedSize(QSizeF(56,
                                  57))
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
+        item.setOffsetFromCallout(QSizeF(13.6, 17.2))
+        item.setOffsetFromCalloutUnit(Qgis.RenderUnit.Inches)
+
         self.assertEqual(item.bounds().toString(3), '100.000,200.000 : 300.000,400.000')
         self.assertEqual(item.path(), self.get_test_data_path('sample_svg.svg').as_posix())
         self.assertEqual(item.format(), Qgis.PictureFormat.SVG)
@@ -86,6 +89,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(item.fixedSize(), QSizeF(56,
                                                   57))
         self.assertEqual(item.fixedSizeUnit(), Qgis.RenderUnit.Inches)
+        self.assertEqual(item.offsetFromCallout(), QSizeF(13.6, 17.2))
+        self.assertEqual(item.offsetFromCalloutUnit(), Qgis.RenderUnit.Inches)
 
         item.setBackgroundSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         item.setFrameSymbol(QgsFillSymbol.createSimple(
@@ -141,10 +146,38 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
+        context = QgsAnnotationItemEditContext()
+        render_context = QgsRenderContext()
+        render_context.setScaleFactor(5)
+        context.setRenderContext(render_context)
+
         self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200),
-                                          QgsAnnotationItemEditContext()),
+                                          context),
                          Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '110.000,220.000 : 130.000,240.000')
+        self.assertEqual(item.offsetFromCallout(), QSizeF())
+
+    def test_translate_fixed_size_with_callout_anchor(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        item.setCalloutAnchor(QgsGeometry.fromWkt('Point(1 3)'))
+        item.setCallout(QgsBalloonCallout())
+        item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
+        self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+
+        context = QgsAnnotationItemEditContext()
+        render_context = QgsRenderContext()
+        render_context.setScaleFactor(5)
+        context.setRenderContext(render_context)
+
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200, 50, 30),
+                                          context),
+                         Qgis.AnnotationItemEditOperationResult.Success)
+        # should affect callout offset only
+        self.assertEqual(item.offsetFromCallout(), QSizeF(9, 5))
+        self.assertEqual(item.offsetFromCalloutUnit(), Qgis.RenderUnit.Millimeters)
 
     def test_apply_move_node_edit_spatial_bounds(self):
         item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
@@ -189,9 +222,14 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
         self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
 
+        context = QgsAnnotationItemEditContext()
+        render_context = QgsRenderContext()
+        render_context.setScaleFactor(5)
+        context.setRenderContext(render_context)
+
         self.assertEqual(item.applyEditV2(
             QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(30, 20), QgsPoint(17, 18)),
-            QgsAnnotationItemEditContext()),
+            context),
             Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.bounds().toString(3), '7.000,8.000 : 27.000,28.000')
 
@@ -286,9 +324,37 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         op = QgsAnnotationItemEditOperationTranslateItem('', 100, 200)
         context = QgsAnnotationItemEditContext()
         context.setCurrentItemBounds(QgsRectangle(1, 2, 3, 4))
+        render_context = QgsRenderContext()
+        render_context.setScaleFactor(5)
+        context.setRenderContext(render_context)
+
         res = item.transientEditResultsV2(op, context)
         self.assertEqual(res.representativeGeometry().asWkt(),
                          'Polygon ((119 229, 121 229, 121 231, 119 231, 119 229))')
+
+    def test_transient_translate_operation_fixed_size_with_callout_anchor(self):
+        item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster,
+                                        self.get_test_data_path(
+                                            'rgb256x256.png').as_posix(),
+                                        QgsRectangle(10, 20, 30, 40))
+        item.setSizeMode(Qgis.AnnotationPictureSizeMode.FixedSize)
+        item.setFixedSize(QSizeF(56,
+                                 57))
+        item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
+        item.setCalloutAnchor(QgsGeometry.fromWkt('Point(1 3)'))
+        item.setCallout(QgsBalloonCallout())
+        self.assertEqual(item.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
+
+        op = QgsAnnotationItemEditOperationTranslateItem('', 100, 200, 50, 30)
+        context = QgsAnnotationItemEditContext()
+        context.setCurrentItemBounds(QgsRectangle(1, 2, 3, 4))
+        render_context = QgsRenderContext()
+        render_context.setScaleFactor(0.5)
+        context.setRenderContext(render_context)
+
+        res = item.transientEditResultsV2(op, context)
+        self.assertEqual(res.representativeGeometry().asWkt(2),
+                         'Polygon ((50.5 -26.5, 761.7 -26.5, 761.7 -750.4, 50.5 -750.4, 50.5 -26.5))')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
@@ -308,6 +374,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
         item.setCalloutAnchor(QgsGeometry.fromWkt('Point(1 3)'))
         item.setCallout(QgsBalloonCallout())
+        item.setOffsetFromCallout(QSizeF(13.6, 17.2))
+        item.setOffsetFromCalloutUnit(Qgis.RenderUnit.Inches)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -331,6 +399,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(s2.fixedSizeUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(s2.calloutAnchor().asWkt(), 'Point (1 3)')
         self.assertIsInstance(s2.callout(), QgsBalloonCallout)
+        self.assertEqual(s2.offsetFromCallout(), QSizeF(13.6, 17.2))
+        self.assertEqual(s2.offsetFromCalloutUnit(), Qgis.RenderUnit.Inches)
 
     def testClone(self):
         item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
@@ -347,6 +417,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setFixedSizeUnit(Qgis.RenderUnit.Inches)
         item.setCalloutAnchor(QgsGeometry.fromWkt('Point(1 3)'))
         item.setCallout(QgsBalloonCallout())
+        item.setOffsetFromCallout(QSizeF(13.6, 17.2))
+        item.setOffsetFromCalloutUnit(Qgis.RenderUnit.Inches)
 
         s2 = item.clone()
         self.assertEqual(s2.bounds().toString(3), '10.000,20.000 : 30.000,40.000')
@@ -366,6 +438,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(s2.fixedSizeUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(s2.calloutAnchor().asWkt(), 'Point (1 3)')
         self.assertIsInstance(s2.callout(), QgsBalloonCallout)
+        self.assertEqual(s2.offsetFromCallout(), QSizeF(13.6, 17.2))
+        self.assertEqual(s2.offsetFromCalloutUnit(), Qgis.RenderUnit.Inches)
 
     def testRenderRasterLockedAspect(self):
         item = QgsAnnotationPictureItem(Qgis.PictureFormat.Raster, self.get_test_data_path('rgb256x256.png').as_posix(),
@@ -580,6 +654,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         callout.lineSymbol().setWidth(1)
         item.setCallout(callout)
         item.setCalloutAnchor(QgsGeometry.fromWkt('Point(11 12)'))
+        item.setOffsetFromCallout(QSizeF(60, -80))
+        item.setOffsetFromCalloutUnit(Qgis.RenderUnit.Points)
 
         settings = QgsMapSettings()
         settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
