@@ -270,8 +270,8 @@ QString QgsGrass::pathSeparator()
 #include <windows.h>
 QString QgsGrass::shortPath( const QString &path )
 {
-  TCHAR buf[MAX_PATH];
-  int len = GetShortPathName( path.toUtf8().constData(), buf, MAX_PATH );
+  char buf[MAX_PATH];
+  int len = GetShortPathNameA( path.toUtf8().constData(), buf, MAX_PATH );
 
   if ( len == 0 || len > MAX_PATH )
   {

@@ -144,7 +144,7 @@ if (UNIX AND NOT APPLE AND NOT ANDROID)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::DBus)
 endif()
 
-if (MSVC)
+if (MSVC AND NOT BUILD_WITH_QT6)
   find_package(${QT_VERSION_BASE}WinExtras)
 
   target_link_libraries(qgis_native shell32)

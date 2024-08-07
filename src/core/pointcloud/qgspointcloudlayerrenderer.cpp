@@ -688,7 +688,7 @@ void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderC
   {
     delaunator.reset( new delaunator::Delaunator( points ) );
   }
-  catch ( std::exception &e )
+  catch ( std::exception & )
   {
     // something went wrong, better to retrieve initial state
     QgsDebugMsgLevel( QStringLiteral( "Error with triangulation" ), 4 );
