@@ -18,20 +18,18 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgschunknode_p.h"
+#include "qgsphongtexturedmaterial.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgscoordinatetransform.h"
+#include "qgstexturematerial.h"
 
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
-
-#include <Qt3DExtras/QTextureMaterial>
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QPhongMaterial>
 
 /// @cond PRIVATE
 
@@ -61,28 +59,26 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   {
     if ( isShadingEnabled )
     {
-      Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
-      diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
-      diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
-      diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
-      diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
-      material = diffuseMapMaterial;
+      QgsPhongTexturedMaterial *phongTexturedMaterial = new QgsPhongTexturedMaterial();
+      phongTexturedMaterial->setAmbient( shadingMaterial.ambient() );
+      phongTexturedMaterial->setSpecular( shadingMaterial.specular() );
+      phongTexturedMaterial->setShininess( static_cast<float>( shadingMaterial.shininess() ) );
+      phongTexturedMaterial->setDiffuseTexture( texture );
+      phongTexturedMaterial->setOpacity( static_cast<float>( shadingMaterial.opacity() ) );
+      material = phongTexturedMaterial;
     }
     else
     {
-      Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+      QgsTextureMaterial *textureMaterial = new QgsTextureMaterial;
       textureMaterial->setTexture( texture );
       material = textureMaterial;
     }
   }
   else
   {
-    Qt3DExtras::QPhongMaterial *phongMaterial  = new Qt3DExtras::QPhongMaterial;
-    phongMaterial->setDiffuse( shadingMaterial.diffuse() );
-    phongMaterial->setAmbient( shadingMaterial.ambient() );
-    phongMaterial->setSpecular( shadingMaterial.specular() );
-    phongMaterial->setShininess( shadingMaterial.shininess() );
-    material = phongMaterial;
+    QgsMaterialContext materialContext;
+    materialContext.setIsSelected( false );
+    material = shadingMaterial.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
   }
 
   // no backface culling on terrain, to allow terrain to be viewed from underground

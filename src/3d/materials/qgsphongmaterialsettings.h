@@ -109,7 +109,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     //! Sets specular color component
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
     //! Sets shininess of the surface
-    void setShininess( float shininess ) { mShininess = shininess; }
+    void setShininess( double shininess ) { mShininess = shininess; }
 
     /**
      * Sets opacity of the surface
