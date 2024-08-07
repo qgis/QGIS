@@ -77,6 +77,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 
   public slots:
     void editConnection();
+    void duplicateConnection();
     void deleteConnection();
     void refreshConnection();
 
