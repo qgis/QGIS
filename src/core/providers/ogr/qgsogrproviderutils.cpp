@@ -2253,7 +2253,11 @@ QgsOgrProviderUtils::DatasetWithLayers *QgsOgrProviderUtils::createDatasetWithLa
     errCause = QObject::tr( "Cannot open %1." ).arg( dsName );
     return nullptr;
   }
-  ( *sMapDSNameToLastModifiedDate() )[dsName] = getLastModified( dsName );
+
+  {
+    QMutexLocker locker( sGlobalMutex() );
+    ( *sMapDSNameToLastModifiedDate() )[dsName] = getLastModified( dsName );
+  }
 
   OGRLayerH hLayer = GDALDatasetGetLayerByName(
                        hDS, layerName.toUtf8().constData() );
@@ -2354,15 +2358,26 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     return layer;
   }
 
+  // It can take a while to open a dataset (especially if it is from a remote source),
+  // so let's unlock the mutex while opening, so that we can create datasets from other
+  // threads as well.
+  locker.unlock();
+
   QgsOgrLayerUniquePtr layer;
   QgsOgrProviderUtils::DatasetWithLayers *ds =
     createDatasetWithLayers( dsName, updateMode, options, layerName, ident, layer, errCause );
   if ( !ds )
     return nullptr;
 
-  QList<DatasetWithLayers *> datasetList;
-  datasetList.push_back( ds );
-  sMapSharedDS[ident] = datasetList;
+  locker.relock();
+
+  // In theory it could have happened that some other thread has opened this dataset
+  // at the same time as we did, let's only add a new entry to sMapSharedDS if there's none
+  if ( !sMapSharedDS.contains( ident ) )
+  {
+    sMapSharedDS[ident] = QList<DatasetWithLayers *>();
+  }
+  sMapSharedDS[ident].push_back( ds );
 
   return layer;
 }
