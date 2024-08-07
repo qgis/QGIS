@@ -42,6 +42,7 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
   private:
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
+    static void duplicateConnection( QgsDataItem *item );
     static void refreshConnection( QgsDataItem *item );
     static void createSchema( QgsDataItem *item, QgsDataItemGuiContext context );
     static void deleteSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
