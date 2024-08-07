@@ -38,6 +38,12 @@ Constructor for QgsVectorLayerFeatureSource.
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() );
 
+%Docstring
+Gets an iterator for features matching the specified ``request``
+This function is thread-safe.
+
+:return: A feature iterator
+%End
 
 
     QgsFields fields() const;

@@ -64,6 +64,11 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
     ~QgsVectorLayerFeatureSource() override;
 
+    /**
+     * Gets an iterator for features matching the specified \a request
+     * This function is thread-safe.
+     * \returns A feature iterator
+     */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
 
     friend class QgsVectorLayerFeatureIterator SIP_SKIP;
@@ -145,6 +150,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 #ifdef SIP_RUN
     QgsVectorLayerFeatureSource( const QgsVectorLayerFeatureSource &other );
 #endif
+    QMutex mGetFeatureMutex;
 };
 
 /**
