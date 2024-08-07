@@ -378,6 +378,7 @@ void QgsMapToolModifyAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *event
           QgsAnnotationItemEditContext context;
           context.setCurrentItemBounds( toLayerCoordinates( layer, mSelectedItemBounds ) );
           context.setRenderContext( QgsRenderContext::fromMapSettings( canvas()->mapSettings() ) );
+
           switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:

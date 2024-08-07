@@ -334,6 +334,54 @@ class CORE_EXPORT QgsAnnotationItem
      */
     void setCalloutAnchor( const QgsGeometry &anchor );
 
+    /**
+     * Returns the (optional) offset of the annotation item from the calloutAnchor().
+     *
+     * Some annotation item subclasses support placement relative to the callout anchor. For these
+     * items, the offset from callout defines how far (in screen/page units) the item should be
+     * placed from the anchor point.
+     *
+     * Units are defined by offsetFromCalloutUnit()
+     *
+     * \see setOffsetFromCallout()
+     * \since QGIS 3.40
+     */
+    QSizeF offsetFromCallout() const;
+
+    /**
+     * Sets the offset of the annotation item from the calloutAnchor().
+     *
+     * Some annotation item subclasses support placement relative to the callout anchor. For these
+     * items, the offset from callout defines how far (in screen/page units) the item should be
+     * placed from the anchor point.
+     *
+     * Units are defined by offsetFromCalloutUnit()
+     *
+     * \see offsetFromCallout()
+     * \since QGIS 3.40
+     */
+    void setOffsetFromCallout( const QSizeF &offset );
+
+    /**
+     * Returns the units for the offsetFromCallout().
+     *
+     * \see offsetFromCallout()
+     * \see setOffsetFromCalloutUnit()
+     *
+     * \since QGIS 3.40
+     */
+    Qgis::RenderUnit offsetFromCalloutUnit() const;
+
+    /**
+     * Sets the \a unit for the offsetFromCallout().
+     *
+     * \see setOffsetFromCallout()
+     * \see offsetFromCalloutUnit()
+     *
+     * \since QGIS 3.40
+     */
+    void setOffsetFromCalloutUnit( Qgis::RenderUnit unit );
+
   protected:
 
     /**
@@ -377,6 +425,8 @@ class CORE_EXPORT QgsAnnotationItem
 
     std::unique_ptr< QgsCallout > mCallout;
     QgsGeometry mCalloutAnchor;
+    QSizeF mOffsetFromCallout;
+    Qgis::RenderUnit mOffsetFromCalloutUnit = Qgis::RenderUnit::Millimeters;
 
 #ifdef SIP_RUN
     QgsAnnotationItem( const QgsAnnotationItem &other );
