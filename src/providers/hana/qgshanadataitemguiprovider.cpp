@@ -50,6 +50,10 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate )
+
     const QList< QgsHanaConnectionItem * > hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
     QAction *actionDelete = new QAction( hanaConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [hanaConnectionItems, context]
@@ -200,6 +204,62 @@ void QgsHanaDataItemGuiProvider::editConnection( QgsDataItem *item )
     // the parent should be updated
     if ( item->parent() )
       item->parent()->refreshConnections();
+  }
+}
+
+void QgsHanaDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
+  const QStringList connections = settings.childGroups();
+  settings.endGroup();
+
+  int i = 0;
+  QString newConnectionName( connectionName );
+  while ( connections.contains( newConnectionName ) )
+  {
+    ++i;
+    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
+  }
+
+  QgsHanaSettings hanaSettings( connectionName, true );
+  QgsHanaSettings newHanaSettings( newConnectionName );
+
+  newHanaSettings.setConnectionType( hanaSettings.connectionType() );
+  newHanaSettings.setDsn( hanaSettings.dsn() );
+  newHanaSettings.setDriver( hanaSettings.driver() );
+  newHanaSettings.setHost( hanaSettings.host() );
+  newHanaSettings.setIdentifierType( hanaSettings.identifierType() );
+  newHanaSettings.setIdentifier( hanaSettings.identifier() );
+  newHanaSettings.setDatabase( hanaSettings.database() );
+  newHanaSettings.setMultitenant( hanaSettings.multitenant() );
+  newHanaSettings.setSchema( hanaSettings.schema() );
+  newHanaSettings.setAuthCfg( hanaSettings.authCfg() );
+  newHanaSettings.setUserName( hanaSettings.userName() );
+  newHanaSettings.setPassword( hanaSettings.password() );
+  newHanaSettings.setSaveUserName( hanaSettings.saveUserName() );
+  newHanaSettings.setSavePassword( hanaSettings.savePassword() );
+  newHanaSettings.setUserTablesOnly( hanaSettings.userTablesOnly() );
+  newHanaSettings.setAllowGeometrylessTables( hanaSettings.allowGeometrylessTables() );
+  newHanaSettings.setUseEstimatedMetadata( hanaSettings.useEstimatedMetadata() );
+  newHanaSettings.setEnableSsl( hanaSettings.enableSsl() );
+  newHanaSettings.setSslCryptoProvider( hanaSettings.sslCryptoProvider() );
+  newHanaSettings.setSslKeyStore( hanaSettings.sslKeyStore() );
+  newHanaSettings.setSslTrustStore( hanaSettings.sslTrustStore() );
+  newHanaSettings.setSslValidateCertificate( hanaSettings.sslValidateCertificate() );
+  newHanaSettings.setSslHostNameInCertificate( hanaSettings.sslHostNameInCertificate() );
+  newHanaSettings.setEnableProxy( hanaSettings.enableProxy() );
+  newHanaSettings.setEnableProxyHttp( hanaSettings.enableProxyHttp() );
+  newHanaSettings.setProxyHost( hanaSettings.proxyHost() );
+  newHanaSettings.setProxyPort( hanaSettings.proxyPort() );
+  newHanaSettings.setProxyUsername( hanaSettings.proxyUsername() );
+  newHanaSettings.setProxyPassword( hanaSettings.proxyPassword() );
+  newHanaSettings.save();
+
+  if ( item->parent() )
+  {
+    item->parent()->refreshConnections();
   }
 }
 
