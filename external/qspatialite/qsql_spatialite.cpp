@@ -632,7 +632,7 @@ bool QSpatiaLiteDriver::open( const QString &db, const QString &, const QString 
   bool openReadOnlyOption = false;
   bool openUriOption = false;
 
-  const auto opts = conOpts.splitRef( QLatin1Char( ';' ) );
+  const auto opts = conOpts.split( QLatin1Char( ';' ) );
   for ( auto option : opts )
   {
     option = option.trimmed();

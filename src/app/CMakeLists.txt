@@ -449,7 +449,11 @@ set(TEST_RCCS ../../tests/testdata/testdata.qrc)
 
 if (WIN32)
   set (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${TEST_RCCS})
-  set (QGIS_APPMAIN_SRCS mainwin.cpp)
+  if(BUILD_WITH_QT6)
+    set (QGIS_APPMAIN_SRCS mainwin.cpp)
+  else()
+    set (QGIS_APPMAIN_SRCS mainwinqt5.cpp)
+  endif()
   if (NOT MSVC)
     enable_language(RC)
     set(CMAKE_RC_COMPILER_INIT ${CMAKE_GENERATOR_RC})
@@ -676,7 +680,7 @@ if (WITH_PDAL)
 endif()
 
 if(MSVC)
-  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
+  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION icons)
 endif()
 
 install(TARGETS qgis_app
