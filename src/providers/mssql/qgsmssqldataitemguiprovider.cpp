@@ -59,6 +59,10 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsMssqlConnectionItem * > mssqlConnectionItems = QgsDataItem::filteredItems<QgsMssqlConnectionItem>( selection );
     QAction *actionDelete = new QAction( mssqlConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [mssqlConnectionItems, context]
@@ -186,6 +190,47 @@ void QgsMssqlDataItemGuiProvider::editConnection( QgsDataItem *item )
     item->refresh();
   }
 }
+
+void QgsMssqlDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
+  const QStringList connections = settings.childGroups();
+  settings.endGroup();
+
+  int i = 0;
+  QString newConnectionName( connectionName );
+  while ( connections.contains( newConnectionName ) )
+  {
+    ++i;
+    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
+  }
+
+  const QString key = "/MSSQL/connections/" + connectionName;
+  const QString newKey = "/MSSQL/connections/" + newConnectionName;
+
+  settings.setValue( newKey + "/service", settings.value( key + "/service" ).toString() );
+  settings.setValue( newKey + "/host", settings.value( key + "/host" ).toString() );
+  settings.setValue( newKey + "/database", settings.value( key + "/database" ).toString() );
+  settings.setValue( newKey + "/username", settings.value( key + "/username" ).toString() );
+  settings.setValue( newKey + "/password", settings.value( key + "/password" ).toString() );
+  settings.setValue( newKey + "/saveUsername", settings.value( key + "/saveUsername" ).toString() );
+  settings.setValue( newKey + "/savePassword", settings.value( key + "/savePassword" ).toString() );
+  settings.setValue( newKey + "/excludedSchemas", settings.value( key + "/excludedSchemas" ) );
+  settings.setValue( newKey + "/schemasFiltering", settings.value( key + "/schemasFiltering" ).toBool() );
+
+  QgsMssqlConnection::setGeometryColumnsOnly( newConnectionName, QgsMssqlConnection::geometryColumnsOnly( connectionName ) );
+  QgsMssqlConnection::setExtentInGeometryColumns( newConnectionName, QgsMssqlConnection::extentInGeometryColumns( connectionName ) );
+  QgsMssqlConnection::setPrimaryKeyInGeometryColumns( newConnectionName, QgsMssqlConnection::primaryKeyInGeometryColumns( connectionName ) );
+  QgsMssqlConnection::setAllowGeometrylessTables( newConnectionName, QgsMssqlConnection::allowGeometrylessTables( connectionName ) );
+  QgsMssqlConnection::setUseEstimatedMetadata( newConnectionName, QgsMssqlConnection::useEstimatedMetadata( connectionName ) );
+  QgsMssqlConnection::setInvalidGeometryHandlingDisabled( newConnectionName, QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connectionName ) );
+
+  item->parent()->refreshConnections();
+  item->refresh();
+}
+
 
 void QgsMssqlDataItemGuiProvider::createSchema( QgsMssqlConnectionItem *connItem )
 {
