@@ -215,13 +215,7 @@ void QgsHanaDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QStringList connections = settings.childGroups();
   settings.endGroup();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QgsHanaSettings hanaSettings( connectionName, true );
   QgsHanaSettings newHanaSettings( newConnectionName );

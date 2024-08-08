@@ -24,6 +24,7 @@
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -311,13 +312,7 @@ void QgsOracleConnectionItem::duplicateConnection()
   const QStringList connections = settings.childGroups();
   settings.endGroup();
 
-  int i = 0;
-  QString newConnectionName( mName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( mName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QString key = QStringLiteral( "/Oracle/connections/" ) + mName;
   QString newKey = QStringLiteral( "/Oracle/connections/" ) + newConnectionName;

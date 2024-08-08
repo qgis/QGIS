@@ -108,13 +108,7 @@ void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QString connectionName = item->name();
   const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wms" )} );
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   const QStringList detailsParameters { QStringLiteral( "wms" ), connectionName };
   const QStringList newDetailsParameters { QStringLiteral( "wms" ), newConnectionName };
@@ -244,13 +238,7 @@ void QgsXyzDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QString connectionName = item->name();
   const QStringList connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QgsXyzConnection connection =  QgsXyzConnectionUtils::connection( connectionName );
   connection.name = newConnectionName;

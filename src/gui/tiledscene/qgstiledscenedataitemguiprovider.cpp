@@ -94,13 +94,7 @@ void QgsTiledSceneDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QgsTiledSceneProviderConnection::Data connection = QgsTiledSceneProviderConnection::connection( connectionName );
   const QStringList connections = QgsTiledSceneProviderConnection::sTreeConnectionTiledScene->items();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QgsTiledSceneProviderConnection::addConnection( newConnectionName, connection );
   item->parent()->refreshConnections();

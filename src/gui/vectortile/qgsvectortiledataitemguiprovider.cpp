@@ -118,13 +118,7 @@ void QgsVectorTileDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QgsVectorTileProviderConnection::Data connection = QgsVectorTileProviderConnection::connection( connectionName );
   const QStringList connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QgsVectorTileProviderConnection::addConnection( newConnectionName, connection );
   item->parent()->refreshConnections();
