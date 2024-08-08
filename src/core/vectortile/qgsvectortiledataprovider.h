@@ -42,6 +42,7 @@ class QgsVectorTileMatrixSet;
 class QgsVectorTileDataProviderSharedData
 {
   public:
+
     QgsVectorTileDataProviderSharedData();
 
     /**
@@ -77,6 +78,11 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
 
   public:
 
+    static int DATA_COLUMN;
+    static int DATA_ROW;
+    static int DATA_ZOOM;
+    static int DATA_SOURCE_ID;
+
     /**
      * Constructor for QgsVectorTileDataProvider, with the specified \a uri.
      */
@@ -106,6 +112,17 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * Returns the source path for the data.
      */
     virtual QString sourcePath() const = 0;
+
+
+    /**
+     * Returns the list of source paths for the data.
+     * \since QGIS 3.40
+     */
+    virtual QgsStringMap sourcePaths() const
+    {
+      return { { QString(), sourcePath() } };
+    }
+
 
     /**
      * Returns a clone of the data provider.
@@ -139,7 +156,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      *
      * The default implementation returns an invalid request.
      */
-    virtual QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
+    virtual QList<QNetworkRequest> tileRequests( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
 
     /**
      * Returns the style definition for the provider, if available.
