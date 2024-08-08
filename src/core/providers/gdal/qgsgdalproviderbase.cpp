@@ -419,7 +419,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   {
     path = path.mid( vsiPrefix.count() );
 
-    const thread_local QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]+)" ) );
+    const thread_local QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.tar\\.gz|\\.tgz)([\\\\/][^|]+)" ) );
     const QRegularExpressionMatch match = vsiRegex.match( path );
     if ( match.hasMatch() )
     {
