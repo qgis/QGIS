@@ -78,15 +78,28 @@ void QgsStackedDiagram::subDiagramPosition( QPointF &newPos, const QgsRenderCont
 QSizeF QgsStackedDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
   QSizeF size( 0, 0 );
-  if ( feature.attributeCount() == 0 )
+  if ( feature.attributeCount() == 0  || mSubDiagrams.length() == 0 )
   {
-    return size; //zero size if no attributes
+    return size; //zero size if no attributes or no subdiagrams
   }
 
   // Iterate subdiagramas and sum their individual sizes
   for ( const auto &item : std::as_const( mSubDiagrams ) )
   {
-    size += item.diagram->diagramSize( feature, c, *item.settings, is );
+    //size += item.diagram->diagramSize( feature, c, *item.settings, is );
+    const QSizeF subSize = item.diagram->diagramSize( feature, c, *item.settings, is );
+    switch ( s.stackedDiagramMode )
+    {
+      case QgsDiagramSettings::Horizontal:
+        size.setWidth( size.width() + subSize.width() );
+        size.setHeight( subSize.height() );
+        break;
+
+      case QgsDiagramSettings::Vertical:
+        size.setWidth( subSize.width() );
+        size.setHeight( size.height() + subSize.height() );
+        break;
+    }
   }
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
@@ -99,11 +112,11 @@ QSizeF QgsStackedDiagram::diagramSize( const QgsFeature &feature, const QgsRende
   switch ( s.stackedDiagramMode )
   {
     case QgsDiagramSettings::Horizontal:
-      size.scale( size.width() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), size.height(), Qt::IgnoreAspectRatio );
+      size.scale( size.width() + spacing * ( mSubDiagrams.length() - 1 ), size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Vertical:
-      size.scale( size.width(), size.height() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), Qt::IgnoreAspectRatio );
+      size.scale( size.width(), size.height() + spacing * ( mSubDiagrams.length() - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
 
@@ -140,17 +153,29 @@ QString QgsStackedDiagram::diagramName() const
 QSizeF QgsStackedDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   QSizeF size( 0, 0 );
-
-  if ( attributes.isEmpty() )
+  if ( attributes.isEmpty()  || mSubDiagrams.length() == 0 )
   {
-    return QSizeF(); //zero size if no attributes
+    return size; //zero size if no attributes or no subdiagrams
   }
 
   // Iterate subdiagramas and sum their individual sizes
   // accounting for stacked diagram defined spacing
   for ( const auto &item : std::as_const( mSubDiagrams ) )
   {
-    size += item.diagram->diagramSize( attributes, c, *item.settings );
+    //size += item.diagram->diagramSize( attributes, c, *item.settings );
+    const QSizeF subSize = item.diagram->diagramSize( attributes, c, *item.settings );
+    switch ( s.stackedDiagramMode )
+    {
+      case QgsDiagramSettings::Horizontal:
+        size.setWidth( size.width() + subSize.width() );
+        size.setHeight( subSize.height() );
+        break;
+
+      case QgsDiagramSettings::Vertical:
+        size.setWidth( subSize.width() );
+        size.setHeight( size.height() + subSize.height() );
+        break;
+    }
   }
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
@@ -163,11 +188,11 @@ QSizeF QgsStackedDiagram::diagramSize( const QgsAttributes &attributes, const Qg
   switch ( s.stackedDiagramMode )
   {
     case QgsDiagramSettings::Horizontal:
-      size.scale( size.width() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), size.height(), Qt::IgnoreAspectRatio );
+      size.scale( size.width() + spacing * ( mSubDiagrams.length() - 1 ), size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Vertical:
-      size.scale( size.width(), size.height() + spacing * std::max( 0, static_cast<int>( mSubDiagrams.length() ) - 1 ), Qt::IgnoreAspectRatio );
+      size.scale( size.width(), size.height() + spacing * ( mSubDiagrams.length() - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
 
