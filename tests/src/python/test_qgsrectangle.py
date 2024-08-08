@@ -43,6 +43,12 @@ class TestQgsRectangle(QgisTestCase):
         self.assertEqual(rect.perimeter(), 58.0)
 
     def testIntersection(self):
+        rect1 = QgsRectangle()
+        rect2 = QgsRectangle()
+
+        # both rectangle are null, they do not intersect
+        self.assertFalse(rect2.intersects(rect1))
+
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect2 = QgsRectangle(2.0, 2.0, 7.0, 7.0)
 
