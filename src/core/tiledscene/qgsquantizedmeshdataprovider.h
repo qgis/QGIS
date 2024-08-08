@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsprovidermetadata.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenedataprovider.h"
@@ -33,23 +34,35 @@
 
 ///@cond PRIVATE
 
+class CORE_EXPORT QgsQuantizedMeshMetadata
+{
+  public:
+
+    /**
+     * \warning Check \p error, object is incomplete if non-empty!
+     */
+    QgsQuantizedMeshMetadata( const QString &uri,
+                              const QgsCoordinateTransformContext &transformContext,
+                              QgsError &error );
+
+    bool containsTile( QgsTileXYZ tile ) const;
+
+    QgsRectangle mExtent;
+    QgsTiledSceneBoundingVolume mBoundingVolume;
+    // Map of zoom level -> list of AABBs of available tiles (tile index ranges)
+    QVector<QVector<QgsTileRange>> mAvailableTiles;
+    QgsCoordinateReferenceSystem mCrs;
+    QString mTileScheme;
+    uint8_t mMinZoom;
+    uint8_t mMaxZoom;
+    std::vector<QString> mTileUrls;
+    QgsTileMatrix mTileMatrix;
+};
+
 class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
 {
     Q_OBJECT
   public:
-    struct Metadata
-    {
-      QgsRectangle mExtent;
-      QgsTiledSceneBoundingVolume mBoundingVolume;
-      // Map of zoom level -> list of AABBs of available tiles (tile index ranges)
-      QVector<QVector<QgsTileRange>> mAvailableTiles;
-      QgsCoordinateReferenceSystem mCrs;
-      QString mTileScheme;
-      uint8_t mMinZoom;
-      uint8_t mMaxZoom;
-      std::vector<QString> mTileUrls;
-    };
-
     QgsQuantizedMeshDataProvider( const QString &uri,
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
@@ -69,7 +82,7 @@ class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
     QString mUri; // For clone()
     QgsDataProvider::ProviderOptions mProviderOptions; // For clone()
     bool mIsValid = false;
-    Metadata mMetadata;
+    std::optional<QgsQuantizedMeshMetadata> mMetadata; // Initialized in constructor
     std::optional<QgsTiledSceneIndex> mIndex;
 };
 
