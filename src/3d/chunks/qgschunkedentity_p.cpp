@@ -456,7 +456,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
     double dist = node->bbox().center().distanceToPoint( sceneContext.cameraPos );
     residencyRequests.push_back( ResidencyRequest( node, dist, node->level() ) );
 
-    if ( !node->entity() )
+    if ( !node->entity() && node->hasData() )
     {
       // this happens initially when root node is not ready yet
       continue;
@@ -470,7 +470,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
       // or not, it's the best we'll ever get...
       becomesActive = true;
     }
-    else if ( mTau > 0 && screenSpaceError( node, sceneContext ) <= mTau )
+    else if ( mTau > 0 && screenSpaceError( node, sceneContext ) <= mTau && node->hasData() )
     {
       // acceptable error for the current chunk - let's render it
       becomesActive = true;
@@ -533,7 +533,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
       }
     }
 
-    if ( becomesActive )
+    if ( becomesActive && node->entity() )
     {
       mActiveNodes << node;
       // if we are not using additive strategy we need to make sure the parent primitives are not counted
