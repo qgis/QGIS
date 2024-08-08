@@ -133,6 +133,15 @@ Sets rendering hint flags for the symbol.
 .. seealso:: :py:func:`renderHints`
 %End
 
+    void setRenderHint( Qgis::SymbolRenderHint hint, bool enabled = true );
+%Docstring
+Sets a rendering ``hint`` flag for the symbol.
+
+.. seealso:: :py:func:`renderHints`
+
+.. versionadded:: 3.40
+%End
+
     void setFeature( const QgsFeature *f );
 
     const QgsFeature *feature() const;

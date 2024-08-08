@@ -139,6 +139,14 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     void setRenderHints( Qgis::SymbolRenderHints hints ) { mRenderHints = hints; }
 
+    /**
+     * Sets a rendering \a hint flag for the symbol.
+     * \see renderHints()
+     *
+     * \since QGIS 3.40
+     */
+    void setRenderHint( Qgis::SymbolRenderHint hint, bool enabled = true ) { mRenderHints.setFlag( hint, enabled ); }
+
     void setFeature( const QgsFeature *f ) { mFeature = f; }
 
     /**

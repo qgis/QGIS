@@ -762,7 +762,10 @@ QgsSymbol.IsSymbolLayerSubSymbol.__doc__ = "Symbol is being rendered as a sub-sy
 QgsSymbol.ForceVectorRendering = Qgis.SymbolRenderHint.ForceVectorRendering
 QgsSymbol.ForceVectorRendering.is_monkey_patched = True
 QgsSymbol.ForceVectorRendering.__doc__ = "Symbol must be rendered using vector methods, and optimisations like pre-rendered images must be disabled (since QGIS 3.40)"
-Qgis.SymbolRenderHint.__doc__ = "Flags controlling behavior of symbols during rendering\n\n.. versionadded:: 3.20\n\n" + '* ``DynamicRotation``: ' + Qgis.SymbolRenderHint.DynamicRotation.__doc__ + '\n' + '* ``IsSymbolLayerSubSymbol``: ' + Qgis.SymbolRenderHint.IsSymbolLayerSubSymbol.__doc__ + '\n' + '* ``ForceVectorRendering``: ' + Qgis.SymbolRenderHint.ForceVectorRendering.__doc__
+QgsSymbol.ExcludeSymbolBuffers = Qgis.SymbolRenderHint.ExcludeSymbolBuffers
+QgsSymbol.ExcludeSymbolBuffers.is_monkey_patched = True
+QgsSymbol.ExcludeSymbolBuffers.__doc__ = "Do not render symbol buffers. (Since QGIS 3.40)"
+Qgis.SymbolRenderHint.__doc__ = "Flags controlling behavior of symbols during rendering\n\n.. versionadded:: 3.20\n\n" + '* ``DynamicRotation``: ' + Qgis.SymbolRenderHint.DynamicRotation.__doc__ + '\n' + '* ``IsSymbolLayerSubSymbol``: ' + Qgis.SymbolRenderHint.IsSymbolLayerSubSymbol.__doc__ + '\n' + '* ``ForceVectorRendering``: ' + Qgis.SymbolRenderHint.ForceVectorRendering.__doc__ + '\n' + '* ``ExcludeSymbolBuffers``: ' + Qgis.SymbolRenderHint.ExcludeSymbolBuffers.__doc__
 # --
 Qgis.SymbolRenderHint.baseClass = Qgis
 Qgis.SymbolRenderHints = lambda flags=0: Qgis.SymbolRenderHint(flags)
