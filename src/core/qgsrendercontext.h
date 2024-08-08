@@ -736,9 +736,19 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * is used in some contexts to refine the converted size. For example, a Qgis::RenderSubcomponentProperty::BlurSize
      * property will be limited to a suitably fast range when the render context has the Qgis::RenderContextFlag::RenderSymbolPreview set.
      *
+     * \see convertFromPainterUnits()
      * \see convertToMapUnits()
      */
     double convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
+
+    /**
+     * Converts a size from painter units (pixels) to the specified render unit.
+     *
+     * \see convertToPainterUnits()
+     * \see convertToMapUnits()
+     * \since QGIS 3.40
+     */
+    double convertFromPainterUnits( double size, Qgis::RenderUnit unit ) const;
 
     /**
      * Converts a size from the specified units to map units. The conversion respects the limits

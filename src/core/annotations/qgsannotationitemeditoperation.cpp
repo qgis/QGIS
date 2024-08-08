@@ -30,6 +30,16 @@ void QgsAnnotationItemEditContext::setCurrentItemBounds( const QgsRectangle &bou
   mCurrentItemBounds = bounds;
 }
 
+QgsRenderContext QgsAnnotationItemEditContext::renderContext() const
+{
+  return mRenderContext;
+}
+
+void QgsAnnotationItemEditContext::setRenderContext( const QgsRenderContext &context )
+{
+  mRenderContext = context;
+}
+
 
 //
 // QgsAbstractAnnotationItemEditOperation
@@ -82,10 +92,12 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationDelet
 // QgsAnnotationItemEditOperationTranslateItem
 //
 
-QgsAnnotationItemEditOperationTranslateItem::QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY )
+QgsAnnotationItemEditOperationTranslateItem::QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY, double translatePixelsX, double translatePixelsY )
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mTranslateX( translateX )
   , mTranslateY( translateY )
+  , mTranslatePixelsX( translatePixelsX )
+  , mTranslatePixelsY( translatePixelsY )
 {
 
 }

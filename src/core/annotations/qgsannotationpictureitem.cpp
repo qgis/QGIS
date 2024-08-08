@@ -30,6 +30,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgsunittypes.h"
 #include "qgscalloutsregistry.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 #include <QFileInfo>
 
@@ -96,16 +98,40 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback *f
 
     case Qgis::AnnotationPictureSizeMode::FixedSize:
     {
-      QPointF center = bounds.center().toQPointF();
-
-      context.mapToPixel().transformInPlace( center.rx(), center.ry() );
-
       const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
       const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
 
-      painterBounds = QRectF( center.x() - widthPixels * 0.5,
-                              center.y() - heightPixels * 0.5,
-                              widthPixels, heightPixels );
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        QgsGeometry anchor = calloutAnchor();
+
+        const double calloutOffsetWidthPixels = context.convertToPainterUnits( offsetFromCallout().width(), offsetFromCalloutUnit() );
+        const double calloutOffsetHeightPixels = context.convertToPainterUnits( offsetFromCallout().height(), offsetFromCalloutUnit() );
+
+        QPointF anchorPoint = anchor.asQPointF();
+        if ( context.coordinateTransform().isValid() )
+        {
+          double x = anchorPoint.x();
+          double y = anchorPoint.y();
+          double z = 0.0;
+          context.coordinateTransform().transformInPlace( x, y, z );
+          anchorPoint = QPointF( x, y );
+        }
+
+        context.mapToPixel().transformInPlace( anchorPoint.rx(), anchorPoint.ry() );
+
+        painterBounds = QRectF( anchorPoint.x() + calloutOffsetWidthPixels,
+                                anchorPoint.y() + calloutOffsetHeightPixels, widthPixels, heightPixels );
+      }
+      else
+      {
+        QPointF center = bounds.center().toQPointF();
+
+        context.mapToPixel().transformInPlace( center.rx(), center.ry() );
+        painterBounds = QRectF( center.x() - widthPixels * 0.5,
+                                center.y() - heightPixels * 0.5,
+                                widthPixels, heightPixels );
+      }
       break;
     }
   }
@@ -283,7 +309,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotat
   BUILTIN_UNREACHABLE
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context )
 {
   switch ( operation->type() )
   {
@@ -352,10 +378,34 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( Q
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
-      mBounds = QgsRectangle( mBounds.xMinimum() + moveOperation->translationX(),
-                              mBounds.yMinimum() + moveOperation->translationY(),
-                              mBounds.xMaximum() + moveOperation->translationX(),
-                              mBounds.yMaximum() + moveOperation->translationY() );
+      switch ( mSizeMode )
+      {
+
+        case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+          mBounds = QgsRectangle( mBounds.xMinimum() + moveOperation->translationX(),
+                                  mBounds.yMinimum() + moveOperation->translationY(),
+                                  mBounds.xMaximum() + moveOperation->translationX(),
+                                  mBounds.yMaximum() + moveOperation->translationY() );
+          break;
+
+        case Qgis::AnnotationPictureSizeMode::FixedSize:
+        {
+          if ( callout() && !calloutAnchor().isEmpty() )
+          {
+            const double xOffset = context.renderContext().convertFromPainterUnits( moveOperation->translationXPixels(), offsetFromCalloutUnit() );
+            const double yOffset = context.renderContext().convertFromPainterUnits( moveOperation->translationYPixels(), offsetFromCalloutUnit() );
+            setOffsetFromCallout( QSizeF( offsetFromCallout().width() + xOffset, offsetFromCallout().height() + yOffset ) );
+          }
+          else
+          {
+            mBounds = QgsRectangle( mBounds.xMinimum() + moveOperation->translationX(),
+                                    mBounds.yMinimum() + moveOperation->translationY(),
+                                    mBounds.xMaximum() + moveOperation->translationX(),
+                                    mBounds.yMaximum() + moveOperation->translationY() );
+          }
+          break;
+        }
+      }
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
@@ -435,10 +485,52 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
 
         case Qgis::AnnotationPictureSizeMode::FixedSize:
         {
-          const QgsRectangle currentBounds = context.currentItemBounds();
-          const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( mBounds.center() + QgsVector( moveOperation->translationX(), moveOperation->translationY() ),
-                                         currentBounds.width(), currentBounds.height() );
-          return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+          if ( callout() && !calloutAnchor().isEmpty() )
+          {
+            QgsGeometry anchor = calloutAnchor();
+
+            const double calloutOffsetWidthPixels = context.renderContext().convertToPainterUnits( offsetFromCallout().width(), offsetFromCalloutUnit() )
+                                                    + moveOperation->translationXPixels();
+            const double calloutOffsetHeightPixels = context.renderContext().convertToPainterUnits( offsetFromCallout().height(), offsetFromCalloutUnit() )
+                + moveOperation->translationYPixels();
+
+            QPointF anchorPoint = anchor.asQPointF();
+            if ( context.renderContext().coordinateTransform().isValid() )
+            {
+              double x = anchorPoint.x();
+              double y = anchorPoint.y();
+              double z = 0.0;
+              context.renderContext().coordinateTransform().transformInPlace( x, y, z );
+              anchorPoint = QPointF( x, y );
+            }
+
+            context.renderContext().mapToPixel().transformInPlace( anchorPoint.rx(), anchorPoint.ry() );
+
+            const double textOriginXPixels = anchorPoint.x() + calloutOffsetWidthPixels;
+            const double textOriginYPixels = anchorPoint.y() + calloutOffsetHeightPixels;
+
+            const double widthPixels = context.renderContext().convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+            const double heightPixels = context.renderContext().convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+            QgsLineString ls( QVector<QgsPointXY> { QgsPointXY( textOriginXPixels, textOriginYPixels ),
+                                                    QgsPointXY( textOriginXPixels + widthPixels, textOriginYPixels ),
+                                                    QgsPointXY( textOriginXPixels + widthPixels, textOriginYPixels + heightPixels ),
+                                                    QgsPointXY( textOriginXPixels, textOriginYPixels + heightPixels ),
+                                                    QgsPointXY( textOriginXPixels, textOriginYPixels )
+                                                  } );
+
+            QgsGeometry g( new QgsPolygon( ls.clone() ) );
+            g.transform( context.renderContext().mapToPixel().transform().inverted() );
+            g.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
+            return new QgsAnnotationItemEditOperationTransientResults( g );
+          }
+          else
+          {
+            const QgsRectangle currentBounds = context.currentItemBounds();
+            const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( mBounds.center() + QgsVector( moveOperation->translationX(), moveOperation->translationY() ),
+                                           currentBounds.width(), currentBounds.height() );
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+          }
         }
       }
       break;
@@ -521,19 +613,26 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox() const
     case Qgis::AnnotationPictureSizeMode::SpatialBounds:
     {
       bounds = mBounds;
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        QgsGeometry anchor = calloutAnchor();
+        bounds.combineExtentWith( anchor.boundingBox() );
+      }
       break;
     }
 
     case Qgis::AnnotationPictureSizeMode::FixedSize:
-      bounds = QgsRectangle( mBounds.center(), mBounds.center() );
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        bounds = calloutAnchor().boundingBox();
+      }
+      else
+      {
+        bounds = QgsRectangle( mBounds.center(), mBounds.center() );
+      }
       break;
   }
 
-  if ( callout() && !calloutAnchor().isEmpty() )
-  {
-    QgsGeometry anchor = calloutAnchor();
-    bounds.combineExtentWith( anchor.boundingBox() );
-  }
   return bounds;
 }
 
@@ -546,24 +645,55 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox( QgsRenderContext &context ) 
 
     case Qgis::AnnotationPictureSizeMode::FixedSize:
     {
-      QPointF center = mBounds.center().toQPointF();
-      if ( context.coordinateTransform().isValid() )
-      {
-        double x = center.x();
-        double y = center.y();
-        double z = 0.0;
-        context.coordinateTransform().transformInPlace( x, y, z );
-        center = QPointF( x, y );
-      }
-
-      context.mapToPixel().transformInPlace( center.rx(), center.ry() );
-
       const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
       const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
 
-      const QRectF boundsInPixels( center.x() - widthPixels * 0.5,
-                                   center.y() - heightPixels * 0.5,
-                                   widthPixels, heightPixels );
+      QRectF boundsInPixels;
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        QgsGeometry anchor = calloutAnchor();
+
+        const double calloutOffsetWidthPixels = context.convertToPainterUnits( offsetFromCallout().width(), offsetFromCalloutUnit() );
+        const double calloutOffsetHeightPixels = context.convertToPainterUnits( offsetFromCallout().height(), offsetFromCalloutUnit() );
+
+        QPointF anchorPoint = anchor.asQPointF();
+        if ( context.coordinateTransform().isValid() )
+        {
+          double x = anchorPoint.x();
+          double y = anchorPoint.y();
+          double z = 0.0;
+          context.coordinateTransform().transformInPlace( x, y, z );
+          anchorPoint = QPointF( x, y );
+        }
+
+        context.mapToPixel().transformInPlace( anchorPoint.rx(), anchorPoint.ry() );
+
+        QgsRectangle textRect( anchorPoint.x() + calloutOffsetWidthPixels,
+                               anchorPoint.y() + calloutOffsetHeightPixels,
+                               anchorPoint.x() + calloutOffsetWidthPixels + widthPixels,
+                               anchorPoint.y() + calloutOffsetHeightPixels + heightPixels );
+        QgsRectangle anchorRect( anchorPoint.x(), anchorPoint.y(), anchorPoint.x(), anchorPoint.y() );
+        anchorRect.combineExtentWith( textRect );
+
+        boundsInPixels = anchorRect.toRectF();
+      }
+      else
+      {
+        QPointF center = mBounds.center().toQPointF();
+        if ( context.coordinateTransform().isValid() )
+        {
+          double x = center.x();
+          double y = center.y();
+          double z = 0.0;
+          context.coordinateTransform().transformInPlace( x, y, z );
+          center = QPointF( x, y );
+        }
+
+        context.mapToPixel().transformInPlace( center.rx(), center.ry() );
+        boundsInPixels = QRectF( center.x() - widthPixels * 0.5,
+                                 center.y() - heightPixels * 0.5,
+                                 widthPixels, heightPixels );
+      }
       const QgsPointXY topLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.top() );
       const QgsPointXY topRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.top() );
       const QgsPointXY bottomLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.bottom() );
@@ -571,12 +701,6 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox( QgsRenderContext &context ) 
 
       const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
       QgsRectangle textRect = context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
-
-      if ( callout() && !calloutAnchor().isEmpty() )
-      {
-        QgsGeometry anchor = calloutAnchor();
-        textRect.combineExtentWith( anchor.boundingBox() );
-      }
       return textRect;
     }
   }

@@ -704,6 +704,42 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertAlmostEqual(size, 4.0 / 2, places=5)
         self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4)
 
+    def testConvertFromPainterUnits(self):
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 100, 100))
+        ms.setOutputSize(QSize(100, 50))
+        ms.setOutputDpi(300)
+        r = QgsRenderContext.fromMapSettings(ms)
+
+        # renderer scale should be about 1:291937841
+
+        # self.assertEqual(r.scaleFactor(),666)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderMapUnits)
+        self.assertAlmostEqual(sf, 2.0, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderMapUnits)
+        self.assertAlmostEqual(size, 4.0, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderMillimeters)
+        self.assertAlmostEqual(sf, 1 / 11.8110236, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderMillimeters)
+        self.assertAlmostEqual(size, 2 / 11.8110236, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderPoints)
+        self.assertAlmostEqual(sf, 1 / 4.166666665625, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderPoints)
+        self.assertAlmostEqual(size, 2 / 4.166666665625, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderInches)
+        self.assertAlmostEqual(sf, 1 / 300.0, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderInches)
+        self.assertAlmostEqual(size, 2 / 300.0, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderPixels)
+        self.assertAlmostEqual(sf, 1.0, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderPixels)
+        self.assertAlmostEqual(size, 2.0, places=5)
+
     def testPixelSizeScaleFactor(self):
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))

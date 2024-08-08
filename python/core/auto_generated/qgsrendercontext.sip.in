@@ -723,7 +723,20 @@ Since QGIS 3.22 the optional ``property`` argument can be used to specify the as
 is used in some contexts to refine the converted size. For example, a :py:class:`Qgis`.RenderSubcomponentProperty.BlurSize
 property will be limited to a suitably fast range when the render context has the :py:class:`Qgis`.RenderContextFlag.RenderSymbolPreview set.
 
+.. seealso:: :py:func:`convertFromPainterUnits`
+
 .. seealso:: :py:func:`convertToMapUnits`
+%End
+
+    double convertFromPainterUnits( double size, Qgis::RenderUnit unit ) const;
+%Docstring
+Converts a size from painter units (pixels) to the specified render unit.
+
+.. seealso:: :py:func:`convertToPainterUnits`
+
+.. seealso:: :py:func:`convertToMapUnits`
+
+.. versionadded:: 3.40
 %End
 
     double convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;

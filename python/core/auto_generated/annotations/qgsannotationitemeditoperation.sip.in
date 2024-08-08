@@ -38,6 +38,20 @@ Sets the current rendered ``bounds`` of the item, in the annotation layer's CRS.
 .. seealso:: :py:func:`currentItemBounds`
 %End
 
+    QgsRenderContext renderContext() const;
+%Docstring
+Returns the render context associated with the edit operation.
+
+.. seealso:: :py:func:`setRenderContext`
+%End
+
+    void setRenderContext( const QgsRenderContext &context );
+%Docstring
+Sets the render ``context`` associated with the edit operation.
+
+.. seealso:: :py:func:`renderContext`
+%End
+
 };
 
 class QgsAbstractAnnotationItemEditOperation
@@ -203,10 +217,13 @@ Annotation item edit operation consisting of translating (moving) an item
 %End
   public:
 
-    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY );
+    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY,
+        double translatePixelsX = 0, double translatePixelsY = 0 );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationTranslateItem, where the node with the specified ``id`` and translation
 (in map units)
+
+Since QGIS 3.40 the ``translatePixelsX`` and ``translatePixelsY`` arguments specify the translation in pixels.
 %End
 
     virtual Type type() const;
@@ -229,6 +246,24 @@ Returns the x-axis translation, in layer units.
 Returns the y-axis translation, in layer units.
 
 \since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationX`
+%End
+
+    double translationXPixels() const;
+%Docstring
+Returns the x-axis translation, in pixels.
+
+\since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationYPixels`
+
+.. versionadded:: 3.40
+%End
+
+    double translationYPixels() const;
+%Docstring
+Returns the y-axis translation, in pixels.
+
+\since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationXPixels`
+
+.. versionadded:: 3.40
 %End
 
 };

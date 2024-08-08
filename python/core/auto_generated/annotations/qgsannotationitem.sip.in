@@ -326,6 +326,58 @@ The callout ``anchor`` geometry must be specified in the parent layer's coordina
 .. versionadded:: 3.40
 %End
 
+    QSizeF offsetFromCallout() const;
+%Docstring
+Returns the (optional) offset of the annotation item from the :py:func:`~QgsAnnotationItem.calloutAnchor`.
+
+Some annotation item subclasses support placement relative to the callout anchor. For these
+items, the offset from callout defines how far (in screen/page units) the item should be
+placed from the anchor point.
+
+Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
+
+.. seealso:: :py:func:`setOffsetFromCallout`
+
+.. versionadded:: 3.40
+%End
+
+    void setOffsetFromCallout( const QSizeF &offset );
+%Docstring
+Sets the offset of the annotation item from the :py:func:`~QgsAnnotationItem.calloutAnchor`.
+
+Some annotation item subclasses support placement relative to the callout anchor. For these
+items, the offset from callout defines how far (in screen/page units) the item should be
+placed from the anchor point.
+
+Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
+
+.. seealso:: :py:func:`offsetFromCallout`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::RenderUnit offsetFromCalloutUnit() const;
+%Docstring
+Returns the units for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
+
+.. seealso:: :py:func:`offsetFromCallout`
+
+.. seealso:: :py:func:`setOffsetFromCalloutUnit`
+
+.. versionadded:: 3.40
+%End
+
+    void setOffsetFromCalloutUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
+
+.. seealso:: :py:func:`setOffsetFromCallout`
+
+.. seealso:: :py:func:`offsetFromCalloutUnit`
+
+.. versionadded:: 3.40
+%End
+
   protected:
 
     void copyCommonProperties( const QgsAnnotationItem *other );

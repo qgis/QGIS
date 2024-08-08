@@ -482,6 +482,68 @@ double QgsRenderContext::convertToPainterUnits( double size, Qgis::RenderUnit un
   return convertedSize;
 }
 
+double QgsRenderContext::convertFromPainterUnits( double size, Qgis::RenderUnit unit ) const
+{
+  double conversionFactor = 1.0;
+  // NOLINTBEGIN(bugprone-branch-clone)
+  switch ( unit )
+  {
+    case Qgis::RenderUnit::Millimeters:
+      conversionFactor = 1 / mScaleFactor;
+      break;
+
+    case Qgis::RenderUnit::Points:
+      conversionFactor = POINTS_TO_MM / mScaleFactor;
+      break;
+
+    case Qgis::RenderUnit::Inches:
+      conversionFactor = 1 / ( mScaleFactor * INCH_TO_MM );
+      break;
+
+    case Qgis::RenderUnit::MetersInMapUnits:
+    {
+      if ( mMapToPixel.isValid() )
+        size = 1 / convertMetersToMapUnits( size );
+      // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
+      [[fallthrough]];
+    }
+    case Qgis::RenderUnit::MapUnits:
+    {
+      if ( mMapToPixel.isValid() )
+      {
+        const double mup = mapToPixel().mapUnitsPerPixel();;
+        if ( mup > 0 )
+        {
+          conversionFactor = mup / 1.0;
+        }
+        else
+        {
+          conversionFactor = 1.0;
+        }
+      }
+      else
+      {
+        // invalid map to pixel. A size in map units can't be calculated, so treat the size as points.
+        // It's the best we can do in this situation!
+        conversionFactor = POINTS_TO_MM / mScaleFactor;
+      }
+      break;
+    }
+    case Qgis::RenderUnit::Pixels:
+      conversionFactor = 1.0;
+      break;
+
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
+      //no sensible value
+      conversionFactor = 1.0;
+      break;
+  }
+  // NOLINTEND(bugprone-branch-clone)
+
+  return size * conversionFactor;
+}
+
 double QgsRenderContext::convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
   const double mup = mMapToPixel.mapUnitsPerPixel();
