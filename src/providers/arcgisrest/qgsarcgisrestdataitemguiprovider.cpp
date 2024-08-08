@@ -179,13 +179,7 @@ void QgsArcGisRestDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QString connectionName = item->name();
   const QStringList connections = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QgsArcGisConnectionSettings::settingsUrl->setValue( QgsArcGisConnectionSettings::settingsUrl->value( connectionName ), newConnectionName );
 
@@ -202,7 +196,6 @@ void QgsArcGisRestDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   if ( item->parent() )
     item->parent()->refreshConnections();
 }
-
 
 void QgsArcGisRestDataItemGuiProvider::refreshConnection( QgsDataItem *item )
 {

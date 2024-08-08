@@ -99,13 +99,7 @@ void QgsWcsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QString connectionName = item->name();
   const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wcs" )} );
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   const QStringList detailsParameters { QStringLiteral( "wcs" ), connectionName };
   const QStringList newDetailsParameters { QStringLiteral( "wcs" ), newConnectionName };

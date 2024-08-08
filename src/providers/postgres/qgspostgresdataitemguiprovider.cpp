@@ -257,13 +257,7 @@ void QgsPostgresDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   const QStringList connections = settings.childGroups();
   settings.endGroup();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connectionName );
   QString newBaseKey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( newConnectionName );

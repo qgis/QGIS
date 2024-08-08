@@ -93,13 +93,7 @@ void QgsSensorThingsDataItemGuiProvider::duplicateConnection( QgsDataItem *item 
   const QgsSensorThingsProviderConnection::Data connection = QgsSensorThingsProviderConnection::connection( connectionName );
   const QStringList connections = QgsSensorThingsProviderConnection::sTreeSensorThingsConnections->items();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ).arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QgsSensorThingsProviderConnection::addConnection( newConnectionName, connection );
   item->parent()->refreshConnections();
