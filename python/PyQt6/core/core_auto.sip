@@ -353,6 +353,7 @@
 %Include auto_generated/geometry/qgsorientedbox3d.sip
 %Include auto_generated/geometry/qgspoint.sip
 %Include auto_generated/geometry/qgspolygon.sip
+%Include auto_generated/geometry/qgspolyhedralsurface.sip
 %Include auto_generated/geometry/qgsquadrilateral.sip
 %Include auto_generated/geometry/qgsrectangle.sip
 %Include auto_generated/geometry/qgsreferencedgeometry.sip
