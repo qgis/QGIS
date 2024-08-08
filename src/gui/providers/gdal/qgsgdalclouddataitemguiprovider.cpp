@@ -136,13 +136,7 @@ void QgsGdalCloudDataItemGuiProvider::duplicateConnection( QgsGdalCloudConnectio
   const QgsGdalCloudProviderConnection::Data connection = QgsGdalCloudProviderConnection::connection( connectionName );
   const QStringList connections = QgsGdalCloudProviderConnection::sTreeConnectionCloud->items();
 
-  int i = 0;
-  QString newConnectionName( connectionName );
-  while ( connections.contains( newConnectionName ) )
-  {
-    ++i;
-    newConnectionName = QString( "%1 - copy %2" ).arg( connectionName ) .arg( i );
-  }
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
   QgsGdalCloudProviderConnection::addConnection( newConnectionName, connection );
   cloudItem->refresh();
