@@ -660,6 +660,7 @@ class CORE_EXPORT Qgis
       DynamicRotation = 1 << 1, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
       IsSymbolLayerSubSymbol = 1 << 2, //!< Symbol is being rendered as a sub-symbol of a QgsSymbolLayer (since QGIS 3.38)
       ForceVectorRendering = 1 << 3, //!< Symbol must be rendered using vector methods, and optimisations like pre-rendered images must be disabled (since QGIS 3.40)
+      ExcludeSymbolBuffers = 1 << 4, //!< Do not render symbol buffers. (Since QGIS 3.40)
     };
     Q_ENUM( SymbolRenderHint )
     //! Symbol render hints
