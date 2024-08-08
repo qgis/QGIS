@@ -902,6 +902,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsorientedbox3d.cpp
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
+  geometry/qgspolyhedralsurface.cpp
   geometry/qgsquadrilateral.cpp
   geometry/qgsrectangle.cpp
   geometry/qgsreferencedgeometry.cpp
@@ -1491,6 +1492,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsorientedbox3d.h
   geometry/qgspoint.h
   geometry/qgspolygon.h
+  geometry/qgspolyhedralsurface.h
   geometry/qgsquadrilateral.h
   geometry/qgsrectangle.h
   geometry/qgsreferencedgeometry.h

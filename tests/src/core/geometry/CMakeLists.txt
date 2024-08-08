@@ -28,6 +28,7 @@ set(TESTS
   testqgspoint.cpp
   testqgspointxy.cpp
   testqgspolygon.cpp
+  testqgspolyhedralsurface.cpp
   testqgsquadrilateral.cpp
   testqgsrectangle.cpp
   testqgsregularpolygon.cpp
