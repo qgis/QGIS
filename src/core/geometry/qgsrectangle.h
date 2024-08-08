@@ -372,13 +372,13 @@ class CORE_EXPORT QgsRectangle
     {
       if ( isNull() || rect.isNull() )
         return false;
-      const double x1 = ( mXmin > rect.mXmin ? mXmin : rect.mXmin );
-      const double x2 = ( mXmax < rect.mXmax ? mXmax : rect.mXmax );
-      if ( x1 > x2 )
+      const double x1 = ( ( std::isgreater( mXmin, rect.mXmin ) || std::isnan( mXmin ) ) ? mXmin : rect.mXmin );
+      const double x2 = ( ( std::isless( mXmax, rect.mXmax ) || std::isnan( mXmax ) )  ? mXmax : rect.mXmax );
+      if ( std::isgreater( x1, x2 ) || std::isnan( x1 ) || std::isnan( x2 ) )
         return false;
-      const double y1 = ( mYmin > rect.mYmin ? mYmin : rect.mYmin );
-      const double y2 = ( mYmax < rect.mYmax ? mYmax : rect.mYmax );
-      return y1 <= y2;
+      const double y1 = ( ( std::isgreater( mYmin, rect.mYmin ) || std::isnan( mYmin ) ) ? mYmin : rect.mYmin );
+      const double y2 = ( ( std::isless( mYmax, rect.mYmax ) || std::isnan( mYmax ) ) ? mYmax : rect.mYmax );
+      return ( std::islessequal( y1, y2 ) && !std::isnan( y1 ) && !std::isnan( y2 ) );
     }
 
     /**

@@ -251,6 +251,14 @@ void TestQgsRectangle::intersects()
   QVERIFY( !rect1.intersects( rect2 ) );
   QVERIFY( !rect2.intersects( rect1 ) );
 
+  // rect2 has a NaN coordinate - rects do not intersect
+  rect2.set( std::numeric_limits<double>::quiet_NaN(), 3.2, 2.5, 4 );
+  QVERIFY( !rect1.intersects( rect2 ) );
+  QVERIFY( !rect2.intersects( rect1 ) );
+  rect2.set( 1.5, std::numeric_limits<double>::quiet_NaN(), 2.5, 4 );
+  QVERIFY( !rect1.intersects( rect2 ) );
+  QVERIFY( !rect2.intersects( rect1 ) );
+
   // intersection
   rect2.set( 1.5, 3.2, 2.5, 4 );
   QVERIFY( rect1.intersects( rect2 ) );
