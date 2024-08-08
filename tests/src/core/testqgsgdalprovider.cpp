@@ -150,7 +150,6 @@ void TestQgsGdalProvider::decodeUri()
   QCOMPARE( components.value( QStringLiteral( "path" ) ).toString(), QString( "nz-elevation/auckland/auckland-north_2016-2018/dem_1m/2193/AY30_10000_0405.tiff" ) );
   QCOMPARE( components.value( QStringLiteral( "vsiPrefix" ) ).toString(), QString( "/vsis3/" ) );
 
-  
   //test .[extension] in domain-part of http[s]
   uri = QStringLiteral( "/vsicurl/https://www.qgis.zip.org/dataset.tif" );
   components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
@@ -179,7 +178,7 @@ void TestQgsGdalProvider::decodeUri()
   QCOMPARE( components.value( QStringLiteral( "vsiPrefix" ) ).toString(), QString( "/vsizip/" ) );
   QCOMPARE( components.value( QStringLiteral( "vsiSuffix" ) ).toString(), QString( "/img.tif" ) );
 
-  // test backslash after .[extenstion] in the path 
+  // test backslash after .[extension] in the path
   uri = QStringLiteral( "/vsizip/C:\\arc.zip\\img.tif" );
   components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
   QCOMPARE( components.value( QStringLiteral( "path" ) ).toString(), QString( "C:\\arc.zip" ) );
