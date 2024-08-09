@@ -2140,4 +2140,4 @@ else:
 if args.python_output:
     with open(args.python_output, 'w') as f:
         f.write(''.join(python_header()))
-        f.write('\n'.join(output_python))
+        f.write(''.join(output_python))
