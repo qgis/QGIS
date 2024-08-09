@@ -1719,10 +1719,10 @@ while line_idx < line_count:
 
                 if actual_class:
                     output_python.append(f'{actual_class}.{enum_qualname}.__doc__ = "{comment}\\n\\n" + ' +
-                                         ' + "\\n" + '.join(enum_members_doc) + '\n# --\n')
+                                         " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
                 else:
-                    output_python.append(f'{enum_qualname}.__doc__ = "{comment}\\n\\n" + ' +
-                                         ' + "\\n" + '.join(enum_members_doc) + '\n# --\n')
+                    output_python.append(f'{enum_qualname}.__doc__ = \'{comment}\\n\\n\' + ' +
+                                         " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
 
             # enums don't have Docstring apparently
             comment = ''
