@@ -2121,7 +2121,7 @@ else:
     print(''.join(output))
     print(''.join(sip_header_footer()))
 
-if args.python_output:
+if args.python_output and output_python:
     with open(args.python_output, 'w') as f:
         f.write(''.join(python_header()))
         f.write(''.join(output_python))
