@@ -71,7 +71,7 @@ python_signature = ''
 enum_int_types: List[str] = []
 enum_intflag_types: List[str] = []
 enum_class_non_int_types: List[str] = []
-enum_monkey_patched_types: List[str] = []
+enum_monkey_patched_types: List = []
 indent = ''
 prev_indent = ''
 comment = ''
@@ -96,7 +96,7 @@ output: List[str] = []
 output_python: List[str] = []
 doxy_inside_sip_run = 0
 has_pushed_force_int = False
-debug = 0
+debug = args.debug
 
 ALLOWED_NON_CLASS_ENUMS = [
     "QgsSipifyHeader::MyEnum",
@@ -612,23 +612,23 @@ def create_class_links(line):
     global actual_class
 
     # Replace Qgs classes (but not the current class) with :py:class: links
-    if re.search(r'\b((?:Qgs[A-Z]\w+)|(?:Qgis))\b(\.?$|[^\w]{2})', line):
+    if re.search(r'\b(Qgs[A-Z]\w+|Qgis)\b(\.?$|\W{2})', line):
         if actual_class is not None and not re.search(actual_class, line):
-            line = re.sub(r'\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})', r':py:class:`\1`\2', line)
+            line = re.sub(r'\b(Qgs[A-Z]\w+)\b(\.?$|\W{2})', r':py:class:`\1`\2', line)
 
     # Replace Qgs class methods with :py:func: links
-    line = re.sub(r'\b(((?:Qgs[A-Z]\w+)|(?:Qgis))\.[a-z]\w+\(\))(?!\w)', r':py:func:`\1`', line)
+    line = re.sub(r'\b((Qgs[A-Z]\w+|Qgis)\.[a-z]\w+\(\))(?!\w)', r':py:func:`\1`', line)
 
     # Replace other methods with :py:func: links
     if actual_class is not None and actual_class:
-        line = re.sub(r'(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)', rf':py:func:`~{actual_class}.\1`', line)
+        line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)', rf':py:func:`~{actual_class}.\1`', line)
     else:
-        line = re.sub(r'(?<!\.)\b(?:([a-z]\w+)\(\))(?!\w)', r':py:func:`~\1`', line)
+        line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)', r':py:func:`~\1`', line)
 
     # Replace Qgs classes (but not the current class) with :py:class: links
-    if re.search(r'\b(?<![`~])((?:Qgs[A-Z]\w+)|(?:Qgis))\b(?!\()', line):
+    if re.search(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', line):
         if not actual_class or not re.search(actual_class, line):
-            line = re.sub(r'\b(?<![`~])((?:Qgs[A-Z]\w+)|(?:Qgis))\b(?!\()', r':py:class:`\1`', line)
+            line = re.sub(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', r':py:class:`\1`', line)
 
     return line
 
@@ -655,7 +655,7 @@ def processDoxygenLine(line):
         return ""
 
     # Detect code snippet
-    code_match = re.match(r'\\code(\{\.?(\w+)\})?', line)
+    code_match = re.match(r'\\code(\{\.?(\w+)})?', line)
     if code_match:
         codelang = f" {code_match.group(2)}" if code_match.group(2) else ""
         if not re.match(r'(cpp|py|unparsed)', codelang):
@@ -743,7 +743,7 @@ def processDoxygenLine(line):
         return ""
 
     # Handle since
-    since_match = re.match(r'\\since .*?([\d\.]+)', line, re.IGNORECASE)
+    since_match = re.match(r'\\since .*?([\d.]+)', line, re.IGNORECASE)
     if since_match:
         prev_indent = indent
         indent = ''
@@ -751,7 +751,7 @@ def processDoxygenLine(line):
         return f"\n.. versionadded:: {since_match.group(1)}\n"
 
     # Handle deprecated
-    deprecated_match = re.match(r'\\deprecated(?:\s+since\s+(?:QGIS\s+)(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?', line, re.IGNORECASE)
+    deprecated_match = re.match(r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?', line, re.IGNORECASE)
     if deprecated_match:
         prev_indent = indent
         indent = ''
@@ -822,7 +822,7 @@ def processDoxygenLine(line):
 def detect_and_remove_following_body_or_initializerlist():
     global LINE
 
-    python_signature = ''
+    signature = ''
 
     # Complex regex pattern to match various C++ function declarations and definitions
     pattern1 = r'^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([(?:long )\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\s*\(([\w=()\/ ,&*<>."-]|::)*\)( +(?:const|SIP_[\w_]+?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\}\s*(?:SIP_[\w_]+)?;?|(?!;))(\s*\/\/.*)?$'
@@ -830,50 +830,50 @@ def detect_and_remove_following_body_or_initializerlist():
     pattern3 = r'^\s*class.*SIP_SKIP'
 
     if (re.match(pattern1, LINE) or
-        re.match(pattern2, LINE) or
+        re.search(pattern2, LINE) or
         re.match(pattern3, LINE)):
 
-        dbg_info("remove constructor definition, function bodies, member initializing list")
+        dbg_info("remove constructor definition, function bodies, member initializing list (1)")
 
         # Extract the parts we want to keep
-        match = re.match(pattern1, LINE)
-        if match:
-            newline = f"{match.group(1) or ''}{match.group(2) or ''}{match.group(3)};"
+        _match = re.match(pattern1, LINE)
+        if _match:
+            newline = f"{_match.group(1) or ''}{_match.group(2) or ''}{_match.group(3)};"
         else:
             newline = LINE
 
         # Call remove_following_body_or_initializerlist() if necessary
-        if not re.search(r'{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$', LINE):
-            python_signature = remove_following_body_or_initializerlist()
+        if not re.search(r'{.*}(\s*SIP_\w+)*\s*(//.*)?$', LINE):
+            signature = remove_following_body_or_initializerlist()
 
         LINE = newline
 
-    return python_signature
+    return signature
 
 
 def remove_following_body_or_initializerlist():
     global line_idx, line_count
 
-    python_signature = ''
+    signature = ''
 
-    dbg_info("remove constructor definition, function bodies, member initializing list")
+    dbg_info("remove constructor definition, function bodies, member initializing list (2)")
     line = read_line()
 
     # Python signature
     if re.match(r'^\s*\[\s*(\w+\s*)?\(', line):
         dbg_info("python signature detected")
-        nesting_index = 0
+        _nesting_index = 0
         while line_idx < line_count:
-            nesting_index += line.count('[')
-            nesting_index -= line.count(']')
-            if nesting_index == 0:
-                match = re.match(r'^(.*);\s*(\/\/.*)?$', line)
-                if match:
-                    line = match.group(1)  # remove semicolon (added later)
-                    python_signature += f"\n{line}"
-                    return python_signature
+            _nesting_index += line.count('[')
+            _nesting_index -= line.count(']')
+            if _nesting_index == 0:
+                _match = re.match(r'^(.*);\s*(//.*)?$', line)
+                if _match:
+                    line = _match.group(1)  # remove semicolon (added later)
+                    signature += f"\n{line}"
+                    return signature
                 break
-            python_signature += f"\n{line}"
+            signature += f"\n{line}"
             line = read_line()
 
     # Member initializing list
@@ -883,16 +883,16 @@ def remove_following_body_or_initializerlist():
 
     # Body
     if re.match(r'^\s*\{', line):
-        nesting_index = 0
+        _nesting_index = 0
         while line_idx < line_count:
             dbg_info("  remove body")
-            nesting_index += line.count('{')
-            nesting_index -= line.count('}')
-            if nesting_index == 0:
+            _nesting_index += line.count('{')
+            _nesting_index -= line.count('}')
+            if _nesting_index == 0:
                 break
             line = read_line()
 
-    return python_signature
+    return signature
 
 
 def fix_annotations(line):
@@ -906,8 +906,8 @@ def fix_annotations(line):
         skipped_params_remove.append(param)
         dbg_info(f"caught removed param: {skipped_params_remove[-1]}")
 
-    out_params = re.findall(r'(\w+)\s+SIP_OUT', line)
-    for param in out_params:
+    _out_params = re.findall(r'(\w+)\s+SIP_OUT', line)
+    for param in _out_params:
         skipped_params_out.append(param)
         dbg_info(f"caught removed param: {skipped_params_out[-1]}")
 
@@ -962,12 +962,12 @@ def fix_annotations(line):
         dbg_info("remove arg")
         if multiline_definition != MULTILINE_NO:
             prev_line = output.pop().rstrip()
-        # Update multi line status
-        parenthesis_balance = prev_line.count('(') - prev_line.count(')')
-        if parenthesis_balance == 1:
-            multiline_definition = MULTILINE_NO
-        # Concatenate with above line to bring previous commas
-        line = f"{prev_line} {line.lstrip()}\n"
+            # Update multi line status
+            parenthesis_balance = prev_line.count('(') - prev_line.count(')')
+            if parenthesis_balance == 1:
+                multiline_definition = MULTILINE_NO
+            # Concatenate with above line to bring previous commas
+            line = f"{prev_line} {line.lstrip()}\n"
 
         if is_qt6:
             line = re.sub(
@@ -996,18 +996,6 @@ def fix_constants(line):
     line = re.sub(r'\bstd::numeric_limits<qlonglong>::max\(\)', 'LLONG_MAX', line)
     line = re.sub(r'\bstd::numeric_limits<int>::max\(\)', 'INT_MAX', line)
     line = re.sub(r'\bstd::numeric_limits<int>::min\(\)', 'INT_MIN', line)
-    return line
-
-
-def replace_macros(line, is_qt6=False):
-    line = re.sub(r'\bTRUE\b', '``True``', line)
-    line = re.sub(r'\bFALSE\b', '``False``', line)
-    line = re.sub(r'\bNULLPTR\b', '``None``', line)
-
-    if is_qt6:
-        # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
-        line = re.sub(r'(QList<\s*|QVector<\s*)QVariantMap', r'\1QMap<QString, QVariant>', line)
-
     return line
 
 
@@ -1066,7 +1054,7 @@ while line_idx < line_count:
     actual_class = classname[-1] if classname else None
     LINE = read_line()
 
-    if re.match(r'^\s*(#define )?+SIP_IF_MODULE\(.*\)$', LINE):
+    if re.match(r'^\s*(#define\s+)?SIP_IF_MODULE\(.*\)$', LINE):
         dbg_info('skipping SIP include condition macro')
         continue
 
@@ -1084,7 +1072,7 @@ while line_idx < line_count:
         write_output("SF1", f"%Property({match.group(1)})\n")
         continue
 
-    match = re.match(r'^\s*SIP_IF_FEATURE\(\s*(\!?\w+)\s*\)(.*)$', LINE)
+    match = re.match(r'^\s*SIP_IF_FEATURE\(\s*(!?\w+)\s*\)(.*)$', LINE)
     if match:
         write_output("SF2", f"%If ({match.group(1)}){match.group(2)}\n")
         continue
@@ -1342,7 +1330,7 @@ while line_idx < line_count:
     # class declaration started
     # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
     class_pattern = re.compile(
-        r"""^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$"""
+        r"""^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
     )
     class_pattern_match = class_pattern.match(LINE)
 
@@ -1546,7 +1534,7 @@ while line_idx < line_count:
     # Save comments and do not print them, except in SIP_RUN
     if not sip_run:
         if re.match(r'^\s*//', LINE):
-            match = re.match(r'^\s*//\!\s*(.*?)\n?$', LINE)
+            match = re.match(r'^\s*//!\s*(.*?)\n?$', LINE)
             if match:
                 comment_param_list = False
                 prev_indent = indent
@@ -1626,6 +1614,7 @@ while line_idx < line_count:
         enum_mk_base = enum_mk_base.group(2) if enum_mk_base else ""
 
         enum_old_name_match = re.search(r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?\([^,]*,\s*(\w+)\s*\)', LINE)
+        enum_old_name = ''
         if enum_old_name_match and monkeypatch == "1":
             enum_old_name = enum_old_name_match.group(2)
             if actual_class:
@@ -1634,7 +1623,7 @@ while line_idx < line_count:
             else:
                 output_python.append(f"{enum_mk_base}.{enum_old_name} = {enum_qualname}\n")
 
-        if re.search(r'\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}', LINE):
+        if re.search(r'\{((\s*\w+)(\s*=\s*[\w\s<|]+.*?)?(,?))+\s*}', LINE):
             if '=' in LINE:
                 exit_with_error(
                     "Sipify does not handle enum one liners with value assignment. Use multiple lines instead. Or just write a new parser.")
@@ -1654,13 +1643,13 @@ while line_idx < line_count:
                 LINE = read_line()
                 if detect_comment_block():
                     continue
-                if re.match(r'\};', LINE):
+                if re.search(r'};', LINE):
                     break
                 if re.match(r'^\s*\w+\s*\|', LINE):  # multi line declaration as sum of enums
                     continue
 
                 enum_match = re.match(
-                    r'^(\s*(?P<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?P<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?P<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?P<enum_value>(:?[\w\s\d|+-]|::|<<)+))?(?P<optional_comma>,?)(:?\s*\/\/!<\s*(?P<co>.*)|.*)$',
+                    r'^(\s*(?P<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?P<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?P<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?P<enum_value>(:?[\w\s\d|+-]|::|<<)+))?(?P<optional_comma>,?)(:?\s*//!<\s*(?P<co>.*)|.*)$',
                     LINE)
 
                 if enum_match:
@@ -1671,7 +1660,7 @@ while line_idx < line_count:
                     enum_value = enum_match.group('enum_value')
 
                     comment = comment.replace('::', '.').replace('"', '\\"')
-                    comment = re.sub(r'\\since .*?([\d\.]+)', r'\\n.. versionadded:: \1\\n', comment, flags=re.I)
+                    comment = re.sub(r'\\since .*?([\d.]+)', r'\\n.. versionadded:: \1\\n', comment, flags=re.I)
                     comment = re.sub(r'\\deprecated (.*)', r'\\n.. deprecated:: \1\\n', comment, flags=re.I)
                     comment = comment.strip('\\n')
 
@@ -1746,7 +1735,7 @@ while line_idx < line_count:
             continue
 
     # Check for invalid use of doxygen command
-    if re.search(r'.*//\!<', LINE):
+    if re.search(r'.*//!<', LINE):
         exit_with_error('"\\!<" doxygen command must only be used for enum documentation')
 
     # Handle override, final, and make private keywords
@@ -1814,7 +1803,7 @@ while line_idx < line_count:
     # Remove struct member assignment
     # https://regex101.com/r/OUwV75/1
     if not sip_run and access[-1] == PUBLIC:
-        match = re.search(r'^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w\:\.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;', LINE)
+        match = re.search(r'^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w:.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;', LINE)
         if match:
             dbg_info("remove struct member assignment")
             LINE = f"{match.group(1)};"
@@ -1905,7 +1894,7 @@ while line_idx < line_count:
     python_signature = detect_and_remove_following_body_or_initializerlist()
 
     # remove inline declarations
-    match = re.search(r'^(\s*)?(static |const )*(([(?:long )\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$', LINE)
+    match = re.search(r'^(\s*)?(static |const )*(([(?:long )\w]+(<.*?>)?\s+([*&])?)?(\w+)( const*?)*)\s*(\{.*});(\s*//.*)?$', LINE)
     if match:
         LINE = f"{match.group(1)}{match.group(3)};"
 
@@ -1921,17 +1910,17 @@ while line_idx < line_count:
             return_type = re.sub(r'\bQString\b', 'str', return_type)
             return_type = re.sub(r'\bQStringList\b', 'list of str', return_type)
 
-            list_match = re.match(r'^(?:QList|QVector)<\s*(.*?)[\s*\*]*>$', return_type)
+            list_match = re.match(r'^(?:QList|QVector)<\s*(.*?)[\s*]*>$', return_type)
             if list_match:
                 return_type = f"list of {list_match.group(1)}"
 
-            set_match = re.match(r'^QSet<\s*(.*?)[\s*\*]*>$', return_type)
+            set_match = re.match(r'^QSet<\s*(.*?)[\s*]*>$', return_type)
             if set_match:
                 return_type = f"set of {set_match.group(1)}"
 
     # deleted functions
     if re.match(
-        r'^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*\/\/.*)?$',
+        r'^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$',
         LINE):
         comment = ''
         continue
@@ -1947,9 +1936,9 @@ while line_idx < line_count:
           (re.search(r'//', LINE) or
            re.match(r'^\s*typedef ', LINE) or
            re.search(r'\s*struct ', LINE) or
-           re.search(r'operator\[\]\(', LINE) or
+           re.search(r'operator\[]\(', LINE) or
            re.match(r'^\s*operator\b', LINE) or
-           re.search(r'operator\s?[!+-=*\/\[\]<>]{1,2}', LINE) or
+           re.search(r'operator\s?[!+-=*/\[\]<>]{1,2}', LINE) or
            re.match(r'^\s*%\w+(.*)?$', LINE) or
            re.match(r'^\s*namespace\s+\w+', LINE) or
            re.match(r'^\s*(virtual\s*)?~', LINE) or
@@ -2012,7 +2001,7 @@ while line_idx < line_count:
         if re.match(r'^([^()]+(\((?:[^()]|\([^()]*\))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*', LINE):
             dbg_info("ending multiline")
             # remove potential following body
-            if multiline_definition != MULTILINE_CONDITIONAL_STATEMENT and not re.search(r'(\{.*\}|;)\s*(\/\/.*)?$',
+            if multiline_definition != MULTILINE_CONDITIONAL_STATEMENT and not re.search(r'(\{.*}|;)\s*(//.*)?$',
                                                                                          LINE):
                 dbg_info("remove following body of multiline def")
                 last_line = LINE
@@ -2059,7 +2048,7 @@ while line_idx < line_count:
                 waiting_for_return_to_end = False
 
                 for comment_line in comment_lines:
-                    if (('versionadded:' in comment_line or 'deprecated:' in comment_line) and out_params):
+                    if ('versionadded:' in comment_line or 'deprecated:' in comment_line) and out_params:
                         dbg_info('out style parameters remain to flush!')
                         # member has /Out/ parameters, but no return type, so flush out out_params docs now
                         first_out_param = out_params.pop(0)
@@ -2076,7 +2065,7 @@ while line_idx < line_count:
                         if param_name in skipped_params_out or param_name in skipped_params_remove:
                             if param_name in skipped_params_out:
                                 comment_line = re.sub(r'^:param\s+(\w+):\s*(.*?)$', r'\1: \2', comment_line)
-                                comment_line = re.sub(r'(?:optional|if specified|if given)[,]?\s*', '',
+                                comment_line = re.sub(r'(?:optional|if specified|if given),?\s*', '',
                                                       comment_line)
                                 out_params.append(comment_line)
                                 skipping_param = 2
