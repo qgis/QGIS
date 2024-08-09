@@ -1872,7 +1872,7 @@ while line_idx < line_count:
                 output[idx] = fix_annotations(re.sub(r'^(\s*?)\b(.*)$', r'\1 virtual \2\n', rolling_line))
             elif is_override_or_make_private == PREPEND_CODE_MAKE_PRIVATE:
                 dbg_info("prepending private access")
-                idx = rolling_line_idx - line_idx + 1
+                idx = rolling_line_idx - line_idx
                 private_access = re.sub(r'(protected|public)', 'private', last_access_section_line)
                 output.insert(idx, private_access + "\n")
                 output[idx + 1] = fix_annotations(rolling_line) + "\n"
