@@ -955,8 +955,9 @@ def fix_annotations(line):
         dbg_info("combine multiple annotations -- works only for 2")
 
     # Unprinted annotations
-    # TODO FIX
-    #line = re.sub(r"""(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)""", r'\3', line)
+    # Original perl regex was:
+    # s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    line = re.sub(r'(\w+)(<[^>]*>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()\']+)(\([^()]*\))?\'?\s*\)', r'\3', line)
     line = re.sub(r'(\w+)\s+SIP_PYARGRENAME\(\s*(\w+)\s*\)', r'\2', line)
 
     # Note: this was the original perl regex, which isn't compatible with Python:
