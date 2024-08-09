@@ -638,16 +638,16 @@ def processDoxygenLine(line):
     global comment_param_list, comment_last_line_note_warning, found_since, line_idx
 
     # Handle SIP_RUN preprocessor directives
-    if re.match(r'\s*#ifdef SIP_RUN', line):
+    if re.search(r'\s*#ifdef SIP_RUN', line):
         doxy_inside_sip_run = 1
         return ""
-    elif re.match(r'\s*#ifndef SIP_RUN', line):
+    elif re.search(r'\s*#ifndef SIP_RUN', line):
         doxy_inside_sip_run = 2
         return ""
-    elif doxy_inside_sip_run != 0 and re.match(r'\s*#else', line):
+    elif doxy_inside_sip_run != 0 and re.search(r'\s*#else', line):
         doxy_inside_sip_run = 2 if doxy_inside_sip_run == 1 else 1
         return ""
-    elif doxy_inside_sip_run != 0 and re.match(r'\s*#endif', line):
+    elif doxy_inside_sip_run != 0 and re.search(r'\s*#endif', line):
         doxy_inside_sip_run = 0
         return ""
 
@@ -655,10 +655,10 @@ def processDoxygenLine(line):
         return ""
 
     # Detect code snippet
-    code_match = re.match(r'\\code(\{\.?(\w+)})?', line)
+    code_match = re.search(r'\\code(\{\.?(\w+)})?', line)
     if code_match:
         codelang = f" {code_match.group(2)}" if code_match.group(2) else ""
-        if not re.match(r'(cpp|py|unparsed)', codelang):
+        if not re.search(r'(cpp|py|unparsed)', codelang):
             exit_with_error(f"invalid code snippet format: {codelang}")
         comment_code_snippet = CODE_SNIPPET
         if re.search(r'cpp', codelang):
@@ -666,7 +666,7 @@ def processDoxygenLine(line):
         codelang = codelang.replace('py', 'python').replace('unparsed', 'raw')
         return "\n" if comment_code_snippet == CODE_SNIPPET_CPP else f"\n.. code-block::{codelang}\n\n"
 
-    if re.match(r'\\endcode', line):
+    if re.search(r'\\endcode', line):
         comment_code_snippet = 0
         return "\n"
 
@@ -728,7 +728,7 @@ def processDoxygenLine(line):
             comment_last_line_note_warning = False
 
     # Handle brief
-    if re.match(r'\s*[\\@]brief', line):
+    if re.match(r'^\s*[\\@]brief', line):
         line = re.sub(r'[\\@]brief\s*', '', line)
         if found_since:
             exit_with_error(f"{headerfile}::{line_idx} Since annotation must come after brief")
@@ -743,7 +743,7 @@ def processDoxygenLine(line):
         return ""
 
     # Handle since
-    since_match = re.match(r'\\since .*?([\d.]+)', line, re.IGNORECASE)
+    since_match = re.search(r'\\since .*?([\d.]+)', line, re.IGNORECASE)
     if since_match:
         prev_indent = indent
         indent = ''
@@ -751,7 +751,7 @@ def processDoxygenLine(line):
         return f"\n.. versionadded:: {since_match.group(1)}\n"
 
     # Handle deprecated
-    deprecated_match = re.match(r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?', line, re.IGNORECASE)
+    deprecated_match = re.search(r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?', line, re.IGNORECASE)
     if deprecated_match:
         prev_indent = indent
         indent = ''
@@ -763,7 +763,7 @@ def processDoxygenLine(line):
         return create_class_links(depr_line)
 
     # Handle see also
-    see_match = re.match(r'\s*\\see +(\w+(\.\w+)*)(\([^()]*\))?', line)
+    see_match = re.search(r'\s*\\see +(\w+(\.\w+)*)(\([^()]*\))?', line)
     if see_match:
         seealso = see_match.group(1)
         seeline = ''
@@ -784,25 +784,25 @@ def processDoxygenLine(line):
                 line = re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
             else:
                 line = line.replace('\\see', 'see')
-    elif not re.match(r'\\throws.*', line):
+    elif not re.search(r'\\throws.*', line):
         line = create_class_links(line)
 
     # Handle note, warning, and throws
-    note_match = re.match(r'[\\@]note (.*)', line)
+    note_match = re.search(r'[\\@]note (.*)', line)
     if note_match:
         comment_last_line_note_warning = True
         prev_indent = indent
         indent = ''
         return f"\n.. note::\n\n   {note_match.group(1)}\n"
 
-    warning_match = re.match(r'[\\@]warning (.*)', line)
+    warning_match = re.search(r'[\\@]warning (.*)', line)
     if warning_match:
         prev_indent = indent
         indent = ''
         comment_last_line_note_warning = True
         return f"\n.. warning::\n\n   {warning_match.group(1)}\n"
 
-    throws_match = re.match(r'[\\@]throws (.+?)\b\s*(.*)', line)
+    throws_match = re.search(r'[\\@]throws (.+?)\b\s*(.*)', line)
     if throws_match:
         prev_indent = indent
         indent = ''
