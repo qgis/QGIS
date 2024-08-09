@@ -982,8 +982,11 @@ def fix_annotations(line):
                 '', line)
         else:
             line = re.sub(r'SIP_PYARGREMOVE6\s*', '', line)
+
+        # original perl regex was:
+        # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//
         line = re.sub(
-            r'(?P<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?P=coma)?',
+            r'(?P<coma>, +)?(const )?(\w+)(<[^>]*>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\([^()]*\))?)?(?(coma)|,?)',
             '', line)
 
         line = re.sub(r'\(\s+\)', '()', line)
