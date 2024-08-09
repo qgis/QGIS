@@ -1275,11 +1275,11 @@ namespace QgsWfs
         QDomElement bbElem = doc.createElement( QStringLiteral( "gml:boundedBy" ) );
         if ( format == QgsWfsParameters::Format::GML3 )
         {
-          // If requested SRS (srsName) is different from rect CRS (crs) we need to transform the envelope
+          // If requested SRS (outputSrsName) is different from rect CRS (crs) we need to transform the envelope
           const QString requestSrsName = request.serverParameters().value( QStringLiteral( "SRSNAME" ) );
-          const QString srsName = !requestSrsName.isEmpty() ? requestSrsName : crs.authid();
+          const QString outputSrsName = !requestSrsName.isEmpty() ? requestSrsName : crs.authid();
           QgsCoordinateReferenceSystem outputCrs;
-          outputCrs.createFromUserInput( srsName );
+          outputCrs.createFromUserInput( outputSrsName );
 
           QgsCoordinateTransform transform;
           transform.setSourceCrs( crs );
@@ -1302,12 +1302,12 @@ namespace QgsWfs
           // See: https://docs.geoserver.org/stable/en/user/services/wfs/axis_order.html
           const bool invertAxis { mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) &&
                                   outputCrs.hasAxisInverted() &&
-                                  !srsName.startsWith( QLatin1String( "EPSG:" ) ) };
+                                  !outputSrsName.startsWith( QLatin1String( "EPSG:" ) ) };
 
-          QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( &crsCorrectedRect, doc, srsName, invertAxis, prec );
+          QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( &crsCorrectedRect, doc, outputSrsName, invertAxis, prec );
           if ( !envElem.isNull() )
           {
-            if ( crs.isValid() && srsName.isEmpty() )
+            if ( crs.isValid() && outputSrsName.isEmpty() )
             {
               envElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
             }
