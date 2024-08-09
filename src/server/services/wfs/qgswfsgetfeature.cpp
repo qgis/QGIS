@@ -1274,7 +1274,9 @@ namespace QgsWfs
           // If requested SRS (srsName) is different from rect CRS (crs) we need to transform the envelope
           QgsCoordinateTransform transform;
           transform.setSourceCrs( crs );
-          transform.setDestinationCrs( QgsCoordinateReferenceSystem( srsName ) );
+          QgsCoordinateReferenceSystem destinationCrs;
+          destinationCrs.createFromUserInput( srsName );
+          transform.setDestinationCrs( destinationCrs );
           QgsRectangle crsCorrectedRect { rect ? *rect : QgsRectangle() };
 
           try
