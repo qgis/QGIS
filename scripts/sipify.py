@@ -1315,7 +1315,7 @@ while line_idx < line_count:
     if struct_match:
         dbg_info("  going to struct => public")
         class_and_struct.append(struct_match.group('structname'))
-        classname.append(classname[-1])  # fake new class since struct has considered similarly
+        classname.append(classname[-1] if classname else struct_match.group('structname'))  # fake new class since struct has considered similarly
         access.append(PUBLIC)
         exported.append(exported[-1])
         glob_bracket_nesting_idx.append(0)
