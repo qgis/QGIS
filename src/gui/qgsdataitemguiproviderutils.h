@@ -61,6 +61,17 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
       QPointer< QgsDataItem > firstParent( items.at( 0 )->parent() );
       deleteConnectionsPrivate( connectionNames, deleteConnection, firstParent );
     }
+
+    /**
+     * Check if connection with \a name exists in \a connectionNames list and then try to
+     * append a number to it to get a unique name.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.40
+     */
+    static const QString uniqueName( const QString &name, const QStringList &connectionNames );
+
 #endif
 
   private:

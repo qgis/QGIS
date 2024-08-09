@@ -35,6 +35,10 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsVectorTileLayerItem * > vtConnectionItems = QgsDataItem::filteredItems<QgsVectorTileLayerItem>( selection );
     QAction *actionDelete = new QAction( vtConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [vtConnectionItems, context]
@@ -105,6 +109,18 @@ void QgsVectorTileDataItemGuiProvider::editConnection( QgsDataItem *item )
     }
   }
 
+  item->parent()->refreshConnections();
+}
+
+void QgsVectorTileDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  const QgsVectorTileProviderConnection::Data connection = QgsVectorTileProviderConnection::connection( connectionName );
+  const QStringList connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsVectorTileProviderConnection::addConnection( newConnectionName, connection );
   item->parent()->refreshConnections();
 }
 

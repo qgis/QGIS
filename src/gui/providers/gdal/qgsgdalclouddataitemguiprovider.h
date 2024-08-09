@@ -38,6 +38,7 @@ class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
 
   private:
     static void editConnection( QgsGdalCloudConnectionItem *item );
+    static void duplicateConnection( QgsGdalCloudConnectionItem *item );
     static void newConnection( QgsDataItem *item, const QgsGdalUtils::VsiNetworkFileSystemDetails &driver );
     static void saveConnections();
     static void loadConnections( QgsGdalCloudRootItem *item );

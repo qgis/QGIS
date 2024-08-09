@@ -34,6 +34,7 @@ class QgsVectorTileDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 
   private:
     static void editConnection( QgsDataItem *item );
+    static void duplicateConnection( QgsDataItem *item );
     static void newConnection( QgsDataItem *item );
     static void newArcGISConnection( QgsDataItem *item );
     static void saveXyzTilesServers();
