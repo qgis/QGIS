@@ -612,22 +612,24 @@ def create_class_links(line):
     global actual_class
 
     # Replace Qgs classes (but not the current class) with :py:class: links
-    if re.search(r'\b(Qgs[A-Z]\w+|Qgis)\b(\.?$|\W{2})', line):
-        if actual_class is not None and not re.search(actual_class, line):
+    _match = re.search(r'\b(Qgs[A-Z]\w+|Qgis)\b(\.?$|\W{2})', line)
+    if _match:
+        if actual_class and _match.group(1) != actual_class:
             line = re.sub(r'\b(Qgs[A-Z]\w+)\b(\.?$|\W{2})', r':py:class:`\1`\2', line)
 
     # Replace Qgs class methods with :py:func: links
     line = re.sub(r'\b((Qgs[A-Z]\w+|Qgis)\.[a-z]\w+\(\))(?!\w)', r':py:func:`\1`', line)
 
     # Replace other methods with :py:func: links
-    if actual_class is not None and actual_class:
+    if actual_class:
         line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)', rf':py:func:`~{actual_class}.\1`', line)
     else:
         line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)', r':py:func:`~\1`', line)
 
     # Replace Qgs classes (but not the current class) with :py:class: links
-    if re.search(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', line):
-        if not actual_class or not re.search(actual_class, line):
+    _match = re.search(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', line)
+    if _match:
+        if not actual_class or _match.group(1) != actual_class:
             line = re.sub(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', r':py:class:`\1`', line)
 
     return line
@@ -1031,21 +1033,8 @@ def detect_comment_block(strict_mode=True):
 
 
 def detect_non_method_member(line):
-    pattern = r'''^\s*
-                (?:template\s*<\w+>\s+)?  # optional 'template <typename>' declaration
-                (?:(const|mutable|static|friend|unsigned)\s+)*  # optional modifiers
-                \w+(::\w+)?  # main type or identifier with optional namespace
-                (<([\w<> *&,()]|::)+>)?  # optional template parameter list
-                (,?\s+\*?\w+  # member name with optional pointer
-                ( = (-?\d+(\.\d+)?|  # optional initializer (numbers)
-                ((QMap|QList)<[^()]+>\(\))|  # optional initializer (QMap or QList)
-                (\w+::)*\w+(\([^()]?\))?)|\[\d+\])?)+;  # optional initializer (function calls, arrays)
-                '''
-
-    if re.match(pattern, line, re.VERBOSE):
-        return True
-
-    return False
+    _pattern = r'''^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|((QMap|QList)<[^()]+>\(\))|(\w+::)*\w+(\([^()]?\))?)|\[\d+\])?)+;'''
+    return re.match(_pattern, line)
 
 
 while line_idx < line_count:
@@ -1583,7 +1572,7 @@ while line_idx < line_count:
             exit_with_error(f"Non class enum exposed to Python -- must be a enum class: {enum_cpp_name}")
 
         oneliner = enum_match.group('oneliner')
-        is_scope_based = "1" if isclass else "0"
+        is_scope_based = bool(isclass)
         enum_decl = re.sub(r'\s*\bQ_DECL_DEPRECATED\b', '', enum_decl)
 
         py_enum_type_match = re.search(r'SIP_ENUM_BASETYPE\(\s*(.*?)\s*\)', LINE)
@@ -1634,7 +1623,7 @@ while line_idx < line_count:
                 exit_with_error('Unexpected content: enum should be followed by {')
             write_output("ENU2", f"{LINE}\n")
 
-            if is_scope_based == "1":
+            if is_scope_based:
                 output_python.append("# monkey patching scoped based enum\n")
 
             enum_members_doc = []
@@ -1653,11 +1642,12 @@ while line_idx < line_count:
                     LINE)
 
                 if enum_match:
-                    enum_decl = f"{enum_match.group(1)}{enum_match.group(3)}{enum_match.group('optional_comma')}"
-                    enum_member = enum_match.group('em')
+                    enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}"
+                    dbg_info(enum_decl)
+                    enum_member = enum_match.group('em') or ''
                     comment = enum_match.group('co') or ''
                     compat_name = enum_match.group('compat') or enum_member
-                    enum_value = enum_match.group('enum_value')
+                    enum_value = enum_match.group('enum_value') or ''
 
                     comment = comment.replace('::', '.').replace('"', '\\"')
                     comment = re.sub(r'\\since .*?([\d.]+)', r'\\n.. versionadded:: \1\\n', comment, flags=re.I)
@@ -1671,7 +1661,7 @@ while line_idx < line_count:
                             exit_with_error(
                                 f"{actual_class}::{enum_qualname} is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line")
 
-                    if is_scope_based == "1" and enum_member:
+                    if is_scope_based and enum_member:
                         if monkeypatch == 1 and enum_mk_base:
                             if actual_class:
                                 output_python.append(
@@ -1705,7 +1695,7 @@ while line_idx < line_count:
                                 enum_members_doc.append(
                                     f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
 
-                    if is_scope_based == "0" and is_qt6 and enum_member:
+                    if not is_scope_based and is_qt6 and enum_member:
                         basename = '.'.join(class_and_struct)
                         if basename:
                             enum_member = 'None_' if enum_member == 'None' else enum_member
