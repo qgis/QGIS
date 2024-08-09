@@ -1646,70 +1646,68 @@ while line_idx < line_count:
                     r'^(\s*(?P<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?P<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?P<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?P<enum_value>(:?[\w\s\d|+-]|::|<<)+))?(?P<optional_comma>,?)(:?\s*//!<\s*(?P<co>.*)|.*)$',
                     LINE)
 
-                if enum_match:
-                    enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}"
-                    dbg_info(enum_decl)
-                    enum_member = enum_match.group('em') or ''
-                    value_comment = enum_match.group('co') or ''
-                    compat_name = enum_match.group('compat') or enum_member
-                    enum_value = enum_match.group('enum_value') or ''
+                enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}" if enum_match else LINE
+                enum_member = enum_match.group('em') or '' if enum_match else ''
+                value_comment = enum_match.group('co') or '' if enum_match else ''
+                compat_name = enum_match.group('compat') or enum_member if enum_match else ''
+                enum_value = enum_match.group('enum_value') or '' if enum_match else ''
 
-                    value_comment = value_comment.replace('::', '.').replace('"', '\\"')
-                    value_comment = re.sub(r'\\since .*?([\d.]+)', r'\\n.. versionadded:: \1\\n', value_comment, flags=re.I)
-                    value_comment = re.sub(r'\\deprecated (.*)', r'\\n.. deprecated:: \1\\n', value_comment, flags=re.I)
-                    value_comment = re.sub(r'^\\n+', '', value_comment)
-                    value_comment = re.sub(r'\\n+$', '', value_comment)
+                value_comment = value_comment.replace('::', '.').replace('"', '\\"')
+                value_comment = re.sub(r'\\since .*?([\d.]+)', r'\\n.. versionadded:: \1\\n', value_comment, flags=re.I)
+                value_comment = re.sub(r'\\deprecated (.*)', r'\\n.. deprecated:: \1\\n', value_comment, flags=re.I)
+                value_comment = re.sub(r'^\\n+', '', value_comment)
+                value_comment = re.sub(r'\\n+$', '', value_comment)
 
-                    dbg_info(f"is_scope_based:{is_scope_based} enum_mk_base:{enum_mk_base} monkeypatch:{monkeypatch}")
+                dbg_info(f"is_scope_based:{is_scope_based} enum_mk_base:{enum_mk_base} monkeypatch:{monkeypatch}")
 
-                    if enum_value and (re.search(r'.*<<.*', enum_value) or re.search(r'.*0x0.*', enum_value)):
-                        if f"{actual_class}::{enum_qualname}" not in enum_intflag_types:
-                            exit_with_error(
-                                f"{actual_class}::{enum_qualname} is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line")
+                if enum_value and (re.search(r'.*<<.*', enum_value) or re.search(r'.*0x0.*', enum_value)):
+                    if f"{actual_class}::{enum_qualname}" not in enum_intflag_types:
+                        exit_with_error(
+                            f"{actual_class}::{enum_qualname} is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line")
 
-                    if is_scope_based and enum_member:
-                        if monkeypatch and enum_mk_base:
-                            if actual_class:
-                                output_python.append(
-                                    f"{enum_mk_base}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
-                                if enum_old_name and compat_name != enum_member:
-                                    output_python.append(
-                                        f"{enum_mk_base}.{enum_old_name}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
-                                output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
-                                output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
-                                enum_members_doc.append(
-                                    f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
-                            else:
-                                output_python.append(f"{enum_mk_base}.{compat_name} = {enum_qualname}.{enum_member}\n")
-                                output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
-                                output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
-                                enum_members_doc.append(
-                                    f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
-                        else:
-                            if monkeypatch:
-                                output_python.append(
-                                    f"{actual_class}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
-                                output_python.append(f"{actual_class}.{compat_name}.is_monkey_patched = True\n")
-                            if actual_class:
-                                complete_class_path = '.'.join(classname)
-                                output_python.append(
-                                    f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
-                                enum_members_doc.append(
-                                    f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
-                            else:
-                                output_python.append(f"{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
-                                enum_members_doc.append(
-                                    f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
-
-                    if not is_scope_based and is_qt6 and enum_member:
-                        basename = '.'.join(class_and_struct)
-                        if basename:
-                            enum_member = 'None_' if enum_member == 'None' else enum_member
+                if is_scope_based and enum_member:
+                    if monkeypatch and enum_mk_base:
+                        if actual_class:
                             output_python.append(
-                                f"{basename}.{enum_member} = {basename}.{enum_qualname}.{enum_member}\n")
+                                f"{enum_mk_base}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
+                            if enum_old_name and compat_name != enum_member:
+                                output_python.append(
+                                    f"{enum_mk_base}.{enum_old_name}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
+                            output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
+                            output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
+                            enum_members_doc.append(
+                                f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
+                        else:
+                            output_python.append(f"{enum_mk_base}.{compat_name} = {enum_qualname}.{enum_member}\n")
+                            output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
+                            output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
+                            enum_members_doc.append(
+                                f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
+                    else:
+                        if monkeypatch:
+                            output_python.append(
+                                f"{actual_class}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
+                            output_python.append(f"{actual_class}.{compat_name}.is_monkey_patched = True\n")
+                        if actual_class:
+                            complete_class_path = '.'.join(classname)
+                            output_python.append(
+                                f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
+                            enum_members_doc.append(
+                                f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
+                        else:
+                            output_python.append(f"{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
+                            enum_members_doc.append(
+                                f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
 
-                    enum_decl = fix_annotations(enum_decl)
-                    write_output("ENU3", f"{enum_decl}\n")
+                if not is_scope_based and is_qt6 and enum_member:
+                    basename = '.'.join(class_and_struct)
+                    if basename:
+                        enum_member = 'None_' if enum_member == 'None' else enum_member
+                        output_python.append(
+                            f"{basename}.{enum_member} = {basename}.{enum_qualname}.{enum_member}\n")
+
+                enum_decl = fix_annotations(enum_decl)
+                write_output("ENU3", f"{enum_decl}\n")
 
                 detect_comment_block(strict_mode=False)
 
