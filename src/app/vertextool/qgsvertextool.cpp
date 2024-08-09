@@ -178,6 +178,7 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
+      std::cout << "filtering match from layer " << match.layer()->name().toStdString() << ", vertexNr " << match.vertexIndex() << std::endl;
       if ( match.layer()->geometryType() != Qgis::GeometryType::Polygon )
         return true;
 
@@ -213,6 +214,7 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
+      std::cout << "SelectedMatchFilter: selecting best match, currently on match layer " << match.layer()->name().toStdString() << ", feature " << match.featureId() << ", match distance " << match.distance() << std::endl;
       if ( match.distance() <= mTolerance && match.layer() )
       {
         // option 1: we have "locked" feature - we consider just a match from that feature
@@ -1659,6 +1661,8 @@ void QgsVertexTool::deleteVertexEditorSelection()
 void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
 {
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );
+  std::cout << "start dragging, event map point : " << mapPoint << std::endl;
+
   if ( isNearEndpointMarker( mapPoint ) )
   {
     startDraggingAddVertexAtEndpoint( mapPoint );
@@ -1667,9 +1671,14 @@ void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
 
   QgsPointLocator::Match m = snapToEditableLayer( e );
   if ( !m.isValid() )
+  {
+    std::cout << "no valid match found" << std::endl << std::endl;
     return;
+  }
   if ( mLockedFeature && ( mLockedFeature->featureId() != m.featureId() || mLockedFeature->layer() != m.layer() ) )
     return; // when a feature is bound to the vertex editor, only process actions for that feature
+
+  std::cout << "VALID match found" << std::endl << std::endl;
 
   // activate advanced digitizing dock
   setAdvancedDigitizingAllowed( true );
@@ -1708,22 +1717,30 @@ QSet<Vertex> QgsVertexTool::findCoincidentVertices( const QSet<Vertex> &vertices
 {
   QSet<Vertex> topoVertices;
   const auto editableLayers = editableVectorLayers();
+  std::cout << "-----------------" << std::endl;
+  std::cout << "looping vertices" << std::endl;
 
   for ( const Vertex &v : std::as_const( vertices ) )
   {
     QgsPointXY origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
     QgsPointXY mapPointV = toMapCoordinates( v.layer, origPointV );
+    std::cout << "\tlooping editable layers" << std::endl;
     for ( QgsVectorLayer *vlayer : editableLayers )
     {
       const auto snappedVertices = layerVerticesSnappedToPoint( vlayer, mapPointV );
+      std::cout << "\t\tlooping matches in layer " << vlayer->name().toStdString() << std::endl;
       for ( const QgsPointLocator::Match &otherMatch : snappedVertices )
       {
+        std::cout << "\t\t\tfound match: layer: " << otherMatch.layer()->name().toStdString() << ", featureId: " << otherMatch.featureId() << std::endl;
+        std::cout << "\t\t\tfeature: " << otherMatch.layer()->getFeature( otherMatch.featureId() ).geometry().asWkt().toStdString() << std::endl;
+        std::cout << "\t\t\tvertexIndex: " << otherMatch.vertexIndex() << std::endl;
         Vertex otherVertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
         if ( !vertices.contains( otherVertex ) )
           topoVertices << otherVertex;
       }
     }
   }
+  std::cout << "-----------------" << std::endl;
   return topoVertices;
 }
 
@@ -1753,6 +1770,7 @@ void QgsVertexTool::buildExtraVertices( const QSet<Vertex> &vertices, const QgsP
 void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 {
   Q_ASSERT( m.hasVertex() );
+  std::cout << "startDraggingMoveVertex" << std::endl;
 
   QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
@@ -1771,6 +1789,7 @@ void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
+    std::cout << "findCoincidentVertices" << std::endl;
     movingVertices.unite( findCoincidentVertices( movingVertices ) );
   }
 
