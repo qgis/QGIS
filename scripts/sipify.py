@@ -1797,7 +1797,8 @@ while line_idx < line_count:
     # Remove struct member assignment
     # https://regex101.com/r/OUwV75/1
     if not sip_run and access[-1] == PUBLIC:
-        match = re.search(r'^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w:.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;', LINE)
+        #match = re.match(r'^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w\:\.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;', LINE)
+        match = re.match(r'^(\s*\w+[\w<> &:,]* \*?\w+)\s*=\s*([\-\w:.]+(?:<\s*\w+(?:\s*\)?\s*>)?)?)(?:\([^()]*\))?\s*;', LINE)
         if match:
             dbg_info("remove struct member assignment")
             LINE = f"{match.group(1)};"
