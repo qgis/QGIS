@@ -977,8 +977,10 @@ def fix_annotations(line):
             line = f"{prev_line} {line.lstrip()}\n"
 
         if is_qt6:
+            # original perl regex was
+            # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6{0,1}( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)
             line = re.sub(
-                r'(?P<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6?( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?P=coma)?',
+                r"(?P<coma>, +)?(const )?(\w+)(<[^>]*>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6{0,1}( = [^()]*(\([^()]*\))?)?(?(coma)|,?)",
                 '', line)
         else:
             line = re.sub(r'SIP_PYARGREMOVE6\s*', '', line)
