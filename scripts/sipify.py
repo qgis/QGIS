@@ -693,10 +693,12 @@ def processDoxygenLine(line):
         line += f"\n{sep_line}"
 
     # Convert ### style headings
-    if re.match(r'^###\s+(.*)$', line):
-        line = re.sub(r'^###\s+(.*)$', r'\1\n' + '-' * len(line), line)
-    if re.match(r'^##\s+(.*)$', line):
-        line = re.sub(r'^##\s+(.*)$', r'\1\n' + '=' * len(line), line)
+    _match = re.match(r'^###\s+(.*)$', line)
+    if _match:
+        line = f"{_match.group(1)}\n{'-' * len(_match.group(1))}"
+    _match = re.match(r'^##\s+(.*)$', line)
+    if _match:
+        line = f"{_match.group(1)}\n{'=' * len(_match.group(1))}"
 
     if line == '*':
         line = ''
