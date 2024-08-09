@@ -958,8 +958,10 @@ def fix_annotations(line):
     # TODO FIX
     #line = re.sub(r"""(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)""", r'\3', line)
     line = re.sub(r'(\w+)\s+SIP_PYARGRENAME\(\s*(\w+)\s*\)', r'\2', line)
-    # TODO FIX
-    #line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)""", r'= \1', line)
+
+    # Note: this was the original perl regex, which isn't compatible with Python:
+    # line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)""", r'= \1', line)
+    line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()\']+)(\((?:[^()]|\([^()]*\))*\))?\'?\s*\)""", r'= \1', line)
 
     # Remove argument
     if 'SIP_PYARGREMOVE' in line:
@@ -1776,11 +1778,12 @@ while line_idx < line_count:
         exit_with_error(f"const static should be written static const in {classname[-1]}")
 
     # TODO needs fixing!!
-    match = False and re.search(
-        r'^(?P<staticconst> *(?P<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?P<endingchar>[|;]) *(//.*?)?$',
+    # original perl regex was:
+    #       ^(?<staticconst> *(?<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
+    match = re.search(
+        r'^(?P<staticconst> *(?P<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(\/\/.*)?$',
         LINE
     )
-
     if match:
         LINE = f"{match.group('staticconst')};"
         if match.group('static') is None:
@@ -1886,7 +1889,7 @@ while line_idx < line_count:
     python_signature = detect_and_remove_following_body_or_initializerlist()
 
     # remove inline declarations
-    match = re.search(r'^(\s*)?(static |const )*(([(?:long )\w]+(<.*?>)?\s+([*&])?)?(\w+)( const*?)*)\s*(\{.*});(\s*//.*)?$', LINE)
+    match = re.search(r'^(\s*)?(static |const )*(([(?:long )\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$', LINE)
     if match:
         LINE = f"{match.group(1)}{match.group(3)};"
 
