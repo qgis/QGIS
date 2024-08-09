@@ -1601,14 +1601,14 @@ while line_idx < line_count:
             write_output("ENU1", oneliner)
         write_output("ENU1", "\n")
 
-        monkeypatch = "1" if is_scope_based == "1" and re.search(
-            r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?', LINE) else "0"
+        monkeypatch = is_scope_based and re.search(
+            r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?', LINE)
         enum_mk_base = re.search(r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?\(\s*(\w+)\s*,', LINE)
         enum_mk_base = enum_mk_base.group(2) if enum_mk_base else ""
 
         enum_old_name_match = re.search(r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?\([^,]*,\s*(\w+)\s*\)', LINE)
         enum_old_name = ''
-        if enum_old_name_match and monkeypatch == "1":
+        if enum_old_name_match and monkeypatch:
             enum_old_name = enum_old_name_match.group(2)
             if actual_class:
                 if f"{enum_mk_base}{enum_old_name}" != f"{actual_class}.{enum_qualname}":
@@ -1649,14 +1649,15 @@ while line_idx < line_count:
                     enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}"
                     dbg_info(enum_decl)
                     enum_member = enum_match.group('em') or ''
-                    comment = enum_match.group('co') or ''
+                    value_comment = enum_match.group('co') or ''
                     compat_name = enum_match.group('compat') or enum_member
                     enum_value = enum_match.group('enum_value') or ''
 
-                    comment = comment.replace('::', '.').replace('"', '\\"')
-                    comment = re.sub(r'\\since .*?([\d.]+)', r'\\n.. versionadded:: \1\\n', comment, flags=re.I)
-                    comment = re.sub(r'\\deprecated (.*)', r'\\n.. deprecated:: \1\\n', comment, flags=re.I)
-                    comment = comment.strip('\\n')
+                    value_comment = value_comment.replace('::', '.').replace('"', '\\"')
+                    value_comment = re.sub(r'\\since .*?([\d.]+)', r'\\n.. versionadded:: \1\\n', value_comment, flags=re.I)
+                    value_comment = re.sub(r'\\deprecated (.*)', r'\\n.. deprecated:: \1\\n', value_comment, flags=re.I)
+                    value_comment = re.sub(r'^\\n+', '', value_comment)
+                    value_comment = re.sub(r'\\n+$', '', value_comment)
 
                     dbg_info(f"is_scope_based:{is_scope_based} enum_mk_base:{enum_mk_base} monkeypatch:{monkeypatch}")
 
@@ -1666,7 +1667,7 @@ while line_idx < line_count:
                                 f"{actual_class}::{enum_qualname} is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line")
 
                     if is_scope_based and enum_member:
-                        if monkeypatch == 1 and enum_mk_base:
+                        if monkeypatch and enum_mk_base:
                             if actual_class:
                                 output_python.append(
                                     f"{enum_mk_base}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
@@ -1674,28 +1675,28 @@ while line_idx < line_count:
                                     output_python.append(
                                         f"{enum_mk_base}.{enum_old_name}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
                                 output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
-                                output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{comment}\"\n")
+                                output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                                 enum_members_doc.append(
                                     f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
                             else:
                                 output_python.append(f"{enum_mk_base}.{compat_name} = {enum_qualname}.{enum_member}\n")
                                 output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
-                                output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{comment}\"\n")
+                                output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                                 enum_members_doc.append(
                                     f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
                         else:
-                            if monkeypatch == 1:
+                            if monkeypatch:
                                 output_python.append(
                                     f"{actual_class}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
                                 output_python.append(f"{actual_class}.{compat_name}.is_monkey_patched = True\n")
                             if actual_class:
                                 complete_class_path = '.'.join(classname)
                                 output_python.append(
-                                    f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{comment}\"\n")
+                                    f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                                 enum_members_doc.append(
                                     f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
                             else:
-                                output_python.append(f"{enum_qualname}.{compat_name}.__doc__ = \"{comment}\"\n")
+                                output_python.append(f"{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                                 enum_members_doc.append(
                                     f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
 
@@ -1711,10 +1712,9 @@ while line_idx < line_count:
 
                 detect_comment_block(strict_mode=False)
 
-            # here
             write_output("ENU4", f"{LINE}\n")
 
-            if is_scope_based == "1":
+            if is_scope_based:
                 comment = comment.replace('\n', '\\n').replace('"', '\\"')
 
                 if actual_class:
