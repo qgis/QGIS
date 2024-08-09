@@ -82,7 +82,7 @@ class QgsBookmarkManagerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 
-A QSortFilterProxyModel subclass for sorting the entries in a QgsBookmarkManagerModel.
+A QSortFilterProxyModel subclass for sorting the entries in a :py:class:`QgsBookmarkManagerModel`.
 
 .. versionadded:: 3.10
 %End

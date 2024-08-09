@@ -368,7 +368,7 @@ class QgsProjectStyleDatabaseProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 
-A proxy model for filtering QgsProjectStyleDatabaseModel.
+A proxy model for filtering :py:class:`QgsProjectStyleDatabaseModel`.
 
 .. versionadded:: 3.26
 %End

@@ -233,7 +233,7 @@ class Qgs2DPlot : QgsPlot
 Base class for 2-dimensional plot/chart/graphs.
 
 The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
-can implement the :py:func:`~QgsPlotAxis.renderContent` method to render their actual plot content.
+can implement the :py:func:`~renderContent` method to render their actual plot content.
 
 .. warning::
 

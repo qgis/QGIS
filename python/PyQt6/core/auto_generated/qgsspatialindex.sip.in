@@ -216,7 +216,7 @@ Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFea
 %End
 
 
-    int  refs() const;
+    QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 %Docstring
 Gets reference count - just for debugging!
 %End

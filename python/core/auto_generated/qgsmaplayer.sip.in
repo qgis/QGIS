@@ -209,7 +209,6 @@ the layer is owned by a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`).
 
    This method should not be called on layers which already belong to a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`.
 
-
 .. seealso:: :py:func:`id`
 
 .. seealso:: :py:func:`idChanged`
@@ -848,7 +847,6 @@ The returned CRS will be invalid if the layer has no vertical CRS.
 
 .. seealso:: :py:func:`setVerticalCrs`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -872,7 +870,6 @@ on the returned value to determine the type of CRS returned by this method.
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`crs3DChanged`
-
 
 .. versionadded:: 3.38
 %End
@@ -905,15 +902,12 @@ The :py:func:`~QgsMapLayer.verticalCrsChanged` signal will be raised if the vert
 
 :param crs: the vertical CRS
 
-
 :return: - ``True`` if vertical CRS was successfully set
          - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
-
 
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`setCrs`
-
 
 .. versionadded:: 3.38
 %End

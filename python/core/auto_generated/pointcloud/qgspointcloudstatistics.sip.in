@@ -13,8 +13,8 @@
 
 struct QgsPointCloudAttributeStatistics
 {
-  double minimum;
-  double maximum;
+  double minimum = DBL_MAX;
+  double maximum = -DBL_MAX;
   double mean;
   double stDev;
   int count;

@@ -77,7 +77,7 @@ Returns the layer id of the source layer.
 
 typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase;
 
-class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase
+class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceNoneNoneBase
 {
 
 %TypeHeaderCode

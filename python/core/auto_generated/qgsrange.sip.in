@@ -143,10 +143,10 @@ Returns ``True`` if this range overlaps another range.
 
 typedef QgsRange<double> QgsRangedoubleBase;
 
-class QgsDoubleRange : QgsRangedoubleBase
+class QgsDoubleRange : QgsRangedoubleNoneNoneBase
 {
 %Docstring(signature="appended")
-QgsRange which stores a range of double values.
+:py:class:`QgsRange` which stores a range of double values.
 
 .. seealso:: :py:class:`QgsIntRange`
 
@@ -212,7 +212,7 @@ Returns ``True`` if the range consists of all possible values.
 
 typedef QgsRange<int> QgsRangeintBase;
 
-class QgsIntRange : QgsRangeintBase
+class QgsIntRange : QgsRangeintNoneNoneBase
 {
 %Docstring(signature="appended")
 :py:class:`QgsRange` which stores a range of integer values.

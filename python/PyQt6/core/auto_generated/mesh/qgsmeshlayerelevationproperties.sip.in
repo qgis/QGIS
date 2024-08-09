@@ -81,7 +81,6 @@ Returns the fixed elevation range for the mesh.
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
 
-
 .. seealso:: :py:func:`setFixedRange`
 
 .. versionadded:: 3.38
@@ -98,7 +97,6 @@ Sets the fixed elevation ``range`` for the mesh.
 .. note::
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
-
 
 .. seealso:: :py:func:`fixedRange`
 
@@ -117,7 +115,6 @@ Returns the fixed elevation range for each group.
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
 
-
 .. seealso:: :py:func:`setFixedRangePerGroup`
 
 .. versionadded:: 3.38
@@ -134,7 +131,6 @@ Sets the fixed elevation range for each group.
 .. note::
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
-
 
 .. seealso:: :py:func:`fixedRangePerGroup`
 

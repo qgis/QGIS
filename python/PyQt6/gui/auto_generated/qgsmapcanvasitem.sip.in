@@ -33,8 +33,8 @@ protected constructor: cannot be constructed directly
 function to be implemented by derived classes
 %End
 
+    void paint( QPainter *painter,
      virtual void paint( QPainter *painter,
-                const QStyleOptionGraphicsItem *option,
                 QWidget *widget = 0 );
 
     void updateCanvas();

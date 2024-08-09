@@ -138,7 +138,6 @@ Returns the cardinality of the relationship between a base entity type and a rel
 :return: - relationship cardinality
          - valid: will be set to ``True`` if a relationship exists between the entity types, or ``False`` if no relationship exists
 
-
 .. versionadded:: 3.38
 %End
 

@@ -313,10 +313,8 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 :return: - ``True`` if the metadata was successfully saved.
          - errorMessage: descriptive string of error if encountered
 
-
 :raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
-
 
 .. versionadded:: 3.20
 %End
@@ -522,7 +520,6 @@ handled by any registered providers, and construct user-friendly warnings as to 
 
    ownership of the UnusableUriHandlerInterface instance is transferred to the registry
 
-
 .. versionadded:: 3.18.1
 %End
 
@@ -545,10 +542,8 @@ QGIS build.
 
 :param uri: URI to test
 
-
 :return: - ``True`` if the ``uri`` was matched to a registered QgsProviderRegistry.UnusableUriHandlerInterface.
          - details: will be populated with details allowing construction of a user-friendly warning message
-
 
 .. seealso:: :py:func:`registerUnusableUriHandler`
 

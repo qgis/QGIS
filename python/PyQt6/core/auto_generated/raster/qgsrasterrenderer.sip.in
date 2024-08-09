@@ -96,12 +96,11 @@ Returns ``True`` if the band was successfully set, or ``False`` if the band coul
 
 .. seealso:: :py:func:`usesBands`
 
-
 .. versionadded:: 3.38
 %End
 
+    QgsRasterBlock *block( int bandNo,
      virtual QgsRasterBlock *block( int bandNo,
-                           const QgsRectangle &extent,
                            int width,
                            int height,
                            QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;

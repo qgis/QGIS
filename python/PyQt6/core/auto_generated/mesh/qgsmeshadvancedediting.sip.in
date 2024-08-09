@@ -98,7 +98,7 @@ class QgsMeshTransformVerticesByExpression : QgsMeshAdvancedEditing
 Class that can transform vertices of a mesh by expression
 
 Each coordinates are associated with an expression that can be defined with function
-returning the current coordinates (see :py:func:`~QgsMeshEditRefineFaces.setExpressions`):
+returning the current coordinates (see :py:func:`~setExpressions`):
 
 - $vertex_x
 - $vertex_y

@@ -34,8 +34,8 @@ Scalebar style that draws a stepped line representation of a scalebar.
     virtual QgsSteppedLineScaleBarRenderer *clone() const /Factory/;
 
 
+    void draw( QgsRenderContext &context,
      virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
 };

@@ -872,7 +872,6 @@ The current :py:func:`~QgsStyle.fileName` will be used if no explicit ``filename
 
 .. seealso:: :py:func:`errorString`
 
-
 .. deprecated::
    This function has no effect.
 %End
@@ -1256,7 +1255,7 @@ Emitted whenever icon previews for entities in the style must be rebuilt.
 class QgsStyleEntityInterface
 {
 %Docstring(signature="appended")
-An interface for entities which can be placed in a QgsStyle database.
+An interface for entities which can be placed in a :py:class:`QgsStyle` database.
 
 .. versionadded:: 3.10
 %End

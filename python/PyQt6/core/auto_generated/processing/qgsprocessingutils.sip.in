@@ -509,7 +509,6 @@ a conversion in this case and will return the target layer name in the ``layerNa
 
 :return: path to source layer, or nearly converted compatible layer
 
-
 .. seealso:: :py:func:`convertToCompatibleFormat`
 
 .. versionadded:: 3.10

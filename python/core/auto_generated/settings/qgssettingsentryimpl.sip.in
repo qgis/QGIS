@@ -11,7 +11,7 @@
 
 typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase;
 
-class QgsSettingsEntryVariant : QgsSettingsEntryBaseTemplateQVariantBase
+class QgsSettingsEntryVariant : QgsSettingsEntryBaseTemplateQVariantNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -45,9 +45,9 @@ Constructor for QgsSettingsEntryVariant.
 .. versionadded:: 3.30
 %End
 
+    QgsSettingsEntryVariant( const QString &key,
   private:
     QgsSettingsEntryVariant( const QString &key,
-                             const QString &section,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
@@ -112,7 +112,7 @@ Returns settings value.
 
 typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase;
 
-class QgsSettingsEntryString : QgsSettingsEntryBaseTemplateQStringBase
+class QgsSettingsEntryString : QgsSettingsEntryBaseTemplateQStringNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -147,9 +147,9 @@ Constructor for QgsSettingsEntryString.
 :param maxLength: specifies the maximal length of the string value. -1 means no limit.
 %End
 
+    QgsSettingsEntryString( const QString &key,
   private:
     QgsSettingsEntryString( const QString &key,
-                            const QString &section,
                             const QString &defaultValue = QString(),
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -213,7 +213,7 @@ Returns the string maximum length. By -1 there is no limitation.
 
 typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase;
 
-class QgsSettingsEntryStringList : QgsSettingsEntryBaseTemplateQStringListBase
+class QgsSettingsEntryStringList : QgsSettingsEntryBaseTemplateQStringListNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -244,9 +244,9 @@ Constructor for QgsSettingsEntryStringList.
 :param options: specifies the options for the settings entry.
 %End
 
+    QgsSettingsEntryStringList( const QString &key,
   private:
     QgsSettingsEntryStringList( const QString &key,
-                                const QString &section,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
@@ -291,7 +291,7 @@ This constructor is intended to be used from plugins.
 
 typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase;
 
-class QgsSettingsEntryBool : QgsSettingsEntryBaseTemplateboolBase
+class QgsSettingsEntryBool : QgsSettingsEntryBaseTemplateboolNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -322,9 +322,9 @@ Constructor for QgsSettingsEntryBool.
 :param options: specifies the options for the settings entry.
 %End
 
+    QgsSettingsEntryBool( const QString &key,
   private:
     QgsSettingsEntryBool( const QString &key,
-                          const QString &section,
                           bool defaultValue = false,
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
@@ -369,7 +369,7 @@ This constructor is intended to be used from plugins.
 
 typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase;
 
-class QgsSettingsEntryInteger : QgsSettingsEntryBaseTemplateintBase
+class QgsSettingsEntryInteger : QgsSettingsEntryBaseTemplateintNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -404,9 +404,9 @@ Constructor for QgsSettingsEntryInteger.
 :param maxValue: specifies the maximal value.
 %End
 
+    QgsSettingsEntryInteger( const QString &key,
   private:
     QgsSettingsEntryInteger( const QString &key,
-                             const QString &section,
                              int defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -472,7 +472,7 @@ Returns the maximum value.
 
 typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase;
 
-class QgsSettingsEntryDouble : QgsSettingsEntryBaseTemplatedoubleBase
+class QgsSettingsEntryDouble : QgsSettingsEntryBaseTemplatedoubleNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -510,9 +510,9 @@ Constructor for QgsSettingsEntryDouble.
                         for example for a QDoubleSpinBox.
 %End
 
+    QgsSettingsEntryDouble( const QString &key,
   private:
     QgsSettingsEntryDouble( const QString &key,
-                            const QString &section,
                             double defaultValue = 0.0,
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -597,7 +597,7 @@ Returns how much decimals should be shown in the Gui.
 
 typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase;
 
-class QgsSettingsEntryColor : QgsSettingsEntryBaseTemplateQColorBase
+class QgsSettingsEntryColor : QgsSettingsEntryBaseTemplateQColorNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -630,9 +630,9 @@ Constructor for QgsSettingsEntryColor.
 :param allowAlpha: specifies if the color can have transparency.
 %End
 
+    QgsSettingsEntryColor( const QString &key,
   private:
     QgsSettingsEntryColor( const QString &key,
-                           const QString &section,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -691,7 +691,7 @@ Returns ``True`` if transparency is allowed for the color
 
 typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase;
 
-class QgsSettingsEntryVariantMap : QgsSettingsEntryBaseTemplateQVariantMapBase
+class QgsSettingsEntryVariantMap : QgsSettingsEntryBaseTemplateQVariantMapNoneNoneBase
 {
 %Docstring(signature="appended")
 
@@ -723,9 +723,9 @@ Constructor for QgsSettingsEntryVariantMap.
 :param options: specifies the options for the settings entry.
 %End
 
+    QgsSettingsEntryVariantMap( const QString &key,
   private:
     QgsSettingsEntryVariantMap( const QString &key,
-                                const QString &section,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;

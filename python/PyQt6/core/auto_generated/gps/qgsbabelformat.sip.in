@@ -123,8 +123,8 @@ Returns the friendly description for the format.
 Returns the list of known extensions for the format, e.g. "csv", "txt".
 %End
 
+    QStringList importCommand( const QString &babel,
      virtual QStringList importCommand( const QString &babel,
-                               Qgis::GpsFeatureType featureType,
                                const QString &input,
                                const QString &output,
                                Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;

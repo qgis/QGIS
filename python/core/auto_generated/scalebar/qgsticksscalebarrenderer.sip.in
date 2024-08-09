@@ -42,8 +42,8 @@ Constructor for QgsTicksScaleBarRenderer.
     virtual QgsTicksScaleBarRenderer *clone() const /Factory/;
 
 
+    void draw( QgsRenderContext &context,
      virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
     void setTickPosition( TickPosition position );

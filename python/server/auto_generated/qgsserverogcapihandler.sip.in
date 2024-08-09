@@ -67,10 +67,6 @@ Optionally, override:
        def parameters(self, context):
            return [QgsServerQueryStringParameter("value1", True, QgsServerQueryStringParameter.Type.Double, "a double value")]
 
-
-
-
-
 .. versionadded:: 3.10
 %End
 

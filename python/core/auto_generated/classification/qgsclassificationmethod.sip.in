@@ -263,7 +263,6 @@ This will calculate the classes for a given layer to define the classes.
 :return: - list of generated classes
          - error: will be set to error string if an error occurred while generating the classes
 
-
 .. versionadded:: 3.38
 %End
 
