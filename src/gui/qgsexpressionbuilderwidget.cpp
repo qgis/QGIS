@@ -458,9 +458,9 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
   cmbFileNames->insertItem( 0, item );
   cmbFileNames->setCurrentRow( 0 );
 
-  QString templatetxt;
-  QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templatetxt );
-  txtPython->setText( templatetxt );
+  QString templateText;
+  QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templateText );
+  txtPython->setText( templateText );
   saveFunctionFile( fileName );
 }
 
@@ -483,9 +483,9 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
       cmbFileNames->insertItem( 0, item );
       cmbFileNames->setCurrentRow( 0 );
 
-      QString templatetxt;
-      QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templatetxt );
-      txtPython->setText( templatetxt );
+      QString templateText;
+      QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templateText );
+      txtPython->setText( templateText );
       saveProjectFunctionsEntry();
     }
     else

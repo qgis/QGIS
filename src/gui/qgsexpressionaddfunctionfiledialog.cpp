@@ -13,17 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include <QPushButton>
 #include <QStandardItemModel>
 #include "qgsexpressionaddfunctionfiledialog.h"
 
-QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( const bool enableProjectFunctions, QWidget *parent )
+QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool enableProjectFunctions, QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
-  cboFileOptions->addItem( QStringLiteral( "Function file" ) );
-  cboFileOptions->addItem( QStringLiteral( "Project functions" ), QStringLiteral( "project" ) );
+  cboFileOptions->addItem( tr( "Function file" ) );
+  cboFileOptions->addItem( tr( "Project functions" ), QStringLiteral( "project" ) );
 
   // Disable project functions (they should be created only once)
   if ( !enableProjectFunctions )
@@ -40,7 +39,7 @@ QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( const bo
 
 void QgsExpressionAddFunctionFileDialog::cboFileOptions_currentIndexChanged( int )
 {
-  bool projectSelected = cboFileOptions->currentData() == "project";
+  bool projectSelected = cboFileOptions->currentData() == QStringLiteral( "project" );
   lblNewFileName->setVisible( !projectSelected );
   txtNewFileName->setVisible( !projectSelected );
   updateOkButtonStatus();
@@ -51,8 +50,18 @@ void QgsExpressionAddFunctionFileDialog::updateOkButtonStatus()
   QPushButton *okBtn = buttonBox->button( QDialogButtonBox::StandardButton::Ok );
   okBtn->setEnabled( true );
 
-  if ( cboFileOptions->currentData() != "project" )
+  if ( cboFileOptions->currentData() != QStringLiteral( "project" ) )
   {
     okBtn->setEnabled( !txtNewFileName->text().trimmed().isEmpty() );
   }
+}
+
+bool QgsExpressionAddFunctionFileDialog::createProjectFunctions() const
+{
+  return cboFileOptions->currentData() == QStringLiteral( "project" );
+}
+
+QString QgsExpressionAddFunctionFileDialog::fileName()
+{
+  return txtNewFileName->text().trimmed();
 }

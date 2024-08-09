@@ -15,11 +15,11 @@
 
 #ifndef QGSEXPRESSIONADDFUNCTIONFILEDIALOG_H
 #define QGSEXPRESSIONADDFUNCTIONFILEDIALOG_H
+#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include <QDialog>
 #include "ui_qgsexpressionaddfunctionfiledialogbase.h"
-
 
 /**
  * \ingroup gui
@@ -39,17 +39,17 @@ class GUI_EXPORT QgsExpressionAddFunctionFileDialog : public QDialog, private Ui
      * Function Editor file list.
      * \a parent is the parent widget.
      */
-    QgsExpressionAddFunctionFileDialog( const bool enableProjectFunctions, QWidget *parent );
+    QgsExpressionAddFunctionFileDialog( bool enableProjectFunctions, QWidget *parent );
 
     /**
      * Returns whether user has selected to create project functions
      */
-    bool createProjectFunctions() const {return cboFileOptions->currentData() == "project";};
+    bool createProjectFunctions() const;
 
     /**
      * Returns the new file name
      */
-    QString fileName() {return txtNewFileName->text().trimmed();};
+    QString fileName();
 
   private slots:
     void cboFileOptions_currentIndexChanged( int );
