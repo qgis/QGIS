@@ -1612,7 +1612,7 @@ while line_idx < line_count:
         if _match and _match.group('emkf') and monkeypatch:
             enum_old_name = _match.group('emkf')
             if actual_class:
-                if f"{enum_mk_base}{enum_old_name}" != f"{actual_class}.{enum_qualname}":
+                if f"{enum_mk_base}.{enum_old_name}" != f"{actual_class}.{enum_qualname}":
                     output_python.append(f"{enum_mk_base}.{enum_old_name} = {actual_class}.{enum_qualname}\n")
             else:
                 output_python.append(f"{enum_mk_base}.{enum_old_name} = {enum_qualname}\n")
