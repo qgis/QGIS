@@ -183,7 +183,6 @@ Gets list of columns referenced by the expression.
    If you are seeking to use these functions to introspect an expression you must
    take care to do this with an unprepared expression.
 
-
 .. seealso:: :py:func:`referencedAttributeIndexes`
 %End
 

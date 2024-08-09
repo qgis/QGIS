@@ -32,8 +32,8 @@ Double box with alternating colors.
     virtual QgsDoubleBoxScaleBarRenderer *clone() const /Factory/;
 
 
+    void draw( QgsRenderContext &context,
      virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
 };

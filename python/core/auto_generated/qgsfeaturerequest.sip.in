@@ -40,7 +40,6 @@ The options may be chained, e.g.:
 
 Examples:
 
-
 .. code-block:: python
 
        # fetch all features:
@@ -645,7 +644,6 @@ the SubsetOfAttributes flag should be removed from the request.
 
 .. seealso:: :py:func:`setSubsetOfAttributes`
 
-
 .. versionadded:: 3.4
 %End
 
@@ -796,7 +794,6 @@ any destination CRS transform present in the feature request.
    transform.
 
 .. seealso:: :py:func:`coordinateTransform`
-
 
 .. versionadded:: 3.40
 %End

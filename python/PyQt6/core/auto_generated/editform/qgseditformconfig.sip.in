@@ -124,7 +124,6 @@ Example
 :return: ``False`` if a field exists with the provided widgetName. In this case
          :py:class:`QgsVectorLayer`.setEditorWidgetSetup should be used.
 
-
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup`
 %End
 

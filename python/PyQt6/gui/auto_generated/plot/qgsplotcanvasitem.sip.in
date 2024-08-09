@@ -45,8 +45,8 @@ Constructor for QgsPlotCanvasItem for the specified ``canvas``.
 Paints the item. Must be implemented by derived classes.
 %End
 
+    void paint( QPainter *painter,
      virtual void paint( QPainter *painter,
-                const QStyleOptionGraphicsItem *option,
                 QWidget *widget = 0 );
 
   protected:

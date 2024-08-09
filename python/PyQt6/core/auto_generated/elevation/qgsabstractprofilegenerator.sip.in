@@ -369,7 +369,7 @@ The scenario will be:
   additional calls to the source.
 # profile job (still in GUI thread) stores the generator for later use.
 # profile job (in worker thread) calls :py:func:`QgsAbstractProfileGenerator.generateProfile()`
-# profile job (again in GUI thread) will check :py:func:`~QgsProfileGenerationContext.errors` and report them
+# profile job (again in GUI thread) will check :py:func:`~errors` and report them
 
 .. versionadded:: 3.26
 %End

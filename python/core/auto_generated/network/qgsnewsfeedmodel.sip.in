@@ -61,7 +61,7 @@ must exist for the lifetime of this model.
 class QgsNewsFeedProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-A proxy model for use with QgsNewsFeedModel.
+A proxy model for use with :py:class:`QgsNewsFeedModel`.
 
 :py:class:`QgsNewsFeedProxyModel` applies custom sorting to the entries in a :py:class:`QgsNewsFeedModel`.
 

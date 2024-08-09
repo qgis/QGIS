@@ -35,8 +35,8 @@ alternating segments. AKA "South African" style.
     virtual QgsHollowScaleBarRenderer *clone() const /Factory/;
 
 
+    void draw( QgsRenderContext &context,
      virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
     virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 

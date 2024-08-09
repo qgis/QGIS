@@ -93,8 +93,6 @@ Example
        x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
        # (6.0, 7.0)
 
-
-
 :return: - x: calculated point x-coordinate
          - y: calculated point y-coordinate
 

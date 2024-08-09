@@ -306,7 +306,7 @@ This applies any curve transforms which may exist on the transformer.
 class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
 %Docstring(signature="appended")
-QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
+:py:class:`QgsPropertyTransformer` subclass for scaling an input numeric value into an output numeric value.
 %End
 
 %TypeHeaderCode

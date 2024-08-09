@@ -422,6 +422,12 @@ Writes a layer out to a vector file.
                                            Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
                                          ) /Deprecated/;
+%Docstring
+Create a new vector file writer
+
+.. deprecated::
+   Use :py:func:`~QgsVectorFileWriter.create` instead.
+%End
 
 
 

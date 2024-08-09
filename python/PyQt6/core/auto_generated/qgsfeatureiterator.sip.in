@@ -148,7 +148,6 @@ features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on
 
 :raises QgsCsException: if the rect cannot be transformed from the destination CRS.
 
-
 .. versionadded:: 3.22
 %End
 

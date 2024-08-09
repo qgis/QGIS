@@ -50,7 +50,7 @@ variable
 %End
 
 
-    QgsServerInterface  *serverInterface();
+    QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) *serverInterface();
 %Docstring
 Returns a pointer to the server interface
 %End

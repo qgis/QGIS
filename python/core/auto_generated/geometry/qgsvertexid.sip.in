@@ -14,7 +14,7 @@ struct QgsVertexId
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, Qgis::VertexType _type = Qgis::VertexType::Segment ) /HoldGIL/;
 %Docstring
-Constructor for :py:class:`QgsVertexId`.
+Constructor for QgsVertexId.
 %End
 
   bool isValid() const  /HoldGIL/;

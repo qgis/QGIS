@@ -231,7 +231,7 @@ use in a standard algorithm dialog, a batch processing dialog, or a modeler dial
 
 Individual widget wrappers are not usually created directly, instead they are
 constructed through the central registry, via calls to
-:py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~QgsProcessingParameterWidgetContext.createParameterWidgetWrapper`.
+:py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~createParameterWidgetWrapper`.
 
 .. versionadded:: 3.4
 %End
@@ -455,9 +455,9 @@ class QgsProcessingParameterWidgetFactoryInterface
 
 An interface for Processing widget wrapper factories.
 
-Widget wrapper factories allow creation of QgsAbstractProcessingParameterWidgetWrapper objects.
+Widget wrapper factories allow creation of :py:class:`QgsAbstractProcessingParameterWidgetWrapper` objects.
 They are centrally managed by :py:class:`QgsProcessingGuiRegistry`. Usually, individual factories
-are not directly utilized, rather the :py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~QgsAbstractProcessingParameterWidgetWrapper.createParameterWidgetWrapper`
+are not directly utilized, rather the :py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~createParameterWidgetWrapper`
 method is used to create widget wrappers.
 
 .. versionadded:: 3.4

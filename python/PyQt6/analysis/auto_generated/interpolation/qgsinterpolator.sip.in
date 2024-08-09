@@ -20,7 +20,7 @@ struct QgsInterpolatorVertexData
 
   QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
-Constructor for :py:class:`QgsInterpolatorVertexData` with the specified
+Constructor for QgsInterpolatorVertexData with the specified
 ``x``, ``y``, and ``z`` coordinate.
 %End
 

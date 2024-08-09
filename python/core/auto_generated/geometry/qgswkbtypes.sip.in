@@ -91,7 +91,6 @@ Returns the curve type for a WKB type. For example, for Polygon WKB types the cu
 
 .. seealso:: :py:func:`multiType`
 
-
 .. versionadded:: 3.10
 %End
 

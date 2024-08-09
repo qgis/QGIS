@@ -91,7 +91,7 @@ Fetches file from ``url`` using ``authCfg`` for this project external storage.
 class QgsExternalStorageContent : QObject
 {
 %Docstring(signature="appended")
-Base class for QgsExternalStorage stored and fetched content
+Base class for :py:class:`QgsExternalStorage` stored and fetched content
 
 .. versionadded:: 3.22
 %End

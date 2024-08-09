@@ -73,8 +73,8 @@ class QgsCreateAnnotationItemMapToolInterface
 
 An interface for map tools which create annotation items.
 
-Clients should connect to the map tool's :py:func:`~QgsCreateAnnotationItemMapToolHandler.itemCreated` signal, and call the
-:py:func:`~QgsCreateAnnotationItemMapToolHandler.takeCreatedItem` implementation to take ownership of the newly created item
+Clients should connect to the map tool's :py:func:`~itemCreated` signal, and call the
+:py:func:`~takeCreatedItem` implementation to take ownership of the newly created item
 whenever this signal is emitted.
 
 .. versionadded:: 3.22

@@ -35,9 +35,17 @@ Compares region, size etc. not collected statistics
 
     qgssize elementCount;
 
-    double maximumValue;
+    double maximumValue = -DBL_MAX;
+%Docstring
+The maximum cell value in the raster band. NO_DATA values
+are ignored. This does not use the gdal GetMaximmum function.
+%End
 
-    double minimumValue;
+    double minimumValue = DBL_MAX;
+%Docstring
+The minimum cell value in the raster band. NO_DATA values
+are ignored. This does not use the gdal GetMinimum function.
+%End
 
     double mean;
 

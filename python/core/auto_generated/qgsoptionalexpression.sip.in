@@ -15,7 +15,7 @@
 
 typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
 
-class QgsOptionalExpression : QgsOptionalQgsExpressionBase
+class QgsOptionalExpression : QgsOptionalQgsExpressionNoneNoneBase
 {
 %Docstring(signature="appended")
 

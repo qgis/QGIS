@@ -139,8 +139,8 @@ Classify color ramp shader
 
     virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
 
+    bool shade( double redValue, double greenValue,
      virtual bool shade( double redValue, double greenValue,
-                double blueValue, double alphaValue,
                 int *returnRedValue /Out/, int *returnGreenValue /Out/,
                 int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
