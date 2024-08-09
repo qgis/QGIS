@@ -229,6 +229,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   QgsPropertyCollection ddProperties;
   QgsPropertyCollection ddRasterProperties;
 
+  bool colorIsDataDefined = false;
+
   std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsFillSymbol >() );
 
   // fill color
@@ -244,6 +246,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
+        colorIsDataDefined = true;
         ddProperties.setProperty( QgsSymbolLayer::Property::FillColor, parseValueList( jsonFillColor.toList(), PropertyType::Color, context, 1, 255, &fillColor ) );
         break;
 
@@ -456,6 +459,10 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   if ( fillColor.isValid() )
   {
     fillSymbol->setFillColor( fillColor );
+  }
+  else if ( colorIsDataDefined )
+  {
+    fillSymbol->setFillColor( QColor( Qt::transparent ) );
   }
   else
   {
@@ -2459,43 +2466,40 @@ QString QgsMapBoxGlStyleConverter::parseArrayStops( const QVariantList &stops, Q
   if ( stops.length() < 2 )
     return QString();
 
-  QString caseString = QStringLiteral( "CASE " );
+  QString caseString = QStringLiteral( "CASE" );
 
-  for ( int i = 0; i < stops.length() - 1; ++i )
+  for ( int i = 0; i < stops.length(); ++i )
   {
-    // bottom zoom and value
-    const QVariant bz = stops.value( i ).toList().value( 0 );
-    const QList<QVariant> bv = stops.value( i ).toList().value( 1 ).toList();
-    QStringList bl;
+    caseString += QLatin1String( " WHEN " );
+    QStringList conditions;
+    if ( i > 0 )
+    {
+      const QVariant bottomZoom = stops.value( i ).toList().value( 0 );
+      conditions << QStringLiteral( "@vector_tile_zoom > %1" ).arg( bottomZoom.toString() );
+    }
+    if ( i < stops.length() - 1 )
+    {
+      const QVariant topZoom = stops.value( i + 1 ).toList().value( 0 );
+      conditions << QStringLiteral( "@vector_tile_zoom <= %1" ).arg( topZoom.toString() );
+    }
+
+    const QVariantList values = stops.value( i ).toList().value( 1 ).toList();
+    QStringList valuesFixed;
     bool ok = false;
-    for ( const QVariant &value : bv )
+    for ( const QVariant &value : values )
     {
       const double number = value.toDouble( &ok );
       if ( ok )
-        bl << QString::number( number * multiplier );
+        valuesFixed << QString::number( number * multiplier );
     }
 
     // top zoom and value
-    const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
-    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
-                                  "THEN array(%3) " ).arg( bz.toString(),
-                                      tz.toString(),
-                                      bl.join( ',' ) );
+    caseString += QStringLiteral( "%1 THEN array(%3)" ).arg(
+                    conditions.join( QStringLiteral( " AND " ) ),
+                    valuesFixed.join( ',' )
+                  );
   }
-  const QVariant lz = stops.value( stops.length() - 1 ).toList().value( 0 );
-  const QList<QVariant> lv = stops.value( stops.length() - 1 ).toList().value( 1 ).toList();
-  QStringList ll;
-  bool ok = false;
-  for ( const QVariant &value : lv )
-  {
-    const double number = value.toDouble( &ok );
-    if ( ok )
-      ll << QString::number( number * multiplier );
-  }
-  caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
-                                "THEN array(%2) " ).arg( lz.toString(),
-                                    ll.join( ',' ) );
-  caseString += QLatin1String( "END" );
+  caseString += QLatin1String( " END" );
   return caseString;
 }
 
@@ -2679,7 +2683,12 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
 
   for ( int i = 2; i < json.length() - 1; i += 2 )
   {
-    const QVariantList keys = json.value( i ).toList();
+    QVariantList keys;
+    QVariant variantKeys = json.value( i );
+    if ( variantKeys.canConvert< QVariantList >() )
+      keys = variantKeys.toList();
+    else
+      keys = {variantKeys};
 
     QStringList matchString;
     for ( const QVariant &key : keys )
