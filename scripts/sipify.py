@@ -1157,8 +1157,8 @@ while line_idx < line_count:
         if re.match(r'^\s*#ifdef SIP_RUN', LINE):
             sip_run = True
             if access[-1] == PRIVATE:
-                dbg_info("writing private content")
-                if private_section_line != '':
+                dbg_info("writing private content (1)")
+                if private_section_line:
                     write_output("PRV1", private_section_line + "\n")
                 private_section_line = ''
             continue
@@ -1198,7 +1198,7 @@ while line_idx < line_count:
                 elif re.match(r'^\s*#else', LINE) and glob_ifdef_nesting_idx == 0:
                     # Code here will be printed out
                     if access[-1] == PRIVATE:
-                        dbg_info("writing private content")
+                        dbg_info("writing private content (2)")
                         if private_section_line != '':
                             write_output("PRV2", private_section_line + "\n")
                         private_section_line = ''
@@ -1477,9 +1477,9 @@ while line_idx < line_count:
                     dbg_info("reached top level")
                     access[-1] = PUBLIC  # Top level should stay public
 
-                COMMENT = ''
-                RETURN_TYPE = ''
-                PRIVATE_SECTION_LINE = ''
+                comment = ''
+                return_type = ''
+                private_section_line = ''
 
             dbg_info(f"new bracket balance: {glob_bracket_nesting_idx}")
 
