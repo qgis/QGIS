@@ -1601,15 +1601,16 @@ while line_idx < line_count:
             write_output("ENU1", oneliner)
         write_output("ENU1", "\n")
 
-        monkeypatch = is_scope_based and re.search(
+        _match = None
+        if is_scope_based:
+            _match = re.search(
             r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?', LINE)
-        enum_mk_base = re.search(r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?\(\s*(\w+)\s*,', LINE)
-        enum_mk_base = enum_mk_base.group(2) if enum_mk_base else ""
+        monkeypatch = is_scope_based and _match
+        enum_mk_base = _match.group('emkb') if _match else ''
 
-        enum_old_name_match = re.search(r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?\([^,]*,\s*(\w+)\s*\)', LINE)
         enum_old_name = ''
-        if enum_old_name_match and monkeypatch:
-            enum_old_name = enum_old_name_match.group(2)
+        if _match and _match.group('emkf') and monkeypatch:
+            enum_old_name = _match.gropu('emkf')
             if actual_class:
                 if f"{enum_mk_base}{enum_old_name}" != f"{actual_class}.{enum_qualname}":
                     output_python.append(f"{enum_mk_base}.{enum_old_name} = {actual_class}.{enum_qualname}\n")
