@@ -1385,7 +1385,7 @@ while line_idx < line_count:
                 r'\b(?P<tpl>(?!QList)\w+)< *(?P<cls1>(\w|::)+) *(, *(?P<cls2>(\w|::)+)? *(, *(?P<cls3>(\w|::)+)? *)?)? *>'
             )
             m = tpl_replace_pattern.sub(lambda
-                                            match: f"{match.group('tpl')}{match.group('cls1')}{match.group('cls2')}{match.group('cls3')}Base",
+                                            match: f"{match.group('tpl') or ''}{match.group('cls1') or ''}{match.group('cls2') or ''}{match.group('cls3') or ''}Base",
                                         m)
             m = re.sub(r'(\w+)< *(?:\w|::)+ *>', '', m)
             m = re.sub(r'([:,])\s*,', r'\1', m)
@@ -1865,6 +1865,7 @@ while line_idx < line_count:
                 rolling_line = input_lines[rolling_line_idx]
                 if rolling_line_idx < 0:
                     exit_with_error('could not reach opening definition')
+            dbg_info(f'rolled back to {rolling_line_idx}: {rolling_line}')
 
             if is_override_or_make_private == PREPEND_CODE_VIRTUAL and not re.match(r'^(\s*)virtual\b(.*)$',
                                                                                     rolling_line):
@@ -1874,7 +1875,7 @@ while line_idx < line_count:
                 dbg_info("prepending private access")
                 idx = rolling_line_idx - line_idx
                 private_access = re.sub(r'(protected|public)', 'private', last_access_section_line)
-                output.insert(idx, private_access + "\n")
+                output.insert(idx + 1, private_access + "\n")
                 output[idx + 1] = fix_annotations(rolling_line) + "\n"
         elif is_override_or_make_private == PREPEND_CODE_MAKE_PRIVATE:
             dbg_info("prepending private access")
