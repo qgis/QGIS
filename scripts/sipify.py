@@ -103,7 +103,7 @@ ALLOWED_NON_CLASS_ENUMS = [
     "QgsSipifyHeader::OneLiner",
     "CadConstraint::LockMode",
     "ColorrampTable",
-    "ElementType",
+    "QgsMesh::ElementType",
     "LabelSettingsTable",
     "Qgis::MessageLevel",
     "Qgs3DMapScene::SceneState",
