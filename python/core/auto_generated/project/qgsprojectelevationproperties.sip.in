@@ -83,7 +83,6 @@ elevation limits associated with the project.
 
 .. seealso:: :py:func:`elevationRangeChanged`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -125,7 +124,6 @@ elevation limits associated with the project.
 .. seealso:: :py:func:`elevationRange`
 
 .. seealso:: :py:func:`elevationRangeChanged`
-
 
 .. versionadded:: 3.38
 %End
@@ -172,7 +170,6 @@ Emitted when the project's elevation ``is`` changed.
 .. seealso:: :py:func:`elevationRange`
 
 .. seealso:: :py:func:`setElevationRange`
-
 
 .. versionadded:: 3.38
 %End

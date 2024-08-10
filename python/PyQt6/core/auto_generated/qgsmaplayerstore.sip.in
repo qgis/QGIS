@@ -124,11 +124,9 @@ The :py:func:`~QgsMapLayerStore.layersAdded` and :py:func:`~QgsMapLayerStore.lay
    but if the validity of the layer has changed from ``False`` to ``True``, the
    layer data source is updated to the new one.
 
-
 :return: a list of the map layers that were added
          successfully. If a layer already exists in the store,
          it will not be part of the returned list.
-
 
 .. seealso:: :py:func:`addMapLayer`
 %End
@@ -147,9 +145,7 @@ If you are adding multiple layers at once, you should use
 
 :return: ``None`` if unable to add layer, otherwise pointer to newly added layer
 
-
 .. seealso:: :py:func:`addMapLayers`
-
 
 .. note::
 

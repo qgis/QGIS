@@ -311,8 +311,8 @@ class QgsMapBoxGlStyleConverter
 Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
 settings.
 
-Conversions are performed by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.convert` with either a JSON map or JSON
-string value, and then retrieving the results by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.renderer` or :py:func:`~QgsMapBoxGlStyleRasterSubLayer.labeling`
+Conversions are performed by calling :py:func:`~convert` with either a JSON map or JSON
+string value, and then retrieving the results by calling :py:func:`~renderer` or :py:func:`~labeling`
 respectively.
 
 .. versionadded:: 3.16
@@ -534,7 +534,6 @@ Parses a symbol layer as a renderer
 
 :param jsonLayer: fill layer to parse
 :param context: conversion context
-
 
 :return: - ``True`` if symbol layer was converted to renderer
          - rendererStyle: generated QGIS vector tile style

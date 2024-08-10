@@ -263,7 +263,7 @@ Sets the collection's state from a DOM element. collectionElement is the DOM nod
 class QgsLayoutGuideProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
+Filters :py:class:`QgsLayoutGuideCollection` models to guides of a single orientation (horizontal or vertical).
 %End
 
 %TypeHeaderCode

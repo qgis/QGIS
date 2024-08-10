@@ -376,7 +376,6 @@ will also be in this same CRS.
 
 .. seealso:: :py:func:`splitGeometryAtAntimeridian`
 
-
 .. versionadded:: 3.6
 %End
 

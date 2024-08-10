@@ -34,7 +34,6 @@ Returns the map layer type corresponding a ``string`` value.
 :return: - converted map layer type
          - ok: will be set to ``True`` if ``string`` was successfully converted to a map layer type
 
-
 .. seealso:: :py:func:`typeToString`
 %End
 

@@ -87,7 +87,7 @@ Creates a new QgsStringReplacement from an encoded properties map.
 class QgsStringReplacementCollection
 {
 %Docstring(signature="appended")
-A collection of string replacements (specified using QgsStringReplacement objects).
+A collection of string replacements (specified using :py:class:`QgsStringReplacement` objects).
 %End
 
 %TypeHeaderCode

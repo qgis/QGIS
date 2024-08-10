@@ -113,7 +113,6 @@ Adds an ``entry`` to the history logs.
 :return: - ID of newly added entry.
          - ok: will be set to ``True`` if entry was successfully added
 
-
 .. seealso:: :py:func:`entryAdded`
 %End
 

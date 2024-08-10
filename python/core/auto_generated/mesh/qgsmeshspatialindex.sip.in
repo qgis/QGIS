@@ -27,7 +27,6 @@ A spatial index for :py:class:`QgsMeshFace` or :py:class:`QgsMeshEdge` objects.
 
 .. seealso:: :py:class:`QgsSpatialIndex`
 
-
 .. versionadded:: 3.6
 %End
 

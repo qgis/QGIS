@@ -81,7 +81,6 @@ Exports the selected layer tree nodes to a QLR file.
 :return: - ``True`` if the export was successful
          - errorMessage: will be set to any error messages generated during the export
 
-
 .. versionadded:: 3.22
 %End
 

@@ -372,7 +372,6 @@ Ownership of ``symbol`` is transferred to the rubberband.
    Setting a symbol for the rubberband overrides any other appearance setting,
    such as the :py:func:`~QgsRubberBand.strokeColor` or :py:func:`~QgsRubberBand.width`.
 
-
 .. seealso:: :py:func:`setSymbol`
 
 .. versionadded:: 3.20

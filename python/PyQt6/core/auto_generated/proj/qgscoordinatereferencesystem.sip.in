@@ -57,12 +57,10 @@ For example, the following code will create and inspect "British national grid" 
 
 This will produce the following output:
 
-
 .. code-block:: raw
 
      CRS Description: OSGB 1936 / British National Grid
      CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
-
 
 CRS Definition Formats
 ----------------------
@@ -82,7 +80,6 @@ QGIS adds support for "USER" authority that refers to IDs used internally in QGI
 is best avoided or used with caution as the IDs are not permanent and they refer to different CRS
 on different machines or user profiles.
 
-
 .. seealso:: :py:func:`authid`
 
 .. seealso:: :py:func:`createFromOgcWmsCrs`
@@ -91,12 +88,9 @@ on different machines or user profiles.
   format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
   underlying proj library. For example, the definition of WGS84 looks like this:
 
-
 .. code-block:: raw
 
        +proj=longlat +datum=WGS84 +no_defs
-
-
 
 .. seealso:: :py:func:`toProj`
 
@@ -104,7 +98,6 @@ on different machines or user profiles.
 
 - Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
   format to define CRS. For WGS84 the OGC WKT definition is the following:
-
 
 .. code-block:: raw
 
@@ -115,8 +108,6 @@ on different machines or user profiles.
                   PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
                   UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
                   AUTHORITY["EPSG","4326"]]
-
-
 
 .. seealso:: :py:func:`toWkt`
 
@@ -169,7 +160,6 @@ Caveats
 There are two different flavors of WKT: one is defined by OGC, the other is the standard
 used by ESRI. They look very similar, but they are not the same. QGIS is able to consume
 both flavors.
-
 
 .. seealso:: :py:class:`QgsCoordinateTransform`
 %End
@@ -332,7 +322,6 @@ or the compound CRS could not be created for the combination.
 
 :return: - compound CRS if it was possible to create one, or an invalid CRS if not
          - error: will be set to a descriptive error if the compound CRS could not be created
-
 
 .. versionadded:: 3.38
 %End
@@ -810,9 +799,7 @@ be returned.
 
    This method requires PROJ 8.0 or later
 
-
 :raises QgsNotSupportedException: on QGIS builds based on PROJ 7 or earlier.
-
 
 .. versionadded:: 3.20
 %End
@@ -826,7 +813,6 @@ Attempts to retrieve the name of the celestial body associated with the CRS (e.g
    This method requires PROJ 8.1 or later
 
 :raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
-
 
 .. versionadded:: 3.20
 %End
@@ -853,9 +839,7 @@ CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
    between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
    however dynamic CRS to dynamic CRS transformations are not currently supported.
 
-
 .. seealso:: :py:func:`coordinateEpoch`
-
 
 .. versionadded:: 3.20
 %End
@@ -882,9 +866,7 @@ CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
 
 :return: Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
 
-
 .. seealso:: :py:func:`setCoordinateEpoch`
-
 
 .. versionadded:: 3.20
 %End

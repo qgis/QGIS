@@ -224,7 +224,7 @@ class QgsLayoutManagerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 
-QSortFilterProxyModel subclass for QgsLayoutManagerModel
+QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`
 
 .. versionadded:: 3.8
 %End

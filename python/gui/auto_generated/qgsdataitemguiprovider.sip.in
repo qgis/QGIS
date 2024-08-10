@@ -102,7 +102,7 @@ Subclasses can utilize this list in order to create actions which operate on mul
 at once, e.g. to allow deletion of multiple layers from a database at once.
 
 When creating a context menu, this method is called for EVERY QgsDataItemGuiProvider
-within the :py:class:`QgsDataItemGuiProviderRegistry`. It is the :py:class:`QgsDataItemGuiProvider` subclass'
+within the :py:class:`QgsDataItemGuiProviderRegistry`. It is the QgsDataItemGuiProvider subclass'
 responsibility to test the ``item`` and ``selectedItems`` for their properties and classes and decide what actions
 (if any) are appropriate to add to the context ``menu``.
 

@@ -175,7 +175,6 @@ desired.
 :return: - ``True`` if the dataset was successfully renamed, or ``False`` if an error occurred
          - error: will be set to a descriptive error message if the rename operation fails
 
-
 .. versionadded:: 3.22
 %End
 

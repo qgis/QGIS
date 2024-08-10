@@ -78,14 +78,14 @@ so making copies of geometries is inexpensive. The geometry container class can 
 a QVariant object.
 
 The actual geometry representation is stored as a :py:class:`QgsAbstractGeometry` within the container, and
-can be accessed via the :py:func:`~QgsGeometryParameters.get` method or set using the :py:func:`~QgsGeometryParameters.set` method. This gives access to the underlying
+can be accessed via the :py:func:`~get` method or set using the :py:func:`~set` method. This gives access to the underlying
 raw geometry primitive, such as the point, line, polygon, curve or other geometry subclasses.
 
 .. note::
 
    :py:class:`QgsGeometry` objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
    of the methods or properties exposed from the :py:class:`QgsGeometry` API (or :py:class:`QgsAbstractGeometry` subclasses) utilize
-   geodesic calculations. Accordingly, properties like :py:func:`~QgsGeometryParameters.length` and :py:func:`~QgsGeometryParameters.area` or spatial operations like :py:func:`~QgsGeometryParameters.buffer`
+   geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` or spatial operations like :py:func:`~buffer`
    are always calculated using strictly Cartesian mathematics. In contrast, the :py:class:`QgsDistanceArea` class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
@@ -461,8 +461,6 @@ Example
        geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
        for v in geometry.vertices():
            print(v.x(), v.y())
-
-
 
 .. seealso:: :py:func:`parts`
 %End
@@ -1674,7 +1672,6 @@ This method requires QGIS builds based on GEOS 3.9 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on GEOS 3.8 or earlier.
 
-
 .. versionadded:: 3.20
 %End
 
@@ -2534,7 +2531,6 @@ Returns True if the Polygon is counter-clockwise.
 
    returns false if the geometry is not a polygon type or empty
 
-
 .. seealso:: :py:func:`isPolygonClockwise`
 
 .. seealso:: :py:func:`forcePolygonClockwise`
@@ -2556,7 +2552,6 @@ Returns True if the Polygon is clockwise.
 .. warning::
 
    returns true if the geometry is not a polygon type or empty
-
 
 .. seealso:: :py:func:`isPolygonCounterClockwise`
 

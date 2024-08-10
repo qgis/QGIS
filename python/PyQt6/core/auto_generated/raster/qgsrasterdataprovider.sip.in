@@ -610,7 +610,6 @@ Returns whether provider-level resampling is enabled.
 
 .. seealso:: :py:func:`maxOversampling`
 
-
 .. versionadded:: 3.16
 %End
 

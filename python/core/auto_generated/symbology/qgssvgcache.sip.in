@@ -94,7 +94,6 @@ Returns an SVG drawing as a QPicture.
    Appropriate translation to the destination painter based on the picture's boundingRect may need to be applied
    if rendering the SVG using the top-left or other reference point is desired.
 
-
 .. warning::
 
    The ``blocking`` parameter must NEVER be ``True`` from GUI based applications (like the main QGIS

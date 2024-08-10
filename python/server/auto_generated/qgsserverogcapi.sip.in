@@ -29,9 +29,6 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
      api.registerHandler(h)
      server.serverInterface().serviceRegistry().registerApi(api)
 
-
-
-
 .. versionadded:: 3.10
 %End
 
