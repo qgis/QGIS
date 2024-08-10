@@ -1805,8 +1805,8 @@ while line_idx < line_count:
 
         python_regex_verbose = r'''
         ^                           # Start of the line
-        (                            # Start of capturing group for the left-hand side
-         \s*                         # Optional leading whitespace
+        (                           # Start of capturing group for the left-hand side
+            \s*                     # Optional leading whitespace
             (?:const\s+)?           # Optional const qualifier
             (?:                     # Start of non-capturing group for type
                 (?:unsigned\s+)?    # Optional unsigned qualifier
@@ -1821,21 +1821,24 @@ while line_idx < line_count:
         )                           # End of capturing group for the left-hand side
         \s*=\s*                     # Equals sign with optional surrounding whitespace
         (                           # Start of capturing group for the right-hand side
-            -?\d+(?:\.\d*)?         # Integer or floating-point number (possibly negative)
-            |                       # OR
-            nullptr                 # nullptr keyword
-            |                       # OR
-            (?:std::)?              # Optional std:: prefix
-            \w+                     # Word characters for function/class names
-            (?:<[^>]+>)?            # Optional template arguments
-            (?:::[\w<>]+)*          # Optional nested name specifiers
-            (?:                     # Start of optional group for function calls
-                \(                  # Opening parenthesis
-                [^()]*              # Any characters except parentheses
-                (?:\([^()]*\))*     # Allows for one level of nested parentheses
-                [^()]*              # Any characters except parentheses
-                \)                  # Closing parenthesis
-            )?                      # End of optional group for function calls
+            -?                      # Optional negative sign
+            (?:                     # Start of non-capturing group for value
+                \d+(?:\.\d*)?       # Integer or floating-point number
+                |                   # OR
+                nullptr             # nullptr keyword
+                |                   # OR
+                (?:std::)?          # Optional std:: prefix
+                \w+                 # Word characters for function/class names
+                (?:<[^>]+>)?        # Optional template arguments
+                (?:::[\w<>]+)*      # Optional nested name specifiers
+                (?:                 # Start of optional group for function calls
+                    \(              # Opening parenthesis
+                    [^()]*          # Any characters except parentheses
+                    (?:\([^()]*\))* # Allows for one level of nested parentheses
+                    [^()]*          # Any characters except parentheses
+                    \)              # Closing parenthesis
+                )?                  # End of optional group for function calls
+            )
         )                           # End of capturing group for the right-hand side
         \s*;                        # Optional whitespace and semicolon
         \s*                         # Optional whitespace after semicolon
