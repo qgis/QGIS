@@ -314,7 +314,7 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         srsTemplate = """<?xml version="" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="{}" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-  <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+  <wfs:Query typeName="testlayer" {} xmlns:feature="http://www.qgis.org/gml">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
       <ogc:BBOX>
         <ogc:PropertyName>geometry</ogc:PropertyName>
@@ -327,8 +327,12 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-        tests.append(('srsname_post_1_0_0', srsTemplate.format('1.0.0', '')))
-        tests.append(('srsname_post_1_1_0', srsTemplate.format('1.1.0', '')))
+        tests.append(('srsname_post_1_0_0', srsTemplate.format(
+            '1.0.0', '', 'srsName="EPSG:3857"')))
+        tests.append(('srsname_post_1_1_0', srsTemplate.format(
+            '1.1.0', '', 'srsName="EPSG:3857"')))
+        tests.append(('srsname_post_1_1_0_urn', srsTemplate.format(
+            '1.1.0', '', 'srsName="urn:ogc:def:crs:EPSG::3857"')))
 
         # Issue https://github.com/qgis/QGIS/issues/36398
         # Check get feature within polygon having srsName=EPSG:4326 (same as the project/layer)
