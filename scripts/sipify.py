@@ -1116,7 +1116,7 @@ while line_idx < line_count:
         r'^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$',
             LINE):
         LINE = f"%{re.match(r'^ *% *(.*)$', LINE).group(1)}"
-        COMMENT = ''
+        comment = ''
         dbg_info("do not process SIP code")
         while not re.match(r'^ *% *End', LINE):
             write_output("COD", LINE + "\n")
@@ -1136,14 +1136,14 @@ while line_idx < line_count:
     # Do not process SIP code %Property
     if sip_run and re.match(r'^ *% *(Property)(.*)?$', LINE):
         LINE = f"%{re.match(r'^ *% *(.*)$', LINE).group(1)}"
-        COMMENT = ''
+        comment = ''
         write_output("COD", LINE + "\n")
         continue
 
     # Do not process SIP code %If %End
     if sip_run and re.match(r'^ *% (If|End)(.*)?$', LINE):
         LINE = f"%{re.match(r'^ *% (.*)$', LINE).group(1)}"
-        COMMENT = ''
+        comment = ''
         write_output("COD", LINE)
         continue
 
@@ -1159,7 +1159,7 @@ while line_idx < line_count:
                 if re.match(r'^\s*#if(def)?\s+', LINE):
                     nesting_index += 1
                 elif nesting_index == 0 and re.match(r'^\s*#(endif|else)', LINE):
-                    COMMENT = ''
+                    comment = ''
                     break
                 elif nesting_index != 0 and re.match(r'^\s*#endif', LINE):
                     nesting_index -= 1
@@ -1193,7 +1193,7 @@ while line_idx < line_count:
                         glob_ifdef_nesting_idx += 1
                     elif re.match(r'^\s*#endif', LINE):
                         if glob_ifdef_nesting_idx == 0:
-                            COMMENT = ''
+                            comment = ''
                             sip_run = False
                             break
                         else:
@@ -1217,8 +1217,7 @@ while line_idx < line_count:
                     break
                 elif re.match(r'^\s*#endif', LINE):
                     if glob_ifdef_nesting_idx == 0:
-                        COMMENT = ''
-                        SIP_RUN = 0
+                        sip_run = 0
                         break
                     else:
                         glob_ifdef_nesting_idx -= 1
