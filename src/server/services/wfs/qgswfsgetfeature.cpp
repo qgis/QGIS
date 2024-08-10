@@ -414,11 +414,28 @@ namespace QgsWfs
         geometryName = QLatin1String( "NONE" );
       }
       // outputCrs
-      QgsCoordinateReferenceSystem outputCrs = vlayer->crs();
+      // if the crs is defined in the parameters, use it
+      // otherwise fallback:
+      //  - geojson uses 'EPSG:4326' by default
+      //  - other formats use the default CRS (the layer's CRS)
+      const QString requestSrsName = request.serverParameters().value( QStringLiteral( "SRSNAME" ) );
+      QString outputSrsName;
       if ( !query.srsName.isEmpty() )
       {
-        outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( query.srsName );
+        outputSrsName = query.srsName;
       }
+      else if ( !requestSrsName.isEmpty() )
+      {
+        outputSrsName = requestSrsName;
+      }
+      else
+      {
+        // fallback to a default value
+        // geojson uses 'EPSG:4326' by default
+        outputSrsName = ( aRequest.outputFormat == QgsWfsParameters::Format::GeoJSON ) ? QStringLiteral( "EPSG:4326" ) : vlayer->crs().authid();
+      }
+
+      const QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( outputSrsName );
 
       bool forceGeomToMulti = QgsWkbTypes::isMultiType( vlayer->wkbType() );
 
@@ -465,19 +482,9 @@ namespace QgsWfs
         // It needs to be an EPSG urn, e.g. urn:ogc:def:crs:EPSG::4326
         // This follows geoserver convention
         // See: https://docs.geoserver.org/stable/en/user/services/wfs/axis_order.html
-        // if the crs is defined in the parameters, use it
-        // otherwise:
-        //  - geojson uses 'EPSG:4326' by default
-        //  - other formats use the default CRS (DefaultSRS, which is the layer's CRS)
-        const QString requestSrsName = request.serverParameters().value( QStringLiteral( "SRSNAME" ) );
-        const QString srsName
-        {
-          !requestSrsName.isEmpty() ? requestSrsName :
-          ( aRequest.outputFormat == QgsWfsParameters::Format::GeoJSON ? QStringLiteral( "EPSG:4326" ) : outputCrs.authid() )
-        };
         const bool invertAxis { mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) &&
                                 outputCrs.hasAxisInverted() &&
-                                ! srsName.startsWith( QLatin1String( "EPSG:" ) ) };
+                                ! outputSrsName.startsWith( QLatin1String( "EPSG:" ) ) };
 
         const createFeatureParams cfp = { layerPrecision,
                                           layerCrs,
@@ -487,7 +494,7 @@ namespace QgsWfs
                                           geometryName,
                                           outputCrs,
                                           forceGeomToMulti,
-                                          srsName,
+                                          outputSrsName,
                                           invertAxis
                                         };
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
