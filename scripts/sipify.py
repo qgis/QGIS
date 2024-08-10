@@ -1903,10 +1903,10 @@ while line_idx < line_count:
     pattern = r'^\s*(?:const |virtual |static |inline )*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(?:\w+|operator.{1,2})\(.*$'
     match = re.match(pattern, LINE)
     if match:
-        return_type = match.group(1)
-        if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)', return_type):
+        return_type_candidate = match.group(1)
+        if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)', return_type_candidate):
             # replace :: with . (changes c++ style namespace/class directives to Python style)
-            return_type = return_type.replace('::', '.')
+            return_type = return_type_candidate.replace('::', '.')
             # replace with builtin Python types
             return_type = re.sub(r'\bdouble\b', 'float', return_type)
             return_type = re.sub(r'\bQString\b', 'str', return_type)
