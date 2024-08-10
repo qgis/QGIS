@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsidentifymenu.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -175,5 +175,5 @@ Applies style from the settings to the highlight
  *                                                                      *
  * src/gui/qgsidentifymenu.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

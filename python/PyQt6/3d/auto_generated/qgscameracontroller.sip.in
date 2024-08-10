@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgscameracontroller.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -249,5 +249,5 @@ Emitted when the camera rotation center changes
  *                                                                      *
  * src/3d/qgscameracontroller.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsderivativefilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,5 +43,5 @@ Calculates the first order derivative in y-direction according to Horn (1981)
  *                                                                      *
  * src/analysis/raster/qgsderivativefilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

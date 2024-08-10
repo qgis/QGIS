@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgscurve.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -343,5 +343,5 @@ Scrolls the curve vertices so that they start with the vertex at the given index
  *                                                                      *
  * src/core/geometry/qgscurve.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

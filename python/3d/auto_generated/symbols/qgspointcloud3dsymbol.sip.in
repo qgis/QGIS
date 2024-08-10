@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/symbols/qgspointcloud3dsymbol.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -550,5 +550,5 @@ Gets the list of categories of the classification that should not be rendered
  *                                                                      *
  * src/3d/symbols/qgspointcloud3dsymbol.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

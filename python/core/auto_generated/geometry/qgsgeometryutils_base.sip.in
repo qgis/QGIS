@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsgeometryutils_base.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -515,5 +515,5 @@ Calculates Cartesian azimuth between points (``x1``, ``y1``) and (``x2``, ``y2``
  *                                                                      *
  * src/core/geometry/qgsgeometryutils_base.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

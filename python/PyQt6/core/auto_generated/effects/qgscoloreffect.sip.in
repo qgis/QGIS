@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/effects/qgscoloreffect.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -259,5 +259,5 @@ Returns the blend mode for the effect
  *                                                                      *
  * src/core/effects/qgscoloreffect.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

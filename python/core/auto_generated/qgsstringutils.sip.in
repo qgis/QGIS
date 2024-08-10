@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsstringutils.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -337,5 +337,5 @@ and replacing them with a horizontal ellipsis character.
  *                                                                      *
  * src/core/qgsstringutils.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/network/qgsnetworkcontentfetcher.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -114,5 +114,5 @@ Emitted when an error with ``code`` error occurred while processing the request
  *                                                                      *
  * src/core/network/qgsnetworkcontentfetcher.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

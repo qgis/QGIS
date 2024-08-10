@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/annotations/qgsannotationmanager.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -134,5 +134,5 @@ Emitted when an annotation is about to be removed from the manager
  *                                                                      *
  * src/core/annotations/qgsannotationmanager.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmaplayerconfigwidgetfactory.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -165,5 +165,5 @@ Factory function to create the widget on demand as needed by the dock.
  *                                                                      *
  * src/gui/qgsmaplayerconfigwidgetfactory.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

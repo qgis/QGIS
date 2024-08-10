@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgsdashspacedialog.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -79,5 +79,5 @@ Sets the unit type used for the dash space pattern (used to update interface lab
  *                                                                      *
  * src/gui/symbology/qgsdashspacedialog.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

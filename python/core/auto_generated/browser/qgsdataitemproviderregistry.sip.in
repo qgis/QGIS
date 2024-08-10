@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsdataitemproviderregistry.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -89,5 +89,5 @@ Emitted when a data item provider is about to be removed
  *                                                                      *
  * src/core/browser/qgsdataitemproviderregistry.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgssqliteutils.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -62,5 +62,5 @@ Returns a string list of SQLite (and spatialite) system tables
  *                                                                      *
  * src/core/qgssqliteutils.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmessagebaritem.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -193,5 +193,5 @@ will need to be updated as a result.
  *                                                                      *
  * src/gui/qgsmessagebaritem.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

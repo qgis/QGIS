@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscustomdrophandler.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -172,5 +172,5 @@ Subclasses which implement this must also implement corresponding versions of
  *                                                                      *
  * src/gui/qgscustomdrophandler.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

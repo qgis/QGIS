@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfieldmappingmodel.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -176,5 +176,5 @@ field name to the corresponding expression.
  *                                                                      *
  * src/gui/qgsfieldmappingmodel.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

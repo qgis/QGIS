@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsgeometrygeneratorsymbollayer.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -148,5 +148,5 @@ context which is available to the evaluated expression.
  *                                                                      *
  * src/core/symbology/qgsgeometrygeneratorsymbollayer.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

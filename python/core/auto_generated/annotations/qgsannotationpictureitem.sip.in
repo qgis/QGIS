@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/annotations/qgsannotationpictureitem.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -255,5 +255,5 @@ The item takes ownership of the symbol.
  *                                                                      *
  * src/core/annotations/qgsannotationpictureitem.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

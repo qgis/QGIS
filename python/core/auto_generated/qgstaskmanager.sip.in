@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstaskmanager.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -566,5 +566,5 @@ For now, subtasks can *NOT* be nested.
  *                                                                      *
  * src/core/qgstaskmanager.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

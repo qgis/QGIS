@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layertree/qgslayertreemodel.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -492,5 +492,5 @@ QFlags<QgsLayerTreeModel::Flag> operator|(QgsLayerTreeModel::Flag f1, QFlags<Qgs
  *                                                                      *
  * src/core/layertree/qgslayertreemodel.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

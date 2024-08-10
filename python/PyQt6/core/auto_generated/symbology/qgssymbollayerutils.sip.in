@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbollayerutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -1030,5 +1030,5 @@ for the symbol layer will be returned.
  *                                                                      *
  * src/core/symbology/qgssymbollayerutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

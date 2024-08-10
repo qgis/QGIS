@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/effects/qgseffectdrawmodecombobox.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,5 +43,5 @@ Sets the currently selected draw mode for the combo box
  *                                                                      *
  * src/gui/effects/qgseffectdrawmodecombobox.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

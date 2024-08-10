@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemmanualtable.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -155,5 +155,5 @@ Replaces the headers in the table with a specified list of :py:class:`QgsLayoutT
  *                                                                      *
  * src/core/layout/qgslayoutitemmanualtable.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

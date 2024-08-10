@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsfielddomain.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -508,5 +508,5 @@ Globs are matching expression like "*[a-z][0-1]?"
  *                                                                      *
  * src/core/vector/qgsfielddomain.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

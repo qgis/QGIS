@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/sensor/qgsiodevicesensor.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -290,5 +290,5 @@ considered a data frame.
  *                                                                      *
  * src/core/sensor/qgsiodevicesensor.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

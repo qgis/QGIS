@@ -593,7 +593,7 @@ def sip_header_footer():
     header_footer.append(" *                                                                      *\n")
     header_footer.append(f" * {headerfile_x:<68} *\n")
     header_footer.append(" *                                                                      *\n")
-    header_footer.append(" * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n")
+    header_footer.append(" * Do not edit manually ! Edit header and run scripts/sipify.py again   *\n")
     header_footer.append(" ************************************************************************/\n")
     return header_footer
 

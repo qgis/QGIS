@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmessagebar.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -235,5 +235,5 @@ Pushes a critical warning ``message`` that must be manually dismissed by the use
  *                                                                      *
  * src/gui/qgsmessagebar.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

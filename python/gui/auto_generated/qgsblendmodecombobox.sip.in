@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsblendmodecombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -81,5 +81,5 @@ blend modes to combo box indexes
  *                                                                      *
  * src/gui/qgsblendmodecombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

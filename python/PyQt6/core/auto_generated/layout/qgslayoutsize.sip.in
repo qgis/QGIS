@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutsize.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -169,5 +169,5 @@ Decodes a size from a ``string``.
  *                                                                      *
  * src/core/layout/qgslayoutsize.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

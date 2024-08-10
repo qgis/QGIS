@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/numericformats/qgsbasicnumericformat.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -173,5 +173,5 @@ Sets the format's ``configuration``.
  *                                                                      *
  * src/core/numericformats/qgsbasicnumericformat.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/history/qgshistoryprovider.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -61,5 +61,5 @@ Updates an existing history ``node`` for the given ``entry``.
  *                                                                      *
  * src/gui/history/qgshistoryprovider.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

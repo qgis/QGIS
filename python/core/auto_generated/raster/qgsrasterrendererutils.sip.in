@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterrendererutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -50,5 +50,5 @@ Returns ``True`` if the save was successful.
  *                                                                      *
  * src/core/raster/qgsrasterrendererutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/providers/qgsabstractdbsourceselect.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -65,5 +65,5 @@ Called on double-click for the source ``index``
  *                                                                      *
  * src/gui/providers/qgsabstractdbsourceselect.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

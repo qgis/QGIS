@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverrequest.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -249,5 +249,5 @@ Set the base URL of QGIS server
  *                                                                      *
  * src/server/qgsserverrequest.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

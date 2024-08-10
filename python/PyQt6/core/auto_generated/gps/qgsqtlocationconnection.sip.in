@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgsqtlocationconnection.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -65,5 +65,5 @@ Called when the number of satellites in use is updated.
  *                                                                      *
  * src/core/gps/qgsqtlocationconnection.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

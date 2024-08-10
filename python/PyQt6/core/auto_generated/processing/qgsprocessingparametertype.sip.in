@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingparametertype.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -113,5 +113,5 @@ Extra explanatory help can be used (which must be translated), eg "a comma delim
  *                                                                      *
  * src/core/processing/qgsprocessingparametertype.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

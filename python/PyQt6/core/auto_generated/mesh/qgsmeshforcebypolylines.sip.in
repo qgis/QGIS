@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshforcebypolylines.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -114,5 +114,5 @@ Adds a list of input forcing lines geometry in rendering coordinates
  *                                                                      *
  * src/core/mesh/qgsmeshforcebypolylines.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

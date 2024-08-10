@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgslabelobstaclesettings.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -128,5 +128,5 @@ set within the specified ``properties`` collection.
  *                                                                      *
  * src/core/labeling/qgslabelobstaclesettings.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

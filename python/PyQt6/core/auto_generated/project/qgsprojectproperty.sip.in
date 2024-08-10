@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsprojectproperty.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -278,5 +278,5 @@ Attempts to find a property with a matching sub-key name.
  *                                                                      *
  * src/core/project/qgsprojectproperty.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

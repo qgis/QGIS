@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/expression/qgsexpressionnode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -307,5 +307,5 @@ Returns a reference to the current object if no optimizations were applied.
  *                                                                      *
  * src/core/expression/qgsexpressionnode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

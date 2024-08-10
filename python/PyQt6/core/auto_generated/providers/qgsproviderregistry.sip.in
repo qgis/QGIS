@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/qgsproviderregistry.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -774,5 +774,5 @@ register a new vector data provider from its ``providerMetadata``
  *                                                                      *
  * src/core/providers/qgsproviderregistry.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

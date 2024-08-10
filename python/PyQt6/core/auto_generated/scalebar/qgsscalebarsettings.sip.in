@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/scalebar/qgsscalebarsettings.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -758,5 +758,5 @@ Ownership of ``format`` is transferred to the settings.
  *                                                                      *
  * src/core/scalebar/qgsscalebarsettings.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

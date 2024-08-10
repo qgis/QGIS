@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingguiregistry.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -159,5 +159,5 @@ it indicates that the parameter type cannot be configured via GUI.
  *                                                                      *
  * src/gui/processing/qgsprocessingguiregistry.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

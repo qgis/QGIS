@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/plot/qgsplot.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -486,5 +486,5 @@ Returns the default fill symbol to use for the chart area border.
  *                                                                      *
  * src/core/plot/qgsplot.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturesink.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -89,5 +89,5 @@ QFlags<QgsFeatureSink::Flag> operator|(QgsFeatureSink::Flag f1, QFlags<QgsFeatur
  *                                                                      *
  * src/core/qgsfeaturesink.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

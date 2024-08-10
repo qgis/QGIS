@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgsstylemanagerdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -353,5 +353,5 @@ sets the text of the item with bold font
  *                                                                      *
  * src/gui/symbology/qgsstylemanagerdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

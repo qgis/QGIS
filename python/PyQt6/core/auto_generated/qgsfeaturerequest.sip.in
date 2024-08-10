@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturerequest.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -1021,5 +1021,5 @@ Gets an iterator for features matching the specified request
  *                                                                      *
  * src/core/qgsfeaturerequest.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

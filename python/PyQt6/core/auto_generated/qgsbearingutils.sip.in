@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsbearingutils.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,5 +40,5 @@ vertical. An exception will be thrown if the bearing could not be calculated.
  *                                                                      *
  * src/core/qgsbearingutils.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

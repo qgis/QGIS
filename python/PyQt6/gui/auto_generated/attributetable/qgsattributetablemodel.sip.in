@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsattributetablemodel.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -299,5 +299,5 @@ Model has been changed
  *                                                                      *
  * src/gui/attributetable/qgsattributetablemodel.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscompoundcolorwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -150,5 +150,5 @@ Sets the color to show in an optional "previous color" section
  *                                                                      *
  * src/gui/qgscompoundcolorwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

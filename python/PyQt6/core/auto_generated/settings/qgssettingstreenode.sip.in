@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/settings/qgssettingstreenode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -278,5 +278,5 @@ Init the nodes with the specific ``options``
  *                                                                      *
  * src/core/settings/qgssettingstreenode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

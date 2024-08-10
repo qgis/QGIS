@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsowsconnection.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -120,5 +120,5 @@ Marks the specified connection for the specified service as selected
  *                                                                      *
  * src/core/qgsowsconnection.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

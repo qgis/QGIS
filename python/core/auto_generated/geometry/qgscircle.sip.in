@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgscircle.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -388,5 +388,5 @@ Coordinates are taken from quadrant North, East and South.
  *                                                                      *
  * src/core/geometry/qgscircle.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

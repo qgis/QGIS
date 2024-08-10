@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/editform/qgsattributeeditorcontainer.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -183,5 +183,5 @@ Sets the background color to ``backgroundColor``.
  *                                                                      *
  * src/core/editform/qgsattributeeditorcontainer.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

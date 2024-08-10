@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmaptoolidentify.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -233,5 +233,5 @@ QFlags<QgsMapToolIdentify::Type> operator|(QgsMapToolIdentify::Type f1, QFlags<Q
  *                                                                      *
  * src/gui/qgsmaptoolidentify.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

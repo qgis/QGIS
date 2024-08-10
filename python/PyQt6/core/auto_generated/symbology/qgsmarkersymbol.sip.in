@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsmarkersymbol.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -252,5 +252,5 @@ and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and o
  *                                                                      *
  * src/core/symbology/qgsmarkersymbol.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

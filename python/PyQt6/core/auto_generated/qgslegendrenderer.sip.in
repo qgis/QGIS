@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgslegendrenderer.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -107,5 +107,5 @@ Returns the style for the given ``node``, within the specified ``model``.
  *                                                                      *
  * src/core/qgslegendrenderer.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

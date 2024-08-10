@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsfeaturelistmodel.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -190,5 +190,5 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.endInsertRows`
  *                                                                      *
  * src/gui/attributetable/qgsfeaturelistmodel.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

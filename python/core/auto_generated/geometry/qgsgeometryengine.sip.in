@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsgeometryengine.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -316,5 +316,5 @@ Logs an error ``message`` encountered during an operation.
  *                                                                      *
  * src/core/geometry/qgsgeometryengine.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsjsonutils.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -384,5 +384,5 @@ Returns a null geometry if the geometry could not be parsed.
  *                                                                      *
  * src/core/qgsjsonutils.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

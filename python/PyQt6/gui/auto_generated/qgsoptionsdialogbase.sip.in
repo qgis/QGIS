@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsoptionsdialogbase.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -187,5 +187,5 @@ it is automatically called if a line edit has "mSearchLineEdit" as object name.
  *                                                                      *
  * src/gui/qgsoptionsdialogbase.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

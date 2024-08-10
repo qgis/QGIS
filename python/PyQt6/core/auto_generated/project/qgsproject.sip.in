@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsproject.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -2326,5 +2326,5 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
  *                                                                      *
  * src/core/project/qgsproject.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

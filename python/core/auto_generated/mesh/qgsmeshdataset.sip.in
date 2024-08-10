@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshdataset.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -1035,5 +1035,5 @@ Writes the item and its children in a DOM document
  *                                                                      *
  * src/core/mesh/qgsmeshdataset.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

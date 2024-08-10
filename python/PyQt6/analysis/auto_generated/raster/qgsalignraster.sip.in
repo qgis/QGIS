@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsalignraster.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -264,5 +264,5 @@ Determine suggested output of raster warp to a different CRS. Returns ``True`` o
  *                                                                      *
  * src/analysis/raster/qgsalignraster.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

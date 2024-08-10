@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsoptionsdialoghighlightwidgetsimpl.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -164,5 +164,5 @@ constructs a highlight widget for a table view or widget.
  *                                                                      *
  * src/gui/qgsoptionsdialoghighlightwidgetsimpl.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

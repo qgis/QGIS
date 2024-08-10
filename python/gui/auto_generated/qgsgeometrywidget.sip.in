@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsgeometrywidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -128,5 +128,5 @@ Emitted whenever the geometry value of the widget is changed.
  *                                                                      *
  * src/gui/qgsgeometrywidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -111,5 +111,5 @@ Contains a set of layers and feature ids in those layers to pass to a geometry c
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

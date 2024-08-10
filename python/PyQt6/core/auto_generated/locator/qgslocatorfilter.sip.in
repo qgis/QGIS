@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/locator/qgslocatorfilter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -364,5 +364,5 @@ QFlags<QgsLocatorFilter::Flag> operator|(QgsLocatorFilter::Flag f1, QFlags<QgsLo
  *                                                                      *
  * src/core/locator/qgslocatorfilter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
