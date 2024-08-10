@@ -457,6 +457,15 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
           if ( existingSatInView.id == currentSatellite.id )
           {
             idAlreadyPresent = true;
+            // Signal averaging
+            if ( existingSatInView.signal == 0 )
+            {
+              existingSatInView.signal = currentSatellite.sig;
+            }
+            else if ( currentSatellite.sig != 0 )
+            {
+              existingSatInView.signal = (existingSatInView.signal + currentSatellite.sig) / 2;
+            }
             break;
           }
         }
