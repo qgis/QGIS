@@ -464,7 +464,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
             }
             else if ( currentSatellite.sig != 0 )
             {
-              existingSatInView.signal = (existingSatInView.signal + currentSatellite.sig) / 2;
+              existingSatInView.signal = ( existingSatInView.signal + currentSatellite.sig ) / 2;
             }
             break;
           }
