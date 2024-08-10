@@ -23,7 +23,6 @@ PREPEND_CODE_NO = 40
 PREPEND_CODE_VIRTUAL = 41
 PREPEND_CODE_MAKE_PRIVATE = 42
 
-
 # TO RENAME
 LINE = ''
 
@@ -755,7 +754,9 @@ def processDoxygenLine(line):
         return f"\n.. versionadded:: {since_match.group(1)}\n"
 
     # Handle deprecated
-    deprecated_match = re.search(r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?', line, re.IGNORECASE)
+    deprecated_match = re.search(
+        r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?', line,
+        re.IGNORECASE)
     if deprecated_match:
         prev_indent = indent
         indent = ''
@@ -835,7 +836,7 @@ def detect_and_remove_following_body_or_initializerlist():
 
     if (re.match(pattern1, LINE) or
         re.search(pattern2, LINE) or
-        re.match(pattern3, LINE)):
+            re.match(pattern3, LINE)):
 
         dbg_info("remove constructor definition, function bodies, member initializing list (1)")
 
@@ -962,7 +963,8 @@ def fix_annotations(line):
 
     # Note: this was the original perl regex, which isn't compatible with Python:
     # line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)""", r'= \1', line)
-    line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()\']+)(\((?:[^()]|\([^()]*\))*\))?\'?\s*\)""", r'= \1', line)
+    line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()\']+)(\((?:[^()]|\([^()]*\))*\))?\'?\s*\)""", r'= \1',
+                  line)
 
     # Remove argument
     if 'SIP_PYARGREMOVE' in line:
@@ -987,7 +989,9 @@ def fix_annotations(line):
 
         # original perl regex was:
         # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//
-        line = re.sub(r'(?P<coma>, +)?(const )?(\w+)(\<(?:[^<>]|\<(?:[^<>]|\<[^<>]*\>)*\>)*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|\([^()]*\))*\s*\))?)?(?(coma)|,?)', '', line)
+        line = re.sub(
+            r'(?P<coma>, +)?(const )?(\w+)(\<(?:[^<>]|\<(?:[^<>]|\<[^<>]*\>)*\>)*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|\([^()]*\))*\s*\))?)?(?(coma)|,?)',
+            '', line)
         line = re.sub(r'\(\s+\)', '()', line)
 
     line = re.sub(r'SIP_FORCE', '', line)
@@ -1110,7 +1114,7 @@ while line_idx < line_count:
     # Do not process SIP code %XXXCode
     if sip_run and re.match(
         r'^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$',
-        LINE):
+            LINE):
         LINE = f"%{re.match(r'^ *% *(.*)$', LINE).group(1)}"
         COMMENT = ''
         dbg_info("do not process SIP code")
@@ -1271,7 +1275,7 @@ while line_idx < line_count:
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, etc.
     if re.match(
         r'^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$',
-        LINE):
+            LINE):
         continue
 
     if re.match(r'^\s*QHASH_FOR_CLASS_ENUM', LINE):
@@ -1318,7 +1322,8 @@ while line_idx < line_count:
     if struct_match:
         dbg_info("  going to struct => public")
         class_and_struct.append(struct_match.group('structname'))
-        classname.append(classname[-1] if classname else struct_match.group('structname'))  # fake new class since struct has considered similarly
+        classname.append(classname[-1] if classname else struct_match.group(
+            'structname'))  # fake new class since struct has considered similarly
         access.append(PUBLIC)
         exported.append(exported[-1])
         glob_bracket_nesting_idx.append(0)
@@ -1388,7 +1393,7 @@ while line_idx < line_count:
                 r'\b(?P<tpl>(?!QList)\w+)< *(?P<cls1>(\w|::)+) *(, *(?P<cls2>(\w|::)+)? *(, *(?P<cls3>(\w|::)+)? *)?)? *>'
             )
             m = tpl_replace_pattern.sub(lambda
-                                            match: f"{match.group('tpl') or ''}{match.group('cls1') or ''}{match.group('cls2') or ''}{match.group('cls3') or ''}Base",
+                                        match: f"{match.group('tpl') or ''}{match.group('cls1') or ''}{match.group('cls2') or ''}{match.group('cls3') or ''}Base",
                                         m)
             m = re.sub(r'(\w+)< *(?:\w|::)+ *>', '', m)
             m = re.sub(r'([:,])\s*,', r'\1', m)
@@ -1552,7 +1557,7 @@ while line_idx < line_count:
     # For scoped and type-based enum, the type has to be removed
     if re.match(
         r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*$',
-        LINE):
+            LINE):
         flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(1)
         flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(2)
         emkb = re.search(r'SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(1)
@@ -1607,7 +1612,7 @@ while line_idx < line_count:
         _match = None
         if is_scope_based:
             _match = re.search(
-            r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?', LINE)
+                r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?', LINE)
         monkeypatch = is_scope_based and _match
         enum_mk_base = _match.group('emkb') if _match else ''
 
@@ -1938,7 +1943,9 @@ while line_idx < line_count:
     python_signature = detect_and_remove_following_body_or_initializerlist()
 
     # remove inline declarations
-    match = re.search(r'^(\s*)?(static |const )*(([(?:long )\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$', LINE)
+    match = re.search(
+        r'^(\s*)?(static |const )*(([(?:long )\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$',
+        LINE)
     if match:
         LINE = f"{match.group(1)}{match.group(3)};"
 
@@ -1965,7 +1972,7 @@ while line_idx < line_count:
     # deleted functions
     if re.match(
         r'^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$',
-        LINE):
+            LINE):
         comment = ''
         continue
 
@@ -1987,7 +1994,7 @@ while line_idx < line_count:
            re.match(r'^\s*namespace\s+\w+', LINE) or
            re.match(r'^\s*(virtual\s*)?~', LINE) or
            detect_non_method_member(LINE)
-          )):
+           )):
         dbg_info('skipping comment')
         if re.search(r'\s*typedef.*?(?!SIP_DOC_TEMPLATE)', LINE):
             dbg_info('because typedef')
