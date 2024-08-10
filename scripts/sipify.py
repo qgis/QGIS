@@ -768,27 +768,29 @@ def processDoxygenLine(line):
         return create_class_links(depr_line)
 
     # Handle see also
-    see_match = re.search(r'\s*\\see +(\w+(\.\w+)*)(\([^()]*\))?', line)
-    if see_match:
-        seealso = see_match.group(1)
-        seeline = ''
-        dbg_info(f"see also: {seealso}")
-        if re.match(r'^Qgs[A-Z]\w+(\([^()]*\))?$', seealso):
-            dbg_info("\\see py:class")
-            seeline = f":py:class:`{seealso}`"
-        elif re.match(r'^(Qgs[A-Z]\w+)\.(\w+)(\([^()]*\))?$', seealso):
-            dbg_info("\\see py:func with param")
-            seeline = f":py:func:`{seealso}`"
-        elif re.match(r'^[a-z]\w+(\([^()]*\))?$', seealso):
-            dbg_info("\\see py:func")
-            seeline = f":py:func:`{seealso}`"
-        if re.match(r'^\s*\\see', line):
-            return f"\n.. seealso:: {seeline or seealso}\n"
-        else:
-            if seeline:
-                line = re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
+    see_matches = list(re.finditer(r'\\see +(\w+(\.\w+)*)(\([^()]*\))?', line))
+    if see_matches:
+        for see_match in reversed(see_matches):
+            seealso = see_match.group(1)
+            seeline = ''
+            dbg_info(f"see also: `{seealso}`")
+            if re.match(r'^Qgs[A-Z]\w+(\([^()]*\))?$', seealso):
+                dbg_info(f"\\see :py:class:`{seealso}`")
+                seeline = f":py:class:`{seealso}`"
+            elif re.match(r'^(Qgs[A-Z]\w+)\.(\w+)(\([^()]*\))?$', seealso):
+                dbg_info(f"\\see py:func with param: :py:func:`{seealso}`")
+                seeline = f":py:func:`{seealso}`"
+            elif re.match(r'^[a-z]\w+(\([^()]*\))?$', seealso):
+                dbg_info(f"\\see :py:func:`{seealso}`")
+                seeline = f":py:func:`{seealso}`"
+
+            if re.match(r'^\s*\\see', line):
+                return f"\n.. seealso:: {seeline or seealso}\n"
             else:
-                line = line.replace('\\see', 'see')
+                if seeline:
+                    line = line[:see_match.start()] + seeline + line[see_match.end():] #re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
+                else:
+                    line = line.replace('\\see', 'see')
     elif not re.search(r'\\throws.*', line):
         line = create_class_links(line)
 
