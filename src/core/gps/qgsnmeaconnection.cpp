@@ -452,7 +452,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       bool idAlreadyPresent = false;
       if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
       {
-        for ( const QgsSatelliteInfo &existingSatInView : std::as_const( mLastGPSInformation.satellitesInView ) )
+        for ( QgsSatelliteInfo &existingSatInView : mLastGPSInformation.satellitesInView )
         {
           if ( existingSatInView.id == currentSatellite.id )
           {
