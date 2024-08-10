@@ -342,7 +342,6 @@ on the returned value to determine the type of CRS returned by this method.
 
 .. seealso:: :py:func:`crs3DChanged`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -408,7 +407,6 @@ The returned CRS will be invalid if the project has no vertical CRS.
 
 .. seealso:: :py:func:`setVerticalCrs`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -426,15 +424,12 @@ The :py:func:`~QgsProject.verticalCrsChanged` signal will be raised if the verti
 
 :param crs: the vertical CRS
 
-
 :return: - ``True`` if vertical CRS was successfully set
          - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
-
 
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`setCrs`
-
 
 .. versionadded:: 3.38
 %End
@@ -1197,7 +1192,6 @@ The :py:func:`~QgsProject.legendLayersAdded` signal is emitted only if addToLege
          successfully. If a layer or already exists in the registry,
          it will not be part of the returned QList.
 
-
 .. note::
 
    As a side-effect QgsProject is made dirty.
@@ -1228,9 +1222,7 @@ If you are adding multiple layers at once, you should use
 
 :return: ``None`` if unable to add layer, otherwise pointer to newly added layer
 
-
 .. seealso:: :py:func:`addMapLayers`
-
 
 .. note::
 
@@ -2226,7 +2218,6 @@ be made persistent until :py:func:`~QgsProject.commitChanges` is called, and can
 
 .. seealso:: :py:func:`rollBack`
 
-
 .. versionadded:: 3.26
 %End
 
@@ -2255,11 +2246,9 @@ that the user has some chance of repairing the damage cleanly.
 :return: - ``True`` if the commit was successful.
          - commitErrors: will be set to a list of descriptive errors if the commit fails.
 
-
 .. seealso:: :py:func:`startEditing`
 
 .. seealso:: :py:func:`rollBack`
-
 
 .. versionadded:: 3.26
 %End
@@ -2276,11 +2265,9 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
 :return: - ``True`` if the rollback was successful.
          - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
 
-
 .. seealso:: :py:func:`startEditing`
 
 .. seealso:: :py:func:`commitChanges`
-
 
 .. versionadded:: 3.26
 %End
@@ -2290,7 +2277,7 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
 class QgsProjectDirtyBlocker
 {
 %Docstring(signature="appended")
-Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
+Temporarily blocks :py:class:`QgsProject` "dirtying" for the lifetime of the object.
 
 :py:class:`QgsProjectDirtyBlocker` supports "stacked" blocking, so two :py:class:`QgsProjectDirtyBlockers` created
 for the same project will both need to be destroyed before the project can be dirtied again.

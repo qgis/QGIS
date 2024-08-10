@@ -139,7 +139,6 @@ Appends the contents of another circular ``string`` to the end of this circular 
    It is the caller's responsibility to ensure that the first point in the appended
    ``string`` matches the last point in the existing curve, or the result will be undefined.
 
-
 .. versionadded:: 3.20
 %End
 

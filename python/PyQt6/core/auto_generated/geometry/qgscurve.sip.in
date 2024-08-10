@@ -319,7 +319,6 @@ Scrolls the curve vertices so that they start with the vertex at the given index
    The ``firstVertexIndex`` must correspond to a segment vertex and not a curve point or the result
    is undefined.
 
-
 .. versionadded:: 3.20
 %End
 

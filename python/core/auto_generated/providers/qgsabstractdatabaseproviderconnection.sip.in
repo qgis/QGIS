@@ -563,7 +563,6 @@ Renames an existing field.
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.28

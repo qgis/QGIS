@@ -287,7 +287,6 @@ to reflect the new value.
 :param value: The new value of the attribute
 
 .. deprecated:: QGIS 3.10
-  
 %End
 
     void setValues( const QVariant &value, const QVariantList &additionalValues );

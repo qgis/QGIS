@@ -29,7 +29,6 @@ system.
 
    :py:class:`QgsCoordinateTransformContext` objects are implicitly shared.
 
-
 .. seealso:: :py:class:`QgsDatumTransform`
 
 .. seealso:: :py:class:`QgsCoordinateTransform`
@@ -72,7 +71,6 @@ required for transformations for that source or destination.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
-
 .. deprecated::
    Has no effect on builds based on Proj 6.0 or later, use :py:func:`~QgsCoordinateTransformContext.coordinateOperations` instead.
 %End
@@ -90,12 +88,10 @@ Returns the stored mapping for source to destination CRS pairs to associated coo
 
 .. seealso:: :py:func:`addCoordinateOperation`
 
-
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
    and the deprecated :py:func:`~QgsCoordinateTransformContext.sourceDestinationDatumTransforms` method must be used instead.
-
 
 .. versionadded:: 3.8
 %End
@@ -148,12 +144,10 @@ Returns ``True`` if the new coordinate operation was added successfully.
 
 .. seealso:: :py:func:`removeCoordinateOperation`
 
-
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
    and the deprecated :py:func:`~QgsCoordinateTransformContext.addSourceDestinationDatumTransform` method must be used instead.
-
 
 .. versionadded:: 3.8
 %End
@@ -221,13 +215,11 @@ be used.
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
    an empty string, and the deprecated :py:func:`~QgsCoordinateTransformContext.calculateDatumTransforms` method should be used instead.
 
-
 .. warning::
 
    Always check the result of :py:func:`~QgsCoordinateTransformContext.mustReverseCoordinateOperation` in order to determine if the
    proj coordinate operation string returned by this method corresponds to the reverse operation, and
    must be manually flipped when calculating coordinate transforms.
-
 
 .. versionadded:: 3.8
 %End

@@ -42,7 +42,6 @@ of the raster covering the specified ``subRegion``.
          - subRegionLeft: starting column of left side of sub region
          - subRegionTop: starting row of top side of sub region
 
-
 .. versionadded:: 3.26
 %End
 

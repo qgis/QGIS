@@ -83,7 +83,7 @@ Tests whether a given legend key is visible for a specified layer.
 class QgsMapHitTestTask : QgsTask
 {
 %Docstring(signature="appended")
-Executes a QgsMapHitTest in a background thread.
+Executes a :py:class:`QgsMapHitTest` in a background thread.
 
 .. versionadded:: 3.32
 %End

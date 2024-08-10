@@ -106,7 +106,7 @@ and help text for the associated property.
 class QgsLabelSettingsWidgetDialog : QDialog
 {
 %Docstring(signature="appended")
-A blocking dialog containing a QgsLabelSettingsWidgetBase.
+A blocking dialog containing a :py:class:`QgsLabelSettingsWidgetBase`.
 
 .. versionadded:: 3.12
 %End

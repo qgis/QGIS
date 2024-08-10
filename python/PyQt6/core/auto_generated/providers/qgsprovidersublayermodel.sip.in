@@ -216,7 +216,7 @@ class QgsProviderSublayerProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 
-A QSortFilterProxyModel for filtering and sorting a QgsProviderSublayerModel.
+A QSortFilterProxyModel for filtering and sorting a :py:class:`QgsProviderSublayerModel`.
 
 .. versionadded:: 3.22
 %End

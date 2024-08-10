@@ -306,7 +306,7 @@ QFlags<QgsTask::Flag> operator|(QgsTask::Flag f1, QFlags<QgsTask::Flag> f2);
 class QgsTaskManager : QObject
 {
 %Docstring(signature="appended")
-Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
+Task manager for managing a set of long-running :py:class:`QgsTask` tasks. This class can be created directly,
 or accessed via :py:func:`QgsApplication.taskManager()`.
 %End
 

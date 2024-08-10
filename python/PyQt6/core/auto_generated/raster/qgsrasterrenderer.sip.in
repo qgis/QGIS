@@ -96,7 +96,6 @@ Returns ``True`` if the band was successfully set, or ``False`` if the band coul
 
 .. seealso:: :py:func:`usesBands`
 
-
 .. versionadded:: 3.38
 %End
 

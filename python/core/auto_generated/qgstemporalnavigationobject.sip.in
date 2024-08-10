@@ -218,7 +218,6 @@ Returns the total number of frames for the movie.
 
 .. seealso:: :py:func:`totalMovieFramesChanged`
 
-
 .. versionadded:: 3.36
 %End
 
@@ -233,7 +232,6 @@ Sets the total number of ``frames`` for the movie.
 .. seealso:: :py:func:`totalMovieFrames`
 
 .. seealso:: :py:func:`totalMovieFramesChanged`
-
 
 .. versionadded:: 3.36
 %End
@@ -271,7 +269,6 @@ Emitted whenever the total number of ``frames`` in the movie is changed.
 .. seealso:: :py:func:`setTotalMovieFrames`
 
 .. seealso:: :py:func:`totalMovieFrames`
-
 
 .. versionadded:: 3.36
 %End

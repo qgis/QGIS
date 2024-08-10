@@ -169,7 +169,6 @@ Converts a ``value`` to a point.
 :return: - converted point
          - ok: will be set to ``True`` if value was successfully converted
 
-
 .. seealso:: :py:func:`decodePoint`
 
 .. seealso:: :py:func:`toSize`
@@ -203,7 +202,6 @@ Converts a ``value`` to a size.
 
 :return: - converted size
          - ok: will be set to ``True`` if value was successfully converted
-
 
 .. seealso:: :py:func:`decodeSize`
 

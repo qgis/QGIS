@@ -75,12 +75,9 @@ Since QGIS 3.4 when closing a project, the application shows a warning about pot
 loss if there are any non-empty memory layers present. If your memory layer should not
 trigger such warning, it is possible to suppress that by setting the following custom variable:
 
-
 .. code-block:: python
 
          layer.setCustomProperty("skipMemoryLayersCheck", 1)
-
-
 
 OGR data provider (ogr)
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -330,7 +327,6 @@ Grass data provider (grass)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Provider to display vector data in a GRASS GIS layer.
-
 
 .. seealso:: :py:class:`QgsVectorLayerUtils`
 %End
@@ -726,7 +722,6 @@ Returns a copy of the user-selected features.
 
 :return: A list of :py:class:`QgsFeature`
 
-
 .. seealso:: :py:func:`selectedFeatureIds`
 
 .. seealso:: :py:func:`getSelectedFeatures`
@@ -741,13 +736,11 @@ Returns an iterator of the selected features.
 
 :return: Iterator over the selected features
 
-
 .. warning::
 
    Calling this method returns an iterator for all attributes and geometry for the selected features.
    Consider using the much more efficient :py:func:`~QgsVectorLayer.selectedFeatureIds` or :py:func:`~QgsVectorLayer.selectedFeatureCount` if you do not
    require access to the feature attributes or geometry.
-
 
 .. seealso:: :py:func:`selectedFeatureIds`
 
@@ -1095,7 +1088,6 @@ Returns ``True`` if the feature's attribute was successfully changed.
    with matching :py:func:`QgsFeature.id()` on every call. Depending on the underlying data source this
    can be slow to execute. Consider using the more efficient :py:func:`~QgsVectorLayer.changeAttributeValue` or
    :py:func:`~QgsVectorLayer.changeGeometry` methods instead.
-
 
 .. seealso:: :py:func:`startEditing`
 
@@ -1764,7 +1756,6 @@ be updated. This can be used to override default field value expressions.
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-
 .. seealso:: :py:func:`startEditing`
 
 .. seealso:: :py:func:`commitChanges`
@@ -1803,7 +1794,6 @@ If ``context`` is provided, it will be used when updating default values (since 
    by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
-
 
 .. seealso:: :py:func:`startEditing`
 
@@ -1845,7 +1835,6 @@ If ``context`` is provided, it will be used when updating default values (since 
    to features using this method are not committed to the underlying data
    provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted changes
    can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
-
 
 .. seealso:: :py:func:`startEditing`
 
@@ -2353,7 +2342,6 @@ Returns the minimum value for an attribute column or an invalid variant in case 
    If both the minimum and maximum value are required it is more efficient to call :py:func:`~QgsVectorLayer.minimumAndMaximumValue`
    instead of separate calls to :py:func:`~QgsVectorLayer.minimumValue` and :py:func:`~QgsVectorLayer.maximumValue`.
 
-
 .. seealso:: :py:func:`maximumValue`
 
 .. seealso:: :py:func:`minimumAndMaximumValue`
@@ -2376,7 +2364,6 @@ Returns the maximum value for an attribute column or an invalid variant in case 
 
    If both the minimum and maximum value are required it is more efficient to call :py:func:`~QgsVectorLayer.minimumAndMaximumValue`
    instead of separate calls to :py:func:`~QgsVectorLayer.minimumValue` and :py:func:`~QgsVectorLayer.maximumValue`.
-
 
 .. seealso:: :py:func:`minimumValue`
 
@@ -2401,11 +2388,9 @@ and maximum values are required.
    calculated values may be outdated (for instance when the attribute value in a saved feature has
    been changed inside the edit buffer then the previous saved value may be returned as the maximum).
 
-
 .. seealso:: :py:func:`minimumValue`
 
 .. seealso:: :py:func:`maximumValue`
-
 
 :return: - minimum: will be set to minimum attribute value or an invalid variant in case of error.
          - maximum: will be set to maximum attribute value or an invalid variant in case of error.

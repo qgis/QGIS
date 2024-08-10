@@ -33,8 +33,6 @@ The time in a mesh layer is defined by :
      AT : absolute time (QDateTime)
      RT : relative time (qint64)
 
-
-
 .. versionadded:: 3.14
 %End
 

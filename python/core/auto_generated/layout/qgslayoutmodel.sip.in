@@ -96,7 +96,7 @@ Returns the QModelIndex corresponding to a :py:class:`QgsLayoutItem` ``item`` an
 class QgsLayoutProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-Allows for filtering a QgsLayoutModel by item type.
+Allows for filtering a :py:class:`QgsLayoutModel` by item type.
 %End
 
 %TypeHeaderCode

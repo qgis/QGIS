@@ -249,7 +249,6 @@ The default is to use no simplification.
 
 .. seealso:: :py:func:`simplifyMethod`
 
-
 .. versionadded:: 3.10
 %End
 

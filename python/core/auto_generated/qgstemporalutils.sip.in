@@ -103,7 +103,6 @@ the number of days in the current month.
 
 :return: The calculated datetime for the frame.
 
-
 .. versionadded:: 3.18
 %End
 

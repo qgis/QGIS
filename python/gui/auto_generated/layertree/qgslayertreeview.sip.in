@@ -471,7 +471,7 @@ Allows customization of the menu.
 class QgsLayerTreeViewMenuProvider
 {
 %Docstring(signature="appended")
-Implementation of this interface can be implemented to allow QgsLayerTreeView
+Implementation of this interface can be implemented to allow :py:class:`QgsLayerTreeView`
 instance to provide custom context menus (opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayerTreeView`

@@ -947,7 +947,6 @@ When vector features are rendered, they should be clipped to this geometry.
 
 .. seealso:: :py:func:`setFeatureClipGeometry`
 
-
 .. versionadded:: 3.16
 %End
 

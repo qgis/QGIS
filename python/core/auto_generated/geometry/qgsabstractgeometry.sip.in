@@ -786,7 +786,6 @@ Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 :return: - ``True`` if geometry is valid
          - error: will be set to the validity error message
 
-
 .. versionadded:: 3.8
 %End
 
@@ -864,8 +863,6 @@ Example
        geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
        for v in geometry.vertices():
            print(v.x(), v.y())
-
-
 
 .. seealso:: :py:func:`parts`
 %End

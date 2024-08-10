@@ -441,11 +441,9 @@ metadata :py:func:`~QgsProviderMetadata.createDatabase` method can be used to cr
 :return: - ``True`` if the database was successfully created
          - errorMessage: will be set to a descriptive error message if the database could not be successfully created.
 
-
 .. note::
 
    This method is only supported by providers which return the QgsProviderMetadata.ProviderMetadataCapability.CreateDatabase capability.
-
 
 .. versionadded:: 3.28
 %End
@@ -678,10 +676,8 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 :return: - ``True`` if the metadata was successfully saved.
          - errorMessage: descriptive string of error if encountered
 
-
 :raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
-
 
 .. versionadded:: 3.20
 %End

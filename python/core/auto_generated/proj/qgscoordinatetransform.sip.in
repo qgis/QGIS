@@ -76,7 +76,7 @@ which dictate the behavior of the transformation.
 
 .. warning::
 
-   Do NOT use an empty/default constructed QgsCoordinateTransformContext()
+   Do NOT use an empty/default constructed :py:class:`QgsCoordinateTransformContext`()
    object when creating QgsCoordinateTransform objects. This prevents correct
    datum transform handling and may result in inaccurate transformations. Always
    ensure that the :py:class:`QgsCoordinateTransformContext` object is correctly retrieved
@@ -108,7 +108,6 @@ correctly respected during coordinate transforms. E.g.
 
 Since QGIS 3.26 the optional ``flags`` argument can be used to specify flags
 which dictate the behavior of the transformation.
-
 
 .. warning::
 
@@ -372,7 +371,6 @@ coordinates.
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
    an empty string, and the deprecated :py:func:`~QgsCoordinateTransform.sourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.destinationDatumTransformId` methods should be used instead.
 
-
 .. seealso:: :py:func:`instantiatedCoordinateOperationDetails`
 
 .. seealso:: :py:func:`setCoordinateOperation`
@@ -413,7 +411,6 @@ coordinates.
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
    and the deprecated :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId` methods should be used instead.
 
-
 .. seealso:: :py:func:`coordinateOperation`
 
 .. versionadded:: 3.8
@@ -433,7 +430,6 @@ are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurre
 
    If :py:func:`~QgsCoordinateTransform.setBallparkTransformsAreAppropriate` is set to ``True``, this setting will be ignored
    and fallback transformations will always be permitted.
-
 
 .. seealso:: :py:func:`allowFallbackTransforms`
 
@@ -493,7 +489,6 @@ and fallback transforms will always be allowed when required.
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
 
-
 .. versionadded:: 3.12
 %End
 
@@ -512,7 +507,6 @@ operation occurred by testing :py:func:`~QgsCoordinateTransform.fallbackOperatio
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
-
 
 .. seealso:: :py:func:`fallbackOperationOccurred`
 
