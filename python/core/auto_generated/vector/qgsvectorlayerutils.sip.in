@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -391,5 +391,5 @@ first available.
  *                                                                      *
  * src/core/vector/qgsvectorlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

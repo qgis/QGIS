@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/scalebar/qgsscalebarrendererregistry.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -80,5 +80,5 @@ Returns the sorting key for the renderer with matching ``id``.
  *                                                                      *
  * src/core/scalebar/qgsscalebarrendererregistry.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

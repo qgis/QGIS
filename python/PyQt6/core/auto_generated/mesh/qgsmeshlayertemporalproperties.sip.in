@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshlayertemporalproperties.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -128,5 +128,5 @@ Sets whether the time proporties are automatically reloaded from provider when p
  *                                                                      *
  * src/core/mesh/qgsmeshlayertemporalproperties.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

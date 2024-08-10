@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectordataprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -691,5 +691,5 @@ Converts the ``geometry`` to the provider geometry type ``providerGeometryType``
  *                                                                      *
  * src/core/vector/qgsvectordataprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

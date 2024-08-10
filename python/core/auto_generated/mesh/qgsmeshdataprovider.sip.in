@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -481,5 +481,5 @@ Emitted when some new dataset groups have been added
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

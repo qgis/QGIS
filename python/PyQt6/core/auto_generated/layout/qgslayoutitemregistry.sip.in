@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -302,5 +302,5 @@ Emitted whenever a new multiframe type is added to the registry, with the specif
  *                                                                      *
  * src/core/layout/qgslayoutitemregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

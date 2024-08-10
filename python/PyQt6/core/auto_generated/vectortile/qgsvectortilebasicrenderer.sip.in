@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vectortile/qgsvectortilebasicrenderer.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -251,5 +251,5 @@ Returns a list of styles to render all layers, using random colors
  *                                                                      *
  * src/core/vectortile/qgsvectortilebasicrenderer.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

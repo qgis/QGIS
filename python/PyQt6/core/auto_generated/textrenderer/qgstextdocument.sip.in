@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextdocument.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -137,5 +137,5 @@ Applies a ``capitalization`` style to the document's text.
  *                                                                      *
  * src/core/textrenderer/qgstextdocument.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshtimesettings.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -73,5 +73,5 @@ Sets format used for absolute time
  *                                                                      *
  * src/core/mesh/qgsmeshtimesettings.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

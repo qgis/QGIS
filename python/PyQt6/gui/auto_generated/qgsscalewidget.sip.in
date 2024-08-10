@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsscalewidget.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -209,5 +209,5 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
  *                                                                      *
  * src/gui/qgsscalewidget.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

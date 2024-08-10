@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgshillshaderendererwidget.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -120,5 +120,5 @@ Sets whether to render using a multi-directional hillshade algorithm.
  *                                                                      *
  * src/gui/raster/qgshillshaderendererwidget.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsregularpolygon.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -223,5 +223,5 @@ Returns 0 if the regular polygon is empty.
  *                                                                      *
  * src/core/geometry/qgsregularpolygon.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

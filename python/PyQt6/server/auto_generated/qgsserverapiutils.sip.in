@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverapiutils.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -157,5 +157,5 @@ Appends MAP query string parameter from current ``requestUrl`` to the given ``pa
  *                                                                      *
  * src/server/qgsserverapiutils.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

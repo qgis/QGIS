@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterinterface.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -563,5 +563,5 @@ Fill in statistics defaults if not specified
  *                                                                      *
  * src/core/raster/qgsrasterinterface.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

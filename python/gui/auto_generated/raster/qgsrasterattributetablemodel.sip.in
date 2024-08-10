@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrasterattributetablemodel.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -148,5 +148,5 @@ Removes the row at ``position``, optionally reporting any error in ``errorMessag
  *                                                                      *
  * src/gui/raster/qgsrasterattributetablemodel.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

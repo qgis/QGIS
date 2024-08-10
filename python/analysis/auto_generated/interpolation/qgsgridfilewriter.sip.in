@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/interpolation/qgsgridfilewriter.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -47,5 +47,5 @@ An optional ``feedback`` object can be set for progress reports and cancellation
  *                                                                      *
  * src/analysis/interpolation/qgsgridfilewriter.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

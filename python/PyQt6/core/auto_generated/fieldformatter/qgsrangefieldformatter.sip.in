@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/fieldformatter/qgsrangefieldformatter.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,5 +33,5 @@ Field formatter for a range (double) field with precision and locale.
  *                                                                      *
  * src/core/fieldformatter/qgsrangefieldformatter.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscolorswatchgrid.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -223,5 +223,5 @@ Emitted when a color has been selected from the widget
  *                                                                      *
  * src/gui/qgscolorswatchgrid.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutviewtoolselect.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -60,5 +60,5 @@ Compute the search tolerance in layout units from the view current scale
  *                                                                      *
  * src/gui/layout/qgslayoutviewtoolselect.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

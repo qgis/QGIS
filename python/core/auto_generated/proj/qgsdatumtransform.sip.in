@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgsdatumtransform.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -200,5 +200,5 @@ If ``datumTransformId`` was not a valid transform ID, a TransformInfo with Trans
  *                                                                      *
  * src/core/proj/qgsdatumtransform.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

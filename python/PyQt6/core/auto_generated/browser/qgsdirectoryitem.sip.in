@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsdirectoryitem.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -224,5 +224,5 @@ Browser parameter widget implementation for directory items.
  *                                                                      *
  * src/core/browser/qgsdirectoryitem.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

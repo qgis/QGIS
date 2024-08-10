@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgspoint.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -481,5 +481,5 @@ Angle undefined. Always returns 0.0
  *                                                                      *
  * src/core/geometry/qgspoint.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

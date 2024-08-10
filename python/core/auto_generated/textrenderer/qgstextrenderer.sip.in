@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -307,5 +307,5 @@ font metrics and sizes for small font sizes.
  *                                                                      *
  * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

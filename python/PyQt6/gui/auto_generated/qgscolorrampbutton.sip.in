@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscolorrampbutton.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -315,5 +315,5 @@ Reimplemented to detect right mouse button clicks on the color ramp button
  *                                                                      *
  * src/gui/qgscolorrampbutton.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

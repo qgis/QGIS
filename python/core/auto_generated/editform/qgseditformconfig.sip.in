@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/editform/qgseditformconfig.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -307,5 +307,5 @@ Returns data defined property definitions.
  *                                                                      *
  * src/core/editform/qgseditformconfig.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

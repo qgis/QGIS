@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeature.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -985,5 +985,5 @@ typedef QList<QgsFeature> QgsFeatureList;
  *                                                                      *
  * src/core/qgsfeature.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

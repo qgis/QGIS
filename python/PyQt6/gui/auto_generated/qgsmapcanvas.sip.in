@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmapcanvas.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -1306,5 +1306,5 @@ called on resize or changed extent to notify canvas items to change their rectan
  *                                                                      *
  * src/gui/qgsmapcanvas.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsnewvectorlayerdialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -115,5 +115,5 @@ Sets the ``crs`` value for the new layer in the dialog.
  *                                                                      *
  * src/gui/qgsnewvectorlayerdialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/scalebar/qgssteppedlinescalebarrenderer.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -45,5 +45,5 @@ Scalebar style that draws a stepped line representation of a scalebar.
  *                                                                      *
  * src/core/scalebar/qgssteppedlinescalebarrenderer.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

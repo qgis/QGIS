@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsfillsymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -2846,5 +2846,5 @@ Sets whether point markers should be ``clipped`` to the current part boundary on
  *                                                                      *
  * src/core/symbology/qgsfillsymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

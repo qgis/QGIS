@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmaptoolpan.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -74,5 +74,5 @@ start of the pan and the current pan position.
  *                                                                      *
  * src/gui/qgsmaptoolpan.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

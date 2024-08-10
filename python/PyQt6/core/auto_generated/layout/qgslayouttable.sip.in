@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayouttable.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -790,5 +790,5 @@ Returns the vertical alignment to use for the cell at the specified ``row`` and 
  *                                                                      *
  * src/core/layout/qgslayouttable.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

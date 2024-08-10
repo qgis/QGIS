@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/expression/qgsexpressioncontextutils.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -375,5 +375,5 @@ Creates a new scope which contains functions relating to mesh layer element ``el
  *                                                                      *
  * src/core/expression/qgsexpressioncontextutils.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

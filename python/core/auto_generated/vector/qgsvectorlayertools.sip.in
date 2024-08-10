@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayertools.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -158,5 +158,5 @@ Returns the project to be used by operations when needed.
  *                                                                      *
  * src/core/vector/qgsvectorlayertools.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

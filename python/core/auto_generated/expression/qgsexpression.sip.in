@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/expression/qgsexpression.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -731,5 +731,5 @@ Returns ``True`` if the given ``expressions`` could be converted to an IN type e
  *                                                                      *
  * src/core/expression/qgsexpression.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

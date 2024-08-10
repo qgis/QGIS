@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshlayerlabeling.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -163,5 +163,5 @@ Create the instance from a DOM element with saved configuration
  *                                                                      *
  * src/core/mesh/qgsmeshlayerlabeling.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

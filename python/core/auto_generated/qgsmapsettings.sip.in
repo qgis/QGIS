@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmapsettings.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -1008,5 +1008,5 @@ Sets the shading ``renderer`` used to render shading on the entire map
  *                                                                      *
  * src/core/qgsmapsettings.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayer.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -2327,5 +2327,5 @@ QFlags<QgsMapLayer::ReadFlag> operator|(QgsMapLayer::ReadFlag f1, QFlags<QgsMapL
  *                                                                      *
  * src/core/qgsmaplayer.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

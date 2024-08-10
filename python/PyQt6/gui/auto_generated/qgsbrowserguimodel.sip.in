@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsbrowserguimodel.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -55,5 +55,5 @@ Sets message bar that will be passed in :py:class:`QgsDataItemGuiContext` to dat
  *                                                                      *
  * src/gui/qgsbrowserguimodel.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

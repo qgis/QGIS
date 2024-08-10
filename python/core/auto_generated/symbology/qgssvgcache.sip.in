@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssvgcache.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -237,5 +237,5 @@ Emitted when the cache has finished retrieving an SVG file from a remote ``url``
  *                                                                      *
  * src/core/symbology/qgssvgcache.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

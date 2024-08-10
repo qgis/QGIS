@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsremappingproxyfeaturesink.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -211,5 +211,5 @@ Returns the destination :py:class:`QgsFeatureSink` which the proxy will forward 
  *                                                                      *
  * src/core/qgsremappingproxyfeaturesink.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstiles.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -400,5 +400,5 @@ Returns a list of tiles in the given tile range.
  *                                                                      *
  * src/core/qgstiles.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

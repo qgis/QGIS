@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayerfactory.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -76,5 +76,5 @@ Caller takes ownership of the returned layer.
  *                                                                      *
  * src/core/qgsmaplayerfactory.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

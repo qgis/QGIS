@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshadvancedediting.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -159,5 +159,5 @@ If ``layer`` is not the same than the one used to make the calculation, this wil
  *                                                                      *
  * src/core/mesh/qgsmeshadvancedediting.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

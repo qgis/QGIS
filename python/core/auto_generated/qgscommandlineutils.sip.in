@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgscommandlineutils.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -36,5 +36,5 @@ Display all versions in the standard output stream
  *                                                                      *
  * src/core/qgscommandlineutils.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

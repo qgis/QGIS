@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgssinglebandgrayrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -115,5 +115,5 @@ Ownership of ``settings`` is transferred.
  *                                                                      *
  * src/core/raster/qgssinglebandgrayrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

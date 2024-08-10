@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgslinearminmaxenhancement.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,5 +31,5 @@ A color enhancement function that performs a linear enhanceContrast between min 
  *                                                                      *
  * src/core/raster/qgslinearminmaxenhancement.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

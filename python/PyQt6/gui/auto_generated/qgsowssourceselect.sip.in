@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsowssourceselect.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -201,5 +201,5 @@ canvas if it is available.
  *                                                                      *
  * src/gui/qgsowssourceselect.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

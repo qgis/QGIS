@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/fieldformatter/qgsfallbackfieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,5 +30,5 @@ The values will be returned unmodified.
  *                                                                      *
  * src/core/fieldformatter/qgsfallbackfieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

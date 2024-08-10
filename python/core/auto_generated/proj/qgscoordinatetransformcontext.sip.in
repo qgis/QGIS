@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgscoordinatetransformcontext.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -289,5 +289,5 @@ Write the context's state to application settings.
  *                                                                      *
  * src/core/proj/qgscoordinatetransformcontext.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

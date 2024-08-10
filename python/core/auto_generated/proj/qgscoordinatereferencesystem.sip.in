@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgscoordinatereferencesystem.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -1189,5 +1189,5 @@ that outdated CRS objects are not created.
  *                                                                      *
  * src/core/proj/qgscoordinatereferencesystem.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

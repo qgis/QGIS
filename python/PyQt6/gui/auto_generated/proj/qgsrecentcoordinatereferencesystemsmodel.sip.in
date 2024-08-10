@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/proj/qgsrecentcoordinatereferencesystemsmodel.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -123,5 +123,5 @@ Returns an invalid CRS if the index is not valid.
  *                                                                      *
  * src/gui/proj/qgsrecentcoordinatereferencesystemsmodel.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

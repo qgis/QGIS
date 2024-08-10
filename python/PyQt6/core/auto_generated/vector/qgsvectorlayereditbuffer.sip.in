@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayereditbuffer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -318,5 +318,5 @@ Updates an index in an attribute map to a new value (for updates of changed attr
  *                                                                      *
  * src/core/vector/qgsvectorlayereditbuffer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

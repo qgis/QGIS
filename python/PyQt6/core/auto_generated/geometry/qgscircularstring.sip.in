@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgscircularstring.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -241,5 +241,5 @@ Appends the contents of another circular ``string`` to the end of this circular 
  *                                                                      *
  * src/core/geometry/qgscircularstring.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

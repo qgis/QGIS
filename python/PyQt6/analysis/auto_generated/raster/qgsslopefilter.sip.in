@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsslopefilter.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,5 +33,5 @@ Calculates slope values in a window of 3x3 cells based on first order derivative
  *                                                                      *
  * src/analysis/raster/qgsslopefilter.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

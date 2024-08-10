@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsgeometrytransformer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -57,5 +57,5 @@ A transformer which multiples the x coordinate by 3 and adds 10 to the y coordin
  *                                                                      *
  * src/core/geometry/qgsgeometrytransformer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgssnappingconfig.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -478,5 +478,5 @@ The project from which the snapped layers should be retrieved
  *                                                                      *
  * src/core/qgssnappingconfig.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

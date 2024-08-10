@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspathresolver.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -210,5 +210,5 @@ An KeyError will be raised if no processor with the specified ``id`` exists.
  *                                                                      *
  * src/core/qgspathresolver.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

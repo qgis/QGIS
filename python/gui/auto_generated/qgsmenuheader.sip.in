@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmenuheader.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -63,5 +63,5 @@ Constructor for QgsMenuHeaderWidgetAction, showing the specified ``text``.
  *                                                                      *
  * src/gui/qgsmenuheader.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

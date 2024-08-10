@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverfilter.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -141,5 +141,5 @@ typedef QMultiMap<int, QgsServerFilter *> QgsServerFiltersMap;
  *                                                                      *
  * src/server/qgsserverfilter.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

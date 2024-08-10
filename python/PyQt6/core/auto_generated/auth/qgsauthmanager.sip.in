@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/auth/qgsauthmanager.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -842,5 +842,5 @@ Clear an authentication config from its associated authentication method cache
  *                                                                      *
  * src/core/auth/qgsauthmanager.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

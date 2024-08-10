@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfontbutton.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -311,5 +311,5 @@ Emitted when the widget's text format settings are changed.
  *                                                                      *
  * src/gui/qgsfontbutton.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

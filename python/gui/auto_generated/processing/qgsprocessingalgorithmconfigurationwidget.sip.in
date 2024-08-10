@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingalgorithmconfigurationwidget.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -130,5 +130,5 @@ Check if this factory can create widgets for ``algorithm``.
  *                                                                      *
  * src/gui/processing/qgsprocessingalgorithmconfigurationwidget.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

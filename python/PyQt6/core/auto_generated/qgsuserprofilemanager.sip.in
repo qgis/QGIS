@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsuserprofilemanager.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -248,5 +248,5 @@ By default new profile notification is disabled.
  *                                                                      *
  * src/core/qgsuserprofilemanager.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

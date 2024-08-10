@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -49,5 +49,5 @@ respecting any elevation and temporal settings which affect the rendered band.
  *                                                                      *
  * src/core/raster/qgsrasterlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

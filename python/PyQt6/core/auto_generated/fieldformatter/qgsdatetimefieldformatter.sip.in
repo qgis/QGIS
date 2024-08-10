@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -93,5 +93,5 @@ The type is expected to be one of
  *                                                                      *
  * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

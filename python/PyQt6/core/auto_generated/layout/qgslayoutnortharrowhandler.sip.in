@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutnortharrowhandler.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -102,5 +102,5 @@ Emitted on arrow rotation change
  *                                                                      *
  * src/core/layout/qgslayoutnortharrowhandler.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
