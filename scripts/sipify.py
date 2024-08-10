@@ -1800,10 +1800,52 @@ while line_idx < line_count:
     # Remove struct member assignment
     # https://regex101.com/r/OUwV75/1
     if not sip_run and access[-1] == PUBLIC:
-        #match = re.match(r'^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w\:\.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;', LINE)
-        match = re.match(r'^(\s*\w+[\w<> &:,]* \*?\w+)\s*=\s*([\-\w:.]+(?:<\s*\w+(?:\s*\)?\s*>)?)?)(?:\([^()]*\))?\s*;', LINE)
+        # original perl regex: ^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w\:\.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;
+        # dbg_info(f"attempt struct member assignment '{LINE}'")
+
+        python_regex_verbose = r'''
+        ^                           # Start of the line
+        (                            # Start of capturing group for the left-hand side
+         \s*                         # Optional leading whitespace
+            (?:const\s+)?           # Optional const qualifier
+            (?:                     # Start of non-capturing group for type
+                (?:unsigned\s+)?    # Optional unsigned qualifier
+                (?:long\s+long|long|int|short|char|float|double|bool|auto|void|size_t|time_t) # Basic types
+                |                   # OR
+                [\w:]+(?:<[^>]+>)?  # Custom types (with optional template)
+            )
+            (?:\s+const)?           # Optional const qualifier after type
+            \s+                     # Whitespace after type
+            \**\s*                  # Optional additional pointer asterisks
+            \w+                     # Variable name
+        )                           # End of capturing group for the left-hand side
+        \s*=\s*                     # Equals sign with optional surrounding whitespace
+        (                           # Start of capturing group for the right-hand side
+            -?\d+(?:\.\d*)?         # Integer or floating-point number (possibly negative)
+            |                       # OR
+            nullptr                 # nullptr keyword
+            |                       # OR
+            (?:std::)?              # Optional std:: prefix
+            \w+                     # Word characters for function/class names
+            (?:<[^>]+>)?            # Optional template arguments
+            (?:::[\w<>]+)*          # Optional nested name specifiers
+            (?:                     # Start of optional group for function calls
+                \(                  # Opening parenthesis
+                [^()]*              # Any characters except parentheses
+                (?:\([^()]*\))*     # Allows for one level of nested parentheses
+                [^()]*              # Any characters except parentheses
+                \)                  # Closing parenthesis
+            )?                      # End of optional group for function calls
+        )                           # End of capturing group for the right-hand side
+        \s*;                        # Optional whitespace and semicolon
+        \s*                         # Optional whitespace after semicolon
+        (?:\/\/.*)?                 # Optional single-line comment
+        $                           # End of the line
+        '''
+        regex_verbose = re.compile(python_regex_verbose, re.VERBOSE | re.MULTILINE)
+        match = regex_verbose.match(LINE)
         if match:
-            dbg_info("remove struct member assignment")
+            dbg_info(f"remove struct member assignment '={match.group(2)}'")
             LINE = f"{match.group(1)};"
 
     # Catch Q_DECLARE_FLAGS
