@@ -28,7 +28,7 @@
  *
  * \brief A template class for enum and flag settings entry.
  *
- * \note This template class has a dedicated handling in sipify.pl
+ * \note This template class has a dedicated handling in sipify.py
  * \since QGIS 3.20
  */
 template <typename T>

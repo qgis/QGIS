@@ -64,7 +64,7 @@ for root_dir in python python/PyQt6; do
     rm -rf ${module_dir}/auto_generated/*.py
     # put back __init__.py
     echo '"""
-This folder is completed using sipify.pl script
+This folder is completed using sipify.py script
 It is not aimed to be manually edited
 """' > ${module_dir}/auto_additions/__init__.py
 
