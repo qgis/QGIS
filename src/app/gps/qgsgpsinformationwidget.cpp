@@ -42,7 +42,7 @@
 #include <qwt_polar_grid.h>
 #include <qwt_polar_curve.h>
 #include <qwt_scale_engine.h>
-#include <qwt_symbol.h>
+// #include <qwt_symbol.h>
 #endif
 
 #include <QMessageBox>
