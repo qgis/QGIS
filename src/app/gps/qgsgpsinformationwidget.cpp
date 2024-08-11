@@ -421,17 +421,20 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         QSize markerSize( 9, 9 );
         QBrush textBgBrush( bg );
         QBrush symbolBrush;
-        
+
         QwtSymbol::Style symbolStyle;
-        if ( currentInfo.satType == 'P' ) {
+        if ( currentInfo.satType == 'P' ) 
+        {
           symbolStyle = QwtSymbol::Ellipse; // GPS;
           myColor = QColor( 50 , 205 , 20 ); //limegreen;
         }
-        else if ( currentInfo.satType == 'L' ) {
+        else if ( currentInfo.satType == 'L' ) 
+        {
           symbolStyle = QwtSymbol::Rect; // GLONASS;
           myColor = QColor( 255 , 165 , 0 ); //orange;
         }
-        else if ( currentInfo.satType == 'B' ) {
+        else if ( currentInfo.satType == 'B' ) 
+        {
           symbolStyle = QwtSymbol::Diamond; // BEIDOU;
           myColor = QColor( 128 , 0 , 128 ); //purple;
         }
@@ -439,26 +442,28 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
           symbolStyle = QwtSymbol::Triangle; //GALILEO
           myColor = Qt::blue;
         }
-        else if ( currentInfo.satType == 'Q' ) {
+        else if ( currentInfo.satType == 'Q' ) 
+        {
           symbolStyle = QwtSymbol::Cross; // QZSS
           myColor = Qt::magenta;
         }
-        else {
+        else 
+        {
           symbolStyle = QwtSymbol::Ellipse; // N, S;
           myColor = Qt::gray;
         }
         penColor = myColor;
         symbolBrush = QBrush( myColor );
-        
+
         if ( currentInfo.signal < 30 ) //weak signal
         {
           penColor = Qt::red; // red border
         }
-        if ( currentInfo.inUse  ) 
+        if ( currentInfo.inUse ) 
         {
           penColor = Qt::black; // black border
         }
-        
+
 #if (QWT_POLAR_VERSION<0x010000)
         mypMarker->setSymbol( QwtSymbol( symbolStyle,
                                          symbolBrush, QPen( penColor ), markerSize ) );
