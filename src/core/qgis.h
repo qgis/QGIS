@@ -214,6 +214,7 @@ class CORE_EXPORT Qgis
       MultiCurve = 11, //!< MultiCurve
       MultiSurface = 12, //!< MultiSurface
       PolyhedralSurface = 15, //!< PolyhedralSurface \since QGIS 3.40
+      TIN = 16, //!< TIN \since QGIS 3.40
       NoGeometry = 100, //!< No geometry
       PointZ = 1001, //!< PointZ
       LineStringZ = 1002, //!< LineStringZ
@@ -229,6 +230,7 @@ class CORE_EXPORT Qgis
       MultiCurveZ = 1011, //!< MultiCurveZ
       MultiSurfaceZ = 1012, //!< MultiSurfaceZ
       PolyhedralSurfaceZ = 1015, //!< PolyhedralSurfaceZ
+      TINZ = 1016, //!< TINZ
       PointM = 2001, //!< PointM
       LineStringM = 2002, //!< LineStringM
       PolygonM = 2003, //!< PolygonM
@@ -243,6 +245,7 @@ class CORE_EXPORT Qgis
       MultiCurveM = 2011, //!< MultiCurveM
       MultiSurfaceM = 2012, //!< MultiSurfaceM
       PolyhedralSurfaceM = 2015, //!< PolyhedralSurfaceM
+      TINM = 2016, //!< TINM
       PointZM = 3001, //!< PointZM
       LineStringZM = 3002, //!< LineStringZM
       PolygonZM = 3003, //!< PolygonZM
@@ -256,6 +259,7 @@ class CORE_EXPORT Qgis
       MultiCurveZM = 3011, //!< MultiCurveZM
       MultiSurfaceZM = 3012, //!< MultiSurfaceZM
       PolyhedralSurfaceZM = 3015, //!< PolyhedralSurfaceM
+      TINZM = 3016, //!< TINZM
       TriangleZM = 3017, //!< TriangleZM
       Point25D = 0x80000001, //!< Point25D
       LineString25D, //!< LineString25D

@@ -1832,6 +1832,15 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( Qgis::WkbType type 
     case Qgis::WkbType::PolyhedralSurfaceZM:
       return wkbPolyhedralSurfaceZM;
 
+    case Qgis::WkbType::TIN:
+      return wkbTIN;
+    case Qgis::WkbType::TINZ:
+      return wkbTINZ;
+    case Qgis::WkbType::TINM:
+      return wkbTINM;
+    case Qgis::WkbType::TINZM:
+      return wkbTINZM;
+
     case Qgis::WkbType::NoGeometry:
       return wkbNone;
 
@@ -1962,6 +1971,15 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbPolyhedralSurfaceZM:
       return Qgis::WkbType::PolyhedralSurfaceZM;
 
+    case wkbTIN:
+      return Qgis::WkbType::TIN;
+    case wkbTINZ:
+      return Qgis::WkbType::TINZ;
+    case wkbTINM:
+      return Qgis::WkbType::TINM;
+    case wkbTINZM:
+      return Qgis::WkbType::TINZM;
+
     case wkbPoint25D:
       return Qgis::WkbType::Point25D;
     case wkbLineString25D:
@@ -1988,10 +2006,6 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
       return Qgis::WkbType::Unknown; // abstract types - no direct mapping to QGIS types
 
     case wkbLinearRing:
-    case wkbTIN:
-    case wkbTINZ:
-    case wkbTINM:
-    case wkbTINZM:
       return Qgis::WkbType::Unknown; // unsupported types
   }
   return Qgis::WkbType::Unknown;
