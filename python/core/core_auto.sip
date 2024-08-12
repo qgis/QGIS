@@ -361,6 +361,7 @@
 %Include auto_generated/geometry/qgssphere.sip
 %Include auto_generated/geometry/qgssurface.sip
 %Include auto_generated/geometry/qgstriangle.sip
+%Include auto_generated/geometry/qgstriangulatedsurface.sip
 %Include auto_generated/geometry/qgsvertexid.sip
 %Include auto_generated/geometry/qgswkbptr.sip
 %Include auto_generated/geometry/qgswkbtypes.sip
