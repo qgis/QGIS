@@ -1479,12 +1479,9 @@ while line_idx < line_count:
                         )
                     exported.pop()
 
-                try:
+                if classname:
                     classname.pop()
                     class_and_struct.pop()
-                except IndexError:
-                    print('arghghghg')
-                    pass
 
                 if len(access) == 1:
                     dbg_info("reached top level")
@@ -2175,8 +2172,8 @@ if args.sip_output:
         f.write(''.join(sip_header_footer()))
 else:
     print(''.join(sip_header_footer()) +
-        ''.join(output) +
-        ''.join(sip_header_footer()).rstrip())
+          ''.join(output) +
+          ''.join(sip_header_footer()).rstrip())
 
 if args.python_output and output_python:
     with open(args.python_output, 'w') as f:
