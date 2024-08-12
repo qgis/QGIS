@@ -33,6 +33,7 @@ set(TESTS
   testqgsrectangle.cpp
   testqgsregularpolygon.cpp
   testqgstriangle.cpp
+  testqgstriangulatedsurface.cpp
   )
 
 foreach(TESTSRC ${TESTS})

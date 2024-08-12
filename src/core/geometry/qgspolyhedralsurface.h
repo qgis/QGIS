@@ -306,7 +306,12 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
      */
     inline static const QgsPolyhedralSurface *cast( const QgsAbstractGeometry *geom )
     {
-      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::PolyhedralSurface )
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == Qgis::WkbType::PolyhedralSurface
+           || flatType == Qgis::WkbType::TIN )
         return static_cast<const QgsPolyhedralSurface *>( geom );
 
       return nullptr;
@@ -367,7 +372,6 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     int compareToSameClass( const QgsAbstractGeometry *other ) const override;
     QgsBox3D calculateBoundingBox3D() const override;
 
-  private:
     QVector< QgsPolygon * > mPatches;
 };
 

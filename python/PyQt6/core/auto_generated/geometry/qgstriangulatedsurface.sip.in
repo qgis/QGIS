@@ -1,0 +1,132 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgstriangulatedsurface.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsTriangulatedSurface: QgsPolyhedralSurface
+{
+%Docstring(signature="appended")
+Triangulated surface geometry type.
+
+A TIN (triangulated irregular network) is a PolyhedralSurface consisting only of triangle patches.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgstriangulatedsurface.h"
+%End
+  public:
+    QgsTriangulatedSurface();
+    QgsTriangulatedSurface( const QgsTriangulatedSurface &p );
+
+
+  public:
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual bool operator==( const QgsAbstractGeometry &other ) const;
+
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const;
+
+    ~QgsTriangulatedSurface();
+
+    virtual QString geometryType() const /HoldGIL/;
+
+    virtual QgsTriangulatedSurface *clone() const /Factory/;
+
+    virtual void clear();
+
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual bool fromWkt( const QString &wkt );
+
+
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QString asKml( int precision = 17 ) const;
+
+    virtual void normalize() /HoldGIL/;
+
+
+    virtual QgsTriangulatedSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
+
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
+    virtual bool deleteVertex( QgsVertexId position );
+
+
+    void setTriangles( const QVector<QgsTriangle *> &triangles /Transfer/ );
+%Docstring
+Sets all triangles, transferring ownership to the polyhedral surface.
+%End
+
+    virtual void addPatch( QgsPolygon *patch /Transfer/ );
+
+%Docstring
+Adds a patch to the geometry, transferring ownership to the polyhedral surface.
+%End
+
+    void addTriangle( QgsTriangle *triangle /Transfer/ );
+%Docstring
+Adds a triangle to the geometry, transferring ownership to the polyhedral surface.
+%End
+
+
+    SIP_PYOBJECT triangleN( int index ) /TypeHint="QgsPolygon"/;
+%Docstring
+Returns the triangle with the specified ``index``.
+
+:raises IndexError: if no polygon with the specified index exists.
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPatches() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->triangleN( a0 ), sipType_QgsTriangle, NULL );
+    }
+%End
+
+
+
+    virtual QgsTriangulatedSurface *createEmptyWithSameType() const /Factory/;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsTriangulatedSurface: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  protected:
+
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgstriangulatedsurface.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
