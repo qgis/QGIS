@@ -2064,7 +2064,7 @@ while line_idx < line_count:
             multiline_definition = MULTILINE_NO
         else:
             continue
-    elif re.match(r'^[^()]+\([^()]*([^()]*\([^()]*\)[^()]*)*[^)]*$', LINE):
+    elif re.match(r'^[^()]+\([^()]*(?:\([^()]*\)[^()]*)*[^)]*$', LINE):
         dbg_info(f"Multiline detected:: {LINE}")
         if re.match(r'^\s*((else )?if|while|for) *\(', LINE):
             multiline_definition = MULTILINE_CONDITIONAL_STATEMENT
