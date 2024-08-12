@@ -404,7 +404,7 @@ jobs:
           echo "DOCKERFILE=$DOCKERFILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
           mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
-          docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+          docker compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
 
       - name: Fix permissions on test report
         if: ${{ failure() }}
