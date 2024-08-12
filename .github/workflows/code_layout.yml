@@ -182,6 +182,7 @@ jobs:
           python-version: 3.7
       - name: Install Requirements
         run: |
+          sudo apt-get update
           sudo apt install -y \
               cpanminus \
               libyaml-tiny-perl \
