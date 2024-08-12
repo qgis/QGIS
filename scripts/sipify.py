@@ -788,7 +788,8 @@ def processDoxygenLine(line):
                 return f"\n.. seealso:: {seeline or seealso}\n"
             else:
                 if seeline:
-                    line = line[:see_match.start()] + seeline + line[see_match.end():] #re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
+                    line = line[:see_match.start()] + seeline + line[
+                        see_match.end():]  # re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
                 else:
                     line = line.replace('\\see', 'see')
     elif not re.search(r'\\throws.*', line):
