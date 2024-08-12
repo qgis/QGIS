@@ -902,6 +902,21 @@ def remove_following_body_or_initializerlist():
     return signature
 
 
+def replace_alternative_types(text):
+    """
+    Handle SIP_PYALTERNATIVETYPE annotation
+    """
+    # Original perl regex was:
+    # s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    _pattern = r'(\w+)(<(?:[^<>]|<(?:[^<>]|<[^<>]*>)*>)*>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()\']+)(\(\s*(?:[^()]|\([^()]*\))*\s*\))?\'?\s*\)'
+
+    while True:
+        new_text = re.sub(_pattern, r'\3', text, flags=re.S)
+        if new_text == text:
+            return text
+        text = new_text
+
+
 def fix_annotations(line):
     global skipped_params_remove, skipped_params_out, is_qt6, multiline_definition, output
 
@@ -958,9 +973,7 @@ def fix_annotations(line):
         dbg_info("combine multiple annotations -- works only for 2")
 
     # Unprinted annotations
-    # Original perl regex was:
-    # s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
-    line = re.sub(r'(\w+)(<[^>]*>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()\']+)(\([^()]*\))?\'?\s*\)', r'\3', line)
+    line = replace_alternative_types(line)
     line = re.sub(r'(\w+)\s+SIP_PYARGRENAME\(\s*(\w+)\s*\)', r'\2', line)
 
     # Note: this was the original perl regex, which isn't compatible with Python:
