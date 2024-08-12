@@ -27,6 +27,7 @@
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
+#include "qgspolyhedralsurface.h"
 #include "qgstriangle.h"
 #include "qgswkbtypes.h"
 #include "qgslogger.h"
@@ -124,6 +125,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   else if ( trimmed.startsWith( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsGeometryCollection >();
+  }
+  else if ( trimmed.startsWith( QLatin1String( "PolyhedralSurface" ), Qt::CaseInsensitive ) )
+  {
+    geom = std::make_unique< QgsPolyhedralSurface >();
   }
 
   if ( geom )
@@ -256,6 +261,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( Qgis::
       return std::make_unique< QgsGeometryCollection >();
     case Qgis::WkbType::Triangle:
       return std::make_unique< QgsTriangle >();
+    case Qgis::WkbType::PolyhedralSurface:
+      return std::make_unique< QgsPolyhedralSurface >();
     default:
       return nullptr;
   }
