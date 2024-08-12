@@ -2174,9 +2174,9 @@ if args.sip_output:
         f.write(''.join(output))
         f.write(''.join(sip_header_footer()))
 else:
-    print(''.join(sip_header_footer()))
-    print(''.join(output))
-    print(''.join(sip_header_footer()))
+    print(''.join(sip_header_footer()) +
+        ''.join(output) +
+        ''.join(sip_header_footer()).rstrip())
 
 if args.python_output and output_python:
     with open(args.python_output, 'w') as f:
