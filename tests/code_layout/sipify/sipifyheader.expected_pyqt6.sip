@@ -3,20 +3,20 @@
  *                                                                      *
  * tests/code_layout/sipify/sipifyheader.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 class QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType
-{
-%TypeHeaderCode
-#include "sipifyheader.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryEnumFlag<Qgis::SnappingType> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
-%End
-  public:
-    QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const Qgis::SnappingType &defaultValue, const QString &description = QString() );
-    QString key( const QString &dynamicKeyPart = QString() ) const;
-    Qgis::SnappingType value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const Qgis::SnappingType &defaultValueOverride = Qgis::SnappingType() ) const;
-};
+    {
+    %TypeHeaderCode
+    #include "sipifyheader.h"
+    #include "qgssettingsentry.h"
+    typedef QgsSettingsEntryEnumFlag<Qgis::SnappingType> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
+    %End
+      public:
+        QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const Qgis::SnappingType &defaultValue, const QString &description = QString() );
+        QString key( const QString &dynamicKeyPart = QString() ) const;
+        Qgis::SnappingType value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const Qgis::SnappingType &defaultValueOverride = Qgis::SnappingType() ) const;
+    };
 
 
 
@@ -462,5 +462,5 @@ typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase;
  *                                                                      *
  * tests/code_layout/sipify/sipifyheader.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
