@@ -57,6 +57,8 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
      * Opens an expression dialog and sets its value as filter expression for the relation reference.
      */
     void mEditExpression_clicked();
+
+    friend class TestQgsRelationReferenceWidget;
 };
 
 #endif // QGSRELATIONREFERENCECONFIGDLGBASE_H

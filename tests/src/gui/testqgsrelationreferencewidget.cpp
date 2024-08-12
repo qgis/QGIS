@@ -22,6 +22,7 @@
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsrelationreferencewidget.h>
 #include <editorwidgets/qgsrelationreferencewidgetwrapper.h>
+#include <editorwidgets/qgsrelationreferenceconfigdlg.h>
 #include <qgsproject.h>
 #include <qgsattributeform.h>
 #include <qgsrelationmanager.h>
@@ -71,6 +72,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testSetFilterExpression();
     void testSetFilterExpressionWithOrClause();
     void testComboLimit();
+    void testAllowNullDefault();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -896,6 +898,45 @@ void TestQgsRelationReferenceWidget::testComboLimit()
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 201 );
 
+}
+
+void TestQgsRelationReferenceWidget::testAllowNullDefault()
+{
+  // Create parent and child layers
+  QgsVectorLayer parentLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vlparent" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &parentLayer, false, false );
+
+  QgsVectorLayer childLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vlchild" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &childLayer, false, false );
+
+  QgsRelation relation;
+  relation.setId( QStringLiteral( "vlchild.vlparent" ) );
+  relation.setName( QStringLiteral( "vlchild.vlparent" ) );
+  relation.setReferencingLayer( childLayer.id() );
+  relation.setReferencedLayer( parentLayer.id() );
+  relation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( relation.isValid() );
+
+  QgsProject::instance()->relationManager()->addRelation( relation );
+
+  // Test the config dialog
+  std::unique_ptr<QgsRelationReferenceConfigDlg> dlg;
+  dlg.reset( static_cast<QgsRelationReferenceConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "RelationReference" ), &childLayer, 1, nullptr ) ) );
+  QVERIFY( dlg );
+
+  // Check that "Allow NULL" was not set by config
+  QCOMPARE( dlg->mAllowNullWasSetByConfig, false );
+
+  // Check the default value of "Allow NULL" checkbox
+  QCOMPARE( dlg->mCbxAllowNull->isChecked(), true );
+
+  // Set "Allow NULL" by config
+  QVariantMap config = dlg->config();
+  config["AllowNULL"] = false;
+  dlg->setConfig( config );
+
+  QCOMPARE( dlg->mAllowNullWasSetByConfig, true );
+  QCOMPARE( dlg->mCbxAllowNull->isChecked(), false );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
