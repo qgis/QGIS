@@ -25,6 +25,7 @@
 #include "qgsdbquerylog_p.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgssettings.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -312,7 +313,7 @@ void QgsOracleConnectionItem::duplicateConnection()
   const QStringList connections = settings.childGroups();
   settings.endGroup();
 
-  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( mName, connections );
 
   QString key = QStringLiteral( "/Oracle/connections/" ) + mName;
   QString newKey = QStringLiteral( "/Oracle/connections/" ) + newConnectionName;
@@ -329,7 +330,7 @@ void QgsOracleConnectionItem::duplicateConnection()
   settings.setValue( newKey + QStringLiteral( "/estimatedMetadata" ), settings.value( key + QStringLiteral( "/estimatedMetadata" ), false ).toBool() );
   settings.setValue( newKey + QStringLiteral( "/onlyExistingTypes" ), settings.value( key + QStringLiteral( "/onlyExistingTypes" ), true ).toBool() );
   settings.setValue( newKey + QStringLiteral( "/includeGeoAttributes" ), settings.value( key + QStringLiteral( "/includeGeoAttributes" ), false ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/projectsInDatabase" ), ettings.value( key + "/projectsInDatabase", false ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/projectsInDatabase" ), settings.value( key + "/projectsInDatabase", false ).toBool() );
   settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/dboptions" ), settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
