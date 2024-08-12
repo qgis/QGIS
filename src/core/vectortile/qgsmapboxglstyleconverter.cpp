@@ -2970,7 +2970,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   QString op = expression.value( 0 ).toString();
   if ( op == QLatin1String( "%" ) && expression.size() >= 3 )
   {
-    return QStringLiteral( "%1 %2 %3" ).arg( parseValue( expression.value( 1 ), context ) ).arg( op ).arg( parseValue( expression.value( 2 ), context ) );
+    return QStringLiteral( "%1 %2 %3" ).arg( parseValue( expression.value( 1 ), context ),
+           op,
+           parseValue( expression.value( 2 ), context ) );
   }
   else if ( op == QLatin1String( "to-number" ) )
   {
@@ -3143,7 +3145,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
   else
   {
-    context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
+    context.pushWarning( QObject::tr( "%1: Skipping unsupported expression \"%2\"" ).arg( context.layerId(), op ) );
     return QString();
   }
 }
