@@ -176,10 +176,10 @@ jobs:
   sip_check:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Python 3.7
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: 3.7
+          python-version: '3.10'
       - name: Install Requirements
         run: |
           sudo apt-get update
@@ -198,10 +198,9 @@ jobs:
               libstrictures-perl \
               libstring-escape-perl \
               libtry-tiny-perl \
-              python-yaml \
               expect
           python -m pip install --upgrade pip
-          pip install autopep8 nose2 mock termcolor
+          pip install autopep8 nose2 mock termcolor yaml
       - name: Checkout
         uses: actions/checkout@v4
       - name: Sip Checks
