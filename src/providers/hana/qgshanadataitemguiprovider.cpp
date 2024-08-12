@@ -24,6 +24,7 @@
 #include "qgshanautils.h"
 #include "qgsnewnamedialog.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -52,7 +53,7 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
 
     QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
     connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
-    menu->addAction( actionDuplicate )
+    menu->addAction( actionDuplicate );
 
     const QList< QgsHanaConnectionItem * > hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
     QAction *actionDelete = new QAction( hanaConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
