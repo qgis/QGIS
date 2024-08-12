@@ -5,7 +5,6 @@
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 class QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType
     {
     %TypeHeaderCode
