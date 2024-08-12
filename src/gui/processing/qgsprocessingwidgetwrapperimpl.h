@@ -2265,6 +2265,8 @@ class GUI_EXPORT QgsProcessingFileDestinationWidgetWrapper : public QgsProcessin
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
 
   protected:
+    QStringList compatibleParameterTypes() const override;
+    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
 };
@@ -2283,6 +2285,8 @@ class GUI_EXPORT QgsProcessingFolderDestinationWidgetWrapper : public QgsProcess
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
 
   protected:
+    QStringList compatibleParameterTypes() const override;
+    QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
 };
