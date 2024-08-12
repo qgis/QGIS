@@ -22,7 +22,7 @@
 #include "qgis_sip.h"
 
 class QColor;
-class QSpinBox;
+class QDoubleSpinBox;
 class QLineEdit;
 class QToolButton;
 
@@ -87,8 +87,19 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * set
      * \see setComponentValue
      * \see component
+     * \deprecated since QGIS 3.40. Use componentValueF() instead.
      */
-    int componentValue() const;
+    Q_DECL_DEPRECATED int componentValue() const;
+
+    /**
+     * Returns the current value of the widget's color component
+     * \returns value of color component, or -1 if widget has multiple components or an invalid color
+     * set
+     * \see setComponentValueF
+     * \see component
+     * \since QGIS 3.40
+     */
+    float componentValueF() const;
 
     /**
      * Create an icon for dragging colors
@@ -115,14 +126,27 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 
     /**
      * Alters the widget's color by setting the value for the widget's color component
-     * \param value value for widget's color component. This value is automatically
-     * clipped to the range of valid values for the color component.
+     * \param value value for widget's color component in the range between 0 and the value returned by componentRange().
+     * This value is automatically clipped to the range of valid values for the color component.
      * \see componentValue
      * \see setComponent
      * \note this method has no effect if the widget is set to the QgsColorWidget::Multiple
      * component
+     * \deprecated since QGIS 3.40. Use setComponentValueF() instead.
      */
-    virtual void setComponentValue( int value );
+    Q_DECL_DEPRECATED virtual void setComponentValue( int value );
+
+    /**
+     * Alters the widget's color by setting the value for the widget's color component
+     * \param value value for widget's color component in the range 0.0-1.0.
+     * This value is automatically clipped to the range 0.0-1.0.
+     * \see componentValue
+     * \see setComponent
+     * \note this method has no effect if the widget is set to the QgsColorWidget::Multiple
+     * component
+     * \since QGIS 3.40
+     */
+    virtual void setComponentValueF( float value );
 
   signals:
 
@@ -147,7 +171,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * QColor wipes the hue information when it is ambiguous (e.g., for saturation = 0). So
      * the hue is stored in mExplicit hue to keep it around, as it is useful when modifying colors
      */
-    int mExplicitHue = 0;
+    float mExplicitHue = 0;
 
     /**
      * Returns the range of valid values for the color widget's component
@@ -165,26 +189,58 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * Returns the value of a component of the widget's current color. This method correctly
      * handles hue values when the color has an ambiguous hue (e.g., black or white shades)
      * \param component color component to return
-     * \returns value of color component, or -1 if widget has an invalid color set
-     * \see hue
+     * \returns value of color component in the range between 0 and the value returned by componentRange(),
+     * or -1 if widget has an invalid color set
+     * \see hue()
+     * \deprecated since QGIS 3.40. Use componentValueF() instead.
      */
-    int componentValue( ColorComponent component ) const;
+    Q_DECL_DEPRECATED int componentValue( ColorComponent component ) const;
+
+    /**
+     * Returns the value of a component of the widget's current color. This method correctly
+     * handles hue values when the color has an ambiguous hue (e.g., black or white shades)
+     * \param component color component to return
+     * \returns value of color component in the range 0-1.0, or -1 if widget has an invalid color set
+     * \see hue()
+     * \since QGIS 3.40
+     */
+    float componentValueF( ColorComponent component ) const;
 
     /**
      * Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
      * as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
-     * \returns explicitly set hue for widget
+     * \returns explicitly set hue for widget in the range 0-359
+     * \deprecated since QGIS 3.40. Use hueF() instead.
      */
-    int hue() const;
+    Q_DECL_DEPRECATED int hue() const;
+
+    /**
+     * Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
+     * as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
+     * \returns explicitly set hue for widget in the range 0-1.0
+     * \since QGIS 3.40
+     */
+    float hueF() const;
 
     /**
      * Alters a color by modifying the value of a specific color component
      * \param color color to alter
      * \param component color component to alter
-     * \param newValue new value of color component. Values are automatically clipped to a
+     * \param newValue new value of color component in the range between 0 and the value returned by componentRange(). Values are automatically clipped to a
      * valid range for the color component.
+     * \deprecated since QGIS 3.40. Use alterColorF() instead.
      */
     static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue );
+
+    /**
+     * Alters a color by modifying the value of a specific color component
+     * \param color color to alter
+     * \param component color component to alter
+     * \param newValue new value of color component in the range between 0 and the value returned by componentRange(). Values are automatically clipped to
+     * range 0.0-1.0
+     * \since QGIS 3.40
+     */
+    static void alterColorF( QColor &color, QgsColorWidget::ColorComponent component, float newValue );
 
     /**
      * Returns color widget type of color, either RGB, HSV, CMYK, or Invalid if this component value is Multiple or Alpha
@@ -430,7 +486,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     bool mIsDragging = false;
 
     /*Margin between outer ring and edge of widget*/
-    int mMargin = 2;
+    static constexpr float mMargin = 2.;
 
     /*Cached image for color box*/
     QImage *mBoxImage = nullptr;
@@ -447,13 +503,13 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      * Returns the range of permissible values along the x axis
      * \returns maximum color component value for x axis
      */
-    int valueRangeX() const;
+    float valueRangeX() const;
 
     /**
      * Returns the range of permissible values along the y axis
      * \returns maximum color component value for y axis
      */
-    int valueRangeY() const;
+    float valueRangeY() const;
 
     /**
      * Returns the color component which varies along the y axis
@@ -463,7 +519,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     /**
      * Returns the value of the color component which varies along the y axis
      */
-    int yComponentValue() const;
+    float yComponentValue() const;
 
     /**
      * Returns the color component which varies along the x axis
@@ -473,7 +529,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     /**
      * Returns the value of the color component which varies along the x axis
      */
-    int xComponentValue() const;
+    float xComponentValue() const;
 
     /**
      * Updates the widget's color based on a point within the widget
@@ -571,9 +627,17 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
     /**
      * Emitted when the widget's color component value changes
-     * \param value new value of color component
+     * \param value new value of color component in the range between 0 and the value returned by componentRange()
+     * \deprecated since QGIS 3.40. Use valueChangedF() instead.
      */
-    void valueChanged( int value );
+    Q_DECL_DEPRECATED void valueChanged( int value );
+
+    /**
+     * Emitted when the widget's color component value changes
+     * \param value new value of color component in the range 0.0-1.0
+     * \since QGIS 3.40
+     */
+    void valueChangedF( float value );
 
   protected:
 
@@ -631,7 +695,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     QgsColorSliderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, ColorComponent component = QgsColorWidget::Red );
 
     void setComponent( ColorComponent component ) override;
-    void setComponentValue( int value ) override;
+    void setComponentValueF( float value ) override;
     void setColor( const QColor &color, bool emitSignals = false ) override;
 
   private:
@@ -640,24 +704,24 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     QgsColorRampWidget *mRampWidget = nullptr;
 
     /*Spin box widget*/
-    QSpinBox *mSpinBox = nullptr;
+    QDoubleSpinBox *mSpinBox = nullptr;
 
     /**
      * Converts the real value of a color component to a friendly display value. For instance,
      * alpha values from 0-255 have little meaning to users, so we translate them to 0-100%
-     * \param realValue actual value of the color component
+     * \param realValue actual value of the color component in the range 0.0-1.0
      * \returns display value of color component
      * \see convertDisplayToReal
      */
-    int convertRealToDisplay( int realValue ) const;
+    float convertRealToDisplay( float realValue ) const;
 
     /**
      * Converts the display value of a color component to a real value.
      * \param displayValue friendly display value of the color component
-     * \returns real value of color component
+     * \returns real value of color component in the range 0.0-1.0
      * \see convertRealToDisplay
      */
-    int convertDisplayToReal( int displayValue ) const;
+    float convertDisplayToReal( float displayValue ) const;
 
   private slots:
 
@@ -669,12 +733,12 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     /**
      * Called when the value of the spin box changes
      */
-    void spinChanged( int value );
+    void spinChanged( double value );
 
     /**
      * Called when the value for the ramp changes
      */
-    void rampChanged( int value );
+    void rampChanged( float value );
 
 };
 
