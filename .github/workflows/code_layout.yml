@@ -200,7 +200,7 @@ jobs:
               libtry-tiny-perl \
               expect
           python -m pip install --upgrade pip
-          pip install autopep8 nose2 mock termcolor yaml
+          pip install autopep8 nose2 mock termcolor pyyaml
       - name: Checkout
         uses: actions/checkout@v4
       - name: Sip Checks
