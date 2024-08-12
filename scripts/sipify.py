@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
 
 
+import argparse
+import os
 import re
 import sys
-import os
-import argparse
-import yaml
+from enum import Enum, auto
 from typing import List, Dict, Any
 
+import yaml
+
+
+class Visibility(Enum):
+    Private = auto()
+    Protected = auto()
+    Public = auto()
+
+
 # Constants
-PRIVATE = 0
-PROTECTED = 1
-PUBLIC = 2
 STRICT = 10
 UNSTRICT = 11
 MULTILINE_NO = 20
@@ -27,7 +33,8 @@ PREPEND_CODE_MAKE_PRIVATE = 42
 LINE = ''
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description="Convert header file to SIP and Python")
+parser = argparse.ArgumentParser(
+    description="Convert header file to SIP and Python")
 parser.add_argument("-debug", action="store_true", help="Enable debug mode")
 parser.add_argument("-qt6", action="store_true", help="Enable Qt6 mode")
 parser.add_argument("-sip_output", help="SIP output file")
@@ -44,7 +51,8 @@ try:
     with open(headerfile, "r") as f:
         input_lines = f.read().splitlines()
 except IOError as e:
-    print(f"Couldn't open '{headerfile}' for reading because: {e}", file=sys.stderr)
+    print(f"Couldn't open '{headerfile}' for reading because: {e}",
+          file=sys.stderr)
     sys.exit(1)
 
 # Read configuration
@@ -53,13 +61,14 @@ try:
     with open(cfg_file, 'r') as f:
         sip_config = yaml.safe_load(f)
 except IOError as e:
-    print(f"Couldn't open configuration file '{cfg_file}' because: {e}", file=sys.stderr)
+    print(f"Couldn't open configuration file '{cfg_file}' because: {e}",
+          file=sys.stderr)
     sys.exit(1)
 
 # Initialize contexts
 sip_run = False
 header_code = False
-access = [PUBLIC]
+access: List[Visibility] = [Visibility.Public]
 classname: List[str] = []
 class_and_struct: List[str] = []
 declared_classes: List[str] = []
@@ -525,7 +534,8 @@ def replace_macros(line):
 
     if is_qt6:
         # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
-        line = re.sub(r'(QList<\s*|QVector<\s*)QVariantMap', r'\1QMap<QString, QVariant>', line)
+        line = re.sub(r'(QList<\s*|QVector<\s*)QVariantMap',
+                      r'\1QMap<QString, QVariant>', line)
 
     return line
 
@@ -572,12 +582,14 @@ def dbg_info(info):
 
     if debug == 1:
         output.append(f"{info}\n")
-        print(f"{line_idx} {len(access)} {sip_run} {multiline_definition} {info}")
+        print(
+            f"{line_idx} {len(access)} {sip_run} {multiline_definition} {info}")
 
 
 def exit_with_error(message):
     global headerfile, line_idx
-    sys.exit(f"! Sipify error in {headerfile} at line :: {line_idx}\n! {message}")
+    sys.exit(
+        f"! Sipify error in {headerfile} at line :: {line_idx}\n! {message}")
 
 
 def sip_header_footer():
@@ -588,13 +600,19 @@ def sip_header_footer():
     # and over there we have to use ./3d/X.h entries because SIP parser does not allow a number
     # as the first letter of a relative path
     headerfile_x = re.sub(r'src/core/3d', r'src/core/./3d', headerfile)
-    header_footer.append("/************************************************************************\n")
-    header_footer.append(" * This file has been generated automatically from                      *\n")
-    header_footer.append(" *                                                                      *\n")
+    header_footer.append(
+        "/************************************************************************\n")
+    header_footer.append(
+        " * This file has been generated automatically from                      *\n")
+    header_footer.append(
+        " *                                                                      *\n")
     header_footer.append(f" * {headerfile_x:<68} *\n")
-    header_footer.append(" *                                                                      *\n")
-    header_footer.append(" * Do not edit manually ! Edit header and run scripts/sipify.py again   *\n")
-    header_footer.append(" ************************************************************************/\n")
+    header_footer.append(
+        " *                                                                      *\n")
+    header_footer.append(
+        " * Do not edit manually ! Edit header and run scripts/sipify.py again   *\n")
+    header_footer.append(
+        " ************************************************************************/\n")
     return header_footer
 
 
@@ -614,22 +632,27 @@ def create_class_links(line):
     _match = re.search(r'\b(Qgs[A-Z]\w+|Qgis)\b(\.?$|\W{2})', line)
     if _match:
         if actual_class and _match.group(1) != actual_class:
-            line = re.sub(r'\b(Qgs[A-Z]\w+)\b(\.?$|\W{2})', r':py:class:`\1`\2', line)
+            line = re.sub(r'\b(Qgs[A-Z]\w+)\b(\.?$|\W{2})',
+                          r':py:class:`\1`\2', line)
 
     # Replace Qgs class methods with :py:func: links
-    line = re.sub(r'\b((Qgs[A-Z]\w+|Qgis)\.[a-z]\w+\(\))(?!\w)', r':py:func:`\1`', line)
+    line = re.sub(r'\b((Qgs[A-Z]\w+|Qgis)\.[a-z]\w+\(\))(?!\w)',
+                  r':py:func:`\1`', line)
 
     # Replace other methods with :py:func: links
     if actual_class:
-        line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)', rf':py:func:`~{actual_class}.\1`', line)
+        line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)',
+                      rf':py:func:`~{actual_class}.\1`', line)
     else:
-        line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)', r':py:func:`~\1`', line)
+        line = re.sub(r'(?<!\.)\b([a-z]\w+)\(\)(?!\w)', r':py:func:`~\1`',
+                      line)
 
     # Replace Qgs classes (but not the current class) with :py:class: links
     _match = re.search(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', line)
     if _match:
         if not actual_class or _match.group(1) != actual_class:
-            line = re.sub(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', r':py:class:`\1`', line)
+            line = re.sub(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()',
+                          r':py:class:`\1`', line)
 
     return line
 
@@ -707,7 +730,9 @@ def processDoxygenLine(line):
         if re.match(r'^\s*[\-#]', line):
             line = f"{prev_indent}{line}"
             indent = f"{prev_indent}  "
-        elif not re.match(r'^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)', line):
+        elif not re.match(
+            r'^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)',
+                line):
             line = f"{indent}{line}"
     else:
         prev_indent = indent
@@ -734,7 +759,8 @@ def processDoxygenLine(line):
     if re.match(r'^\s*[\\@]brief', line):
         line = re.sub(r'[\\@]brief\s*', '', line)
         if found_since:
-            exit_with_error(f"{headerfile}::{line_idx} Since annotation must come after brief")
+            exit_with_error(
+                f"{headerfile}::{line_idx} Since annotation must come after brief")
         found_since = False
         if re.match(r'^\s*$', line):
             return ""
@@ -755,7 +781,8 @@ def processDoxygenLine(line):
 
     # Handle deprecated
     deprecated_match = re.search(
-        r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?', line,
+        r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?',
+        line,
         re.IGNORECASE)
     if deprecated_match:
         prev_indent = indent
@@ -841,7 +868,8 @@ def detect_and_remove_following_body_or_initializerlist():
         re.search(pattern2, LINE) or
             re.match(pattern3, LINE)):
 
-        dbg_info("remove constructor definition, function bodies, member initializing list (1)")
+        dbg_info(
+            "remove constructor definition, function bodies, member initializing list (1)")
 
         # Extract the parts we want to keep
         _match = re.match(pattern1, LINE)
@@ -864,7 +892,8 @@ def remove_following_body_or_initializerlist():
 
     signature = ''
 
-    dbg_info("remove constructor definition, function bodies, member initializing list (2)")
+    dbg_info(
+        "remove constructor definition, function bodies, member initializing list (2)")
     line = read_line()
 
     # Python signature
@@ -967,7 +996,9 @@ def fix_annotations(line):
 
     # Combine multiple annotations
     while True:
-        new_line = re.sub(r'/([\w,]+(="?[\w, \[\]]+"?)?)/\s*/([\w,]+(="?[\w, \[\]]+"?)?]?)/', r'/\1,\3/', line)
+        new_line = re.sub(
+            r'/([\w,]+(="?[\w, \[\]]+"?)?)/\s*/([\w,]+(="?[\w, \[\]]+"?)?]?)/',
+            r'/\1,\3/', line)
         if new_line == line:
             break
         line = new_line
@@ -979,8 +1010,10 @@ def fix_annotations(line):
 
     # Note: this was the original perl regex, which isn't compatible with Python:
     # line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)""", r'= \1', line)
-    line = re.sub(r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()\']+)(\((?:[^()]|\([^()]*\))*\))?\'?\s*\)""", r'= \1',
-                  line)
+    line = re.sub(
+        r"""=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()\']+)(\((?:[^()]|\([^()]*\))*\))?\'?\s*\)""",
+        r'= \1',
+        line)
 
     # Remove argument
     if 'SIP_PYARGREMOVE' in line:
@@ -1019,10 +1052,14 @@ def fix_annotations(line):
 
 def fix_constants(line):
     line = re.sub(r'\bstd::numeric_limits<double>::max\(\)', 'DBL_MAX', line)
-    line = re.sub(r'\bstd::numeric_limits<double>::lowest\(\)', '-DBL_MAX', line)
-    line = re.sub(r'\bstd::numeric_limits<double>::epsilon\(\)', 'DBL_EPSILON', line)
-    line = re.sub(r'\bstd::numeric_limits<qlonglong>::min\(\)', 'LLONG_MIN', line)
-    line = re.sub(r'\bstd::numeric_limits<qlonglong>::max\(\)', 'LLONG_MAX', line)
+    line = re.sub(r'\bstd::numeric_limits<double>::lowest\(\)', '-DBL_MAX',
+                  line)
+    line = re.sub(r'\bstd::numeric_limits<double>::epsilon\(\)', 'DBL_EPSILON',
+                  line)
+    line = re.sub(r'\bstd::numeric_limits<qlonglong>::min\(\)', 'LLONG_MIN',
+                  line)
+    line = re.sub(r'\bstd::numeric_limits<qlonglong>::max\(\)', 'LLONG_MAX',
+                  line)
     line = re.sub(r'\bstd::numeric_limits<int>::max\(\)', 'INT_MAX', line)
     line = re.sub(r'\bstd::numeric_limits<int>::min\(\)', 'INT_MIN', line)
     return line
@@ -1043,12 +1080,14 @@ def detect_comment_block(strict_mode=True):
 
     if re.match(r'^\s*/\*', LINE) or (not strict_mode and '/*' in LINE):
         dbg_info("found comment block")
-        comment = processDoxygenLine(re.sub(r'^\s*/\*(\*)?(.*?)\n?$', r'\2', LINE))
+        comment = processDoxygenLine(
+            re.sub(r'^\s*/\*(\*)?(.*?)\n?$', r'\2', LINE))
         comment = re.sub(r'^\s*$', '', comment)
 
         while not re.search(r'\*/\s*(//.*?)?$', LINE):
             LINE = read_line()
-            comment += processDoxygenLine(re.sub(r'\s*\*?(.*?)(/)?\n?$', r'\1', LINE))
+            comment += processDoxygenLine(
+                re.sub(r'\s*\*?(.*?)(/)?\n?$', r'\1', LINE))
 
         comment = re.sub(r'\n\s+\n', '\n\n', comment)
         comment = re.sub(r'\n{3,}', '\n\n', comment)
@@ -1115,7 +1154,8 @@ while line_idx < line_count:
 
     if is_qt6:
         LINE = re.sub(r'int\s*__len__\s*\(\s*\)', 'Py_ssize_t __len__()', LINE)
-        LINE = re.sub(r'long\s*__hash__\s*\(\s*\)', 'Py_hash_t __hash__()', LINE)
+        LINE = re.sub(r'long\s*__hash__\s*\(\s*\)', 'Py_hash_t __hash__()',
+                      LINE)
 
     if is_qt6 and re.match(r'^\s*#ifdef SIP_PYQT5_RUN', LINE):
         dbg_info("do not process PYQT5 code")
@@ -1174,7 +1214,8 @@ while line_idx < line_count:
                 LINE = read_line()
                 if re.match(r'^\s*#if(def)?\s+', LINE):
                     nesting_index += 1
-                elif nesting_index == 0 and re.match(r'^\s*#(endif|else)', LINE):
+                elif nesting_index == 0 and re.match(r'^\s*#(endif|else)',
+                                                     LINE):
                     comment = ''
                     break
                 elif nesting_index != 0 and re.match(r'^\s*#endif', LINE):
@@ -1183,7 +1224,7 @@ while line_idx < line_count:
 
         if re.match(r'^\s*#ifdef SIP_RUN', LINE):
             sip_run = True
-            if access[-1] == PRIVATE:
+            if access[-1] == Visibility.Private:
                 dbg_info("writing private content (1)")
                 if private_section_line:
                     write_output("PRV1", private_section_line + "\n")
@@ -1222,9 +1263,10 @@ while line_idx < line_count:
                 LINE = read_line()
                 if re.match(r'^\s*#if(def)?\s+', LINE):
                     glob_ifdef_nesting_idx += 1
-                elif re.match(r'^\s*#else', LINE) and glob_ifdef_nesting_idx == 0:
+                elif re.match(r'^\s*#else',
+                              LINE) and glob_ifdef_nesting_idx == 0:
                     # Code here will be printed out
-                    if access[-1] == PRIVATE:
+                    if access[-1] == Visibility.Private:
                         dbg_info("writing private content (2)")
                         if private_section_line != '':
                             write_output("PRV2", private_section_line + "\n")
@@ -1248,8 +1290,9 @@ while line_idx < line_count:
         write_output("HCE", "%End\n")
 
     # Skip forward declarations
-    match = re.match(r'^\s*(template ?<class T> |enum\s+)?(class|struct) \w+(?P<external> *SIP_EXTERNAL)?;\s*(//.*)?$',
-                     LINE)
+    match = re.match(
+        r'^\s*(template ?<class T> |enum\s+)?(class|struct) \w+(?P<external> *SIP_EXTERNAL)?;\s*(//.*)?$',
+        LINE)
     if match:
         if match.group('external'):
             dbg_info('do not skip external forward declaration')
@@ -1267,7 +1310,8 @@ while line_idx < line_count:
         if not re.search(r'SIP_SKIP', LINE):
             dbg_info('Q_GADGET')
             write_output("HCE", "  public:\n")
-            write_output("HCE", "    static const QMetaObject staticMetaObject;\n\n")
+            write_output("HCE",
+                         "    static const QMetaObject staticMetaObject;\n\n")
         continue
 
     # Insert in Python output (python/module/__init__.py)
@@ -1302,7 +1346,8 @@ while line_idx < line_count:
         if multiline_definition != MULTILINE_NO:
             dbg_info('SIP_SKIP with MultiLine')
             opening_line = ''
-            while not re.match(r'^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$', opening_line):
+            while not re.match(r'^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$',
+                               opening_line):
                 opening_line = output.pop()
                 if len(output) < 1:
                     exit_with_error('could not reach opening definition')
@@ -1313,7 +1358,8 @@ while line_idx < line_count:
         detect_and_remove_following_body_or_initializerlist()
 
         # line skipped, go to next iteration
-        match = re.search(r'SIP_PYTHON_SPECIAL_(\w+)\(\s*(".*"|\w+)\s*\)', LINE)
+        match = re.search(r'SIP_PYTHON_SPECIAL_(\w+)\(\s*(".*"|\w+)\s*\)',
+                          LINE)
         if match:
             method_or_code = match.group(2)
             dbg_info(f"PYTHON SPECIAL method or code: {method_or_code}")
@@ -1333,13 +1379,14 @@ while line_idx < line_count:
     if detect_comment_block():
         continue
 
-    struct_match = re.match(r'^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$', LINE)
+    struct_match = re.match(
+        r'^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$', LINE)
     if struct_match:
         dbg_info("  going to struct => public")
         class_and_struct.append(struct_match.group('structname'))
         classname.append(classname[-1] if classname else struct_match.group(
             'structname'))  # fake new class since struct has considered similarly
-        access.append(PUBLIC)
+        access.append(Visibility.Public)
         exported.append(exported[-1])
         glob_bracket_nesting_idx.append(0)
 
@@ -1352,7 +1399,7 @@ while line_idx < line_count:
 
     if class_pattern_match:
         dbg_info("class definition started")
-        access.append(PUBLIC)
+        access.append(Visibility.Public)
         exported.append(0)
         glob_bracket_nesting_idx.append(0)
         template_inheritance_template = []
@@ -1452,11 +1499,11 @@ while line_idx < line_count:
             else:
                 LINE += f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;"
 
-        if any(x == PRIVATE for x in access) and len(access) != 1:
+        if any(x == Visibility.Private for x in access) and len(access) != 1:
             dbg_info("skipping class in private context")
             continue
 
-        access[-1] = PRIVATE  # private by default
+        access[-1] = Visibility.Private  # private by default
         write_output("CLS", f"{LINE}\n")
 
         # Skip opening curly bracket, incrementing hereunder
@@ -1467,7 +1514,7 @@ while line_idx < line_count:
 
         comment = ''
         header_code = True
-        access[-1] = PRIVATE
+        access[-1] = Visibility.Private
         continue
 
     # Bracket balance in class/struct tree
@@ -1486,7 +1533,8 @@ while line_idx < line_count:
                     glob_bracket_nesting_idx.pop()
                     access.pop()
 
-                    if exported[-1] == 0 and classname[-1] != sip_config.get('no_export_macro'):
+                    if exported[-1] == 0 and classname[-1] != sip_config.get(
+                            'no_export_macro'):
                         exit_with_error(
                             f"Class {classname[-1]} should be exported with appropriate [LIB]_EXPORT macro. "
                             f"If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
@@ -1499,7 +1547,8 @@ while line_idx < line_count:
 
                 if len(access) == 1:
                     dbg_info("reached top level")
-                    access[-1] = PUBLIC  # Top level should stay public
+                    access[
+                        -1] = Visibility.Public  # Top level should stay public
 
                 comment = ''
                 return_type = ''
@@ -1509,7 +1558,7 @@ while line_idx < line_count:
 
     # Private members (exclude SIP_RUN)
     if re.match(r'^\s*private( slots)?:', LINE):
-        access[-1] = PRIVATE
+        access[-1] = Visibility.Private
         last_access_section_line = LINE
         private_section_line = LINE
         comment = ''
@@ -1519,27 +1568,28 @@ while line_idx < line_count:
     elif re.match(r'^\s*(public( slots)?|signals):.*$', LINE):
         dbg_info("going public")
         last_access_section_line = LINE
-        access[-1] = PUBLIC
+        access[-1] = Visibility.Public
         comment = ''
 
     elif re.match(r'^\s*(protected)( slots)?:.*$', LINE):
         dbg_info("going protected")
         last_access_section_line = LINE
-        access[-1] = PROTECTED
+        access[-1] = Visibility.Protected
         comment = ''
 
-    elif access[-1] == PRIVATE and 'SIP_FORCE' in LINE:
+    elif access[-1] == Visibility.Private and 'SIP_FORCE' in LINE:
         dbg_info("private with SIP_FORCE")
         if private_section_line:
             write_output("PRV3", private_section_line + "\n")
         private_section_line = ''
 
-    elif any(x == PRIVATE for x in access) and not sip_run:
+    elif any(x == Visibility.Private for x in access) and not sip_run:
         comment = ''
         continue
 
     # Skip operators
-    if access[-1] != PRIVATE and re.search(r'operator(=|<<|>>|->)\s*\(', LINE):
+    if access[-1] != Visibility.Private and re.search(
+            r'operator(=|<<|>>|->)\s*\(', LINE):
         dbg_info("skip operator")
         detect_and_remove_following_body_or_initializerlist()
         continue
@@ -1560,10 +1610,12 @@ while line_idx < line_count:
             continue
 
     # Handle Q_DECLARE_FLAGS in Qt6
-    if is_qt6 and re.match(r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE):
+    if is_qt6 and re.match(
+            r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE):
         flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(1)
         flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(2)
-        output_python.append(f"{actual_class}.{flags_name} = lambda flags=0: {actual_class}.{flag_name}(flags)\n")
+        output_python.append(
+            f"{actual_class}.{flags_name} = lambda flags=0: {actual_class}.{flag_name}(flags)\n")
 
     # Enum declaration
     # For scoped and type-based enum, the type has to be removed
@@ -1572,13 +1624,19 @@ while line_idx < line_count:
             LINE):
         flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(1)
         flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(2)
-        emkb = re.search(r'SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(1)
-        emkf = re.search(r'SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(2)
+        emkb = re.search(
+            r'SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)',
+            LINE).group(1)
+        emkf = re.search(
+            r'SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)',
+            LINE).group(2)
 
         if f"{emkb}.{emkf}" != f"{actual_class}.{flags_name}":
-            output_python.append(f"{emkb}.{emkf} = {actual_class}.{flags_name}\n")
+            output_python.append(
+                f"{emkb}.{emkf} = {actual_class}.{flags_name}\n")
 
-        enum_monkey_patched_types.append([actual_class, flags_name, emkb, emkf])
+        enum_monkey_patched_types.append(
+            [actual_class, flags_name, emkb, emkf])
 
         LINE = re.sub(r'\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)', '', LINE)
 
@@ -1593,14 +1651,17 @@ while line_idx < line_count:
         enum_cpp_name = f"{actual_class}::{enum_qualname}" if actual_class else enum_qualname
 
         if not isclass and enum_cpp_name not in ALLOWED_NON_CLASS_ENUMS:
-            exit_with_error(f"Non class enum exposed to Python -- must be a enum class: {enum_cpp_name}")
+            exit_with_error(
+                f"Non class enum exposed to Python -- must be a enum class: {enum_cpp_name}")
 
         oneliner = enum_match.group('oneliner')
         is_scope_based = bool(isclass)
         enum_decl = re.sub(r'\s*\bQ_DECL_DEPRECATED\b', '', enum_decl)
 
-        py_enum_type_match = re.search(r'SIP_ENUM_BASETYPE\(\s*(.*?)\s*\)', LINE)
-        py_enum_type = py_enum_type_match.group(1) if py_enum_type_match else None
+        py_enum_type_match = re.search(r'SIP_ENUM_BASETYPE\(\s*(.*?)\s*\)',
+                                       LINE)
+        py_enum_type = py_enum_type_match.group(
+            1) if py_enum_type_match else None
 
         if py_enum_type == "IntFlag":
             enum_intflag_types.append(enum_cpp_name)
@@ -1610,7 +1671,8 @@ while line_idx < line_count:
             if is_qt6:
                 enum_decl += f" /BaseType={py_enum_type or 'IntEnum'}/"
         elif enum_type:
-            exit_with_error(f"Unhandled enum type {enum_type} for {enum_cpp_name}")
+            exit_with_error(
+                f"Unhandled enum type {enum_type} for {enum_cpp_name}")
         elif isclass:
             enum_class_non_int_types.append(f"{actual_class}.{enum_qualname}")
         elif is_qt6:
@@ -1624,7 +1686,8 @@ while line_idx < line_count:
         _match = None
         if is_scope_based:
             _match = re.search(
-                r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?', LINE)
+                r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?',
+                LINE)
         monkeypatch = is_scope_based and _match
         enum_mk_base = _match.group('emkb') if _match else ''
 
@@ -1633,9 +1696,11 @@ while line_idx < line_count:
             enum_old_name = _match.group('emkf')
             if actual_class:
                 if f"{enum_mk_base}.{enum_old_name}" != f"{actual_class}.{enum_qualname}":
-                    output_python.append(f"{enum_mk_base}.{enum_old_name} = {actual_class}.{enum_qualname}\n")
+                    output_python.append(
+                        f"{enum_mk_base}.{enum_old_name} = {actual_class}.{enum_qualname}\n")
             else:
-                output_python.append(f"{enum_mk_base}.{enum_old_name} = {enum_qualname}\n")
+                output_python.append(
+                    f"{enum_mk_base}.{enum_old_name} = {enum_qualname}\n")
 
         if re.search(r'\{((\s*\w+)(\s*=\s*[\w\s<|]+.*?)?(,?))+\s*}', LINE):
             if '=' in LINE:
@@ -1645,7 +1710,8 @@ while line_idx < line_count:
         else:
             LINE = read_line()
             if not re.match(r'^\s*\{\s*$', LINE):
-                exit_with_error('Unexpected content: enum should be followed by {')
+                exit_with_error(
+                    'Unexpected content: enum should be followed by {')
             write_output("ENU2", f"{LINE}\n")
 
             if is_scope_based:
@@ -1659,7 +1725,8 @@ while line_idx < line_count:
                     continue
                 if re.search(r'};', LINE):
                     break
-                if re.match(r'^\s*\w+\s*\|', LINE):  # multi line declaration as sum of enums
+                if re.match(r'^\s*\w+\s*\|',
+                            LINE):  # multi line declaration as sum of enums
                     continue
 
                 enum_match = re.match(
@@ -1667,20 +1734,32 @@ while line_idx < line_count:
                     LINE)
 
                 enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}" if enum_match else LINE
-                enum_member = enum_match.group('em') or '' if enum_match else ''
-                value_comment = enum_match.group('co') or '' if enum_match else ''
-                compat_name = enum_match.group('compat') or enum_member if enum_match else ''
-                enum_value = enum_match.group('enum_value') or '' if enum_match else ''
+                enum_member = enum_match.group(
+                    'em') or '' if enum_match else ''
+                value_comment = enum_match.group(
+                    'co') or '' if enum_match else ''
+                compat_name = enum_match.group(
+                    'compat') or enum_member if enum_match else ''
+                enum_value = enum_match.group(
+                    'enum_value') or '' if enum_match else ''
 
-                value_comment = value_comment.replace('::', '.').replace('"', '\\"')
-                value_comment = re.sub(r'\\since .*?([\d.]+)', r'\\n.. versionadded:: \1\\n', value_comment, flags=re.I)
-                value_comment = re.sub(r'\\deprecated (.*)', r'\\n.. deprecated:: \1\\n', value_comment, flags=re.I)
+                value_comment = value_comment.replace('::', '.').replace('"',
+                                                                         '\\"')
+                value_comment = re.sub(r'\\since .*?([\d.]+)',
+                                       r'\\n.. versionadded:: \1\\n',
+                                       value_comment, flags=re.I)
+                value_comment = re.sub(r'\\deprecated (.*)',
+                                       r'\\n.. deprecated:: \1\\n',
+                                       value_comment, flags=re.I)
                 value_comment = re.sub(r'^\\n+', '', value_comment)
                 value_comment = re.sub(r'\\n+$', '', value_comment)
 
-                dbg_info(f"is_scope_based:{is_scope_based} enum_mk_base:{enum_mk_base} monkeypatch:{monkeypatch}")
+                dbg_info(
+                    f"is_scope_based:{is_scope_based} enum_mk_base:{enum_mk_base} monkeypatch:{monkeypatch}")
 
-                if enum_value and (re.search(r'.*<<.*', enum_value) or re.search(r'.*0x0.*', enum_value)):
+                if enum_value and (
+                    re.search(r'.*<<.*', enum_value) or re.search(r'.*0x0.*',
+                                                                  enum_value)):
                     if f"{actual_class}::{enum_qualname}" not in enum_intflag_types:
                         exit_with_error(
                             f"{actual_class}::{enum_qualname} is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line")
@@ -1693,21 +1772,27 @@ while line_idx < line_count:
                             if enum_old_name and compat_name != enum_member:
                                 output_python.append(
                                     f"{enum_mk_base}.{enum_old_name}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
-                            output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
-                            output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
+                            output_python.append(
+                                f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
+                            output_python.append(
+                                f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
                                 f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
                         else:
-                            output_python.append(f"{enum_mk_base}.{compat_name} = {enum_qualname}.{enum_member}\n")
-                            output_python.append(f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
-                            output_python.append(f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
+                            output_python.append(
+                                f"{enum_mk_base}.{compat_name} = {enum_qualname}.{enum_member}\n")
+                            output_python.append(
+                                f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
+                            output_python.append(
+                                f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
                                 f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
                     else:
                         if monkeypatch:
                             output_python.append(
                                 f"{actual_class}.{compat_name} = {actual_class}.{enum_qualname}.{enum_member}\n")
-                            output_python.append(f"{actual_class}.{compat_name}.is_monkey_patched = True\n")
+                            output_python.append(
+                                f"{actual_class}.{compat_name}.is_monkey_patched = True\n")
                         if actual_class:
                             complete_class_path = '.'.join(classname)
                             output_python.append(
@@ -1715,7 +1800,8 @@ while line_idx < line_count:
                             enum_members_doc.append(
                                 f"'* ``{compat_name}``: ' + {actual_class}.{enum_qualname}.{enum_member}.__doc__")
                         else:
-                            output_python.append(f"{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
+                            output_python.append(
+                                f"{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
                                 f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
 
@@ -1737,11 +1823,13 @@ while line_idx < line_count:
                 comment = comment.replace('\n', '\\n').replace('"', '\\"')
 
                 if actual_class:
-                    output_python.append(f'{actual_class}.{enum_qualname}.__doc__ = "{comment}\\n\\n" + ' +
-                                         " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
+                    output_python.append(
+                        f'{actual_class}.{enum_qualname}.__doc__ = "{comment}\\n\\n" + ' +
+                        " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
                 else:
-                    output_python.append(f'{enum_qualname}.__doc__ = \'{comment}\\n\\n\' + ' +
-                                         " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
+                    output_python.append(
+                        f'{enum_qualname}.__doc__ = \'{comment}\\n\\n\' + ' +
+                        " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
 
             # enums don't have Docstring apparently
             comment = ''
@@ -1749,7 +1837,8 @@ while line_idx < line_count:
 
     # Check for invalid use of doxygen command
     if re.search(r'.*//!<', LINE):
-        exit_with_error('"\\!<" doxygen command must only be used for enum documentation')
+        exit_with_error(
+            '"\\!<" doxygen command must only be used for enum documentation')
 
     # Handle override, final, and make private keywords
     if re.search(r'\boverride\b', LINE):
@@ -1763,9 +1852,12 @@ while line_idx < line_count:
     LINE = re.sub(r'^(\s*)Q_INVOKABLE ', r'\1', LINE)
 
     # Keyword fixes
-    LINE = re.sub(r'^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$', r'\1\2\3', LINE)
-    LINE = re.sub(r'^(\s*template\s*<)(?:class|typename) (\w+) *, *(?:class|typename) (\w+>)(.*)$', r'\1\2,\3\4',
-                  LINE)
+    LINE = re.sub(r'^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$',
+                  r'\1\2\3', LINE)
+    LINE = re.sub(
+        r'^(\s*template\s*<)(?:class|typename) (\w+) *, *(?:class|typename) (\w+>)(.*)$',
+        r'\1\2,\3\4',
+        LINE)
     LINE = re.sub(
         r'^(\s*template\s*<)(?:class|typename) (\w+) *, *(?:class|typename) (\w+) *, *(?:class|typename) (\w+>)(.*)$',
         r'\1\2,\3,\4\5', LINE)
@@ -1787,14 +1879,16 @@ while line_idx < line_count:
         LINE = re.sub(r'\b\w+_EXPORT\s+', '', LINE)
 
     # Skip non-method member declaration in non-public sections
-    if not sip_run and access[-1] != PUBLIC and detect_non_method_member(LINE):
+    if not sip_run and access[
+            -1] != Visibility.Public and detect_non_method_member(LINE):
         dbg_info("skip non-method member declaration in non-public sections")
         continue
 
     # Remove static const value assignment
     # https://regex101.com/r/DyWkgn/6
     if re.search(r'^\s*const static \w+', LINE):
-        exit_with_error(f"const static should be written static const in {classname[-1]}")
+        exit_with_error(
+            f"const static should be written static const in {classname[-1]}")
 
     # TODO needs fixing!!
     # original perl regex was:
@@ -1816,7 +1910,7 @@ while line_idx < line_count:
 
     # Remove struct member assignment
     # https://regex101.com/r/OUwV75/1
-    if not sip_run and access[-1] == PUBLIC:
+    if not sip_run and access[-1] == Visibility.Public:
         # original perl regex: ^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w\:\.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;
         # dbg_info(f"attempt struct member assignment '{LINE}'")
 
@@ -1862,26 +1956,30 @@ while line_idx < line_count:
         (?:\/\/.*)?                 # Optional single-line comment
         $                           # End of the line
         '''
-        regex_verbose = re.compile(python_regex_verbose, re.VERBOSE | re.MULTILINE)
+        regex_verbose = re.compile(python_regex_verbose,
+                                   re.VERBOSE | re.MULTILINE)
         match = regex_verbose.match(LINE)
         if match:
             dbg_info(f"remove struct member assignment '={match.group(2)}'")
             LINE = f"{match.group(1)};"
 
     # Catch Q_DECLARE_FLAGS
-    match = re.search(r'^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$', LINE)
+    match = re.search(r'^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$',
+                      LINE)
     if match:
         actual_class = f"{classname[-1]}::" if len(classname) >= 0 else ''
         dbg_info(f"Declare flags: {actual_class}")
         LINE = f"{match.group(1)}typedef QFlags<{actual_class}{match.group(3)}> {match.group(2)};\n"
-        qflag_hash[f"{actual_class}{match.group(2)}"] = f"{actual_class}{match.group(3)}"
+        qflag_hash[
+            f"{actual_class}{match.group(2)}"] = f"{actual_class}{match.group(3)}"
 
         if f"{actual_class}{match.group(3)}" not in enum_intflag_types:
             exit_with_error(
                 f"{actual_class}{match.group(3)} is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line")
 
     # Catch Q_DECLARE_OPERATORS_FOR_FLAGS
-    match = re.search(r'^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$', LINE)
+    match = re.search(
+        r'^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$', LINE)
     if match:
         flags = match.group(2)
         flag = qflag_hash.get(flags)
@@ -1899,7 +1997,8 @@ while line_idx < line_count:
                     output_python.append(
                         "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n")
                     has_pushed_force_int = True
-                output_python.append(f"{py_flag}.__bool__ = lambda flag: bool(_force_int(flag))\n")
+                output_python.append(
+                    f"{py_flag}.__bool__ = lambda flag: bool(_force_int(flag))\n")
                 output_python.append(
                     f"{py_flag}.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n")
                 output_python.append(
@@ -1924,28 +2023,36 @@ while line_idx < line_count:
         if multiline_definition != MULTILINE_NO:
             rolling_line = LINE
             rolling_line_idx = line_idx
-            dbg_info("handle multiline definition to add virtual keyword or making private on opening line")
-            while not re.match(r'^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$', rolling_line):
+            dbg_info(
+                "handle multiline definition to add virtual keyword or making private on opening line")
+            while not re.match(r'^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$',
+                               rolling_line):
                 rolling_line_idx -= 1
                 rolling_line = input_lines[rolling_line_idx]
                 if rolling_line_idx < 0:
                     exit_with_error('could not reach opening definition')
             dbg_info(f'rolled back to {rolling_line_idx}: {rolling_line}')
 
-            if is_override_or_make_private == PREPEND_CODE_VIRTUAL and not re.match(r'^(\s*)virtual\b(.*)$',
-                                                                                    rolling_line):
+            if is_override_or_make_private == PREPEND_CODE_VIRTUAL and not re.match(
+                r'^(\s*)virtual\b(.*)$',
+                    rolling_line):
                 idx = rolling_line_idx - line_idx + 1
-                output[idx] = fix_annotations(re.sub(r'^(\s*?)\b(.*)$', r'\1 virtual \2\n', rolling_line))
+                output[idx] = fix_annotations(
+                    re.sub(r'^(\s*?)\b(.*)$', r'\1 virtual \2\n',
+                           rolling_line))
             elif is_override_or_make_private == PREPEND_CODE_MAKE_PRIVATE:
                 dbg_info("prepending private access")
                 idx = rolling_line_idx - line_idx
-                private_access = re.sub(r'(protected|public)', 'private', last_access_section_line)
+                private_access = re.sub(r'(protected|public)', 'private',
+                                        last_access_section_line)
                 output.insert(idx + 1, private_access + "\n")
                 output[idx + 1] = fix_annotations(rolling_line) + "\n"
         elif is_override_or_make_private == PREPEND_CODE_MAKE_PRIVATE:
             dbg_info("prepending private access")
-            LINE = re.sub(r'(protected|public)', 'private', last_access_section_line) + "\n" + LINE + "\n"
-        elif is_override_or_make_private == PREPEND_CODE_VIRTUAL and not re.match(r'^(\s*)virtual\b(.*)$', LINE):
+            LINE = re.sub(r'(protected|public)', 'private',
+                          last_access_section_line) + "\n" + LINE + "\n"
+        elif is_override_or_make_private == PREPEND_CODE_VIRTUAL and not re.match(
+                r'^(\s*)virtual\b(.*)$', LINE):
             # SIP often requires the virtual keyword to be present, or it chokes on covariant return types
             # in overridden methods
             dbg_info('adding virtual keyword for overridden method')
@@ -1965,15 +2072,18 @@ while line_idx < line_count:
     match = re.match(pattern, LINE)
     if match:
         return_type_candidate = match.group(1)
-        if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)', return_type_candidate):
+        if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)',
+                         return_type_candidate):
             # replace :: with . (changes c++ style namespace/class directives to Python style)
             return_type = return_type_candidate.replace('::', '.')
             # replace with builtin Python types
             return_type = re.sub(r'\bdouble\b', 'float', return_type)
             return_type = re.sub(r'\bQString\b', 'str', return_type)
-            return_type = re.sub(r'\bQStringList\b', 'list of str', return_type)
+            return_type = re.sub(r'\bQStringList\b', 'list of str',
+                                 return_type)
 
-            list_match = re.match(r'^(?:QList|QVector)<\s*(.*?)[\s*]*>$', return_type)
+            list_match = re.match(r'^(?:QList|QVector)<\s*(.*?)[\s*]*>$',
+                                  return_type)
             if list_match:
                 return_type = f"list of {list_match.group(1)}"
 
@@ -1992,7 +2102,8 @@ while line_idx < line_count:
     LINE = re.sub(r'^(\s*struct )\w+_EXPORT (.+)$', r'\1\2', LINE)
 
     # Skip comments
-    if re.match(r'^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE', LINE):
+    if re.match(r'^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE',
+                LINE):
         # support Docstring for template based classes in SIP 4.19.7+
         comment_template_docstring = True
     elif (multiline_definition == MULTILINE_NO and
@@ -2022,7 +2133,8 @@ while line_idx < line_count:
 
     # MISSING
     # handle enum/flags QgsSettingsEntryEnumFlag
-    match = re.match(r'^(\s*)const QgsSettingsEntryEnumFlag<(.*)> (.+);$', LINE)
+    match = re.match(r'^(\s*)const QgsSettingsEntryEnumFlag<(.*)> (.+);$',
+                     LINE)
     if match:
         indent, enum_type, var_name = match.groups()
 
@@ -2047,10 +2159,13 @@ while line_idx < line_count:
 
     # append to class map file
     if args.class_map and actual_class:
-        match = re.match(r'^ *(const |virtual |static )* *[\w:]+ +\*?(?P<method>\w+)\(.*$', LINE)
+        match = re.match(
+            r'^ *(const |virtual |static )* *[\w:]+ +\*?(?P<method>\w+)\(.*$',
+            LINE)
         if match:
             with open(args.class_map, 'a') as f:
-                f.write(f"{'.'.join(classname)}.{match.group('method')}: {headerfile}#L{line_idx}\n")
+                f.write(
+                    f"{'.'.join(classname)}.{match.group('method')}: {headerfile}#L{line_idx}\n")
 
     if python_signature:
         write_output("PSI", f"{python_signature}\n")
@@ -2061,11 +2176,14 @@ while line_idx < line_count:
         # https://regex101.com/r/DN01iM/4
         # TODO - original regex is incompatible with python -- it was:
         # ^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*$:
-        if re.match(r'^([^()]+(\((?:[^()]|\([^()]*\))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*', LINE):
+        if re.match(
+            r'^([^()]+(\((?:[^()]|\([^()]*\))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*',
+                LINE):
             dbg_info("ending multiline")
             # remove potential following body
-            if multiline_definition != MULTILINE_CONDITIONAL_STATEMENT and not re.search(r'(\{.*}|;)\s*(//.*)?$',
-                                                                                         LINE):
+            if multiline_definition != MULTILINE_CONDITIONAL_STATEMENT and not re.search(
+                r'(\{.*}|;)\s*(//.*)?$',
+                    LINE):
                 dbg_info("remove following body of multiline def")
                 last_line = LINE
                 last_line += remove_following_body_or_initializerlist()
@@ -2111,14 +2229,17 @@ while line_idx < line_count:
                 waiting_for_return_to_end = False
 
                 for comment_line in comment_lines:
-                    if ('versionadded:' in comment_line or 'deprecated:' in comment_line) and out_params:
+                    if (
+                            'versionadded:' in comment_line or 'deprecated:' in comment_line) and out_params:
                         dbg_info('out style parameters remain to flush!')
                         # member has /Out/ parameters, but no return type, so flush out out_params docs now
                         first_out_param = out_params.pop(0)
-                        write_output("CM7", f"{doc_prepend}:return: - {first_out_param}\n")
+                        write_output("CM7",
+                                     f"{doc_prepend}:return: - {first_out_param}\n")
 
                         for out_param in out_params:
-                            write_output("CM7", f"{doc_prepend}         - {out_param}\n")
+                            write_output("CM7",
+                                         f"{doc_prepend}         - {out_param}\n")
                         write_output("CM7", f"{doc_prepend}\n")
                         out_params = []
 
@@ -2127,9 +2248,13 @@ while line_idx < line_count:
                         param_name = param_match.group(1)
                         if param_name in skipped_params_out or param_name in skipped_params_remove:
                             if param_name in skipped_params_out:
-                                comment_line = re.sub(r'^:param\s+(\w+):\s*(.*?)$', r'\1: \2', comment_line)
-                                comment_line = re.sub(r'(?:optional|if specified|if given),?\s*', '',
-                                                      comment_line)
+                                comment_line = re.sub(
+                                    r'^:param\s+(\w+):\s*(.*?)$', r'\1: \2',
+                                    comment_line)
+                                comment_line = re.sub(
+                                    r'(?:optional|if specified|if given),?\s*',
+                                    '',
+                                    comment_line)
                                 out_params.append(comment_line)
                                 skipping_param = 2
                             else:
@@ -2148,10 +2273,12 @@ while line_idx < line_count:
 
                     if ':return:' in comment_line and out_params:
                         waiting_for_return_to_end = True
-                        comment_line = comment_line.replace(':return:', ':return: -')
+                        comment_line = comment_line.replace(':return:',
+                                                            ':return: -')
                         write_output("CM2", f"{doc_prepend}{comment_line}\n")
                         for out_param in out_params:
-                            write_output("CM7", f"{doc_prepend}         - {out_param}\n")
+                            write_output("CM7",
+                                         f"{doc_prepend}         - {out_param}\n")
                         out_params = []
                     else:
                         write_output("CM2", f"{doc_prepend}{comment_line}\n")
