@@ -318,6 +318,8 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Creates a new geometry from a QgsBox3D object
+     * Returns a 2D polygon geometry if the box is purely 2d,
+     * otherwise returns a polyhedral surface geometry.
      *
      * \since QGIS 3.34
      */

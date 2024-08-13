@@ -755,7 +755,7 @@ void TestQgsGeometry::fromBox3d()
 {
   QgsBox3D box3d( 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 );
   QgsGeometry result( QgsGeometry::fromBox3D( box3d ) );
-  QCOMPARE( result.asWkt(), "MultiPolygonZ (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))" );
+  QCOMPARE( result.asWkt(), "PolyhedralSurfaceZ (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))" );
 }
 
 void TestQgsGeometry::fromPoint()
