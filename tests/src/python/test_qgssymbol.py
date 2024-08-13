@@ -1409,7 +1409,7 @@ class TestQgsMarkerSymbol(QgisTestCase):
         markerSymbol.setBufferSettings(s)
 
         image = QImage(200, 200, QImage.Format.Format_RGB32)
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
 
         painter = QPainter(image)
         context = QgsRenderContext.fromQPainter(painter)
@@ -1461,7 +1461,7 @@ class TestQgsMarkerSymbol(QgisTestCase):
         markerSymbol.setBufferSettings(s)
 
         image = QImage(200, 200, QImage.Format.Format_RGB32)
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
 
         painter = QPainter(image)
         context = QgsRenderContext.fromQPainter(painter)
@@ -1508,7 +1508,7 @@ class TestQgsMarkerSymbol(QgisTestCase):
         markerSymbol.setBufferSettings(s)
 
         image = QImage(200, 200, QImage.Format.Format_RGB32)
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
 
         painter = QPainter(image)
         context = QgsRenderContext.fromQPainter(painter)
@@ -1557,7 +1557,7 @@ class TestQgsMarkerSymbol(QgisTestCase):
         markerSymbol.setBufferSettings(s)
 
         image = QImage(200, 200, QImage.Format.Format_RGB32)
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
 
         painter = QPainter(image)
         context = QgsRenderContext.fromQPainter(painter)
