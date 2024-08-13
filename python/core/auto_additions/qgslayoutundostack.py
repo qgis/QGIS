@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/layout/qgslayoutundostack.h
-QgsLayoutUndoStack.__attribute_docs__ = {'undoRedoOccurredForItems': 'Emitted when an undo or redo action has occurred, which affected a\nset of layout ``itemUuids``.\n'}
+try:
+    QgsLayoutUndoStack.__attribute_docs__ = {'undoRedoOccurredForItems': 'Emitted when an undo or redo action has occurred, which affected a\nset of layout ``itemUuids``.\n'}
+except NameError:
+    pass

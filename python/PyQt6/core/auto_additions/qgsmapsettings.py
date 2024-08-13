@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgsmapsettings.h
-QgsLabelBlockingRegion.__attribute_docs__ = {'geometry': 'Geometry of region to avoid placing labels within (in destination map coordinates and CRS)'}
+try:
+    QgsLabelBlockingRegion.__attribute_docs__ = {'geometry': 'Geometry of region to avoid placing labels within (in destination map coordinates and CRS)'}
+except NameError:
+    pass

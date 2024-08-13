@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/gui/qgsfieldcombobox.h
-QgsFieldComboBox.__attribute_docs__ = {'fieldChanged': 'Emitted when the currently selected field changes.\n'}
+try:
+    QgsFieldComboBox.__attribute_docs__ = {'fieldChanged': 'Emitted when the currently selected field changes.\n'}
+except NameError:
+    pass

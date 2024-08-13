@@ -11,4 +11,7 @@ QgsKernelDensityEstimation.DriverError = QgsKernelDensityEstimation.Result.Drive
 QgsKernelDensityEstimation.InvalidParameters = QgsKernelDensityEstimation.Result.InvalidParameters
 QgsKernelDensityEstimation.FileCreationError = QgsKernelDensityEstimation.Result.FileCreationError
 QgsKernelDensityEstimation.RasterIoError = QgsKernelDensityEstimation.Result.RasterIoError
-QgsKernelDensityEstimation.__attribute_docs__ = {'source': 'Point feature source', 'radius': 'Fixed radius, in map units', 'radiusField': 'Field for radius, or empty if using a fixed radius', 'weightField': 'Field name for weighting field, or empty if not using weights', 'pixelSize': 'Size of pixel in output file', 'shape': 'Kernel shape', 'decayRatio': 'Decay ratio (Triangular kernels only)', 'outputValues': 'Type of output value'}
+try:
+    QgsKernelDensityEstimation.__attribute_docs__ = {'source': 'Point feature source', 'radius': 'Fixed radius, in map units', 'radiusField': 'Field for radius, or empty if using a fixed radius', 'weightField': 'Field name for weighting field, or empty if not using weights', 'pixelSize': 'Size of pixel in output file', 'shape': 'Kernel shape', 'decayRatio': 'Decay ratio (Triangular kernels only)', 'outputValues': 'Type of output value'}
+except NameError:
+    pass

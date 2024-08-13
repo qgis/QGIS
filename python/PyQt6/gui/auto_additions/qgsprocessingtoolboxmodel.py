@@ -78,4 +78,7 @@ QgsProcessingToolboxProxyModel.Filter.baseClass = QgsProcessingToolboxProxyModel
 QgsProcessingToolboxProxyModel.Filters = lambda flags=0: QgsProcessingToolboxProxyModel.Filter(flags)
 QgsProcessingToolboxProxyModel.Filters.baseClass = QgsProcessingToolboxProxyModel
 Filters = QgsProcessingToolboxProxyModel  # dirty hack since SIP seems to introduce the flags in module
-QgsProcessingToolboxModel.__attribute_docs__ = {'recentAlgorithmAdded': 'Emitted whenever recent algorithms are added to the model.\n', 'favoriteAlgorithmAdded': 'Emitted whenever favorite algorithms are added to the model.\n'}
+try:
+    QgsProcessingToolboxModel.__attribute_docs__ = {'recentAlgorithmAdded': 'Emitted whenever recent algorithms are added to the model.\n', 'favoriteAlgorithmAdded': 'Emitted whenever favorite algorithms are added to the model.\n'}
+except NameError:
+    pass

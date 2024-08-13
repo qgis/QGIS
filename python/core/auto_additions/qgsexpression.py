@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/expression/qgsexpression.h
-QgsExpression.__attribute_docs__ = {'errorType': 'The type of parser error that was found.', 'errorMsg': 'The message for the error at this location.', 'firstLine': "The first line that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'firstColumn': "The first column that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'lastLine': 'The last line that contained the error in the parser.', 'lastColumn': 'The last column that contained the error in the parser.'}
+try:
+    QgsExpression.__attribute_docs__ = {'errorType': 'The type of parser error that was found.', 'errorMsg': 'The message for the error at this location.', 'firstLine': "The first line that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'firstColumn': "The first column that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'lastLine': 'The last line that contained the error in the parser.', 'lastColumn': 'The last column that contained the error in the parser.'}
+except NameError:
+    pass

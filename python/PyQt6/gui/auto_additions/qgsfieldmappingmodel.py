@@ -11,4 +11,7 @@ QgsFieldMappingModel.ColumnDataIndex.DestinationComment.__doc__ = "Destination c
 QgsFieldMappingModel.ColumnDataIndex.__doc__ = "The ColumnDataIndex enum represents the column index for the view\n\n" + '* ``SourceExpression``: ' + QgsFieldMappingModel.ColumnDataIndex.SourceExpression.__doc__ + '\n' + '* ``DestinationName``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationName.__doc__ + '\n' + '* ``DestinationType``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationType.__doc__ + '\n' + '* ``DestinationLength``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationLength.__doc__ + '\n' + '* ``DestinationPrecision``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationPrecision.__doc__ + '\n' + '* ``DestinationConstraints``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationConstraints.__doc__ + '\n' + '* ``DestinationAlias``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationAlias.__doc__ + '\n' + '* ``DestinationComment``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationComment.__doc__
 # --
 QgsFieldMappingModel.ColumnDataIndex.baseClass = QgsFieldMappingModel
-QgsFieldMappingModel.__attribute_docs__ = {'originalName': 'The original name of the field', 'field': 'The field in its current status (it might have been renamed)', 'expression': 'The expression for the mapped field from the source fields'}
+try:
+    QgsFieldMappingModel.__attribute_docs__ = {'originalName': 'The original name of the field', 'field': 'The field in its current status (it might have been renamed)', 'expression': 'The expression for the mapped field from the source fields'}
+except NameError:
+    pass

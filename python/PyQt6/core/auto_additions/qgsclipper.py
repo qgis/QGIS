@@ -5,4 +5,7 @@ QgsClipper.YMax = QgsClipper.Boundary.YMax
 QgsClipper.YMin = QgsClipper.Boundary.YMin
 QgsClipper.ZMax = QgsClipper.Boundary.ZMax
 QgsClipper.ZMin = QgsClipper.Boundary.ZMin
-QgsClipper.__attribute_docs__ = {'MAX_X': 'Maximum X-coordinate of the rectangular box used for clipping.', 'MIN_X': 'Minimum X-coordinate of the rectangular box used for clipping.', 'MAX_Y': 'Maximum Y-coordinate of the rectangular box used for clipping.', 'MIN_Y': 'Minimum Y-coordinate of the rectangular box used for clipping.'}
+try:
+    QgsClipper.__attribute_docs__ = {'MAX_X': 'Maximum X-coordinate of the rectangular box used for clipping.', 'MIN_X': 'Minimum X-coordinate of the rectangular box used for clipping.', 'MAX_Y': 'Maximum Y-coordinate of the rectangular box used for clipping.', 'MIN_Y': 'Minimum Y-coordinate of the rectangular box used for clipping.'}
+except NameError:
+    pass

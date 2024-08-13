@@ -1,3 +1,9 @@
 # The following has been generated automatically from src/core/elevation/qgsprofilesnapping.h
-QgsProfileSnapContext.__attribute_docs__ = {'maximumSurfaceDistanceDelta': 'Maximum allowed snapping delta for the distance values when snapping to a continuous elevation surface', 'maximumSurfaceElevationDelta': 'Maximum allowed snapping delta for the elevation values when snapping to a continuous elevation surface', 'maximumPointDistanceDelta': 'Maximum allowed snapping delta for the distance values when snapping to a point', 'maximumPointElevationDelta': 'Maximum allowed snapping delta for the elevation values when snapping to a point', 'displayRatioElevationVsDistance': 'Display ratio of elevation vs distance units'}
-QgsProfileSnapResult.__attribute_docs__ = {'snappedPoint': 'Snapped point'}
+try:
+    QgsProfileSnapContext.__attribute_docs__ = {'maximumSurfaceDistanceDelta': 'Maximum allowed snapping delta for the distance values when snapping to a continuous elevation surface', 'maximumSurfaceElevationDelta': 'Maximum allowed snapping delta for the elevation values when snapping to a continuous elevation surface', 'maximumPointDistanceDelta': 'Maximum allowed snapping delta for the distance values when snapping to a point', 'maximumPointElevationDelta': 'Maximum allowed snapping delta for the elevation values when snapping to a point', 'displayRatioElevationVsDistance': 'Display ratio of elevation vs distance units'}
+except NameError:
+    pass
+try:
+    QgsProfileSnapResult.__attribute_docs__ = {'snappedPoint': 'Snapped point'}
+except NameError:
+    pass

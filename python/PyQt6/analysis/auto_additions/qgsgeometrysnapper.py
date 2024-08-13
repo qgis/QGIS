@@ -6,4 +6,7 @@ QgsGeometrySnapper.PreferClosestNoExtraVertices = QgsGeometrySnapper.SnapMode.Pr
 QgsGeometrySnapper.EndPointPreferNodes = QgsGeometrySnapper.SnapMode.EndPointPreferNodes
 QgsGeometrySnapper.EndPointPreferClosest = QgsGeometrySnapper.SnapMode.EndPointPreferClosest
 QgsGeometrySnapper.EndPointToEndPoint = QgsGeometrySnapper.SnapMode.EndPointToEndPoint
-QgsGeometrySnapper.__attribute_docs__ = {'featureSnapped': 'Emitted each time a feature has been processed when calling :py:func:`~QgsGeometrySnapper.snapFeatures`\n'}
+try:
+    QgsGeometrySnapper.__attribute_docs__ = {'featureSnapped': 'Emitted each time a feature has been processed when calling :py:func:`~QgsGeometrySnapper.snapFeatures`\n'}
+except NameError:
+    pass

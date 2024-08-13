@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/gui/processing/qgsprocessingfavoritealgorithmmanager.h
-QgsProcessingFavoriteAlgorithmManager.__attribute_docs__ = {'changed': 'Emitted when the list of favorite algorithms is changed, e.g. when\na new algorithm ID is added to the list or an existing algorithm ID\nis removed from the list.\n'}
+try:
+    QgsProcessingFavoriteAlgorithmManager.__attribute_docs__ = {'changed': 'Emitted when the list of favorite algorithms is changed, e.g. when\na new algorithm ID is added to the list or an existing algorithm ID\nis removed from the list.\n'}
+except NameError:
+    pass

@@ -8,4 +8,7 @@ QgsPointCloudDataProvider.Capabilities = lambda flags=0: QgsPointCloudDataProvid
 QgsPointCloudDataProvider.NotIndexed = QgsPointCloudDataProvider.PointCloudIndexGenerationState.NotIndexed
 QgsPointCloudDataProvider.Indexing = QgsPointCloudDataProvider.PointCloudIndexGenerationState.Indexing
 QgsPointCloudDataProvider.Indexed = QgsPointCloudDataProvider.PointCloudIndexGenerationState.Indexed
-QgsPointCloudDataProvider.__attribute_docs__ = {'indexGenerationStateChanged': 'Emitted when point cloud generation state is changed\n'}
+try:
+    QgsPointCloudDataProvider.__attribute_docs__ = {'indexGenerationStateChanged': 'Emitted when point cloud generation state is changed\n'}
+except NameError:
+    pass

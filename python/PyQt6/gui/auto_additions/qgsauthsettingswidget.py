@@ -2,4 +2,7 @@
 QgsAuthSettingsWidget.ProjectFile = QgsAuthSettingsWidget.WarningType.ProjectFile
 QgsAuthSettingsWidget.UserSettings = QgsAuthSettingsWidget.WarningType.UserSettings
 QgsAuthSettingsWidget.WarningType.baseClass = QgsAuthSettingsWidget
-QgsAuthSettingsWidget.__attribute_docs__ = {'usernameChanged': 'Emitted when the plain text username defined in the dialog is changed.\n\n.. versionadded:: 3.22\n', 'passwordChanged': 'Emitted when the plain text password defined in the dialog is changed.\n\n.. versionadded:: 3.22\n', 'configIdChanged': 'Emitted when the auth configuration ID selected in the dialog is changed.\n\n.. versionadded:: 3.22\n'}
+try:
+    QgsAuthSettingsWidget.__attribute_docs__ = {'usernameChanged': 'Emitted when the plain text username defined in the dialog is changed.\n\n.. versionadded:: 3.22\n', 'passwordChanged': 'Emitted when the plain text password defined in the dialog is changed.\n\n.. versionadded:: 3.22\n', 'configIdChanged': 'Emitted when the auth configuration ID selected in the dialog is changed.\n\n.. versionadded:: 3.22\n'}
+except NameError:
+    pass

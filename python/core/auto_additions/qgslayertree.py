@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/layertree/qgslayertree.h
-QgsLayerTree.__attribute_docs__ = {'customLayerOrderChanged': 'Emitted when the custom layer order has changed.\n', 'layerOrderChanged': 'Emitted when the layer order has changed.\n', 'hasCustomLayerOrderChanged': 'Emitted when the hasCustomLayerOrder flag changes.\n\n.. seealso:: :py:func:`hasCustomLayerOrder`\n'}
+try:
+    QgsLayerTree.__attribute_docs__ = {'customLayerOrderChanged': 'Emitted when the custom layer order has changed.\n', 'layerOrderChanged': 'Emitted when the layer order has changed.\n', 'hasCustomLayerOrderChanged': 'Emitted when the hasCustomLayerOrder flag changes.\n\n.. seealso:: :py:func:`hasCustomLayerOrder`\n'}
+except NameError:
+    pass
