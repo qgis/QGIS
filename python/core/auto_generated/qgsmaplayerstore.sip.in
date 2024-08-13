@@ -108,8 +108,7 @@ Returns a map of all valid layers by layer ID.
 %End
 
 
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers /Transfer/);
-
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers /Transfer/ );
 %Docstring
 Add a list of ``layers`` to the store. Ownership of the layers is transferred
 to the store.
@@ -131,8 +130,7 @@ The :py:func:`~QgsMapLayerStore.layersAdded` and :py:func:`~QgsMapLayerStore.lay
 .. seealso:: :py:func:`addMapLayer`
 %End
 
-    QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/);
-
+    QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/ );
 %Docstring
 Add a ``layer`` to the store. Ownership of the layer is transferred to the
 store.

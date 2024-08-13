@@ -286,7 +286,7 @@ Helper utilities for working with JSON and GeoJSON conversions.
 
   public:
 
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields());
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields() );
 %Docstring
 Attempts to parse a GeoJSON ``string`` to a collection of features.
 It is possible to specify ``fields`` to parse specific fields, if not provided, no fields will be included.
@@ -301,7 +301,7 @@ An ``encoding`` can be specified which defaults to UTF-8 if it is `None`.
    this function is a wrapper around :py:func:`QgsOgrUtils.stringToFeatureList()`
 %End
 
-    static QgsFields stringToFields( const QString &string);
+    static QgsFields stringToFields( const QString &string );
 %Docstring
 Attempts to retrieve the fields from a GeoJSON  ``string`` representing a collection of features.
 An ``encoding`` can be specified which defaults to UTF-8 if it is `None`.

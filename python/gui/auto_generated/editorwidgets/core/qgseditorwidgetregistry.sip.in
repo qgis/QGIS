@@ -61,7 +61,6 @@ Find the best editor widget and its configuration for a given field.
                                     const QVariantMap &config,
                                     QWidget *editor,
                                     QWidget *parent /TransferThis/ ) /Factory/;
-
 %Docstring
 Create an attribute editor widget wrapper of a given type for a given field.
 The editor may be ``None`` if you want the widget wrapper to create a default widget.
@@ -80,7 +79,6 @@ The editor may be ``None`` if you want the widget wrapper to create a default wi
                                     int fieldIdx,
                                     QWidget *editor,
                                     QWidget *parent /TransferThis/ ) /Factory/;
-
 %Docstring
 Create an attribute editor widget wrapper of the best type for a given field.
 The editor may be ``None`` if you want the widget wrapper to create a default widget.
@@ -98,7 +96,6 @@ The editor may be ``None`` if you want the widget wrapper to create a default wi
         int fieldIdx,
         const QVariantMap &config,
         QWidget *parent /TransferThis/ ) /Factory/;
-
 
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ ) /Factory/;
 %Docstring

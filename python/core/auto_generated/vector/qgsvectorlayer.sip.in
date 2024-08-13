@@ -2404,8 +2404,7 @@ and maximum values are required.
                         QgsExpressionContext *context = 0,
                         bool *ok = 0,
                         QgsFeatureIds *fids = 0,
-                        QgsFeedback *feedback = 0) const;
-
+                        QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculates an aggregated value from the layer's features.
 Currently any filtering expression provided will override filters in the FeatureRequest.

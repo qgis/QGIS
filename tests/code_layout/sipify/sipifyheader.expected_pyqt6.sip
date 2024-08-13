@@ -314,12 +314,19 @@ remove argument
     void method();
     void test();
     void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
-
     void position();
-    void position(  bool keep );
+    void position( bool keep );
     void position( bool keep, bool keep );
     void position( bool keep );
-
+    static QgsFields stringToFields( const QString &string );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
+                                       bool addToLegend = true );
+    QgsEditorWidgetWrapper *create( const QString &widgetId,
+                                    QgsVectorLayer *vl,
+                                    int fieldIdx,
+                                    const QVariantMap &config,
+                                    QWidget *editor,
+                                    QWidget *parent /TransferThis/ ) /Factory/;
     void method( bool superArg = test );
     void method( bool myArg1,
                  bool superArg2 = test, // hola
