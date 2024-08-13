@@ -1,4 +1,10 @@
 # The following has been generated automatically from src/gui/qgscolorwidgets.h
+# monkey patching scoped based enum
+QgsColorWidget.ComponentUnit.Raw.__doc__ = "Raw values in the range 0-255"
+QgsColorWidget.ComponentUnit.Percent.__doc__ = "Percent values in the range 0-100"
+QgsColorWidget.ComponentUnit.Degree.__doc__ = "Degree values in the range 0-359"
+QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Raw``: ' + QgsColorWidget.ComponentUnit.Raw.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
+# --
 QgsColorTextWidget.ColorTextFormat.baseClass = QgsColorTextWidget
 try:
     QgsColorWidget.__attribute_docs__ = {'colorChanged': "Emitted when the widget's color changes\n\n:param color: new widget color\n", 'hovered': 'Emitted when mouse hovers over widget.\n'}

@@ -11,6 +11,12 @@ QgsColorWidget.Cyan = QgsColorWidget.ColorComponent.Cyan
 QgsColorWidget.Magenta = QgsColorWidget.ColorComponent.Magenta
 QgsColorWidget.Yellow = QgsColorWidget.ColorComponent.Yellow
 QgsColorWidget.Black = QgsColorWidget.ColorComponent.Black
+# monkey patching scoped based enum
+QgsColorWidget.ComponentUnit.Raw.__doc__ = "Raw values in the range 0-255"
+QgsColorWidget.ComponentUnit.Percent.__doc__ = "Percent values in the range 0-100"
+QgsColorWidget.ComponentUnit.Degree.__doc__ = "Degree values in the range 0-359"
+QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Raw``: ' + QgsColorWidget.ComponentUnit.Raw.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
+# --
 QgsColorRampWidget.Horizontal = QgsColorRampWidget.Orientation.Horizontal
 QgsColorRampWidget.Vertical = QgsColorRampWidget.Orientation.Vertical
 QgsColorTextWidget.HexRgb = QgsColorTextWidget.ColorTextFormat.HexRgb

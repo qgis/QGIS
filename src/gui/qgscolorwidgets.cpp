@@ -93,6 +93,26 @@ QPixmap QgsColorWidget::createDragIcon( const QColor &color )
   return pixmap;
 }
 
+QgsColorWidget::ComponentUnit QgsColorWidget::componentUnit( ColorComponent component )
+{
+  switch ( component )
+  {
+    case QgsColorWidget::Hue:
+      return ComponentUnit::Degree;
+    case QgsColorWidget::Saturation:
+    case QgsColorWidget::Value:
+    case QgsColorWidget::Alpha:
+    case QgsColorWidget::Cyan:
+    case QgsColorWidget::Magenta:
+    case QgsColorWidget::Yellow:
+    case QgsColorWidget::Black:
+      return ComponentUnit::Percent;
+
+    default:
+      return ComponentUnit::Raw;
+  }
+}
+
 int QgsColorWidget::componentValue( const QgsColorWidget::ColorComponent component ) const
 {
   return static_cast<int>( std::round( componentValueF( component ) * static_cast<float>( componentRange( component ) ) ) );
@@ -1447,15 +1467,6 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( 1.f ) );
   mSpinBox->setValue( convertRealToDisplay( componentValueF() ) );
-  if ( component == QgsColorWidget::Hue )
-  {
-    //degrees suffix for hue
-    mSpinBox->setSuffix( QChar( 176 ) );
-  }
-  else if ( component == QgsColorWidget::Saturation || component == QgsColorWidget::Value || component == QgsColorWidget::Alpha )
-  {
-    mSpinBox->setSuffix( tr( "%" ) );
-  }
   hLayout->addWidget( mSpinBox );
   setLayout( hLayout );
 
@@ -1468,15 +1479,13 @@ void QgsColorSliderWidget::setComponent( const QgsColorWidget::ColorComponent co
 {
   QgsColorWidget::setComponent( component );
   mRampWidget->setComponent( component );
-  mSpinBox->setMaximum( convertRealToDisplay( componentRange() ) );
-  if ( component == QgsColorWidget::Hue )
+  mSpinBox->setMaximum( convertRealToDisplay( static_cast<float>( componentRange() ) ) );
+  if ( componentUnit( component ) == ComponentUnit::Degree )
   {
-    //degrees suffix for hue
     mSpinBox->setSuffix( QChar( 176 ) );
   }
-  else if ( component == QgsColorWidget::Saturation || component == QgsColorWidget::Value || component == QgsColorWidget::Alpha )
+  else if ( componentUnit( component ) == ComponentUnit::Percent )
   {
-    //saturation, value and alpha are in %
     mSpinBox->setSuffix( tr( "%" ) );
   }
   else
@@ -1529,13 +1538,11 @@ void QgsColorSliderWidget::rampChanged( float value )
 
 float QgsColorSliderWidget::convertRealToDisplay( const float realValue ) const
 {
-  //scale saturation, value or alpha to 0->100 range. This makes more sense for users
-  //for whom "255" is a totally arbitrary value!
-  if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
+  if ( componentUnit( mComponent ) == ComponentUnit::Percent )
   {
     return realValue * 100.f;
   }
-  else if ( mComponent == QgsColorWidget::Hue )
+  else if ( componentUnit( mComponent ) == ComponentUnit::Degree )
   {
     return realValue * HUE_MAX;
   }
@@ -1547,11 +1554,11 @@ float QgsColorSliderWidget::convertRealToDisplay( const float realValue ) const
 
 float QgsColorSliderWidget::convertDisplayToReal( const float displayValue ) const
 {
-  if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
+  if ( componentUnit( mComponent ) == ComponentUnit::Percent )
   {
     return displayValue / 100.f;
   }
-  else if ( mComponent == QgsColorWidget::Hue )
+  else if ( componentUnit( mComponent ) == ComponentUnit::Degree )
   {
     return displayValue / HUE_MAX;
   }
