@@ -262,6 +262,8 @@ Creates a new geometry from a :py:class:`QgsRectangle`
     static QgsGeometry fromBox3D( const QgsBox3D &box ) /HoldGIL/;
 %Docstring
 Creates a new geometry from a :py:class:`QgsBox3D` object
+Returns a 2D polygon geometry if the box is purely 2d,
+otherwise returns a polyhedral surface geometry.
 
 .. versionadded:: 3.34
 %End
