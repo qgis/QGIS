@@ -36,9 +36,6 @@ MULTILINE_NO = 20
 MULTILINE_METHOD = 21
 MULTILINE_CONDITIONAL_STATEMENT = 22
 
-# TO RENAME
-LINE = ''
-
 # Parse command-line arguments
 parser = argparse.ArgumentParser(
     description="Convert header file to SIP and Python")
@@ -80,6 +77,7 @@ class Context:
         self.is_qt6: bool = False
         self.header_file: str = ''
 
+        self.current_line: str = ''
         self.sip_run: bool = False
         self.header_code: bool = False
         self.access: List[Visibility] = [Visibility.Public]
@@ -877,7 +875,7 @@ def processDoxygenLine(line):
 
 
 def detect_and_remove_following_body_or_initializerlist():
-    global LINE
+    global CONTEXT
 
     signature = ''
 
@@ -886,25 +884,26 @@ def detect_and_remove_following_body_or_initializerlist():
     pattern2 = r'SIP_SKIP\s*(?!;)\s*(\/\/.*)?$'
     pattern3 = r'^\s*class.*SIP_SKIP'
 
-    if (re.match(pattern1, LINE) or
-        re.search(pattern2, LINE) or
-        re.match(pattern3, LINE)):
+    if (re.match(pattern1, CONTEXT.current_line) or
+        re.search(pattern2, CONTEXT.current_line) or
+        re.match(pattern3, CONTEXT.current_line)):
 
         dbg_info(
             "remove constructor definition, function bodies, member initializing list (1)")
 
         # Extract the parts we want to keep
-        _match = re.match(pattern1, LINE)
+        _match = re.match(pattern1, CONTEXT.current_line)
         if _match:
             newline = f"{_match.group(1) or ''}{_match.group(2) or ''}{_match.group(3)};"
         else:
-            newline = LINE
+            newline = CONTEXT.current_line
 
         # Call remove_following_body_or_initializerlist() if necessary
-        if not re.search(r'{.*}(\s*SIP_\w+)*\s*(//.*)?$', LINE):
+        if not re.search(r'{.*}(\s*SIP_\w+)*\s*(//.*)?$',
+                         CONTEXT.current_line):
             signature = remove_following_body_or_initializerlist()
 
-        LINE = newline
+        CONTEXT.current_line = newline
 
     return signature
 
@@ -1089,7 +1088,7 @@ def fix_constants(line):
 
 def detect_comment_block(strict_mode=True):
     # Initialize global or module-level variables if necessary
-    global CONTEXT, LINE
+    global CONTEXT
 
     CONTEXT.comment_param_list = False
     CONTEXT.indent = ''
@@ -1100,16 +1099,17 @@ def detect_comment_block(strict_mode=True):
     CONTEXT.skipped_params_out = []
     CONTEXT.skipped_params_remove = []
 
-    if re.match(r'^\s*/\*', LINE) or (not strict_mode and '/*' in LINE):
+    if re.match(r'^\s*/\*', CONTEXT.current_line) or (
+        not strict_mode and '/*' in CONTEXT.current_line):
         dbg_info("found comment block")
         CONTEXT.comment = processDoxygenLine(
-            re.sub(r'^\s*/\*(\*)?(.*?)\n?$', r'\2', LINE))
+            re.sub(r'^\s*/\*(\*)?(.*?)\n?$', r'\2', CONTEXT.current_line))
         CONTEXT.comment = re.sub(r'^\s*$', '', CONTEXT.comment)
 
-        while not re.search(r'\*/\s*(//.*?)?$', LINE):
-            LINE = read_line()
+        while not re.search(r'\*/\s*(//.*?)?$', CONTEXT.current_line):
+            CONTEXT.current_line = read_line()
             CONTEXT.comment += processDoxygenLine(
-                re.sub(r'\s*\*?(.*?)(/)?\n?$', r'\1', LINE))
+                re.sub(r'\s*\*?(.*?)(/)?\n?$', r'\1', CONTEXT.current_line))
 
         CONTEXT.comment = re.sub(r'\n\s+\n', '\n\n', CONTEXT.comment)
         CONTEXT.comment = re.sub(r'\n{3,}', '\n\n', CONTEXT.comment)
@@ -1129,122 +1129,142 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     CONTEXT.python_signature = ''
     CONTEXT.actual_class = CONTEXT.classname[-1] if CONTEXT.classname else None
-    LINE = read_line()
+    CONTEXT.current_line = read_line()
 
-    if re.match(r'^\s*(#define\s+)?SIP_IF_MODULE\(.*\)$', LINE):
+    if re.match(r'^\s*(#define\s+)?SIP_IF_MODULE\(.*\)$',
+                CONTEXT.current_line):
         dbg_info('skipping SIP include condition macro')
         continue
 
-    match = re.match(r'^(.*?)\s*//\s*cppcheck-suppress.*$', LINE)
+    match = re.match(r'^(.*?)\s*//\s*cppcheck-suppress.*$',
+                     CONTEXT.current_line)
     if match:
-        LINE = match.group(1)
+        CONTEXT.current_line = match.group(1)
 
-    match = re.match(r'^\s*SIP_FEATURE\(\s*(\w+)\s*\)(.*)$', LINE)
+    match = re.match(r'^\s*SIP_FEATURE\(\s*(\w+)\s*\)(.*)$',
+                     CONTEXT.current_line)
     if match:
         write_output("SF1", f"%Feature {match.group(1)}{match.group(2)}\n")
         continue
 
-    match = re.match(r'^\s*SIP_PROPERTY\((.*)\)$', LINE)
+    match = re.match(r'^\s*SIP_PROPERTY\((.*)\)$', CONTEXT.current_line)
     if match:
         write_output("SF1", f"%Property({match.group(1)})\n")
         continue
 
-    match = re.match(r'^\s*SIP_IF_FEATURE\(\s*(!?\w+)\s*\)(.*)$', LINE)
+    match = re.match(r'^\s*SIP_IF_FEATURE\(\s*(!?\w+)\s*\)(.*)$',
+                     CONTEXT.current_line)
     if match:
         write_output("SF2", f"%If ({match.group(1)}){match.group(2)}\n")
         continue
 
-    match = re.match(r'^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$', LINE)
+    match = re.match(r'^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$',
+                     CONTEXT.current_line)
     if match:
-        LINE = f"%ConvertToSubClassCode{match.group(1)}"
+        CONTEXT.current_line = f"%ConvertToSubClassCode{match.group(1)}"
         # Do not continue here, let the code process the next steps
 
-    match = re.match(r'^\s*SIP_VIRTUAL_CATCHER_CODE(.*)$', LINE)
+    match = re.match(r'^\s*SIP_VIRTUAL_CATCHER_CODE(.*)$',
+                     CONTEXT.current_line)
     if match:
-        LINE = f"%VirtualCatcherCode{match.group(1)}"
+        CONTEXT.current_line = f"%VirtualCatcherCode{match.group(1)}"
         # Do not continue here, let the code process the next steps
 
-    match = re.match(r'^\s*SIP_END(.*)$', LINE)
+    match = re.match(r'^\s*SIP_END(.*)$', CONTEXT.current_line)
     if match:
         write_output("SEN", f"%End{match.group(1)}\n")
         continue
 
-    match = re.search(r'SIP_WHEN_FEATURE\(\s*(.*?)\s*\)', LINE)
+    match = re.search(r'SIP_WHEN_FEATURE\(\s*(.*?)\s*\)', CONTEXT.current_line)
     if match:
         dbg_info('found SIP_WHEN_FEATURE')
         CONTEXT.if_feature_condition = match.group(1)
 
     if CONTEXT.is_qt6:
-        LINE = re.sub(r'int\s*__len__\s*\(\s*\)', 'Py_ssize_t __len__()', LINE)
-        LINE = re.sub(r'long\s*__hash__\s*\(\s*\)', 'Py_hash_t __hash__()',
-                      LINE)
+        CONTEXT.current_line = re.sub(r'int\s*__len__\s*\(\s*\)',
+                                      'Py_ssize_t __len__()',
+                                      CONTEXT.current_line)
+        CONTEXT.current_line = re.sub(r'long\s*__hash__\s*\(\s*\)',
+                                      'Py_hash_t __hash__()',
+                                      CONTEXT.current_line)
 
-    if CONTEXT.is_qt6 and re.match(r'^\s*#ifdef SIP_PYQT5_RUN', LINE):
+    if CONTEXT.is_qt6 and re.match(r'^\s*#ifdef SIP_PYQT5_RUN',
+                                   CONTEXT.current_line):
         dbg_info("do not process PYQT5 code")
-        while not re.match(r'^#endif', LINE):
-            LINE = read_line()
+        while not re.match(r'^#endif', CONTEXT.current_line):
+            CONTEXT.current_line = read_line()
 
-    if not CONTEXT.is_qt6 and re.match(r'^\s*#ifdef SIP_PYQT6_RUN', LINE):
+    if not CONTEXT.is_qt6 and re.match(r'^\s*#ifdef SIP_PYQT6_RUN',
+                                       CONTEXT.current_line):
         dbg_info("do not process PYQT6 code")
-        while not re.match(r'^#endif', LINE):
-            LINE = read_line()
+        while not re.match(r'^#endif', CONTEXT.current_line):
+            CONTEXT.current_line = read_line()
 
     # Do not process SIP code %XXXCode
     if CONTEXT.sip_run and re.match(
         r'^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$',
-        LINE):
-        LINE = f"%{re.match(r'^ *% *(.*)$', LINE).group(1)}"
+        CONTEXT.current_line):
+        CONTEXT.current_line = f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
         CONTEXT.comment = ''
         dbg_info("do not process SIP code")
-        while not re.match(r'^ *% *End', LINE):
-            write_output("COD", LINE + "\n")
-            LINE = read_line()
+        while not re.match(r'^ *% *End', CONTEXT.current_line):
+            write_output("COD", CONTEXT.current_line + "\n")
+            CONTEXT.current_line = read_line()
             if CONTEXT.is_qt6:
-                LINE = re.sub(r'SIP_SSIZE_T', 'Py_ssize_t', LINE)
-                LINE = re.sub(r'SIPLong_AsLong', 'PyLong_AsLong', LINE)
-            LINE = re.sub(
+                CONTEXT.current_line = re.sub(r'SIP_SSIZE_T', 'Py_ssize_t',
+                                              CONTEXT.current_line)
+                CONTEXT.current_line = re.sub(r'SIPLong_AsLong',
+                                              'PyLong_AsLong',
+                                              CONTEXT.current_line)
+            CONTEXT.current_line = re.sub(
                 r'^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$',
-                r'%\1\2', LINE)
-            LINE = re.sub(r'^\s*SIP_END(.*)$', r'%End\1', LINE)
+                r'%\1\2', CONTEXT.current_line)
+            CONTEXT.current_line = re.sub(r'^\s*SIP_END(.*)$', r'%End\1',
+                                          CONTEXT.current_line)
 
-        LINE = re.sub(r'^\s*% End', '%End', LINE)
-        write_output("COD", LINE + "\n")
+        CONTEXT.current_line = re.sub(r'^\s*% End', '%End',
+                                      CONTEXT.current_line)
+        write_output("COD", CONTEXT.current_line + "\n")
         continue
 
     # Do not process SIP code %Property
-    if CONTEXT.sip_run and re.match(r'^ *% *(Property)(.*)?$', LINE):
-        LINE = f"%{re.match(r'^ *% *(.*)$', LINE).group(1)}"
+    if CONTEXT.sip_run and re.match(r'^ *% *(Property)(.*)?$',
+                                    CONTEXT.current_line):
+        CONTEXT.current_line = f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
         CONTEXT.comment = ''
-        write_output("COD", LINE + "\n")
+        write_output("COD", CONTEXT.current_line + "\n")
         continue
 
     # Do not process SIP code %If %End
-    if CONTEXT.sip_run and re.match(r'^ *% (If|End)(.*)?$', LINE):
-        LINE = f"%{re.match(r'^ *% (.*)$', LINE).group(1)}"
+    if CONTEXT.sip_run and re.match(r'^ *% (If|End)(.*)?$',
+                                    CONTEXT.current_line):
+        CONTEXT.current_line = f"%{re.match(r'^ *% (.*)$', CONTEXT.current_line).group(1)}"
         CONTEXT.comment = ''
-        write_output("COD", LINE)
+        write_output("COD", CONTEXT.current_line)
         continue
 
     # Skip preprocessor directives
-    if re.match(r'^\s*#', LINE):
+    if re.match(r'^\s*#', CONTEXT.current_line):
         # Skip #if 0 or #if defined(Q_OS_WIN) blocks
-        match = re.match(r'^\s*#if (0|defined\(Q_OS_WIN\))', LINE)
+        match = re.match(r'^\s*#if (0|defined\(Q_OS_WIN\))',
+                         CONTEXT.current_line)
         if match:
             dbg_info(f"skipping #if {match.group(1)} block")
             nesting_index = 0
             while CONTEXT.line_idx < CONTEXT.line_count:
-                LINE = read_line()
-                if re.match(r'^\s*#if(def)?\s+', LINE):
+                CONTEXT.current_line = read_line()
+                if re.match(r'^\s*#if(def)?\s+', CONTEXT.current_line):
                     nesting_index += 1
                 elif nesting_index == 0 and re.match(r'^\s*#(endif|else)',
-                                                     LINE):
+                                                     CONTEXT.current_line):
                     CONTEXT.comment = ''
                     break
-                elif nesting_index != 0 and re.match(r'^\s*#endif', LINE):
+                elif nesting_index != 0 and re.match(r'^\s*#endif',
+                                                     CONTEXT.current_line):
                     nesting_index -= 1
             continue
 
-        if re.match(r'^\s*#ifdef SIP_RUN', LINE):
+        if re.match(r'^\s*#ifdef SIP_RUN', CONTEXT.current_line):
             CONTEXT.sip_run = True
             if CONTEXT.access[-1] == Visibility.Private:
                 dbg_info("writing private content (1)")
@@ -1254,23 +1274,24 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             continue
 
         if CONTEXT.sip_run:
-            if re.match(r'^\s*#endif', LINE):
+            if re.match(r'^\s*#endif', CONTEXT.current_line):
                 if CONTEXT.ifdef_nesting_idx == 0:
                     CONTEXT.sip_run = False
                     continue
                 else:
                     CONTEXT.ifdef_nesting_idx -= 1
 
-            if re.match(r'^\s*#if(def)?\s+', LINE):
+            if re.match(r'^\s*#if(def)?\s+', CONTEXT.current_line):
                 CONTEXT.ifdef_nesting_idx += 1
 
             # If there is an else at this level, code will be ignored (i.e., not SIP_RUN)
-            if re.match(r'^\s*#else', LINE) and CONTEXT.ifdef_nesting_idx == 0:
+            if re.match(r'^\s*#else',
+                        CONTEXT.current_line) and CONTEXT.ifdef_nesting_idx == 0:
                 while CONTEXT.line_idx < CONTEXT.line_count:
-                    LINE = read_line()
-                    if re.match(r'^\s*#if(def)?\s+', LINE):
+                    CONTEXT.current_line = read_line()
+                    if re.match(r'^\s*#if(def)?\s+', CONTEXT.current_line):
                         CONTEXT.ifdef_nesting_idx += 1
-                    elif re.match(r'^\s*#endif', LINE):
+                    elif re.match(r'^\s*#endif', CONTEXT.current_line):
                         if CONTEXT.ifdef_nesting_idx == 0:
                             CONTEXT.comment = ''
                             CONTEXT.sip_run = False
@@ -1279,14 +1300,14 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             CONTEXT.ifdef_nesting_idx -= 1
                 continue
 
-        elif re.match(r'^\s*#ifndef SIP_RUN', LINE):
+        elif re.match(r'^\s*#ifndef SIP_RUN', CONTEXT.current_line):
             # Code is ignored here
             while CONTEXT.line_idx < CONTEXT.line_count:
-                LINE = read_line()
-                if re.match(r'^\s*#if(def)?\s+', LINE):
+                CONTEXT.current_line = read_line()
+                if re.match(r'^\s*#if(def)?\s+', CONTEXT.current_line):
                     CONTEXT.ifdef_nesting_idx += 1
                 elif re.match(r'^\s*#else',
-                              LINE) and CONTEXT.ifdef_nesting_idx == 0:
+                              CONTEXT.current_line) and CONTEXT.ifdef_nesting_idx == 0:
                     # Code here will be printed out
                     if CONTEXT.access[-1] == Visibility.Private:
                         dbg_info("writing private content (2)")
@@ -1296,7 +1317,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         CONTEXT.private_section_line = ''
                     CONTEXT.sip_run = True
                     break
-                elif re.match(r'^\s*#endif', LINE):
+                elif re.match(r'^\s*#endif', CONTEXT.current_line):
                     if CONTEXT.ifdef_nesting_idx == 0:
                         CONTEXT.sip_run = 0
                         break
@@ -1315,7 +1336,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # Skip forward declarations
     match = re.match(
         r'^\s*(template ?<class T> |enum\s+)?(class|struct) \w+(?P<external> *SIP_EXTERNAL)?;\s*(//.*)?$',
-        LINE)
+        CONTEXT.current_line)
     if match:
         if match.group('external'):
             dbg_info('do not skip external forward declaration')
@@ -1325,12 +1346,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             continue
 
     # Skip friend declarations
-    if re.match(r'^\s*friend class \w+', LINE):
+    if re.match(r'^\s*friend class \w+', CONTEXT.current_line):
         continue
 
     # Insert metaobject for Q_GADGET
-    if re.match(r'^\s*Q_GADGET\b.*?$', LINE):
-        if not re.search(r'SIP_SKIP', LINE):
+    if re.match(r'^\s*Q_GADGET\b.*?$', CONTEXT.current_line):
+        if not re.search(r'SIP_SKIP', CONTEXT.current_line):
             dbg_info('Q_GADGET')
             write_output("HCE", "  public:\n")
             write_output("HCE",
@@ -1338,9 +1359,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         continue
 
     # Insert in Python output (python/module/__init__.py)
-    match = re.search(r'Q_(ENUM|FLAG)\(\s*(\w+)\s*\)', LINE)
+    match = re.search(r'Q_(ENUM|FLAG)\(\s*(\w+)\s*\)', CONTEXT.current_line)
     if match:
-        if not re.search(r'SIP_SKIP', LINE):
+        if not re.search(r'SIP_SKIP', CONTEXT.current_line):
             is_flag = 1 if match.group(1) == 'FLAG' else 0
             enum_helper = f"{CONTEXT.actual_class}.{match.group(2)}.baseClass = {CONTEXT.actual_class}"
             dbg_info(f"Q_ENUM/Q_FLAG {enum_helper}")
@@ -1357,13 +1378,13 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, etc.
     if re.match(
         r'^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$',
-        LINE):
+        CONTEXT.current_line):
         continue
 
-    if re.match(r'^\s*QHASH_FOR_CLASS_ENUM', LINE):
+    if re.match(r'^\s*QHASH_FOR_CLASS_ENUM', CONTEXT.current_line):
         continue
 
-    if re.search(r'SIP_SKIP|SIP_PYTHON_SPECIAL_', LINE):
+    if re.search(r'SIP_SKIP|SIP_PYTHON_SPECIAL_', CONTEXT.current_line):
         dbg_info('SIP SKIP!')
         # if multiline definition, remove previous lines
         if CONTEXT.multiline_definition != MULTILINE_NO:
@@ -1382,7 +1403,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         # line skipped, go to next iteration
         match = re.search(r'SIP_PYTHON_SPECIAL_(\w+)\(\s*(".*"|\w+)\s*\)',
-                          LINE)
+                          CONTEXT.current_line)
         if match:
             method_or_code = match.group(2)
             dbg_info(f"PYTHON SPECIAL method or code: {method_or_code}")
@@ -1403,7 +1424,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         continue
 
     struct_match = re.match(
-        r'^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$', LINE)
+        r'^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$',
+        CONTEXT.current_line)
     if struct_match:
         dbg_info("  going to struct => public")
         CONTEXT.class_and_struct.append(struct_match.group('structname'))
@@ -1419,7 +1441,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     class_pattern = re.compile(
         r"""^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
     )
-    class_pattern_match = class_pattern.match(LINE)
+    class_pattern_match = class_pattern.match(CONTEXT.current_line)
 
     if class_pattern_match:
         dbg_info("class definition started")
@@ -1440,14 +1462,14 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         dbg_info(f"class: {CONTEXT.classname[-1]}")
 
         if (
-            re.search(r'\b[A-Z0-9_]+_EXPORT\b', LINE)
+            re.search(r'\b[A-Z0-9_]+_EXPORT\b', CONTEXT.current_line)
             or len(CONTEXT.classname) != 1
             or re.search(r'^\s*template\s*<',
                          CONTEXT.input_lines[CONTEXT.line_idx - 2])
         ):
             CONTEXT.exported[-1] += 1
 
-        LINE = f"{class_pattern_match.group(1)} {class_pattern_match.group('classname')}"
+        CONTEXT.current_line = f"{class_pattern_match.group(1)} {class_pattern_match.group('classname')}"
 
         # append to class map file
         if args.class_map:
@@ -1486,17 +1508,17 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             m = re.sub(r'(\w+)< *(?:\w|::)+ *>', '', m)
             m = re.sub(r'([:,])\s*,', r'\1', m)
             m = re.sub(r'(\s*[:,])?\s*$', '', m)
-            LINE += m
+            CONTEXT.current_line += m
 
         if class_pattern_match.group('annot'):
-            LINE += class_pattern_match.group('annot')
-            LINE = fix_annotations(LINE)
+            CONTEXT.current_line += class_pattern_match.group('annot')
+            CONTEXT.current_line = fix_annotations(CONTEXT.current_line)
 
-        LINE += "\n{\n"
+        CONTEXT.current_line += "\n{\n"
         if CONTEXT.comment.strip():
-            LINE += "%Docstring(signature=\"appended\")\n" + CONTEXT.comment + "\n%End\n"
+            CONTEXT.current_line += "%Docstring(signature=\"appended\")\n" + CONTEXT.comment + "\n%End\n"
 
-        LINE += f"\n%TypeHeaderCode\n#include \"{os.path.basename(CONTEXT.header_file)}\""
+        CONTEXT.current_line += f"\n%TypeHeaderCode\n#include \"{os.path.basename(CONTEXT.header_file)}\""
 
         # for template based inheritance, add a typedef to define the base type
         while template_inheritance_template:
@@ -1506,24 +1528,24 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             cls3 = template_inheritance_class3.pop()
 
             if cls2 == "":
-                LINE = f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base;\n\n{LINE}"
+                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base;\n\n{CONTEXT.current_line}"
             elif cls3 == "":
-                LINE = f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base;\n\n{LINE}"
+                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base;\n\n{CONTEXT.current_line}"
             else:
-                LINE = f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;\n\n{LINE}"
+                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;\n\n{CONTEXT.current_line}"
 
             if tpl not in CONTEXT.declared_classes:
                 tpl_header = f"{tpl.lower()}.h"
                 if tpl in sip_config['class_headerfile']:
                     tpl_header = sip_config['class_headerfile'][tpl]
-                LINE += f"\n#include \"{tpl_header}\""
+                CONTEXT.current_line += f"\n#include \"{tpl_header}\""
 
             if cls2 == "":
-                LINE += f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base;"
+                CONTEXT.current_line += f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base;"
             elif cls3 == "":
-                LINE += f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base;"
+                CONTEXT.current_line += f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base;"
             else:
-                LINE += f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;"
+                CONTEXT.current_line += f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;"
 
         if any(x == Visibility.Private for x in CONTEXT.access) and len(
             CONTEXT.access) != 1:
@@ -1531,7 +1553,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             continue
 
         CONTEXT.access[-1] = Visibility.Private  # private by default
-        write_output("CLS", f"{LINE}\n")
+        write_output("CLS", f"{CONTEXT.current_line}\n")
 
         # Skip opening curly bracket, incrementing hereunder
         skip = read_line()
@@ -1547,8 +1569,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # Bracket balance in class/struct tree
     if not CONTEXT.sip_run:
         bracket_balance = 0
-        bracket_balance += LINE.count('{')
-        bracket_balance -= LINE.count('}')
+        bracket_balance += CONTEXT.current_line.count('{')
+        bracket_balance -= CONTEXT.current_line.count('}')
 
         if bracket_balance != 0:
             CONTEXT.bracket_nesting_idx[-1] += bracket_balance
@@ -1585,27 +1607,28 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             dbg_info(f"new bracket balance: {CONTEXT.bracket_nesting_idx}")
 
     # Private members (exclude SIP_RUN)
-    if re.match(r'^\s*private( slots)?:', LINE):
+    if re.match(r'^\s*private( slots)?:', CONTEXT.current_line):
         CONTEXT.access[-1] = Visibility.Private
-        CONTEXT.last_access_section_line = LINE
-        CONTEXT.private_section_line = LINE
+        CONTEXT.last_access_section_line = CONTEXT.current_line
+        CONTEXT.private_section_line = CONTEXT.current_line
         CONTEXT.comment = ''
         dbg_info("going private")
         continue
 
-    elif re.match(r'^\s*(public( slots)?|signals):.*$', LINE):
+    elif re.match(r'^\s*(public( slots)?|signals):.*$', CONTEXT.current_line):
         dbg_info("going public")
-        CONTEXT.last_access_section_line = LINE
+        CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Public
         CONTEXT.comment = ''
 
-    elif re.match(r'^\s*(protected)( slots)?:.*$', LINE):
+    elif re.match(r'^\s*(protected)( slots)?:.*$', CONTEXT.current_line):
         dbg_info("going protected")
-        CONTEXT.last_access_section_line = LINE
+        CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Protected
         CONTEXT.comment = ''
 
-    elif CONTEXT.access[-1] == Visibility.Private and 'SIP_FORCE' in LINE:
+    elif CONTEXT.access[
+        -1] == Visibility.Private and 'SIP_FORCE' in CONTEXT.current_line:
         dbg_info("private with SIP_FORCE")
         if CONTEXT.private_section_line:
             write_output("PRV3", CONTEXT.private_section_line + "\n")
@@ -1618,15 +1641,15 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # Skip operators
     if CONTEXT.access[-1] != Visibility.Private and re.search(
-        r'operator(=|<<|>>|->)\s*\(', LINE):
+        r'operator(=|<<|>>|->)\s*\(', CONTEXT.current_line):
         dbg_info("skip operator")
         detect_and_remove_following_body_or_initializerlist()
         continue
 
     # Save comments and do not print them, except in SIP_RUN
     if not CONTEXT.sip_run:
-        if re.match(r'^\s*//', LINE):
-            match = re.match(r'^\s*//!\s*(.*?)\n?$', LINE)
+        if re.match(r'^\s*//', CONTEXT.current_line):
+            match = re.match(r'^\s*//!\s*(.*?)\n?$', CONTEXT.current_line)
             if match:
                 CONTEXT.comment_param_list = False
                 CONTEXT.prev_indent = CONTEXT.indent
@@ -1641,9 +1664,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # Handle Q_DECLARE_FLAGS in Qt6
     if CONTEXT.is_qt6 and re.match(
-        r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE):
-        flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(1)
-        flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(2)
+        r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)',
+        CONTEXT.current_line):
+        flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
+                               CONTEXT.current_line).group(1)
+        flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
+                              CONTEXT.current_line).group(2)
         CONTEXT.output_python.append(
             f"{CONTEXT.actual_class}.{flags_name} = lambda flags=0: {CONTEXT.actual_class}.{flag_name}(flags)\n")
 
@@ -1651,15 +1677,17 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # For scoped and type-based enum, the type has to be removed
     if re.match(
         r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*$',
-        LINE):
-        flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(1)
-        flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)', LINE).group(2)
+        CONTEXT.current_line):
+        flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
+                               CONTEXT.current_line).group(1)
+        flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
+                              CONTEXT.current_line).group(2)
         emkb = re.search(
             r'SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)',
-            LINE).group(1)
+            CONTEXT.current_line).group(1)
         emkf = re.search(
             r'SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)',
-            LINE).group(2)
+            CONTEXT.current_line).group(2)
 
         if f"{emkb}.{emkf}" != f"{CONTEXT.actual_class}.{flags_name}":
             CONTEXT.output_python.append(
@@ -1668,11 +1696,13 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.enum_monkey_patched_types.append(
             [CONTEXT.actual_class, flags_name, emkb, emkf])
 
-        LINE = re.sub(r'\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)', '', LINE)
+        CONTEXT.current_line = re.sub(
+            r'\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)', '',
+            CONTEXT.current_line)
 
     enum_match = re.match(
         r'^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?P<isclass>class\s+)?(?P<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?P<enum_type>\w+))?(?:\s*SIP_ENUM_BASETYPE\s*\(\s*(?P<py_enum_type>\w+)\s*\))?(?P<oneliner>.*)$',
-        LINE)
+        CONTEXT.current_line)
     if enum_match:
         enum_decl = enum_match.group(1)
         enum_qualname = enum_match.group('enum_qualname')
@@ -1689,7 +1719,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         enum_decl = re.sub(r'\s*\bQ_DECL_DEPRECATED\b', '', enum_decl)
 
         py_enum_type_match = re.search(r'SIP_ENUM_BASETYPE\(\s*(.*?)\s*\)',
-                                       LINE)
+                                       CONTEXT.current_line)
         py_enum_type = py_enum_type_match.group(
             1) if py_enum_type_match else None
 
@@ -1719,7 +1749,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         if is_scope_based:
             _match = re.search(
                 r'SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?P<emkb>\w+)\s*,\s*(?P<emkf>\w+)\s*\))?',
-                LINE)
+                CONTEXT.current_line)
         monkeypatch = is_scope_based and _match
         enum_mk_base = _match.group('emkb') if _match else ''
 
@@ -1734,17 +1764,18 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.output_python.append(
                     f"{enum_mk_base}.{enum_old_name} = {enum_qualname}\n")
 
-        if re.search(r'\{((\s*\w+)(\s*=\s*[\w\s<|]+.*?)?(,?))+\s*}', LINE):
-            if '=' in LINE:
+        if re.search(r'\{((\s*\w+)(\s*=\s*[\w\s<|]+.*?)?(,?))+\s*}',
+                     CONTEXT.current_line):
+            if '=' in CONTEXT.current_line:
                 exit_with_error(
                     "Sipify does not handle enum one liners with value assignment. Use multiple lines instead. Or just write a new parser.")
             continue
         else:
-            LINE = read_line()
-            if not re.match(r'^\s*\{\s*$', LINE):
+            CONTEXT.current_line = read_line()
+            if not re.match(r'^\s*\{\s*$', CONTEXT.current_line):
                 exit_with_error(
                     'Unexpected content: enum should be followed by {')
-            write_output("ENU2", f"{LINE}\n")
+            write_output("ENU2", f"{CONTEXT.current_line}\n")
 
             if is_scope_based:
                 CONTEXT.output_python.append(
@@ -1753,20 +1784,20 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             enum_members_doc = []
 
             while CONTEXT.line_idx < CONTEXT.line_count:
-                LINE = read_line()
+                CONTEXT.current_line = read_line()
                 if detect_comment_block():
                     continue
-                if re.search(r'};', LINE):
+                if re.search(r'};', CONTEXT.current_line):
                     break
                 if re.match(r'^\s*\w+\s*\|',
-                            LINE):  # multi line declaration as sum of enums
+                            CONTEXT.current_line):  # multi line declaration as sum of enums
                     continue
 
                 enum_match = re.match(
                     r'^(\s*(?P<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?P<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?P<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?P<enum_value>(:?[\w\s\d|+-]|::|<<)+))?(?P<optional_comma>,?)(:?\s*//!<\s*(?P<co>.*)|.*)$',
-                    LINE)
+                    CONTEXT.current_line)
 
-                enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}" if enum_match else LINE
+                enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}" if enum_match else CONTEXT.current_line
                 enum_member = enum_match.group(
                     'em') or '' if enum_match else ''
                 value_comment = enum_match.group(
@@ -1850,7 +1881,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
                 detect_comment_block(strict_mode=False)
 
-            write_output("ENU4", f"{LINE}\n")
+            write_output("ENU4", f"{CONTEXT.current_line}\n")
 
             if is_scope_based:
                 CONTEXT.comment = CONTEXT.comment.replace('\n', '\\n').replace(
@@ -1870,57 +1901,69 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             continue
 
     # Check for invalid use of doxygen command
-    if re.search(r'.*//!<', LINE):
+    if re.search(r'.*//!<', CONTEXT.current_line):
         exit_with_error(
             '"\\!<" doxygen command must only be used for enum documentation')
 
     # Handle override, final, and make private keywords
-    if re.search(r'\boverride\b', LINE):
+    if re.search(r'\boverride\b', CONTEXT.current_line):
         CONTEXT.is_override_or_make_private = PrependType.Virtual
-    if re.search(r'\bFINAL\b', LINE):
+    if re.search(r'\bFINAL\b', CONTEXT.current_line):
         CONTEXT.is_override_or_make_private = PrependType.Virtual
-    if re.search(r'\bSIP_MAKE_PRIVATE\b', LINE):
+    if re.search(r'\bSIP_MAKE_PRIVATE\b', CONTEXT.current_line):
         CONTEXT.is_override_or_make_private = PrependType.MakePrivate
 
     # Remove Q_INVOKABLE
-    LINE = re.sub(r'^(\s*)Q_INVOKABLE ', r'\1', LINE)
+    CONTEXT.current_line = re.sub(r'^(\s*)Q_INVOKABLE ', r'\1',
+                                  CONTEXT.current_line)
 
     # Keyword fixes
-    LINE = re.sub(r'^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$',
-                  r'\1\2\3', LINE)
-    LINE = re.sub(
+    CONTEXT.current_line = re.sub(
+        r'^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$',
+        r'\1\2\3', CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(
         r'^(\s*template\s*<)(?:class|typename) (\w+) *, *(?:class|typename) (\w+>)(.*)$',
         r'\1\2,\3\4',
-        LINE)
-    LINE = re.sub(
+        CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(
         r'^(\s*template\s*<)(?:class|typename) (\w+) *, *(?:class|typename) (\w+) *, *(?:class|typename) (\w+>)(.*)$',
-        r'\1\2,\3,\4\5', LINE)
-    LINE = re.sub(r'\s*\boverride\b', '', LINE)
-    LINE = re.sub(r'\s*\bSIP_MAKE_PRIVATE\b', '', LINE)
-    LINE = re.sub(r'\s*\bFINAL\b', ' ${SIP_FINAL}', LINE)
-    LINE = re.sub(r'\s*\bextern \b', '', LINE)
-    LINE = re.sub(r'\s*\bMAYBE_UNUSED \b', '', LINE)
-    LINE = re.sub(r'\s*\bNODISCARD \b', '', LINE)
-    LINE = re.sub(r'\s*\bQ_DECL_DEPRECATED\b', '', LINE)
-    LINE = re.sub(r'^(\s*)?(const |virtual |static )*inline ', r'\1\2', LINE)
-    LINE = re.sub(r'\bconstexpr\b', 'const', LINE)
-    LINE = re.sub(r'\bnullptr\b', '0', LINE)
-    LINE = re.sub(r'\s*=\s*default\b', '', LINE)
+        r'\1\2,\3,\4\5', CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*\boverride\b', '', CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*\bSIP_MAKE_PRIVATE\b', '',
+                                  CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*\bFINAL\b', ' ${SIP_FINAL}',
+                                  CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*\bextern \b', '', CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*\bMAYBE_UNUSED \b', '',
+                                  CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*\bNODISCARD \b', '',
+                                  CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*\bQ_DECL_DEPRECATED\b', '',
+                                  CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'^(\s*)?(const |virtual |static )*inline ',
+                                  r'\1\2', CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\bconstexpr\b', 'const',
+                                  CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\bnullptr\b', '0', CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(r'\s*=\s*default\b', '',
+                                  CONTEXT.current_line)
 
     # Handle export macros
-    if re.search(r'\b\w+_EXPORT\b', LINE):
+    if re.search(r'\b\w+_EXPORT\b', CONTEXT.current_line):
         CONTEXT.exported[-1] += 1
-        LINE = re.sub(r'\b\w+_EXPORT\s+', '', LINE)
+        CONTEXT.current_line = re.sub(r'\b\w+_EXPORT\s+', '',
+                                      CONTEXT.current_line)
 
     # Skip non-method member declaration in non-public sections
     if not CONTEXT.sip_run and CONTEXT.access[
-        -1] != Visibility.Public and detect_non_method_member(LINE):
+        -1] != Visibility.Public and detect_non_method_member(
+        CONTEXT.current_line):
         dbg_info("skip non-method member declaration in non-public sections")
         continue
 
     # Remove static const value assignment
     # https://regex101.com/r/DyWkgn/6
-    if re.search(r'^\s*const static \w+', LINE):
+    if re.search(r'^\s*const static \w+', CONTEXT.current_line):
         exit_with_error(
             f"const static should be written static const in {CONTEXT.classname[-1]}")
 
@@ -1929,10 +1972,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     #       ^(?<staticconst> *(?<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
     match = re.search(
         r'^(?P<staticconst> *(?P<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(\/\/.*)?$',
-        LINE
+        CONTEXT.current_line
     )
     if match:
-        LINE = f"{match.group('staticconst')};"
+        CONTEXT.current_line = f"{match.group('staticconst')};"
         if match.group('static') is None:
             CONTEXT.comment = ''
 
@@ -1946,7 +1989,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # https://regex101.com/r/OUwV75/1
     if not CONTEXT.sip_run and CONTEXT.access[-1] == Visibility.Public:
         # original perl regex: ^(\s*\w+[\w<> *&:,]* \*?\w+) = ([\-\w\:\.]+(< *\w+( \*)? *>)?)+(\([^()]*\))?\s*;
-        # dbg_info(f"attempt struct member assignment '{LINE}'")
+        # dbg_info(f"attempt struct member assignment '{CONTEXT.current_line}'")
 
         python_regex_verbose = r'''
         ^                           # Start of the line
@@ -1992,19 +2035,19 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         '''
         regex_verbose = re.compile(python_regex_verbose,
                                    re.VERBOSE | re.MULTILINE)
-        match = regex_verbose.match(LINE)
+        match = regex_verbose.match(CONTEXT.current_line)
         if match:
             dbg_info(f"remove struct member assignment '={match.group(2)}'")
-            LINE = f"{match.group(1)};"
+            CONTEXT.current_line = f"{match.group(1)};"
 
     # Catch Q_DECLARE_FLAGS
     match = re.search(r'^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$',
-                      LINE)
+                      CONTEXT.current_line)
     if match:
         CONTEXT.actual_class = f"{CONTEXT.classname[-1]}::" if len(
             CONTEXT.classname) >= 0 else ''
         dbg_info(f"Declare flags: {CONTEXT.actual_class}")
-        LINE = f"{match.group(1)}typedef QFlags<{CONTEXT.actual_class}{match.group(3)}> {match.group(2)};\n"
+        CONTEXT.current_line = f"{match.group(1)}typedef QFlags<{CONTEXT.actual_class}{match.group(3)}> {match.group(2)};\n"
         CONTEXT.qflag_hash[
             f"{CONTEXT.actual_class}{match.group(2)}"] = f"{CONTEXT.actual_class}{match.group(3)}"
 
@@ -2014,11 +2057,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # Catch Q_DECLARE_OPERATORS_FOR_FLAGS
     match = re.search(
-        r'^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$', LINE)
+        r'^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$',
+        CONTEXT.current_line)
     if match:
         flags = match.group(2)
         flag = CONTEXT.qflag_hash.get(flags)
-        LINE = f"{match.group(1)}QFlags<{flag}> operator|({flag} f1, QFlags<{flag}> f2);\n"
+        CONTEXT.current_line = f"{match.group(1)}QFlags<{flag}> operator|({flag} f1, QFlags<{flag}> f2);\n"
 
         py_flag = flag.replace("::", ".")
 
@@ -2056,7 +2100,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if CONTEXT.is_override_or_make_private != PrependType.NoPrepend:
         # Handle multiline definition to add virtual keyword or make private on opening line
         if CONTEXT.multiline_definition != MULTILINE_NO:
-            rolling_line = LINE
+            rolling_line = CONTEXT.current_line
             rolling_line_idx = CONTEXT.line_idx
             dbg_info(
                 "handle multiline definition to add virtual keyword or making private on opening line")
@@ -2084,14 +2128,15 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.output[idx + 1] = fix_annotations(rolling_line) + "\n"
         elif CONTEXT.is_override_or_make_private == PrependType.MakePrivate:
             dbg_info("prepending private access")
-            LINE = re.sub(r'(protected|public)', 'private',
-                          CONTEXT.last_access_section_line) + "\n" + LINE + "\n"
+            CONTEXT.current_line = re.sub(r'(protected|public)', 'private',
+                                          CONTEXT.last_access_section_line) + "\n" + CONTEXT.current_line + "\n"
         elif CONTEXT.is_override_or_make_private == PrependType.Virtual and not re.match(
-            r'^(\s*)virtual\b(.*)$', LINE):
+            r'^(\s*)virtual\b(.*)$', CONTEXT.current_line):
             # SIP often requires the virtual keyword to be present, or it chokes on covariant return types
             # in overridden methods
             dbg_info('adding virtual keyword for overridden method')
-            LINE = re.sub(r'^(\s*?)\b(.*)$', r'\1virtual \2\n', LINE)
+            CONTEXT.current_line = re.sub(r'^(\s*?)\b(.*)$', r'\1virtual \2\n',
+                                          CONTEXT.current_line)
 
     # remove constructor definition, function bodies, member initializing list
     CONTEXT.python_signature = detect_and_remove_following_body_or_initializerlist()
@@ -2099,12 +2144,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # remove inline declarations
     match = re.search(
         r'^(\s*)?(static |const )*(([(?:long )\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$',
-        LINE)
+        CONTEXT.current_line)
     if match:
-        LINE = f"{match.group(1)}{match.group(3)};"
+        CONTEXT.current_line = f"{match.group(1)}{match.group(3)};"
 
     pattern = r'^\s*(?:const |virtual |static |inline )*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(?:\w+|operator.{1,2})\(.*$'
-    match = re.match(pattern, LINE)
+    match = re.match(pattern, CONTEXT.current_line)
     if match:
         return_type_candidate = match.group(1)
         if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)',
@@ -2132,47 +2177,51 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # deleted functions
     if re.match(
         r'^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$',
-        LINE):
+        CONTEXT.current_line):
         CONTEXT.comment = ''
         continue
 
     # remove export macro from struct definition
-    LINE = re.sub(r'^(\s*struct )\w+_EXPORT (.+)$', r'\1\2', LINE)
+    CONTEXT.current_line = re.sub(r'^(\s*struct )\w+_EXPORT (.+)$', r'\1\2',
+                                  CONTEXT.current_line)
 
     # Skip comments
     if re.match(r'^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE',
-                LINE):
+                CONTEXT.current_line):
         # support Docstring for template based classes in SIP 4.19.7+
         CONTEXT.comment_template_docstring = True
     elif (CONTEXT.multiline_definition == MULTILINE_NO and
-          (re.search(r'//', LINE) or
-           re.match(r'^\s*typedef ', LINE) or
-           re.search(r'\s*struct ', LINE) or
-           re.search(r'operator\[]\(', LINE) or
-           re.match(r'^\s*operator\b', LINE) or
-           re.search(r'operator\s?[!+-=*/\[\]<>]{1,2}', LINE) or
-           re.match(r'^\s*%\w+(.*)?$', LINE) or
-           re.match(r'^\s*namespace\s+\w+', LINE) or
-           re.match(r'^\s*(virtual\s*)?~', LINE) or
-           detect_non_method_member(LINE)
+          (re.search(r'//', CONTEXT.current_line) or
+           re.match(r'^\s*typedef ', CONTEXT.current_line) or
+           re.search(r'\s*struct ', CONTEXT.current_line) or
+           re.search(r'operator\[]\(', CONTEXT.current_line) or
+           re.match(r'^\s*operator\b', CONTEXT.current_line) or
+           re.search(r'operator\s?[!+-=*/\[\]<>]{1,2}',
+                     CONTEXT.current_line) or
+           re.match(r'^\s*%\w+(.*)?$', CONTEXT.current_line) or
+           re.match(r'^\s*namespace\s+\w+', CONTEXT.current_line) or
+           re.match(r'^\s*(virtual\s*)?~', CONTEXT.current_line) or
+           detect_non_method_member(CONTEXT.current_line)
           )):
         dbg_info('skipping comment')
-        if re.search(r'\s*typedef.*?(?!SIP_DOC_TEMPLATE)', LINE):
+        if re.search(r'\s*typedef.*?(?!SIP_DOC_TEMPLATE)',
+                     CONTEXT.current_line):
             dbg_info('because typedef')
         CONTEXT.comment = ''
         CONTEXT.return_type = ''
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend
 
-    LINE = fix_constants(LINE)
-    LINE = fix_annotations(LINE)
+    CONTEXT.current_line = fix_constants(CONTEXT.current_line)
+    CONTEXT.current_line = fix_annotations(CONTEXT.current_line)
 
     # fix astyle placing space after % character
-    LINE = re.sub(r'/\s+GetWrapper\s+/', '/GetWrapper/', LINE)
+    CONTEXT.current_line = re.sub(r'/\s+GetWrapper\s+/', '/GetWrapper/',
+                                  CONTEXT.current_line)
 
     # MISSING
     # handle enum/flags QgsSettingsEntryEnumFlag
     match = re.match(r'^(\s*)const QgsSettingsEntryEnumFlag<(.*)> (.+);$',
-                     LINE)
+                     CONTEXT.current_line)
     if match:
         CONTEXT.indent, enum_type, var_name = match.groups()
 
@@ -2189,17 +2238,17 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         {enum_type} value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const {enum_type} &defaultValueOverride = {enum_type}() ) const;
     }};"""
 
-        LINE = f"{CONTEXT.indent}const QgsSettingsEntryEnumFlag_{var_name} {var_name};"
+        CONTEXT.current_line = f"{CONTEXT.indent}const QgsSettingsEntryEnumFlag_{var_name} {var_name};"
         CONTEXT.comment = ''
         write_output("ENF", f"{prep_line}\n", "prepend")
 
-    write_output("NOR", f"{LINE}\n")
+    write_output("NOR", f"{CONTEXT.current_line}\n")
 
     # append to class map file
     if args.class_map and CONTEXT.actual_class:
         match = re.match(
             r'^ *(const |virtual |static )* *[\w:]+ +\*?(?P<method>\w+)\(.*$',
-            LINE)
+            CONTEXT.current_line)
         if match:
             with open(args.class_map, 'a') as f:
                 f.write(
@@ -2216,14 +2265,14 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         # ^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*$:
         if re.match(
             r'^([^()]+(\((?:[^()]|\([^()]*\))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*',
-            LINE):
+            CONTEXT.current_line):
             dbg_info("ending multiline")
             # remove potential following body
             if CONTEXT.multiline_definition != MULTILINE_CONDITIONAL_STATEMENT and not re.search(
                 r'(\{.*}|;)\s*(//.*)?$',
-                LINE):
+                CONTEXT.current_line):
                 dbg_info("remove following body of multiline def")
-                last_line = LINE
+                last_line = CONTEXT.current_line
                 last_line += remove_following_body_or_initializerlist()
                 # add missing semi column
                 CONTEXT.output.pop()
@@ -2231,21 +2280,22 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             CONTEXT.multiline_definition = MULTILINE_NO
         else:
             continue
-    elif re.match(r'^[^()]+\([^()]*(?:\([^()]*\)[^()]*)*[^)]*$', LINE):
-        dbg_info(f"Multiline detected:: {LINE}")
-        if re.match(r'^\s*((else )?if|while|for) *\(', LINE):
+    elif re.match(r'^[^()]+\([^()]*(?:\([^()]*\)[^()]*)*[^)]*$',
+                  CONTEXT.current_line):
+        dbg_info(f"Multiline detected:: {CONTEXT.current_line}")
+        if re.match(r'^\s*((else )?if|while|for) *\(', CONTEXT.current_line):
             CONTEXT.multiline_definition = MULTILINE_CONDITIONAL_STATEMENT
         else:
             CONTEXT.multiline_definition = MULTILINE_METHOD
         continue
 
     # write comment
-    if re.match(r'^\s*$', LINE):
+    if re.match(r'^\s*$', CONTEXT.current_line):
         dbg_info("no more override / private")
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend
         continue
 
-    if re.match(r'^\s*template\s*<.*>', LINE):
+    if re.match(r'^\s*template\s*<.*>', CONTEXT.current_line):
         # do not comment now for templates, wait for class definition
         continue
 
