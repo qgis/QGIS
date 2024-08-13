@@ -672,6 +672,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      */
     void setColorFromPoint( QPointF point );
 
+    friend class TestQgsCompoundColorWidget;
 };
 
 
@@ -740,6 +741,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      */
     void rampChanged( float value );
 
+    friend class TestQgsCompoundColorWidget;
 };
 
 
