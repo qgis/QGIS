@@ -1063,7 +1063,7 @@ def fix_annotations(line):
         # original perl regex was:
         # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//
         line = re.sub(
-            r'(?P<coma>, +)?(const )?(\w+)(\<(?:[^<>]|\<(?:[^<>]|\<[^<>]*\>)*\>)*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|\([^()]*\))*\s*\))?)?(?(coma)|,?)',
+            r'(?P<coma>, +)?(const )?(\w+)(<(?:[^<>]|<(?:[^<>]|<[^<>]*>)*>)*>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|\([^()]*\))*\s*\))?)?(?(coma)|,?)',
             '', line)
         line = re.sub(r'\(\s+\)', '()', line)
 
@@ -1980,7 +1980,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # original perl regex was:
     #       ^(?<staticconst> *(?<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
     match = re.search(
-        r'^(?P<staticconst> *(?P<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(\/\/.*)?$',
+        r'^(?P<staticconst> *(?P<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(//.*)?$',
         CONTEXT.current_line
     )
     if match:
@@ -2152,7 +2152,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # remove inline declarations
     match = re.search(
-        r'^(\s*)?(static |const )*(([(?:long )\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$',
+        r'^(\s*)?(static |const )*(([(?:long )\w]+(<.*?>)?\s+([*&])?)?(\w+)( const*?)*)\s*(\{.*});(\s*//.*)?$',
         CONTEXT.current_line)
     if match:
         CONTEXT.current_line = f"{match.group(1)}{match.group(3)};"
@@ -2325,7 +2325,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             # parent class Docstring
             pass
         else:
-            dbg_info(f'writing comment')
+            dbg_info('writing comment')
             if CONTEXT.comment.strip():
                 dbg_info('comment non-empty')
                 doc_prepend = "@DOCSTRINGSTEMPLATE@" if CONTEXT.comment_template_docstring else ""
