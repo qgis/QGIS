@@ -6,4 +6,7 @@ QgsProjectionSelectionWidget.CurrentCrs = QgsProjectionSelectionWidget.CrsOption
 QgsProjectionSelectionWidget.DefaultCrs = QgsProjectionSelectionWidget.CrsOption.DefaultCrs
 QgsProjectionSelectionWidget.RecentCrs = QgsProjectionSelectionWidget.CrsOption.RecentCrs
 QgsProjectionSelectionWidget.CrsNotSet = QgsProjectionSelectionWidget.CrsOption.CrsNotSet
-QgsProjectionSelectionWidget.__attribute_docs__ = {'crsChanged': 'Emitted when the selected CRS is changed\n', 'cleared': 'Emitted when the not set option is selected.\n'}
+try:
+    QgsProjectionSelectionWidget.__attribute_docs__ = {'crsChanged': 'Emitted when the selected CRS is changed\n', 'cleared': 'Emitted when the not set option is selected.\n'}
+except NameError:
+    pass

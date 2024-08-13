@@ -2493,7 +2493,7 @@ else:
 
 for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
     CONTEXT.output_python.append(
-        f'{class_name}.__attribute_docs__ = {str(attribute_docstrings)}\n')
+        f'try:\n    {class_name}.__attribute_docs__ = {str(attribute_docstrings)}\nexcept NameError:\n    pass\n')
 
 if args.python_output and CONTEXT.output_python:
 

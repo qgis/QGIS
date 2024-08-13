@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/gui/auth/qgsauthconfigselect.h
-QgsAuthConfigSelect.__attribute_docs__ = {'selectedConfigIdChanged': 'Emitted when authentication config is changed or missing\n', 'selectedConfigIdRemoved': 'Emitted when authentication config is removed\n'}
+try:
+    QgsAuthConfigSelect.__attribute_docs__ = {'selectedConfigIdChanged': 'Emitted when authentication config is changed or missing\n', 'selectedConfigIdRemoved': 'Emitted when authentication config is removed\n'}
+except NameError:
+    pass

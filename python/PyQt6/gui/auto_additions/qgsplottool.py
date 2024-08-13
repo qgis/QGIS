@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/gui/plot/qgsplottool.h
-QgsPlotTool.__attribute_docs__ = {'activated': 'Emitted when the tool is activated.\n', 'deactivated': 'Emitted when the tool is deactivated\n'}
+try:
+    QgsPlotTool.__attribute_docs__ = {'activated': 'Emitted when the tool is activated.\n', 'deactivated': 'Emitted when the tool is deactivated\n'}
+except NameError:
+    pass

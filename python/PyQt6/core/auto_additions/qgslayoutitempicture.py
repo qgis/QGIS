@@ -6,4 +6,7 @@ QgsLayoutItemPicture.ZoomResizeFrame = QgsLayoutItemPicture.ResizeMode.ZoomResiz
 QgsLayoutItemPicture.FrameToImageSize = QgsLayoutItemPicture.ResizeMode.FrameToImageSize
 QgsLayoutItemPicture.GridNorth = QgsLayoutItemPicture.NorthMode.GridNorth
 QgsLayoutItemPicture.TrueNorth = QgsLayoutItemPicture.NorthMode.TrueNorth
-QgsLayoutItemPicture.__attribute_docs__ = {'pictureRotationChanged': 'Emitted on picture rotation change\n'}
+try:
+    QgsLayoutItemPicture.__attribute_docs__ = {'pictureRotationChanged': 'Emitted on picture rotation change\n'}
+except NameError:
+    pass

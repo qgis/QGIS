@@ -4,4 +4,7 @@ QgsExternalResourceWidget.Image = QgsExternalResourceWidget.DocumentViewerConten
 QgsExternalResourceWidget.Web = QgsExternalResourceWidget.DocumentViewerContent.Web
 QgsExternalResourceWidget.Audio = QgsExternalResourceWidget.DocumentViewerContent.Audio
 QgsExternalResourceWidget.Video = QgsExternalResourceWidget.DocumentViewerContent.Video
-QgsExternalResourceWidget.__attribute_docs__ = {'valueChanged': 'emitteed as soon as the current document changes\n'}
+try:
+    QgsExternalResourceWidget.__attribute_docs__ = {'valueChanged': 'emitteed as soon as the current document changes\n'}
+except NameError:
+    pass

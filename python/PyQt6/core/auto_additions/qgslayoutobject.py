@@ -268,4 +268,7 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = "Data defined properties for diffe
 # --
 QgsLayoutObject.EvaluatedValue = QgsLayoutObject.PropertyValueType.EvaluatedValue
 QgsLayoutObject.OriginalValue = QgsLayoutObject.PropertyValueType.OriginalValue
-QgsLayoutObject.__attribute_docs__ = {'changed': "Emitted when the object's properties change.\n"}
+try:
+    QgsLayoutObject.__attribute_docs__ = {'changed': "Emitted when the object's properties change.\n"}
+except NameError:
+    pass

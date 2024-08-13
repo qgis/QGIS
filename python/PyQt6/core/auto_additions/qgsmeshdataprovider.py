@@ -2,4 +2,7 @@
 QgsMesh.Vertex = QgsMesh.ElementType.Vertex
 QgsMesh.Edge = QgsMesh.ElementType.Edge
 QgsMesh.Face = QgsMesh.ElementType.Face
-QgsMeshDataProvider.__attribute_docs__ = {'datasetGroupsAdded': 'Emitted when some new dataset groups have been added\n'}
+try:
+    QgsMeshDataProvider.__attribute_docs__ = {'datasetGroupsAdded': 'Emitted when some new dataset groups have been added\n'}
+except NameError:
+    pass

@@ -2,4 +2,7 @@
 QgsRelationReferenceWidget.Fixed = QgsRelationReferenceWidget.CanvasExtent.Fixed
 QgsRelationReferenceWidget.Pan = QgsRelationReferenceWidget.CanvasExtent.Pan
 QgsRelationReferenceWidget.Scale = QgsRelationReferenceWidget.CanvasExtent.Scale
-QgsRelationReferenceWidget.__attribute_docs__ = {'foreignKeyChanged': 'Emitted when the foreign key changed\n\n.. deprecated:: QGIS 3.10\n', 'foreignKeysChanged': 'Emitted when the foreign keys changed\n\n.. versionadded:: 3.10\n'}
+try:
+    QgsRelationReferenceWidget.__attribute_docs__ = {'foreignKeyChanged': 'Emitted when the foreign key changed\n\n.. deprecated:: QGIS 3.10\n', 'foreignKeysChanged': 'Emitted when the foreign keys changed\n\n.. versionadded:: 3.10\n'}
+except NameError:
+    pass

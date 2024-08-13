@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingprovider.h
-QgsProcessingProvider.__attribute_docs__ = {'algorithmsLoaded': 'Emitted when the provider has loaded (or refreshed) its list of available\nalgorithms.\n\n.. seealso:: :py:func:`refreshAlgorithms`\n'}
+try:
+    QgsProcessingProvider.__attribute_docs__ = {'algorithmsLoaded': 'Emitted when the provider has loaded (or refreshed) its list of available\nalgorithms.\n\n.. seealso:: :py:func:`refreshAlgorithms`\n'}
+except NameError:
+    pass

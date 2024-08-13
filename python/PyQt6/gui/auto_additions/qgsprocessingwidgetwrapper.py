@@ -4,4 +4,7 @@ QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters.__doc__ = "Para
 QgsProcessingParametersGenerator.Flag.__doc__ = "Flags controlling parameter generation.\n\n.. versionadded:: 3.24\n\n" + '* ``SkipDefaultValueParameters``: ' + QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters.__doc__
 # --
 QgsProcessingParametersGenerator.Flags = lambda flags=0: QgsProcessingParametersGenerator.Flag(flags)
-QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget) is changed.\n'}
+try:
+    QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget) is changed.\n'}
+except NameError:
+    pass

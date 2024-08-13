@@ -8,4 +8,7 @@ QgsFileWidget.Absolute = QgsFileWidget.RelativeStorage.Absolute
 QgsFileWidget.RelativeProject = QgsFileWidget.RelativeStorage.RelativeProject
 QgsFileWidget.RelativeDefaultPath = QgsFileWidget.RelativeStorage.RelativeDefaultPath
 QgsFileWidget.RelativeStorage.baseClass = QgsFileWidget
-QgsFileWidget.__attribute_docs__ = {'fileChanged': 'Emitted whenever the current file or directory ``path`` is changed.\n'}
+try:
+    QgsFileWidget.__attribute_docs__ = {'fileChanged': 'Emitted whenever the current file or directory ``path`` is changed.\n'}
+except NameError:
+    pass
