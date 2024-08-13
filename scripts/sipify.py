@@ -971,6 +971,76 @@ def replace_alternative_types(text):
         text = new_text
 
 
+def split_args(args_string: str) -> List[str]:
+    """
+    Tries to split a line of arguments into separate parts
+    """
+    res = []
+    current_arg = ''
+    paren_level = 0
+    angle_level = 0
+
+    for char in args_string:
+        if char == ',' and paren_level == 0 and angle_level == 0:
+            res.append(current_arg.strip())
+            current_arg = ''
+        else:
+            current_arg += char
+            if char == '(':
+                paren_level += 1
+            elif char == ')':
+                paren_level -= 1
+            elif char == '<':
+                angle_level += 1
+            elif char == '>':
+                angle_level -= 1
+
+    if current_arg:
+        res.append(current_arg.strip())
+
+    return res
+
+
+def remove_sip_pyargremove(input_string: str) -> str:
+    """
+    Remove SIP_PYARGREMOVE annotated arguments
+    """
+    global CONTEXT
+    # Split the string into function signature and body
+    signature_split = re.match(r'(.*?)\((.*)\)(.*)', input_string)
+    if signature_split and 'SIP_PYARGREMOVE' not in signature_split.group(1):
+        prefix, arguments, suffix = signature_split.groups()
+        prefix += '('
+        suffix = ')' + suffix
+    else:
+        signature_split = re.match(r'(\s*)(.*)\)(.*)', input_string)
+        if signature_split:
+            prefix, arguments, suffix = signature_split.groups()
+            suffix = ')' + suffix
+        else:
+            prefix = ''
+            arguments = input_string
+            suffix = ''
+
+    arguments_list = split_args(arguments)
+
+    if CONTEXT.is_qt6:
+        filtered_args = [arg for arg in arguments_list if
+                         'SIP_PYARGREMOVE' not in arg]
+    else:
+        filtered_args = [re.sub(r'\s*SIP_PYARGREMOVE6\s*', ' ', arg)
+                         for arg in arguments_list if
+                         not ('SIP_PYARGREMOVE' in arg and 'SIP_PYARGREMOVE6' not in arg)]
+
+    # Reassemble the function signature
+    remaining_args = ', '.join(filtered_args)
+    if remaining_args and prefix.strip():
+        prefix += ' '
+    if remaining_args and suffix.strip():
+        suffix = ' ' + suffix
+    return f"{prefix}{remaining_args}{suffix}"
+
+
 def fix_annotations(line):
     global CONTEXT
 
@@ -1051,20 +1121,11 @@ def fix_annotations(line):
             # Concatenate with above line to bring previous commas
             line = f"{prev_line} {line.lstrip()}\n"
 
-        if CONTEXT.is_qt6:
-            # original perl regex was
-            # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6{0,1}( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)
-            line = re.sub(
-                r"(, +)?(const )?(\w+)(<[^>]*>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6?( = [^()]*(\([^()]*\))?)?(?(1)|,?)",
-                '', line)
-        else:
-            line = re.sub(r'SIP_PYARGREMOVE6\s*', '', line)
-
         # original perl regex was:
         # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//
-        line = re.sub(
-            r'(?P<coma>, +)?(const )?(\w+)(<(?:[^<>]|<(?:[^<>]|<[^<>]*>)*>)*>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|\([^()]*\))*\s*\))?)?(?(coma)|,?)',
-            '', line)
+        if 'SIP_PYARGREMOVE' in line:
+            line = remove_sip_pyargremove(line)
+
         line = re.sub(r'\(\s+\)', '()', line)
 
     line = re.sub(r'SIP_FORCE', '', line)

@@ -151,7 +151,7 @@ of rendered text.
 .. seealso:: :py:func:`toQFont`
 %End
 
-    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0) const;
+    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Returns a font with the size scaled to match the format's size settings (including
 units and map unit scale) for a specified render context.

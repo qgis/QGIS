@@ -1175,8 +1175,7 @@ Returns ``True`` if the project comes from a zip archive, ``False`` otherwise.
 
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
-                                       bool addToLegend = true);
-
+                                       bool addToLegend = true );
 %Docstring
 Add a list of layers to the map of loaded layers.
 
@@ -1205,8 +1204,7 @@ The :py:func:`~QgsProject.legendLayersAdded` signal is emitted only if addToLege
 %End
 
     QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/,
-                              bool addToLegend = true);
-
+                              bool addToLegend = true );
 %Docstring
 Add a layer to the map of loaded layers.
 

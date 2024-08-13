@@ -30,7 +30,7 @@ A model for display of recently used coordinate reference systems.
       AuthId,
     };
 
-    QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0);
+    QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsModel, with the specified ``parent`` object.
 %End
@@ -71,7 +71,7 @@ A sort/filter proxy model for recent coordinate reference systems.
 %End
   public:
 
-    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0);
+    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given ``parent`` object.
 %End

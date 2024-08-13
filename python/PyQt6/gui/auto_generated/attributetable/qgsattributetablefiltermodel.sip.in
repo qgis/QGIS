@@ -202,7 +202,7 @@ Returns -1 if none is defined.
     virtual int columnCount( const QModelIndex &parent ) const;
 
 
-    void setAttributeTableConfig( const QgsAttributeTableConfig &config);
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 %Docstring
 Set the attribute table configuration to control which fields are shown,
 in which order they are shown as well as if and where an action column
