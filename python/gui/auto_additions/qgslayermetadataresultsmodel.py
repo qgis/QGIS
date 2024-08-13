@@ -7,3 +7,4 @@ QgsLayerMetadataResultsModel.Metadata.__doc__ = "Layer metadata role"
 QgsLayerMetadataResultsModel.CustomRole.__doc__ = "The Roles enum represents the user roles for the model.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsLayerMetadataResultsModel.Roles\n\n.. versionadded:: 3.36\n\n" + '* ``Metadata``: ' + QgsLayerMetadataResultsModel.CustomRole.Metadata.__doc__
 # --
 QgsLayerMetadataResultsModel.CustomRole.baseClass = QgsLayerMetadataResultsModel
+QgsLayerMetadataResultsModel.__attribute_docs__ = {'progressChanged': 'Emitted when the progress changed to ``progress``.\n'}

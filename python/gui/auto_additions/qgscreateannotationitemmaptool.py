@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/gui/annotations/qgscreateannotationitemmaptool.h
+QgsCreateAnnotationItemMapToolHandler.__attribute_docs__ = {'itemCreated': 'Emitted by the tool when a new annotation item has been created.\n\nClients should connect to this signal and call :py:func:`~QgsCreateAnnotationItemMapToolHandler.takeCreatedItem` to take the newly created item from the map tool.\n'}

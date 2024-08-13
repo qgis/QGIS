@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/analysis/raster/qgskde.h
+QgsKernelDensityEstimation.__attribute_docs__ = {'source': 'Point feature source', 'radius': 'Fixed radius, in map units', 'radiusField': 'Field for radius, or empty if using a fixed radius', 'weightField': 'Field name for weighting field, or empty if not using weights', 'pixelSize': 'Size of pixel in output file', 'shape': 'Kernel shape', 'decayRatio': 'Decay ratio (Triangular kernels only)', 'outputValues': 'Type of output value'}

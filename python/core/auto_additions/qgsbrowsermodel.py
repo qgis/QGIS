@@ -24,3 +24,4 @@ QgsBrowserModel.LayerMetadataRole.__doc__ = ""
 QgsBrowserModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsBrowserModel.ItemDataRole\n\n.. versionadded:: 3.36\n\n" + '* ``PathRole``: ' + QgsBrowserModel.CustomRole.Path.__doc__ + '\n' + '* ``CommentRole``: ' + QgsBrowserModel.CustomRole.Comment.__doc__ + '\n' + '* ``SortRole``: ' + QgsBrowserModel.CustomRole.Sort.__doc__ + '\n' + '* ``ProviderKeyRole``: ' + QgsBrowserModel.CustomRole.ProviderKey.__doc__ + '\n' + '* ``LayerMetadataRole``: ' + QgsBrowserModel.CustomRole.LayerMetadata.__doc__
 # --
 QgsBrowserModel.CustomRole.baseClass = QgsBrowserModel
+QgsBrowserModel.__attribute_docs__ = {'stateChanged': 'Emitted when item children fetch was finished\n', 'connectionsChanged': 'Emitted when connections for the specified ``providerKey`` have changed in the browser.\n\nForwarded to the widget and used to notify the provider dialogs of a changed connection.\n'}

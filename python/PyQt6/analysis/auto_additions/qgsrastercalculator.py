@@ -7,3 +7,4 @@ QgsRasterCalculator.ParserError = QgsRasterCalculator.Result.ParserError
 QgsRasterCalculator.MemoryError = QgsRasterCalculator.Result.MemoryError
 QgsRasterCalculator.BandError = QgsRasterCalculator.Result.BandError
 QgsRasterCalculator.CalculationError = QgsRasterCalculator.Result.CalculationError
+QgsRasterCalculatorEntry.__attribute_docs__ = {'ref': 'Name of entry.', 'raster': 'Raster layer associated with entry.', 'bandNumber': 'Band number for entry. Numbering for bands usually starts at 1 for the first band, not 0.'}

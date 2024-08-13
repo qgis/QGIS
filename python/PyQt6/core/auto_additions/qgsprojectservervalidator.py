@@ -4,3 +4,4 @@ QgsProjectServerValidator.LayerShortName = QgsProjectServerValidator.ValidationE
 QgsProjectServerValidator.LayerEncoding = QgsProjectServerValidator.ValidationError.LayerEncoding
 QgsProjectServerValidator.ProjectShortName = QgsProjectServerValidator.ValidationError.ProjectShortName
 QgsProjectServerValidator.ProjectRootNameConflict = QgsProjectServerValidator.ValidationError.ProjectRootNameConflict
+QgsProjectServerValidator.__attribute_docs__ = {'error': 'Error which occurred during the validation process.', 'identifier': 'Identifier related to the error. It can be a layer/group name.'}

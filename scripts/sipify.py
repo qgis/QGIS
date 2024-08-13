@@ -5,6 +5,7 @@ import argparse
 import os
 import re
 import sys
+from collections import defaultdict
 from enum import Enum, auto
 from typing import List, Dict, Any
 
@@ -15,6 +16,7 @@ class Visibility(Enum):
     Private = auto()
     Protected = auto()
     Public = auto()
+    Signals = auto()
 
 
 class CodeSnippetType(Enum):
@@ -116,6 +118,8 @@ class Context:
         self.output_python: List[str] = []
         self.doxy_inside_sip_run: int = 0
         self.has_pushed_force_int: bool = False
+        self.attribute_docstrings = defaultdict(dict)
+        self.current_method_name: str = ''
 
 
 CONTEXT = Context()
@@ -1614,10 +1618,16 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         dbg_info("going private")
         continue
 
-    elif re.match(r'^\s*(public( slots)?|signals):.*$', CONTEXT.current_line):
+    elif re.match(r'^\s*(public( slots)?):.*$', CONTEXT.current_line):
         dbg_info("going public")
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Public
+        CONTEXT.comment = ''
+
+    elif re.match(r'^\s*signals:.*$', CONTEXT.current_line):
+        dbg_info("going public for signals")
+        CONTEXT.last_access_section_line = CONTEXT.current_line
+        CONTEXT.access[-1] = Visibility.Signals
         CONTEXT.comment = ''
 
     elif re.match(r'^\s*(protected)( slots)?:.*$', CONTEXT.current_line):
@@ -2147,9 +2157,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         CONTEXT.current_line = f"{match.group(1)}{match.group(3)};"
 
-    pattern = r'^\s*(?:const |virtual |static |inline )*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(?:\w+|operator.{1,2})\(.*$'
+    pattern = r'^\s*(?:const |virtual |static |inline )*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(\w+|operator.{1,2})\(.*$'
     match = re.match(pattern, CONTEXT.current_line)
     if match:
+        CONTEXT.current_method_name = match.group(2)
         return_type_candidate = match.group(1)
         if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)',
                          return_type_candidate):
@@ -2202,10 +2213,20 @@ while CONTEXT.line_idx < CONTEXT.line_count:
            re.match(r'^\s*(virtual\s*)?~', CONTEXT.current_line) or
            detect_non_method_member(CONTEXT.current_line)
            )):
-        dbg_info('skipping comment')
+        dbg_info(f'skipping comment for {CONTEXT.current_line}')
         if re.search(r'\s*typedef.*?(?!SIP_DOC_TEMPLATE)',
                      CONTEXT.current_line):
             dbg_info('because typedef')
+        elif CONTEXT.actual_class and detect_non_method_member(
+                CONTEXT.current_line) and CONTEXT.comment:
+            attribute_name_match = re.match(r'^.*?\s[*&]*(\w+);.*$',
+                                            CONTEXT.current_line)
+            class_name = '.'.join([c for c in CONTEXT.classname if c != CONTEXT.actual_class] + [CONTEXT.actual_class])
+            dbg_info(
+                f'storing attribute docstring for {class_name} : {attribute_name_match.group(1)}')
+            CONTEXT.attribute_docstrings[class_name][
+                attribute_name_match.group(1)] = CONTEXT.comment
+
         CONTEXT.comment = ''
         CONTEXT.return_type = ''
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend
@@ -2304,12 +2325,13 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             # parent class Docstring
             pass
         else:
-            dbg_info('writing comment')
+            dbg_info(f'writing comment')
             if CONTEXT.comment.strip():
                 dbg_info('comment non-empty')
                 doc_prepend = "@DOCSTRINGSTEMPLATE@" if CONTEXT.comment_template_docstring else ""
                 write_output("CM1", f"{doc_prepend}%Docstring\n")
 
+                doc_string = ''
                 comment_lines = CONTEXT.comment.split('\n')
                 skipping_param = 0
                 out_params = []
@@ -2321,13 +2343,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         dbg_info('out style parameters remain to flush!')
                         # member has /Out/ parameters, but no return type, so flush out out_params docs now
                         first_out_param = out_params.pop(0)
-                        write_output("CM7",
-                                     f"{doc_prepend}:return: - {first_out_param}\n")
+                        doc_string += f"{doc_prepend}:return: - {first_out_param}\n"
 
                         for out_param in out_params:
-                            write_output("CM7",
-                                         f"{doc_prepend}         - {out_param}\n")
-                        write_output("CM7", f"{doc_prepend}\n")
+                            doc_string += f"{doc_prepend}         - {out_param}\n"
+
+                        doc_string += f"{doc_prepend}\n"
                         out_params = []
 
                     param_match = re.match(r'^:param\s+(\w+)', comment_line)
@@ -2362,13 +2383,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         waiting_for_return_to_end = True
                         comment_line = comment_line.replace(':return:',
                                                             ':return: -')
-                        write_output("CM2", f"{doc_prepend}{comment_line}\n")
+                        doc_string += f"{doc_prepend}{comment_line}\n"
                         for out_param in out_params:
-                            write_output("CM7",
-                                         f"{doc_prepend}         - {out_param}\n")
+                            doc_string += f"{doc_prepend}         - {out_param}\n"
                         out_params = []
                     else:
-                        write_output("CM2", f"{doc_prepend}{comment_line}\n")
+                        doc_string += f"{doc_prepend}{comment_line}\n"
 
                     if waiting_for_return_to_end:
                         if re.match(r'^(:.*|\.\..*|\s*)$', comment_line):
@@ -2380,6 +2400,13 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     exit_with_error(
                         f"A method with output parameters must contain a return directive (method returns {CONTEXT.return_type})")
 
+                dbg_info(f'doc_string is {doc_string}')
+                write_output("DS", doc_string)
+                if CONTEXT.access[-1] == Visibility.Signals and doc_string:
+                    dbg_info('storing signal docstring')
+                    class_name = '.'.join(CONTEXT.classname)
+                    CONTEXT.attribute_docstrings[class_name][
+                        CONTEXT.current_method_name] = doc_string
                 write_output("CM4", f"{doc_prepend}%End\n")
 
         CONTEXT.comment = ''
@@ -2403,7 +2430,12 @@ else:
           ''.join(CONTEXT.output) +
           ''.join(sip_header_footer()).rstrip())
 
+for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
+    CONTEXT.output_python.append(
+        f'{class_name}.__attribute_docs__ = {str(attribute_docstrings)}\n')
+
 if args.python_output and CONTEXT.output_python:
+
     with open(args.python_output, 'w') as f:
         f.write(''.join(python_header()))
         f.write(''.join(CONTEXT.output_python))

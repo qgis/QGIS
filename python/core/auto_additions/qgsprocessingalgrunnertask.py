@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/core/processing/qgsprocessingalgrunnertask.h
+QgsProcessingAlgRunnerTask.__attribute_docs__ = {'executed': 'Emitted when the algorithm has finished execution. If the algorithm completed\nexecution without errors then ``successful`` will be ``True``. The ``results`` argument\ncontains the results reported by the algorithm.\n'}

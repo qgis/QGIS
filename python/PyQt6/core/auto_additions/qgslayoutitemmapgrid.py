@@ -60,3 +60,4 @@ QgsLayoutItemMapGrid.FrameSideFlag.__bool__ = lambda flag: bool(_force_int(flag)
 QgsLayoutItemMapGrid.FrameSideFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsLayoutItemMapGrid.FrameSideFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsLayoutItemMapGrid.FrameSideFlag.__or__ = lambda flag1, flag2: QgsLayoutItemMapGrid.FrameSideFlag(_force_int(flag1) | _force_int(flag2))
+QgsLayoutItemMapGrid.__attribute_docs__ = {'crsChanged': "Emitted whenever the grid's CRS is changed.\n\n.. versionadded:: 3.18\n"}

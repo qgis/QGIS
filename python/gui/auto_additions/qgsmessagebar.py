@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/gui/qgsmessagebar.h
+QgsMessageBar.__attribute_docs__ = {'widgetAdded': 'Emitted whenever an ``item`` is added to the bar.\n', 'widgetRemoved': 'Emitted whenever an ``item`` was removed from the bar.\n'}

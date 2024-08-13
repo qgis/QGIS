@@ -19,3 +19,4 @@ QgsProjectStyleDatabaseProxyModel.Filter.__doc__ = "Available filter flags for f
 QgsProjectStyleDatabaseProxyModel.Filter.baseClass = QgsProjectStyleDatabaseProxyModel
 QgsProjectStyleDatabaseProxyModel.Filters.baseClass = QgsProjectStyleDatabaseProxyModel
 Filters = QgsProjectStyleDatabaseProxyModel  # dirty hack since SIP seems to introduce the flags in module
+QgsProjectStyleSettings.__attribute_docs__ = {'styleDatabasesChanged': 'Emitted whenever the set of style databases associated with the project is changed.\n'}
