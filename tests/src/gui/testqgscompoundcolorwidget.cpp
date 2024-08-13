@@ -20,6 +20,11 @@
 
 Q_DECLARE_METATYPE( QgsColorWidget::ColorComponent )
 
+void compareFloat( float a, float b )
+{
+  QVERIFY2( qgsDoubleNear( a, b, 0.00001 ), QString( "%1 != %2" ).arg( a ).arg( b ).toLatin1() );
+}
+
 class TestQgsCompoundColorWidget : public QgsTest
 {
     Q_OBJECT
@@ -40,6 +45,7 @@ class TestQgsCompoundColorWidget : public QgsTest
     void testModelChange();
     void testTabChange();
     void testInvalidColor();
+    void testSliderWidgets();
 };
 
 void TestQgsCompoundColorWidget::initTestCase()
@@ -234,6 +240,46 @@ void TestQgsCompoundColorWidget::testInvalidColor()
   QCOMPARE( w.mColorModel->currentIndex(), 0 );
   QVERIFY( w.mRGB->isVisible() );
   QVERIFY( !w.mCMYK->isVisible() );
+}
+
+void TestQgsCompoundColorWidget::testSliderWidgets()
+{
+  QgsCompoundColorWidget w( nullptr, QColor::fromRgbF( 0.12f, 0.34f, 0.56, 0.78 ) );
+  w.setVisible( true );
+
+  QCOMPARE( w.mRedSlider->mSpinBox->value(), 30.6 );
+  compareFloat( w.mRedSlider->mRampWidget->color().redF(), 0.12f );
+  QCOMPARE( w.mGreenSlider->mSpinBox->value(), 86.7 );
+  compareFloat( w.mGreenSlider->mRampWidget->color().greenF(), 0.34f );
+  QCOMPARE( w.mBlueSlider->mSpinBox->value(), 142.8 );
+  compareFloat( w.mBlueSlider->mRampWidget->color().blueF(), 0.56f );
+  QCOMPARE( w.mAlphaSlider->mSpinBox->value(), 78 );
+  compareFloat( w.mAlphaSlider->mRampWidget->color().alphaF(), 0.78f );
+
+  w.mRedSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mRedSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mBlueSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mBlueSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mGreenSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mGreenSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mAlphaSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mAlphaSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+
+  QCOMPARE( w.mRedSlider->mSpinBox->value(), 127.5 );
+  compareFloat( w.mRedSlider->mRampWidget->color().redF(), 0.5f );
+  QCOMPARE( w.mBlueSlider->mSpinBox->value(), 127.5 );
+  compareFloat( w.mBlueSlider->mRampWidget->color().blueF(), 0.5f );
+  QCOMPARE( w.mGreenSlider->mSpinBox->value(), 127.5 );
+  compareFloat( w.mGreenSlider->mRampWidget->color().greenF(), 0.5f );
+  QCOMPARE( w.mAlphaSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mAlphaSlider->mRampWidget->color().greenF(), 0.5f );
+
+  w.mHueSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mHueSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mSaturationSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mSaturationSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mValueSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mValueSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+
+  QCOMPARE( w.mHueSlider->mSpinBox->value(), 179.5 );
+  compareFloat( w.mHueSlider->mRampWidget->color().hueF(), 0.5f );
+  QCOMPARE( w.mSaturationSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mSaturationSlider->mRampWidget->color().saturationF(), 0.5f );
+  QCOMPARE( w.mValueSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mValueSlider->mRampWidget->color().greenF(), 0.5f );
 }
 
 
