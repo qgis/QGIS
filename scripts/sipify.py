@@ -653,9 +653,9 @@ def create_class_links(line):
     global CONTEXT
 
     # Replace Qgs classes (but not the current class) with :py:class: links
-    _match = re.search(r'\b(Qgs[A-Z]\w+|Qgis)\b(\.?$|\W{2})', line)
-    if _match:
-        if CONTEXT.actual_class and _match.group(1) != CONTEXT.actual_class:
+    class_link_match = re.search(r'\b(Qgs[A-Z]\w+|Qgis)\b(\.?$|\W{2})', line)
+    if class_link_match:
+        if CONTEXT.actual_class and class_link_match.group(1) != CONTEXT.actual_class:
             line = re.sub(r'\b(Qgs[A-Z]\w+)\b(\.?$|\W{2})',
                           r':py:class:`\1`\2', line)
 
@@ -672,16 +672,16 @@ def create_class_links(line):
                       line)
 
     # Replace Qgs classes (but not the current class) with :py:class: links
-    _match = re.search(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', line)
-    if _match:
-        if not CONTEXT.actual_class or _match.group(1) != CONTEXT.actual_class:
+    class_link_match = re.search(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()', line)
+    if class_link_match:
+        if not CONTEXT.actual_class or class_link_match.group(1) != CONTEXT.actual_class:
             line = re.sub(r'\b(?<![`~])(Qgs[A-Z]\w+|Qgis)\b(?!\()',
                           r':py:class:`\1`', line)
 
     return line
 
 
-def processDoxygenLine(line):
+def process_doxygen_line(line: str) -> str:
     global CONTEXT
 
     # Handle SIP_RUN preprocessor directives
@@ -738,12 +738,12 @@ def processDoxygenLine(line):
         line += f"\n{sep_line}"
 
     # Convert ### style headings
-    _match = re.match(r'^###\s+(.*)$', line)
-    if _match:
-        line = f"{_match.group(1)}\n{'-' * len(_match.group(1))}"
-    _match = re.match(r'^##\s+(.*)$', line)
-    if _match:
-        line = f"{_match.group(1)}\n{'=' * len(_match.group(1))}"
+    heading_match = re.match(r'^###\s+(.*)$', line)
+    if heading_match:
+        line = f"{heading_match.group(1)}\n{'-' * len(heading_match.group(1))}"
+    heading_match = re.match(r'^##\s+(.*)$', line)
+    if heading_match:
+        line = f"{heading_match.group(1)}\n{'=' * len(heading_match.group(1))}"
 
     if line == '*':
         line = ''
@@ -895,9 +895,9 @@ def detect_and_remove_following_body_or_initializerlist():
             "remove constructor definition, function bodies, member initializing list (1)")
 
         # Extract the parts we want to keep
-        _match = re.match(pattern1, CONTEXT.current_line)
-        if _match:
-            newline = f"{_match.group(1) or ''}{_match.group(2) or ''}{_match.group(3)};"
+        initializer_match = re.match(pattern1, CONTEXT.current_line)
+        if initializer_match:
+            newline = f"{initializer_match.group(1) or ''}{initializer_match.group(2) or ''}{initializer_match.group(3)};"
         else:
             newline = CONTEXT.current_line
 
@@ -928,9 +928,9 @@ def remove_following_body_or_initializerlist():
             _nesting_index += line.count('[')
             _nesting_index -= line.count(']')
             if _nesting_index == 0:
-                _match = re.match(r'^(.*);\s*(//.*)?$', line)
-                if _match:
-                    line = _match.group(1)  # remove semicolon (added later)
+                line_match = re.match(r'^(.*);\s*(//.*)?$', line)
+                if line_match:
+                    line = line_match.group(1)  # remove semicolon (added later)
                     signature += f"\n{line}"
                     return signature
                 break
@@ -1015,8 +1015,8 @@ def fix_annotations(line):
         r'SIP_THROW\(\s*([\w\s,]+?)\s*\)': r'throw( \1 )',
     }
 
-    for pattern, replacement in replacements.items():
-        line = re.sub(pattern, replacement, line)
+    for _pattern, replacement in replacements.items():
+        line = re.sub(_pattern, replacement, line)
 
     # Combine multiple annotations
     while True:
@@ -1055,7 +1055,7 @@ def fix_annotations(line):
             # original perl regex was
             # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6{0,1}( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)
             line = re.sub(
-                r"(?P<coma>, +)?(const )?(\w+)(<[^>]*>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6{0,1}( = [^()]*(\([^()]*\))?)?(?(coma)|,?)",
+                r"(?P<coma>, +)?(const )?(\w+)(<[^>]*>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6?( = [^()]*(\([^()]*\))?)?(?(coma)|,?)",
                 '', line)
         else:
             line = re.sub(r'SIP_PYARGREMOVE6\s*', '', line)
@@ -1105,13 +1105,13 @@ def detect_comment_block(strict_mode=True):
     if re.match(r'^\s*/\*', CONTEXT.current_line) or (
             not strict_mode and '/*' in CONTEXT.current_line):
         dbg_info("found comment block")
-        CONTEXT.comment = processDoxygenLine(
+        CONTEXT.comment = process_doxygen_line(
             re.sub(r'^\s*/\*(\*)?(.*?)\n?$', r'\2', CONTEXT.current_line))
         CONTEXT.comment = re.sub(r'^\s*$', '', CONTEXT.comment)
 
         while not re.search(r'\*/\s*(//.*?)?$', CONTEXT.current_line):
             CONTEXT.current_line = read_line()
-            CONTEXT.comment += processDoxygenLine(
+            CONTEXT.comment += process_doxygen_line(
                 re.sub(r'\s*\*?(.*?)(/)?\n?$', r'\1', CONTEXT.current_line))
 
         CONTEXT.comment = re.sub(r'\n\s+\n', '\n\n', CONTEXT.comment)
@@ -1506,7 +1506,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 r'\b(?P<tpl>(?!QList)\w+)< *(?P<cls1>(\w|::)+) *(, *(?P<cls2>(\w|::)+)? *(, *(?P<cls3>(\w|::)+)? *)?)? *>'
             )
             m = tpl_replace_pattern.sub(lambda
-                                        match: f"{match.group('tpl') or ''}{match.group('cls1') or ''}{match.group('cls2') or ''}{match.group('cls3') or ''}Base",
+                                        tpl_match: f"{tpl_match.group('tpl') or ''}{tpl_match.group('cls1') or ''}{tpl_match.group('cls2') or ''}{tpl_match.group('cls3') or ''}Base",
                                         m)
             m = re.sub(r'(\w+)< *(?:\w|::)+ *>', '', m)
             m = re.sub(r'([:,])\s*,', r'\1', m)
@@ -1664,7 +1664,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.prev_indent = CONTEXT.indent
                 CONTEXT.indent = ''
                 CONTEXT.comment_last_line_note_warning = False
-                CONTEXT.comment = processDoxygenLine(match.group(1))
+                CONTEXT.comment = process_doxygen_line(match.group(1))
                 CONTEXT.comment = CONTEXT.comment.rstrip()
             elif not re.search(r'\*/',
                                CONTEXT.input_lines[CONTEXT.line_idx - 1]):
@@ -1803,7 +1803,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     continue
 
                 enum_match = re.match(
-                    r'^(\s*(?P<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?P<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?P<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?P<enum_value>(:?[\w\s\d|+-]|::|<<)+))?(?P<optional_comma>,?)(:?\s*//!<\s*(?P<co>.*)|.*)$',
+                    r'^(\s*(?P<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?P<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?P<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?P<enum_value>(:?[\w\s|+-]|::|<<)+))?(?P<optional_comma>,?)(:?\s*//!<\s*(?P<co>.*)|.*)$',
                     CONTEXT.current_line)
 
                 enum_decl = f"{enum_match.group(1) or ''}{enum_match.group(3) or ''}{enum_match.group('optional_comma') or ''}" if enum_match else CONTEXT.current_line
