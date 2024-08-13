@@ -29,12 +29,11 @@ class PrependType(Enum):
     MakePrivate = auto()
 
 
-# Constants
-STRICT = 10
-UNSTRICT = 11
-MULTILINE_NO = 20
-MULTILINE_METHOD = 21
-MULTILINE_CONDITIONAL_STATEMENT = 22
+class MultiLineType(Enum):
+    NotMultiline = auto()
+    Method = auto()
+    ConditionalStatement = auto()
+
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(
@@ -81,7 +80,7 @@ class Context:
         self.sip_run: bool = False
         self.header_code: bool = False
         self.access: List[Visibility] = [Visibility.Public]
-        self.multiline_definition: int = MULTILINE_NO
+        self.multiline_definition: MultiLineType = MultiLineType.NotMultiline
         self.classname: List[str] = []
         self.class_and_struct: List[str] = []
         self.declared_classes: List[str] = []
@@ -752,7 +751,7 @@ def processDoxygenLine(line):
             CONTEXT.indent = f"{CONTEXT.prev_indent}  "
         elif not re.match(
             r'^\s*[\\:]+(param|note|since|return|deprecated|warning|throws)',
-            line):
+                line):
             line = f"{CONTEXT.indent}{line}"
     else:
         CONTEXT.prev_indent = CONTEXT.indent
@@ -836,7 +835,7 @@ def processDoxygenLine(line):
             else:
                 if seeline:
                     line = line[:see_match.start()] + seeline + line[
-                                                                see_match.end():]  # re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
+                        see_match.end():]  # re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
                 else:
                     line = line.replace('\\see', 'see')
     elif not re.search(r'\\throws.*', line):
@@ -886,7 +885,7 @@ def detect_and_remove_following_body_or_initializerlist():
 
     if (re.match(pattern1, CONTEXT.current_line) or
         re.search(pattern2, CONTEXT.current_line) or
-        re.match(pattern3, CONTEXT.current_line)):
+            re.match(pattern3, CONTEXT.current_line)):
 
         dbg_info(
             "remove constructor definition, function bodies, member initializing list (1)")
@@ -1039,12 +1038,12 @@ def fix_annotations(line):
     # Remove argument
     if 'SIP_PYARGREMOVE' in line:
         dbg_info("remove arg")
-        if CONTEXT.multiline_definition != MULTILINE_NO:
+        if CONTEXT.multiline_definition != MultiLineType.NotMultiline:
             prev_line = CONTEXT.output.pop().rstrip()
             # Update multi line status
             parenthesis_balance = prev_line.count('(') - prev_line.count(')')
             if parenthesis_balance == 1:
-                CONTEXT.multiline_definition = MULTILINE_NO
+                CONTEXT.multiline_definition = MultiLineType.NotMultiline
             # Concatenate with above line to bring previous commas
             line = f"{prev_line} {line.lstrip()}\n"
 
@@ -1100,7 +1099,7 @@ def detect_comment_block(strict_mode=True):
     CONTEXT.skipped_params_remove = []
 
     if re.match(r'^\s*/\*', CONTEXT.current_line) or (
-        not strict_mode and '/*' in CONTEXT.current_line):
+            not strict_mode and '/*' in CONTEXT.current_line):
         dbg_info("found comment block")
         CONTEXT.comment = processDoxygenLine(
             re.sub(r'^\s*/\*(\*)?(.*?)\n?$', r'\2', CONTEXT.current_line))
@@ -1203,7 +1202,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # Do not process SIP code %XXXCode
     if CONTEXT.sip_run and re.match(
         r'^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$',
-        CONTEXT.current_line):
+            CONTEXT.current_line):
         CONTEXT.current_line = f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
         CONTEXT.comment = ''
         dbg_info("do not process SIP code")
@@ -1378,7 +1377,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, etc.
     if re.match(
         r'^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$',
-        CONTEXT.current_line):
+            CONTEXT.current_line):
         continue
 
     if re.match(r'^\s*QHASH_FOR_CLASS_ENUM', CONTEXT.current_line):
@@ -1387,7 +1386,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if re.search(r'SIP_SKIP|SIP_PYTHON_SPECIAL_', CONTEXT.current_line):
         dbg_info('SIP SKIP!')
         # if multiline definition, remove previous lines
-        if CONTEXT.multiline_definition != MULTILINE_NO:
+        if CONTEXT.multiline_definition != MultiLineType.NotMultiline:
             dbg_info('SIP_SKIP with MultiLine')
             opening_line = ''
             while not re.match(r'^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$',
@@ -1396,7 +1395,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 if len(CONTEXT.output) < 1:
                     exit_with_error('could not reach opening definition')
             dbg_info("removed multiline definition of SIP_SKIP method")
-            CONTEXT.multiline_definition = MULTILINE_NO
+            CONTEXT.multiline_definition = MultiLineType.NotMultiline
 
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist()
@@ -1503,7 +1502,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 r'\b(?P<tpl>(?!QList)\w+)< *(?P<cls1>(\w|::)+) *(, *(?P<cls2>(\w|::)+)? *(, *(?P<cls3>(\w|::)+)? *)?)? *>'
             )
             m = tpl_replace_pattern.sub(lambda
-                                            match: f"{match.group('tpl') or ''}{match.group('cls1') or ''}{match.group('cls2') or ''}{match.group('cls3') or ''}Base",
+                                        match: f"{match.group('tpl') or ''}{match.group('cls1') or ''}{match.group('cls2') or ''}{match.group('cls3') or ''}Base",
                                         m)
             m = re.sub(r'(\w+)< *(?:\w|::)+ *>', '', m)
             m = re.sub(r'([:,])\s*,', r'\1', m)
@@ -1548,7 +1547,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.current_line += f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;"
 
         if any(x == Visibility.Private for x in CONTEXT.access) and len(
-            CONTEXT.access) != 1:
+                CONTEXT.access) != 1:
             dbg_info("skipping class in private context")
             continue
 
@@ -1583,8 +1582,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     CONTEXT.access.pop()
 
                     if CONTEXT.exported[-1] == 0 and CONTEXT.classname[
-                        -1] != sip_config.get(
-                        'no_export_macro'):
+                            -1] != sip_config.get(
+                            'no_export_macro'):
                         exit_with_error(
                             f"Class {CONTEXT.classname[-1]} should be exported with appropriate [LIB]_EXPORT macro. "
                             f"If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
@@ -1628,7 +1627,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.comment = ''
 
     elif CONTEXT.access[
-        -1] == Visibility.Private and 'SIP_FORCE' in CONTEXT.current_line:
+            -1] == Visibility.Private and 'SIP_FORCE' in CONTEXT.current_line:
         dbg_info("private with SIP_FORCE")
         if CONTEXT.private_section_line:
             write_output("PRV3", CONTEXT.private_section_line + "\n")
@@ -1641,7 +1640,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # Skip operators
     if CONTEXT.access[-1] != Visibility.Private and re.search(
-        r'operator(=|<<|>>|->)\s*\(', CONTEXT.current_line):
+            r'operator(=|<<|>>|->)\s*\(', CONTEXT.current_line):
         dbg_info("skip operator")
         detect_and_remove_following_body_or_initializerlist()
         continue
@@ -1665,7 +1664,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # Handle Q_DECLARE_FLAGS in Qt6
     if CONTEXT.is_qt6 and re.match(
         r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)',
-        CONTEXT.current_line):
+            CONTEXT.current_line):
         flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
                                CONTEXT.current_line).group(1)
         flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
@@ -1677,7 +1676,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # For scoped and type-based enum, the type has to be removed
     if re.match(
         r'^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*$',
-        CONTEXT.current_line):
+            CONTEXT.current_line):
         flags_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
                                CONTEXT.current_line).group(1)
         flag_name = re.search(r'\(\s*(\w+)\s*,\s*(\w+)\s*\)',
@@ -1956,8 +1955,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # Skip non-method member declaration in non-public sections
     if not CONTEXT.sip_run and CONTEXT.access[
-        -1] != Visibility.Public and detect_non_method_member(
-        CONTEXT.current_line):
+            -1] != Visibility.Public and detect_non_method_member(
+            CONTEXT.current_line):
         dbg_info("skip non-method member declaration in non-public sections")
         continue
 
@@ -2099,7 +2098,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # Remove keywords
     if CONTEXT.is_override_or_make_private != PrependType.NoPrepend:
         # Handle multiline definition to add virtual keyword or make private on opening line
-        if CONTEXT.multiline_definition != MULTILINE_NO:
+        if CONTEXT.multiline_definition != MultiLineType.NotMultiline:
             rolling_line = CONTEXT.current_line
             rolling_line_idx = CONTEXT.line_idx
             dbg_info(
@@ -2114,7 +2113,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
             if CONTEXT.is_override_or_make_private == PrependType.Virtual and not re.match(
                 r'^(\s*)virtual\b(.*)$',
-                rolling_line):
+                    rolling_line):
                 idx = rolling_line_idx - CONTEXT.line_idx + 1
                 CONTEXT.output[idx] = fix_annotations(
                     re.sub(r'^(\s*?)\b(.*)$', r'\1 virtual \2\n',
@@ -2131,7 +2130,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             CONTEXT.current_line = re.sub(r'(protected|public)', 'private',
                                           CONTEXT.last_access_section_line) + "\n" + CONTEXT.current_line + "\n"
         elif CONTEXT.is_override_or_make_private == PrependType.Virtual and not re.match(
-            r'^(\s*)virtual\b(.*)$', CONTEXT.current_line):
+                r'^(\s*)virtual\b(.*)$', CONTEXT.current_line):
             # SIP often requires the virtual keyword to be present, or it chokes on covariant return types
             # in overridden methods
             dbg_info('adding virtual keyword for overridden method')
@@ -2177,7 +2176,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     # deleted functions
     if re.match(
         r'^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$',
-        CONTEXT.current_line):
+            CONTEXT.current_line):
         CONTEXT.comment = ''
         continue
 
@@ -2190,7 +2189,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.current_line):
         # support Docstring for template based classes in SIP 4.19.7+
         CONTEXT.comment_template_docstring = True
-    elif (CONTEXT.multiline_definition == MULTILINE_NO and
+    elif (CONTEXT.multiline_definition == MultiLineType.NotMultiline and
           (re.search(r'//', CONTEXT.current_line) or
            re.match(r'^\s*typedef ', CONTEXT.current_line) or
            re.search(r'\s*struct ', CONTEXT.current_line) or
@@ -2202,7 +2201,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
            re.match(r'^\s*namespace\s+\w+', CONTEXT.current_line) or
            re.match(r'^\s*(virtual\s*)?~', CONTEXT.current_line) or
            detect_non_method_member(CONTEXT.current_line)
-          )):
+           )):
         dbg_info('skipping comment')
         if re.search(r'\s*typedef.*?(?!SIP_DOC_TEMPLATE)',
                      CONTEXT.current_line):
@@ -2258,35 +2257,35 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         write_output("PSI", f"{CONTEXT.python_signature}\n")
 
     # multiline definition (parenthesis left open)
-    if CONTEXT.multiline_definition != MULTILINE_NO:
+    if CONTEXT.multiline_definition != MultiLineType.NotMultiline:
         dbg_info("on multiline")
         # https://regex101.com/r/DN01iM/4
         # TODO - original regex is incompatible with python -- it was:
         # ^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*$:
         if re.match(
             r'^([^()]+(\((?:[^()]|\([^()]*\))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*',
-            CONTEXT.current_line):
+                CONTEXT.current_line):
             dbg_info("ending multiline")
             # remove potential following body
-            if CONTEXT.multiline_definition != MULTILINE_CONDITIONAL_STATEMENT and not re.search(
+            if CONTEXT.multiline_definition != MultiLineType.ConditionalStatement and not re.search(
                 r'(\{.*}|;)\s*(//.*)?$',
-                CONTEXT.current_line):
+                    CONTEXT.current_line):
                 dbg_info("remove following body of multiline def")
                 last_line = CONTEXT.current_line
                 last_line += remove_following_body_or_initializerlist()
                 # add missing semi column
                 CONTEXT.output.pop()
                 write_output("MLT", f"{last_line};\n")
-            CONTEXT.multiline_definition = MULTILINE_NO
+            CONTEXT.multiline_definition = MultiLineType.NotMultiline
         else:
             continue
     elif re.match(r'^[^()]+\([^()]*(?:\([^()]*\)[^()]*)*[^)]*$',
                   CONTEXT.current_line):
         dbg_info(f"Multiline detected:: {CONTEXT.current_line}")
         if re.match(r'^\s*((else )?if|while|for) *\(', CONTEXT.current_line):
-            CONTEXT.multiline_definition = MULTILINE_CONDITIONAL_STATEMENT
+            CONTEXT.multiline_definition = MultiLineType.ConditionalStatement
         else:
-            CONTEXT.multiline_definition = MULTILINE_METHOD
+            CONTEXT.multiline_definition = MultiLineType.Method
         continue
 
     # write comment
@@ -2318,7 +2317,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
                 for comment_line in comment_lines:
                     if (
-                        'versionadded:' in comment_line or 'deprecated:' in comment_line) and out_params:
+                            'versionadded:' in comment_line or 'deprecated:' in comment_line) and out_params:
                         dbg_info('out style parameters remain to flush!')
                         # member has /Out/ parameters, but no return type, so flush out out_params docs now
                         first_out_param = out_params.pop(0)
