@@ -237,7 +237,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             12, 1,
             13, 0
         ], QgsMapBoxGlStyleConverter.PropertyType.Opacity, conversion_context, 100, 255)
-        self.assertEqual(res.asExpression(), 'CASE  WHEN @vector_tile_zoom >= 13 THEN (0)  WHEN @vector_tile_zoom >= 12 THEN (100)  WHEN @vector_tile_zoom >= 11 THEN (CASE WHEN ("28" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 10 THEN (CASE WHEN ("18" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 9 THEN (CASE WHEN ("15" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 8 THEN (CASE WHEN ("14" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 7 THEN (CASE WHEN "capital" IN (2,4) THEN 100 ELSE 0 END) ELSE (0) END')
+        self.assertEqual(res.asExpression(), 'CASE  WHEN @vector_tile_zoom >= 13 THEN (0)  WHEN @vector_tile_zoom >= 12 THEN (255)  WHEN @vector_tile_zoom >= 11 THEN (CASE WHEN ("28" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 10 THEN (CASE WHEN ("18" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 9 THEN (CASE WHEN ("15" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 8 THEN (CASE WHEN ("14" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 7 THEN (CASE WHEN "capital" IN (2,4) THEN 255 ELSE 0 END) ELSE (0) END')
 
     def testParseValueList(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
