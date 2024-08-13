@@ -2645,6 +2645,26 @@ void TestQgsGeometry::snappedToGrid()
     std::unique_ptr<QgsAbstractGeometry> snappedZM { polyhedralSurfaceZM.constGet()->snappedToGrid( 1, 1, 1, 1 ) };
     QCOMPARE( snappedZM->asWkt( 5 ), QStringLiteral( "PolyhedralSurfaceZM (((0 0 1 2, 0 1 1 2, 1 1 1 2, 0 0 1 2)),((10 10 0 0, 10 11 0 0, 11 11 0 0, 10 10 0 0)))" ) );
   }
+
+  {
+    // TIN
+    QgsGeometry triangulatedSurface = QgsGeometry::fromWkt( "TIN (((0.2 0.3, 0.2 1.4, 2.1 2.4, 0.2 0.3)))" );
+    std::unique_ptr<QgsAbstractGeometry> snapped { triangulatedSurface.constGet()->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "TIN (((0 0, 0 1, 2 2, 0 0)))" ) );
+
+    QgsGeometry triangulatedSurfaceZ = QgsGeometry::fromWkt( "TINZ (((0.1 0.1 10.2,1.13 0.2 10.3,0.4 2.3 10.4,0.1 0.1 10.2)),((0.3 0.2 10.4,1.2 0.2 10.2,1.4 0.10 20.2,0.3 0.2 10.4)),((1.13 0.2 10.3,0.4 2.3 10.4,0.1 2.3 20.2,1.13 0.2 10.3)),((0.4 2.3 10.4,0.1 0.1 10.2,0.2 0.1 20.3,0.4 2.3 10.4)),((0.2 0.1 20.3,1.2 0.1 20.1,0.1 2.3 20.2,0.2 0.1 20.3)))" );
+    qDebug() << triangulatedSurfaceZ.isEmpty();
+    std::unique_ptr<QgsAbstractGeometry> snappedZ { triangulatedSurfaceZ.constGet()->snappedToGrid( 1, 1, 10 ) };
+    QCOMPARE( snappedZ->asWkt( 5 ),  QStringLiteral( "TINZ (((0 0 10, 1 0 10, 0 2 10, 0 0 10)),((0 0 10, 1 0 10, 1 0 20, 0 0 10)),((1 0 10, 0 2 10, 0 2 20, 1 0 10)),((0 2 10, 0 0 10, 0 0 20, 0 2 10)),((0 0 20, 1 0 20, 0 2 20, 0 0 20)))" ) );
+
+    QgsGeometry triangulatedSurfaceM = QgsGeometry::fromWkt( "TINM (((0.1 0.1 3.2, 0.3 1.2 3.2, 1.1 1.05 3.2, 0.1 0.1 3.2)))" );
+    std::unique_ptr<QgsAbstractGeometry> snappedM { triangulatedSurfaceM.constGet()->snappedToGrid( 1, 1, 0, 1 ) };
+    QCOMPARE( snappedM->asWkt( 5 ), QStringLiteral( "TINM (((0 0 3, 0 1 3, 1 1 3, 0 0 3)))" ) );
+
+    QgsGeometry triangulatedSurfaceZM = QgsGeometry::fromWkt( "TINZM (((0.2 0.1 1.1 2.2, 0.2 1.2 1.2 2.2, 1.3 1.2 1.4 2.1, 0.2 0.1 1.1 2.2)),((10.1 10.2 0.2 0.3, 10.1 11.1 0.1 0.1, 11.2 11.2 0.1 0.3, 10.1 10.2 0.2 0.3)))" );
+    std::unique_ptr<QgsAbstractGeometry> snappedZM { triangulatedSurfaceZM.constGet()->snappedToGrid( 1, 1, 1, 1 ) };
+    QCOMPARE( snappedZM->asWkt( 5 ), QStringLiteral( "TINZM (((0 0 1 2, 0 1 1 2, 1 1 1 2, 0 0 1 2)),((10 10 0 0, 10 11 0 0, 11 11 0 0, 10 10 0 0)))" ) );
+  }
 }
 
 void TestQgsGeometry::convertGeometryCollectionToSubclass()
