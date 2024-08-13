@@ -54,7 +54,7 @@ const QString QgsDataItemGuiProviderUtils::uniqueName( const QString &name, cons
   while ( connectionNames.contains( newConnectionName ) )
   {
     ++i;
-    newConnectionName = QString( "%1 (copy %2)" ).arg( name ) .arg( i );
+    newConnectionName = QObject::tr( "%1 (copy %2)" ).arg( name ) .arg( i );
   }
 
   return newConnectionName;
