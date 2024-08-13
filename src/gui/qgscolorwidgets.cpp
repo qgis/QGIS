@@ -42,6 +42,14 @@
 
 #define HUE_MAX 359
 
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+typedef qreal float_type;
+#else
+typedef float float_type;
+#endif
+
+
 //
 // QgsColorWidget
 //
@@ -177,11 +185,11 @@ void QgsColorWidget::alterColor( QColor &color, const QgsColorWidget::ColorCompo
 
 void QgsColorWidget::alterColorF( QColor &color, const QgsColorWidget::ColorComponent component, const float newValue )
 {
-  float clippedValue = std::clamp( newValue, 0.f, 1.f );
+  float_type clippedValue = std::clamp( newValue, 0.f, 1.f );
 
   if ( colorSpec( component ) == QColor::Spec::Cmyk )
   {
-    float c, m, y, k, a;
+    float_type c, m, y, k, a;
     color.getCmykF( &c, &m, &y, &k, &a );
 
     switch ( component )
@@ -204,9 +212,9 @@ void QgsColorWidget::alterColorF( QColor &color, const QgsColorWidget::ColorComp
   }
   else
   {
-    float r, g, b, a;
+    float_type r, g, b, a;
     color.getRgbF( &r, &g, &b, &a );
-    float h, s, v;
+    float_type h, s, v;
     color.getHsvF( &h, &s, &v );
 
     switch ( component )
@@ -365,7 +373,7 @@ void QgsColorWidget::setComponentValueF( const float value )
   //overwrite hue with explicit hue if required
   if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value )
   {
-    float h, s, v, a;
+    float_type h, s, v, a;
     mCurrentColor.getHsvF( &h, &s, &v, &a );
 
     h = hueF();
@@ -577,7 +585,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
   QColor newColor = QColor();
 
-  float h, s, l, alpha;
+  float_type h, s, l, alpha;
   mCurrentColor.getHslF( &h, &s, &l, &alpha );
   //override hue with explicit hue, so we don't get -1 values from QColor for hue
   h = hueF();
