@@ -3221,6 +3221,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     caseString += QStringLiteral( " ELSE %1 END" ).arg( value );
     return caseString;
   }
+  else if ( op == QLatin1String( "zoom" ) && expression.count() == 1 )
+  {
+    return QStringLiteral( "@vector_tile_zoom" );
+  }
   else
   {
     context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
