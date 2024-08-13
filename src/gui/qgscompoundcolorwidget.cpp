@@ -269,10 +269,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
   mTabWidget->setIconSize( QSize( iconSize, iconSize ) );
 
-  if ( color.isValid() )
-  {
-    setColor( color );
-  }
+  setColor( color );
 
   // restore active Rgb/Cmyk component radio button
   const int activeRgbRadio = settings.value( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 2 ).toInt();
@@ -727,8 +724,8 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
 {
   const QColor::Spec colorSpec = color.spec() == QColor::Cmyk ? QColor::Cmyk : QColor::Rgb;
   mColorModel->setCurrentIndex( mColorModel->findData( colorSpec ) );
-  mRGB->setVisible( color.spec() != QColor::Cmyk );
-  mCMYK->setVisible( color.spec() == QColor::Cmyk );
+  mRGB->setVisible( colorSpec != QColor::Cmyk );
+  mCMYK->setVisible( colorSpec == QColor::Cmyk );
   _setColor( color );
 }
 
