@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/gui/raster/qgsrasterbandcombobox.h
+QgsRasterBandComboBox.__attribute_docs__ = {'bandChanged': 'Emitted when the currently selected band changes.\n'}

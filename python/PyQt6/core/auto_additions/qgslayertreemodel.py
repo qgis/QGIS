@@ -21,3 +21,4 @@ QgsLayerTreeModel.Flag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsLayerTreeModel.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsLayerTreeModel.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsLayerTreeModel.Flag.__or__ = lambda flag1, flag2: QgsLayerTreeModel.Flag(_force_int(flag1) | _force_int(flag2))
+QgsLayerTreeModel.__attribute_docs__ = {'messageEmitted': 'Emits a message than can be displayed to the user in a GUI class\n\n.. versionadded:: 3.14\n', 'hitTestStarted': 'Emitted when a hit test for visible legend items starts.\n\n.. seealso:: :py:func:`hitTestInProgress`\n\n.. seealso:: :py:func:`hitTestCompleted`\n\n.. versionadded:: 3.32\n', 'hitTestCompleted': 'Emitted when a hit test for visible legend items completes.\n\n.. seealso:: :py:func:`hitTestInProgress`\n\n.. seealso:: :py:func:`hitTestStarted`\n\n.. versionadded:: 3.32\n'}

@@ -20,3 +20,4 @@ QgsLayoutTable.LastColumn = QgsLayoutTable.CellStyleGroup.LastColumn
 QgsLayoutTable.HeaderRow = QgsLayoutTable.CellStyleGroup.HeaderRow
 QgsLayoutTable.FirstRow = QgsLayoutTable.CellStyleGroup.FirstRow
 QgsLayoutTable.LastRow = QgsLayoutTable.CellStyleGroup.LastRow
+QgsLayoutTableStyle.__attribute_docs__ = {'enabled': 'Whether the styling option is enabled', 'cellBackgroundColor': 'Cell background color'}

@@ -3,3 +3,4 @@ QgsAttributeTableConfig.Field = QgsAttributeTableConfig.Type.Field
 QgsAttributeTableConfig.Action = QgsAttributeTableConfig.Type.Action
 QgsAttributeTableConfig.ButtonList = QgsAttributeTableConfig.ActionWidgetStyle.ButtonList
 QgsAttributeTableConfig.DropDown = QgsAttributeTableConfig.ActionWidgetStyle.DropDown
+QgsAttributeTableConfig.__attribute_docs__ = {'type': 'The type of this column.', 'name': 'The name of the attribute if this column represents a field', 'hidden': 'Flag that controls if the column is hidden', 'width': 'Width of column, or -1 for default width'}

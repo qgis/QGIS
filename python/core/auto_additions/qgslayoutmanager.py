@@ -10,3 +10,4 @@ QgsLayoutManagerModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n
 QgsLayoutManagerModel.CustomRole.baseClass = QgsLayoutManagerModel
 QgsLayoutManagerProxyModel.Filters.baseClass = QgsLayoutManagerProxyModel
 Filters = QgsLayoutManagerProxyModel  # dirty hack since SIP seems to introduce the flags in module
+QgsLayoutManager.__attribute_docs__ = {'layoutAboutToBeAdded': 'Emitted when a layout is about to be added to the manager\n', 'layoutAdded': 'Emitted when a layout has been added to the manager\n', 'layoutRemoved': 'Emitted when a layout was removed from the manager\n', 'layoutAboutToBeRemoved': 'Emitted when a layout is about to be removed from the manager\n', 'layoutRenamed': 'Emitted when a layout is renamed\n'}

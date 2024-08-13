@@ -6,3 +6,4 @@ QgsBlockingNetworkRequest.RequestFlag.__doc__ = "Request flags\n\n.. versionadde
 QgsBlockingNetworkRequest.RequestFlag.baseClass = QgsBlockingNetworkRequest
 QgsBlockingNetworkRequest.RequestFlags.baseClass = QgsBlockingNetworkRequest
 RequestFlags = QgsBlockingNetworkRequest  # dirty hack since SIP seems to introduce the flags in module
+QgsBlockingNetworkRequest.__attribute_docs__ = {'downloadProgress': 'Emitted when when data arrives during a request.\n', 'downloadFinished': 'Emitted once a request has finished downloading.\n\n.. deprecated::\n   Use the :py:func:`~QgsBlockingNetworkRequest.finished` signal instead.\n', 'uploadProgress': 'Emitted when when data are sent during a request.\n\n.. versionadded:: 3.22\n', 'finished': 'Emitted once a request has finished.\n'}

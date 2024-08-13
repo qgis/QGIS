@@ -19,3 +19,4 @@ QgsLayoutItemRegistry.LayoutManualTable = QgsLayoutItemRegistry.ItemType.LayoutM
 QgsLayoutItemRegistry.LayoutMarker = QgsLayoutItemRegistry.ItemType.LayoutMarker
 QgsLayoutItemRegistry.LayoutElevationProfile = QgsLayoutItemRegistry.ItemType.LayoutElevationProfile
 QgsLayoutItemRegistry.PluginItem = QgsLayoutItemRegistry.ItemType.PluginItem
+QgsLayoutItemRegistry.__attribute_docs__ = {'typeAdded': 'Emitted whenever a new item type is added to the registry, with the specified\n``type`` and visible ``name``.\n', 'multiFrameTypeAdded': 'Emitted whenever a new multiframe type is added to the registry, with the specified\n``type`` and visible ``name``.\n'}

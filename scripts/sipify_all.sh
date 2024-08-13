@@ -56,8 +56,10 @@ for root_dir in python python/PyQt6; do
   for module in "${modules[@]}"; do
     module_dir=${root_dir}/${module}
 
-    rm ${module_dir}/class_map.yaml || true
-    touch ${module_dir}/class_map.yaml
+    if [[ ${CLASS_MAP} -eq 1 ]]; then
+      rm ${module_dir}/class_map.yaml || true
+      touch ${module_dir}/class_map.yaml
+    fi
 
     # clean auto_additions and auto_generated folders
     rm -rf ${module_dir}/auto_additions/*.py

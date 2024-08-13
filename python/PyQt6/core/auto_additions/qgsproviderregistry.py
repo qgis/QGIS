@@ -2,3 +2,4 @@
 QgsProviderRegistry.Standalone = QgsProviderRegistry.WidgetMode.Standalone
 QgsProviderRegistry.Embedded = QgsProviderRegistry.WidgetMode.Embedded
 QgsProviderRegistry.Manager = QgsProviderRegistry.WidgetMode.Manager
+QgsProviderRegistry.UnusableUriDetails.__attribute_docs__ = {'uri': 'URI which could not be handled.', 'warning': 'Contains a short, user-friendly, translated message advising why the URI is not usable.', 'detailedWarning': 'Contains a longer, user-friendly, translated message advising why the URI is not usable.', 'layerTypes': 'Contains a list of map layer types which are usually valid options for opening the\ntarget URI.'}

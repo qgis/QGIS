@@ -69,3 +69,4 @@ QgsCallout.LabelBottomRight = QgsCallout.LabelAnchorPoint.LabelBottomRight
 QgsCurvedLineCallout.Automatic = QgsCurvedLineCallout.Orientation.Automatic
 QgsCurvedLineCallout.Clockwise = QgsCurvedLineCallout.Orientation.Clockwise
 QgsCurvedLineCallout.CounterClockwise = QgsCurvedLineCallout.Orientation.CounterClockwise
+QgsCallout.QgsCalloutContext.__attribute_docs__ = {'allFeaturePartsLabeled': '``True`` if all parts of associated feature were labeled', 'originalFeatureCrs': 'Contains the CRS of the original feature associated with this callout.\n\n.. versionadded:: 3.20'}
