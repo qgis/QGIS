@@ -39,6 +39,7 @@ class TestQgsCompoundColorWidget : public QgsTest
     void testComponentSettings();
     void testModelChange();
     void testTabChange();
+    void testInvalidColor();
 };
 
 void TestQgsCompoundColorWidget::initTestCase()
@@ -223,6 +224,17 @@ void TestQgsCompoundColorWidget::testTabChange()
   QVERIFY( !w.mBlackRadio->isEnabled() );
 }
 
+void TestQgsCompoundColorWidget::testInvalidColor()
+{
+  QgsCompoundColorWidget w( nullptr, QColor() );
+  w.setVisible( true );
+
+  // default color is red
+  QCOMPARE( w.color(), QColor( 255, 0, 0 ) );
+  QCOMPARE( w.mColorModel->currentIndex(), 0 );
+  QVERIFY( w.mRGB->isVisible() );
+  QVERIFY( !w.mCMYK->isVisible() );
+}
 
 
 QGSTEST_MAIN( TestQgsCompoundColorWidget )
