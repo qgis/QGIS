@@ -195,6 +195,8 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
         symbolWidgetContext.setMapCanvas( mMapLayerConfigWidgetContext.mapCanvas() );
         symbolWidgetContext.setMessageBar( mMapLayerConfigWidgetContext.messageBar() );
         mItemWidget->setContext( symbolWidgetContext );
+        mItemWidget->setLayer( mLayer );
+        mItemWidget->setItemId( itemId );
       }
     }
   }

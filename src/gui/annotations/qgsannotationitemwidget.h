@@ -21,6 +21,8 @@
 #include "qgssymbolwidgetcontext.h"
 
 class QgsAnnotationItem;
+class QgsAnnotationLayer;
+class QgsRenderedAnnotationItemDetails;
 
 /**
  * \class QgsAnnotationItemBaseWidget
@@ -64,6 +66,38 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
     bool setItem( QgsAnnotationItem *item );
 
     /**
+     * Sets the associated annotation map \a layer.
+     *
+     * \see layer()
+     * \since QGIS 3.40
+     */
+    virtual void setLayer( QgsAnnotationLayer *layer );
+
+    /**
+     * Returns the associated annotation map layer.
+     *
+     * \see setLayer()
+     * \since QGIS 3.40
+     */
+    QgsAnnotationLayer *layer();
+
+    /**
+     * Sets the associated annotation item \a id.
+     *
+     * \see itemId()
+     * \since QGIS 3.40
+     */
+    void setItemId( const QString &id );
+
+    /**
+     * Returns the associated annotation item id.
+     *
+     * \see setItemId()
+     * \since QGIS 3.40
+     */
+    QString itemId() const;
+
+    /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \see context()
      */
@@ -102,8 +136,18 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
      */
     virtual bool setNewItem( QgsAnnotationItem *item );
 
+    /**
+     * Retrieve rendered annotation details for the associated annotation, if available.
+     *
+     * \since QGIS 3.40
+     */
+    const QgsRenderedAnnotationItemDetails *renderedItemDetails();
+
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
+
+    QPointer< QgsAnnotationLayer > mLayer;
+    QString mItemId;
 };
 
 #endif // QGSANNOTATIONITEMWIDGET_H
