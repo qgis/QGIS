@@ -488,7 +488,17 @@ try:
    QgsRasterBlock.as_numpy = raster_block_as_numpy
 
 except ModuleNotFoundError:
-   def raster_block_as_numpy(self, use_masking=True):
+   def raster_block_as_numpy(self, use_masking:bool = True):
        raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
 
    QgsRasterBlock.as_numpy = raster_block_as_numpy
+
+QgsRasterBlock.as_numpy.__doc__ = """
+Returns the block data as a numpy array.
+
+If `use_masking` is `True` then the returned array will be a numpy masked array, masking the raster block's nodata values.
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
