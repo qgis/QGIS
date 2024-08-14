@@ -1548,7 +1548,7 @@ int QgsLayoutItemMapGrid::xGridLines() const
   }
 
   //consider to round up to the next step in case the left boundary is > 0
-  const double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
+  const double roundCorrection = mapBoundingRect.top() > gridOffsetY ? 1.0 : 0.0;
   double currentLevel = static_cast< int >( ( mapBoundingRect.top() - gridOffsetY ) / gridIntervalY + roundCorrection ) * gridIntervalY + gridOffsetY;
 
   int gridLineCount = 0;
@@ -1649,7 +1649,7 @@ int QgsLayoutItemMapGrid::yGridLines() const
   }
 
   //consider to round up to the next step in case the left boundary is > 0
-  const double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
+  const double roundCorrection = mapBoundingRect.left() > gridOffsetX ? 1.0 : 0.0;
   double currentLevel = static_cast< int >( ( mapBoundingRect.left() - gridOffsetX ) / gridIntervalX + roundCorrection ) * gridIntervalX + gridOffsetX;
 
   int gridLineCount = 0;
@@ -1722,7 +1722,7 @@ int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, cons
     return 1;
   }
 
-  const double roundCorrection = bbox.yMaximum() > 0 ? 1.0 : 0.0;
+  const double roundCorrection = bbox.yMaximum() > mEvaluatedOffsetY ? 1.0 : 0.0;
   double currentLevel = static_cast< int >( ( bbox.yMaximum() - mEvaluatedOffsetY ) / mEvaluatedIntervalY + roundCorrection ) * mEvaluatedIntervalY + mEvaluatedOffsetY;
 
   const double minX = bbox.xMinimum();
@@ -1801,7 +1801,7 @@ int QgsLayoutItemMapGrid::yGridLinesCrsTransform( const QgsRectangle &bbox, cons
     return 1;
   }
 
-  const double roundCorrection = bbox.xMinimum() > 0 ? 1.0 : 0.0;
+  const double roundCorrection = bbox.xMinimum() > mEvaluatedOffsetX ? 1.0 : 0.0;
   double currentLevel = static_cast< int >( ( bbox.xMinimum() - mEvaluatedOffsetX ) / mEvaluatedIntervalX + roundCorrection ) * mEvaluatedIntervalX + mEvaluatedOffsetX;
 
   const double minY = bbox.yMinimum();
