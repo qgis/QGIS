@@ -2523,8 +2523,8 @@ for class_name, static_methods in CONTEXT.static_methods.items():
             method_name = 'usageInformation'
         elif class_name == 'QgsSymbolLayerUtils' and method_name == 'wellKnownMarkerFromSld':
             method_name = 'wellKnownMarkerFromSld2'
-        elif class_name == 'QgsZonalStatistics' and method_name == 'calculateStatisticsInt':
-            method_name = 'calculateStatistics'
+        elif class_name == 'QgsZonalStatistics' and method_name in ('calculateStatisticsInt', 'calculateStatistics'):
+            continue
         elif class_name == 'QgsServerApiUtils' and method_name == 'temporalExtentList':
             method_name = 'temporalExtent'
 
