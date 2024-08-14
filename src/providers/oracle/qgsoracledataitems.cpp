@@ -315,27 +315,7 @@ void QgsOracleConnectionItem::duplicateConnection()
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( mName, connections );
 
-  QString key = QStringLiteral( "/Oracle/connections/" ) + mName;
-  QString newKey = QStringLiteral( "/Oracle/connections/" ) + newConnectionName;
-
-  settings.setValue( newKey + QStringLiteral( "/database" ), settings.value( key + QStringLiteral( "/database" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/host" ), settings.value( key + QStringLiteral( "/host" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/port" ), settings.value( key + QStringLiteral( "/port" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/username" ), settings.value( key + "/username" ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/password" ), settings.value( key + "/password" ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + "/authcfg" ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/userTablesOnly" ), settings.value( key + QStringLiteral( "/userTablesOnly" ), false ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/geometryColumnsOnly" ), settings.value( key + QStringLiteral( "/geometryColumnsOnly" ), true ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/allowGeometrylessTables" ), settings.value( key + QStringLiteral( "/allowGeometrylessTables" ), false ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/estimatedMetadata" ), settings.value( key + QStringLiteral( "/estimatedMetadata" ), false ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/onlyExistingTypes" ), settings.value( key + QStringLiteral( "/onlyExistingTypes" ), true ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/includeGeoAttributes" ), settings.value( key + QStringLiteral( "/includeGeoAttributes" ), false ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/projectsInDatabase" ), settings.value( key + "/projectsInDatabase", false ).toBool() );
-  settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/dboptions" ), settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/dbworkspace" ), settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/schema" ), settings.value( key + QStringLiteral( "/schema" ) ).toString() );
+  QgsOracleConn::duplicateConnection( mName, newConnectionName );
 
   mParent->refreshConnections();
 }

@@ -254,6 +254,12 @@ class QgsMssqlConnection
      */
     static QString buildQueryForTables( const QString &connName );
 
+    /**
+     * Duplicates \a src connection settings to new \a dst connection.
+     * \since QGIS 3.40
+     */
+    static void duplicateConnection( const QString &src, const QString &dst );
+
   private:
 
 
