@@ -864,6 +864,16 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
 
+  const bool isCmyk = QgsProject::instance()->styleSettings() && QgsProject::instance()->styleSettings()->colorModel() == Qgis::ColorModel::Cmyk;
+  if ( s->color().spec() == QColor::Spec::Rgb && isCmyk )
+  {
+    s->setColor( s->color().toCmyk() );
+  }
+  else if ( s->color().spec() == QColor::Spec::Cmyk && !isCmyk )
+  {
+    s->setColor( s->color().toRgb() );
+  }
+
   return s.release();
 }
 
