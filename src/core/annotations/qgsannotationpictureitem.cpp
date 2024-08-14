@@ -61,11 +61,11 @@ QString QgsAnnotationPictureItem::type() const
 
 Qgis::AnnotationItemFlags QgsAnnotationPictureItem::flags() const
 {
-  switch ( mSizeMode )
+  switch ( mPlacementMode )
   {
-    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
       return Qgis::AnnotationItemFlag::SupportsCallouts;
-    case Qgis::AnnotationPictureSizeMode::FixedSize:
+    case Qgis::AnnotationPlacementMode::FixedSize:
       return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
              | Qgis::AnnotationItemFlag::SupportsCallouts;
   }
@@ -90,13 +90,13 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback *f
   bool lockAspectRatio = mLockAspectRatio;
   QRectF painterBounds;
 
-  switch ( mSizeMode )
+  switch ( mPlacementMode )
   {
-    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
       painterBounds = context.mapToPixel().transformBounds( bounds.toRectF() );
       break;
 
-    case Qgis::AnnotationPictureSizeMode::FixedSize:
+    case Qgis::AnnotationPlacementMode::FixedSize:
     {
       const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
       const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
@@ -231,7 +231,7 @@ bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &doc
   element.setAttribute( QStringLiteral( "yMax" ), qgsDoubleToString( mBounds.yMaximum() ) );
   element.setAttribute( QStringLiteral( "path" ), mPath );
   element.setAttribute( QStringLiteral( "format" ), qgsEnumValueToKey( mFormat ) );
-  element.setAttribute( QStringLiteral( "sizeMode" ), qgsEnumValueToKey( mSizeMode ) );
+  element.setAttribute( QStringLiteral( "sizeMode" ), qgsEnumValueToKey( mPlacementMode ) );
   element.setAttribute( QStringLiteral( "fixedWidth" ), qgsDoubleToString( mFixedSize.width() ) );
   element.setAttribute( QStringLiteral( "fixedHeight" ), qgsDoubleToString( mFixedSize.height() ) );
   element.setAttribute( QStringLiteral( "fixedSizeUnit" ), QgsUnitTypes::encodeUnit( mFixedSizeUnit ) );
@@ -259,9 +259,9 @@ bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &doc
 QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotationItemEditContext &context ) const
 {
   QList<QgsAnnotationItemNode> res;
-  switch ( mSizeMode )
+  switch ( mPlacementMode )
   {
-    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
     {
       res =
       {
@@ -285,7 +285,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotat
       return res;
     }
 
-    case Qgis::AnnotationPictureSizeMode::FixedSize:
+    case Qgis::AnnotationPlacementMode::FixedSize:
     {
       res =
       {
@@ -318,9 +318,9 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( Q
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
-        switch ( mSizeMode )
+        switch ( mPlacementMode )
         {
-          case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+          case Qgis::AnnotationPlacementMode::SpatialBounds:
           {
             switch ( moveOperation->nodeId().vertex )
             {
@@ -354,7 +354,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( Q
             return Qgis::AnnotationItemEditOperationResult::Success;
           }
 
-          case Qgis::AnnotationPictureSizeMode::FixedSize:
+          case Qgis::AnnotationPlacementMode::FixedSize:
           {
             mBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(),
                       mBounds.width(),
@@ -378,17 +378,17 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( Q
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
-      switch ( mSizeMode )
+      switch ( mPlacementMode )
       {
 
-        case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+        case Qgis::AnnotationPlacementMode::SpatialBounds:
           mBounds = QgsRectangle( mBounds.xMinimum() + moveOperation->translationX(),
                                   mBounds.yMinimum() + moveOperation->translationY(),
                                   mBounds.xMaximum() + moveOperation->translationX(),
                                   mBounds.yMaximum() + moveOperation->translationY() );
           break;
 
-        case Qgis::AnnotationPictureSizeMode::FixedSize:
+        case Qgis::AnnotationPlacementMode::FixedSize:
         {
           if ( callout() && !calloutAnchor().isEmpty() )
           {
@@ -425,9 +425,9 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
-        switch ( mSizeMode )
+        switch ( mPlacementMode )
         {
-          case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+          case Qgis::AnnotationPlacementMode::SpatialBounds:
           {
             QgsRectangle modifiedBounds = mBounds;
             switch ( moveOperation->nodeId().vertex )
@@ -453,7 +453,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
             }
             return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
           }
-          case Qgis::AnnotationPictureSizeMode::FixedSize:
+          case Qgis::AnnotationPlacementMode::FixedSize:
           {
             const QgsRectangle currentBounds = context.currentItemBounds();
             const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(), currentBounds.width(), currentBounds.height() );
@@ -472,9 +472,9 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
-      switch ( mSizeMode )
+      switch ( mPlacementMode )
       {
-        case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+        case Qgis::AnnotationPlacementMode::SpatialBounds:
         {
           const QgsRectangle modifiedBounds( mBounds.xMinimum() + moveOperation->translationX(),
                                              mBounds.yMinimum() + moveOperation->translationY(),
@@ -483,7 +483,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
           return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
         }
 
-        case Qgis::AnnotationPictureSizeMode::FixedSize:
+        case Qgis::AnnotationPlacementMode::FixedSize:
         {
           if ( callout() && !calloutAnchor().isEmpty() )
           {
@@ -559,7 +559,7 @@ bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsRea
   const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( QStringLiteral( "format" ) ), Qgis::PictureFormat::Unknown );
   setPath( format, element.attribute( QStringLiteral( "path" ) ) );
 
-  mSizeMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "sizeMode" ) ), Qgis::AnnotationPictureSizeMode::SpatialBounds );
+  mPlacementMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "sizeMode" ) ), Qgis::AnnotationPlacementMode::SpatialBounds );
 
   mFixedSize = QSizeF(
                  element.attribute( QStringLiteral( "fixedWidth" ) ).toDouble(),
@@ -589,7 +589,7 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
 {
   std::unique_ptr< QgsAnnotationPictureItem > item = std::make_unique< QgsAnnotationPictureItem >( mFormat, mPath, mBounds );
   item->setLockAspectRatio( mLockAspectRatio );
-  item->setSizeMode( mSizeMode );
+  item->setPlacementMode( mPlacementMode );
   item->setFixedSize( mFixedSize );
   item->setFixedSizeUnit( mFixedSizeUnit );
 
@@ -608,9 +608,9 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
 QgsRectangle QgsAnnotationPictureItem::boundingBox() const
 {
   QgsRectangle bounds;
-  switch ( mSizeMode )
+  switch ( mPlacementMode )
   {
-    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
     {
       bounds = mBounds;
       if ( callout() && !calloutAnchor().isEmpty() )
@@ -621,7 +621,7 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox() const
       break;
     }
 
-    case Qgis::AnnotationPictureSizeMode::FixedSize:
+    case Qgis::AnnotationPlacementMode::FixedSize:
       if ( callout() && !calloutAnchor().isEmpty() )
       {
         bounds = calloutAnchor().boundingBox();
@@ -638,12 +638,12 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox() const
 
 QgsRectangle QgsAnnotationPictureItem::boundingBox( QgsRenderContext &context ) const
 {
-  switch ( mSizeMode )
+  switch ( mPlacementMode )
   {
-    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
       return QgsAnnotationPictureItem::boundingBox();
 
-    case Qgis::AnnotationPictureSizeMode::FixedSize:
+    case Qgis::AnnotationPlacementMode::FixedSize:
     {
       const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
       const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
@@ -774,12 +774,12 @@ void QgsAnnotationPictureItem::setFixedSizeUnit( Qgis::RenderUnit unit )
   mFixedSizeUnit = unit;
 }
 
-Qgis::AnnotationPictureSizeMode QgsAnnotationPictureItem::sizeMode() const
+Qgis::AnnotationPlacementMode QgsAnnotationPictureItem::placementMode() const
 {
-  return mSizeMode;
+  return mPlacementMode;
 }
 
-void QgsAnnotationPictureItem::setSizeMode( Qgis::AnnotationPictureSizeMode mode )
+void QgsAnnotationPictureItem::setPlacementMode( Qgis::AnnotationPlacementMode mode )
 {
-  mSizeMode = mode;
+  mPlacementMode = mode;
 }

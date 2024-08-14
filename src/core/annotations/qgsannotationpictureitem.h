@@ -62,7 +62,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
      *
      * The coordinate reference system for the bounds will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * When the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize then the picture will be placed
+     * When the placementMode() is Qgis::AnnotationPlacementMode::FixedSize then the picture will be placed
      * at the center of the bounds.
      *
      * \see setBounds()
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
      *
      * The coordinate reference system for the bounds will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * When the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize then the picture will be placed
+     * When the placementMode() is Qgis::AnnotationPlacementMode::FixedSize then the picture will be placed
      * at the center of the bounds.
      *
      * \see bounds()
@@ -102,21 +102,21 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
     void setPath( Qgis::PictureFormat format, const QString &path );
 
     /**
-     * Returns the size mode for the picture.
+     * Returns the placement mode for the picture.
      *
-     * \see setSizeMode()
+     * \see setPlacementMode()
      */
-    Qgis::AnnotationPictureSizeMode sizeMode() const;
+    Qgis::AnnotationPlacementMode placementMode() const;
 
     /**
-     * Sets the size \a mode for the picture.
+     * Sets the placement \a mode for the picture.
      *
-     * \see sizeMode()
+     * \see placementMode()
      */
-    void setSizeMode( Qgis::AnnotationPictureSizeMode mode );
+    void setPlacementMode( Qgis::AnnotationPlacementMode mode );
 
     /**
-     * Returns the fixed size to use for the picture, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     * Returns the fixed size to use for the picture, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
      *
      * Units are retrieved via fixedSizeUnit()
      *
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
     QSizeF fixedSize() const;
 
     /**
-     * Sets the fixed \a size to use for the picture, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     * Sets the fixed \a size to use for the picture, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
      *
      * Units are set via setFixedSizeUnit()
      *
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
     void setFixedSize( const QSizeF &size );
 
     /**
-     * Returns the units to use for fixed picture sizes, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     * Returns the units to use for fixed picture sizes, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
      *
      * \see setFixedSizeUnit()
      * \see fixedSize()
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
     Qgis::RenderUnit fixedSizeUnit() const;
 
     /**
-     * Sets the \a unit to use for fixed picture sizes, when the sizeMode() is Qgis::AnnotationPictureSizeMode::FixedSize.
+     * Sets the \a unit to use for fixed picture sizes, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
      *
      * \see fixedSizeUnit()
      * \see setFixedSize()
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationItem
 
     QString mPath;
     Qgis::PictureFormat mFormat = Qgis::PictureFormat::Unknown;
-    Qgis::AnnotationPictureSizeMode mSizeMode = Qgis::AnnotationPictureSizeMode::SpatialBounds;
+    Qgis::AnnotationPlacementMode mPlacementMode = Qgis::AnnotationPlacementMode::SpatialBounds;
     QgsRectangle mBounds;
 
     QSizeF mFixedSize;

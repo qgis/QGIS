@@ -64,7 +64,7 @@ Returns the bounds of the picture.
 
 The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-When the :py:func:`~QgsAnnotationPictureItem.sizeMode` is :py:class:`Qgis`.AnnotationPictureSizeMode.FixedSize then the picture will be placed
+When the :py:func:`~QgsAnnotationPictureItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the picture will be placed
 at the center of the bounds.
 
 .. seealso:: :py:func:`setBounds`
@@ -76,7 +76,7 @@ Sets the ``bounds`` of the picture.
 
 The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-When the :py:func:`~QgsAnnotationPictureItem.sizeMode` is :py:class:`Qgis`.AnnotationPictureSizeMode.FixedSize then the picture will be placed
+When the :py:func:`~QgsAnnotationPictureItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the picture will be placed
 at the center of the bounds.
 
 .. seealso:: :py:func:`bounds`
@@ -103,23 +103,23 @@ Sets the ``format`` and ``path`` of the image used to render the item.
 .. seealso:: :py:func:`format`
 %End
 
-    Qgis::AnnotationPictureSizeMode sizeMode() const;
+    Qgis::AnnotationPlacementMode placementMode() const;
 %Docstring
-Returns the size mode for the picture.
+Returns the placement mode for the picture.
 
-.. seealso:: :py:func:`setSizeMode`
+.. seealso:: :py:func:`setPlacementMode`
 %End
 
-    void setSizeMode( Qgis::AnnotationPictureSizeMode mode );
+    void setPlacementMode( Qgis::AnnotationPlacementMode mode );
 %Docstring
-Sets the size ``mode`` for the picture.
+Sets the placement ``mode`` for the picture.
 
-.. seealso:: :py:func:`sizeMode`
+.. seealso:: :py:func:`placementMode`
 %End
 
     QSizeF fixedSize() const;
 %Docstring
-Returns the fixed size to use for the picture, when the :py:func:`~QgsAnnotationPictureItem.sizeMode` is :py:class:`Qgis`.AnnotationPictureSizeMode.FixedSize.
+Returns the fixed size to use for the picture, when the :py:func:`~QgsAnnotationPictureItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 Units are retrieved via :py:func:`~QgsAnnotationPictureItem.fixedSizeUnit`
 
@@ -130,7 +130,7 @@ Units are retrieved via :py:func:`~QgsAnnotationPictureItem.fixedSizeUnit`
 
     void setFixedSize( const QSizeF &size );
 %Docstring
-Sets the fixed ``size`` to use for the picture, when the :py:func:`~QgsAnnotationPictureItem.sizeMode` is :py:class:`Qgis`.AnnotationPictureSizeMode.FixedSize.
+Sets the fixed ``size`` to use for the picture, when the :py:func:`~QgsAnnotationPictureItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 Units are set via :py:func:`~QgsAnnotationPictureItem.setFixedSizeUnit`
 
@@ -141,7 +141,7 @@ Units are set via :py:func:`~QgsAnnotationPictureItem.setFixedSizeUnit`
 
     Qgis::RenderUnit fixedSizeUnit() const;
 %Docstring
-Returns the units to use for fixed picture sizes, when the :py:func:`~QgsAnnotationPictureItem.sizeMode` is :py:class:`Qgis`.AnnotationPictureSizeMode.FixedSize.
+Returns the units to use for fixed picture sizes, when the :py:func:`~QgsAnnotationPictureItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 .. seealso:: :py:func:`setFixedSizeUnit`
 
@@ -150,7 +150,7 @@ Returns the units to use for fixed picture sizes, when the :py:func:`~QgsAnnotat
 
     void setFixedSizeUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` to use for fixed picture sizes, when the :py:func:`~QgsAnnotationPictureItem.sizeMode` is :py:class:`Qgis`.AnnotationPictureSizeMode.FixedSize.
+Sets the ``unit`` to use for fixed picture sizes, when the :py:func:`~QgsAnnotationPictureItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
 
 .. seealso:: :py:func:`fixedSizeUnit`
 
