@@ -445,39 +445,39 @@ QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = property(
 QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent.setter(set_pixel_transparency)
 
 try:
-   import numpy
+   import numpy as _numpy
 
-   def qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> Optional[numpy.dtype]:
+   def _qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> Optional[_numpy.dtype]:
       qgis_to_numpy_dtype_dict = {
        Qgis.DataType.UnknownDataType: None,
-       Qgis.DataType.Byte: numpy.byte,
-       Qgis.DataType.Int8: numpy.int8,
-       Qgis.DataType.UInt16: numpy.uint16,
-       Qgis.DataType.Int16: numpy.int16,
-       Qgis.DataType.UInt32: numpy.uint32,
-       Qgis.DataType.Int32: numpy.int32,
-       Qgis.DataType.Float32: numpy.float32,
-       Qgis.DataType.Float64: numpy.float64,
+       Qgis.DataType.Byte: _numpy.byte,
+       Qgis.DataType.Int8: _numpy.int8,
+       Qgis.DataType.UInt16: _numpy.uint16,
+       Qgis.DataType.Int16: _numpy.int16,
+       Qgis.DataType.UInt32: _numpy.uint32,
+       Qgis.DataType.Int32: _numpy.int32,
+       Qgis.DataType.Float32: _numpy.float32,
+       Qgis.DataType.Float64: _numpy.float64,
        Qgis.DataType.CInt16: None,
        Qgis.DataType.CInt32: None,
-       Qgis.DataType.CFloat32: numpy.complex64,
-       Qgis.DataType.CFloat64: numpy.complex128,
+       Qgis.DataType.CFloat32: _numpy.complex64,
+       Qgis.DataType.CFloat64: _numpy.complex128,
        Qgis.DataType.ARGB32: None,
        Qgis.DataType.ARGB32_Premultiplied: None
        }
       return qgis_to_numpy_dtype_dict[dataType]
 
-   def raster_block_as_numpy(self, use_masking=True) -> Union[numpy.ndarray, numpy.ma.MaskedArray]:
-      raster_dtype = qgis_data_type_to_numeric_data_type(self.dataType())
+   def raster_block_as_numpy(self, use_masking:bool = True) -> Union[_numpy.ndarray, _numpy.ma.MaskedArray]:
+      raster_dtype = _qgis_data_type_to_numeric_data_type(self.dataType())
       if not raster_dtype:
          raise ValueError(f"The raster block data type '{str(self.dataType())}' is not compatible with NumPy arrays.")
-      src_array = numpy.frombuffer(self.data(), dtype=raster_dtype)
+      src_array = _numpy.frombuffer(self.data(), dtype=raster_dtype)
       src_array = src_array.reshape((self.height(), self.width()))
       if not self.hasNoDataValue() or not use_masking:
          return src_array
       else:
          no_data_value = self.noDataValue() if isinstance(self.noDataValue(), raster_dtype) else 0
-         return numpy.ma.masked_equal(src_array, no_data_value)
+         return _numpy.ma.masked_equal(src_array, no_data_value)
 
    QgsRasterBlock.as_numpy = raster_block_as_numpy
 
