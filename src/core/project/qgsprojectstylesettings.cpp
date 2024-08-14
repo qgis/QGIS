@@ -71,15 +71,30 @@ void QgsProjectStyleSettings::setDefaultSymbol( Qgis::SymbolType symbolType, Qgs
   switch ( symbolType )
   {
     case Qgis::SymbolType::Marker:
+      if ( mDefaultMarkerSymbol.get() == symbol )
+        return;
+
       mDefaultMarkerSymbol.reset( symbol ? symbol->clone() : nullptr );
+
+      makeDirty();
       break;
 
     case Qgis::SymbolType::Line:
+      if ( mDefaultLineSymbol.get() == symbol )
+        return;
+
       mDefaultLineSymbol.reset( symbol ? symbol->clone() : nullptr );
+
+      makeDirty();
       break;
 
     case Qgis::SymbolType::Fill:
+      if ( mDefaultFillSymbol.get() == symbol )
+        return;
+
       mDefaultFillSymbol.reset( symbol ? symbol->clone() : nullptr );
+
+      makeDirty();
       break;
 
     case Qgis::SymbolType::Hybrid:
@@ -94,7 +109,12 @@ QgsColorRamp *QgsProjectStyleSettings::defaultColorRamp() const
 
 void QgsProjectStyleSettings::setDefaultColorRamp( QgsColorRamp *colorRamp )
 {
+  if ( mDefaultColorRamp.get() == colorRamp )
+    return;
+
   mDefaultColorRamp.reset( colorRamp ? colorRamp->clone() : nullptr );
+
+  makeDirty();
 }
 
 QgsTextFormat QgsProjectStyleSettings::defaultTextFormat() const
@@ -104,7 +124,32 @@ QgsTextFormat QgsProjectStyleSettings::defaultTextFormat() const
 
 void QgsProjectStyleSettings::setDefaultTextFormat( const QgsTextFormat &textFormat )
 {
+  if ( mDefaultTextFormat == textFormat )
+    return;
+
   mDefaultTextFormat = textFormat;
+
+  makeDirty();
+}
+
+void QgsProjectStyleSettings::setDefaultSymbolOpacity( double opacity )
+{
+  if ( mDefaultSymbolOpacity == opacity )
+    return;
+
+  mDefaultSymbolOpacity = opacity;
+
+  makeDirty();
+}
+
+void QgsProjectStyleSettings::setRandomizeDefaultSymbolColor( bool randomized )
+{
+  if ( mRandomizeDefaultSymbolColor == randomized )
+    return;
+
+  mRandomizeDefaultSymbolColor = randomized;
+
+  makeDirty();
 }
 
 void QgsProjectStyleSettings::reset()
@@ -464,7 +509,13 @@ QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel()
 
 void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 {
+  if ( mColorModel == colorModel )
+    return;
+
   mColorModel = colorModel;
+
+  makeDirty();
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
   if ( mColorSpace.isValid() && QgsColorUtils::toColorModel( mColorSpace.colorModel() ) != colorModel )
   {
@@ -480,6 +531,9 @@ Qgis::ColorModel QgsProjectStyleSettings::colorModel() const
 
 void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
 {
+  if ( mColorSpace == colorSpace )
+    return;
+
   if ( !mProject )
   {
     QgsDebugError( "Impossible to attach ICC profile, no project defined" );
@@ -504,6 +558,8 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
   mColorSpace = colorSpace;
 #endif
 
+  makeDirty();
+
   if ( !mColorSpace.isValid() )
     return;
 
@@ -523,6 +579,11 @@ QColorSpace QgsProjectStyleSettings::colorSpace() const
   return mColorSpace;
 }
 
+void QgsProjectStyleSettings::makeDirty()
+{
+  if ( mProject )
+    mProject->setDirty( true );
+}
 
 //
 // QgsProjectStyleDatabaseModel
