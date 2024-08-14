@@ -33,6 +33,8 @@
 #include "qgsexpressionfinder.h"
 #include "qgsimagecache.h"
 #include "qgssvgcache.h"
+#include "qgsrenderedannotationitemdetails.h"
+#include "qgsmapcanvas.h"
 
 ///@cond PRIVATE
 
@@ -817,6 +819,7 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
 
   mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::SpatialBounds ) );
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
+  mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters
                              << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
@@ -885,6 +888,7 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
         pictureItem->setLockAspectRatio( mLockAspectRatioCheck->isChecked() );
         break;
       case Qgis::AnnotationPlacementMode::FixedSize:
+      case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
         pictureItem->setLockAspectRatio( mLockAspectRatio->isChecked() );
         break;
     }
@@ -896,6 +900,12 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
     pictureItem->setFrameEnabled( mFrameCheckbox->isChecked() );
     pictureItem->setBackgroundSymbol( mBackgroundSymbolButton->clonedSymbol< QgsFillSymbol >() );
     pictureItem->setFrameSymbol( mFrameSymbolButton->clonedSymbol< QgsFillSymbol >() );
+
+    if ( mUpdateItemPosition )
+    {
+      pictureItem->setBounds( mItem->bounds() );
+      mUpdateItemPosition = false;
+    }
 
     mPropertiesWidget->updateItem( pictureItem );
   }
@@ -1005,9 +1015,29 @@ void QgsAnnotationPictureItemWidget::sizeModeChanged()
     case Qgis::AnnotationPlacementMode::SpatialBounds:
       mSizeStackedWidget->setCurrentWidget( mPageSpatialBounds );
       break;
+
     case Qgis::AnnotationPlacementMode::FixedSize:
       mSizeStackedWidget->setCurrentWidget( mPageFixedSize );
       break;
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      if ( const QgsRenderedAnnotationItemDetails *details = renderedItemDetails() )
+      {
+        // convert item bounds to relative position
+        const QgsRectangle itemBounds = details->boundingBox();
+        if ( QgsMapCanvas *canvas = context().mapCanvas() )
+        {
+          const double centerX = ( itemBounds.center().x() - canvas->extent().xMinimum() ) / canvas->extent().width();
+          const double centerY = ( canvas->extent().yMaximum() - itemBounds.center().y() ) / canvas->extent().height();
+          mItem->setBounds( QgsRectangle::fromCenterAndSize( QgsPointXY( centerX, centerY ), 0.5, 0.5 ) );
+          mUpdateItemPosition = true;
+        }
+      }
+
+      mSizeStackedWidget->setCurrentWidget( mPageFixedSize );
+      break;
+    }
   }
 
   onWidgetChanged();

@@ -235,6 +235,7 @@ class QgsAnnotationPictureItemWidget : public QgsAnnotationItemBaseWidget, priva
     double pictureAspectRatio() const;
 
     bool mBlockChangedSignal = false;
+    bool mUpdateItemPosition = false;
     std::unique_ptr< QgsAnnotationPictureItem> mItem;
 };
 
