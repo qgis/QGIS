@@ -220,8 +220,8 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "rgb(248,249,250)",
             "rgb(252, 252, 252)"
         ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
-        self.assertEqual(res.asExpression(), 'CASE WHEN "luminosity" IS -15 THEN 0 WHEN "luminosity" IS -14 THEN 0 WHEN "luminosity" IS -13 THEN 0 WHEN "luminosity" IS -12 THEN 0 WHEN "luminosity" IS -11 THEN 0 WHEN "luminosity" IS -10 THEN 0 WHEN "luminosity" IS -9 THEN 0 WHEN "luminosity" IS -8 THEN 0 WHEN "luminosity" IS -7 THEN 0 WHEN "luminosity" IS -6 THEN 0 WHEN "luminosity" IS -5 THEN 0 WHEN "luminosity" IS -4 THEN 0 WHEN "luminosity" IS -3 THEN 0 WHEN "luminosity" IS -2 THEN 0 WHEN "luminosity" IS -1 THEN 0 ELSE 0 END')
-        self.assertEqual(default_number, 0.0)
+        self.assertEqual(res.asExpression(), 'CASE WHEN "luminosity" IN (-15) THEN \'#c8d2d5\' WHEN "luminosity" IN (-14) THEN \'#cbd5d8\' WHEN "luminosity" IN (-13) THEN \'#cfd7da\' WHEN "luminosity" IN (-12) THEN \'#d2dadd\' WHEN "luminosity" IN (-11) THEN \'#d5dde0\' WHEN "luminosity" IN (-10) THEN \'#d9e0e2\' WHEN "luminosity" IN (-9) THEN \'#dce3e5\' WHEN "luminosity" IN (-8) THEN \'#e0e6e7\' WHEN "luminosity" IN (-7) THEN \'#e3e8ea\' WHEN "luminosity" IN (-6) THEN \'#e7ebed\' WHEN "luminosity" IN (-5) THEN \'#eaeeef\' WHEN "luminosity" IN (-4) THEN \'#eef1f2\' WHEN "luminosity" IN (-3) THEN \'#f1f4f5\' WHEN "luminosity" IN (-2) THEN \'#f5f7f7\' WHEN "luminosity" IN (-1) THEN \'#f8f9fa\' ELSE \'#fcfcfc\' END')
+        self.assertTrue(qgsDoubleNear(default_number, 0.0))
 
     def testParseStepList(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
