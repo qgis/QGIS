@@ -56,11 +56,14 @@ QgsAbstractAnnotationItemEditOperation::~QgsAbstractAnnotationItemEditOperation(
 //
 // QgsAnnotationItemEditOperationMoveNode
 //
-QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after )
+QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
+    double translatePixelsX, double translatePixelsY )
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mNodeId( nodeId )
   , mBefore( before )
   , mAfter( after )
+  , mTranslatePixelsX( translatePixelsX )
+  , mTranslatePixelsY( translatePixelsY )
 {
 
 }
