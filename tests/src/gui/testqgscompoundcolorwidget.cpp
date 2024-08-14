@@ -292,6 +292,8 @@ void TestQgsCompoundColorWidget::testSliderWidgetsCmyk()
   QgsCompoundColorWidget w( nullptr, QColor::fromCmykF( 0.12f, 0.34f, 0.56f, 0.78f, 0.91f ) );
   w.setVisible( true );
 
+  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
   QCOMPARE( w.mCyanSlider->mSpinBox->value(), 12 );
   compareFloat( w.mCyanSlider->mRampWidget->color().cyanF(), 0.12f );
   QCOMPARE( w.mMagentaSlider->mSpinBox->value(), 34 );
@@ -319,6 +321,7 @@ void TestQgsCompoundColorWidget::testSliderWidgetsCmyk()
   compareFloat( w.mBlackSlider->mRampWidget->color().blackF(), 0.5f );
   QCOMPARE( w.mAlphaSlider->mSpinBox->value(), 50 );
   compareFloat( w.mAlphaSlider->mRampWidget->color().alphaF(), 0.5f );
+  // NOLINTEND(bugprone-narrowing-conversions)
 }
 
 
