@@ -111,32 +111,32 @@ void QgsAuthOAuth2Config::setDescription( const QString &value )
 void QgsAuthOAuth2Config::setRequestUrl( const QString &value )
 {
   const QString preval( mRequestUrl );
-  mRequestUrl = value;
-  if ( preval != value )
+  mRequestUrl = value.trimmed();
+  if ( preval != mRequestUrl )
     emit requestUrlChanged( mRequestUrl );
 }
 
 void QgsAuthOAuth2Config::setTokenUrl( const QString &value )
 {
   const QString preval( mTokenUrl );
-  mTokenUrl = value;
-  if ( preval != value )
+  mTokenUrl = value.trimmed();
+  if ( preval != mTokenUrl )
     emit tokenUrlChanged( mTokenUrl );
 }
 
 void QgsAuthOAuth2Config::setRefreshTokenUrl( const QString &value )
 {
   const QString preval( mRefreshTokenUrl );
-  mRefreshTokenUrl = value;
-  if ( preval != value )
+  mRefreshTokenUrl = value.trimmed();
+  if ( preval != mRefreshTokenUrl )
     emit refreshTokenUrlChanged( mRefreshTokenUrl );
 }
 
 void QgsAuthOAuth2Config::setRedirectUrl( const QString &value )
 {
   const QString preval( mRedirectURL );
-  mRedirectURL = value;
-  if ( preval != value )
+  mRedirectURL = value.trimmed();
+  if ( preval != mRedirectURL )
     emit redirectUrlChanged( mRedirectURL );
 }
 
@@ -144,23 +144,23 @@ void QgsAuthOAuth2Config::setRedirectPort( int value )
 {
   const int preval( mRedirectPort );
   mRedirectPort = value;
-  if ( preval != value )
+  if ( preval != mRedirectPort )
     emit redirectPortChanged( mRedirectPort );
 }
 
 void QgsAuthOAuth2Config::setClientId( const QString &value )
 {
   const QString preval( mClientId );
-  mClientId = value;
-  if ( preval != value )
+  mClientId = value.trimmed();
+  if ( preval != mClientId )
     emit clientIdChanged( mClientId );
 }
 
 void QgsAuthOAuth2Config::setClientSecret( const QString &value )
 {
   const QString preval( mClientSecret );
-  mClientSecret = value;
-  if ( preval != value )
+  mClientSecret = value.trimmed();
+  if ( preval != mClientSecret )
     emit clientSecretChanged( mClientSecret );
 }
 
