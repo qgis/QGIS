@@ -108,7 +108,10 @@ QgsColorWidget::ComponentUnit QgsColorWidget::componentUnit( ColorComponent comp
     case QgsColorWidget::Black:
       return ComponentUnit::Percent;
 
-    default:
+    case QgsColorWidget::Multiple:
+    case QgsColorWidget::Red:
+    case QgsColorWidget::Green:
+    case QgsColorWidget::Blue:
       return ComponentUnit::Raw;
   }
 }
