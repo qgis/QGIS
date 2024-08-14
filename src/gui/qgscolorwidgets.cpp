@@ -43,6 +43,7 @@
 #define HUE_MAX 359
 
 
+// TODO QGIS 4 remove typedef, QColor was qreal (double) and is now float
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 typedef qreal float_type;
 #else
@@ -104,6 +105,8 @@ float QgsColorWidget::componentValueF( const QgsColorWidget::ColorComponent comp
     return -1;
   }
 
+  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
   switch ( component )
   {
     case QgsColorWidget::Red:
@@ -132,6 +135,7 @@ float QgsColorWidget::componentValueF( const QgsColorWidget::ColorComponent comp
     default:
       return -1;
   }
+  // NOLINTEND(bugprone-narrowing-conversions)
 }
 
 int QgsColorWidget::componentRange() const
@@ -168,7 +172,7 @@ float QgsColorWidget::hueF() const
 {
   if ( mCurrentColor.hueF() >= 0 )
   {
-    return mCurrentColor.hueF();
+    return mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
   }
   else
   {
@@ -386,7 +390,7 @@ void QgsColorWidget::setComponentValueF( const float value )
   //update recorded hue
   if ( mCurrentColor.hue() >= 0 )
   {
-    mExplicitHue = mCurrentColor.hueF();
+    mExplicitHue = mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
   }
 
   update();
@@ -404,7 +408,7 @@ void QgsColorWidget::setColor( const QColor &color, const bool emitSignals )
   //update recorded hue
   if ( color.hue() >= 0 )
   {
-    mExplicitHue = color.hueF();
+    mExplicitHue = color.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
   }
 
   if ( emitSignals )
@@ -637,7 +641,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
   {
     //use hue angle
     s = mCurrentColor.hsvSaturationF();
-    const float v = mCurrentColor.valueF();
+    const float v = mCurrentColor.valueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
     const qreal newHue = line.angle() / HUE_MAX;
     newColor = QColor::fromHsvF( static_cast<float>( newHue ), s, v, alpha );
     //hue has changed, need to redraw triangle
@@ -652,7 +656,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     if ( mCurrentColor.hueF() >= 0 )
     {
       //color has a valid hue, so update the QgsColorWidget's explicit hue
-      mExplicitHue = mCurrentColor.hueF();
+      mExplicitHue = mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
     }
 
     update();
@@ -956,18 +960,18 @@ void QgsColorBox::createBox()
 
   //create a temporary color object
   QColor currentColor = QColor( mCurrentColor );
-  int colorComponentValue;
+  float colorComponentValue;
 
   for ( int y = 0; y < maxValueY; ++y )
   {
     QRgb *scanLine = ( QRgb * )mBoxImage->scanLine( y );
 
-    colorComponentValue = int( valueRangeY() - valueRangeY() * ( double( y ) / maxValueY ) );
-    alterColor( currentColor, yComponent(), colorComponentValue );
+    colorComponentValue = 1.f - static_cast<float>( y ) / static_cast<float>( maxValueY );
+    alterColorF( currentColor, yComponent(), colorComponentValue );
     for ( int x = 0; x < maxValueX; ++x )
     {
-      colorComponentValue = int( valueRangeX() * ( double( x ) / maxValueX ) );
-      alterColor( currentColor, xComponent(), colorComponentValue );
+      colorComponentValue = static_cast<float>( x ) / static_cast<float>( maxValueY );
+      alterColorF( currentColor, xComponent(), colorComponentValue );
       scanLine[x] = currentColor.rgb();
     }
   }
@@ -1057,15 +1061,12 @@ void QgsColorBox::setColorFromPoint( QPoint point )
   const float w = static_cast<float>( width() );
   const float h = static_cast<float>( height() );
 
-  float valX = valueRangeX() * ( x - mMargin ) / ( w - 2 * mMargin - 1 );
-  valX = std::min( std::max( valX, 0.f ), valueRangeX() );
-
-  float valY = valueRangeY() - valueRangeY() * ( y - mMargin ) / ( h - 2 * mMargin - 1 );
-  valY = std::min( std::max( valY, 0.f ), valueRangeY() );
+  float valX = ( x - mMargin ) / ( w - 2 * mMargin - 1 );
+  float valY = 1.f - ( y - mMargin ) / ( h - 2 * mMargin - 1 );
 
   QColor color = QColor( mCurrentColor );
-  alterColor( color, xComponent(), valX );
-  alterColor( color, yComponent(), valY );
+  alterColorF( color, xComponent(), valX );
+  alterColorF( color, yComponent(), valY );
 
   if ( color == mCurrentColor )
   {
@@ -1074,7 +1075,7 @@ void QgsColorBox::setColorFromPoint( QPoint point )
 
   if ( color.hueF() >= 0 )
   {
-    mExplicitHue = color.hueF();
+    mExplicitHue = color.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
   }
 
   mCurrentColor = color;
@@ -1141,7 +1142,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
   float margin = static_cast<float>( mMargin );
   if ( mComponent != QgsColorWidget::Alpha )
   {
-    const float maxValue = static_cast<float>( mOrientation == QgsColorRampWidget::Horizontal ? width() : height() ) - 1.f - 2.f * margin;
+    const int maxValue = ( mOrientation == QgsColorRampWidget::Horizontal ? width() : height() ) - 1 - 2 * mMargin;
     QColor color = QColor( mCurrentColor );
     color.setAlphaF( 1.f );
     QPen pen;
@@ -1154,9 +1155,9 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     painter.setBrush( Qt::NoBrush );
 
     //draw background ramp
-    for ( float c = 0.f; c <= maxValue; ++c )
+    for ( int c = 0; c <= maxValue; ++c )
     {
-      float colorVal = c / maxValue;
+      float colorVal = static_cast<float>( c ) / static_cast<float>( maxValue );
       //vertical sliders are reversed
       if ( mOrientation == QgsColorRampWidget::Vertical )
       {
@@ -1172,12 +1173,12 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
       if ( mOrientation == QgsColorRampWidget::Horizontal )
       {
         //horizontal
-        painter.drawLine( QLineF( c + margin, margin, c + margin, h - margin - 1 ) );
+        painter.drawLine( c + mMargin, mMargin, c + mMargin, height() - mMargin - 1 );
       }
       else
       {
         //vertical
-        painter.drawLine( QLineF( margin, c + margin, w - margin - 1, c + margin ) );
+        painter.drawLine( mMargin, c + mMargin, width() - mMargin - 1, c + mMargin );
       }
     }
   }
