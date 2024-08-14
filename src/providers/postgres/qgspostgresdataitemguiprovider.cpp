@@ -23,6 +23,7 @@
 #include "qgspgsourceselect.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgssettings.h"
+#include "qgspostgresconn.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -259,27 +260,7 @@ void QgsPostgresDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  QString baseKey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connectionName );
-  QString newBaseKey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( newConnectionName );
-
-  settings.setValue( newBaseKey + "/service", settings.value( baseKey + "/service" ).toString() );
-  settings.setValue( newBaseKey + "/host", settings.value( baseKey + "/host" ).toString() );
-  settings.setValue( newBaseKey + "/port", settings.value( baseKey + "/port" ).toString() );
-  settings.setValue( newBaseKey + "/database", settings.value( baseKey + "/database" ).toString() );
-  settings.setValue( newBaseKey + "/session_role", settings.value( baseKey + "/session_role" ).toString() );
-  settings.setValue( newBaseKey + "/publicOnly", settings.value( baseKey + "/publicOnly", false ).toBool() );
-  settings.setValue( newBaseKey + "/geometryColumnsOnly", settings.value( baseKey + "/geometryColumnsOnly", true ).toBool() );
-  settings.setValue( newBaseKey + "/dontResolveType", settings.value( baseKey + "/dontResolveType", false ).toBool() );
-  settings.setValue( newBaseKey + "/allowGeometrylessTables", settings.value( baseKey + "/allowGeometrylessTables", false ).toBool() );
-  settings.setValue( newBaseKey + "/estimatedMetadata", settings.value( baseKey + "/estimatedMetadata", false ).toBool() );
-  settings.setValue( newBaseKey + "/projectsInDatabase", settings.value( baseKey + "/projectsInDatabase", false ).toBool() );
-  settings.setValue( newBaseKey + "/metadataInDatabase", settings.value( baseKey + "/metadataInDatabase", false ).toBool() );
-  settings.setEnumValue( newBaseKey + "/sslmode", settings.enumValue( baseKey + "/sslmode", QgsDataSourceUri::SslPrefer ) );
-  settings.setValue( newBaseKey + "/saveUsername", settings.value( baseKey + "/saveUsername" ).toString() );
-  settings.setValue( newBaseKey + "/savePassword", settings.value( baseKey + "/savePassword" ).toString() );
-  settings.setValue( newBaseKey + "/username", settings.value( baseKey + "/username" ).toString() );
-  settings.setValue( newBaseKey + "/password", settings.value( baseKey + "/password" ).toString() );
-  settings.setValue( newBaseKey + "/authcfg", settings.value( baseKey + "/authcfg" ).toString() );
+  QgsPostgresConn::duplicateConnection( connectionName, newConnectionName );
 
   if ( item->parent() )
   {

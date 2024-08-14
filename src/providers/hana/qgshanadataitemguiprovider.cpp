@@ -218,39 +218,7 @@ void QgsHanaDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  QgsHanaSettings hanaSettings( connectionName, true );
-  QgsHanaSettings newHanaSettings( newConnectionName );
-
-  newHanaSettings.setConnectionType( hanaSettings.connectionType() );
-  newHanaSettings.setDsn( hanaSettings.dsn() );
-  newHanaSettings.setDriver( hanaSettings.driver() );
-  newHanaSettings.setHost( hanaSettings.host() );
-  newHanaSettings.setIdentifierType( hanaSettings.identifierType() );
-  newHanaSettings.setIdentifier( hanaSettings.identifier() );
-  newHanaSettings.setDatabase( hanaSettings.database() );
-  newHanaSettings.setMultitenant( hanaSettings.multitenant() );
-  newHanaSettings.setSchema( hanaSettings.schema() );
-  newHanaSettings.setAuthCfg( hanaSettings.authCfg() );
-  newHanaSettings.setUserName( hanaSettings.userName() );
-  newHanaSettings.setPassword( hanaSettings.password() );
-  newHanaSettings.setSaveUserName( hanaSettings.saveUserName() );
-  newHanaSettings.setSavePassword( hanaSettings.savePassword() );
-  newHanaSettings.setUserTablesOnly( hanaSettings.userTablesOnly() );
-  newHanaSettings.setAllowGeometrylessTables( hanaSettings.allowGeometrylessTables() );
-  newHanaSettings.setUseEstimatedMetadata( hanaSettings.useEstimatedMetadata() );
-  newHanaSettings.setEnableSsl( hanaSettings.enableSsl() );
-  newHanaSettings.setSslCryptoProvider( hanaSettings.sslCryptoProvider() );
-  newHanaSettings.setSslKeyStore( hanaSettings.sslKeyStore() );
-  newHanaSettings.setSslTrustStore( hanaSettings.sslTrustStore() );
-  newHanaSettings.setSslValidateCertificate( hanaSettings.sslValidateCertificate() );
-  newHanaSettings.setSslHostNameInCertificate( hanaSettings.sslHostNameInCertificate() );
-  newHanaSettings.setEnableProxy( hanaSettings.enableProxy() );
-  newHanaSettings.setEnableProxyHttp( hanaSettings.enableProxyHttp() );
-  newHanaSettings.setProxyHost( hanaSettings.proxyHost() );
-  newHanaSettings.setProxyPort( hanaSettings.proxyPort() );
-  newHanaSettings.setProxyUsername( hanaSettings.proxyUsername() );
-  newHanaSettings.setProxyPassword( hanaSettings.proxyPassword() );
-  newHanaSettings.save();
+  QgsHanaSettings::duplicateConnection( connectionName, newConnectionName );
 
   if ( item->parent() )
   {

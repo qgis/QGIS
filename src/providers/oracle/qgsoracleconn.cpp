@@ -921,18 +921,51 @@ void QgsOracleConn::deleteConnection( const QString &connName )
   settings.remove( key + QStringLiteral( "/host" ) );
   settings.remove( key + QStringLiteral( "/port" ) );
   settings.remove( key + QStringLiteral( "/database" ) );
+  settings.remove( key + QStringLiteral( "/schema" ) );
   settings.remove( key + QStringLiteral( "/username" ) );
   settings.remove( key + QStringLiteral( "/password" ) );
+  settings.remove( key + QStringLiteral( "/authcfg" ) );
+  settings.remove( key + QStringLiteral( "/dboptions" ) );
+  settings.remove( key + QStringLiteral( "/dbworkspace" ) );
   settings.remove( key + QStringLiteral( "/userTablesOnly" ) );
   settings.remove( key + QStringLiteral( "/geometryColumnsOnly" ) );
   settings.remove( key + QStringLiteral( "/allowGeometrylessTables" ) );
   settings.remove( key + QStringLiteral( "/estimatedMetadata" ) );
   settings.remove( key + QStringLiteral( "/onlyExistingTypes" ) );
   settings.remove( key + QStringLiteral( "/includeGeoAttributes" ) );
+  settings.remove( key + QStringLiteral( "/projectsInDatabase" ) );
   settings.remove( key + QStringLiteral( "/saveUsername" ) );
   settings.remove( key + QStringLiteral( "/savePassword" ) );
   settings.remove( key + QStringLiteral( "/save" ) );
   settings.remove( key );
+}
+
+void QgsOracleConn::duplicateConnection( const QString &src, const QString &dst )
+{
+  const QString key( QStringLiteral( "/Oracle/connections/" ) + src );
+  const QString newKey( QStringLiteral( "/Oracle/connections/" ) + dst );
+
+  QgsSettings settings;
+  settings.setValue( newKey + QStringLiteral( "/host" ), settings.value( key + QStringLiteral( "/host" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/port" ), settings.value( key + QStringLiteral( "/port" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/database" ), settings.value( key + QStringLiteral( "/database" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/schema" ), settings.value( key + QStringLiteral( "/schema" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/username" ), settings.value( key + QStringLiteral( "/username" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/password" ), settings.value( key + QStringLiteral( "/password" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + QStringLiteral( "/authcfg" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/dboptions" ), settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/dbworkspace" ), settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/userTablesOnly" ), settings.value( key + QStringLiteral( "/userTablesOnly" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/geometryColumnsOnly" ), settings.value( key + QStringLiteral( "/geometryColumnsOnly" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/allowGeometrylessTables" ), settings.value( key + QStringLiteral( "/allowGeometrylessTables" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/estimatedMetadata" ), settings.value( key + QStringLiteral( "/estimatedMetadata" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/onlyExistingTypes" ), settings.value( key + QStringLiteral( "/onlyExistingTypes" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/includeGeoAttributes" ), settings.value( key + QStringLiteral( "/includeGeoAttributes" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/projectsInDatabase" ), settings.value( key + QStringLiteral( "/projectsInDatabase" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
+
+  settings.sync();
 }
 
 QString QgsOracleConn::selectedConnection()
@@ -991,7 +1024,7 @@ QgsDataSourceUri QgsOracleConn::connUri( const QString &connName )
     uri.setParam( QStringLiteral( "dbworkspace" ), settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
   }
 
-  QString authcfg = settings.value( key + "/authcfg" ).toString();
+  QString authcfg = settings.value( key + QStringLiteral( "/authcfg" ) ).toString();
   if ( !authcfg.isEmpty() )
   {
     uri.setAuthConfigId( authcfg );
@@ -1009,37 +1042,37 @@ bool QgsOracleConn::userTablesOnly( const QString &connName )
 QString QgsOracleConn::restrictToSchema( const QString &connName )
 {
   QgsSettings settings;
-  return settings.value( "/Oracle/connections/" + connName + "/schema" ).toString();
+  return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/schema" ) ).toString();
 }
 
 bool QgsOracleConn::geometryColumnsOnly( const QString &connName )
 {
   QgsSettings settings;
-  return settings.value( "/Oracle/connections/" + connName + "/geometryColumnsOnly", true ).toBool();
+  return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/geometryColumnsOnly" ), true ).toBool();
 }
 
 bool QgsOracleConn::allowGeometrylessTables( const QString &connName )
 {
   QgsSettings settings;
-  return settings.value( "/Oracle/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
+  return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/allowGeometrylessTables" ), false ).toBool();
 }
 
 bool QgsOracleConn::allowProjectsInDatabase( const QString &connName )
 {
   QgsSettings settings;
-  return settings.value( "/Oracle/connections/" + connName + "/projectsInDatabase", false ).toBool();
+  return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/projectsInDatabase" ), false ).toBool();
 }
 
 bool QgsOracleConn::estimatedMetadata( const QString &connName )
 {
   QgsSettings settings;
-  return settings.value( "/Oracle/connections/" + connName + "/estimatedMetadata", false ).toBool();
+  return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/estimatedMetadata" ), false ).toBool();
 }
 
 bool QgsOracleConn::onlyExistingTypes( const QString &connName )
 {
   QgsSettings settings;
-  return settings.value( "/Oracle/connections/" + connName + "/onlyExistingTypes", false ).toBool();
+  return settings.value( QStringLiteral( "/Oracle/connections/" ) + connName + QStringLiteral( "/onlyExistingTypes" ), false ).toBool();
 }
 
 QString QgsOracleConn::databaseName( const QString &database, const QString &host, const QString &port )

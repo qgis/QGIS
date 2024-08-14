@@ -201,25 +201,7 @@ void QgsMssqlDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  const QString key = "/MSSQL/connections/" + connectionName;
-  const QString newKey = "/MSSQL/connections/" + newConnectionName;
-
-  settings.setValue( newKey + "/service", settings.value( key + "/service" ).toString() );
-  settings.setValue( newKey + "/host", settings.value( key + "/host" ).toString() );
-  settings.setValue( newKey + "/database", settings.value( key + "/database" ).toString() );
-  settings.setValue( newKey + "/username", settings.value( key + "/username" ).toString() );
-  settings.setValue( newKey + "/password", settings.value( key + "/password" ).toString() );
-  settings.setValue( newKey + "/saveUsername", settings.value( key + "/saveUsername" ).toString() );
-  settings.setValue( newKey + "/savePassword", settings.value( key + "/savePassword" ).toString() );
-  settings.setValue( newKey + "/excludedSchemas", settings.value( key + "/excludedSchemas" ) );
-  settings.setValue( newKey + "/schemasFiltering", settings.value( key + "/schemasFiltering" ).toBool() );
-
-  QgsMssqlConnection::setGeometryColumnsOnly( newConnectionName, QgsMssqlConnection::geometryColumnsOnly( connectionName ) );
-  QgsMssqlConnection::setExtentInGeometryColumns( newConnectionName, QgsMssqlConnection::extentInGeometryColumns( connectionName ) );
-  QgsMssqlConnection::setPrimaryKeyInGeometryColumns( newConnectionName, QgsMssqlConnection::primaryKeyInGeometryColumns( connectionName ) );
-  QgsMssqlConnection::setAllowGeometrylessTables( newConnectionName, QgsMssqlConnection::allowGeometrylessTables( connectionName ) );
-  QgsMssqlConnection::setUseEstimatedMetadata( newConnectionName, QgsMssqlConnection::useEstimatedMetadata( connectionName ) );
-  QgsMssqlConnection::setInvalidGeometryHandlingDisabled( newConnectionName, QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connectionName ) );
+  QgsMssqlConnection::duplicateConnection( connectionName, newConnectionName );
 
   item->parent()->refreshConnections();
   item->refresh();

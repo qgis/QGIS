@@ -259,6 +259,12 @@ class QgsOracleConn : public QObject
     static QString databaseName( const QString &database, const QString &host, const QString &port );
     static QString toPoolName( const QgsDataSourceUri &uri );
 
+    /**
+     * Duplicates \a src connection settings to a new \a dst connection.
+     * \since QGIS 3.40
+     */
+    static void duplicateConnection( const QString &src, const QString &dst );
+
     operator QSqlDatabase() { return mDatabase; }
 
     static QString getLastExecutedQuery( const QSqlQuery &query );
