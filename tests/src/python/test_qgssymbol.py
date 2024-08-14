@@ -1772,6 +1772,15 @@ class TestQgsFillSymbol(QgisTestCase):
 
         return image
 
+    def testDefaultSymbolColor(self):
+        s1 = QgsSymbol.defaultSymbol(Qgis.GeometryType.Point)
+        self.assertEqual(s1.color().spec(), QColor.Spec.Rgb)
+
+        self.assertTrue(QgsProject.instance().styleSettings())
+        QgsProject.instance().styleSettings().setColorModel(Qgis.ColorModel.Cmyk)
+        s1 = QgsSymbol.defaultSymbol(Qgis.GeometryType.Point)
+        self.assertEqual(s1.color().spec(), QColor.Spec.Cmyk)
+
 
 if __name__ == '__main__':
     unittest.main()
