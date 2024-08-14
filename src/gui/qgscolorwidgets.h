@@ -230,7 +230,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * valid range for the color component.
      * \deprecated since QGIS 3.40. Use alterColorF() instead.
      */
-    static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue );
+    Q_DECL_DEPRECATED static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) SIP_DEPRECATED;
 
     /**
      * Alters a color by modifying the value of a specific color component

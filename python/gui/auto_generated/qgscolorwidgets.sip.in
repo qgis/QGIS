@@ -246,7 +246,7 @@ as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the satu
 .. versionadded:: 3.40
 %End
 
-    static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue );
+ static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) /Deprecated/;
 %Docstring
 Alters a color by modifying the value of a specific color component
 
