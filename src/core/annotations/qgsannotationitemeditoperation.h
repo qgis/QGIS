@@ -126,8 +126,11 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
     /**
      * Constructor for QgsAnnotationItemEditOperationMoveNode, where the node with the specified \a id moves
      * from \a before to \a after (in layer coordinates).
+     *
+     * Since QGIS 3.40 the \a translatePixelsX and \a translatePixelsY arguments specify the translation in pixels.
      */
-    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after );
+    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
+                                            double translatePixelsX = 0, double translatePixelsY = 0 );
 
     Type type() const override;
 
@@ -150,12 +153,30 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
      */
     QgsPoint after() const { return mAfter; }
 
+    /**
+     * Returns the x-axis translation, in pixels.
+     *
+     * \since translationYPixels()
+     * \since QGIS 3.40
+     */
+    double translationXPixels() const { return mTranslatePixelsX; }
+
+    /**
+     * Returns the y-axis translation, in pixels.
+     *
+     * \since translationXPixels()
+     * \since QGIS 3.40
+     */
+    double translationYPixels() const { return mTranslatePixelsY; }
+
   private:
 
     QgsVertexId mNodeId;
     QgsPoint mBefore;
     QgsPoint mAfter;
 
+    double mTranslatePixelsX = 0;
+    double mTranslatePixelsY = 0;
 };
 
 

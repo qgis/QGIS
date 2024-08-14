@@ -173,7 +173,9 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
       if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
       {
         const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-        QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
+        QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ),
+            event->pixelPoint().x() - mMoveStartPointPixels.x(),
+            event->pixelPoint().y() - mMoveStartPointPixels.y() );
         std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResultsV2( &operation, context ) );
         if ( operationResults )
         {
@@ -331,7 +333,9 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
         if ( layer )
         {
           const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-          QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
+          QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ),
+              event->pixelPoint().x() - mMoveStartPointPixels.x(),
+              event->pixelPoint().y() - mMoveStartPointPixels.y() );
           switch ( layer->applyEditV2( &operation, context ) )
           {
             case Qgis::AnnotationItemEditOperationResult::Success:
@@ -558,6 +562,7 @@ void QgsMapToolModifyAnnotation::onCanvasRefreshed()
 
       mSelectedRubberBand->copyPointsFrom( mHoverRubberBand );
       mSelectedRubberBand->show();
+      mSelectedItemBounds = mHoveredItemBounds;
     }
   }
   else
