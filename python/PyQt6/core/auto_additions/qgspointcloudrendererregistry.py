@@ -1,0 +1,3 @@
+# The following has been generated automatically from src/core/pointcloud/qgspointcloudrendererregistry.h
+QgsPointCloudRendererRegistry.defaultRenderer = staticmethod(QgsPointCloudRendererRegistry.defaultRenderer)
+QgsPointCloudRendererRegistry.classificationAttributeCategories = staticmethod(QgsPointCloudRendererRegistry.classificationAttributeCategories)

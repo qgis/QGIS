@@ -10,3 +10,5 @@ try:
     QgsLocatorFilter.__attribute_docs__ = {'finished': 'Emitted when the filter finishes fetching results.\n', 'resultFetched': 'Should be emitted by filters whenever they encounter a matching result\nduring within their :py:func:`~QgsLocatorFilter.fetchResults` implementation.\n'}
 except NameError:
     pass
+QgsLocatorFilter.stringMatches = staticmethod(QgsLocatorFilter.stringMatches)
+QgsLocatorFilter.fuzzyScore = staticmethod(QgsLocatorFilter.fuzzyScore)

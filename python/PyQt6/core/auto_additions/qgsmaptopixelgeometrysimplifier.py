@@ -2,3 +2,5 @@
 QgsMapToPixelSimplifier.NoFlags = QgsMapToPixelSimplifier.SimplifyFlag.NoFlags
 QgsMapToPixelSimplifier.SimplifyGeometry = QgsMapToPixelSimplifier.SimplifyFlag.SimplifyGeometry
 QgsMapToPixelSimplifier.SimplifyEnvelope = QgsMapToPixelSimplifier.SimplifyFlag.SimplifyEnvelope
+QgsMapToPixelSimplifier.calculateLengthSquared2D = staticmethod(QgsMapToPixelSimplifier.calculateLengthSquared2D)
+QgsMapToPixelSimplifier.equalSnapToGrid = staticmethod(QgsMapToPixelSimplifier.equalSnapToGrid)

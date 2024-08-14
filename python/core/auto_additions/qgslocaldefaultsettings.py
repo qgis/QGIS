@@ -1,0 +1,5 @@
+# The following has been generated automatically from src/core/qgslocaldefaultsettings.h
+QgsLocalDefaultSettings.setBearingFormat = staticmethod(QgsLocalDefaultSettings.setBearingFormat)
+QgsLocalDefaultSettings.bearingFormat = staticmethod(QgsLocalDefaultSettings.bearingFormat)
+QgsLocalDefaultSettings.setGeographicCoordinateFormat = staticmethod(QgsLocalDefaultSettings.setGeographicCoordinateFormat)
+QgsLocalDefaultSettings.geographicCoordinateFormat = staticmethod(QgsLocalDefaultSettings.geographicCoordinateFormat)

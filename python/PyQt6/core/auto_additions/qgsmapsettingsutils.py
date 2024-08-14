@@ -4,3 +4,6 @@ QgsMapSettingsUtils.EffectsCheckFlag.IgnoreGeoPdfSupportedEffects.__doc__ = "Ign
 QgsMapSettingsUtils.EffectsCheckFlag.__doc__ = "Flags for controlling the behavior of :py:func:`~QgsMapSettingsUtils.containsAdvancedEffects`\n\n.. versionadded:: 3.14\n\n" + '* ``IgnoreGeoPdfSupportedEffects``: ' + QgsMapSettingsUtils.EffectsCheckFlag.IgnoreGeoPdfSupportedEffects.__doc__
 # --
 QgsMapSettingsUtils.EffectsCheckFlags = lambda flags=0: QgsMapSettingsUtils.EffectsCheckFlag(flags)
+QgsMapSettingsUtils.containsAdvancedEffects = staticmethod(QgsMapSettingsUtils.containsAdvancedEffects)
+QgsMapSettingsUtils.worldFileParameters = staticmethod(QgsMapSettingsUtils.worldFileParameters)
+QgsMapSettingsUtils.worldFileContent = staticmethod(QgsMapSettingsUtils.worldFileContent)

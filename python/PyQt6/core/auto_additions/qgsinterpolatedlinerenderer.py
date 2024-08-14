@@ -1,3 +1,4 @@
 # The following has been generated automatically from src/core/symbology/qgsinterpolatedlinerenderer.h
 QgsInterpolatedLineColor.SingleColor = QgsInterpolatedLineColor.ColoringMethod.SingleColor
 QgsInterpolatedLineColor.ColorRamp = QgsInterpolatedLineColor.ColoringMethod.ColorRamp
+QgsInterpolatedLineSymbolLayer.create = staticmethod(QgsInterpolatedLineSymbolLayer.create)

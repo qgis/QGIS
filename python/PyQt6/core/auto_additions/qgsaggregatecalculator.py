@@ -3,3 +3,6 @@ try:
     QgsAggregateCalculator.__attribute_docs__ = {'function': 'The expression function', 'name': 'A translated, human readable name', 'supportedTypes': 'This aggregate function can only be used with these datatypes', 'filter': 'Optional filter for calculating aggregate over a subset of features, or an\nempty string to use all features.\n\n.. seealso:: :py:func:`QgsAggregateCalculator.setFilter`\n\n.. seealso:: :py:func:`QgsAggregateCalculator.filter`', 'delimiter': 'Delimiter to use for joining values with the StringConcatenate aggregate.\n\n.. seealso:: :py:func:`QgsAggregateCalculator.setDelimiter`\n\n.. seealso:: :py:func:`QgsAggregateCalculator.delimiter`', 'orderBy': 'Optional order by clauses.\n\n.. versionadded:: 3.8'}
 except NameError:
     pass
+QgsAggregateCalculator.stringToAggregate = staticmethod(QgsAggregateCalculator.stringToAggregate)
+QgsAggregateCalculator.displayName = staticmethod(QgsAggregateCalculator.displayName)
+QgsAggregateCalculator.aggregates = staticmethod(QgsAggregateCalculator.aggregates)

@@ -3,3 +3,4 @@ try:
     QgsAuthConfigSelect.__attribute_docs__ = {'selectedConfigIdChanged': 'Emitted when authentication config is changed or missing\n', 'selectedConfigIdRemoved': 'Emitted when authentication config is removed\n'}
 except NameError:
     pass
+QgsAuthConfigUriEdit.hasConfigId = staticmethod(QgsAuthConfigUriEdit.hasConfigId)

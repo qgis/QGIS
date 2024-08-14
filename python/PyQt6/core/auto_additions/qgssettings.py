@@ -10,3 +10,5 @@ QgsSettings.Providers = QgsSettings.Section.Providers
 QgsSettings.Expressions = QgsSettings.Section.Expressions
 QgsSettings.Misc = QgsSettings.Section.Misc
 QgsSettings.Gps = QgsSettings.Section.Gps
+QgsSettings.globalSettingsPath = staticmethod(QgsSettings.globalSettingsPath)
+QgsSettings.setGlobalSettingsPath = staticmethod(QgsSettings.setGlobalSettingsPath)

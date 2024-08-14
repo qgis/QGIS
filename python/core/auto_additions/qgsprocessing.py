@@ -17,3 +17,5 @@ try:
     QgsProcessing.__attribute_docs__ = {'TEMPORARY_OUTPUT': 'Constant used to indicate that a Processing algorithm output should be a temporary layer/file.\n\n.. versionadded:: 3.6'}
 except NameError:
     pass
+QgsProcessing.sourceTypeToString = staticmethod(QgsProcessing.sourceTypeToString)
+QgsProcessing.documentationFlagToString = staticmethod(QgsProcessing.documentationFlagToString)

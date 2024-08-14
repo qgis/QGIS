@@ -3,3 +3,4 @@ try:
     QgsVectorLayerJoinBuffer.__attribute_docs__ = {'joinedFieldsChanged': "Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)\n"}
 except NameError:
     pass
+QgsVectorLayerJoinBuffer.joinSubsetIndices = staticmethod(QgsVectorLayerJoinBuffer.joinSubsetIndices)

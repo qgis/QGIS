@@ -3,3 +3,9 @@ try:
     QgsCesiumUtils.__attribute_docs__ = {'gltf': 'GLTF binary content', 'rtcCenter': 'Center position of relative-to-center coordinates (when used)'}
 except NameError:
     pass
+QgsCesiumUtils.parseRegion = staticmethod(QgsCesiumUtils.parseRegion)
+QgsCesiumUtils.parseBox = staticmethod(QgsCesiumUtils.parseBox)
+QgsCesiumUtils.parseSphere = staticmethod(QgsCesiumUtils.parseSphere)
+QgsCesiumUtils.transformSphere = staticmethod(QgsCesiumUtils.transformSphere)
+QgsCesiumUtils.extractGltfFromB3dm = staticmethod(QgsCesiumUtils.extractGltfFromB3dm)
+QgsCesiumUtils.extractGltfFromTileContent = staticmethod(QgsCesiumUtils.extractGltfFromTileContent)

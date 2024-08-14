@@ -15,3 +15,4 @@ try:
     QgsWidgetWrapper.__attribute_docs__ = {'contextChanged': 'Signal when :py:class:`QgsAttributeEditorContext` mContext changed\n\n.. versionadded:: 3.4\n'}
 except NameError:
     pass
+QgsWidgetWrapper.fromWidget = staticmethod(QgsWidgetWrapper.fromWidget)

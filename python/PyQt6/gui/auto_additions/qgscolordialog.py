@@ -3,3 +3,4 @@ try:
     QgsColorDialog.__attribute_docs__ = {'currentColorChanged': "Emitted when the dialog's color changes\n\n:param color: current color\n"}
 except NameError:
     pass
+QgsColorDialog.getColor = staticmethod(QgsColorDialog.getColor)
