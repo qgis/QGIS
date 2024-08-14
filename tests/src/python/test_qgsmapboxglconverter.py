@@ -219,7 +219,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             -1,
             "rgb(248,249,250)",
             "rgb(252, 252, 252)"
-        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
         self.assertEqual(res.asExpression(), 'CASE WHEN "luminosity" IS -15 THEN 0 WHEN "luminosity" IS -14 THEN 0 WHEN "luminosity" IS -13 THEN 0 WHEN "luminosity" IS -12 THEN 0 WHEN "luminosity" IS -11 THEN 0 WHEN "luminosity" IS -10 THEN 0 WHEN "luminosity" IS -9 THEN 0 WHEN "luminosity" IS -8 THEN 0 WHEN "luminosity" IS -7 THEN 0 WHEN "luminosity" IS -6 THEN 0 WHEN "luminosity" IS -5 THEN 0 WHEN "luminosity" IS -4 THEN 0 WHEN "luminosity" IS -3 THEN 0 WHEN "luminosity" IS -2 THEN 0 WHEN "luminosity" IS -1 THEN 0 ELSE 0 END')
         self.assertEqual(default_number, 0.0)
 
