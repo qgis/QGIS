@@ -5,6 +5,7 @@ QgsColorWidget.ComponentUnit.Percent.__doc__ = "Percent values in the range 0-10
 QgsColorWidget.ComponentUnit.Degree.__doc__ = "Degree values in the range 0-359"
 QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Raw``: ' + QgsColorWidget.ComponentUnit.Raw.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
 # --
+QgsColorWidget.ComponentUnit.baseClass = QgsColorWidget
 QgsColorTextWidget.ColorTextFormat.baseClass = QgsColorTextWidget
 try:
     QgsColorWidget.__attribute_docs__ = {'colorChanged': "Emitted when the widget's color changes\n\n:param color: new widget color\n", 'hovered': 'Emitted when mouse hovers over widget.\n'}

@@ -69,6 +69,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
       Percent, //!< Percent values in the range 0-100
       Degree //!< Degree values in the range 0-359
     };
+    Q_ENUM( ComponentUnit )
 
     /**
      * Construct a new color widget.

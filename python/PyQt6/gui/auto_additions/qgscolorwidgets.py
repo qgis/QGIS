@@ -17,6 +17,7 @@ QgsColorWidget.ComponentUnit.Percent.__doc__ = "Percent values in the range 0-10
 QgsColorWidget.ComponentUnit.Degree.__doc__ = "Degree values in the range 0-359"
 QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Raw``: ' + QgsColorWidget.ComponentUnit.Raw.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
 # --
+QgsColorWidget.ComponentUnit.baseClass = QgsColorWidget
 QgsColorRampWidget.Horizontal = QgsColorRampWidget.Orientation.Horizontal
 QgsColorRampWidget.Vertical = QgsColorRampWidget.Orientation.Vertical
 QgsColorTextWidget.HexRgb = QgsColorTextWidget.ColorTextFormat.HexRgb
