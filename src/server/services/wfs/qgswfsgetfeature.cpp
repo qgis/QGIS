@@ -435,7 +435,8 @@ namespace QgsWfs
         outputSrsName = ( aRequest.outputFormat == QgsWfsParameters::Format::GeoJSON ) ? QStringLiteral( "EPSG:4326" ) : vlayer->crs().authid();
       }
 
-      const QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( outputSrsName );
+      QgsCoordinateReferenceSystem outputCrs;
+      outputCrs.createFromUserInput( outputSrsName );
 
       bool forceGeomToMulti = QgsWkbTypes::isMultiType( vlayer->wkbType() );
 
