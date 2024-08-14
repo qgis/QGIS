@@ -22,9 +22,9 @@
 #include "qgis_sip.h"
 
 class QColor;
-class QDoubleSpinBox;
 class QLineEdit;
 class QToolButton;
+class QgsDoubleSpinBox;
 
 /**
  * \ingroup gui
@@ -705,7 +705,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     QgsColorRampWidget *mRampWidget = nullptr;
 
     /*Spin box widget*/
-    QDoubleSpinBox *mSpinBox = nullptr;
+    QgsDoubleSpinBox *mSpinBox = nullptr;
 
     /**
      * Converts the real value of a color component to a friendly display value. For instance,
