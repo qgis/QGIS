@@ -66,7 +66,7 @@ Returns the color component which the widget controls
 .. seealso:: :py:func:`setComponent`
 %End
 
- int componentValue() const;
+ int componentValue() const /Deprecated/;
 %Docstring
 Returns the current value of the widget's color component
 
@@ -123,7 +123,7 @@ Sets the color component which the widget controls
 .. seealso:: :py:func:`component`
 %End
 
- virtual void setComponentValue( int value );
+ virtual void setComponentValue( int value ) /Deprecated/;
 %Docstring
 Alters the widget's color by setting the value for the widget's color component
 
@@ -195,7 +195,7 @@ Returns the range of valid values a color component
 :return: maximum value allowed for color component
 %End
 
- int componentValue( ColorComponent component ) const;
+ int componentValue( ColorComponent component ) const /Deprecated/;
 %Docstring
 Returns the value of a component of the widget's current color. This method correctly
 handles hue values when the color has an ambiguous hue (e.g., black or white shades)
@@ -225,7 +225,7 @@ handles hue values when the color has an ambiguous hue (e.g., black or white sha
 .. versionadded:: 3.40
 %End
 
- int hue() const;
+ int hue() const /Deprecated/;
 %Docstring
 Returns the hue for the widget. This may differ from the hue for the QColor returned by :py:func:`~QgsColorWidget.color`,
 as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
@@ -561,7 +561,7 @@ Sets the size for drawing the triangular markers on the ramp
 
   signals:
 
- void valueChanged( int value );
+ void valueChanged( int value ) /Deprecated/;
 %Docstring
 Emitted when the widget's color component value changes
 
