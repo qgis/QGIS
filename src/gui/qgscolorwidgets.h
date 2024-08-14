@@ -89,7 +89,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \see component
      * \deprecated since QGIS 3.40. Use componentValueF() instead.
      */
-    Q_DECL_DEPRECATED int componentValue() const;
+    Q_DECL_DEPRECATED int componentValue() const SIP_DEPRECATED;
 
     /**
      * Returns the current value of the widget's color component
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * component
      * \deprecated since QGIS 3.40. Use setComponentValueF() instead.
      */
-    Q_DECL_DEPRECATED virtual void setComponentValue( int value );
+    Q_DECL_DEPRECATED virtual void setComponentValue( int value ) SIP_DEPRECATED;
 
     /**
      * Alters the widget's color by setting the value for the widget's color component
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \see hue()
      * \deprecated since QGIS 3.40. Use componentValueF() instead.
      */
-    Q_DECL_DEPRECATED int componentValue( ColorComponent component ) const;
+    Q_DECL_DEPRECATED int componentValue( ColorComponent component ) const SIP_DEPRECATED;
 
     /**
      * Returns the value of a component of the widget's current color. This method correctly
@@ -212,7 +212,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \returns explicitly set hue for widget in the range 0-359
      * \deprecated since QGIS 3.40. Use hueF() instead.
      */
-    Q_DECL_DEPRECATED int hue() const;
+    Q_DECL_DEPRECATED int hue() const SIP_DEPRECATED;
 
     /**
      * Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
@@ -630,7 +630,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \param value new value of color component in the range between 0 and the value returned by componentRange()
      * \deprecated since QGIS 3.40. Use valueChangedF() instead.
      */
-    Q_DECL_DEPRECATED void valueChanged( int value );
+    Q_DECL_DEPRECATED void valueChanged( int value ) SIP_DEPRECATED;
 
     /**
      * Emitted when the widget's color component value changes
