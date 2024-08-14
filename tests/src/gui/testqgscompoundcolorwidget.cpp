@@ -248,6 +248,8 @@ void TestQgsCompoundColorWidget::testSliderWidgets()
   QgsCompoundColorWidget w( nullptr, QColor::fromRgbF( 0.12f, 0.34f, 0.56, 0.78 ) );
   w.setVisible( true );
 
+  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
   QCOMPARE( w.mRedSlider->mSpinBox->value(), 30.6 );
   compareFloat( w.mRedSlider->mRampWidget->color().redF(), 0.12f );
   QCOMPARE( w.mGreenSlider->mSpinBox->value(), 86.7 );
@@ -281,6 +283,7 @@ void TestQgsCompoundColorWidget::testSliderWidgets()
   compareFloat( w.mSaturationSlider->mRampWidget->color().saturationF(), 0.5f );
   QCOMPARE( w.mValueSlider->mSpinBox->value(), 50 );
   compareFloat( w.mValueSlider->mRampWidget->color().greenF(), 0.5f );
+  // NOLINTEND(bugprone-narrowing-conversions)
 }
 
 
