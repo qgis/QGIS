@@ -815,8 +815,8 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
 
   mSizeStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
-  mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPictureSizeMode::SpatialBounds ) );
-  mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPictureSizeMode::FixedSize ) );
+  mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::SpatialBounds ) );
+  mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters
                              << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
@@ -878,13 +878,13 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
     const QString path = mSourceLineEdit->source();
     pictureItem->setPath( newFormat, path );
 
-    pictureItem->setSizeMode( mSizeModeCombo->currentData().value< Qgis::AnnotationPictureSizeMode >() );
-    switch ( pictureItem->sizeMode() )
+    pictureItem->setPlacementMode( mSizeModeCombo->currentData().value< Qgis::AnnotationPlacementMode >() );
+    switch ( pictureItem->placementMode() )
     {
-      case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+      case Qgis::AnnotationPlacementMode::SpatialBounds:
         pictureItem->setLockAspectRatio( mLockAspectRatioCheck->isChecked() );
         break;
-      case Qgis::AnnotationPictureSizeMode::FixedSize:
+      case Qgis::AnnotationPlacementMode::FixedSize:
         pictureItem->setLockAspectRatio( mLockAspectRatio->isChecked() );
         break;
     }
@@ -968,7 +968,7 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mWidthSpinBox->setValue( pictureItem->fixedSize().width() );
   mHeightSpinBox->setValue( pictureItem->fixedSize().height() );
-  mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->sizeMode() ) ) );
+  mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->placementMode() ) ) );
   sizeModeChanged();
 
   mBlockChangedSignal = false;
@@ -999,13 +999,13 @@ void QgsAnnotationPictureItemWidget::modeChanged( bool checked )
 
 void QgsAnnotationPictureItemWidget::sizeModeChanged()
 {
-  const Qgis::AnnotationPictureSizeMode mode = mSizeModeCombo->currentData().value< Qgis::AnnotationPictureSizeMode >();
+  const Qgis::AnnotationPlacementMode mode = mSizeModeCombo->currentData().value< Qgis::AnnotationPlacementMode >();
   switch ( mode )
   {
-    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
       mSizeStackedWidget->setCurrentWidget( mPageSpatialBounds );
       break;
-    case Qgis::AnnotationPictureSizeMode::FixedSize:
+    case Qgis::AnnotationPlacementMode::FixedSize:
       mSizeStackedWidget->setCurrentWidget( mPageFixedSize );
       break;
   }

@@ -1287,10 +1287,11 @@ The development version
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
 
-    enum class AnnotationPictureSizeMode
+    enum class AnnotationPlacementMode
     {
       SpatialBounds,
       FixedSize,
+      RelativeToMapFrame,
     };
 
     enum class AnnotationItemGuiFlag

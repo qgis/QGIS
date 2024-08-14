@@ -2189,16 +2189,17 @@ class CORE_EXPORT Qgis
     Q_FLAG( AnnotationItemFlags )
 
     /**
-     * Picture annotation item size modes.
+     * Annotation item placement modes.
      *
      * \since QGIS 3.40
      */
-    enum class AnnotationPictureSizeMode : int
+    enum class AnnotationPlacementMode : int
     {
-      SpatialBounds = 0, //!< Picture is rendered inside spatial bounds, and size will depend on map scale
-      FixedSize, //!< Picture is rendered at a fixed size, regardless of map scale
+      SpatialBounds = 0, //!< Item is rendered inside fixed spatial bounds, and size will depend on map scale
+      FixedSize, //!< Item is rendered at a fixed size, regardless of map scale. Item's location is georeferenced to a spatial location.
+      RelativeToMapFrame, //!< Items size and placement is relative to the map's frame, and the item will always be rendered in the same visible location regardless of map extent or scale.
     };
-    Q_ENUM( AnnotationPictureSizeMode )
+    Q_ENUM( AnnotationPlacementMode )
 
     /**
      * Flags for controlling how an annotation item behaves in the GUI.
