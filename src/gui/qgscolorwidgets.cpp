@@ -862,18 +862,18 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
   //draw cross lines
   const double h = height();
   const double w = width();
-  const int margin = static_cast<int>( mMargin );
-  const int xPos = static_cast<int>( mMargin + ( w - 2 * mMargin - 1 ) * static_cast<double>( xComponentValue() ) );
-  const int yPos = static_cast<int>( mMargin + ( h - 2 * mMargin - 1 ) - ( h - 2 * mMargin - 1 ) * static_cast<double>( yComponentValue() ) );
+  const double margin = mMargin;
+  const double xPos = ( mMargin + ( w - 2 * mMargin - 1 ) * xComponentValue() );
+  const double yPos = ( mMargin + ( h - 2 * mMargin - 1 ) - ( h - 2 * mMargin - 1 ) * yComponentValue() );
 
   painter.setBrush( Qt::white );
   painter.setPen( Qt::NoPen );
 
-  painter.drawRect( xPos - 1, mMargin, 3, height() - 2 * margin - 1 );
-  painter.drawRect( mMargin, yPos - 1, width() - 2 * margin - 1, 3 );
+  painter.drawRect( QRectF( xPos - 1, mMargin, 3, height() - 2 * margin - 1 ) );
+  painter.drawRect( QRectF( mMargin, yPos - 1, width() - 2 * margin - 1, 3 ) );
   painter.setPen( Qt::black );
-  painter.drawLine( xPos, mMargin, xPos, height() - margin - 1 );
-  painter.drawLine( mMargin, yPos, width() - margin - 1, yPos );
+  painter.drawLine( QLineF( xPos, mMargin, xPos, height() - margin - 1 ) );
+  painter.drawLine( QLineF( mMargin, yPos, width() - margin - 1, yPos ) );
 
   painter.end();
 }
