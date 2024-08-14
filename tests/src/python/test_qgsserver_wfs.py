@@ -787,7 +787,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         jdata['features'][0]['geometry']
         jdata['features'][0]['geometry']['coordinates']
         self.assertEqual(jdata['features'][0]['geometry']['coordinates'], [807305, 5592878])
-        self.assertEqual(jdata['crs']['properties']['name'], "urn:ogc:def:crs:EPSG:0:3857")
+        self.assertEqual(jdata['crs']['properties']['name'], "urn:ogc:def:crs:EPSG::3857")
 
         query_string = "?" + "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WFS",
@@ -836,7 +836,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         jdata['features'][0]['geometry']
         jdata['features'][0]['geometry']['coordinates']
         self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [361806, 4964192])
-        self.assertEqual(jdata['crs']['properties']['name'], "urn:ogc:def:crs:EPSG:0:32632")
+        self.assertEqual(jdata['crs']['properties']['name'], "urn:ogc:def:crs:EPSG::32632")
 
         query_string = "?" + "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WFS",
@@ -854,7 +854,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         jdata['features'][0]['geometry']
         jdata['features'][0]['geometry']['coordinates']
         self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [812191, 5589555])
-        self.assertEqual(jdata['crs']['properties']['name'], "urn:ogc:def:crs:EPSG:0:3857")
+        self.assertEqual(jdata['crs']['properties']['name'], "urn:ogc:def:crs:EPSG::3857")
 
     def test_insert_srsName(self):
         """Test srsName is respected when insering"""
