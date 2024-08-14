@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsguiutils.h"
+#include "qgsdoublespinbox.h"
 
 #include <QResizeEvent>
 
@@ -29,7 +30,6 @@
 #endif
 #include <QPainter>
 #include <QHBoxLayout>
-#include <QDoubleSpinBox>
 #include <QLineEdit>
 #include <QFontMetrics>
 #include <QToolButton>
@@ -1438,7 +1438,8 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   mRampWidget->setColor( mCurrentColor );
   hLayout->addWidget( mRampWidget, 1 );
 
-  mSpinBox = new QDoubleSpinBox();
+  mSpinBox = new QgsDoubleSpinBox();
+  mSpinBox->setShowClearButton( false );
   //set spinbox to a reasonable width
   const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( QStringLiteral( "888%" ) );
   mSpinBox->setMinimumWidth( largestCharWidth + 35 );

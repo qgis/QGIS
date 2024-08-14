@@ -17,6 +17,7 @@
 
 #include "qgscompoundcolorwidget.h"
 #include "qgssettings.h"
+#include "qgsdoublespinbox.h"
 
 Q_DECLARE_METATYPE( QgsColorWidget::ColorComponent )
 
