@@ -68,6 +68,8 @@ Qgis::AnnotationItemFlags QgsAnnotationPictureItem::flags() const
     case Qgis::AnnotationPlacementMode::FixedSize:
       return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
              | Qgis::AnnotationItemFlag::SupportsCallouts;
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+      return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
   }
   BUILTIN_UNREACHABLE
 }
@@ -75,7 +77,7 @@ Qgis::AnnotationItemFlags QgsAnnotationPictureItem::flags() const
 void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback *feedback )
 {
   QgsRectangle bounds = mBounds;
-  if ( context.coordinateTransform().isValid() )
+  if ( mPlacementMode != Qgis::AnnotationPlacementMode::RelativeToMapFrame && context.coordinateTransform().isValid() )
   {
     try
     {
@@ -134,6 +136,21 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback *f
       }
       break;
     }
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+      const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+      QPointF center = bounds.center().toQPointF();
+      center.rx() *= context.outputSize().width();
+      center.ry() *= context.outputSize().height();
+
+      painterBounds = QRectF( center.x() - widthPixels * 0.5,
+                              center.y() - heightPixels * 0.5,
+                              widthPixels, heightPixels );
+      break;
+    }
   }
 
   if ( painterBounds.width() < 1 || painterBounds.height() < 1 )
@@ -146,7 +163,7 @@ void QgsAnnotationPictureItem::render( QgsRenderContext &context, QgsFeedback *f
     mBackgroundSymbol->stopRender( context );
   }
 
-  if ( callout() )
+  if ( mPlacementMode != Qgis::AnnotationPlacementMode::RelativeToMapFrame && callout() )
   {
     QgsCallout::QgsCalloutContext calloutContext;
     renderCallout( context, painterBounds, 0, calloutContext, feedback );
@@ -305,6 +322,15 @@ QList<QgsAnnotationItemNode> QgsAnnotationPictureItem::nodesV2( const QgsAnnotat
 
       return res;
     }
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      return
+      {
+        QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ),
+                               context.currentItemBounds().center(), Qgis::AnnotationItemNodeType::VertexHandle )
+      };
+    }
   }
   BUILTIN_UNREACHABLE
 }
@@ -361,6 +387,15 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( Q
                       mBounds.height() );
             return Qgis::AnnotationItemEditOperationResult::Success;
           }
+
+          case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+          {
+            const double deltaX = moveOperation->translationXPixels() / context.renderContext().outputSize().width();
+            const double deltaY = moveOperation->translationYPixels() / context.renderContext().outputSize().height();
+            mBounds = QgsRectangle::fromCenterAndSize( QgsPointXY( mBounds.center().x() + deltaX, mBounds.center().y() + deltaY ),
+                      mBounds.width(), mBounds.height() );
+            return Qgis::AnnotationItemEditOperationResult::Success;
+          }
         }
       }
       else if ( moveOperation->nodeId().part == 1 )
@@ -403,6 +438,15 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPictureItem::applyEditV2( Q
                                     mBounds.xMaximum() + moveOperation->translationX(),
                                     mBounds.yMaximum() + moveOperation->translationY() );
           }
+          break;
+        }
+
+        case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+        {
+          const double deltaX = moveOperation->translationXPixels() / context.renderContext().outputSize().width();
+          const double deltaY = moveOperation->translationYPixels() / context.renderContext().outputSize().height();
+          mBounds = QgsRectangle::fromCenterAndSize( QgsPointXY( mBounds.center().x() + deltaX, mBounds.center().y() + deltaY ),
+                    mBounds.width(), mBounds.height() );
           break;
         }
       }
@@ -457,6 +501,13 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
           {
             const QgsRectangle currentBounds = context.currentItemBounds();
             const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(), currentBounds.width(), currentBounds.height() );
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+          }
+          case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+          {
+            const QgsRectangle currentBounds = context.currentItemBounds();
+            const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( currentBounds.center() + ( moveOperation->after() - moveOperation->before() ),
+                                           currentBounds.width(), currentBounds.height() );
             return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
           }
         }
@@ -531,6 +582,14 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPictureItem::transi
                                            currentBounds.width(), currentBounds.height() );
             return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
           }
+        }
+
+        case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+        {
+          const QgsRectangle currentBounds = context.currentItemBounds();
+          const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( currentBounds.center() + QgsVector( moveOperation->translationX(), moveOperation->translationY() ),
+                                         currentBounds.width(), currentBounds.height() );
+          return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
         }
       }
       break;
@@ -631,6 +690,10 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox() const
         bounds = QgsRectangle( mBounds.center(), mBounds.center() );
       }
       break;
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+      bounds = mBounds;
+      break;
   }
 
   return bounds;
@@ -694,6 +757,40 @@ QgsRectangle QgsAnnotationPictureItem::boundingBox( QgsRenderContext &context ) 
                                  center.y() - heightPixels * 0.5,
                                  widthPixels, heightPixels );
       }
+      const QgsPointXY topLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.top() );
+      const QgsPointXY topRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.top() );
+      const QgsPointXY bottomLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.bottom() );
+      const QgsPointXY bottomRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.bottom() );
+
+      const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
+      QgsRectangle textRect = context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
+      return textRect;
+    }
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+      const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+      QRectF boundsInPixels;
+
+      const double centerMapX = context.mapExtent().xMinimum() + mBounds.center().x() * context.mapExtent().width();
+      const double centerMapY = context.mapExtent().yMaximum() - mBounds.center().y() * context.mapExtent().height();
+      QPointF center( centerMapX, centerMapY );
+      if ( context.coordinateTransform().isValid() )
+      {
+        double x = centerMapX;
+        double y = centerMapY;
+        double z = 0.0;
+        context.coordinateTransform().transformInPlace( x, y, z );
+        center = QPointF( x, y );
+      }
+
+      context.mapToPixel().transformInPlace( center.rx(), center.ry() );
+      boundsInPixels = QRectF( center.x() - widthPixels * 0.5,
+                               center.y() - heightPixels * 0.5,
+                               widthPixels, heightPixels );
+
       const QgsPointXY topLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.top() );
       const QgsPointXY topRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.top() );
       const QgsPointXY bottomLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.bottom() );
