@@ -24,3 +24,8 @@ QgsDxfExport.HAlign.HFit.__doc__ = "Fit into point = (5) (if VAlign==0)"
 QgsDxfExport.HAlign.Undefined.__doc__ = "Undefined"
 QgsDxfExport.HAlign.__doc__ = "Horizontal alignments.\n\n" + '* ``HLeft``: ' + QgsDxfExport.HAlign.HLeft.__doc__ + '\n' + '* ``HCenter``: ' + QgsDxfExport.HAlign.HCenter.__doc__ + '\n' + '* ``HRight``: ' + QgsDxfExport.HAlign.HRight.__doc__ + '\n' + '* ``HAligned``: ' + QgsDxfExport.HAlign.HAligned.__doc__ + '\n' + '* ``HMiddle``: ' + QgsDxfExport.HAlign.HMiddle.__doc__ + '\n' + '* ``HFit``: ' + QgsDxfExport.HAlign.HFit.__doc__ + '\n' + '* ``Undefined``: ' + QgsDxfExport.HAlign.Undefined.__doc__
 # --
+QgsDxfExport.closestColorMatch = staticmethod(QgsDxfExport.closestColorMatch)
+QgsDxfExport.mapUnitScaleFactor = staticmethod(QgsDxfExport.mapUnitScaleFactor)
+QgsDxfExport.dxfLayerName = staticmethod(QgsDxfExport.dxfLayerName)
+QgsDxfExport.dxfEncoding = staticmethod(QgsDxfExport.dxfEncoding)
+QgsDxfExport.encodings = staticmethod(QgsDxfExport.encodings)

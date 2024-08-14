@@ -6,3 +6,4 @@ try:
     QgsMeshDataProvider.__attribute_docs__ = {'datasetGroupsAdded': 'Emitted when some new dataset groups have been added\n'}
 except NameError:
     pass
+QgsMesh.compareFaces = staticmethod(QgsMesh.compareFaces)

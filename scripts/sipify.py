@@ -120,6 +120,12 @@ class Context:
         self.has_pushed_force_int: bool = False
         self.attribute_docstrings = defaultdict(dict)
         self.current_method_name: str = ''
+        self.static_methods = defaultdict(dict)
+
+    def current_fully_qualified_class_name(self) -> str:
+        return '.'.join(
+            _c for _c in ([c for c in self.classname if c != self.actual_class] + [
+                self.actual_class]) if _c)
 
 
 CONTEXT = Context()
@@ -1461,6 +1467,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     exit_with_error('could not reach opening definition')
             dbg_info("removed multiline definition of SIP_SKIP method")
             CONTEXT.multiline_definition = MultiLineType.NotMultiline
+            del CONTEXT.static_methods[CONTEXT.current_fully_qualified_class_name()][CONTEXT.current_method_name]
 
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist()
@@ -2218,11 +2225,20 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         CONTEXT.current_line = f"{match.group(1)}{match.group(3)};"
 
-    pattern = r'^\s*(?:const |virtual |static |inline )*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(\w+|operator.{1,2})\(.*$'
+    pattern = r'^\s*((?:const |virtual |static |inline ))*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(\w+|operator.{1,2})\(.*$'
     match = re.match(pattern, CONTEXT.current_line)
     if match:
-        CONTEXT.current_method_name = match.group(2)
-        return_type_candidate = match.group(1)
+        CONTEXT.current_method_name = match.group(3)
+        return_type_candidate = match.group(2)
+        is_static = bool(match.group(1) and 'static' in match.group(1))
+        class_name = CONTEXT.current_fully_qualified_class_name()
+        if CONTEXT.current_method_name in CONTEXT.static_methods[class_name]:
+            if CONTEXT.static_methods[class_name][CONTEXT.current_method_name] != is_static:
+                CONTEXT.static_methods[class_name][
+                    CONTEXT.current_method_name] = False
+        else:
+            CONTEXT.static_methods[class_name][CONTEXT.current_method_name] = is_static
+
         if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)',
                          return_type_candidate):
             # replace :: with . (changes c++ style namespace/class directives to Python style)
@@ -2494,6 +2510,26 @@ else:
 for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
     CONTEXT.output_python.append(
         f'try:\n    {class_name}.__attribute_docs__ = {str(attribute_docstrings)}\nexcept NameError:\n    pass\n')
+
+for class_name, static_methods in CONTEXT.static_methods.items():
+    for method_name, is_static in static_methods.items():
+        if not is_static:
+            continue
+
+        # TODO -- fix
+        if class_name == 'QgsProcessingUtils' and method_name == 'createFeatureSinkPython':
+            method_name = 'createFeatureSink'
+        elif class_name == 'QgsRasterAttributeTable' and method_name == 'usageInformationInt':
+            method_name = 'usageInformation'
+        elif class_name == 'QgsSymbolLayerUtils' and method_name == 'wellKnownMarkerFromSld':
+            method_name = 'wellKnownMarkerFromSld2'
+        elif class_name == 'QgsZonalStatistics' and method_name == 'calculateStatisticsInt':
+            method_name = 'calculateStatistics'
+        elif class_name == 'QgsServerApiUtils' and method_name == 'temporalExtentList':
+            method_name = 'temporalExtent'
+
+        CONTEXT.output_python.append(f'{class_name}.{method_name} = staticmethod({class_name}.{method_name})\n')
+
 
 if args.python_output and CONTEXT.output_python:
 

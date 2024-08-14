@@ -7,3 +7,7 @@ QgsRenderChecker.Flag.baseClass = QgsRenderChecker
 QgsRenderChecker.Flags = lambda flags=0: QgsRenderChecker.Flag(flags)
 QgsRenderChecker.Flags.baseClass = QgsRenderChecker
 Flags = QgsRenderChecker  # dirty hack since SIP seems to introduce the flags in module
+QgsRenderChecker.testReportDir = staticmethod(QgsRenderChecker.testReportDir)
+QgsRenderChecker.shouldGenerateReport = staticmethod(QgsRenderChecker.shouldGenerateReport)
+QgsRenderChecker.drawBackground = staticmethod(QgsRenderChecker.drawBackground)
+QgsRenderChecker.sourcePath = staticmethod(QgsRenderChecker.sourcePath)

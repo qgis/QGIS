@@ -3,3 +3,12 @@ try:
     QgsRuleBasedRenderer.__attribute_docs__ = {'ftr': 'Feature to render', 'symbol': 'Symbol to render feature with (not owned by this object).', 'jobs': 'List of jobs to render, owned by this object.'}
 except NameError:
     pass
+QgsRuleBasedRenderer.create = staticmethod(QgsRuleBasedRenderer.create)
+QgsRuleBasedRenderer.createFromSld = staticmethod(QgsRuleBasedRenderer.createFromSld)
+QgsRuleBasedRenderer.refineRuleCategories = staticmethod(QgsRuleBasedRenderer.refineRuleCategories)
+QgsRuleBasedRenderer.refineRuleRanges = staticmethod(QgsRuleBasedRenderer.refineRuleRanges)
+QgsRuleBasedRenderer.refineRuleScales = staticmethod(QgsRuleBasedRenderer.refineRuleScales)
+QgsRuleBasedRenderer.convertFromRenderer = staticmethod(QgsRuleBasedRenderer.convertFromRenderer)
+QgsRuleBasedRenderer.convertToDataDefinedSymbology = staticmethod(QgsRuleBasedRenderer.convertToDataDefinedSymbology)
+QgsRuleBasedRenderer.Rule.createFromSld = staticmethod(QgsRuleBasedRenderer.Rule.createFromSld)
+QgsRuleBasedRenderer.Rule.create = staticmethod(QgsRuleBasedRenderer.Rule.create)

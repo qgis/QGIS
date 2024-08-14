@@ -2,3 +2,4 @@
 QgsLayoutItemAttributeTable.LayerAttributes = QgsLayoutItemAttributeTable.ContentSource.LayerAttributes
 QgsLayoutItemAttributeTable.AtlasFeature = QgsLayoutItemAttributeTable.ContentSource.AtlasFeature
 QgsLayoutItemAttributeTable.RelationChildren = QgsLayoutItemAttributeTable.ContentSource.RelationChildren
+QgsLayoutItemAttributeTable.create = staticmethod(QgsLayoutItemAttributeTable.create)

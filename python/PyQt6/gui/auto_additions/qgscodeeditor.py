@@ -32,3 +32,9 @@ try:
     QgsCodeEditor.__attribute_docs__ = {'SEARCH_RESULT_INDICATOR': 'Indicator index for search results', 'sessionHistoryCleared': 'Emitted when the history of commands run in the current session is cleared.\n\n.. versionadded:: 3.30\n', 'persistentHistoryCleared': 'Emitted when the persistent history of commands run in the editor is cleared.\n\n.. versionadded:: 3.30\n'}
 except NameError:
     pass
+QgsCodeEditor.languageToString = staticmethod(QgsCodeEditor.languageToString)
+QgsCodeEditor.defaultColor = staticmethod(QgsCodeEditor.defaultColor)
+QgsCodeEditor.color = staticmethod(QgsCodeEditor.color)
+QgsCodeEditor.setColor = staticmethod(QgsCodeEditor.setColor)
+QgsCodeEditor.getMonospaceFont = staticmethod(QgsCodeEditor.getMonospaceFont)
+QgsCodeEditor.isFixedPitch = staticmethod(QgsCodeEditor.isFixedPitch)

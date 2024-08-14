@@ -30,3 +30,5 @@ QgsPointCloudAttributeModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note
 QgsPointCloudAttributeModel.CustomRole.baseClass = QgsPointCloudAttributeModel
 QgsPointCloudAttributeProxyModel.Filters.baseClass = QgsPointCloudAttributeProxyModel
 Filters = QgsPointCloudAttributeProxyModel  # dirty hack since SIP seems to introduce the flags in module
+QgsPointCloudAttributeModel.attributeToolTip = staticmethod(QgsPointCloudAttributeModel.attributeToolTip)
+QgsPointCloudAttributeModel.iconForAttributeType = staticmethod(QgsPointCloudAttributeModel.iconForAttributeType)

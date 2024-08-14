@@ -7,3 +7,8 @@ try:
     QgsRasterAttributeTable.MinMaxClass.__attribute_docs__ = {'minMaxValues': 'List of values for the class'}
 except NameError:
     pass
+QgsRasterAttributeTable.guessFieldUsage = staticmethod(QgsRasterAttributeTable.guessFieldUsage)
+QgsRasterAttributeTable.usageName = staticmethod(QgsRasterAttributeTable.usageName)
+QgsRasterAttributeTable.valueAndColorFieldUsages = staticmethod(QgsRasterAttributeTable.valueAndColorFieldUsages)
+QgsRasterAttributeTable.createFromRaster = staticmethod(QgsRasterAttributeTable.createFromRaster)
+QgsRasterAttributeTable.usageInformation = staticmethod(QgsRasterAttributeTable.usageInformation)

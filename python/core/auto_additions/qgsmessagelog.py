@@ -3,3 +3,4 @@ try:
     QgsMessageLog.__attribute_docs__ = {'messageReceived': 'Emitted whenever the log receives a message which is not a :py:class:`Qgis`.MessageLevel.Info level message\nand which has the ``notifyUser`` flag as ``True``.\n\nIf :py:class:`QgsMessageLogNotifyBlocker` objects have been created then this signal may be\ntemporarily suppressed.\n\n.. seealso:: :py:class:`QgsMessageLogNotifyBlocker`\n'}
 except NameError:
     pass
+QgsMessageLog.logMessage = staticmethod(QgsMessageLog.logMessage)

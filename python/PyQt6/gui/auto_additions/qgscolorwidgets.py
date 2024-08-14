@@ -30,3 +30,5 @@ try:
     QgsColorRampWidget.__attribute_docs__ = {'valueChanged': "Emitted when the widget's color component value changes\n\n:param value: new value of color component\n"}
 except NameError:
     pass
+QgsColorWidget.createDragIcon = staticmethod(QgsColorWidget.createDragIcon)
+QgsColorWidget.alterColor = staticmethod(QgsColorWidget.alterColor)

@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/gui/qgsexternalstoragefilewidget.h
+QgsExternalStorageFileWidget.createFileWidgetScope = staticmethod(QgsExternalStorageFileWidget.createFileWidgetScope)

@@ -3,3 +3,4 @@ try:
     QgsProcessingModelAlgorithm.VariableDefinition.__attribute_docs__ = {'value': 'Value of variable', 'source': "Original source of variable's value", 'description': 'Translated description of variable'}
 except NameError:
     pass
+QgsProcessingModelAlgorithm.safeName = staticmethod(QgsProcessingModelAlgorithm.safeName)

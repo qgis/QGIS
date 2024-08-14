@@ -3,3 +3,4 @@ try:
     QgsLayoutItemPicture.__attribute_docs__ = {'pictureRotationChanged': 'Emitted on picture rotation change\n'}
 except NameError:
     pass
+QgsLayoutItemPicture.create = staticmethod(QgsLayoutItemPicture.create)

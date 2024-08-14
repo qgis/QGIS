@@ -5,3 +5,5 @@ QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType.__doc__ = "I
 QgsProviderUtils.SublayerCompletenessFlag.__doc__ = "Flags which control how :py:func:`QgsProviderUtils.sublayerDetailsAreIncomplete()` tests for completeness.\n\n" + '* ``IgnoreUnknownFeatureCount``: ' + QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount.__doc__ + '\n' + '* ``IgnoreUnknownGeometryType``: ' + QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType.__doc__
 # --
 QgsProviderUtils.SublayerCompletenessFlags = lambda flags=0: QgsProviderUtils.SublayerCompletenessFlag(flags)
+QgsProviderUtils.sublayerDetailsAreIncomplete = staticmethod(QgsProviderUtils.sublayerDetailsAreIncomplete)
+QgsProviderUtils.suggestLayerNameFromFilePath = staticmethod(QgsProviderUtils.suggestLayerNameFromFilePath)

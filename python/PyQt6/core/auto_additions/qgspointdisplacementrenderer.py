@@ -2,3 +2,5 @@
 QgsPointDisplacementRenderer.Ring = QgsPointDisplacementRenderer.Placement.Ring
 QgsPointDisplacementRenderer.ConcentricRings = QgsPointDisplacementRenderer.Placement.ConcentricRings
 QgsPointDisplacementRenderer.Grid = QgsPointDisplacementRenderer.Placement.Grid
+QgsPointDisplacementRenderer.create = staticmethod(QgsPointDisplacementRenderer.create)
+QgsPointDisplacementRenderer.convertFromRenderer = staticmethod(QgsPointDisplacementRenderer.convertFromRenderer)

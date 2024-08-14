@@ -24,3 +24,4 @@ QgsExpressionNodeBinaryOperator.boIntDiv = QgsExpressionNodeBinaryOperator.Binar
 QgsExpressionNodeBinaryOperator.boMod = QgsExpressionNodeBinaryOperator.BinaryOperator.boMod
 QgsExpressionNodeBinaryOperator.boPow = QgsExpressionNodeBinaryOperator.BinaryOperator.boPow
 QgsExpressionNodeBinaryOperator.boConcat = QgsExpressionNodeBinaryOperator.BinaryOperator.boConcat
+QgsExpressionNodeFunction.validateParams = staticmethod(QgsExpressionNodeFunction.validateParams)

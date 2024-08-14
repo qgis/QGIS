@@ -8,3 +8,4 @@ QgsValidityCheckResultsModel.DescriptionRole.__doc__ = "Result detailed descript
 QgsValidityCheckResultsModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsValidityCheckResultsModel.Roles\n\n.. versionadded:: 3.36\n\n" + '* ``DescriptionRole``: ' + QgsValidityCheckResultsModel.CustomRole.Description.__doc__
 # --
 QgsValidityCheckResultsModel.CustomRole.baseClass = QgsValidityCheckResultsModel
+QgsValidityCheckResultsWidget.runChecks = staticmethod(QgsValidityCheckResultsWidget.runChecks)

@@ -7,3 +7,4 @@ try:
     QgsNewsFeedParser.__attribute_docs__ = {'fetched': 'Emitted when ``entries`` have been fetched from the feed.\n\n.. seealso:: :py:func:`fetch`\n', 'entryAdded': 'Emitted whenever a new ``entry`` is available from the feed (as a result\nof a call to :py:func:`~QgsNewsFeedParser.fetch`).\n\n.. seealso:: :py:func:`fetch`\n', 'entryUpdated': 'Emitted whenever an existing ``entry`` is available from the feed (as a result\nof a call to :py:func:`~QgsNewsFeedParser.fetch`).\n\n.. seealso:: :py:func:`fetch`\n\n.. versionadded:: 3.36\n', 'entryDismissed': 'Emitted whenever an ``entry`` is dismissed (as a result of a call\nto :py:func:`~QgsNewsFeedParser.dismissEntry`).\n\n.. seealso:: :py:func:`dismissEntry`\n', 'imageFetched': 'Emitted when the image attached to the entry with the specified ``key`` has been fetched\nand is now available.\n'}
 except NameError:
     pass
+QgsNewsFeedParser.keyForFeed = staticmethod(QgsNewsFeedParser.keyForFeed)

@@ -2,3 +2,4 @@
 QgsPaintEffect.Modifier = QgsPaintEffect.DrawMode.Modifier
 QgsPaintEffect.Render = QgsPaintEffect.DrawMode.Render
 QgsPaintEffect.ModifyAndRender = QgsPaintEffect.DrawMode.ModifyAndRender
+QgsDrawSourceEffect.create = staticmethod(QgsDrawSourceEffect.create)

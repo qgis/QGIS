@@ -3,3 +3,4 @@ try:
     QgsLegendModel.__attribute_docs__ = {'refreshLegend': 'Emitted to refresh the legend.\n\n.. versionadded:: 3.10\n'}
 except NameError:
     pass
+QgsLayoutItemLegend.create = staticmethod(QgsLayoutItemLegend.create)

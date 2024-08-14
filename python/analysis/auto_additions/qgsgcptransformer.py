@@ -11,3 +11,6 @@ QgsGcpTransformerInterface.TransformMethod.InvalidTransform.__doc__ = "Invalid t
 QgsGcpTransformerInterface.TransformMethod.__doc__ = "Available transformation methods.\n\n" + '* ``Linear``: ' + QgsGcpTransformerInterface.TransformMethod.Linear.__doc__ + '\n' + '* ``Helmert``: ' + QgsGcpTransformerInterface.TransformMethod.Helmert.__doc__ + '\n' + '* ``PolynomialOrder1``: ' + QgsGcpTransformerInterface.TransformMethod.PolynomialOrder1.__doc__ + '\n' + '* ``PolynomialOrder2``: ' + QgsGcpTransformerInterface.TransformMethod.PolynomialOrder2.__doc__ + '\n' + '* ``PolynomialOrder3``: ' + QgsGcpTransformerInterface.TransformMethod.PolynomialOrder3.__doc__ + '\n' + '* ``ThinPlateSpline``: ' + QgsGcpTransformerInterface.TransformMethod.ThinPlateSpline.__doc__ + '\n' + '* ``Projective``: ' + QgsGcpTransformerInterface.TransformMethod.Projective.__doc__ + '\n' + '* ``InvalidTransform``: ' + QgsGcpTransformerInterface.TransformMethod.InvalidTransform.__doc__
 # --
 QgsGcpTransformerInterface.TransformMethod.baseClass = QgsGcpTransformerInterface
+QgsGcpTransformerInterface.methodToString = staticmethod(QgsGcpTransformerInterface.methodToString)
+QgsGcpTransformerInterface.create = staticmethod(QgsGcpTransformerInterface.create)
+QgsGcpTransformerInterface.createFromParameters = staticmethod(QgsGcpTransformerInterface.createFromParameters)

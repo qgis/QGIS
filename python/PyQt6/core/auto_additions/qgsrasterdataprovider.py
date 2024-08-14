@@ -20,3 +20,11 @@ try:
     QgsRasterDataProvider.__attribute_docs__ = {'statusChanged': 'Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)\n'}
 except NameError:
     pass
+QgsRasterDataProvider.create = staticmethod(QgsRasterDataProvider.create)
+QgsRasterDataProvider.pyramidResamplingMethods = staticmethod(QgsRasterDataProvider.pyramidResamplingMethods)
+QgsRasterDataProvider.decodeVirtualRasterProviderUri = staticmethod(QgsRasterDataProvider.decodeVirtualRasterProviderUri)
+QgsRasterDataProvider.encodeVirtualRasterProviderUri = staticmethod(QgsRasterDataProvider.encodeVirtualRasterProviderUri)
+QgsRasterDataProvider.identifyFormatName = staticmethod(QgsRasterDataProvider.identifyFormatName)
+QgsRasterDataProvider.identifyFormatFromName = staticmethod(QgsRasterDataProvider.identifyFormatFromName)
+QgsRasterDataProvider.identifyFormatLabel = staticmethod(QgsRasterDataProvider.identifyFormatLabel)
+QgsRasterDataProvider.identifyFormatToCapability = staticmethod(QgsRasterDataProvider.identifyFormatToCapability)
