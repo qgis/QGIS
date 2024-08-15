@@ -22,6 +22,7 @@
 
 #include "qgsrectangle.h"
 #include "qgscameracontroller.h"
+#include <QVector4D>
 
 #ifndef SIP_RUN
 namespace Qt3DRender

@@ -124,7 +124,7 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
 
     ~QgsVectorLayerChunkedEntity();
   private slots:
-    void onTerrainElevationOffsetChanged( float newOffset );
+    void onTerrainElevationOffsetChanged();
 
   private:
     friend class QgsRuleBasedChunkedEntity;

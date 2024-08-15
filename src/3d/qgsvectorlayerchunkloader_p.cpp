@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsterrainsettings.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -191,11 +192,11 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map,
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
   {
-    mTransform->setTranslation( QVector3D( 0.0f, map->terrainElevationOffset(), 0.0f ) );
+    mTransform->setTranslation( QVector3D( 0.0f, map->terrainSettings()->elevationOffset(), 0.0f ) );
   }
   this->addComponent( mTransform );
 
-  connect( map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
+  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
 
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
@@ -246,9 +247,10 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
   return true;
 }
 
-void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
+void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
+  float newOffset = qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset();
   if ( !applyTerrainOffset() )
   {
     newOffset = 0.0;

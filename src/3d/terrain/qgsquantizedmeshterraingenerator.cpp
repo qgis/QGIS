@@ -39,14 +39,15 @@
 #include "qgs3dmapsettings.h"
 #include "qgsvector3d.h"
 #include "qgsapplication.h"
-#include <qcomponent.h>
-#include <qdiffusespecularmaterial.h>
-#include <qentity.h>
-#include <qglobal.h>
-#include <qnamespace.h>
-#include <qphongmaterial.h>
-#include <qtconcurrentrun.h>
-#include <qtexturematerial.h>
+#include "qgsterrainsettings.h"
+
+#include <QComponent>
+#include <QDiffuseSpecularMaterial>
+#include <QEntity>
+#include <QtGlobal>
+#include <QPhongMaterial>
+#include <QtConcurrentRun>
+#include <QTextureMaterial>
 
 ///@cond PRIVATE
 
@@ -76,7 +77,7 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
 
   // Access terrain only on the original thread.
   Qgs3DMapSettings *map = terrain()->mapSettings();
-  double vertScale = map->terrainVerticalScale();
+  double vertScale = map->terrainSettings()->verticalScale();
   bool shadingEnabled = map->isTerrainShadingEnabled();
   QgsVector3D chunkOrigin = node->box3D().center();
 

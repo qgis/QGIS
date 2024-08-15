@@ -26,7 +26,7 @@
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
 #include "qgsframegraph.h"
-
+#include "qgsterrainsettings.h"
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
@@ -133,7 +133,7 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   mPoints.append( addedPoint );
   mDialog->addPoint();
 
-  const QgsPoint newPoint( point.x(), point.y(), point.z() / canvas()->mapSettings()->terrainVerticalScale() );
+  const QgsPoint newPoint( point.x(), point.y(), point.z() / canvas()->mapSettings()->terrainSettings()->verticalScale() );
   if ( mPoints.size() == 1 )
   {
     mRubberBand->addPoint( newPoint );
@@ -199,7 +199,7 @@ void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
   const float dist = ray.direction().y() == 0 ? 0 : static_cast<float>( mPoints.last().z() - ray.origin().y() ) / ray.direction().y();
   const QVector3D hoverPoint = ray.origin() + ray.direction() * dist;
   const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hoverPoint, mCanvas->mapSettings()->origin() );
-  mRubberBand->moveLastPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() / canvas()->mapSettings()->terrainVerticalScale() ) );
+  mRubberBand->moveLastPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() / canvas()->mapSettings()->terrainSettings()->verticalScale() ) );
 }
 
 void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )

@@ -75,7 +75,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
     void onLayersChanged();
-    void onTerrainElevationOffsetChanged( float newOffset );
+    void onTerrainElevationOffsetChanged();
 
   private:
     void connectToLayersRepaintRequest();
