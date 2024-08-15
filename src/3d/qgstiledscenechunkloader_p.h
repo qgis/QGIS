@@ -33,6 +33,7 @@
 #include "qgschunknode_p.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenetile.h"
+#include "qgs3dmapsettingssnapshot.h"
 
 #include <QFutureWatcher>
 
@@ -79,7 +80,7 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
 {
     Q_OBJECT
   public:
-    QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index,
+    QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettingsSnapshot &map, const QgsTiledSceneIndex &index,
                                      double zValueScale, double zValueOffset );
 
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -92,7 +93,7 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const;
     void fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode );
 
-    const Qgs3DMapSettings &mMap;
+    Qgs3DMapSettingsSnapshot mMap;
     QString mRelativePathBase;
     mutable QgsTiledSceneIndex mIndex;
     double mZValueScale = 1.0;
@@ -117,7 +118,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes,
+    explicit QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettingsSnapshot &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes,
         double zValueScale, double zValueOffset );
 
     ~QgsTiledSceneLayerChunkedEntity();

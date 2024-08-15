@@ -25,7 +25,7 @@
 #include "qgsterrainentity_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsmeshlayerutils.h"
-
+#include "qgs3dmapsettings.h"
 
 QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsTriangularMesh &triangularMesh, const QgsMesh3DSymbol *symbol )
   : QgsTerrainTileLoader( terrain, node )
@@ -37,7 +37,7 @@ QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, Q
 
 Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( terrain()->map3D(), mTriangularMesh, mSymbol.get(), mNode->tileId(), parent );
+  QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( terrain()->map3D().snapshot(), mTriangularMesh, mSymbol.get(), mNode->tileId(), parent );
   entity->build();
   createTexture( entity );
 
@@ -145,7 +145,7 @@ void QgsMeshTerrainGenerator::readXml( const QDomElement &elem )
   mSymbol->readXml( elem.firstChildElement( "symbol" ), rwc );
 }
 
-float QgsMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings & ) const
+float QgsMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettingsSnapshot & ) const
 {
   return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y );
 }

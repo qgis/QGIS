@@ -33,8 +33,7 @@ class QgsFeature;
 
 
 #include "qgsexpressioncontext.h"
-
-class Qgs3DMapSettings;
+#include "qgs3dmapsettingssnapshot.h"
 
 #define SIP_NO_FILE
 
@@ -48,9 +47,9 @@ class Qgs3DMapSettings;
 class Qgs3DRenderContext
 {
   public:
-    Qgs3DRenderContext( const Qgs3DMapSettings &map ) : mMap( map ) {}
+    Qgs3DRenderContext( const Qgs3DMapSettingsSnapshot &map ) : mMap( map ) {}
 
-    const Qgs3DMapSettings &map() const { return mMap; }
+    const Qgs3DMapSettingsSnapshot &map() const { return mMap; }
 
     /**
      * Sets the expression context. This context is used for all expression evaluation
@@ -75,7 +74,7 @@ class Qgs3DRenderContext
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
 
   private:
-    const Qgs3DMapSettings &mMap;
+    Qgs3DMapSettingsSnapshot mMap;
     //! Expression context
     QgsExpressionContext mExpressionContext;
 

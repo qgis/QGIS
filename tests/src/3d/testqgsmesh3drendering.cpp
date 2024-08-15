@@ -30,6 +30,7 @@
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
+#include "qgs3dmapsettingssnapshot.h"
 
 
 class TestQgsMesh3DRendering : public QgsTest
@@ -121,7 +122,7 @@ void TestQgsMesh3DRendering::testMeshTerrain()
   meshTerrain->setLayer( mLayerMeshTerrain );
   map->setTerrainGenerator( meshTerrain );
 
-  QCOMPARE( meshTerrain->heightAt( 750, 2500, *map ), 500.0 );
+  QCOMPARE( meshTerrain->heightAt( 750, 2500, map->snapshot() ), 500.0 );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );

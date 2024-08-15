@@ -21,9 +21,6 @@
 #include "qgsmeshterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsprojectviewsettings.h"
-#include "qgsvectorlayer3drenderer.h"
-#include "qgsmeshlayer3drenderer.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgslightsource.h"
@@ -31,6 +28,8 @@
 #include "qgsrasterlayer.h"
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsthreadingutils.h"
+#include "qgs3dmapsettingssnapshot.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -116,6 +115,25 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
 Qgs3DMapSettings::~Qgs3DMapSettings()
 {
   qDeleteAll( mLightSources );
+}
+
+Qgs3DMapSettingsSnapshot Qgs3DMapSettings::snapshot() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  Qgs3DMapSettingsSnapshot res;
+  res.setCrs( mCrs );
+  res.setTransformContext( mTransformContext );
+  res.setOrigin( mOrigin );
+  res.setExtent( mExtent );
+  res.setTemporalRange( temporalRange() );
+  res.setSelectionColor( mSelectionColor );
+  res.setOutputDpi( mDpi );
+  res.setFieldOfView( mFieldOfView );
+  res.setTerrainRenderingEnabled( mTerrainRenderingEnabled );
+  res.setTerrainVerticalScale( mTerrainVerticalScale );
+  res.setTerrainGenerator( mTerrainGenerator.get() );
+  return res;
 }
 
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )

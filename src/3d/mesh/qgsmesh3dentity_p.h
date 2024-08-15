@@ -21,7 +21,7 @@
 #include <Qt3DCore/QEntity>
 
 #include "mesh/qgsmesh3dgeometry_p.h"
-#include "qgs3dmapsettings.h"
+#include "qgs3dmapsettingssnapshot.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsterraintileentity_p.h"
 
@@ -52,13 +52,13 @@ class QgsMesh3DEntity
     void build();
   protected:
     //! Constructor
-    QgsMesh3DEntity( const Qgs3DMapSettings &map,
+    QgsMesh3DEntity( const Qgs3DMapSettingsSnapshot &map,
                      const QgsTriangularMesh &triangularMesh,
                      const QgsMesh3DSymbol *symbol );
 
     virtual ~QgsMesh3DEntity() = default;
 
-    Qgs3DMapSettings mMapSettings;
+    Qgs3DMapSettingsSnapshot mMapSettings;
     QgsTriangularMesh mTriangularMesh;
     std::unique_ptr< QgsMesh3DSymbol > mSymbol;
 
@@ -74,7 +74,7 @@ class QgsMeshDataset3DEntity: public Qt3DCore::QEntity, public QgsMesh3DEntity
 
   public:
     //! Constructor
-    QgsMeshDataset3DEntity( const Qgs3DMapSettings &map,
+    QgsMeshDataset3DEntity( const Qgs3DMapSettingsSnapshot &map,
                             const QgsTriangularMesh &triangularMesh,
                             QgsMeshLayer *meshLayer,
                             const QgsMesh3DSymbol *symbol );
@@ -94,7 +94,7 @@ class QgsMesh3DTerrainTileEntity: public QgsTerrainTileEntity, public QgsMesh3DE
     Q_OBJECT
 
   public:
-    QgsMesh3DTerrainTileEntity( const Qgs3DMapSettings &map,
+    QgsMesh3DTerrainTileEntity( const Qgs3DMapSettingsSnapshot &map,
                                 const QgsTriangularMesh &triangularMesh,
                                 const QgsMesh3DSymbol *symbol,
                                 QgsChunkNodeId nodeId,
