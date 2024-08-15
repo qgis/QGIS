@@ -4,3 +4,7 @@ QgsRasterProjector.Exact = QgsRasterProjector.Precision.Exact
 QgsRasterProjector.Precision.baseClass = QgsRasterProjector
 QgsRasterProjector.precisionLabel = staticmethod(QgsRasterProjector.precisionLabel)
 QgsRasterProjector.extentSize = staticmethod(QgsRasterProjector.extentSize)
+try:
+    QgsRasterProjector.__group__ = ['raster']
+except NameError:
+    pass

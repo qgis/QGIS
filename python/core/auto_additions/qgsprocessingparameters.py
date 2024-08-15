@@ -144,3 +144,207 @@ QgsProcessingParameterPointCloudAttribute.typeName = staticmethod(QgsProcessingP
 QgsProcessingParameterPointCloudAttribute.fromScriptCode = staticmethod(QgsProcessingParameterPointCloudAttribute.fromScriptCode)
 QgsProcessingParameterVectorTileDestination.typeName = staticmethod(QgsProcessingParameterVectorTileDestination.typeName)
 QgsProcessingParameterVectorTileDestination.fromScriptCode = staticmethod(QgsProcessingParameterVectorTileDestination.fromScriptCode)
+try:
+    QgsProcessingFeatureSourceDefinition.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingOutputLayerDefinition.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterDefinition.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameters.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterBoolean.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterCrs.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterExtent.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterPoint.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterGeometry.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterFile.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterMatrix.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterMultipleLayers.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterNumber.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterDistance.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterArea.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterVolume.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterDuration.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterScale.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterRange.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterRasterLayer.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterEnum.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterString.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterAuthConfig.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterExpression.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterLimitedDataTypes.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterVectorLayer.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterMeshLayer.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterMapLayer.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterField.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterFeatureSource.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingDestinationParameter.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterFeatureSink.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterVectorDestination.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterRasterDestination.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterFileDestination.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterFolderDestination.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterBand.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterLayout.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterLayoutItem.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterColor.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterCoordinateOperation.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterMapTheme.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterDateTime.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterProviderConnection.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterDatabaseSchema.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterDatabaseTable.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterPointCloudLayer.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterAnnotationLayer.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterPointCloudDestination.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterPointCloudAttribute.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterVectorTileDestination.__group__ = ['processing']
+except NameError:
+    pass

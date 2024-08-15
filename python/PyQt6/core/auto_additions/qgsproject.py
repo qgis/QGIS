@@ -17,3 +17,11 @@ except NameError:
     pass
 QgsProject.instance = staticmethod(QgsProject.instance)
 QgsProject.setInstance = staticmethod(QgsProject.setInstance)
+try:
+    QgsProject.__group__ = ['project']
+except NameError:
+    pass
+try:
+    QgsProjectDirtyBlocker.__group__ = ['project']
+except NameError:
+    pass

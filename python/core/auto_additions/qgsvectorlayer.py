@@ -8,3 +8,15 @@ QgsVectorLayer.LayerOptions.__doc__ = """Setting options for loading vector laye
 QgsVectorLayer.DeleteContext.__doc__ = """Context for cascade delete features
 
 .. versionadded:: 3.14"""
+try:
+    QgsVectorLayer.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayer.LayerOptions.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayer.DeleteContext.__group__ = ['vector']
+except NameError:
+    pass

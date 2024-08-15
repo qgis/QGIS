@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsProcessingModelAlgorithm.safeName = staticmethod(QgsProcessingModelAlgorithm.safeName)
+try:
+    QgsProcessingModelAlgorithm.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsProcessingModelAlgorithm.VariableDefinition.__group__ = ['processing', 'models']
+except NameError:
+    pass

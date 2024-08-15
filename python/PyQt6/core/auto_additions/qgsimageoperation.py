@@ -21,3 +21,11 @@ QgsImageOperation.flipImage = staticmethod(QgsImageOperation.flipImage)
 QgsImageOperation.nonTransparentImageRect = staticmethod(QgsImageOperation.nonTransparentImageRect)
 QgsImageOperation.cropTransparent = staticmethod(QgsImageOperation.cropTransparent)
 QgsImageOperation.DistanceTransformProperties.__doc__ = """Struct for storing properties of a distance transform operation"""
+try:
+    QgsImageOperation.__group__ = ['effects']
+except NameError:
+    pass
+try:
+    QgsImageOperation.DistanceTransformProperties.__group__ = ['effects']
+except NameError:
+    pass

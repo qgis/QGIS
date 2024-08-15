@@ -22,3 +22,27 @@ try:
     QgsModelChildAlgorithmGraphicItem.__attribute_docs__ = {'runFromHere': 'Emitted when the user opts to run the model from this child algorithm.\n\n.. versionadded:: 3.38\n', 'runSelected': 'Emitted when the user opts to run selected steps from the model.\n\n.. versionadded:: 3.38\n', 'showPreviousResults': 'Emitted when the user opts to view previous results from this child algorithm.\n\n.. versionadded:: 3.38\n', 'showLog': 'Emitted when the user opts to view the previous log from this child algorithm.\n\n.. versionadded:: 3.38\n'}
 except NameError:
     pass
+try:
+    QgsModelComponentGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsModelParameterGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsModelChildAlgorithmGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsModelOutputGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsModelCommentGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsModelGroupBoxGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass

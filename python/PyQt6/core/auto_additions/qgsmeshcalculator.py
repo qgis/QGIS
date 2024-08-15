@@ -9,3 +9,7 @@ QgsMeshCalculator.EvaluateError = QgsMeshCalculator.Result.EvaluateError
 QgsMeshCalculator.MemoryError = QgsMeshCalculator.Result.MemoryError
 QgsMeshCalculator.expression_valid = staticmethod(QgsMeshCalculator.expression_valid)
 QgsMeshCalculator.expressionIsValid = staticmethod(QgsMeshCalculator.expressionIsValid)
+try:
+    QgsMeshCalculator.__group__ = ['mesh']
+except NameError:
+    pass

@@ -11,3 +11,11 @@ try:
 except NameError:
     pass
 QgsPointCloudLayer.LayerOptions.__doc__ = """Setting options for loading point cloud layers."""
+try:
+    QgsPointCloudLayer.__group__ = ['pointcloud']
+except NameError:
+    pass
+try:
+    QgsPointCloudLayer.LayerOptions.__group__ = ['pointcloud']
+except NameError:
+    pass

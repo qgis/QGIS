@@ -2,3 +2,7 @@
 QgsSingleBandGrayRenderer.BlackToWhite = QgsSingleBandGrayRenderer.Gradient.BlackToWhite
 QgsSingleBandGrayRenderer.WhiteToBlack = QgsSingleBandGrayRenderer.Gradient.WhiteToBlack
 QgsSingleBandGrayRenderer.create = staticmethod(QgsSingleBandGrayRenderer.create)
+try:
+    QgsSingleBandGrayRenderer.__group__ = ['raster']
+except NameError:
+    pass

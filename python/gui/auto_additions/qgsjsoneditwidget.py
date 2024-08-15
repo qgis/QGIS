@@ -10,3 +10,7 @@ QgsJsonEditWidget.FormatJson.Compact.__doc__ = "JSON data formatted as a compact
 QgsJsonEditWidget.FormatJson.Disabled.__doc__ = "JSON data is not formatted"
 QgsJsonEditWidget.FormatJson.__doc__ = "Format mode in the text view\n\n" + '* ``Indented``: ' + QgsJsonEditWidget.FormatJson.Indented.__doc__ + '\n' + '* ``Compact``: ' + QgsJsonEditWidget.FormatJson.Compact.__doc__ + '\n' + '* ``Disabled``: ' + QgsJsonEditWidget.FormatJson.Disabled.__doc__
 # --
+try:
+    QgsJsonEditWidget.__group__ = ['editorwidgets']
+except NameError:
+    pass

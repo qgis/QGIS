@@ -3,3 +3,7 @@ try:
     QgsAuthMethodEdit.__attribute_docs__ = {'validityChanged': 'Emitted when the configuration validatity changes\n'}
 except NameError:
     pass
+try:
+    QgsAuthMethodEdit.__group__ = ['auth']
+except NameError:
+    pass

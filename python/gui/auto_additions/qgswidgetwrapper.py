@@ -16,3 +16,7 @@ try:
 except NameError:
     pass
 QgsWidgetWrapper.fromWidget = staticmethod(QgsWidgetWrapper.fromWidget)
+try:
+    QgsWidgetWrapper.__group__ = ['editorwidgets', 'core']
+except NameError:
+    pass

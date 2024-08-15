@@ -14,3 +14,11 @@ QgsNetworkAccessManager.setRequestPreprocessor = staticmethod(QgsNetworkAccessMa
 QgsNetworkAccessManager.removeRequestPreprocessor = staticmethod(QgsNetworkAccessManager.removeRequestPreprocessor)
 QgsNetworkAccessManager.setReplyPreprocessor = staticmethod(QgsNetworkAccessManager.setReplyPreprocessor)
 QgsNetworkAccessManager.removeReplyPreprocessor = staticmethod(QgsNetworkAccessManager.removeReplyPreprocessor)
+try:
+    QgsNetworkRequestParameters.__group__ = ['network']
+except NameError:
+    pass
+try:
+    QgsNetworkAccessManager.__group__ = ['network']
+except NameError:
+    pass

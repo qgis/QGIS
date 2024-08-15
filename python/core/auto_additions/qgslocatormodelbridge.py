@@ -3,3 +3,7 @@ try:
     QgsLocatorModelBridge.__attribute_docs__ = {'resultAdded': 'Emitted when a result is added\n', 'isRunningChanged': 'Emitted when the running status changes\n', 'resultsCleared': 'Emitted when the results are cleared\n'}
 except NameError:
     pass
+try:
+    QgsLocatorModelBridge.__group__ = ['locator']
+except NameError:
+    pass

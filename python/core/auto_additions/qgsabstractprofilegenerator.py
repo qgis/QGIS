@@ -10,3 +10,31 @@ except NameError:
 QgsAbstractProfileResults.Feature.__doc__ = """Encapsulates information about a feature exported from the profile results.
 
 .. versionadded:: 3.32"""
+try:
+    QgsProfileRenderContext.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsProfileIdentifyContext.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsProfileIdentifyResults.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsAbstractProfileResults.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsAbstractProfileResults.Feature.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsProfileGenerationContext.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsAbstractProfileGenerator.__group__ = ['elevation']
+except NameError:
+    pass

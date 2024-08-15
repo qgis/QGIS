@@ -7,3 +7,7 @@ QgsProviderUtils.SublayerCompletenessFlag.__doc__ = "Flags which control how :py
 QgsProviderUtils.SublayerCompletenessFlags = lambda flags=0: QgsProviderUtils.SublayerCompletenessFlag(flags)
 QgsProviderUtils.sublayerDetailsAreIncomplete = staticmethod(QgsProviderUtils.sublayerDetailsAreIncomplete)
 QgsProviderUtils.suggestLayerNameFromFilePath = staticmethod(QgsProviderUtils.suggestLayerNameFromFilePath)
+try:
+    QgsProviderUtils.__group__ = ['providers']
+except NameError:
+    pass

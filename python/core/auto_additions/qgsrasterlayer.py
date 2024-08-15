@@ -6,3 +6,11 @@ except NameError:
 QgsRasterLayer.isValidRasterFileName = staticmethod(QgsRasterLayer.isValidRasterFileName)
 QgsRasterLayer.lastModified = staticmethod(QgsRasterLayer.lastModified)
 QgsRasterLayer.LayerOptions.__doc__ = """Setting options for loading raster layers."""
+try:
+    QgsRasterLayer.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterLayer.LayerOptions.__group__ = ['raster']
+except NameError:
+    pass

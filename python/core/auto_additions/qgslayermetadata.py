@@ -6,3 +6,19 @@ except NameError:
 QgsLayerMetadata.SpatialExtent.__doc__ = """Metadata spatial extent structure."""
 QgsLayerMetadata.Extent.__doc__ = """Metadata extent structure."""
 QgsLayerMetadata.Constraint.__doc__ = """Metadata constraint structure."""
+try:
+    QgsLayerMetadata.__group__ = ['metadata']
+except NameError:
+    pass
+try:
+    QgsLayerMetadata.SpatialExtent.__group__ = ['metadata']
+except NameError:
+    pass
+try:
+    QgsLayerMetadata.Extent.__group__ = ['metadata']
+except NameError:
+    pass
+try:
+    QgsLayerMetadata.Constraint.__group__ = ['metadata']
+except NameError:
+    pass

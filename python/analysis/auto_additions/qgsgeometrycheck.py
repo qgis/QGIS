@@ -13,3 +13,15 @@ In Python some accessor methods will need to be written.
 QgsGeometryCheck.Change.__doc__ = """Descripts a change to fix a geometry.
 
 .. versionadded:: 3.4"""
+try:
+    QgsGeometryCheck.__group__ = ['vector', 'geometry_checker']
+except NameError:
+    pass
+try:
+    QgsGeometryCheck.LayerFeatureIds.__group__ = ['vector', 'geometry_checker']
+except NameError:
+    pass
+try:
+    QgsGeometryCheck.Change.__group__ = ['vector', 'geometry_checker']
+except NameError:
+    pass

@@ -12,3 +12,19 @@ QgsAbstractMetadataBase.Contact.__doc__ = """Metadata contact structure.
 QgsAbstractMetadataBase.Link.__doc__ = """Metadata link structure.
 
 .. versionadded:: 3.2"""
+try:
+    QgsAbstractMetadataBase.__group__ = ['metadata']
+except NameError:
+    pass
+try:
+    QgsAbstractMetadataBase.Address.__group__ = ['metadata']
+except NameError:
+    pass
+try:
+    QgsAbstractMetadataBase.Contact.__group__ = ['metadata']
+except NameError:
+    pass
+try:
+    QgsAbstractMetadataBase.Link.__group__ = ['metadata']
+except NameError:
+    pass

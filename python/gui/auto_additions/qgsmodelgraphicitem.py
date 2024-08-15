@@ -7,3 +7,11 @@ try:
     QgsModelDesignerFoldButtonGraphicItem.__attribute_docs__ = {'folded': 'Emitted when the button ``folded`` state changes.\n\nIf ``folded`` is ``True``, the button represents the collapsed state for the item.\n'}
 except NameError:
     pass
+try:
+    QgsModelDesignerFlatButtonGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsModelDesignerFoldButtonGraphicItem.__group__ = ['processing', 'models']
+except NameError:
+    pass

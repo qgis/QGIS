@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsPlotTool.constrainPointToRect = staticmethod(QgsPlotTool.constrainPointToRect)
+try:
+    QgsPlotTool.__group__ = ['plot']
+except NameError:
+    pass

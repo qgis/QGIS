@@ -3,3 +3,7 @@ QgsDataCollectionItem.iconDir = staticmethod(QgsDataCollectionItem.iconDir)
 QgsDataCollectionItem.iconDataCollection = staticmethod(QgsDataCollectionItem.iconDataCollection)
 QgsDataCollectionItem.openDirIcon = staticmethod(QgsDataCollectionItem.openDirIcon)
 QgsDataCollectionItem.homeDirIcon = staticmethod(QgsDataCollectionItem.homeDirIcon)
+try:
+    QgsDataCollectionItem.__group__ = ['browser']
+except NameError:
+    pass

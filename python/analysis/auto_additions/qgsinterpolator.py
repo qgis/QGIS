@@ -9,3 +9,15 @@ except NameError:
     pass
 QgsInterpolatorVertexData.__doc__ = """Interpolation data for an individual source vertex."""
 QgsInterpolator.LayerData.__doc__ = """A source together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)"""
+try:
+    QgsInterpolatorVertexData.__group__ = ['interpolation']
+except NameError:
+    pass
+try:
+    QgsInterpolator.__group__ = ['interpolation']
+except NameError:
+    pass
+try:
+    QgsInterpolator.LayerData.__group__ = ['interpolation']
+except NameError:
+    pass

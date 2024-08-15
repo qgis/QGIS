@@ -10,3 +10,7 @@ QgsQuadrilateral.rectangleFromExtent = staticmethod(QgsQuadrilateral.rectangleFr
 QgsQuadrilateral.squareFromDiagonal = staticmethod(QgsQuadrilateral.squareFromDiagonal)
 QgsQuadrilateral.rectangleFromCenterPoint = staticmethod(QgsQuadrilateral.rectangleFromCenterPoint)
 QgsQuadrilateral.fromRectangle = staticmethod(QgsQuadrilateral.fromRectangle)
+try:
+    QgsQuadrilateral.__group__ = ['geometry']
+except NameError:
+    pass

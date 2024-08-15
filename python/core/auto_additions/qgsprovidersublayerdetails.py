@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsProviderSublayerDetails.LayerOptions.__doc__ = """Setting options for loading layers."""
+try:
+    QgsProviderSublayerDetails.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsProviderSublayerDetails.LayerOptions.__group__ = ['providers']
+except NameError:
+    pass

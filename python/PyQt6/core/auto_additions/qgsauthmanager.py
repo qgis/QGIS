@@ -9,3 +9,7 @@ except NameError:
     pass
 QgsAuthManager.hasConfigId = staticmethod(QgsAuthManager.hasConfigId)
 QgsAuthManager.passwordHelperEnabled = staticmethod(QgsAuthManager.passwordHelperEnabled)
+try:
+    QgsAuthManager.__group__ = ['auth']
+except NameError:
+    pass

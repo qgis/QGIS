@@ -3,3 +3,7 @@ QgsLayoutItemShape.Ellipse = QgsLayoutItemShape.Shape.Ellipse
 QgsLayoutItemShape.Rectangle = QgsLayoutItemShape.Shape.Rectangle
 QgsLayoutItemShape.Triangle = QgsLayoutItemShape.Shape.Triangle
 QgsLayoutItemShape.create = staticmethod(QgsLayoutItemShape.create)
+try:
+    QgsLayoutItemShape.__group__ = ['layout']
+except NameError:
+    pass

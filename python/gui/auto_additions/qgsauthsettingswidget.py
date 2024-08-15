@@ -5,3 +5,7 @@ try:
 except NameError:
     pass
 QgsAuthSettingsWidget.formattedWarning = staticmethod(QgsAuthSettingsWidget.formattedWarning)
+try:
+    QgsAuthSettingsWidget.__group__ = ['auth']
+except NameError:
+    pass

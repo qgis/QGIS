@@ -21,3 +21,7 @@ QgsLayoutUtils.mapLayerFromString = staticmethod(QgsLayoutUtils.mapLayerFromStri
 QgsLayoutUtils.calculatePrettySize = staticmethod(QgsLayoutUtils.calculatePrettySize)
 QgsLayoutUtils.itemIsAClippingSource = staticmethod(QgsLayoutUtils.itemIsAClippingSource)
 QgsLayoutUtils.predefinedScales = staticmethod(QgsLayoutUtils.predefinedScales)
+try:
+    QgsLayoutUtils.__group__ = ['layout']
+except NameError:
+    pass

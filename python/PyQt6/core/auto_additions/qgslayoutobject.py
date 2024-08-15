@@ -273,3 +273,7 @@ try:
 except NameError:
     pass
 QgsLayoutObject.propertyAssociatesWithParentMultiframe = staticmethod(QgsLayoutObject.propertyAssociatesWithParentMultiframe)
+try:
+    QgsLayoutObject.__group__ = ['layout']
+except NameError:
+    pass

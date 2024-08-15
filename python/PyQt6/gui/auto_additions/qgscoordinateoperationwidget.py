@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsCoordinateOperationWidget.OperationDetails.__doc__ = """Coordinate operation details"""
+try:
+    QgsCoordinateOperationWidget.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsCoordinateOperationWidget.OperationDetails.__group__ = ['proj']
+except NameError:
+    pass

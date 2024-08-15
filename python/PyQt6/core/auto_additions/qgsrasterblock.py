@@ -6,3 +6,7 @@ QgsRasterBlock.typeWithNoDataValue = staticmethod(QgsRasterBlock.typeWithNoDataV
 QgsRasterBlock.valueBytes = staticmethod(QgsRasterBlock.valueBytes)
 QgsRasterBlock.printValue = staticmethod(QgsRasterBlock.printValue)
 QgsRasterBlock.subRect = staticmethod(QgsRasterBlock.subRect)
+try:
+    QgsRasterBlock.__group__ = ['raster']
+except NameError:
+    pass

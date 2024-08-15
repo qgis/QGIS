@@ -21,3 +21,15 @@ except NameError:
 QgsStyleEntityVisitorInterface.StyleLeaf.__doc__ = """Contains information relating to the style entity currently being visited."""
 QgsStyleEntityVisitorInterface.Node.__doc__ = """Contains information relating to a node (i.e. a group of symbols or other nodes)
 being visited."""
+try:
+    QgsStyleEntityVisitorInterface.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleEntityVisitorInterface.StyleLeaf.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleEntityVisitorInterface.Node.__group__ = ['symbology']
+except NameError:
+    pass

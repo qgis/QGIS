@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsAbstractSensor.SensorData.__doc__ = """Contains details of a sensor data capture"""
+try:
+    QgsAbstractSensor.__group__ = ['sensor']
+except NameError:
+    pass
+try:
+    QgsAbstractSensor.SensorData.__group__ = ['sensor']
+except NameError:
+    pass

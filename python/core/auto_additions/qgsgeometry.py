@@ -21,3 +21,15 @@ QgsGeometry.createPolygonFromQPolygonF = staticmethod(QgsGeometry.createPolygonF
 QgsGeometry.compare = staticmethod(QgsGeometry.compare)
 QgsGeometry.createGeometryEngine = staticmethod(QgsGeometry.createGeometryEngine)
 QgsGeometry.convertPointList = staticmethod(QgsGeometry.convertPointList)
+try:
+    QgsGeometryParameters.__group__ = ['geometry']
+except NameError:
+    pass
+try:
+    QgsGeometry.__group__ = ['geometry']
+except NameError:
+    pass
+try:
+    QgsGeometry.Error.__group__ = ['geometry']
+except NameError:
+    pass

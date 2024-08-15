@@ -3,3 +3,7 @@ try:
     QgsGdalCredentialOptionsWidget.__attribute_docs__ = {'optionsChanged': 'Emitted when the credential options are changed in the widget.\n'}
 except NameError:
     pass
+try:
+    QgsGdalCredentialOptionsWidget.__group__ = ['providers', 'gdal']
+except NameError:
+    pass

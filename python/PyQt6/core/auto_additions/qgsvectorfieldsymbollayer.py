@@ -8,3 +8,7 @@ QgsVectorFieldSymbolLayer.Degrees = QgsVectorFieldSymbolLayer.AngleUnits.Degrees
 QgsVectorFieldSymbolLayer.Radians = QgsVectorFieldSymbolLayer.AngleUnits.Radians
 QgsVectorFieldSymbolLayer.create = staticmethod(QgsVectorFieldSymbolLayer.create)
 QgsVectorFieldSymbolLayer.createFromSld = staticmethod(QgsVectorFieldSymbolLayer.createFromSld)
+try:
+    QgsVectorFieldSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass

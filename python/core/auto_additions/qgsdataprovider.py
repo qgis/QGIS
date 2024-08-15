@@ -11,3 +11,11 @@ QgsDataProvider.ProviderOptions.__doc__ = """Setting options for creating vector
    coordinateTransformContext was added in QGIS 3.8
 
 .. versionadded:: 3.2"""
+try:
+    QgsDataProvider.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsDataProvider.ProviderOptions.__group__ = ['providers']
+except NameError:
+    pass

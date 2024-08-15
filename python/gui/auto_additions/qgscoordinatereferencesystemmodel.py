@@ -38,3 +38,11 @@ QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = "Custom model roles.\n\n.
 QgsCoordinateReferenceSystemModel.CustomRole.baseClass = QgsCoordinateReferenceSystemModel
 QgsCoordinateReferenceSystemProxyModel.Filters.baseClass = QgsCoordinateReferenceSystemProxyModel
 Filters = QgsCoordinateReferenceSystemProxyModel  # dirty hack since SIP seems to introduce the flags in module
+try:
+    QgsCoordinateReferenceSystemModel.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
+except NameError:
+    pass

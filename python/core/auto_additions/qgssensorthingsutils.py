@@ -18,3 +18,11 @@ QgsSensorThingsUtils.relationshipCardinality = staticmethod(QgsSensorThingsUtils
 QgsSensorThingsUtils.asQueryString = staticmethod(QgsSensorThingsUtils.asQueryString)
 QgsSensorThingsExpansionDefinition.defaultDefinitionForEntity = staticmethod(QgsSensorThingsExpansionDefinition.defaultDefinitionForEntity)
 QgsSensorThingsExpansionDefinition.fromString = staticmethod(QgsSensorThingsExpansionDefinition.fromString)
+try:
+    QgsSensorThingsUtils.__group__ = ['providers', 'sensorthings']
+except NameError:
+    pass
+try:
+    QgsSensorThingsExpansionDefinition.__group__ = ['providers', 'sensorthings']
+except NameError:
+    pass

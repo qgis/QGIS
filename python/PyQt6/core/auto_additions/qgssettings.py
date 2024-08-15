@@ -12,3 +12,7 @@ QgsSettings.Misc = QgsSettings.Section.Misc
 QgsSettings.Gps = QgsSettings.Section.Gps
 QgsSettings.globalSettingsPath = staticmethod(QgsSettings.globalSettingsPath)
 QgsSettings.setGlobalSettingsPath = staticmethod(QgsSettings.setGlobalSettingsPath)
+try:
+    QgsSettings.__group__ = ['settings']
+except NameError:
+    pass

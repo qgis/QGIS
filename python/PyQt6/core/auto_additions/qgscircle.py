@@ -7,3 +7,7 @@ QgsCircle.from3Tangents = staticmethod(QgsCircle.from3Tangents)
 QgsCircle.from3TangentsMulti = staticmethod(QgsCircle.from3TangentsMulti)
 QgsCircle.fromExtent = staticmethod(QgsCircle.fromExtent)
 QgsCircle.minimalCircleFrom3Points = staticmethod(QgsCircle.minimalCircleFrom3Points)
+try:
+    QgsCircle.__group__ = ['geometry']
+except NameError:
+    pass

@@ -27,3 +27,11 @@ QgsArcGisRestUtils.featureToJson = staticmethod(QgsArcGisRestUtils.featureToJson
 QgsArcGisRestUtils.variantToAttributeValue = staticmethod(QgsArcGisRestUtils.variantToAttributeValue)
 QgsArcGisRestUtils.fieldDefinitionToJson = staticmethod(QgsArcGisRestUtils.fieldDefinitionToJson)
 QgsArcGisRestUtils.serviceTypeFromString = staticmethod(QgsArcGisRestUtils.serviceTypeFromString)
+try:
+    QgsArcGisRestContext.__group__ = ['providers', 'arcgis']
+except NameError:
+    pass
+try:
+    QgsArcGisRestUtils.__group__ = ['providers', 'arcgis']
+except NameError:
+    pass

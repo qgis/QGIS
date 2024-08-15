@@ -12,3 +12,11 @@ try:
     QgsPointCloudLayerExporterTask.__attribute_docs__ = {'exportComplete': 'Emitted when exporting the layer is successfully completed.\n'}
 except NameError:
     pass
+try:
+    QgsPointCloudLayerExporter.__group__ = ['pointcloud']
+except NameError:
+    pass
+try:
+    QgsPointCloudLayerExporterTask.__group__ = ['pointcloud']
+except NameError:
+    pass

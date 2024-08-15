@@ -7,3 +7,11 @@ QgsLayerTreeRegistryBridge.InsertionPoint.__doc__ = """A structure to define the
 This represents the current layer tree group and index where newly added map layers should be inserted into.
 
 .. versionadded:: 3.10"""
+try:
+    QgsLayerTreeRegistryBridge.__group__ = ['layertree']
+except NameError:
+    pass
+try:
+    QgsLayerTreeRegistryBridge.InsertionPoint.__group__ = ['layertree']
+except NameError:
+    pass

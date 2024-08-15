@@ -86,6 +86,7 @@ class Context:
         self.classname: List[str] = []
         self.class_and_struct: List[str] = []
         self.declared_classes: List[str] = []
+        self.all_fully_qualified_class_names: List[str] = []
         self.exported: List[int] = [0]
         self.actual_class: str = ''
         self.python_signature: str = ''
@@ -1507,6 +1508,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.classname.append(
             CONTEXT.classname[-1] if CONTEXT.classname else struct_match.group(
                 'structname'))  # fake new class since struct has considered similarly
+        if CONTEXT.access[-1] != Visibility.Private:
+            CONTEXT.all_fully_qualified_class_names.append(CONTEXT.current_fully_qualified_struct_name())
         CONTEXT.access.append(Visibility.Public)
         CONTEXT.exported.append(CONTEXT.exported[-1])
         CONTEXT.bracket_nesting_idx.append(0)
@@ -1520,7 +1523,6 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     if class_pattern_match:
         dbg_info("class definition started")
-        CONTEXT.access.append(Visibility.Public)
         CONTEXT.exported.append(0)
         CONTEXT.bracket_nesting_idx.append(0)
         template_inheritance_template = []
@@ -1530,6 +1532,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         CONTEXT.classname.append(class_pattern_match.group('classname'))
         CONTEXT.class_and_struct.append(class_pattern_match.group('classname'))
+        if CONTEXT.access[-1] != Visibility.Private:
+            CONTEXT.all_fully_qualified_class_names.append(CONTEXT.current_fully_qualified_struct_name())
+        CONTEXT.access.append(Visibility.Public)
 
         if len(CONTEXT.classname) == 1:
             CONTEXT.declared_classes.append(CONTEXT.classname[-1])
@@ -2543,6 +2548,13 @@ for class_name, static_methods in CONTEXT.static_methods.items():
 for class_name, doc_string in CONTEXT.struct_docstrings.items():
     CONTEXT.output_python.append(f'{class_name}.__doc__ = """{doc_string}"""\n')
 
+group_match = re.match('^.*src/[a-z0-9_]+/(.*?)/[^/]+$', CONTEXT.header_file)
+if group_match:
+    groups = list(group for group in group_match.group(1).split('/') if group and group != '.')
+    if groups:
+        for class_name in CONTEXT.all_fully_qualified_class_names:
+            CONTEXT.output_python.append(
+                f'try:\n    {class_name}.__group__ = {groups}\nexcept NameError:\n    pass\n')
 
 if args.python_output and CONTEXT.output_python:
 

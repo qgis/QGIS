@@ -11,3 +11,15 @@ QgsProcessingAlgorithm.writeFeatureError = staticmethod(QgsProcessingAlgorithm.w
 QgsProcessingAlgorithm.VectorProperties.__doc__ = """Properties of a vector source or sink used in an algorithm.
 
 .. versionadded:: 3.14"""
+try:
+    QgsProcessingAlgorithm.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingAlgorithm.VectorProperties.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingFeatureBasedAlgorithm.__group__ = ['processing']
+except NameError:
+    pass

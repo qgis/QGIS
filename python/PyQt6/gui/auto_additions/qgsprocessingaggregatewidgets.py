@@ -19,3 +19,15 @@ try:
 except NameError:
     pass
 QgsAggregateMappingModel.Aggregate.__doc__ = """The Aggregate struct holds information about an aggregate column"""
+try:
+    QgsAggregateMappingModel.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsAggregateMappingModel.Aggregate.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsAggregateMappingWidget.__group__ = ['processing']
+except NameError:
+    pass

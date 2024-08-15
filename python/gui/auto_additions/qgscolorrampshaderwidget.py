@@ -3,3 +3,7 @@ try:
     QgsColorRampShaderWidget.__attribute_docs__ = {'minimumMaximumChangedFromTree': 'Color ramp tree has changed\n', 'widgetChanged': 'Widget changed\n', 'classificationModeChanged': 'Classification mode changed\n'}
 except NameError:
     pass
+try:
+    QgsColorRampShaderWidget.__group__ = ['raster']
+except NameError:
+    pass

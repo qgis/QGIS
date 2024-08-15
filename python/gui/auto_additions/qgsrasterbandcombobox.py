@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsRasterBandComboBox.displayBandName = staticmethod(QgsRasterBandComboBox.displayBandName)
+try:
+    QgsRasterBandComboBox.__group__ = ['raster']
+except NameError:
+    pass

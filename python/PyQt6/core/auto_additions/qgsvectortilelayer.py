@@ -6,3 +6,11 @@ except NameError:
 QgsVectorTileLayer.LayerOptions.__doc__ = """Setting options for loading vector tile layers.
 
 .. versionadded:: 3.22"""
+try:
+    QgsVectorTileLayer.__group__ = ['vectortile']
+except NameError:
+    pass
+try:
+    QgsVectorTileLayer.LayerOptions.__group__ = ['vectortile']
+except NameError:
+    pass

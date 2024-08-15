@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsAuthConfigUriEdit.hasConfigId = staticmethod(QgsAuthConfigUriEdit.hasConfigId)
+try:
+    QgsAuthConfigSelect.__group__ = ['auth']
+except NameError:
+    pass
+try:
+    QgsAuthConfigUriEdit.__group__ = ['auth']
+except NameError:
+    pass

@@ -15,3 +15,31 @@ QgsFontMarkerSymbolLayer.create = staticmethod(QgsFontMarkerSymbolLayer.create)
 QgsFontMarkerSymbolLayer.createFromSld = staticmethod(QgsFontMarkerSymbolLayer.createFromSld)
 QgsFontMarkerSymbolLayer.resolveFonts = staticmethod(QgsFontMarkerSymbolLayer.resolveFonts)
 QgsAnimatedMarkerSymbolLayer.create = staticmethod(QgsAnimatedMarkerSymbolLayer.create)
+try:
+    QgsSimpleMarkerSymbolLayerBase.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSimpleMarkerSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsFilledMarkerSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSvgMarkerSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRasterMarkerSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsFontMarkerSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsAnimatedMarkerSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass

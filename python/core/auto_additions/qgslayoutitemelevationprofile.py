@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsLayoutItemElevationProfile.create = staticmethod(QgsLayoutItemElevationProfile.create)
+try:
+    QgsLayoutItemElevationProfile.__group__ = ['layout']
+except NameError:
+    pass

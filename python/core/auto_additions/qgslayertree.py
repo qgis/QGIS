@@ -6,3 +6,7 @@ except NameError:
 QgsLayerTree.isGroup = staticmethod(QgsLayerTree.isGroup)
 QgsLayerTree.isLayer = staticmethod(QgsLayerTree.isLayer)
 QgsLayerTree.readXml = staticmethod(QgsLayerTree.readXml)
+try:
+    QgsLayerTree.__group__ = ['layertree']
+except NameError:
+    pass

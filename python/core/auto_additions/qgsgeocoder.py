@@ -4,3 +4,7 @@ QgsGeocoderInterface.Flag.GeocodesStrings.__doc__ = "Can geocode string input va
 QgsGeocoderInterface.Flag.GeocodesFeatures.__doc__ = "Can geocode QgsFeature input values"
 QgsGeocoderInterface.Flag.__doc__ = "Capability flags for the geocoder.\n\n" + '* ``GeocodesStrings``: ' + QgsGeocoderInterface.Flag.GeocodesStrings.__doc__ + '\n' + '* ``GeocodesFeatures``: ' + QgsGeocoderInterface.Flag.GeocodesFeatures.__doc__
 # --
+try:
+    QgsGeocoderInterface.__group__ = ['geocoding']
+except NameError:
+    pass

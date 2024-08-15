@@ -26,3 +26,11 @@ QgsScaleBarRenderer.ScaleBarContext.__doc__ = """Contains parameters regarding s
 .. note::
 
    The need to attribute the parameters vary depending on the targeted scalebar."""
+try:
+    QgsScaleBarRenderer.__group__ = ['scalebar']
+except NameError:
+    pass
+try:
+    QgsScaleBarRenderer.ScaleBarContext.__group__ = ['scalebar']
+except NameError:
+    pass

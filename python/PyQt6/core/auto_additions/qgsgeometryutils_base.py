@@ -34,3 +34,7 @@ QgsGeometryUtilsBase.lineIntersection = staticmethod(QgsGeometryUtilsBase.lineIn
 QgsGeometryUtilsBase.segmentIntersection = staticmethod(QgsGeometryUtilsBase.segmentIntersection)
 QgsGeometryUtilsBase.project = staticmethod(QgsGeometryUtilsBase.project)
 QgsGeometryUtilsBase.azimuth = staticmethod(QgsGeometryUtilsBase.azimuth)
+try:
+    QgsGeometryUtilsBase.__group__ = ['geometry']
+except NameError:
+    pass

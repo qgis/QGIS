@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsLayoutItemLegend.create = staticmethod(QgsLayoutItemLegend.create)
+try:
+    QgsLegendModel.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutItemLegend.__group__ = ['layout']
+except NameError:
+    pass

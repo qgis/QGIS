@@ -26,3 +26,7 @@ QgsLabelLineSettings.AnchorTextPoint.FollowPlacement.__doc__ = "Automatically se
 QgsLabelLineSettings.AnchorTextPoint.__doc__ = "Anchor point of label text.\n\n.. versionadded:: 3.26\n\n" + '* ``StartOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.StartOfText.__doc__ + '\n' + '* ``CenterOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.CenterOfText.__doc__ + '\n' + '* ``EndOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.EndOfText.__doc__ + '\n' + '* ``FollowPlacement``: ' + QgsLabelLineSettings.AnchorTextPoint.FollowPlacement.__doc__
 # --
 QgsLabelLineSettings.AnchorTextPoint.baseClass = QgsLabelLineSettings
+try:
+    QgsLabelLineSettings.__group__ = ['labeling']
+except NameError:
+    pass

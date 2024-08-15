@@ -3,3 +3,11 @@ try:
     QgsLabelSettingsWidgetBase.__attribute_docs__ = {'changed': 'Emitted when any of the settings described by the widget are changed.\n', 'auxiliaryFieldCreated': 'Emitted when an auxiliary field is created in the widget.\n'}
 except NameError:
     pass
+try:
+    QgsLabelSettingsWidgetBase.__group__ = ['labeling']
+except NameError:
+    pass
+try:
+    QgsLabelSettingsWidgetDialog.__group__ = ['labeling']
+except NameError:
+    pass

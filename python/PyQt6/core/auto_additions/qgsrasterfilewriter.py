@@ -11,3 +11,11 @@ QgsRasterFileWriter.supportedFormatExtensions = staticmethod(QgsRasterFileWriter
 QgsRasterFileWriter.driverForExtension = staticmethod(QgsRasterFileWriter.driverForExtension)
 QgsRasterFileWriter.extensionsForFormat = staticmethod(QgsRasterFileWriter.extensionsForFormat)
 QgsRasterFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
+try:
+    QgsRasterFileWriter.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterFileWriter.FilterFormatDetails.__group__ = ['raster']
+except NameError:
+    pass

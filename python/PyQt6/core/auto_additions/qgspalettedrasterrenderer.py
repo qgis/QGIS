@@ -15,3 +15,15 @@ QgsPalettedRasterRenderer.classDataFromFile = staticmethod(QgsPalettedRasterRend
 QgsPalettedRasterRenderer.classDataToString = staticmethod(QgsPalettedRasterRenderer.classDataToString)
 QgsPalettedRasterRenderer.classDataFromRaster = staticmethod(QgsPalettedRasterRenderer.classDataFromRaster)
 QgsPalettedRasterRenderer.Class.__doc__ = """Properties of a single value class"""
+try:
+    QgsPalettedRasterRenderer.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsPalettedRasterRenderer.Class.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsPalettedRasterRenderer.MultiValueClass.__group__ = ['raster']
+except NameError:
+    pass

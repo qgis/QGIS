@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsFontDownloadDetails.standardizeFamily = staticmethod(QgsFontDownloadDetails.standardizeFamily)
+try:
+    QgsFontDownloadDetails.__group__ = ['textrenderer']
+except NameError:
+    pass
+try:
+    QgsFontManager.__group__ = ['textrenderer']
+except NameError:
+    pass

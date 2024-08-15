@@ -42,3 +42,11 @@ QgsExpression.createFieldEqualityExpression = staticmethod(QgsExpression.createF
 QgsExpression.isFieldEqualityExpression = staticmethod(QgsExpression.isFieldEqualityExpression)
 QgsExpression.attemptReduceToInClause = staticmethod(QgsExpression.attemptReduceToInClause)
 QgsExpression.ParserError.__doc__ = """Details about any parser errors that were found when parsing the expression."""
+try:
+    QgsExpression.__group__ = ['expression']
+except NameError:
+    pass
+try:
+    QgsExpression.ParserError.__group__ = ['expression']
+except NameError:
+    pass

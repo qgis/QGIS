@@ -9,3 +9,11 @@ QgsProfileExporterTask.ExportResult.Canceled.__doc__ = "Export was canceled"
 QgsProfileExporterTask.ExportResult.__doc__ = "Results of exporting the profile.\n\n" + '* ``Success``: ' + QgsProfileExporterTask.ExportResult.Success.__doc__ + '\n' + '* ``Empty``: ' + QgsProfileExporterTask.ExportResult.Empty.__doc__ + '\n' + '* ``DeviceError``: ' + QgsProfileExporterTask.ExportResult.DeviceError.__doc__ + '\n' + '* ``DxfExportFailed``: ' + QgsProfileExporterTask.ExportResult.DxfExportFailed.__doc__ + '\n' + '* ``LayerExportFailed``: ' + QgsProfileExporterTask.ExportResult.LayerExportFailed.__doc__ + '\n' + '* ``Canceled``: ' + QgsProfileExporterTask.ExportResult.Canceled.__doc__
 # --
 QgsProfileExporterTask.ExportResult.baseClass = QgsProfileExporterTask
+try:
+    QgsProfileExporter.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsProfileExporterTask.__group__ = ['elevation']
+except NameError:
+    pass

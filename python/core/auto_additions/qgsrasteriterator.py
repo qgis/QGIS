@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsRasterIterator.subRegion = staticmethod(QgsRasterIterator.subRegion)
+try:
+    QgsRasterIterator.__group__ = ['raster']
+except NameError:
+    pass

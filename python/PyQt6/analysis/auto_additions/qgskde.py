@@ -16,3 +16,11 @@ try:
 except NameError:
     pass
 QgsKernelDensityEstimation.Parameters.__doc__ = """KDE parameters"""
+try:
+    QgsKernelDensityEstimation.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsKernelDensityEstimation.Parameters.__group__ = ['raster']
+except NameError:
+    pass

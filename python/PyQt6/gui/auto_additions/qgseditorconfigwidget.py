@@ -3,3 +3,7 @@ try:
     QgsEditorConfigWidget.__attribute_docs__ = {'changed': 'Emitted when the configuration of the widget is changed.\n'}
 except NameError:
     pass
+try:
+    QgsEditorConfigWidget.__group__ = ['editorwidgets', 'core']
+except NameError:
+    pass

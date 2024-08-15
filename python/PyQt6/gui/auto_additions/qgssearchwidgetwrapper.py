@@ -32,3 +32,7 @@ except NameError:
 QgsSearchWidgetWrapper.exclusiveFilterFlags = staticmethod(QgsSearchWidgetWrapper.exclusiveFilterFlags)
 QgsSearchWidgetWrapper.nonExclusiveFilterFlags = staticmethod(QgsSearchWidgetWrapper.nonExclusiveFilterFlags)
 QgsSearchWidgetWrapper.toString = staticmethod(QgsSearchWidgetWrapper.toString)
+try:
+    QgsSearchWidgetWrapper.__group__ = ['editorwidgets', 'core']
+except NameError:
+    pass

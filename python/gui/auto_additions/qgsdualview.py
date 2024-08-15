@@ -6,3 +6,15 @@ try:
 except NameError:
     pass
 QgsDualView.requiredAttributes = staticmethod(QgsDualView.requiredAttributes)
+try:
+    QgsDualView.__group__ = ['attributetable']
+except NameError:
+    pass
+try:
+    QgsAttributeTableAction.__group__ = ['attributetable']
+except NameError:
+    pass
+try:
+    QgsAttributeTableMapLayerAction.__group__ = ['attributetable']
+except NameError:
+    pass

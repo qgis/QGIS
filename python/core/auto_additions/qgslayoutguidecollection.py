@@ -28,3 +28,15 @@ try:
     QgsLayoutGuide.__attribute_docs__ = {'positionChanged': "Emitted when the guide's position is changed.\n"}
 except NameError:
     pass
+try:
+    QgsLayoutGuide.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutGuideCollection.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutGuideProxyModel.__group__ = ['layout']
+except NameError:
+    pass

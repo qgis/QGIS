@@ -9,3 +9,11 @@ QgsExifTools.getGeoTag = staticmethod(QgsExifTools.getGeoTag)
 QgsExifTools.hasGeoTag = staticmethod(QgsExifTools.hasGeoTag)
 QgsExifTools.geoTagImage = staticmethod(QgsExifTools.geoTagImage)
 QgsExifTools.tagImage = staticmethod(QgsExifTools.tagImage)
+try:
+    QgsExifTools.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsExifTools.GeoTagDetails.__group__ = ['raster']
+except NameError:
+    pass

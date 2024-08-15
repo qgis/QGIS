@@ -52,3 +52,11 @@ QgsCoordinateReferenceSystemProxyModel.Filter.__bool__ = lambda flag: bool(_forc
 QgsCoordinateReferenceSystemProxyModel.Filter.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsCoordinateReferenceSystemProxyModel.Filter.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsCoordinateReferenceSystemProxyModel.Filter.__or__ = lambda flag1, flag2: QgsCoordinateReferenceSystemProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsCoordinateReferenceSystemModel.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
+except NameError:
+    pass

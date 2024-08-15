@@ -134,3 +134,15 @@ except NameError:
 QgsLayoutItem.ExportLayerDetail.__doc__ = """Contains details of a particular export layer relating to a layout item.
 
 .. versionadded:: 3.10"""
+try:
+    QgsLayoutItemRenderContext.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutItem.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutItem.ExportLayerDetail.__group__ = ['layout']
+except NameError:
+    pass

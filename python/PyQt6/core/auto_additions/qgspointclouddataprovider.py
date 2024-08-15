@@ -16,3 +16,7 @@ QgsPointCloudDataProvider.lasClassificationCodes = staticmethod(QgsPointCloudDat
 QgsPointCloudDataProvider.translatedLasClassificationCodes = staticmethod(QgsPointCloudDataProvider.translatedLasClassificationCodes)
 QgsPointCloudDataProvider.dataFormatIds = staticmethod(QgsPointCloudDataProvider.dataFormatIds)
 QgsPointCloudDataProvider.translatedDataFormatIds = staticmethod(QgsPointCloudDataProvider.translatedDataFormatIds)
+try:
+    QgsPointCloudDataProvider.__group__ = ['pointcloud']
+except NameError:
+    pass

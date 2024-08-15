@@ -10,3 +10,7 @@ QgsGraduatedSymbolRenderer.calcEqualIntervalBreaks = staticmethod(QgsGraduatedSy
 QgsGraduatedSymbolRenderer.createRenderer = staticmethod(QgsGraduatedSymbolRenderer.createRenderer)
 QgsGraduatedSymbolRenderer.create = staticmethod(QgsGraduatedSymbolRenderer.create)
 QgsGraduatedSymbolRenderer.convertFromRenderer = staticmethod(QgsGraduatedSymbolRenderer.convertFromRenderer)
+try:
+    QgsGraduatedSymbolRenderer.__group__ = ['symbology']
+except NameError:
+    pass

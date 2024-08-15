@@ -17,3 +17,7 @@ QgsTextRenderer.textHeight = staticmethod(QgsTextRenderer.textHeight)
 QgsTextRenderer.textRequiresWrapping = staticmethod(QgsTextRenderer.textRequiresWrapping)
 QgsTextRenderer.wrappedText = staticmethod(QgsTextRenderer.wrappedText)
 QgsTextRenderer.calculateScaleFactorForFormat = staticmethod(QgsTextRenderer.calculateScaleFactorForFormat)
+try:
+    QgsTextRenderer.__group__ = ['textrenderer']
+except NameError:
+    pass

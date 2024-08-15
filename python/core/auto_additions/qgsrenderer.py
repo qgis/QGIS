@@ -10,3 +10,11 @@ QgsFeatureRenderer.loadSld = staticmethod(QgsFeatureRenderer.loadSld)
 QgsFeatureRenderer._getPoint = staticmethod(QgsFeatureRenderer._getPoint)
 QgsFeatureRenderer.convertSymbolSizeScale = staticmethod(QgsFeatureRenderer.convertSymbolSizeScale)
 QgsFeatureRenderer.convertSymbolRotation = staticmethod(QgsFeatureRenderer.convertSymbolRotation)
+try:
+    QgsSymbolLevelItem.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsFeatureRenderer.__group__ = ['symbology']
+except NameError:
+    pass

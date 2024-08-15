@@ -8,3 +8,11 @@ try:
 except NameError:
     pass
 QgsFieldConditionalFormatWidget.defaultPresets = staticmethod(QgsFieldConditionalFormatWidget.defaultPresets)
+try:
+    QgsFieldConditionalFormatWidget.__group__ = ['attributetable']
+except NameError:
+    pass
+try:
+    QgsEditConditionalFormatRuleWidget.__group__ = ['attributetable']
+except NameError:
+    pass

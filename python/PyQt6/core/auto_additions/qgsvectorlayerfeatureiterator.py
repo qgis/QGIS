@@ -5,3 +5,19 @@ except NameError:
     pass
 QgsVectorLayerFeatureIterator.FetchJoinInfo.__doc__ = """Join information prepared for fast attribute id mapping in :py:func:`QgsVectorLayerJoinBuffer.updateFeatureAttributes()`.
 Created in the :py:func:`~QgsVectorLayerFeatureIterator.select` method of :py:class:`QgsVectorLayerJoinBuffer` for the joins that contain fetched attributes"""
+try:
+    QgsVectorLayerFeatureSource.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayerFeatureIterator.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayerFeatureIterator.FetchJoinInfo.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayerSelectedFeatureSource.__group__ = ['vector']
+except NameError:
+    pass

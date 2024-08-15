@@ -32,3 +32,7 @@ QgsRasterCalcNode.opMAX = QgsRasterCalcNode.Operator.opMAX
 QgsRasterCalcNode.opMIN = QgsRasterCalcNode.Operator.opMIN
 QgsRasterCalcNode.opNONE = QgsRasterCalcNode.Operator.opNONE
 QgsRasterCalcNode.parseRasterCalcString = staticmethod(QgsRasterCalcNode.parseRasterCalcString)
+try:
+    QgsRasterCalcNode.__group__ = ['raster']
+except NameError:
+    pass

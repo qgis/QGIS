@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsPointDistanceRenderer.GroupedFeature.__doc__ = """Contains properties for a feature within a clustered group."""
+try:
+    QgsPointDistanceRenderer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsPointDistanceRenderer.GroupedFeature.__group__ = ['symbology']
+except NameError:
+    pass

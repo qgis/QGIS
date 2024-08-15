@@ -4,3 +4,11 @@ QgsModelDesignerDialog.SaveAction.SaveAsFile.__doc__ = "Save model as a file"
 QgsModelDesignerDialog.SaveAction.SaveInProject.__doc__ = "Save model into project"
 QgsModelDesignerDialog.SaveAction.__doc__ = "Save action.\n\n.. versionadded:: 3.24\n\n" + '* ``SaveAsFile``: ' + QgsModelDesignerDialog.SaveAction.SaveAsFile.__doc__ + '\n' + '* ``SaveInProject``: ' + QgsModelDesignerDialog.SaveAction.SaveInProject.__doc__
 # --
+try:
+    QgsModelDesignerDialog.__group__ = ['processing', 'models']
+except NameError:
+    pass
+try:
+    QgsModelChildDependenciesWidget.__group__ = ['processing', 'models']
+except NameError:
+    pass

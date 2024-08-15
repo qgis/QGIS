@@ -20,3 +20,15 @@ QgsProviderSublayerModel.Column.Name.__doc__ = "Layer name"
 QgsProviderSublayerModel.Column.Description.__doc__ = "Layer description"
 QgsProviderSublayerModel.Column.__doc__ = "Model columns\n\n" + '* ``Name``: ' + QgsProviderSublayerModel.Column.Name.__doc__ + '\n' + '* ``Description``: ' + QgsProviderSublayerModel.Column.Description.__doc__
 # --
+try:
+    QgsProviderSublayerModel.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsProviderSublayerModel.NonLayerItem.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsProviderSublayerProxyModel.__group__ = ['providers']
+except NameError:
+    pass

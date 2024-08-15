@@ -10,3 +10,7 @@ QgsAbstract3DSymbol.PropertyExtrusionHeight.is_monkey_patched = True
 QgsAbstract3DSymbol.PropertyExtrusionHeight.__doc__ = "Extrusion height (zero means no extrusion)"
 QgsAbstract3DSymbol.Property.__doc__ = "Data definable properties.\n\n" + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.Height.__doc__ + '\n' + '* ``PropertyExtrusionHeight``: ' + QgsAbstract3DSymbol.Property.ExtrusionHeight.__doc__
 # --
+try:
+    QgsAbstract3DSymbol.__group__ = ['3d']
+except NameError:
+    pass

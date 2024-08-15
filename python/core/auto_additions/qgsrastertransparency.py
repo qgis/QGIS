@@ -5,3 +5,15 @@ except NameError:
     pass
 QgsRasterTransparency.TransparentThreeValuePixel.__doc__ = """Defines the transparency for a RGB pixel value."""
 QgsRasterTransparency.TransparentSingleValuePixel.__doc__ = """Defines the transparency for a range of single-band pixel values."""
+try:
+    QgsRasterTransparency.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterTransparency.TransparentThreeValuePixel.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterTransparency.TransparentSingleValuePixel.__group__ = ['raster']
+except NameError:
+    pass

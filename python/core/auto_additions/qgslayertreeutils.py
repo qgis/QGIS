@@ -19,3 +19,7 @@ QgsLayerTreeUtils.collectMapLayersRecursive = staticmethod(QgsLayerTreeUtils.col
 QgsLayerTreeUtils.countMapLayerInTree = staticmethod(QgsLayerTreeUtils.countMapLayerInTree)
 QgsLayerTreeUtils.firstGroupWithoutCustomProperty = staticmethod(QgsLayerTreeUtils.firstGroupWithoutCustomProperty)
 QgsLayerTreeUtils.insertLayerAtOptimalPlacement = staticmethod(QgsLayerTreeUtils.insertLayerAtOptimalPlacement)
+try:
+    QgsLayerTreeUtils.__group__ = ['layertree']
+except NameError:
+    pass

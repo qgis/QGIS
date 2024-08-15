@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsMeshLayer.LayerOptions.__doc__ = """Setting options for loading mesh layers."""
+try:
+    QgsMeshLayer.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshLayer.LayerOptions.__group__ = ['mesh']
+except NameError:
+    pass

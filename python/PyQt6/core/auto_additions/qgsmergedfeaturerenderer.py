@@ -4,3 +4,7 @@ QgsMergedFeatureRenderer.InvertOnly = QgsMergedFeatureRenderer.GeometryOperation
 QgsMergedFeatureRenderer.MergeAndInvert = QgsMergedFeatureRenderer.GeometryOperation.MergeAndInvert
 QgsMergedFeatureRenderer.create = staticmethod(QgsMergedFeatureRenderer.create)
 QgsMergedFeatureRenderer.convertFromRenderer = staticmethod(QgsMergedFeatureRenderer.convertFromRenderer)
+try:
+    QgsMergedFeatureRenderer.__group__ = ['symbology']
+except NameError:
+    pass

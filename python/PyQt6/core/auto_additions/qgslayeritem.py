@@ -12,3 +12,7 @@ QgsLayerItem.iconDefault = staticmethod(QgsLayerItem.iconDefault)
 QgsLayerItem.iconMesh = staticmethod(QgsLayerItem.iconMesh)
 QgsLayerItem.iconVectorTile = staticmethod(QgsLayerItem.iconVectorTile)
 QgsLayerItem.iconPointCloud = staticmethod(QgsLayerItem.iconPointCloud)
+try:
+    QgsLayerItem.__group__ = ['browser']
+except NameError:
+    pass
