@@ -11,6 +11,9 @@
 
 class QgsVectorLayerEditUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for editing vector layers.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorlayereditutils.h"

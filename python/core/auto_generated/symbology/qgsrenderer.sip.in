@@ -47,6 +47,9 @@ typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
 
 class QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+Abstract base class for all 2D vector feature renderers.
+%End
 
 %TypeHeaderCode
 #include "qgsrenderer.h"

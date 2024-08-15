@@ -760,6 +760,9 @@ Renders the diagrams for all features with the same settings
 
 class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
 {
+%Docstring(signature="appended")
+Alters the size of rendered diagrams using a linear scaling.
+%End
 
 %TypeHeaderCode
 #include "qgsdiagramrenderer.h"

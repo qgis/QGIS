@@ -10,6 +10,9 @@
 
 class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+A vector feature renderer which uses numeric attributes to classify features into different ranges.
+%End
 
 %TypeHeaderCode
 #include "qgsgraduatedsymbolrenderer.h"

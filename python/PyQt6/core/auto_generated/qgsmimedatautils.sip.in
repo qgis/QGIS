@@ -11,6 +11,9 @@
 
 class QgsMimeDataUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for working with MIME data.
+%End
 
 %TypeHeaderCode
 #include "qgsmimedatautils.h"

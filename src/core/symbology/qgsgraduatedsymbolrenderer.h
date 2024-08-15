@@ -31,6 +31,7 @@ class QgsExpression;
 /**
  * \ingroup core
  * \class QgsGraduatedSymbolRenderer
+ * \brief A vector feature renderer which uses numeric attributes to classify features into different ranges.
  */
 class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 {

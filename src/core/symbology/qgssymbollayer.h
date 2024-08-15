@@ -1072,6 +1072,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 /**
  * \ingroup core
  * \class QgsLineSymbolLayer
+ *
+ * \brief Abstract base class for line symbol layers.
  */
 class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 {
@@ -1267,6 +1269,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 /**
  * \ingroup core
  * \class QgsFillSymbolLayer
+ * \brief Abstract base class for fill symbol layers.
  */
 class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 {

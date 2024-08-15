@@ -23,6 +23,7 @@
 
 /**
  * \ingroup core
+ * \brief Contains utility functions for working with map scales.
  */
 class CORE_EXPORT QgsScaleUtils
 {

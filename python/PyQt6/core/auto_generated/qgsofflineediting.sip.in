@@ -12,6 +12,9 @@
 
 class QgsOfflineEditing : QObject
 {
+%Docstring(signature="appended")
+Handles logic relating to synchronizing online and offline copies of layer data.
+%End
 
 %TypeHeaderCode
 #include "qgsofflineediting.h"

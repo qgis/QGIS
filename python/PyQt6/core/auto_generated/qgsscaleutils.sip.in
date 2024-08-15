@@ -11,6 +11,9 @@
 
 class QgsScaleUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for working with map scales.
+%End
 
 %TypeHeaderCode
 #include "qgsscaleutils.h"

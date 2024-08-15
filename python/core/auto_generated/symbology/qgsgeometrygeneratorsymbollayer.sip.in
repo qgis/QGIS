@@ -11,6 +11,9 @@
 
 class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 {
+%Docstring(signature="appended")
+A symbol layer subclass which alters rendered feature shapes through the use of QGIS expressions.
+%End
 
 %TypeHeaderCode
 #include "qgsgeometrygeneratorsymbollayer.h"

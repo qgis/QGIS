@@ -33,6 +33,7 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 /**
  * \ingroup core
  * \class QgsVectorLayerEditBuffer
+ * \brief Stores queued vector layer edit operations prior to committing changes to the layer's data provider.
  */
 class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 {

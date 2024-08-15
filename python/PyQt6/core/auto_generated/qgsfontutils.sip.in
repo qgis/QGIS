@@ -12,6 +12,9 @@
 
 class QgsFontUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for working with fonts.
+%End
 
 %TypeHeaderCode
 #include "qgsfontutils.h"

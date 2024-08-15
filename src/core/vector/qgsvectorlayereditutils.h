@@ -27,6 +27,7 @@ class QgsGeometry;
 /**
  * \ingroup core
  * \class QgsVectorLayerEditUtils
+ * \brief Contains utility functions for editing vector layers.
  */
 class CORE_EXPORT QgsVectorLayerEditUtils
 {

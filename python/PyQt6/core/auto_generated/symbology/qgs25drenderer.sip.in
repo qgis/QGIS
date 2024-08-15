@@ -10,6 +10,9 @@
 
 class Qgs25DRenderer : QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+A vector renderer which represents 3D features in an isometric view.
+%End
 
 %TypeHeaderCode
 #include "qgs25drenderer.h"
