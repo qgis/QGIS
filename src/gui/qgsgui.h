@@ -298,8 +298,21 @@ class GUI_EXPORT QgsGui : public QObject
      * The lambda will be run either if macros are currently allowed or if the user accepts the message.
      * The \a messageBar must be given in such case.
      * \param messageBar the message bar must be provided if a lambda method is used.
+     *
+     * \note Not available in Python bindings
      */
     static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
+
+    /**
+     * Returns TRUE if python expression functions from project are currently allowed to be loaded.
+     *
+     * If the global option is to ask user, a button to enable them will be shown in a message bar.
+     * \param messageBar Message bar to communicate with the user.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.40
+     */
+    static bool pythonExpressionFromProjectAllowed( QgsMessageBar *messageBar ) SIP_SKIP;
 
     /**
      * Initializes callout widgets.

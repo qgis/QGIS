@@ -519,6 +519,7 @@ Returns the number of functions defined in the parser
 :return: The number of function defined in the parser.
 %End
 
+
     static QString quotedColumnRef( QString name );
 %Docstring
 Returns a quoted column reference (in double quotes)

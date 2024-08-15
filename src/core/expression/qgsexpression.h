@@ -631,6 +631,15 @@ class CORE_EXPORT QgsExpression
     static int functionCount();
 
     /**
+     * Loads python expression functions stored in the currrent project
+     * \returns Whether the project functions where loaded or not.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    static bool loadFunctionsFromProject() SIP_SKIP;
+
+    /**
      * Returns a quoted column reference (in double quotes)
      * \see quotedString()
      * \see quotedValue()

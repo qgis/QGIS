@@ -6579,10 +6579,10 @@ bool QgisApp::addProject( const QString &projectFile )
       }
 
       // does the project have expression functions?
-      QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
+      const QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
       if ( !projectFunctions.isEmpty() )
       {
-        QgsPythonRunner::run( projectFunctions );
+        QgsGui::pythonExpressionFromProjectAllowed( mInfoBar );
       }
     }
 #endif

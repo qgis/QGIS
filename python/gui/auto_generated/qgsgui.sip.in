@@ -251,6 +251,7 @@ Returns the screen at the given global ``point`` (pixel).
 
 
 
+
   signals:
 
     void optionsChanged();

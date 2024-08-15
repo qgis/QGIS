@@ -443,6 +443,59 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
   return false;
 }
 
+bool QgsGui::pythonExpressionFromProjectAllowed( QgsMessageBar *messageBar )
+{
+  const Qgis::PythonMacroMode pythonMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+
+  switch ( pythonMode )
+  {
+    case Qgis::PythonMacroMode::SessionOnly:
+    case Qgis::PythonMacroMode::Always:
+      QgsExpression::loadFunctionsFromProject();
+      return true;
+    case Qgis::PythonMacroMode::Never:
+    case Qgis::PythonMacroMode::NotForThisSession:
+      if ( messageBar )
+      {
+        messageBar->pushMessage( tr( "Python Expressions" ),
+                                 tr( "Python expressions from project are currently disabled and will not be loaded" ),
+                                 Qgis::MessageLevel::Warning );
+      }
+      return false;
+    case Qgis::PythonMacroMode::Ask:
+      // create the notification widget for expressions from project
+      Q_ASSERT( messageBar );
+      if ( messageBar )
+      {
+        QToolButton *btnEnableExpressionsFromProject = new QToolButton();
+        btnEnableExpressionsFromProject->setText( tr( "Enable python expressions from project" ) );
+        btnEnableExpressionsFromProject->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+        btnEnableExpressionsFromProject->setCursor( Qt::PointingHandCursor );
+        btnEnableExpressionsFromProject->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QgsMessageBarItem *expressionFromProjectMsg = new QgsMessageBarItem(
+          tr( "Security warning" ),
+          tr( "Python expressions from project cannot currently be loaded." ),
+          btnEnableExpressionsFromProject,
+          Qgis::MessageLevel::Warning,
+          0,
+          messageBar );
+
+        connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [ = ]()
+        {
+          QgsExpression::loadFunctionsFromProject();
+          messageBar->popWidget( expressionFromProjectMsg );
+        } );
+
+        // display the notification widget
+        messageBar->pushItem( expressionFromProjectMsg );
+      }
+
+      return false;
+  }
+  return false;
+}
+
 void QgsGui::initCalloutWidgets()
 {
   static std::once_flag initialized;
