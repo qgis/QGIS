@@ -13,6 +13,9 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsVectorLayerEditBuffer : QObject
 {
+%Docstring(signature="appended")
+Stores queued vector layer edit operations prior to committing changes to the layer's data provider.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorlayereditbuffer.h"

@@ -14,6 +14,9 @@
 
 class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+Renders polygons using a single fill and stroke color.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
@@ -2718,6 +2721,10 @@ Returns the map scale for the density area.
 
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+
+A fill symbol layer which renders a marker symbol at the centroid of a polygon geometry.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"

@@ -18,6 +18,9 @@ typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 
 class QgsSymbolLayerUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for working with symbols and symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerutils.h"

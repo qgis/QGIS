@@ -35,6 +35,7 @@ class QgsCptCitySelectionItem;
 /**
  * \class QgsCptCityArchive
  * \ingroup core
+ * \brief Represents a CPT City color scheme.
  */
 class CORE_EXPORT QgsCptCityArchive
 {
@@ -316,6 +317,7 @@ class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 /**
  * \ingroup core
  * \class QgsCptCityBrowserModel
+ * \brief A custom item model for display of CPT City color palettes.
  */
 class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 {

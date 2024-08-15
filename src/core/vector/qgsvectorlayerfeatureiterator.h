@@ -149,6 +149,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
 /**
  * \ingroup core
+ * \brief A feature iterator which iterates over features from a QgsVectorLayer.
  */
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {

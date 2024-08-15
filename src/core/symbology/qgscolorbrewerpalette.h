@@ -24,6 +24,7 @@
 /**
  * \ingroup core
  * \class QgsColorBrewerPalette
+ * \brief Contains utility functions for working with Color Brewer color schemes.
  */
 class CORE_EXPORT QgsColorBrewerPalette
 {

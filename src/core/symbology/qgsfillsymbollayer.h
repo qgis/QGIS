@@ -39,6 +39,7 @@ class QgsPathResolver;
 /**
  * \ingroup core
  * \class QgsSimpleFillSymbolLayer
+ * \brief Renders polygons using a single fill and stroke color.
  */
 class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 {
@@ -2476,6 +2477,8 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsCentroidFillSymbolLayer
+ *
+ * \brief A fill symbol layer which renders a marker symbol at the centroid of a polygon geometry.
  */
 class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 {

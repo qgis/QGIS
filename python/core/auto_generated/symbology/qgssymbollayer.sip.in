@@ -1117,6 +1117,10 @@ Adjusts a marker offset to account for rotation.
 
 class QgsLineSymbolLayer : QgsSymbolLayer
 {
+%Docstring(signature="appended")
+
+Abstract base class for line symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayer.h"
@@ -1331,6 +1335,9 @@ for a polygon.
 
 class QgsFillSymbolLayer : QgsSymbolLayer
 {
+%Docstring(signature="appended")
+Abstract base class for fill symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayer.h"

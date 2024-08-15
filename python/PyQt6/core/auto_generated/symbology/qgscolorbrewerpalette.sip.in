@@ -10,6 +10,9 @@
 
 class QgsColorBrewerPalette
 {
+%Docstring(signature="appended")
+Contains utility functions for working with Color Brewer color schemes.
+%End
 
 %TypeHeaderCode
 #include "qgscolorbrewerpalette.h"
