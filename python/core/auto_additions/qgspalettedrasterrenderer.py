@@ -14,3 +14,4 @@ QgsPalettedRasterRenderer.classDataFromString = staticmethod(QgsPalettedRasterRe
 QgsPalettedRasterRenderer.classDataFromFile = staticmethod(QgsPalettedRasterRenderer.classDataFromFile)
 QgsPalettedRasterRenderer.classDataToString = staticmethod(QgsPalettedRasterRenderer.classDataToString)
 QgsPalettedRasterRenderer.classDataFromRaster = staticmethod(QgsPalettedRasterRenderer.classDataFromRaster)
+QgsPalettedRasterRenderer.Class.__doc__ = """Properties of a single value class"""

@@ -119,6 +119,7 @@ class Context:
         self.doxy_inside_sip_run: int = 0
         self.has_pushed_force_int: bool = False
         self.attribute_docstrings = defaultdict(dict)
+        self.struct_docstrings = defaultdict(dict)
         self.current_method_name: str = ''
         self.static_methods = defaultdict(dict)
 
@@ -126,6 +127,9 @@ class Context:
         return '.'.join(
             _c for _c in ([c for c in self.classname if c != self.actual_class] + [
                 self.actual_class]) if _c)
+
+    def current_fully_qualified_struct_name(self) -> str:
+        return '.'.join(self.class_and_struct)
 
 
 CONTEXT = Context()
@@ -2303,6 +2307,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 f'storing attribute docstring for {class_name} : {attribute_name_match.group(1)}')
             CONTEXT.attribute_docstrings[class_name][
                 attribute_name_match.group(1)] = CONTEXT.comment
+        elif CONTEXT.current_fully_qualified_struct_name() and re.search(r'\s*struct ', CONTEXT.current_line) and CONTEXT.comment:
+            class_name = CONTEXT.current_fully_qualified_struct_name()
+            dbg_info(
+                f'storing struct docstring for {class_name}')
+            CONTEXT.struct_docstrings[class_name] = CONTEXT.comment
 
         CONTEXT.comment = ''
         CONTEXT.return_type = ''
@@ -2529,6 +2538,10 @@ for class_name, static_methods in CONTEXT.static_methods.items():
             method_name = 'temporalExtent'
 
         CONTEXT.output_python.append(f'{class_name}.{method_name} = staticmethod({class_name}.{method_name})\n')
+
+
+for class_name, doc_string in CONTEXT.struct_docstrings.items():
+    CONTEXT.output_python.append(f'{class_name}.__doc__ = """{doc_string}"""\n')
 
 
 if args.python_output and CONTEXT.output_python:

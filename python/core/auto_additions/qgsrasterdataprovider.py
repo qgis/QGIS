@@ -26,3 +26,15 @@ QgsRasterDataProvider.identifyFormatName = staticmethod(QgsRasterDataProvider.id
 QgsRasterDataProvider.identifyFormatFromName = staticmethod(QgsRasterDataProvider.identifyFormatFromName)
 QgsRasterDataProvider.identifyFormatLabel = staticmethod(QgsRasterDataProvider.identifyFormatLabel)
 QgsRasterDataProvider.identifyFormatToCapability = staticmethod(QgsRasterDataProvider.identifyFormatToCapability)
+QgsRasterDataProvider.VirtualRasterInputLayers.__doc__ = """Struct that stores information of the raster used in :py:class:`QgsVirtualRasterProvider` for the calculations,
+this struct is  stored in the DecodedUriParameters
+
+.. note::
+
+   used by :py:class:`QgsVirtualRasterProvider` only"""
+QgsRasterDataProvider.VirtualRasterParameters.__doc__ = """Struct that stores the information about the parameters that should be given to the
+:py:class:`QgsVirtualRasterProvider` through the :py:class:`QgsRasterDataProvider`.DecodedUriParameters
+
+.. note::
+
+   used by :py:class:`QgsVirtualRasterProvider` only"""

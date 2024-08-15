@@ -4,3 +4,6 @@ try:
 except NameError:
     pass
 QgsAttributeEditorElement.create = staticmethod(QgsAttributeEditorElement.create)
+QgsAttributeEditorElement.LabelStyle.__doc__ = """The TabStyle struct defines color and font overrides for form fields, tabs and groups labels.
+
+.. versionadded:: 3.26"""

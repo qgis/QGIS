@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsMesh.compareFaces = staticmethod(QgsMesh.compareFaces)
+QgsMesh.__doc__ = """
+Mesh - vertices, edges and faces
+
+.. versionadded:: 3.6"""

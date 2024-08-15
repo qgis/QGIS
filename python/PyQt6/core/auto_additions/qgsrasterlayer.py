@@ -5,3 +5,4 @@ except NameError:
     pass
 QgsRasterLayer.isValidRasterFileName = staticmethod(QgsRasterLayer.isValidRasterFileName)
 QgsRasterLayer.lastModified = staticmethod(QgsRasterLayer.lastModified)
+QgsRasterLayer.LayerOptions.__doc__ = """Setting options for loading raster layers."""

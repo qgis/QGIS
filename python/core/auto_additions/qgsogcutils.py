@@ -9,3 +9,6 @@ QgsOgcUtils.colorFromOgcFill = staticmethod(QgsOgcUtils.colorFromOgcFill)
 QgsOgcUtils.expressionFromOgcFilter = staticmethod(QgsOgcUtils.expressionFromOgcFilter)
 QgsOgcUtils.expressionToOgcExpression = staticmethod(QgsOgcUtils.expressionToOgcExpression)
 QgsOgcUtils.elseFilterExpression = staticmethod(QgsOgcUtils.elseFilterExpression)
+QgsOgcUtils.Context.__doc__ = """The Context struct stores the current layer and coordinate transform context.
+
+.. versionadded:: 3.14"""

@@ -7,3 +7,5 @@ QgsEllipsoidUtils.ellipsoidParameters = staticmethod(QgsEllipsoidUtils.ellipsoid
 QgsEllipsoidUtils.definitions = staticmethod(QgsEllipsoidUtils.definitions)
 QgsEllipsoidUtils.acronyms = staticmethod(QgsEllipsoidUtils.acronyms)
 QgsEllipsoidUtils.celestialBodies = staticmethod(QgsEllipsoidUtils.celestialBodies)
+QgsEllipsoidUtils.EllipsoidParameters.__doc__ = """Contains parameters for an ellipsoid."""
+QgsEllipsoidUtils.EllipsoidDefinition.__doc__ = """Contains definition of an ellipsoid."""

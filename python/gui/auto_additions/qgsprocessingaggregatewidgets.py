@@ -18,3 +18,4 @@ try:
     QgsAggregateMappingWidget.__attribute_docs__ = {'changed': 'Emitted when the aggregates defined in the widget are changed.\n'}
 except NameError:
     pass
+QgsAggregateMappingModel.Aggregate.__doc__ = """The Aggregate struct holds information about an aggregate column"""

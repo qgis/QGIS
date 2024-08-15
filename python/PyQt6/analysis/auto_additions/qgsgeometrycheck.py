@@ -17,3 +17,11 @@ try:
     QgsGeometryCheck.__attribute_docs__ = {'what': 'What level this change affects.', 'type': 'What action this change performs.', 'vidx': 'The index of the part / ring / vertex, depending on :py:func:`what`.'}
 except NameError:
     pass
+QgsGeometryCheck.LayerFeatureIds.__doc__ = """A list of layers and feature ids for each of these layers.
+In C++, the member `ids` can be accessed directly.
+In Python some accessor methods will need to be written.
+
+.. versionadded:: 3.4"""
+QgsGeometryCheck.Change.__doc__ = """Descripts a change to fix a geometry.
+
+.. versionadded:: 3.4"""

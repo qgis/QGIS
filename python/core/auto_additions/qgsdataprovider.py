@@ -4,3 +4,10 @@ try:
 except NameError:
     pass
 QgsDataProvider.sublayerSeparator = staticmethod(QgsDataProvider.sublayerSeparator)
+QgsDataProvider.ProviderOptions.__doc__ = """Setting options for creating vector data providers.
+
+.. note::
+
+   coordinateTransformContext was added in QGIS 3.8
+
+.. versionadded:: 3.2"""

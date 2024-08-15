@@ -69,3 +69,5 @@ QgsVectorFileWriter.defaultLayerOptions = staticmethod(QgsVectorFileWriter.defau
 QgsVectorFileWriter.editionCapabilities = staticmethod(QgsVectorFileWriter.editionCapabilities)
 QgsVectorFileWriter.targetLayerExists = staticmethod(QgsVectorFileWriter.targetLayerExists)
 QgsVectorFileWriter.areThereNewFieldsToCreate = staticmethod(QgsVectorFileWriter.areThereNewFieldsToCreate)
+QgsVectorFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
+QgsVectorFileWriter.DriverDetails.__doc__ = """Details of available driver formats."""

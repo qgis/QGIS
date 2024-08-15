@@ -41,3 +41,4 @@ QgsExpression.formatPreviewString = staticmethod(QgsExpression.formatPreviewStri
 QgsExpression.createFieldEqualityExpression = staticmethod(QgsExpression.createFieldEqualityExpression)
 QgsExpression.isFieldEqualityExpression = staticmethod(QgsExpression.isFieldEqualityExpression)
 QgsExpression.attemptReduceToInClause = staticmethod(QgsExpression.attemptReduceToInClause)
+QgsExpression.ParserError.__doc__ = """Details about any parser errors that were found when parsing the expression."""
