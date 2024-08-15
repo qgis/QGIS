@@ -32,6 +32,7 @@
 #include "qgschunkedentity.h"
 #include "qgsterrainentity.h"
 #include "qgsraycastingutils_p.h"
+#include "qgsterrainsettings.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -368,7 +369,7 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
     }
   }
 
-  const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainVerticalScale() ) + offset;
+  const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainSettings()->verticalScale() ) + offset;
   return z;
 }
 
@@ -416,7 +417,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
         break;
     }
 
-    const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainVerticalScale() ) + offset;
+    const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainSettings()->verticalScale() ) + offset;
     lineString->setZAt( i, z );
   }
 }
@@ -489,7 +490,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
     {
       geomZ = pt.z();
     }
-    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator() ? context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * context.terrainVerticalScale() : 0;
+    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator() ? context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * context.terrainSettings()->verticalScale() : 0;
     float h = 0.0f;
     switch ( altClamp )
     {

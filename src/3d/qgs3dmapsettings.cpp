@@ -33,6 +33,8 @@
 #include "qgs3drendercontext.h"
 #include "qgsthreadingutils.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsterrainsettings.h"
+#include "qgsflatterrainsettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -45,6 +47,7 @@ Qgs3DMapSettings::Qgs3DMapSettings()
     QgsProject::instance()->setDirty();
   } );
   connectChangedSignalsToSettingsChanged();
+  mTerrainSettings = std::make_unique<QgsFlatTerrainSettings>();
 }
 
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
@@ -54,12 +57,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
   , mSelectionColor( other.mSelectionColor )
-  , mTerrainVerticalScale( other.mTerrainVerticalScale )
   , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
-  , mMapTileResolution( other.mMapTileResolution )
-  , mMaxTerrainScreenError( other.mMaxTerrainScreenError )
-  , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
-  , mTerrainElevationOffset( other.mTerrainElevationOffset )
+  , mTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() )
   , mTerrainShadingEnabled( other.mTerrainShadingEnabled )
   , mTerrainShadingMaterial( other.mTerrainShadingMaterial )
   , mTerrainMapTheme( other.mTerrainMapTheme )
@@ -174,12 +173,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elemTerrain = elem.firstChildElement( QStringLiteral( "terrain" ) );
   mTerrainRenderingEnabled = elemTerrain.attribute( QStringLiteral( "terrain-rendering-enabled" ), QStringLiteral( "1" ) ).toInt();
-  mTerrainVerticalScale = elemTerrain.attribute( QStringLiteral( "exaggeration" ), QStringLiteral( "1" ) ).toFloat();
-  mMapTileResolution = elemTerrain.attribute( QStringLiteral( "texture-size" ), QStringLiteral( "512" ) ).toInt();
-  mMaxTerrainScreenError = elemTerrain.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toFloat();
-  mMaxTerrainGroundError = elemTerrain.attribute( QStringLiteral( "max-ground-error" ), QStringLiteral( "1" ) ).toFloat();
   mTerrainShadingEnabled = elemTerrain.attribute( QStringLiteral( "shading-enabled" ), QStringLiteral( "0" ) ).toInt();
-  mTerrainElevationOffset = elemTerrain.attribute( QStringLiteral( "elevation-offset" ), QStringLiteral( "0.0" ) ).toFloat();
 
   QDomElement elemTerrainShadingMaterial = elemTerrain.firstChildElement( QStringLiteral( "shading-material" ) );
   if ( !elemTerrainShadingMaterial.isNull() )
@@ -373,12 +367,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
 
   QDomElement elemTerrain = doc.createElement( QStringLiteral( "terrain" ) );
   elemTerrain.setAttribute( QStringLiteral( "terrain-rendering-enabled" ), mTerrainRenderingEnabled ? 1 : 0 );
-  elemTerrain.setAttribute( QStringLiteral( "exaggeration" ), QString::number( mTerrainVerticalScale ) );
-  elemTerrain.setAttribute( QStringLiteral( "texture-size" ), mMapTileResolution );
-  elemTerrain.setAttribute( QStringLiteral( "max-terrain-error" ), QString::number( mMaxTerrainScreenError ) );
-  elemTerrain.setAttribute( QStringLiteral( "max-ground-error" ), QString::number( mMaxTerrainGroundError ) );
   elemTerrain.setAttribute( QStringLiteral( "shading-enabled" ), mTerrainShadingEnabled ? 1 : 0 );
-  elemTerrain.setAttribute( QStringLiteral( "elevation-offset" ), mTerrainElevationOffset );
 
   QDomElement elemTerrainShadingMaterial = doc.createElement( QStringLiteral( "shading-material" ) );
   mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial, context );
@@ -636,18 +625,21 @@ void Qgs3DMapSettings::setTerrainVerticalScale( double zScale )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( zScale == mTerrainVerticalScale )
+  if ( zScale == mTerrainSettings->verticalScale() )
     return;
 
-  mTerrainVerticalScale = zScale;
+  mTerrainSettings->setVerticalScale( zScale );
+  Q_NOWARN_DEPRECATED_PUSH
   emit terrainVerticalScaleChanged();
+  Q_NOWARN_DEPRECATED_POP
+  emit terrainSettingsChanged();
 }
 
 double Qgs3DMapSettings::terrainVerticalScale() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mTerrainVerticalScale;
+  return mTerrainSettings->verticalScale();
 }
 
 void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
@@ -725,75 +717,126 @@ void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationPropertie
   }
 }
 
+const QgsAbstractTerrainSettings *Qgs3DMapSettings::terrainSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mTerrainSettings.get();
+}
+
+void Qgs3DMapSettings::setTerrainSettings( QgsAbstractTerrainSettings *settings )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  bool hasChanged = false;
+  if ( settings == mTerrainSettings.get() )
+  {
+    // emit signals anyway. We don't know if the caller changed settings on the pointer before calling this..
+    hasChanged = true;
+  }
+  else
+  {
+    hasChanged = !settings->equals( mTerrainSettings.get() );
+    mTerrainSettings.reset( settings );
+  }
+
+  if ( hasChanged )
+  {
+    // emit all the signals, we don't know exactly what's changed
+    Q_NOWARN_DEPRECATED_PUSH
+    emit mapTileResolutionChanged();
+    emit maxTerrainScreenErrorChanged();
+    emit maxTerrainGroundErrorChanged();
+    emit terrainElevationOffsetChanged( mTerrainSettings->elevationOffset() );
+    emit terrainVerticalScaleChanged();
+    Q_NOWARN_DEPRECATED_POP
+
+    emit terrainSettingsChanged();
+  }
+}
+
 void Qgs3DMapSettings::setMapTileResolution( int res )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mMapTileResolution == res )
+  if ( mTerrainSettings->mapTileResolution() == res )
     return;
 
-  mMapTileResolution = res;
+  mTerrainSettings->setMapTileResolution( res );
+  Q_NOWARN_DEPRECATED_PUSH
   emit mapTileResolutionChanged();
+  Q_NOWARN_DEPRECATED_POP
+  emit terrainSettingsChanged();
 }
 
 int Qgs3DMapSettings::mapTileResolution() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mMapTileResolution;
+  return mTerrainSettings->mapTileResolution();
 }
 
-void Qgs3DMapSettings::setMaxTerrainScreenError( float error )
+void Qgs3DMapSettings::setMaxTerrainScreenError( double error )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mMaxTerrainScreenError == error )
+  if ( mTerrainSettings->maximumScreenError() == error )
     return;
 
-  mMaxTerrainScreenError = error;
+  mTerrainSettings->setMaximumScreenError( error );
+  Q_NOWARN_DEPRECATED_PUSH
   emit maxTerrainScreenErrorChanged();
+  Q_NOWARN_DEPRECATED_POP
+  emit terrainSettingsChanged();
 }
 
-float Qgs3DMapSettings::maxTerrainScreenError() const
+double Qgs3DMapSettings::maxTerrainScreenError() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mMaxTerrainScreenError;
+  return mTerrainSettings->maximumScreenError();
 }
 
-void Qgs3DMapSettings::setMaxTerrainGroundError( float error )
+void Qgs3DMapSettings::setMaxTerrainGroundError( double error )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mMaxTerrainGroundError == error )
+  if ( mTerrainSettings->maximumGroundError() == error )
     return;
 
-  mMaxTerrainGroundError = error;
+  mTerrainSettings->setMaximumGroundError( error );
+  Q_NOWARN_DEPRECATED_PUSH
   emit maxTerrainGroundErrorChanged();
+  Q_NOWARN_DEPRECATED_POP
+
+  emit terrainSettingsChanged();
 }
 
-void Qgs3DMapSettings::setTerrainElevationOffset( float offset )
+void Qgs3DMapSettings::setTerrainElevationOffset( double offset )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mTerrainElevationOffset == offset )
+  if ( mTerrainSettings->elevationOffset() == offset )
     return;
-  mTerrainElevationOffset = offset;
-  emit terrainElevationOffsetChanged( mTerrainElevationOffset );
+  mTerrainSettings->setElevationOffset( offset );
+  Q_NOWARN_DEPRECATED_PUSH
+  emit terrainElevationOffsetChanged( offset );
+  Q_NOWARN_DEPRECATED_POP
+  emit terrainSettingsChanged();
 }
 
-float Qgs3DMapSettings::terrainElevationOffset() const
+double Qgs3DMapSettings::terrainElevationOffset() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mTerrainElevationOffset;
+  return mTerrainSettings->elevationOffset();
 }
 
-float Qgs3DMapSettings::maxTerrainGroundError() const
+double Qgs3DMapSettings::maxTerrainGroundError() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mMaxTerrainGroundError;
+  return mTerrainSettings->maximumGroundError();
 }
 
 void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
@@ -1441,11 +1484,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::selectionColorChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::mapTileResolutionChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::terrainSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::terrainMapThemeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapSettings::settingsChanged );

@@ -76,6 +76,7 @@
 #include "qgs3dmapexportsettings.h"
 #include "qgsmessageoutput.h"
 #include "qgsframegraph.h"
+#include "qgsterrainsettings.h"
 
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
@@ -123,10 +124,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   createTerrainDeferred();
   connect( &map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapScene::createTerrain );
-  connect( &map, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapScene::createTerrain );
-  connect( &map, &Qgs3DMapSettings::mapTileResolutionChanged, this, &Qgs3DMapScene::createTerrain );
-  connect( &map, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapScene::createTerrain );
-  connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
+
+  connect( &map, &Qgs3DMapSettings::terrainSettingsChanged, this, &Qgs3DMapScene::createTerrain );
+
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
@@ -475,7 +475,7 @@ void Qgs3DMapScene::createTerrainDeferred()
   if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
   {
     double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
-    int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
+    int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->maximumGroundError() );
     const QgsBox3D rootBox3D = mMap.terrainGenerator()->rootChunkBox3D( mMap );
     float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
     const QgsBox3D clippingBox3D( mMap.extent(), rootBox3D.zMinimum(), rootBox3D.zMaximum() );
