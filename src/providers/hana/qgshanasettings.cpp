@@ -64,7 +64,7 @@ void QgsHanaSettings::setKeyColumns( const QString &schemaName, const QString &o
 
 void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 {
-  if ( uri.hasParam( ( "connectionType" ) ) )
+  if ( uri.hasParam( QStringLiteral( "connectionType" ) ) )
     mConnectionType = static_cast<QgsHanaConnectionType>( uri.param( QStringLiteral( "connectionType" ) ).toUInt() );
   switch ( mConnectionType )
   {
