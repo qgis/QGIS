@@ -9,3 +9,5 @@ QgsCesiumUtils.parseSphere = staticmethod(QgsCesiumUtils.parseSphere)
 QgsCesiumUtils.transformSphere = staticmethod(QgsCesiumUtils.transformSphere)
 QgsCesiumUtils.extractGltfFromB3dm = staticmethod(QgsCesiumUtils.extractGltfFromB3dm)
 QgsCesiumUtils.extractGltfFromTileContent = staticmethod(QgsCesiumUtils.extractGltfFromTileContent)
+QgsCesiumUtils.B3DMContents.__doc__ = """Encapsulates the contents of a B3DM file."""
+QgsCesiumUtils.TileContents.__doc__ = """Encapsulates the contents of a 3D tile."""

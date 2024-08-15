@@ -9,3 +9,4 @@ QgsTemporalUtils.exportAnimation = staticmethod(QgsTemporalUtils.exportAnimation
 QgsTemporalUtils.calculateFrameTime = staticmethod(QgsTemporalUtils.calculateFrameTime)
 QgsTemporalUtils.calculateDateTimesUsingDuration = staticmethod(QgsTemporalUtils.calculateDateTimesUsingDuration)
 QgsTemporalUtils.calculateDateTimesFromISO8601 = staticmethod(QgsTemporalUtils.calculateDateTimesFromISO8601)
+QgsTemporalUtils.AnimationExportSettings.__doc__ = """Contains settings relating to exporting animations"""

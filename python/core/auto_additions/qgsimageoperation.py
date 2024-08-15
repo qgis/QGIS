@@ -14,3 +14,4 @@ QgsImageOperation.gaussianBlur = staticmethod(QgsImageOperation.gaussianBlur)
 QgsImageOperation.flipImage = staticmethod(QgsImageOperation.flipImage)
 QgsImageOperation.nonTransparentImageRect = staticmethod(QgsImageOperation.nonTransparentImageRect)
 QgsImageOperation.cropTransparent = staticmethod(QgsImageOperation.cropTransparent)
+QgsImageOperation.DistanceTransformProperties.__doc__ = """Struct for storing properties of a distance transform operation"""

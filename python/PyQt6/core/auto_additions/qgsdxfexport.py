@@ -56,3 +56,5 @@ QgsDxfExport.mapUnitScaleFactor = staticmethod(QgsDxfExport.mapUnitScaleFactor)
 QgsDxfExport.dxfLayerName = staticmethod(QgsDxfExport.dxfLayerName)
 QgsDxfExport.dxfEncoding = staticmethod(QgsDxfExport.dxfEncoding)
 QgsDxfExport.encodings = staticmethod(QgsDxfExport.encodings)
+QgsDxfExport.DxfLayer.__doc__ = """Layers and optional attribute index to split
+into multiple layers using attribute value as layer name."""

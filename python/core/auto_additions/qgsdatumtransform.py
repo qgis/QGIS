@@ -8,3 +8,28 @@ QgsDatumTransform.datumTransformations = staticmethod(QgsDatumTransform.datumTra
 QgsDatumTransform.datumTransformToProj = staticmethod(QgsDatumTransform.datumTransformToProj)
 QgsDatumTransform.projStringToDatumTransformId = staticmethod(QgsDatumTransform.projStringToDatumTransformId)
 QgsDatumTransform.datumTransformInfo = staticmethod(QgsDatumTransform.datumTransformInfo)
+QgsDatumTransform.TransformPair.__doc__ = """Contains datum transform information.
+
+.. deprecated::
+   Not used for builds based on Proj >= 6.0"""
+QgsDatumTransform.TransformInfo.__doc__ = """Contains datum transform information.
+
+.. deprecated::
+   Not used on builds based on Proj >= 6.0"""
+QgsDatumTransform.GridDetails.__doc__ = """Contains information about a projection transformation grid file.
+
+.. versionadded:: 3.8"""
+QgsDatumTransform.SingleOperationDetails.__doc__ = """Contains information about a single coordinate operation.
+
+.. note::
+
+   Only used in builds based on on Proj >= 6.2
+
+.. versionadded:: 3.10"""
+QgsDatumTransform.TransformDetails.__doc__ = """Contains information about a coordinate transformation operation.
+
+.. note::
+
+   Only used in builds based on on Proj >= 6.0
+
+.. versionadded:: 3.8"""

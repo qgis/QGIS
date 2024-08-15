@@ -17,3 +17,6 @@ QgsRuleBasedRenderer.convertFromRenderer = staticmethod(QgsRuleBasedRenderer.con
 QgsRuleBasedRenderer.convertToDataDefinedSymbology = staticmethod(QgsRuleBasedRenderer.convertToDataDefinedSymbology)
 QgsRuleBasedRenderer.Rule.createFromSld = staticmethod(QgsRuleBasedRenderer.Rule.createFromSld)
 QgsRuleBasedRenderer.Rule.create = staticmethod(QgsRuleBasedRenderer.Rule.create)
+QgsRuleBasedRenderer.FeatureToRender.__doc__ = """Feature for rendering by a QgsRuleBasedRenderer. Contains a QgsFeature and some flags."""
+QgsRuleBasedRenderer.RenderJob.__doc__ = """A QgsRuleBasedRenderer rendering job, consisting of a feature to be rendered with a particular symbol."""
+QgsRuleBasedRenderer.RenderLevel.__doc__ = """Render level: a list of jobs to be drawn at particular level for a QgsRuleBasedRenderer."""

@@ -86,3 +86,31 @@ try:
     QgsAbstractDatabaseProviderConnection.__attribute_docs__ = {'sql': 'The SQL expression that defines the SQL (query) layer', 'filter': 'Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability.Filters capability', 'layerName': 'Optional name for the new layer', 'primaryKeyColumns': 'List of primary key column names', 'geometryColumn': 'Name of the geometry column', 'disableSelectAtId': 'If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability.SelectAtId capability', 'geometryColumnName': 'Specifies the name of the geometry column to create the index for'}
 except NameError:
     pass
+QgsAbstractDatabaseProviderConnection.QueryResult.__doc__ = """The QueryResult class represents the result of a query executed by :py:func:`~QgsAbstractDatabaseProviderConnection.execSql`
+
+It encapsulates an iterator over the result rows and a list of the column names.
+
+Rows can be retrieved by iterating over the result with :py:func:`~QgsAbstractDatabaseProviderConnection.hasNextRow` and :py:func:`~QgsAbstractDatabaseProviderConnection.nextRow`
+or by calling :py:func:`~QgsAbstractDatabaseProviderConnection.rows` that will internally iterate over the results and return
+the whole result list.
+
+.. versionadded:: 3.18"""
+QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__doc__ = """The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
+
+.. seealso:: :py:func:`createSqlVectorLayer`
+
+.. versionadded:: 3.22"""
+QgsAbstractDatabaseProviderConnection.TableProperty.__doc__ = """The TableProperty class represents a database table or view.
+
+In case the table is a vector spatial table and it has multiple
+geometry columns, separate entries for each geometry column must
+be created.
+
+In case the table is a vector spatial table and the geometry column
+can contain multiple geometry types and/or CRSs, a clone of the property
+for the individual geometry type/CRS can be retrieved with at(i)"""
+QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__doc__ = """The GeometryColumnType struct represents the combination
+of geometry type and CRS for the table geometry column."""
+QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__doc__ = """The SpatialIndexOptions contains extra options relating to spatial index creation.
+
+.. versionadded:: 3.14"""

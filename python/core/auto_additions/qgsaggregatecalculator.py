@@ -6,3 +6,5 @@ except NameError:
 QgsAggregateCalculator.stringToAggregate = staticmethod(QgsAggregateCalculator.stringToAggregate)
 QgsAggregateCalculator.displayName = staticmethod(QgsAggregateCalculator.displayName)
 QgsAggregateCalculator.aggregates = staticmethod(QgsAggregateCalculator.aggregates)
+QgsAggregateCalculator.AggregateInfo.__doc__ = """Structured information about the available aggregates."""
+QgsAggregateCalculator.AggregateParameters.__doc__ = """A bundle of parameters controlling aggregate calculation"""

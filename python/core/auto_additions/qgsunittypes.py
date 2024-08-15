@@ -30,3 +30,5 @@ QgsUnitTypes.formatDistance = staticmethod(QgsUnitTypes.formatDistance)
 QgsUnitTypes.formatArea = staticmethod(QgsUnitTypes.formatArea)
 QgsUnitTypes.decodeRenderUnit = staticmethod(QgsUnitTypes.decodeRenderUnit)
 QgsUnitTypes.decodeLayoutUnit = staticmethod(QgsUnitTypes.decodeLayoutUnit)
+QgsUnitTypes.DistanceValue.__doc__ = """A combination of distance value and unit."""
+QgsUnitTypes.AreaValue.__doc__ = """A combination of area value and unit."""

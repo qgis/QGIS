@@ -7,3 +7,6 @@ try:
     QgsAbstractProfileResults.__attribute_docs__ = {'layerIdentifier': 'Identifier for grouping output features', 'geometry': 'Exported geometry', 'attributes': 'Exported attributes'}
 except NameError:
     pass
+QgsAbstractProfileResults.Feature.__doc__ = """Encapsulates information about a feature exported from the profile results.
+
+.. versionadded:: 3.32"""

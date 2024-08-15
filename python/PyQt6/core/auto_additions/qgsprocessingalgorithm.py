@@ -8,3 +8,6 @@ QgsProcessingAlgorithm.invalidRasterError = staticmethod(QgsProcessingAlgorithm.
 QgsProcessingAlgorithm.invalidSinkError = staticmethod(QgsProcessingAlgorithm.invalidSinkError)
 QgsProcessingAlgorithm.invalidPointCloudError = staticmethod(QgsProcessingAlgorithm.invalidPointCloudError)
 QgsProcessingAlgorithm.writeFeatureError = staticmethod(QgsProcessingAlgorithm.writeFeatureError)
+QgsProcessingAlgorithm.VectorProperties.__doc__ = """Properties of a vector source or sink used in an algorithm.
+
+.. versionadded:: 3.14"""

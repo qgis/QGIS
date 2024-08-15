@@ -5,3 +5,8 @@ try:
 except NameError:
     pass
 QgsServerWmsDimensionProperties.wmsDimensionDefaultDisplayLabels = staticmethod(QgsServerWmsDimensionProperties.wmsDimensionDefaultDisplayLabels)
+QgsServerMetadataUrlProperties.MetadataUrl.__doc__ = """MetadataUrl structure.
+MetadataUrl is a link to the detailed, standardized metadata about the data."""
+QgsServerWmsDimensionProperties.WmsDimensionInfo.__doc__ = """Setting to define QGIS Server WMS Dimension.
+
+.. versionadded:: 3.10"""

@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsVectorLayer.drawVertexMarker = staticmethod(QgsVectorLayer.drawVertexMarker)
+QgsVectorLayer.LayerOptions.__doc__ = """Setting options for loading vector layers."""
+QgsVectorLayer.DeleteContext.__doc__ = """Context for cascade delete features
+
+.. versionadded:: 3.14"""

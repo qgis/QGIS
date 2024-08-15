@@ -3,3 +3,4 @@ try:
     QgsVertexId.__attribute_docs__ = {'part': 'Part number', 'ring': 'Ring number', 'vertex': 'Vertex number', 'type': 'Vertex type'}
 except NameError:
     pass
+QgsVertexId.__doc__ = """Utility class for identifying a unique vertex within a geometry."""

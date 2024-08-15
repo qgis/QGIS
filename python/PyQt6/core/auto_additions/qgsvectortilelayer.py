@@ -3,3 +3,6 @@ try:
     QgsVectorTileLayer.__attribute_docs__ = {'transformContext': 'Coordinate transform context', 'selectionChanged': 'Emitted whenever the selected features in the layer are changed.\n\n.. versionadded:: 3.28\n'}
 except NameError:
     pass
+QgsVectorTileLayer.LayerOptions.__doc__ = """Setting options for loading vector tile layers.
+
+.. versionadded:: 3.22"""

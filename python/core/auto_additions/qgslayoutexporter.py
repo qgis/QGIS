@@ -6,3 +6,8 @@ except NameError:
 QgsLayoutExporter.exportToPdfs = staticmethod(QgsLayoutExporter.exportToPdfs)
 QgsLayoutExporter.requiresRasterization = staticmethod(QgsLayoutExporter.requiresRasterization)
 QgsLayoutExporter.containsAdvancedEffects = staticmethod(QgsLayoutExporter.containsAdvancedEffects)
+QgsLayoutExporter.PageExportDetails.__doc__ = """Contains details of a page being exported by the class"""
+QgsLayoutExporter.ImageExportSettings.__doc__ = """Contains settings relating to exporting layouts to raster images"""
+QgsLayoutExporter.PdfExportSettings.__doc__ = """Contains settings relating to exporting layouts to PDF"""
+QgsLayoutExporter.PrintExportSettings.__doc__ = """Contains settings relating to printing layouts"""
+QgsLayoutExporter.SvgExportSettings.__doc__ = """Contains settings relating to exporting layouts to SVG"""

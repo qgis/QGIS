@@ -8,3 +8,4 @@ try:
 except NameError:
     pass
 QgsDataDefinedSizeLegend.readXml = staticmethod(QgsDataDefinedSizeLegend.readXml)
+QgsDataDefinedSizeLegend.SizeClass.__doc__ = """Definition of one class for the legend"""

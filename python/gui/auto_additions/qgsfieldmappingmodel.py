@@ -15,3 +15,4 @@ try:
     QgsFieldMappingModel.__attribute_docs__ = {'originalName': 'The original name of the field', 'field': 'The field in its current status (it might have been renamed)', 'expression': 'The expression for the mapped field from the source fields'}
 except NameError:
     pass
+QgsFieldMappingModel.Field.__doc__ = """The Field struct holds information about a mapped field"""
