@@ -46,7 +46,13 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      */
     explicit QgsMapLayerComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Filters according to layer type and/or geometry type.
+    /**
+     * Sets \a filters for the layers displayed in the combo box.
+     *
+     * This method allows filtering layers according to layer type and/or geometry type.
+     *
+     * \see filters()
+     */
     void setFilters( Qgis::LayerFilters filters ) { mProxyModel->setFilters( filters ); }
 
     /**
@@ -57,13 +63,25 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      */
     Q_DECL_DEPRECATED void setFilters( int filters ) SIP_DEPRECATED { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
 
-    //! currently used filter on list layers
+    /**
+     * Returns any currently used filters on the listed layers.
+     *
+     * \see setFilters()
+     */
     Qgis::LayerFilters filters() const { return mProxyModel->filters(); }
 
-    //! except a list of layers not to be listed
+    /**
+     * Sets a list of layers which should be excluded from the combo box.
+     *
+     * \see exceptedLayerList()
+     */
     void setExceptedLayerList( const QList<QgsMapLayer *> &layerList ) { mProxyModel->setExceptedLayerList( layerList );}
 
-    //! returns the list of excepted layers
+    /**
+     * Returns a list of layers which should be excluded from the combo box.
+     *
+     * \see setExceptedLayerList()
+     */
     QList<QgsMapLayer *> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
 
     /**
@@ -162,7 +180,10 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     QgsMapLayer *layer( int layerIndex ) const;
 
   public slots:
-    //! setLayer set the current layer selected in the combo
+
+    /**
+     * Sets the current \a layer selected in the combo box.
+     */
     void setLayer( QgsMapLayer *layer );
 
   signals:
