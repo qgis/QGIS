@@ -85,7 +85,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     QgsRectangle rootChunkExtent() const override;
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
-    float heightAt( double x, double y, const Qgs3DMapSettings & ) const override;
+    float heightAt( double x, double y, const Qgs3DMapSettingsSnapshot &map ) const override;
 
   private slots:
     void updateTriangularMesh();

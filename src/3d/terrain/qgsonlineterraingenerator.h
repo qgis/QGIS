@@ -63,7 +63,7 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     Type type() const override;
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
-    float heightAt( double x, double y, const Qgs3DMapSettings &map ) const override;
+    float heightAt( double x, double y, const Qgs3DMapSettingsSnapshot &map ) const override;
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
     //void resolveReferences( const QgsProject &project ) override;

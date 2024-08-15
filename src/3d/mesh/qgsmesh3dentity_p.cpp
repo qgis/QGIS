@@ -20,12 +20,12 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "qgsmeshlayer.h"
-#include "qgs3dmapsettings.h"
+#include "qgs3dmapsettingssnapshot.h"
 #include "qgsmesh3dmaterial_p.h"
 
 
 
-QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DMapSettings &map,
+QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DMapSettingsSnapshot &map,
                                   const QgsTriangularMesh &triangularMesh,
                                   const QgsMesh3DSymbol *symbol )
   : mMapSettings( map )
@@ -34,7 +34,7 @@ QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DMapSettings &map,
 {}
 
 QgsMeshDataset3DEntity::QgsMeshDataset3DEntity(
-  const Qgs3DMapSettings &map,
+  const Qgs3DMapSettingsSnapshot &map,
   const QgsTriangularMesh &triangularMesh,
   QgsMeshLayer *meshLayer,
   const QgsMesh3DSymbol *symbol )
@@ -77,7 +77,7 @@ QgsMeshLayer *QgsMeshDataset3DEntity::layer() const
 }
 
 QgsMesh3DTerrainTileEntity::QgsMesh3DTerrainTileEntity(
-  const Qgs3DMapSettings &map,
+  const Qgs3DMapSettingsSnapshot &map,
   const QgsTriangularMesh &triangularMesh,
   const QgsMesh3DSymbol *symbol,
   QgsChunkNodeId nodeId,

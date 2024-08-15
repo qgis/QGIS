@@ -40,6 +40,7 @@ class QgsLightSource;
 class QgsAbstract3DRenderer;
 class QgsReadWriteContext;
 class QgsProject;
+class Qgs3DMapSettingsSnapshot;
 
 class QDomElement;
 
@@ -47,6 +48,9 @@ class QDomElement;
  * \ingroup 3d
  * \brief Definition of the world.
  *
+ * \warning Qgs3DMapSettings are a QObject subclass, and accordingly are not
+ * safe for access across different threads. See Qgs3DMapSettingsSnapshot instead
+ * for a safe snapshot of settings from Qgs3DMapSettings.
  */
 class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObject
 {
@@ -58,6 +62,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     ~Qgs3DMapSettings() override;
 
     Qgs3DMapSettings &operator=( Qgs3DMapSettings const & ) = delete;
+
+    /**
+     * Returns a snapshot of settings from this object in a thread-safe, cheap-to-copy structure.
+     *
+     * \since QGIS 3.40
+     */
+    Qgs3DMapSettingsSnapshot snapshot() const SIP_SKIP;
 
     //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

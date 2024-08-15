@@ -23,7 +23,7 @@
 
 
 QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *layer,
-    const Qgs3DMapSettings &map,
+    const Qgs3DMapSettingsSnapshot &map,
     const QgsCoordinateTransform &coordinateTransform,
     QgsPointCloud3DSymbol *symbol,
     float maximumScreenSpaceError,

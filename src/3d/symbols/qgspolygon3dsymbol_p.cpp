@@ -90,7 +90,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
   outEdges.withAdjacency = true;
-  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, &context.map() );
+  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context.map() );
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 

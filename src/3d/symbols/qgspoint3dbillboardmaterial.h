@@ -53,10 +53,10 @@ class QgsPoint3DBillboardMaterial : public Qt3DRender::QMaterial
     QSizeF windowSize() const;
 
     //! Set default symbol for the texture with \a map and \a selected parameter for rendering.
-    void useDefaultSymbol( const Qgs3DMapSettings &map, bool selected = false );
+    void useDefaultSymbol( const Qgs3DMapSettingsSnapshot &map, bool selected = false );
 
     //! Set \a markerSymbol for the texture with \a map and \a selected parameter for rendering.
-    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DMapSettings &map, bool selected = false );
+    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DMapSettingsSnapshot &map, bool selected = false );
 
   private:
     //! Set the texture2D of the billboard from \a image with \a size.

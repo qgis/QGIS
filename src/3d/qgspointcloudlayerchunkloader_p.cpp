@@ -131,7 +131,7 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 ///////////////
 
 
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
+QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettingsSnapshot &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
     double zValueScale, double zValueOffset, int pointBudget )
   : mMap( map )
   , mCoordinateTransform( coordinateTransform )
@@ -170,7 +170,7 @@ int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) 
   return mPointCloudIndex->nodePointCount( n );
 }
 
-QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, double zValueOffset );
+QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettingsSnapshot &map, const QgsCoordinateTransform &coordinateTransform, double zValueOffset );
 
 QgsChunkNode *QgsPointCloudLayerChunkLoaderFactory::createRootNode() const
 {
@@ -220,7 +220,7 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
 ///////////////
 
 
-QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, double zValueOffset )
+QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettingsSnapshot &map, const QgsCoordinateTransform &coordinateTransform, double zValueOffset )
 {
   QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(), nodeBounds.yMin() * scale.y() + offset.y(), nodeBounds.zMin() * scale.z() + offset.z() + zValueOffset );
   QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(), nodeBounds.yMax() * scale.y() + offset.y(), nodeBounds.zMax() * scale.z() + offset.z() + zValueOffset );
@@ -243,7 +243,7 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map,
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettingsSnapshot &map,
     const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol,
     float maximumScreenSpaceError, bool showBoundingBoxes,
     double zValueScale, double zValueOffset,

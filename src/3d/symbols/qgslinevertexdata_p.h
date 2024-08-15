@@ -33,6 +33,7 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
+#include "qgs3dmapsettingssnapshot.h"
 
 
 namespace Qt3DCore
@@ -51,7 +52,6 @@ namespace Qt3DRender
 #endif
 
 class QgsLineString;
-class Qgs3DMapSettings;
 
 
 /**
@@ -79,11 +79,11 @@ struct QgsLineVertexData
   Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
   Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
   float baseHeight = 0;
-  const Qgs3DMapSettings *mapSettings = nullptr;
+  Qgs3DMapSettingsSnapshot mapSettings;
 
   QgsLineVertexData();
 
-  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DMapSettings *map );
+  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DMapSettingsSnapshot &map );
 
   QByteArray createVertexBuffer();
   QByteArray createIndexBuffer();

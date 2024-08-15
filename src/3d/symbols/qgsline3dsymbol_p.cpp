@@ -272,8 +272,8 @@ bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QS
 
   outNormal.withAdjacency = true;
   outSelected.withAdjacency = true;
-  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), &context.map() );
-  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), &context.map() );
+  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context.map() );
+  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context.map() );
 
   QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );

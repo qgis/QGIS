@@ -50,7 +50,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
 
   QgsVectorLayer *layer = mFactory->mLayer;
   mLayerName = mFactory->mLayer->name();
-  const Qgs3DMapSettings &map = mFactory->mMap;
+  const Qgs3DMapSettingsSnapshot &map = mFactory->mMap;
 
   QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
   if ( !handler )
@@ -160,7 +160,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 ///////////////
 
 
-QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax )
+QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettingsSnapshot &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax )
   : mMap( map )
   , mLayer( vl )
   , mSymbol( symbol->clone() )
@@ -188,7 +188,7 @@ QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNod
 
 QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map )
   : QgsChunkedEntity( -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
+                      new QgsVectorLayerChunkLoaderFactory( map.snapshot(), vl, symbol, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
 {
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
