@@ -444,6 +444,13 @@ QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = QgsRasterT
 QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = property(get_pixel_transparency)
 QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent.setter(set_pixel_transparency)
 
+QgsCsException.__doc__ = "Custom exception class for Coordinate Reference System related exceptions."
+QgsProcessingException.__doc__ = "Custom exception class for processing related exceptions."
+QgsProviderConnectionException.__doc__ = "Custom exception class for provider connection related exceptions."
+QgsNotSupportedException.__doc__ = "Custom exception class which is raised when an operation is not supported."
+QgsSettingsException.__doc__ = "Custom exception class for settings related exceptions."
+QgsException.__doc__ = "Defines a QGIS exception class."
+
 try:
    import numpy as _numpy
 
