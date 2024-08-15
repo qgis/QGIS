@@ -14,3 +14,15 @@ try:
     QgsLayoutManager.__attribute_docs__ = {'layoutAboutToBeAdded': 'Emitted when a layout is about to be added to the manager\n', 'layoutAdded': 'Emitted when a layout has been added to the manager\n', 'layoutRemoved': 'Emitted when a layout was removed from the manager\n', 'layoutAboutToBeRemoved': 'Emitted when a layout is about to be removed from the manager\n', 'layoutRenamed': 'Emitted when a layout is renamed\n'}
 except NameError:
     pass
+try:
+    QgsLayoutManager.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutManagerModel.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutManagerProxyModel.__group__ = ['layout']
+except NameError:
+    pass

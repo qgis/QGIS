@@ -3,3 +3,7 @@ try:
     QgsCalloutPanelWidget.__attribute_docs__ = {'calloutChanged': 'Emitted when the callout defined by the widget changes\n'}
 except NameError:
     pass
+try:
+    QgsCalloutPanelWidget.__group__ = ['callouts']
+except NameError:
+    pass

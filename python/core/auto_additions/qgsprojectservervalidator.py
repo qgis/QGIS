@@ -6,3 +6,11 @@ except NameError:
 QgsProjectServerValidator.displayValidationError = staticmethod(QgsProjectServerValidator.displayValidationError)
 QgsProjectServerValidator.validate = staticmethod(QgsProjectServerValidator.validate)
 QgsProjectServerValidator.ValidationResult.__doc__ = """Contains the parameters describing a project validation failure."""
+try:
+    QgsProjectServerValidator.__group__ = ['project']
+except NameError:
+    pass
+try:
+    QgsProjectServerValidator.ValidationResult.__group__ = ['project']
+except NameError:
+    pass

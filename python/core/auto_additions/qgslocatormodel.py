@@ -32,3 +32,15 @@ QgsLocatorModel.ResultActionsRole.__doc__ = "The actions to be shown for the giv
 QgsLocatorModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsLocatorModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``ResultDataRole``: ' + QgsLocatorModel.CustomRole.ResultData.__doc__ + '\n' + '* ``ResultTypeRole``: ' + QgsLocatorModel.CustomRole.ResultType.__doc__ + '\n' + '* ``ResultFilterPriorityRole``: ' + QgsLocatorModel.CustomRole.ResultFilterPriority.__doc__ + '\n' + '* ``ResultScoreRole``: ' + QgsLocatorModel.CustomRole.ResultScore.__doc__ + '\n' + '* ``ResultFilterNameRole``: ' + QgsLocatorModel.CustomRole.ResultFilterName.__doc__ + '\n' + '* ``ResultFilterGroupSortingRole``: ' + QgsLocatorModel.CustomRole.ResultFilterGroupSorting.__doc__ + '\n' + '* ``ResultActionsRole``: ' + QgsLocatorModel.CustomRole.ResultActions.__doc__
 # --
 QgsLocatorModel.CustomRole.baseClass = QgsLocatorModel
+try:
+    QgsLocatorModel.__group__ = ['locator']
+except NameError:
+    pass
+try:
+    QgsLocatorAutomaticModel.__group__ = ['locator']
+except NameError:
+    pass
+try:
+    QgsLocatorProxyModel.__group__ = ['locator']
+except NameError:
+    pass

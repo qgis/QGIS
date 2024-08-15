@@ -3,3 +3,7 @@ try:
     QgsLayoutItemComboBox.__attribute_docs__ = {'itemChanged': 'Emitted whenever the currently selected item changes\n'}
 except NameError:
     pass
+try:
+    QgsLayoutItemComboBox.__group__ = ['layout']
+except NameError:
+    pass

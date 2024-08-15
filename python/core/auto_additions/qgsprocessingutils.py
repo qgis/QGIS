@@ -63,3 +63,11 @@ QgsProcessingUtils.defaultVectorTileExtension = staticmethod(QgsProcessingUtils.
 QgsProcessingUtils.removePointerValuesFromMap = staticmethod(QgsProcessingUtils.removePointerValuesFromMap)
 QgsProcessingUtils.preprocessQgisProcessParameters = staticmethod(QgsProcessingUtils.preprocessQgisProcessParameters)
 QgsProcessingUtils.resolveDefaultEncoding = staticmethod(QgsProcessingUtils.resolveDefaultEncoding)
+try:
+    QgsProcessingUtils.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingFeatureSource.__group__ = ['processing']
+except NameError:
+    pass

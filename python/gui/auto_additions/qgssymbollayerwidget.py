@@ -25,3 +25,95 @@ QgsRandomMarkerFillSymbolLayerWidget.create = staticmethod(QgsRandomMarkerFillSy
 QgsFontMarkerSymbolLayerWidget.create = staticmethod(QgsFontMarkerSymbolLayerWidget.create)
 QgsCentroidFillSymbolLayerWidget.create = staticmethod(QgsCentroidFillSymbolLayerWidget.create)
 QgsGeometryGeneratorSymbolLayerWidget.create = staticmethod(QgsGeometryGeneratorSymbolLayerWidget.create)
+try:
+    QgsSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSimpleLineSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSimpleMarkerSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSimpleFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsFilledMarkerSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsGradientFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsShapeburstFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsMarkerLineSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsHashedLineSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSvgMarkerSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRasterMarkerSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsAnimatedMarkerSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRasterFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRasterLineSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsLineburstSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsFilledLineSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSVGFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsLinePatternFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsPointPatternFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRandomMarkerFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsFontMarkerSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsCentroidFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsGeometryGeneratorSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass

@@ -19,3 +19,7 @@ except NameError:
     pass
 QgsProcessing.sourceTypeToString = staticmethod(QgsProcessing.sourceTypeToString)
 QgsProcessing.documentationFlagToString = staticmethod(QgsProcessing.documentationFlagToString)
+try:
+    QgsProcessing.__group__ = ['processing']
+except NameError:
+    pass

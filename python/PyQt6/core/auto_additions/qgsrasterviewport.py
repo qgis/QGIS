@@ -8,3 +8,7 @@ be rendered into.
 
 The qgsrasterviewport class sets up a viewport / area of interest to be used
 by rasterlayer draw functions at the point of drawing to the screen."""
+try:
+    QgsRasterViewPort.__group__ = ['raster']
+except NameError:
+    pass

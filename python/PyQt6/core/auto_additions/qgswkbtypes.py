@@ -23,3 +23,7 @@ QgsWkbTypes.addM = staticmethod(QgsWkbTypes.addM)
 QgsWkbTypes.dropZ = staticmethod(QgsWkbTypes.dropZ)
 QgsWkbTypes.dropM = staticmethod(QgsWkbTypes.dropM)
 QgsWkbTypes.to25D = staticmethod(QgsWkbTypes.to25D)
+try:
+    QgsWkbTypes.__group__ = ['geometry']
+except NameError:
+    pass

@@ -19,3 +19,15 @@ QgsVectorLayerUtils.fieldEditabilityDependsOnFeature = staticmethod(QgsVectorLay
 QgsVectorLayerUtils.getFeatureDisplayString = staticmethod(QgsVectorLayerUtils.getFeatureDisplayString)
 QgsVectorLayerUtils.impactsCascadeFeatures = staticmethod(QgsVectorLayerUtils.impactsCascadeFeatures)
 QgsVectorLayerUtils.guessFriendlyIdentifierField = staticmethod(QgsVectorLayerUtils.guessFriendlyIdentifierField)
+try:
+    QgsVectorLayerUtils.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayerUtils.QgsDuplicateFeatureContext.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayerUtils.QgsFeatureData.__group__ = ['vector']
+except NameError:
+    pass

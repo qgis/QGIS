@@ -5,3 +5,7 @@ except NameError:
     pass
 QgsEditorWidgetWrapper.fromWidget = staticmethod(QgsEditorWidgetWrapper.fromWidget)
 QgsEditorWidgetWrapper.isInTable = staticmethod(QgsEditorWidgetWrapper.isInTable)
+try:
+    QgsEditorWidgetWrapper.__group__ = ['editorwidgets', 'core']
+except NameError:
+    pass

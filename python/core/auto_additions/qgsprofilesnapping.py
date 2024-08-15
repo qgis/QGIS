@@ -7,3 +7,11 @@ try:
     QgsProfileSnapResult.__attribute_docs__ = {'snappedPoint': 'Snapped point'}
 except NameError:
     pass
+try:
+    QgsProfileSnapContext.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsProfileSnapResult.__group__ = ['elevation']
+except NameError:
+    pass

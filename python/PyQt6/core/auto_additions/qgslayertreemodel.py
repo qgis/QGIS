@@ -28,3 +28,7 @@ except NameError:
 QgsLayerTreeModel.index2legendNode = staticmethod(QgsLayerTreeModel.index2legendNode)
 QgsLayerTreeModel.scaleIconSize = staticmethod(QgsLayerTreeModel.scaleIconSize)
 QgsLayerTreeModel.iconGroup = staticmethod(QgsLayerTreeModel.iconGroup)
+try:
+    QgsLayerTreeModel.__group__ = ['layertree']
+except NameError:
+    pass

@@ -3,3 +3,7 @@ QgsLayoutItemAttributeTable.LayerAttributes = QgsLayoutItemAttributeTable.Conten
 QgsLayoutItemAttributeTable.AtlasFeature = QgsLayoutItemAttributeTable.ContentSource.AtlasFeature
 QgsLayoutItemAttributeTable.RelationChildren = QgsLayoutItemAttributeTable.ContentSource.RelationChildren
 QgsLayoutItemAttributeTable.create = staticmethod(QgsLayoutItemAttributeTable.create)
+try:
+    QgsLayoutItemAttributeTable.__group__ = ['layout']
+except NameError:
+    pass

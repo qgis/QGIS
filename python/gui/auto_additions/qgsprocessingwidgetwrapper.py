@@ -7,3 +7,27 @@ try:
     QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget) is changed.\n'}
 except NameError:
     pass
+try:
+    QgsProcessingContextGenerator.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParametersGenerator.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterWidgetContext.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsAbstractProcessingParameterWidgetWrapper.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterWidgetFactoryInterface.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingHiddenWidgetWrapper.__group__ = ['processing']
+except NameError:
+    pass

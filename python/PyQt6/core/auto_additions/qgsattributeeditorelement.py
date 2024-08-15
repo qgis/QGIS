@@ -7,3 +7,11 @@ QgsAttributeEditorElement.create = staticmethod(QgsAttributeEditorElement.create
 QgsAttributeEditorElement.LabelStyle.__doc__ = """The TabStyle struct defines color and font overrides for form fields, tabs and groups labels.
 
 .. versionadded:: 3.26"""
+try:
+    QgsAttributeEditorElement.__group__ = ['editform']
+except NameError:
+    pass
+try:
+    QgsAttributeEditorElement.LabelStyle.__group__ = ['editform']
+except NameError:
+    pass

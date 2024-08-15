@@ -30,3 +30,7 @@ QgsSensorModel.Sensor.__doc__ = "Sensor object pointer"
 QgsSensorModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsSensorModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``SensorType``: ' + QgsSensorModel.CustomRole.SensorType.__doc__ + '\n' + '* ``SensorId``: ' + QgsSensorModel.CustomRole.SensorId.__doc__ + '\n' + '* ``SensorName``: ' + QgsSensorModel.CustomRole.SensorName.__doc__ + '\n' + '* ``SensorStatus``: ' + QgsSensorModel.CustomRole.SensorStatus.__doc__ + '\n' + '* ``SensorLastValue``: ' + QgsSensorModel.CustomRole.SensorLastValue.__doc__ + '\n' + '* ``SensorLastTimestamp``: ' + QgsSensorModel.CustomRole.SensorLastTimestamp.__doc__ + '\n' + '* ``Sensor``: ' + QgsSensorModel.CustomRole.Sensor.__doc__
 # --
 QgsSensorModel.CustomRole.baseClass = QgsSensorModel
+try:
+    QgsSensorModel.__group__ = ['sensor']
+except NameError:
+    pass

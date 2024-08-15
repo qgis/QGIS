@@ -16,3 +16,43 @@ QgsPointPatternFillSymbolLayer.createFromSld = staticmethod(QgsPointPatternFillS
 QgsRandomMarkerFillSymbolLayer.create = staticmethod(QgsRandomMarkerFillSymbolLayer.create)
 QgsCentroidFillSymbolLayer.create = staticmethod(QgsCentroidFillSymbolLayer.create)
 QgsCentroidFillSymbolLayer.createFromSld = staticmethod(QgsCentroidFillSymbolLayer.createFromSld)
+try:
+    QgsSimpleFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsGradientFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsShapeburstFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsImageFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRasterFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSVGFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsLinePatternFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsPointPatternFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRandomMarkerFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsCentroidFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass

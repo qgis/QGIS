@@ -4,3 +4,7 @@ QgsPointDisplacementRenderer.ConcentricRings = QgsPointDisplacementRenderer.Plac
 QgsPointDisplacementRenderer.Grid = QgsPointDisplacementRenderer.Placement.Grid
 QgsPointDisplacementRenderer.create = staticmethod(QgsPointDisplacementRenderer.create)
 QgsPointDisplacementRenderer.convertFromRenderer = staticmethod(QgsPointDisplacementRenderer.convertFromRenderer)
+try:
+    QgsPointDisplacementRenderer.__group__ = ['symbology']
+except NameError:
+    pass

@@ -61,3 +61,7 @@ QgsGeometryUtils.bisector = staticmethod(QgsGeometryUtils.bisector)
 QgsGeometryUtils.circleCenterRadius = staticmethod(QgsGeometryUtils.circleCenterRadius)
 QgsGeometryUtils.lineIntersection = staticmethod(QgsGeometryUtils.lineIntersection)
 QgsGeometryUtils.segmentIntersection = staticmethod(QgsGeometryUtils.segmentIntersection)
+try:
+    QgsGeometryUtils.__group__ = ['geometry']
+except NameError:
+    pass

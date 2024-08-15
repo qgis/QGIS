@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsTiledSceneLayer.LayerOptions.__doc__ = """Setting options for loading tiled scene layers."""
+try:
+    QgsTiledSceneLayer.__group__ = ['tiledscene']
+except NameError:
+    pass
+try:
+    QgsTiledSceneLayer.LayerOptions.__group__ = ['tiledscene']
+except NameError:
+    pass

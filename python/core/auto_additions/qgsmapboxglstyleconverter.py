@@ -37,3 +37,23 @@ QgsMapBoxGlStyleConverter.parseExpression = staticmethod(QgsMapBoxGlStyleConvert
 QgsMapBoxGlStyleConverter.retrieveSprite = staticmethod(QgsMapBoxGlStyleConverter.retrieveSprite)
 QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64 = staticmethod(QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64)
 QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties = staticmethod(QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties)
+try:
+    QgsMapBoxGlStyleConversionContext.__group__ = ['vectortile']
+except NameError:
+    pass
+try:
+    QgsMapBoxGlStyleAbstractSource.__group__ = ['vectortile']
+except NameError:
+    pass
+try:
+    QgsMapBoxGlStyleRasterSource.__group__ = ['vectortile']
+except NameError:
+    pass
+try:
+    QgsMapBoxGlStyleRasterSubLayer.__group__ = ['vectortile']
+except NameError:
+    pass
+try:
+    QgsMapBoxGlStyleConverter.__group__ = ['vectortile']
+except NameError:
+    pass

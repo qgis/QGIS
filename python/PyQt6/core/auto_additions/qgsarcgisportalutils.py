@@ -3,3 +3,7 @@ QgsArcGisPortalUtils.retrieveUserInfo = staticmethod(QgsArcGisPortalUtils.retrie
 QgsArcGisPortalUtils.retrieveUserGroups = staticmethod(QgsArcGisPortalUtils.retrieveUserGroups)
 QgsArcGisPortalUtils.retrieveGroupContent = staticmethod(QgsArcGisPortalUtils.retrieveGroupContent)
 QgsArcGisPortalUtils.retrieveGroupItemsOfType = staticmethod(QgsArcGisPortalUtils.retrieveGroupItemsOfType)
+try:
+    QgsArcGisPortalUtils.__group__ = ['providers', 'arcgis']
+except NameError:
+    pass

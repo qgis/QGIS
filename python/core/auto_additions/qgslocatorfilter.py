@@ -17,3 +17,15 @@ actions to be used in a locator widget for the result.
 They could be used in a context menu for instance.
 
 .. versionadded:: 3.6"""
+try:
+    QgsLocatorResult.__group__ = ['locator']
+except NameError:
+    pass
+try:
+    QgsLocatorResult.ResultAction.__group__ = ['locator']
+except NameError:
+    pass
+try:
+    QgsLocatorFilter.__group__ = ['locator']
+except NameError:
+    pass

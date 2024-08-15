@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsGpsDetector.availablePorts = staticmethod(QgsGpsDetector.availablePorts)
+try:
+    QgsGpsDetector.__group__ = ['gps']
+except NameError:
+    pass

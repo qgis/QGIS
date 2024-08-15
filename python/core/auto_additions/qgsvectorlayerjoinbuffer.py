@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsVectorLayerJoinBuffer.joinSubsetIndices = staticmethod(QgsVectorLayerJoinBuffer.joinSubsetIndices)
+try:
+    QgsVectorLayerJoinBuffer.__group__ = ['vector']
+except NameError:
+    pass

@@ -28,3 +28,7 @@ try:
     QgsBrowserModel.__attribute_docs__ = {'stateChanged': 'Emitted when item children fetch was finished\n', 'connectionsChanged': 'Emitted when connections for the specified ``providerKey`` have changed in the browser.\n\nForwarded to the widget and used to notify the provider dialogs of a changed connection.\n'}
 except NameError:
     pass
+try:
+    QgsBrowserModel.__group__ = ['browser']
+except NameError:
+    pass

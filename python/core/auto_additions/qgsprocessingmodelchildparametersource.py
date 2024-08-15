@@ -4,3 +4,7 @@ QgsProcessingModelChildParameterSource.fromModelParameter = staticmethod(QgsProc
 QgsProcessingModelChildParameterSource.fromChildOutput = staticmethod(QgsProcessingModelChildParameterSource.fromChildOutput)
 QgsProcessingModelChildParameterSource.fromExpression = staticmethod(QgsProcessingModelChildParameterSource.fromExpression)
 QgsProcessingModelChildParameterSource.fromExpressionText = staticmethod(QgsProcessingModelChildParameterSource.fromExpressionText)
+try:
+    QgsProcessingModelChildParameterSource.__group__ = ['processing', 'models']
+except NameError:
+    pass

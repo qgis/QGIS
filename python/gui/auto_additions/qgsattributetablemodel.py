@@ -24,3 +24,7 @@ try:
     QgsAttributeTableModel.__attribute_docs__ = {'modelChanged': 'Model has been changed\n'}
 except NameError:
     pass
+try:
+    QgsAttributeTableModel.__group__ = ['attributetable']
+except NameError:
+    pass

@@ -2,3 +2,7 @@
 QgsBlurEffect.StackBlur = QgsBlurEffect.BlurMethod.StackBlur
 QgsBlurEffect.GaussianBlur = QgsBlurEffect.BlurMethod.GaussianBlur
 QgsBlurEffect.create = staticmethod(QgsBlurEffect.create)
+try:
+    QgsBlurEffect.__group__ = ['effects']
+except NameError:
+    pass

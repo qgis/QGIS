@@ -3,3 +3,7 @@ QgsProcessingParameterVectorTileWriterLayers.typeName = staticmethod(QgsProcessi
 QgsProcessingParameterVectorTileWriterLayers.parameterAsLayers = staticmethod(QgsProcessingParameterVectorTileWriterLayers.parameterAsLayers)
 QgsProcessingParameterVectorTileWriterLayers.variantMapAsLayer = staticmethod(QgsProcessingParameterVectorTileWriterLayers.variantMapAsLayer)
 QgsProcessingParameterVectorTileWriterLayers.layerAsVariantMap = staticmethod(QgsProcessingParameterVectorTileWriterLayers.layerAsVariantMap)
+try:
+    QgsProcessingParameterVectorTileWriterLayers.__group__ = ['processing']
+except NameError:
+    pass

@@ -5,3 +5,7 @@ QgsTextRendererUtils.decodeBackgroundRotationType = staticmethod(QgsTextRenderer
 QgsTextRendererUtils.decodeShadowPlacementType = staticmethod(QgsTextRendererUtils.decodeShadowPlacementType)
 QgsTextRendererUtils.encodeTextOrientation = staticmethod(QgsTextRendererUtils.encodeTextOrientation)
 QgsTextRendererUtils.decodeTextOrientation = staticmethod(QgsTextRendererUtils.decodeTextOrientation)
+try:
+    QgsTextRendererUtils.__group__ = ['textrenderer']
+except NameError:
+    pass

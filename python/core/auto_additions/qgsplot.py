@@ -4,3 +4,19 @@ QgsPlotDefaultSettings.axisGridMajorSymbol = staticmethod(QgsPlotDefaultSettings
 QgsPlotDefaultSettings.axisGridMinorSymbol = staticmethod(QgsPlotDefaultSettings.axisGridMinorSymbol)
 QgsPlotDefaultSettings.chartBackgroundSymbol = staticmethod(QgsPlotDefaultSettings.chartBackgroundSymbol)
 QgsPlotDefaultSettings.chartBorderSymbol = staticmethod(QgsPlotDefaultSettings.chartBorderSymbol)
+try:
+    QgsPlot.__group__ = ['plot']
+except NameError:
+    pass
+try:
+    QgsPlotAxis.__group__ = ['plot']
+except NameError:
+    pass
+try:
+    Qgs2DPlot.__group__ = ['plot']
+except NameError:
+    pass
+try:
+    QgsPlotDefaultSettings.__group__ = ['plot']
+except NameError:
+    pass

@@ -5,3 +5,11 @@ except NameError:
     pass
 QgsDataItem.findItem = staticmethod(QgsDataItem.findItem)
 QgsDataItem.pathComponent = staticmethod(QgsDataItem.pathComponent)
+try:
+    QgsDataItem.__group__ = ['browser']
+except NameError:
+    pass
+try:
+    QgsErrorItem.__group__ = ['browser']
+except NameError:
+    pass

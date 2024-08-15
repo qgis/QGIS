@@ -8,3 +8,7 @@ QgsProjUtils.esriDatabaseDate = staticmethod(QgsProjUtils.esriDatabaseDate)
 QgsProjUtils.ignfDatabaseVersion = staticmethod(QgsProjUtils.ignfDatabaseVersion)
 QgsProjUtils.ignfDatabaseDate = staticmethod(QgsProjUtils.ignfDatabaseDate)
 QgsProjUtils.searchPaths = staticmethod(QgsProjUtils.searchPaths)
+try:
+    QgsProjUtils.__group__ = ['proj']
+except NameError:
+    pass

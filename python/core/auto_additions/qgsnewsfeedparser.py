@@ -8,3 +8,11 @@ try:
 except NameError:
     pass
 QgsNewsFeedParser.keyForFeed = staticmethod(QgsNewsFeedParser.keyForFeed)
+try:
+    QgsNewsFeedParser.__group__ = ['network']
+except NameError:
+    pass
+try:
+    QgsNewsFeedParser.Entry.__group__ = ['network']
+except NameError:
+    pass

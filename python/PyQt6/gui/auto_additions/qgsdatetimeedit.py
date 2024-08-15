@@ -11,3 +11,15 @@ try:
     QgsDateEdit.__attribute_docs__ = {'dateValueChanged': 'Signal emitted whenever the date changes.\n'}
 except NameError:
     pass
+try:
+    QgsDateTimeEdit.__group__ = ['editorwidgets']
+except NameError:
+    pass
+try:
+    QgsTimeEdit.__group__ = ['editorwidgets']
+except NameError:
+    pass
+try:
+    QgsDateEdit.__group__ = ['editorwidgets']
+except NameError:
+    pass

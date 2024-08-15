@@ -5,3 +5,11 @@ except NameError:
     pass
 QgsVectorLayerExporter.exportLayer = staticmethod(QgsVectorLayerExporter.exportLayer)
 QgsVectorLayerExporterTask.withLayerOwnership = staticmethod(QgsVectorLayerExporterTask.withLayerOwnership)
+try:
+    QgsVectorLayerExporter.__group__ = ['vector']
+except NameError:
+    pass
+try:
+    QgsVectorLayerExporterTask.__group__ = ['vector']
+except NameError:
+    pass

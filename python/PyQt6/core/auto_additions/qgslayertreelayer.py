@@ -7,3 +7,7 @@ try:
 except NameError:
     pass
 QgsLayerTreeLayer.readXml = staticmethod(QgsLayerTreeLayer.readXml)
+try:
+    QgsLayerTreeLayer.__group__ = ['layertree']
+except NameError:
+    pass

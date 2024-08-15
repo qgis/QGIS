@@ -82,3 +82,27 @@ QgsSimpleLineCallout.create = staticmethod(QgsSimpleLineCallout.create)
 QgsManhattanLineCallout.create = staticmethod(QgsManhattanLineCallout.create)
 QgsCurvedLineCallout.create = staticmethod(QgsCurvedLineCallout.create)
 QgsBalloonCallout.create = staticmethod(QgsBalloonCallout.create)
+try:
+    QgsCallout.__group__ = ['callouts']
+except NameError:
+    pass
+try:
+    QgsCallout.QgsCalloutContext.__group__ = ['callouts']
+except NameError:
+    pass
+try:
+    QgsSimpleLineCallout.__group__ = ['callouts']
+except NameError:
+    pass
+try:
+    QgsManhattanLineCallout.__group__ = ['callouts']
+except NameError:
+    pass
+try:
+    QgsCurvedLineCallout.__group__ = ['callouts']
+except NameError:
+    pass
+try:
+    QgsBalloonCallout.__group__ = ['callouts']
+except NameError:
+    pass

@@ -19,3 +19,35 @@ QgsMeshRendererVectorSettings.Arrows = QgsMeshRendererVectorSettings.Symbology.A
 QgsMeshRendererVectorSettings.Streamlines = QgsMeshRendererVectorSettings.Symbology.Streamlines
 QgsMeshRendererVectorSettings.Traces = QgsMeshRendererVectorSettings.Symbology.Traces
 QgsMeshRendererVectorSettings.WindBarbs = QgsMeshRendererVectorSettings.Symbology.WindBarbs
+try:
+    QgsMeshRendererMeshSettings.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshRendererScalarSettings.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshRendererVectorArrowSettings.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshRendererVectorStreamlineSettings.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshRendererVectorTracesSettings.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshRendererVectorWindBarbSettings.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshRendererVectorSettings.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshRendererSettings.__group__ = ['mesh']
+except NameError:
+    pass

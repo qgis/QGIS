@@ -12,3 +12,19 @@ QgsRasterAttributeTable.usageName = staticmethod(QgsRasterAttributeTable.usageNa
 QgsRasterAttributeTable.valueAndColorFieldUsages = staticmethod(QgsRasterAttributeTable.valueAndColorFieldUsages)
 QgsRasterAttributeTable.createFromRaster = staticmethod(QgsRasterAttributeTable.createFromRaster)
 QgsRasterAttributeTable.usageInformation = staticmethod(QgsRasterAttributeTable.usageInformation)
+try:
+    QgsRasterAttributeTable.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterAttributeTable.UsageInformation.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterAttributeTable.Field.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterAttributeTable.MinMaxClass.__group__ = ['raster']
+except NameError:
+    pass

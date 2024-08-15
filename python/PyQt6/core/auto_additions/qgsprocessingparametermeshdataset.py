@@ -5,3 +5,11 @@ QgsProcessingParameterMeshDatasetTime.typeName = staticmethod(QgsProcessingParam
 QgsProcessingParameterMeshDatasetTime.valueAsTimeType = staticmethod(QgsProcessingParameterMeshDatasetTime.valueAsTimeType)
 QgsProcessingParameterMeshDatasetTime.timeValueAsDatasetIndex = staticmethod(QgsProcessingParameterMeshDatasetTime.timeValueAsDatasetIndex)
 QgsProcessingParameterMeshDatasetTime.timeValueAsDefinedDateTime = staticmethod(QgsProcessingParameterMeshDatasetTime.timeValueAsDefinedDateTime)
+try:
+    QgsProcessingParameterMeshDatasetGroups.__group__ = ['processing']
+except NameError:
+    pass
+try:
+    QgsProcessingParameterMeshDatasetTime.__group__ = ['processing']
+except NameError:
+    pass

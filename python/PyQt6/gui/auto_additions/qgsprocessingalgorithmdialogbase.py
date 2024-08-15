@@ -11,3 +11,7 @@ try:
 except NameError:
     pass
 QgsProcessingAlgorithmDialogBase.formatStringForLog = staticmethod(QgsProcessingAlgorithmDialogBase.formatStringForLog)
+try:
+    QgsProcessingAlgorithmDialogBase.__group__ = ['processing']
+except NameError:
+    pass

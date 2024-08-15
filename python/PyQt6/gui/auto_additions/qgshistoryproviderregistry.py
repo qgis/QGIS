@@ -8,3 +8,11 @@ try:
 except NameError:
     pass
 QgsHistoryProviderRegistry.userHistoryDbPath = staticmethod(QgsHistoryProviderRegistry.userHistoryDbPath)
+try:
+    QgsHistoryProviderRegistry.__group__ = ['history']
+except NameError:
+    pass
+try:
+    QgsHistoryProviderRegistry.HistoryEntryOptions.__group__ = ['history']
+except NameError:
+    pass

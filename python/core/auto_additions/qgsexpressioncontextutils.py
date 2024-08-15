@@ -33,3 +33,7 @@ QgsExpressionContextUtils.processingModelAlgorithmScope = staticmethod(QgsExpres
 QgsExpressionContextUtils.notificationScope = staticmethod(QgsExpressionContextUtils.notificationScope)
 QgsExpressionContextUtils.registerContextFunctions = staticmethod(QgsExpressionContextUtils.registerContextFunctions)
 QgsExpressionContextUtils.meshExpressionScope = staticmethod(QgsExpressionContextUtils.meshExpressionScope)
+try:
+    QgsExpressionContextUtils.__group__ = ['expression']
+except NameError:
+    pass

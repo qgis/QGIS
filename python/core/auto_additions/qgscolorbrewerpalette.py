@@ -2,3 +2,7 @@
 QgsColorBrewerPalette.listSchemeColors = staticmethod(QgsColorBrewerPalette.listSchemeColors)
 QgsColorBrewerPalette.listSchemes = staticmethod(QgsColorBrewerPalette.listSchemes)
 QgsColorBrewerPalette.listSchemeVariants = staticmethod(QgsColorBrewerPalette.listSchemeVariants)
+try:
+    QgsColorBrewerPalette.__group__ = ['symbology']
+except NameError:
+    pass

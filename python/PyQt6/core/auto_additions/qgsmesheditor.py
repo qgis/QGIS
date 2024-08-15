@@ -3,3 +3,11 @@ try:
     QgsMeshEditor.__attribute_docs__ = {'meshEdited': 'Emitted when the mesh is edited\n'}
 except NameError:
     pass
+try:
+    QgsMeshEditingError.__group__ = ['mesh']
+except NameError:
+    pass
+try:
+    QgsMeshEditor.__group__ = ['mesh']
+except NameError:
+    pass

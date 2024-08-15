@@ -160,3 +160,7 @@ QgsSymbolLayerUtils.tileSize = staticmethod(QgsSymbolLayerUtils.tileSize)
 QgsSymbolLayerUtils.clearSymbolLayerIds = staticmethod(QgsSymbolLayerUtils.clearSymbolLayerIds)
 QgsSymbolLayerUtils.resetSymbolLayerIds = staticmethod(QgsSymbolLayerUtils.resetSymbolLayerIds)
 QgsSymbolLayerUtils.collectSymbolLayerClipGeometries = staticmethod(QgsSymbolLayerUtils.collectSymbolLayerClipGeometries)
+try:
+    QgsSymbolLayerUtils.__group__ = ['symbology']
+except NameError:
+    pass

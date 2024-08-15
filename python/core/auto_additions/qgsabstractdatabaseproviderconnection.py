@@ -64,3 +64,27 @@ of geometry type and CRS for the table geometry column."""
 QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__doc__ = """The SpatialIndexOptions contains extra options relating to spatial index creation.
 
 .. versionadded:: 3.14"""
+try:
+    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.QueryResult.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.TableProperty.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__group__ = ['providers']
+except NameError:
+    pass

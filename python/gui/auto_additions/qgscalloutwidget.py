@@ -3,3 +3,7 @@ try:
     QgsCalloutWidget.__attribute_docs__ = {'changed': 'Should be emitted whenever configuration changes happened on this symbol layer configuration.\nIf the subsymbol is changed, :py:func:`~QgsCalloutWidget.symbolChanged` should be emitted instead.\n'}
 except NameError:
     pass
+try:
+    QgsCalloutWidget.__group__ = ['callouts']
+except NameError:
+    pass

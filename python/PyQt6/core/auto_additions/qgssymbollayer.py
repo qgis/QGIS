@@ -292,3 +292,19 @@ QgsLineSymbolLayer.AllRings = QgsLineSymbolLayer.RenderRingFilter.AllRings
 QgsLineSymbolLayer.ExteriorRingOnly = QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly
 QgsLineSymbolLayer.InteriorRingsOnly = QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly
 QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
+try:
+    QgsSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsMarkerSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsLineSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsFillSymbolLayer.__group__ = ['symbology']
+except NameError:
+    pass

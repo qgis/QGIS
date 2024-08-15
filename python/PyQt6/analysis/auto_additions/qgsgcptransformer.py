@@ -14,3 +14,7 @@ QgsGcpTransformerInterface.TransformMethod.baseClass = QgsGcpTransformerInterfac
 QgsGcpTransformerInterface.methodToString = staticmethod(QgsGcpTransformerInterface.methodToString)
 QgsGcpTransformerInterface.create = staticmethod(QgsGcpTransformerInterface.create)
 QgsGcpTransformerInterface.createFromParameters = staticmethod(QgsGcpTransformerInterface.createFromParameters)
+try:
+    QgsGcpTransformerInterface.__group__ = ['georeferencing']
+except NameError:
+    pass

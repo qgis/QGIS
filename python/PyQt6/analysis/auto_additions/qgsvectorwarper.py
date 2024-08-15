@@ -5,3 +5,11 @@ QgsVectorWarperTask.Result.Canceled.__doc__ = "Task was canceled before completi
 QgsVectorWarperTask.Result.Error.__doc__ = "An error occurred while warping"
 QgsVectorWarperTask.Result.__doc__ = "Task results\n\n" + '* ``Success``: ' + QgsVectorWarperTask.Result.Success.__doc__ + '\n' + '* ``Canceled``: ' + QgsVectorWarperTask.Result.Canceled.__doc__ + '\n' + '* ``Error``: ' + QgsVectorWarperTask.Result.Error.__doc__
 # --
+try:
+    QgsVectorWarper.__group__ = ['georeferencing']
+except NameError:
+    pass
+try:
+    QgsVectorWarperTask.__group__ = ['georeferencing']
+except NameError:
+    pass

@@ -9,3 +9,15 @@ QgsEllipsoidUtils.acronyms = staticmethod(QgsEllipsoidUtils.acronyms)
 QgsEllipsoidUtils.celestialBodies = staticmethod(QgsEllipsoidUtils.celestialBodies)
 QgsEllipsoidUtils.EllipsoidParameters.__doc__ = """Contains parameters for an ellipsoid."""
 QgsEllipsoidUtils.EllipsoidDefinition.__doc__ = """Contains definition of an ellipsoid."""
+try:
+    QgsEllipsoidUtils.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsEllipsoidUtils.EllipsoidParameters.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsEllipsoidUtils.EllipsoidDefinition.__group__ = ['proj']
+except NameError:
+    pass

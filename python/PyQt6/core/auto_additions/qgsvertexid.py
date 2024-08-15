@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsVertexId.__doc__ = """Utility class for identifying a unique vertex within a geometry."""
+try:
+    QgsVertexId.__group__ = ['geometry']
+except NameError:
+    pass

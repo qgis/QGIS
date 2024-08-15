@@ -2,3 +2,7 @@
 QgsSingleSymbolRenderer.createFromSld = staticmethod(QgsSingleSymbolRenderer.createFromSld)
 QgsSingleSymbolRenderer.create = staticmethod(QgsSingleSymbolRenderer.create)
 QgsSingleSymbolRenderer.convertFromRenderer = staticmethod(QgsSingleSymbolRenderer.convertFromRenderer)
+try:
+    QgsSingleSymbolRenderer.__group__ = ['symbology']
+except NameError:
+    pass

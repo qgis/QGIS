@@ -8,3 +8,7 @@ QgsPainting.qtDefaultDpiX = staticmethod(QgsPainting.qtDefaultDpiX)
 QgsPainting.qtDefaultDpiY = staticmethod(QgsPainting.qtDefaultDpiY)
 QgsPainting.applyScaleFixForQPictureDpi = staticmethod(QgsPainting.applyScaleFixForQPictureDpi)
 QgsPainting.drawPicture = staticmethod(QgsPainting.drawPicture)
+try:
+    QgsPainting.__group__ = ['painting']
+except NameError:
+    pass

@@ -11,3 +11,15 @@ QgsCesiumUtils.extractGltfFromB3dm = staticmethod(QgsCesiumUtils.extractGltfFrom
 QgsCesiumUtils.extractGltfFromTileContent = staticmethod(QgsCesiumUtils.extractGltfFromTileContent)
 QgsCesiumUtils.B3DMContents.__doc__ = """Encapsulates the contents of a B3DM file."""
 QgsCesiumUtils.TileContents.__doc__ = """Encapsulates the contents of a 3D tile."""
+try:
+    QgsCesiumUtils.__group__ = ['tiledscene']
+except NameError:
+    pass
+try:
+    QgsCesiumUtils.B3DMContents.__group__ = ['tiledscene']
+except NameError:
+    pass
+try:
+    QgsCesiumUtils.TileContents.__group__ = ['tiledscene']
+except NameError:
+    pass

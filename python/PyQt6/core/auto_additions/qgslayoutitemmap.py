@@ -28,3 +28,15 @@ try:
 except NameError:
     pass
 QgsLayoutItemMap.create = staticmethod(QgsLayoutItemMap.create)
+try:
+    QgsLayoutItemMapAtlasClippingSettings.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutItemMapItemClipPathSettings.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutItemMap.__group__ = ['layout']
+except NameError:
+    pass

@@ -40,3 +40,11 @@ except NameError:
     pass
 QgsProviderMetadata.setBoolParameter = staticmethod(QgsProviderMetadata.setBoolParameter)
 QgsProviderMetadata.boolParameter = staticmethod(QgsProviderMetadata.boolParameter)
+try:
+    QgsMeshDriverMetadata.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsProviderMetadata.__group__ = ['providers']
+except NameError:
+    pass

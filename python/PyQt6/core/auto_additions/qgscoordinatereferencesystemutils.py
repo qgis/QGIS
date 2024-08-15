@@ -3,3 +3,7 @@ QgsCoordinateReferenceSystemUtils.defaultCoordinateOrderForCrs = staticmethod(Qg
 QgsCoordinateReferenceSystemUtils.axisDirectionToAbbreviatedString = staticmethod(QgsCoordinateReferenceSystemUtils.axisDirectionToAbbreviatedString)
 QgsCoordinateReferenceSystemUtils.crsTypeToString = staticmethod(QgsCoordinateReferenceSystemUtils.crsTypeToString)
 QgsCoordinateReferenceSystemUtils.translateProjection = staticmethod(QgsCoordinateReferenceSystemUtils.translateProjection)
+try:
+    QgsCoordinateReferenceSystemUtils.__group__ = ['proj']
+except NameError:
+    pass

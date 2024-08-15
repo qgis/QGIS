@@ -13,3 +13,15 @@ try:
 except NameError:
     pass
 QgsExpressionNode.NamedNode.__doc__ = """Named node"""
+try:
+    QgsExpressionNode.__group__ = ['expression']
+except NameError:
+    pass
+try:
+    QgsExpressionNode.NamedNode.__group__ = ['expression']
+except NameError:
+    pass
+try:
+    QgsExpressionNode.NodeList.__group__ = ['expression']
+except NameError:
+    pass

@@ -43,3 +43,11 @@ QgsStyleModel.IsTitleRole.__doc__ = "True if the index corresponds to a title it
 QgsStyleModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsStyleModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``TypeRole``: ' + QgsStyleModel.CustomRole.Type.__doc__ + '\n' + '* ``TagRole``: ' + QgsStyleModel.CustomRole.Tag.__doc__ + '\n' + '* ``EntityName``: ' + QgsStyleModel.CustomRole.EntityName.__doc__ + '\n' + '* ``SymbolTypeRole``: ' + QgsStyleModel.CustomRole.SymbolType.__doc__ + '\n' + '* ``IsFavoriteRole``: ' + QgsStyleModel.CustomRole.IsFavorite.__doc__ + '\n' + '* ``LayerTypeRole``: ' + QgsStyleModel.CustomRole.LayerType.__doc__ + '\n' + '* ``CompatibleGeometryTypesRole``: ' + QgsStyleModel.CustomRole.CompatibleGeometryTypes.__doc__ + '\n' + '* ``StyleName``: ' + QgsStyleModel.CustomRole.StyleName.__doc__ + '\n' + '* ``StyleFileName``: ' + QgsStyleModel.CustomRole.StyleFileName.__doc__ + '\n' + '* ``IsTitleRole``: ' + QgsStyleModel.CustomRole.IsTitle.__doc__
 # --
 QgsStyleModel.CustomRole.baseClass = QgsStyleModel
+try:
+    QgsStyleModel.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleProxyModel.__group__ = ['symbology']
+except NameError:
+    pass

@@ -18,3 +18,27 @@ QgsLayoutExporter.ImageExportSettings.__doc__ = """Contains settings relating to
 QgsLayoutExporter.PdfExportSettings.__doc__ = """Contains settings relating to exporting layouts to PDF"""
 QgsLayoutExporter.PrintExportSettings.__doc__ = """Contains settings relating to printing layouts"""
 QgsLayoutExporter.SvgExportSettings.__doc__ = """Contains settings relating to exporting layouts to SVG"""
+try:
+    QgsLayoutExporter.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutExporter.PageExportDetails.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutExporter.ImageExportSettings.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutExporter.PdfExportSettings.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutExporter.PrintExportSettings.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutExporter.SvgExportSettings.__group__ = ['layout']
+except NameError:
+    pass

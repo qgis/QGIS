@@ -25,3 +25,11 @@ QgsNewsFeedModel.Sticky.__doc__ = "Whether entry is sticky"
 QgsNewsFeedModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsNewsFeedModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``Key``: ' + QgsNewsFeedModel.CustomRole.Key.__doc__ + '\n' + '* ``Title``: ' + QgsNewsFeedModel.CustomRole.Title.__doc__ + '\n' + '* ``Content``: ' + QgsNewsFeedModel.CustomRole.Content.__doc__ + '\n' + '* ``ImageUrl``: ' + QgsNewsFeedModel.CustomRole.ImageUrl.__doc__ + '\n' + '* ``Image``: ' + QgsNewsFeedModel.CustomRole.Image.__doc__ + '\n' + '* ``Link``: ' + QgsNewsFeedModel.CustomRole.Link.__doc__ + '\n' + '* ``Sticky``: ' + QgsNewsFeedModel.CustomRole.Sticky.__doc__
 # --
 QgsNewsFeedModel.CustomRole.baseClass = QgsNewsFeedModel
+try:
+    QgsNewsFeedModel.__group__ = ['network']
+except NameError:
+    pass
+try:
+    QgsNewsFeedProxyModel.__group__ = ['network']
+except NameError:
+    pass

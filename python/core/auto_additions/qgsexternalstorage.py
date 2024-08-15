@@ -11,3 +11,19 @@ try:
     QgsExternalStorageStoredContent.__attribute_docs__ = {'stored': 'The signal is emitted when the resource has successfully been stored\n'}
 except NameError:
     pass
+try:
+    QgsExternalStorage.__group__ = ['externalstorage']
+except NameError:
+    pass
+try:
+    QgsExternalStorageContent.__group__ = ['externalstorage']
+except NameError:
+    pass
+try:
+    QgsExternalStorageFetchedContent.__group__ = ['externalstorage']
+except NameError:
+    pass
+try:
+    QgsExternalStorageStoredContent.__group__ = ['externalstorage']
+except NameError:
+    pass

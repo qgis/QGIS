@@ -2,3 +2,7 @@
 QgsZipItem.vsiPrefix = staticmethod(QgsZipItem.vsiPrefix)
 QgsZipItem.itemFromPath = staticmethod(QgsZipItem.itemFromPath)
 QgsZipItem.iconZip = staticmethod(QgsZipItem.iconZip)
+try:
+    QgsZipItem.__group__ = ['browser']
+except NameError:
+    pass

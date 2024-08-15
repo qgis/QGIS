@@ -10,3 +10,35 @@ except NameError:
 QgsStyle.defaultStyle = staticmethod(QgsStyle.defaultStyle)
 QgsStyle.defaultTextFormatForProject = staticmethod(QgsStyle.defaultTextFormatForProject)
 QgsStyle.isXmlStyleFile = staticmethod(QgsStyle.isXmlStyleFile)
+try:
+    QgsStyle.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleEntityInterface.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleSymbolEntity.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleColorRampEntity.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleTextFormatEntity.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleLabelSettingsEntity.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleLegendPatchShapeEntity.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleSymbol3DEntity.__group__ = ['symbology']
+except NameError:
+    pass

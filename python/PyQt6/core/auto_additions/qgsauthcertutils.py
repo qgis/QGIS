@@ -54,3 +54,7 @@ QgsAuthCertUtils.certViabilityErrors = staticmethod(QgsAuthCertUtils.certViabili
 QgsAuthCertUtils.certIsViable = staticmethod(QgsAuthCertUtils.certIsViable)
 QgsAuthCertUtils.validateCertChain = staticmethod(QgsAuthCertUtils.validateCertChain)
 QgsAuthCertUtils.validatePKIBundle = staticmethod(QgsAuthCertUtils.validatePKIBundle)
+try:
+    QgsAuthCertUtils.__group__ = ['auth']
+except NameError:
+    pass

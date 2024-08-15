@@ -6,3 +6,11 @@ except NameError:
 QgsAnnotationLayer.LayerOptions.__doc__ = """Setting options for loading annotation layers.
 
 .. versionadded:: 3.16"""
+try:
+    QgsAnnotationLayer.__group__ = ['annotations']
+except NameError:
+    pass
+try:
+    QgsAnnotationLayer.LayerOptions.__group__ = ['annotations']
+except NameError:
+    pass

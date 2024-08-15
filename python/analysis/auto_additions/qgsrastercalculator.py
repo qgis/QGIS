@@ -4,3 +4,11 @@ try:
 except NameError:
     pass
 QgsRasterCalculatorEntry.rasterEntries = staticmethod(QgsRasterCalculatorEntry.rasterEntries)
+try:
+    QgsRasterCalculatorEntry.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterCalculator.__group__ = ['raster']
+except NameError:
+    pass

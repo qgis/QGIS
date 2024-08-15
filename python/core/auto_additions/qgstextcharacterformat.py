@@ -5,3 +5,7 @@ QgsTextCharacterFormat.BooleanValue.SetTrue.__doc__ = "Property is set and ``Tru
 QgsTextCharacterFormat.BooleanValue.SetFalse.__doc__ = "Property is set and ``False``"
 QgsTextCharacterFormat.BooleanValue.__doc__ = "Status values for boolean format properties\n\n" + '* ``NotSet``: ' + QgsTextCharacterFormat.BooleanValue.NotSet.__doc__ + '\n' + '* ``SetTrue``: ' + QgsTextCharacterFormat.BooleanValue.SetTrue.__doc__ + '\n' + '* ``SetFalse``: ' + QgsTextCharacterFormat.BooleanValue.SetFalse.__doc__
 # --
+try:
+    QgsTextCharacterFormat.__group__ = ['textrenderer']
+except NameError:
+    pass

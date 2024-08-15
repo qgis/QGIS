@@ -8,3 +8,7 @@ QgsContrastEnhancement.maximumValuePossible = staticmethod(QgsContrastEnhancemen
 QgsContrastEnhancement.minimumValuePossible = staticmethod(QgsContrastEnhancement.minimumValuePossible)
 QgsContrastEnhancement.contrastEnhancementAlgorithmString = staticmethod(QgsContrastEnhancement.contrastEnhancementAlgorithmString)
 QgsContrastEnhancement.contrastEnhancementAlgorithmFromString = staticmethod(QgsContrastEnhancement.contrastEnhancementAlgorithmFromString)
+try:
+    QgsContrastEnhancement.__group__ = ['raster']
+except NameError:
+    pass

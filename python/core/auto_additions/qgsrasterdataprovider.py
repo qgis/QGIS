@@ -38,3 +38,19 @@ QgsRasterDataProvider.VirtualRasterParameters.__doc__ = """Struct that stores th
 .. note::
 
    used by :py:class:`QgsVirtualRasterProvider` only"""
+try:
+    QgsImageFetcher.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterDataProvider.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterDataProvider.VirtualRasterInputLayers.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterDataProvider.VirtualRasterParameters.__group__ = ['raster']
+except NameError:
+    pass

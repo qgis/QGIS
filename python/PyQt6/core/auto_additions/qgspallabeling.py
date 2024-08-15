@@ -372,3 +372,15 @@ QgsPalLabeling.prepareGeometry = staticmethod(QgsPalLabeling.prepareGeometry)
 QgsPalLabeling.geometryRequiresPreparation = staticmethod(QgsPalLabeling.geometryRequiresPreparation)
 QgsPalLabeling.splitToLines = staticmethod(QgsPalLabeling.splitToLines)
 QgsPalLabeling.splitToGraphemes = staticmethod(QgsPalLabeling.splitToGraphemes)
+try:
+    QgsPalLayerSettings.__group__ = ['labeling']
+except NameError:
+    pass
+try:
+    QgsLabelCandidate.__group__ = ['labeling']
+except NameError:
+    pass
+try:
+    QgsPalLabeling.__group__ = ['labeling']
+except NameError:
+    pass

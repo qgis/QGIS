@@ -3,3 +3,7 @@ QgsProcessingParameterAlignRasterLayers.typeName = staticmethod(QgsProcessingPar
 QgsProcessingParameterAlignRasterLayers.parameterAsItems = staticmethod(QgsProcessingParameterAlignRasterLayers.parameterAsItems)
 QgsProcessingParameterAlignRasterLayers.variantMapAsItem = staticmethod(QgsProcessingParameterAlignRasterLayers.variantMapAsItem)
 QgsProcessingParameterAlignRasterLayers.itemAsVariantMap = staticmethod(QgsProcessingParameterAlignRasterLayers.itemAsVariantMap)
+try:
+    QgsProcessingParameterAlignRasterLayers.__group__ = ['processing']
+except NameError:
+    pass

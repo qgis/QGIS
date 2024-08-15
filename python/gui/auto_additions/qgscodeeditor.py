@@ -37,3 +37,11 @@ QgsCodeEditor.color = staticmethod(QgsCodeEditor.color)
 QgsCodeEditor.setColor = staticmethod(QgsCodeEditor.setColor)
 QgsCodeEditor.getMonospaceFont = staticmethod(QgsCodeEditor.getMonospaceFont)
 QgsCodeEditor.isFixedPitch = staticmethod(QgsCodeEditor.isFixedPitch)
+try:
+    QgsCodeInterpreter.__group__ = ['codeeditors']
+except NameError:
+    pass
+try:
+    QgsCodeEditor.__group__ = ['codeeditors']
+except NameError:
+    pass

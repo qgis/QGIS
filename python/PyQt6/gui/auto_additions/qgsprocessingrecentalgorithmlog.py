@@ -3,3 +3,7 @@ try:
     QgsProcessingRecentAlgorithmLog.__attribute_docs__ = {'changed': 'Emitted when the list of recently used algorithms is changed, e.g. when\na new algorithm ID is pushed to the list (see :py:func:`~QgsProcessingRecentAlgorithmLog.push`).\n'}
 except NameError:
     pass
+try:
+    QgsProcessingRecentAlgorithmLog.__group__ = ['processing']
+except NameError:
+    pass

@@ -33,3 +33,27 @@ QgsDatumTransform.TransformDetails.__doc__ = """Contains information about a coo
    Only used in builds based on on Proj >= 6.0
 
 .. versionadded:: 3.8"""
+try:
+    QgsDatumTransform.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsDatumTransform.TransformPair.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsDatumTransform.TransformInfo.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsDatumTransform.GridDetails.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsDatumTransform.SingleOperationDetails.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsDatumTransform.TransformDetails.__group__ = ['proj']
+except NameError:
+    pass

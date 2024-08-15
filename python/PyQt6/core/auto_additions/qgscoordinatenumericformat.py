@@ -6,3 +6,7 @@ QgsGeographicCoordinateNumericFormat.AngleFormat.DecimalDegrees.__doc__ = "Decim
 QgsGeographicCoordinateNumericFormat.AngleFormat.__doc__ = "Angle format options.\n\n" + '* ``DegreesMinutesSeconds``: ' + QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds.__doc__ + '\n' + '* ``DegreesMinutes``: ' + QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes.__doc__ + '\n' + '* ``DecimalDegrees``: ' + QgsGeographicCoordinateNumericFormat.AngleFormat.DecimalDegrees.__doc__
 # --
 QgsGeographicCoordinateNumericFormat.AngleFormat.baseClass = QgsGeographicCoordinateNumericFormat
+try:
+    QgsGeographicCoordinateNumericFormat.__group__ = ['numericformats']
+except NameError:
+    pass

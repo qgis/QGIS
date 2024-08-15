@@ -12,3 +12,11 @@ QgsRecentCoordinateReferenceSystemsModel.RoleAuthId.__doc__ = "CRS authority ID"
 QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = "Custom model roles.\n\n" + '* ``RoleCrs``: ' + QgsRecentCoordinateReferenceSystemsModel.CustomRole.Crs.__doc__ + '\n' + '* ``RoleAuthId``: ' + QgsRecentCoordinateReferenceSystemsModel.CustomRole.AuthId.__doc__
 # --
 QgsRecentCoordinateReferenceSystemsModel.CustomRole.baseClass = QgsRecentCoordinateReferenceSystemsModel
+try:
+    QgsRecentCoordinateReferenceSystemsModel.__group__ = ['proj']
+except NameError:
+    pass
+try:
+    QgsRecentCoordinateReferenceSystemsProxyModel.__group__ = ['proj']
+except NameError:
+    pass

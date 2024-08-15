@@ -4,3 +4,19 @@ try:
 except NameError:
     pass
 QgsProviderRegistry.instance = staticmethod(QgsProviderRegistry.instance)
+try:
+    QgsProviderRegistry.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsProviderRegistry.ProviderCandidateDetails.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsProviderRegistry.UnusableUriDetails.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsProviderRegistry.UnusableUriHandlerInterface.__group__ = ['providers']
+except NameError:
+    pass

@@ -32,3 +32,11 @@ QgsPointCloudAttributeProxyModel.Filters.baseClass = QgsPointCloudAttributeProxy
 Filters = QgsPointCloudAttributeProxyModel  # dirty hack since SIP seems to introduce the flags in module
 QgsPointCloudAttributeModel.attributeToolTip = staticmethod(QgsPointCloudAttributeModel.attributeToolTip)
 QgsPointCloudAttributeModel.iconForAttributeType = staticmethod(QgsPointCloudAttributeModel.iconForAttributeType)
+try:
+    QgsPointCloudAttributeModel.__group__ = ['pointcloud']
+except NameError:
+    pass
+try:
+    QgsPointCloudAttributeProxyModel.__group__ = ['pointcloud']
+except NameError:
+    pass

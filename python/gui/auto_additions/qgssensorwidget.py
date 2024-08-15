@@ -3,3 +3,7 @@ try:
     QgsAbstractSensorWidget.__attribute_docs__ = {'changed': 'Emitted whenever configuration changes happened on this sensor configuration.\n'}
 except NameError:
     pass
+try:
+    QgsAbstractSensorWidget.__group__ = ['sensor']
+except NameError:
+    pass

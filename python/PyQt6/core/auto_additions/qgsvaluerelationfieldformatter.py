@@ -12,3 +12,11 @@ QgsValueRelationFieldFormatter.expressionParentFormAttributes = staticmethod(Qgs
 QgsValueRelationFieldFormatter.expressionParentFormVariables = staticmethod(QgsValueRelationFieldFormatter.expressionParentFormVariables)
 QgsValueRelationFieldFormatter.expressionIsUsable = staticmethod(QgsValueRelationFieldFormatter.expressionIsUsable)
 QgsValueRelationFieldFormatter.resolveLayer = staticmethod(QgsValueRelationFieldFormatter.resolveLayer)
+try:
+    QgsValueRelationFieldFormatter.__group__ = ['fieldformatter']
+except NameError:
+    pass
+try:
+    QgsValueRelationFieldFormatter.ValueRelationItem.__group__ = ['fieldformatter']
+except NameError:
+    pass

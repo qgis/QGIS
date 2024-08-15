@@ -9,3 +9,31 @@ QgsShadowEffectWidget.create = staticmethod(QgsShadowEffectWidget.create)
 QgsGlowWidget.create = staticmethod(QgsGlowWidget.create)
 QgsTransformWidget.create = staticmethod(QgsTransformWidget.create)
 QgsColorEffectWidget.create = staticmethod(QgsColorEffectWidget.create)
+try:
+    QgsPaintEffectWidget.__group__ = ['effects']
+except NameError:
+    pass
+try:
+    QgsDrawSourceWidget.__group__ = ['effects']
+except NameError:
+    pass
+try:
+    QgsBlurWidget.__group__ = ['effects']
+except NameError:
+    pass
+try:
+    QgsShadowEffectWidget.__group__ = ['effects']
+except NameError:
+    pass
+try:
+    QgsGlowWidget.__group__ = ['effects']
+except NameError:
+    pass
+try:
+    QgsTransformWidget.__group__ = ['effects']
+except NameError:
+    pass
+try:
+    QgsColorEffectWidget.__group__ = ['effects']
+except NameError:
+    pass

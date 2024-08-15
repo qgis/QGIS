@@ -9,3 +9,7 @@ QgsRasterMinMaxOrigin.extentString = staticmethod(QgsRasterMinMaxOrigin.extentSt
 QgsRasterMinMaxOrigin.extentFromString = staticmethod(QgsRasterMinMaxOrigin.extentFromString)
 QgsRasterMinMaxOrigin.statAccuracyString = staticmethod(QgsRasterMinMaxOrigin.statAccuracyString)
 QgsRasterMinMaxOrigin.statAccuracyFromString = staticmethod(QgsRasterMinMaxOrigin.statAccuracyFromString)
+try:
+    QgsRasterMinMaxOrigin.__group__ = ['raster']
+except NameError:
+    pass

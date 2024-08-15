@@ -64,3 +64,11 @@ try:
     QgsLayoutItemMapGrid.__attribute_docs__ = {'crsChanged': "Emitted whenever the grid's CRS is changed.\n\n.. versionadded:: 3.18\n"}
 except NameError:
     pass
+try:
+    QgsLayoutItemMapGridStack.__group__ = ['layout']
+except NameError:
+    pass
+try:
+    QgsLayoutItemMapGrid.__group__ = ['layout']
+except NameError:
+    pass

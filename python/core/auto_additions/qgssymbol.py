@@ -13,3 +13,15 @@ QgsSymbol._getPoint = staticmethod(QgsSymbol._getPoint)
 QgsSymbol._getLineString = staticmethod(QgsSymbol._getLineString)
 QgsSymbol._getPolygonRing = staticmethod(QgsSymbol._getPolygonRing)
 QgsSymbol._getPolygon = staticmethod(QgsSymbol._getPolygon)
+try:
+    QgsSymbolAnimationSettings.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSymbolBufferSettings.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsSymbol.__group__ = ['symbology']
+except NameError:
+    pass
