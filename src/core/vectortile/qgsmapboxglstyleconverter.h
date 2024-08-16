@@ -681,6 +681,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * Interpolates a list which starts with the interpolate function.
      *
      * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \since QGIS 3.40
      */
     static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
         int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
@@ -690,7 +692,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param colorExpression the color expression
      * \param context the style conversion context
      * \returns the QGIS expression string
-     * since QGIS 3.22
+     * \since QGIS 3.22
      */
     static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
 
