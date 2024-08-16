@@ -135,7 +135,9 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     QgsPoint p = lineString.pointN( i );
     float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, mapSettings );
 
-    vertices << QVector3D( p.x() - mapSettings.origin().x(), z, -( p.y() - mapSettings.origin().y() ) );
+    vertices << QVector3D( static_cast< float >( p.x() - mapSettings.origin().x() ),
+                           z,
+                           static_cast< float >( -( p.y() - mapSettings.origin().y() ) ) );
     indexes << vertices.count() - 1;
   }
 
@@ -166,9 +168,13 @@ void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float
     if ( withAdjacency )
       indexes << vertices.count();  // add the following vertex (for adjacency)
 
-    vertices << QVector3D( p.x() - mapSettings.origin().x(), z, -( p.y() - mapSettings.origin().y() ) );
+    vertices << QVector3D( static_cast< float >( p.x() - mapSettings.origin().x() ),
+                           z,
+                           static_cast< float >( -( p.y() - mapSettings.origin().y() ) ) );
     indexes << vertices.count() - 1;
-    vertices << QVector3D( p.x() - mapSettings.origin().x(), z2, -( p.y() - mapSettings.origin().y() ) );
+    vertices << QVector3D( static_cast< float >( p.x() - mapSettings.origin().x() ),
+                           z2,
+                           static_cast< float >( -( p.y() - mapSettings.origin().y() ) ) );
     indexes << vertices.count() - 1;
 
     if ( withAdjacency )
