@@ -214,6 +214,36 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     Q_DECL_DEPRECATED static QMap< QString, Qgs3DMapScene * > openScenes() SIP_DEPRECATED;
 
+    /**
+     * Enables OpenGL clipping based on the planes equations defined in \a clipPlaneEquations.
+     * The number of planes is equal to the size of \a clipPlaneEquations.
+     * A plane equation contains 4 elements.
+     * A simple way to define a clip plane equation is to define a normalized normal to
+     * the plane and its distance from the origin of the scene.
+     * In that case, the first 3 elements are the coordinates of the normal of the plane as (X, Y, Z).
+     * They need to be normalized.
+     * The last element is the distance of the plane from the origin of the scene.
+     * In mathematical terms, a 3d plane can be defined with the equation ax+by+cz+d=0
+     * The normal is (a, b, c) with |a, b, c| = 1
+     * The distance is -d.
+     *
+     * By default, OpenGL supports up to 8 additional clipping planes. If \a clipPlaneEquations
+     * contains more than 8 planes, only the first 8 ones will be used.
+     * If \a clipPlaneEquations is empty, the clipping is disabled.
+     *
+     * \see disableClipping()
+     * \since QGIS 3.40
+    */
+    void enableClipping( const QList<QVector4D> &clipPlaneEquations );
+
+    /**
+     * Disables OpenGL clipping.
+     *
+     * \see enableClipping()
+     * \since QGIS 3.40
+     */
+    void disableClipping();
+
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
     static std::function< QMap< QString, Qgs3DMapScene * >() > sOpenScenesFunction;
@@ -296,7 +326,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
     int maximumTextureSize() const;
 
+    void handleClippingOnEntity( QEntity *entity ) const;
+    void handleClippingOnAllEntities() const;
+
   private:
+
     Qgs3DMapSettings &mMap;
     QgsAbstract3DEngine *mEngine = nullptr;
     //! Provides a way to have a synchronous function executed each frame
@@ -321,6 +355,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qgs3DAxis *m3DAxis = nullptr;
 
     bool mSceneUpdatesEnabled = true;
+
+    QList<QVector4D> mClipPlanesEquations;
 
 };
 #endif // QGS3DMAPSCENE_H
