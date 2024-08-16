@@ -26,6 +26,7 @@ __author__ = 'Nathan Woodrow'
 __date__ = 'November 2018'
 __copyright__ = '(C) 2018, Nathan Woodrow'
 
+import typing as _typing
 from .algfactory import ProcessingAlgFactory
 
 alg = ProcessingAlgFactory()
@@ -33,20 +34,21 @@ alg = ProcessingAlgFactory()
 
 # "Forward declare" functions which will be patched in when the Processing plugin loads:
 
-def algorithmHelp(id: str):
+def algorithmHelp(id: str) -> None:
     """
     Prints algorithm parameters with their types. Also
     provides information about parameters and outputs,
     and their acceptable values.
 
-    :param id: An algorithm's ID
-    :type id: str
+    :param id: An algorithm's ID, eg "native:buffer"
+
+    :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_child_algorithm=False):
+def run(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str, object], onFinish:_ typing.Optional[_typing.Callable[]] = None, feedback: _typing.Optional["QgsProcessingFeedback"] = None, context: _typing.Optional[QgsProcessingContext] = None, is_child_algorithm: bool = False) -> _typing.Union[_typing.Dict, None]:
     """
     Executes given algorithm and returns its outputs as dictionary object.
 
@@ -59,13 +61,14 @@ def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_ch
     i.e. it is a sub-part of an algorithm which calls other Processing algorithms.
 
     :return: algorithm results as a dictionary, or None if execution failed
-    :rtype: Union[dict, None]
+
+    :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
+def runAndLoadResults(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str, object], feedback:_ typing.Optional["QgsProcessingFeedback"] = None, context:_ typing.Optional["QgsProcessingContext"] = None) -> _typing.Union[_typing.Dict, None]:
     """
     Executes given algorithm and load its results into the current QGIS project
     when possible.
@@ -77,12 +80,14 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
 
     :return: algorithm results as a dictionary, or None if execution failed
     :rtype: Union[dict, None]
+
+    :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def createAlgorithmDialog(algOrName, parameters={}):
+def createAlgorithmDialog(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str, object] = {}) -> _typing.Union[str, 'QgsProcessingAlgorithm']:
     """
     Creates and returns an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters. It is the caller's responsibility to execute
@@ -92,13 +97,14 @@ def createAlgorithmDialog(algOrName, parameters={}):
     :param parameters: Initial algorithm parameters dictionary
 
     :return: algorithm results as a dictionary, or None if execution failed
-    :rtype: Union[dict, None]
+
+    :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def execAlgorithmDialog(algOrName, parameters={}):
+def execAlgorithmDialog(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str: object] = {}) -> _typing.Union[_typing.Dict, None]:
     """
     Executes an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters.
@@ -107,13 +113,14 @@ def execAlgorithmDialog(algOrName, parameters={}):
     :param parameters: Initial algorithm parameters dictionary
 
     :return: algorithm results as a dictionary, or None if execution failed
-    :rtype: Union[dict, None]
+
+    :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def createContext(feedback=None):
+def createContext(feedback: _typing.Optional["QgsProcessingFeedback"] = None) -> "QgsProcessingContext":
     """
     Creates a default processing context
 
@@ -121,7 +128,8 @@ def createContext(feedback=None):
     :type feedback: Optional[QgsProcessingFeedback]
 
     :returns: New QgsProcessingContext object
-    :rtype: QgsProcessingContext
+
+    :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
     raise QgsNotSupportedException('Processing plugin has not been loaded')
