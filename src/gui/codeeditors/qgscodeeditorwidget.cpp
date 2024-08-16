@@ -275,6 +275,12 @@ bool QgsCodeEditorWidget::eventFilter( QObject *obj, QEvent *event )
           QFile file( mFilePath );
           if ( file.open( QFile::ReadOnly ) )
           {
+            int currentLine = -1, currentColumn = -1;
+            if ( !mLastModified.isNull() )
+            {
+              mEditor->getCursorPosition( &currentLine, &currentColumn );
+            }
+
             const QString content = file.readAll();
 
             // don't clear, instead perform undoable actions:
@@ -287,6 +293,11 @@ bool QgsCodeEditorWidget::eventFilter( QObject *obj, QEvent *event )
             mEditor->endUndoAction();
 
             mLastModified = fi.lastModified();
+            if ( currentLine >= 0 && currentLine < mEditor->lines() )
+            {
+              mEditor->setCursorPosition( currentLine, currentColumn );
+            }
+
             emit loadedExternalChanges();
           }
         }
@@ -421,6 +432,8 @@ void QgsCodeEditorWidget::setFilePath( const QString &path )
     return;
 
   mFilePath = path;
+  mLastModified = QDateTime();
+
   emit filePathChanged( mFilePath );
 }
 
