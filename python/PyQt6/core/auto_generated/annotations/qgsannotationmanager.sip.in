@@ -92,6 +92,7 @@ present in the XML document.
 .. seealso:: :py:func:`writeXml`
 %End
 
+
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns a DOM element representing the state of the manager.
