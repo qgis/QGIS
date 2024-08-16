@@ -51,16 +51,10 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
+# changing this signature? make sure you update the signature in
+# python/processing/__init__.py too!
+# Docstring for this function is in python/processing/__init__.py
 def createContext(feedback=None):
-    """
-    Creates a default processing context
-
-    :param feedback: Optional existing QgsProcessingFeedback object, or None to use a default feedback object
-    :type feedback: Optional[QgsProcessingFeedback]
-
-    :returns: New QgsProcessingContext object
-    :rtype: QgsProcessingContext
-    """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
     context.setFeedback(feedback)
