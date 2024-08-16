@@ -418,6 +418,25 @@ void QgsCodeEditorWidget::setFilePath( const QString &path )
   emit filePathChanged( mFilePath );
 }
 
+bool QgsCodeEditorWidget::save( const QString &path )
+{
+  bool saved = false;
+  const QString filePath = !path.isEmpty() ? path : mFilePath;
+  if ( !filePath.isEmpty() )
+  {
+    QFile file( filePath );
+    if ( file.open( QFile::WriteOnly ) )
+    {
+      file.write( mEditor->text().toUtf8() );
+      file.close();
+      saved = true;
+    }
+    mLastModified = QFileInfo( filePath ).lastModified();
+    setFilePath( filePath );
+  }
+  return saved;
+}
+
 bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
 {
   if ( mFilePath.isEmpty() )

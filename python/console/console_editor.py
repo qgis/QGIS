@@ -418,9 +418,7 @@ class Editor(QgsCodeEditorPython):
             self.reformatCode()
 
         index = self.tab_widget.indexOf(self.editor_tab)
-        if filename:
-            self.code_editor_widget.setFilePath(filename)
-        if not self.code_editor_widget.filePath():
+        if not filename and not self.code_editor_widget.filePath():
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
             folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
@@ -432,11 +430,13 @@ class Editor(QgsCodeEditorPython):
             if not path:
                 self.code_editor_widget.setFilePath(None)
                 return
-            self.code_editor_widget.setFilePath(path)
+            filename = path
 
-            msgText = QCoreApplication.translate('PythonConsole',
-                                                 'Script was correctly saved.')
-            self.showMessage(msgText)
+        self.code_editor_widget.save(filename)
+
+        msgText = QCoreApplication.translate('PythonConsole',
+                                             'Script was correctly saved.')
+        self.showMessage(msgText)
 
         # Save the new contents
         # Need to use newline='' to avoid adding extra \r characters on Windows
