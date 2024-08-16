@@ -146,7 +146,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.actionToggleComment.triggered.connect(self.editor.toggleComment)
-        self.editor.textChanged.connect(self._on_text_modified)
+        self.editor.modificationChanged.connect(self._on_text_modified)
 
         self.run_dialog = None
 
@@ -237,8 +237,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.setHasChanged(False)
         QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
 
-    def _on_text_modified(self):
-        self.setHasChanged(True)
+    def _on_text_modified(self, modified):
+        self.setHasChanged(modified)
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
