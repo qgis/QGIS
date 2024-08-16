@@ -88,7 +88,7 @@ jobs:
       - name: Run WMS 1.3.0 OGC tests
         run: |
           source venv/bin/activate && ./pyogctest/pyogctest.py -s wms130 -e
-          docker-compose -f .ci/ogc/docker-compose.yml up -d
+          docker compose -f .ci/ogc/docker-compose.yml up -d
           source venv/bin/activate && ./pyogctest/pyogctest.py -n ogc_qgis -s wms130 -v -u http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' qgis_server_nginx)/qgisserver_wms130
         env:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
@@ -96,7 +96,7 @@ jobs:
       - name: Run OGC API Features 1.0 tests
         run: |
           cd data && git clone https://github.com/qgis/QGIS-Training-Data && cd -
-          docker-compose -f .ci/ogc/docker-compose.yml up -d
+          docker compose -f .ci/ogc/docker-compose.yml up -d
           source venv/bin/activate && ./pyogctest/pyogctest.py -n ogc_qgis -s ogcapif -v -u http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' qgis_server_nginx)/qgisserver_ogcapif
         env:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
