@@ -44,6 +44,7 @@ class TestQgs3DUtils : public QgsTest
     void testQgsBox3DDistanceTo();
     void testQgsRay3D();
     void testExportToObj();
+    void testAddDefinesToShaderCode();
   private:
 };
 
@@ -376,6 +377,34 @@ void TestQgs3DUtils::testExportToObj()
     QString actual = out.readAll();
     QGSCOMPARELONGSTR( "export_obj", "sparse_faces.obj", actual.toUtf8() );
   }
+}
+
+void TestQgs3DUtils::testAddDefinesToShaderCode()
+{
+  const QStringList definesList( {"BASE_COLOR_MAP", "ROUGHNESS_MAP"} );
+
+  // test a shader code
+  const QByteArray shaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample.frag" ) ) );
+  QVERIFY( !shaderCode.isEmpty() );
+
+  const QByteArray actualShaderCodeWithDefines = Qgs3DUtils::addDefinesToShaderCode( shaderCode, QStringList( {"BASE_COLOR_MAP", "ROUGHNESS_MAP"} ) );
+  const QByteArray expectedShaderCodeWithDefines = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_with_defines.frag" ) ) );
+  QCOMPARE( actualShaderCodeWithDefines, expectedShaderCodeWithDefines );
+
+  // shader code without a #version - this should not happen
+  // in that case the #define is inserted at the beginning
+  const QByteArray shaderCodeNoVersion = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_no_version.frag" ) ) );
+  QVERIFY( !shaderCodeNoVersion.isEmpty() );
+
+  const QByteArray actualShaderCodeNoVersionWithDefines = Qgs3DUtils::addDefinesToShaderCode( shaderCodeNoVersion, QStringList( {"BASE_COLOR_MAP", "ROUGHNESS_MAP"} ) );
+  const QByteArray expectedShaderCodeNoVersionWithDefines = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_no_version_with_defines.frag" ) ) );
+  QCOMPARE( actualShaderCodeNoVersionWithDefines, expectedShaderCodeNoVersionWithDefines );
+
+
+  // input is empty
+  // the result only contains the #define code
+  const QByteArray onlyDefines = Qgs3DUtils::addDefinesToShaderCode( QByteArray(), QStringList( {"BASE_COLOR_MAP", "ROUGHNESS_MAP"} ) );
+  QCOMPARE( onlyDefines, QByteArray( "#define BASE_COLOR_MAP\n#define ROUGHNESS_MAP\n" ) );
 }
 
 
