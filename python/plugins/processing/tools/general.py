@@ -102,7 +102,7 @@ def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_ch
     :param is_child_algorithm: Set to True if this algorithm is being run as part of a larger algorithm,
     i.e. it is a sub-part of an algorithm which calls other Processing algorithms.
 
-    :returns algorithm results as a dictionary, or None if execution failed
+    :return: algorithm results as a dictionary, or None if execution failed
     :rtype: Union[dict, None]
     """
     if onFinish or not is_child_algorithm:
@@ -127,7 +127,7 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
     :param feedback: Processing feedback object
     :param context: Processing context object
 
-    :returns algorithm results as a dictionary, or None if execution failed
+    :return: algorithm results as a dictionary, or None if execution failed
     :rtype: Union[dict, None]
     """
     if isinstance(algOrName, QgsProcessingAlgorithm):
@@ -162,7 +162,7 @@ def createAlgorithmDialog(algOrName, parameters={}):
     :param algOrName: Either an instance of an algorithm, or an algorithm's ID
     :param parameters: Initial algorithm parameters dictionary
 
-    :returns algorithm results as a dictionary, or None if execution failed
+    :return: algorithm results as a dictionary, or None if execution failed
     :rtype: Union[dict, None]
     """
     if isinstance(algOrName, QgsProcessingAlgorithm):
@@ -191,7 +191,7 @@ def execAlgorithmDialog(algOrName, parameters={}):
     :param algOrName: Either an instance of an algorithm, or an algorithm's ID
     :param parameters: Initial algorithm parameters dictionary
 
-    :returns algorithm results as a dictionary, or None if execution failed
+    :return: algorithm results as a dictionary, or None if execution failed
     :rtype: Union[dict, None]
     """
     dlg = createAlgorithmDialog(algOrName, parameters)
