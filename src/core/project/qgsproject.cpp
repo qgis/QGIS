@@ -2499,7 +2499,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   emit labelingEngineSettingsChanged();
 
   profile.switchTask( tr( "Loading annotations" ) );
-  mAnnotationManager->readXml( doc->documentElement(), context );
+  mAnnotationManager->readXmlAndUpgradeToAnnotationLayerItems( doc->documentElement(), context, mMainAnnotationLayer );
   if ( !( flags & Qgis::ProjectReadFlag::DontLoadLayouts ) )
   {
     profile.switchTask( tr( "Loading layouts" ) );

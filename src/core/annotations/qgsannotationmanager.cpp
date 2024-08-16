@@ -19,6 +19,8 @@
 #include "qgsannotationregistry.h"
 #include "qgsapplication.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsannotationitem.h"
+#include "qgsannotationlayer.h"
 
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )
@@ -87,16 +89,51 @@ QList<QgsAnnotation *> QgsAnnotationManager::cloneAnnotations() const
 
 bool QgsAnnotationManager::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
+  return readXmlPrivate( element, context, nullptr );
+}
+
+bool QgsAnnotationManager::readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer )
+{
+  return readXmlPrivate( element, context, layer );
+}
+
+bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer )
+{
   clear();
   //restore each annotation
   bool result = true;
 
+  auto createAnnotationFromElement = [this, &context, layer]( const QDomElement & element )
+  {
+    std::unique_ptr< QgsAnnotation > annotation( createAnnotationFromXml( element, context ) );
+    if ( !annotation )
+      return;
+
+    if ( layer )
+    {
+      std::unique_ptr< QgsAnnotationItem > annotationItem = convertToAnnotationItem( annotation.get() );
+      if ( annotationItem )
+      {
+        layer->addItem( annotationItem.release() );
+      }
+      else
+      {
+        // could not convert to QgsAnnotationItem, just leave as QgsAnnotation
+        addAnnotation( annotation.release() );
+      }
+    }
+    else
+    {
+      addAnnotation( annotation.release() );
+    }
+  };
+
   QDomElement annotationsElem = element.firstChildElement( QStringLiteral( "Annotations" ) );
 
   QDomElement annotationElement = annotationsElem.firstChildElement( QStringLiteral( "Annotation" ) );
-  while ( ! annotationElement .isNull() )
+  while ( ! annotationElement.isNull() )
   {
-    createAnnotationFromXml( annotationElement, context );
+    createAnnotationFromElement( annotationElement );
     annotationElement = annotationElement.nextSiblingElement( QStringLiteral( "Annotation" ) );
   }
 
@@ -106,26 +143,32 @@ bool QgsAnnotationManager::readXml( const QDomElement &element, const QgsReadWri
     QDomNodeList oldItemList = element.elementsByTagName( QStringLiteral( "TextAnnotationItem" ) );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
-      createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
+      createAnnotationFromElement( oldItemList.at( i ).toElement() );
     }
     oldItemList = element.elementsByTagName( QStringLiteral( "FormAnnotationItem" ) );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
-      createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
+      createAnnotationFromElement( oldItemList.at( i ).toElement() );
     }
     oldItemList = element.elementsByTagName( QStringLiteral( "HtmlAnnotationItem" ) );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
-      createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
+      createAnnotationFromElement( oldItemList.at( i ).toElement() );
     }
     oldItemList = element.elementsByTagName( QStringLiteral( "SVGAnnotationItem" ) );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
-      createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
+      createAnnotationFromElement( oldItemList.at( i ).toElement() );
     }
   }
 
   return result;
+}
+
+std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem( QgsAnnotation *annotation )
+{
+  Q_UNUSED( annotation );
+  return nullptr;
 }
 
 QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -169,12 +212,12 @@ bool QgsAnnotationManager::accept( QgsStyleEntityVisitorInterface *visitor ) con
   return true;
 }
 
-void QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, const QgsReadWriteContext &context )
+QgsAnnotation *QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   QString type = element.tagName();
   QgsAnnotation *annotation = QgsApplication::annotationRegistry()->create( type );
   if ( !annotation )
-    return;
+    return nullptr;
 
   annotation->readXml( element, context );
 
@@ -183,5 +226,5 @@ void QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, 
     annotation->setMapPositionCrs( mProject->crs() );
   }
 
-  addAnnotation( annotation );
+  return annotation;
 }
