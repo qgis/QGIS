@@ -48,7 +48,12 @@ def algorithmHelp(id: str) -> None:
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def run(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str, object], onFinish:_ typing.Optional[_typing.Callable[]] = None, feedback: _typing.Optional["QgsProcessingFeedback"] = None, context: _typing.Optional[QgsProcessingContext] = None, is_child_algorithm: bool = False) -> _typing.Union[_typing.Dict, None]:
+def run(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'],
+        parameters: _typing.Dict[str, object],
+        onFinish: _typing.Optional[_typing.Callable] = None,
+        feedback: _typing.Optional["QgsProcessingFeedback"] = None,
+        context: _typing.Optional[QgsProcessingContext] = None,
+        is_child_algorithm: bool = False) -> _typing.Union[_typing.Dict, None]:
     """
     Executes given algorithm and returns its outputs as dictionary object.
 
@@ -68,7 +73,10 @@ def run(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _ty
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def runAndLoadResults(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str, object], feedback:_ typing.Optional["QgsProcessingFeedback"] = None, context:_ typing.Optional["QgsProcessingContext"] = None) -> _typing.Union[_typing.Dict, None]:
+def runAndLoadResults(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'],
+                      parameters: _typing.Dict[str, object],
+                      feedback: _typing.Optional["QgsProcessingFeedback"] = None,
+                      context: _typing.Optional["QgsProcessingContext"] = None) -> _typing.Union[_typing.Dict, None]:
     """
     Executes given algorithm and load its results into the current QGIS project
     when possible.
@@ -87,7 +95,8 @@ def runAndLoadResults(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], p
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def createAlgorithmDialog(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str, object] = {}) -> _typing.Union[str, 'QgsProcessingAlgorithm']:
+def createAlgorithmDialog(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'],
+                          parameters: _typing.Dict[str, object] = {}) -> _typing.Union[str, 'QgsProcessingAlgorithm']:
     """
     Creates and returns an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters. It is the caller's responsibility to execute
@@ -104,7 +113,8 @@ def createAlgorithmDialog(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'
     raise QgsNotSupportedException('Processing plugin has not been loaded')
 
 
-def execAlgorithmDialog(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'], parameters: _typing.Dict[str: object] = {}) -> _typing.Union[_typing.Dict, None]:
+def execAlgorithmDialog(algOrName: _typing.Union[str, 'QgsProcessingAlgorithm'],
+                        parameters: _typing.Dict[str: object] = {}) -> _typing.Union[_typing.Dict, None]:
     """
     Executes an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters.
