@@ -698,6 +698,8 @@ Interpolates a list which starts with the interpolate function.
 .. warning::
 
    This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.40
 %End
 
     static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
@@ -708,7 +710,8 @@ Converts an expression representing a color to a string (can be color string or 
 :param context: the style conversion context
 
 :return: the QGIS expression string
-         since QGIS 3.22
+
+.. versionadded:: 3.22
 %End
 
     static QColor parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context );
