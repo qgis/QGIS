@@ -104,6 +104,17 @@ Returns the widget's associated file path.
 .. seealso:: :py:func:`filePathChanged`
 %End
 
+    bool save( const QString &path = QString() );
+%Docstring
+Saves the code editor content into the file ``path``.
+
+.. note::
+
+   When the path is empty, the content will be saved to the current file path if not empty
+
+.. versionadded:: 3.38.2
+%End
+
   public slots:
 
     void showSearchBar();

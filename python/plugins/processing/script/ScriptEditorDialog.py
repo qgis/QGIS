@@ -230,23 +230,11 @@ class ScriptEditorDialog(BASE, WIDGET):
 
             if newPath:
                 newPath = QgsFileUtils.ensureFileNameHasExtension(newPath, ['py'])
-                self.code_editor_widget.setFilePath(newPath)
+                self.code_editor_widget.save(newPath)
+        elif self.code_editor_widget.filePath():
+            self.code_editor_widget.save()
 
-        if self.code_editor_widget.filePath():
-            text = self.editor.text()
-            try:
-                with codecs.open(self.code_editor_widget.filePath(),
-                                 "w", encoding="utf-8") as f:
-                    f.write(text)
-            except OSError as e:
-                QMessageBox.warning(self,
-                                    self.tr("I/O error"),
-                                    self.tr("Unable to save edits:\n{}").format(str(e))
-                                    )
-                return
-
-            self.setHasChanged(False)
-
+        self.setHasChanged(False)
         QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
 
     def _on_text_modified(self):
