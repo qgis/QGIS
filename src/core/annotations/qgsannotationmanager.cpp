@@ -21,6 +21,10 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationlayer.h"
+#include "qgssvgannotation.h"
+#include "qgsannotationpictureitem.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )
@@ -89,21 +93,21 @@ QList<QgsAnnotation *> QgsAnnotationManager::cloneAnnotations() const
 
 bool QgsAnnotationManager::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  return readXmlPrivate( element, context, nullptr );
+  return readXmlPrivate( element, context, nullptr, QgsCoordinateTransformContext() );
 }
 
-bool QgsAnnotationManager::readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer )
+bool QgsAnnotationManager::readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
 {
-  return readXmlPrivate( element, context, layer );
+  return readXmlPrivate( element, context, layer, transformContext );
 }
 
-bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer )
+bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
 {
   clear();
   //restore each annotation
   bool result = true;
 
-  auto createAnnotationFromElement = [this, &context, layer]( const QDomElement & element )
+  auto createAnnotationFromElement = [this, &context, layer, &transformContext]( const QDomElement & element )
   {
     std::unique_ptr< QgsAnnotation > annotation( createAnnotationFromXml( element, context ) );
     if ( !annotation )
@@ -111,7 +115,7 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
 
     if ( layer )
     {
-      std::unique_ptr< QgsAnnotationItem > annotationItem = convertToAnnotationItem( annotation.get() );
+      std::unique_ptr< QgsAnnotationItem > annotationItem = convertToAnnotationItem( annotation.get(), layer, transformContext );
       if ( annotationItem )
       {
         layer->addItem( annotationItem.release() );
@@ -165,9 +169,91 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
   return result;
 }
 
-std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem( QgsAnnotation *annotation )
+std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem( QgsAnnotation *annotation, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
 {
-  Q_UNUSED( annotation );
+  auto setCommonProperties = [layer, &transformContext]( const QgsAnnotation * source, QgsAnnotationItem * destination ) -> bool
+  {
+    destination->setEnabled( source->isVisible() );
+    if ( source->hasFixedMapPosition() )
+    {
+      QgsPointXY mapPosition = source->mapPosition();
+      QgsCoordinateTransform transform( source->mapPositionCrs(), layer->crs(), transformContext );
+      try
+      {
+        transform.transform( mapPosition );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
+        return false;
+      }
+
+      destination->setCalloutAnchor( QgsGeometry::fromPointXY( mapPosition ) );
+
+      std::unique_ptr< QgsBalloonCallout > callout = std::make_unique< QgsBalloonCallout >();
+      if ( QgsFillSymbol *fill = source->fillSymbol() )
+        callout->setFillSymbol( fill->clone() );
+
+      if ( QgsMarkerSymbol *marker = source->markerSymbol() )
+        callout->setMarkerSymbol( marker->clone() );
+      callout->setMargins( source->contentsMargin() );
+      callout->setMarginsUnit( Qgis::RenderUnit::Millimeters );
+      destination->setCallout( callout.release() );
+    }
+
+    if ( source->mapLayer() )
+      layer->setLinkedVisibilityLayer( source->mapLayer() );
+
+    return true;
+
+  };
+
+  if ( const QgsSvgAnnotation *svg = dynamic_cast< const QgsSvgAnnotation *>( annotation ) )
+  {
+    QgsPointXY mapPosition = svg->mapPosition();
+    QgsCoordinateTransform transform( svg->mapPositionCrs(), layer->crs(), transformContext );
+    try
+    {
+      transform.transform( mapPosition );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
+    }
+
+    std::unique_ptr< QgsAnnotationPictureItem > item = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::SVG,
+        svg->filePath(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
+    if ( !setCommonProperties( annotation, item.get() ) )
+      return nullptr;
+
+    const QgsMargins margins = svg->contentsMargin();
+    item->setFixedSize( QSizeF( svg->frameSizeMm().width() - margins.left() - margins.right(),
+                                svg->frameSizeMm().height() - margins.top() - margins.bottom() ) );
+    item->setFixedSizeUnit( Qgis::RenderUnit::Millimeters );
+
+    if ( svg->hasFixedMapPosition() )
+    {
+      item->setPlacementMode( Qgis::AnnotationPlacementMode::FixedSize );
+
+      item->setOffsetFromCallout( QSizeF( svg->frameOffsetFromReferencePointMm().x() + margins.left(),
+                                          svg->frameOffsetFromReferencePointMm().y() + margins.top() ) );
+      item->setOffsetFromCalloutUnit( Qgis::RenderUnit::Millimeters );
+    }
+    else
+    {
+      item->setPlacementMode( Qgis::AnnotationPlacementMode::RelativeToMapFrame );
+      item->setBounds( QgsRectangle( svg->relativePosition().x(), svg->relativePosition().y(),
+                                     svg->relativePosition().x(), svg->relativePosition().y() ) );
+      if ( QgsFillSymbol *fill = svg->fillSymbol() )
+      {
+        item->setBackgroundEnabled( true );
+        item->setBackgroundSymbol( fill->clone() );
+      }
+    }
+
+    return item;
+  }
+
   return nullptr;
 }
 

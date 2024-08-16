@@ -27,6 +27,7 @@ class QgsAnnotation;
 class QgsStyleEntityVisitorInterface;
 class QgsAnnotationLayer;
 class QgsAnnotationItem;
+class QgsCoordinateTransformContext;
 
 /**
  * \ingroup core
@@ -115,7 +116,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * \since QGIS 3.40
      */
     bool readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context,
-        QgsAnnotationLayer *layer ) SIP_SKIP;
+        QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
     /**
      * Returns a DOM element representing the state of the manager.
@@ -147,8 +148,9 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
 
   private:
 
-    bool readXmlPrivate( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer );
-    static std::unique_ptr< QgsAnnotationItem > convertToAnnotationItem( QgsAnnotation *annotation );
+    bool readXmlPrivate( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext );
+    static std::unique_ptr< QgsAnnotationItem > convertToAnnotationItem( QgsAnnotation *annotation, QgsAnnotationLayer *layer,
+        const QgsCoordinateTransformContext &transformContext );
 
     QgsProject *mProject = nullptr;
 
