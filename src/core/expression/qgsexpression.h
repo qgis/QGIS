@@ -640,6 +640,15 @@ class CORE_EXPORT QgsExpression
     static bool loadFunctionsFromProject() SIP_SKIP;
 
     /**
+     * Unloads python expression functions stored in the current project
+     * and reloads local functions from the user profile.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    static void cleanFunctionsFromProject() SIP_SKIP;
+
+    /**
      * Returns a quoted column reference (in double quotes)
      * \see quotedString()
      * \see quotedValue()

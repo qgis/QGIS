@@ -13863,8 +13863,16 @@ void QgisApp::closeProject()
   {
     QgsPythonRunner::run( QStringLiteral( "qgis.utils.unloadProjectMacros();" ) );
   }
-
   mPythonMacrosEnabled = false;
+
+#ifdef WITH_BINDINGS
+  // unload the project expression functions and reload user expressions
+  const QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
+  if ( !projectFunctions.isEmpty() )
+  {
+    QgsExpression::cleanFunctionsFromProject();
+  }
+#endif
 
   mLegendExpressionFilterButton->setExpressionText( QString() );
   mLegendExpressionFilterButton->setChecked( false );

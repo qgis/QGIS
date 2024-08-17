@@ -9513,6 +9513,10 @@ bool QgsExpression::loadFunctionsFromProject()
   return false;
 }
 
+void QgsExpression::cleanFunctionsFromProject()
+{
+  QgsPythonRunner::run( "qgis.utils.clean_project_expression_functions()" );
+}
 
 QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()
   : QgsExpressionFunction( QStringLiteral( "array_foreach" ), QgsExpressionFunction::ParameterList()  // skip-keyword-check
