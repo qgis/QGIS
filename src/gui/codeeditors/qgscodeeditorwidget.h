@@ -117,6 +117,14 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      */
     QString filePath() const { return mFilePath; }
 
+    /**
+     * Saves the code editor content into the file \a path.
+     * \returns FALSE if the file path has not previously been set, or if writing the file fails.
+     * \note When the path is empty, the content will be saved to the current file path if not empty.
+     * \since QGIS 3.38.2
+     */
+    bool save( const QString &path = QString() );
+
   public slots:
 
     /**
