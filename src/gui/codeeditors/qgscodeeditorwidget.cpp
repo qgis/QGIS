@@ -439,7 +439,6 @@ void QgsCodeEditorWidget::setFilePath( const QString &path )
 
 bool QgsCodeEditorWidget::save( const QString &path )
 {
-  bool saved = false;
   const QString filePath = !path.isEmpty() ? path : mFilePath;
   if ( !filePath.isEmpty() )
   {
@@ -448,12 +447,15 @@ bool QgsCodeEditorWidget::save( const QString &path )
     {
       file.write( mEditor->text().toUtf8() );
       file.close();
-      saved = true;
+
+      mEditor->setModified( false );
+      mLastModified = QFileInfo( filePath ).lastModified();
+      setFilePath( filePath );
+
+      return true;
     }
-    mLastModified = QFileInfo( filePath ).lastModified();
-    setFilePath( filePath );
   }
-  return saved;
+  return false;
 }
 
 bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
