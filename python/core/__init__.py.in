@@ -32,9 +32,9 @@ from .additions.fromfunction import _fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
 from .additions.providermetadata import PyProviderMetadata
-from .additions.qgsfeature import mapping_feature
+from .additions.qgsfeature import _mapping_feature
 from .additions.qgsfunction import register_function, qgsfunction
-from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
+from .additions.qgsgeometry import _geometryNonZero, _mapping_geometry
 from .additions.qgssettings import _qgssettings_enum_value, _qgssettings_set_enum_value, _qgssettings_flag_value
 from .additions.qgssettingsentry import PyQgsSettingsEntryEnumFlag
 from .additions.qgstaskwrapper import QgsTaskWrapper
@@ -45,9 +45,9 @@ from .additions.validitycheck import check
 from typing import Optional, Union
 
 # Injections into classes
-QgsFeature.__geo_interface__ = property(mapping_feature)
+QgsFeature.__geo_interface__ = property(_mapping_feature)
 QgsGeometry.__bool__ = _geometryNonZero
-QgsGeometry.__geo_interface__ = property(mapping_geometry)
+QgsGeometry.__geo_interface__ = property(_mapping_geometry)
 QgsGeometry.__nonzero__ = _geometryNonZero
 QgsProject.blockDirtying = ProjectDirtyBlocker
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
