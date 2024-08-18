@@ -30,7 +30,6 @@ from qgis._core import *
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import _fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
-from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
 from .additions.providermetadata import PyProviderMetadata
 from .additions.qgsfeature import mapping_feature
@@ -50,8 +49,6 @@ QgsFeature.__geo_interface__ = property(mapping_feature)
 QgsGeometry.__bool__ = _geometryNonZero
 QgsGeometry.__geo_interface__ = property(mapping_geometry)
 QgsGeometry.__nonzero__ = _geometryNonZero
-QgsProcessingFeatureSourceDefinition.__repr__ = processing_source_repr
-QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
 QgsProject.blockDirtying = ProjectDirtyBlocker
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 QgsRuntimeProfiler.profile = ScopedRuntimeProfileContextManager
@@ -72,6 +69,25 @@ def _date_range_repr(self):
 
 QgsDateTimeRange.__repr__ = _datetime_range_repr
 QgsDateRange.__repr__ = _date_range_repr
+
+
+# add some __repr__ methods to processing classes
+def _processing_source_repr(self):
+    if self.featureLimit != -1:
+        return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}, 'featureLimit': {}}}>".format(
+            self.source.staticValue(), self.selectedFeaturesOnly, self.featureLimit)
+    else:
+        return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}}}>".format(
+            self.source.staticValue(), self.selectedFeaturesOnly)
+
+
+def _processing_output_layer_repr(self):
+    return "<QgsProcessingOutputLayerDefinition {{'sink':{}, 'createOptions': {}}}>".format(self.sink.staticValue(),
+                                                                                            self.createOptions)
+
+QgsProcessingFeatureSourceDefinition.__repr__ = _processing_source_repr
+QgsProcessingOutputLayerDefinition.__repr__ = _processing_output_layer_repr
+
 
 # Classes patched
 QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
