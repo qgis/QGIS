@@ -208,13 +208,13 @@ QgsAbstractMetadataBaseValidator.ValidationResult.identifier = QgsAbstractMetada
 
 
 # TODO QGIS 4.0 - remove, replaced by Qgis.LinePlacementFlags
-class LinePlacementFlags:
+class _LinePlacementFlags:
   OnLine = 1
   AboveLine = 2
   BelowLine = 4
   MapOrientation = 8
 
-QgsPalLayerSettings.LinePlacementFlags = LinePlacementFlags
+QgsPalLayerSettings.LinePlacementFlags = _LinePlacementFlags
 QgsPalLayerSettings.OnLine = QgsPalLayerSettings.LinePlacementFlags.OnLine
 QgsPalLayerSettings.AboveLine = QgsPalLayerSettings.LinePlacementFlags.AboveLine
 QgsPalLayerSettings.BelowLine = QgsPalLayerSettings.LinePlacementFlags.BelowLine
