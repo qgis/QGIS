@@ -28,7 +28,7 @@ from qgis._core import *
 @MONKEYPATCH_INJECTIONS@
 
 from .additions.edit import edit, QgsEditError
-from .additions.fromfunction import fromFunction
+from .additions.fromfunction import _fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
@@ -58,7 +58,7 @@ QgsRuntimeProfiler.profile = ScopedRuntimeProfileContextManager
 QgsSettings.enumValue = _qgssettings_enum_value
 QgsSettings.setEnumValue = _qgssettings_set_enum_value
 QgsSettings.flagValue = _qgssettings_flag_value
-QgsTask.fromFunction = fromFunction
+QgsTask.fromFunction = _fromFunction
 
 # add some __repr__ methods to QGIS range classes. We can't do this via sip because they are template based classes
 
