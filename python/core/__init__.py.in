@@ -266,12 +266,12 @@ QgsPalLayerSettings.reverseDirectionSymbol = QgsPalLayerSettings.reverseDirectio
 
 
 # TODO QGIS 4.0 - remove, replaced by QgsLabelLineSettings.DirectionSymbolPlacement
-class DirectionSymbols:
+class _DirectionSymbols:
   SymbolLeftRight = 0
   SymbolAbove = 1
   SymbolBelow = 2
 
-QgsPalLayerSettings.DirectionSymbols = DirectionSymbols
+QgsPalLayerSettings.DirectionSymbols = _DirectionSymbols
 QgsPalLayerSettings.SymbolLeftRight = QgsPalLayerSettings.DirectionSymbols.SymbolLeftRight
 QgsPalLayerSettings.SymbolAbove = QgsPalLayerSettings.DirectionSymbols.SymbolAbove
 QgsPalLayerSettings.SymbolBelow = QgsPalLayerSettings.DirectionSymbols.SymbolBelow
