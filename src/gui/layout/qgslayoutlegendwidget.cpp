@@ -852,6 +852,11 @@ void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool us
   {
     // update widgets state based on current selection
     selectedChanged( QModelIndex(), QModelIndex() );
+    mItemTreeView->proxyModel()->setShowPrivateLayers( true );
+  }
+  else
+  {
+    mItemTreeView->proxyModel()->setShowPrivateLayers( false );
   }
 }
 
