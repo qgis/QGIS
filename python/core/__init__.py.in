@@ -22,6 +22,7 @@ __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Nathan Woodrow'
 
 from qgis.PyQt.QtCore import NULL
+from qgis.PyQt.QtCore import Qt as _Qt
 from qgis._core import *
 
 @MONKEYPATCH_INJECTIONS@
@@ -41,7 +42,6 @@ from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
 from .additions.validitycheck import check
-from .additions.ranges import datetime_range_repr, date_range_repr
 
 from typing import Optional, Union
 
@@ -59,8 +59,20 @@ QgsSettings.enumValue = _qgssettings_enum_value
 QgsSettings.setEnumValue = _qgssettings_set_enum_value
 QgsSettings.flagValue = _qgssettings_flag_value
 QgsTask.fromFunction = fromFunction
-QgsDateTimeRange.__repr__ = datetime_range_repr
-QgsDateRange.__repr__ = date_range_repr
+
+
+# add some __repr__ methods to QGIS range classes. We can't do this via sip because they are template based classes
+
+def _datetime_range_repr(self):
+    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(_Qt.DateFormat.ISODate)}, {self.end().toString(_Qt.DateFormat.ISODate)}{']' if self.includeEnd() else ')'}>"
+
+
+def _date_range_repr(self):
+    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(_Qt.DateFormat.ISODate)}, {self.end().toString(_Qt.DateFormat.ISODate)}{']' if self.includeEnd() else ')'}>"
+
+
+QgsDateTimeRange.__repr__ = _datetime_range_repr
+QgsDateRange.__repr__ = _date_range_repr
 
 # Classes patched
 QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
