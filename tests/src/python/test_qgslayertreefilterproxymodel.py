@@ -68,7 +68,7 @@ class TestQgsLayerTreeFilterProxyModel(QgisTestCase):
         proxy_items = []
         for r in range(proxy_model.rowCount()):
             proxy_items.append(
-                proxy_model.data(proxy_model.index(r, 0), Qt.DisplayRole))
+                proxy_model.data(proxy_model.index(r, 0), Qt.ItemDataRole.DisplayRole))
 
         self.assertEqual(proxy_items, ['layer1', 'layer2', 'layer3'])
 
@@ -82,7 +82,7 @@ class TestQgsLayerTreeFilterProxyModel(QgisTestCase):
         proxy_items = []
         for r in range(proxy_model.rowCount()):
             proxy_items.append(
-                proxy_model.data(proxy_model.index(r, 0), Qt.DisplayRole))
+                proxy_model.data(proxy_model.index(r, 0), Qt.ItemDataRole.DisplayRole))
 
         self.assertEqual(proxy_items, ['layer1', 'layer2'])
 
