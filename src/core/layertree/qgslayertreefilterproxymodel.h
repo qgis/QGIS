@@ -63,6 +63,24 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
 
     /**
+     * Returns if private layers are shown.
+     *
+     * Defaults to TRUE.
+     *
+     * \since QGIS 3.40
+     */
+    bool showPrivateLayers() const;
+
+    /**
+     * Determines if private layers are shown.
+     *
+     * Defaults to TRUE.
+     *
+     * \since QGIS 3.40
+     */
+    void setShowPrivateLayers( bool showPrivate );
+
+    /**
      * Defines the type layers (vector, raster, etc) shown in the tree
      * If the list is empty, all types are shown.
      */
@@ -110,6 +128,8 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QList<QgsMapLayer *> mCheckedLayers;
     QString mFilterText;
+    // for compatibility this defaults to true
+    bool mShowPrivateLayers = true;
     Qgis::LayerFilters mFilters = Qgis::LayerFilter::All;
 };
 
