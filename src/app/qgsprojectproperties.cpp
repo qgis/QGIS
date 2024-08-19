@@ -2599,7 +2599,11 @@ void QgsProjectProperties::setCurrentEllipsoid( const QString &ellipsoidAcronym 
 
 void QgsProjectProperties::mButtonAddColor_clicked()
 {
-  QColor newColor = QgsColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
+  const Qgis::ColorModel colorModel = mColorModel->currentData().value<Qgis::ColorModel>();
+  const QColor defaultColor = colorModel == Qgis::ColorModel::Cmyk ?
+                              QColor::fromCmykF( 0., 1., 1., 0. ) : QColor::fromRgbF( 1., 0., 0. );
+
+  QColor newColor = QgsColorDialog::getColor( defaultColor, this->parentWidget(), tr( "Select Color" ), true );
   if ( !newColor.isValid() )
   {
     return;
