@@ -24,6 +24,7 @@ from qgis.PyQt.QtGui import (
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
+    QgsMapLayer,
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
     QgsExpression,
@@ -438,6 +439,49 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(
             self.render_layout_check(
                 'composer_legend_size_content_no_double_paint', layout
+            )
+        )
+
+    def test_private_layers(self):
+        """
+        Test legend does not contain private layers by default
+        """
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer1 = QgsVectorLayer(point_path, 'points 1', 'ogr')
+        point_layer2 = QgsVectorLayer(point_path, 'points 2', 'ogr')
+        point_layer2.setFlags(QgsMapLayer.LayerFlag.Private)
+        p = QgsProject()
+        p.addMapLayers([point_layer1, point_layer2])
+
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
+
+        point_layer1.setRenderer(
+            QgsSingleSymbolRenderer(marker_symbol.clone()))
+        point_layer2.setRenderer(
+            QgsSingleSymbolRenderer(marker_symbol.clone()))
+
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        layout.addLayoutItem(legend)
+
+        legend.setStyleFont(QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_private_layers', layout
             )
         )
 

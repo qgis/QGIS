@@ -57,6 +57,7 @@ class CORE_EXPORT QgsLegendRenderer
 #ifndef SIP_RUN
     QgsLegendRenderer( const QgsLegendRenderer &other ) = delete;
     QgsLegendRenderer &operator=( const QgsLegendRenderer &other ) = delete;
+    QgsLegendRenderer( QgsLegendRenderer &&other );
 #endif
 
     /**
