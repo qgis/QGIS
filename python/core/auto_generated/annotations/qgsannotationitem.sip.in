@@ -380,14 +380,14 @@ Sets the ``unit`` for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
 
   protected:
 
-    void copyCommonProperties( const QgsAnnotationItem *other );
+    virtual void copyCommonProperties( const QgsAnnotationItem *other );
 %Docstring
 Copies common properties from the base class from an ``other`` item.
 
 .. versionadded:: 3.22
 %End
 
-    bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes common properties from the base class into an XML ``element``.
 
@@ -396,7 +396,7 @@ Writes common properties from the base class into an XML ``element``.
 .. versionadded:: 3.22
 %End
 
-    bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+    virtual bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads common properties from the base class from the given DOM ``element``.
 
