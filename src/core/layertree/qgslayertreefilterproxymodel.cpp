@@ -107,6 +107,20 @@ void QgsLayerTreeFilterProxyModel::setLayerTreeModel( QgsLayerTreeModel *layerTr
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
 }
 
+bool QgsLayerTreeFilterProxyModel::showPrivateLayers() const
+{
+  return mShowPrivateLayers;
+}
+
+void QgsLayerTreeFilterProxyModel::setShowPrivateLayers( bool showPrivate )
+{
+  if ( showPrivate == mShowPrivateLayers )
+    return;
+
+  mShowPrivateLayers = showPrivate;
+  invalidateFilter();
+}
+
 void QgsLayerTreeFilterProxyModel::setFilters( Qgis::LayerFilters filters )
 {
   mFilters = filters;
@@ -180,6 +194,10 @@ bool QgsLayerTreeFilterProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return false;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
+    if ( ! mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+    {
+      return false;
+    }
     if ( !QgsMapLayerProxyModel::layerMatchesFilters( layer, mFilters ) )
       return false;
 
