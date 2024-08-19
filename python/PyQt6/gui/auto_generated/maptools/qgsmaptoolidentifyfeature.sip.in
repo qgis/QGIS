@@ -1,50 +1,56 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolemitpoint.h                                        *
+ * src/gui/maptools/qgsmaptoolidentifyfeature.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
-
-class QgsMapToolEmitPoint : QgsMapTool
+class QgsMapToolIdentifyFeature : QgsMapToolIdentify
 {
 %Docstring(signature="appended")
-A map tool that simply emits a point when clicking on the map.
-Connecting a slot to its :py:func:`~canvasClicked` signal will
-let you implement custom behavior for the passed in point.
+The :py:class:`QgsMapToolIdentifyFeature` class is a map tool to identify a feature on a chosen layer.
+Once the map tool is enable, user can click on the map canvas to identify a feature.
+A signal will then be emitted.
 %End
 
 %TypeHeaderCode
-#include "qgsmaptoolemitpoint.h"
+#include "qgsmaptoolidentifyfeature.h"
 %End
   public:
-    QgsMapToolEmitPoint( QgsMapCanvas *canvas );
+
+    QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl = 0 );
 %Docstring
-constructor
+QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
+
+:param canvas: the map canvas
+:param vl: the vector layer. The map tool can be initialized without any layer and can be set afterward.
 %End
 
-    virtual Flags flags() const;
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
-
-    virtual void canvasPressEvent( QgsMapMouseEvent *e );
+    void setLayer( QgsVectorLayer *vl );
+%Docstring
+change the layer used by the map tool to identify
+%End
 
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
 
   signals:
-    void canvasClicked( const QgsPointXY &point, Qt::MouseButton button );
-%Docstring
-signal emitted on canvas click
-%End
+    void featureIdentified( const QgsFeature & );
+    void featureIdentified( QgsFeatureId );
+
+  protected:
+    virtual void keyPressEvent( QKeyEvent *e );
+
+
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolemitpoint.h                                        *
+ * src/gui/maptools/qgsmaptoolidentifyfeature.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

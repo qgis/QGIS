@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolextent.h                                           *
+ * src/gui/maptools/qgsmaptoolzoom.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -9,74 +9,52 @@
 
 
 
-
-class QgsMapToolExtent : QgsMapTool
+class QgsMapToolZoom : QgsMapTool
 {
 %Docstring(signature="appended")
-A map tool that emits an extent from a rectangle drawn onto the map canvas.
+A map tool for zooming into the map.
+
+.. seealso:: :py:class:`QgsMapTool`
 %End
 
 %TypeHeaderCode
-#include "qgsmaptoolextent.h"
+#include "qgsmaptoolzoom.h"
 %End
   public:
-
-    QgsMapToolExtent( QgsMapCanvas *canvas );
+    QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
 %Docstring
 constructor
 %End
+    ~QgsMapToolZoom();
 
     virtual Flags flags() const;
+
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
-    virtual void activate();
+    virtual void keyPressEvent( QKeyEvent *e );
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
 
     virtual void deactivate();
 
 
-    void setRatio( QSize ratio );
-%Docstring
-Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
-To unset a fixed aspect ratio, set the width and height to zero.
+  protected:
 
-:param ratio: aspect ratio's width and height
-%End
 
-    QSize ratio() const;
-%Docstring
-Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
-If the aspect ratio isn't fixed, the width and height will be set to zero.
-%End
 
-    QgsRectangle extent() const;
-%Docstring
-Returns the current extent drawn onto the canvas.
-%End
 
-    void clearRubberBand();
-%Docstring
-Removes the tool's rubber band from the canvas.
 
-.. versionadded:: 3.20
-%End
-
-  signals:
-
-    void extentChanged( const QgsRectangle &extent );
-%Docstring
-signal emitted on extent change
-%End
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolextent.h                                           *
+ * src/gui/maptools/qgsmaptoolzoom.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

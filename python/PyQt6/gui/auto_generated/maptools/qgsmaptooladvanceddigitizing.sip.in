@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptooladvanceddigitizing.h                               *
+ * src/gui/maptools/qgsmaptooladvanceddigitizing.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -210,7 +210,7 @@ The snapping will occur in the layer's CRS.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptooladvanceddigitizing.h                               *
+ * src/gui/maptools/qgsmaptooladvanceddigitizing.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolcapture.h                                          *
+ * src/gui/maptools/qgsmaptoolcapture.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -26,7 +26,7 @@ as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptur
 %End
   public:
 
-    enum CaptureMode /BaseType=IntEnum/
+    enum CaptureMode
     {
       CaptureNone,
       CapturePoint,
@@ -34,7 +34,7 @@ as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptur
       CapturePolygon
     };
 
-    enum Capability /BaseType=IntEnum/
+    enum Capability
     {
       NoCapabilities,
       SupportsCurves,
@@ -363,7 +363,7 @@ QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolcapture.h                                          *
+ * src/gui/maptools/qgsmaptoolcapture.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

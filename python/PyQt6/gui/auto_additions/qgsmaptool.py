@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/gui/qgsmaptool.h
+# The following has been generated automatically from src/gui/maptools/qgsmaptool.h
 QgsMapTool.Transient = QgsMapTool.Flag.Transient
 QgsMapTool.EditTool = QgsMapTool.Flag.EditTool
 QgsMapTool.AllowZoomRect = QgsMapTool.Flag.AllowZoomRect
@@ -20,3 +20,7 @@ except NameError:
     pass
 QgsMapTool.searchRadiusMM = staticmethod(QgsMapTool.searchRadiusMM)
 QgsMapTool.searchRadiusMU = staticmethod(QgsMapTool.searchRadiusMU)
+try:
+    QgsMapTool.__group__ = ['maptools']
+except NameError:
+    pass
