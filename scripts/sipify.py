@@ -721,7 +721,7 @@ def process_doxygen_line(line: str) -> str:
         CONTEXT.comment_code_snippet = CodeSnippetType.NotSpecified
         if re.search(r'cpp', codelang):
             CONTEXT.comment_code_snippet = CodeSnippetType.Cpp
-        codelang = codelang.replace('py', 'python').replace('unparsed', 'raw')
+        codelang = codelang.replace('py', 'python').replace('unparsed', 'text')
         return "\n" if CONTEXT.comment_code_snippet == CodeSnippetType.Cpp else f"\n.. code-block::{codelang}\n\n"
 
     if re.search(r'\\endcode', line):
