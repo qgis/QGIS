@@ -9,7 +9,7 @@
 
 
 
-class QgsAnnotationRectangleTextItem : QgsAnnotationItem
+class QgsAnnotationRectangleTextItem : QgsAnnotationRectItem
 {
 %Docstring(signature="appended")
 An annotation item which renders paragraphs of text within a rectangle.
@@ -33,15 +33,7 @@ within the specified ``bounds`` rectangle.
 
     virtual Qgis::AnnotationItemFlags flags() const;
 
-    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
-
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
-
-    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
-
-    virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
-
-    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 
 
     static QgsAnnotationRectangleTextItem *create() /Factory/;
@@ -53,28 +45,6 @@ Creates a new rectangle text annotation item.
 
     virtual QgsAnnotationRectangleTextItem *clone() const /Factory/;
 
-    virtual QgsRectangle boundingBox() const;
-
-    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
-
-
-    QgsRectangle bounds() const;
-%Docstring
-Returns the bounds of the text.
-
-The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
-
-.. seealso:: :py:func:`setBounds`
-%End
-
-    void setBounds( const QgsRectangle &bounds );
-%Docstring
-Sets the ``bounds`` of the text.
-
-The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
-
-.. seealso:: :py:func:`bounds`
-%End
 
     QString text() const;
 %Docstring
@@ -88,60 +58,6 @@ Returns the text rendered by the item.
 Sets the ``text`` rendered by the item.
 
 .. seealso:: :py:func:`text`
-%End
-
-    Qgis::AnnotationPlacementMode placementMode() const;
-%Docstring
-Returns the placement mode for the text.
-
-.. seealso:: :py:func:`setPlacementMode`
-%End
-
-    void setPlacementMode( Qgis::AnnotationPlacementMode mode );
-%Docstring
-Sets the placement ``mode`` for the text.
-
-.. seealso:: :py:func:`placementMode`
-%End
-
-    QSizeF fixedSize() const;
-%Docstring
-Returns the fixed size to use for the text, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
-
-Units are retrieved via :py:func:`~QgsAnnotationRectangleTextItem.fixedSizeUnit`
-
-.. seealso:: :py:func:`setFixedSize`
-
-.. seealso:: :py:func:`fixedSizeUnit`
-%End
-
-    void setFixedSize( const QSizeF &size );
-%Docstring
-Sets the fixed ``size`` to use for the text, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
-
-Units are set via :py:func:`~QgsAnnotationRectangleTextItem.setFixedSizeUnit`
-
-.. seealso:: :py:func:`fixedSize`
-
-.. seealso:: :py:func:`setFixedSizeUnit`
-%End
-
-    Qgis::RenderUnit fixedSizeUnit() const;
-%Docstring
-Returns the units to use for fixed text sizes, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
-
-.. seealso:: :py:func:`setFixedSizeUnit`
-
-.. seealso:: :py:func:`fixedSize`
-%End
-
-    void setFixedSizeUnit( Qgis::RenderUnit unit );
-%Docstring
-Sets the ``unit`` to use for fixed text sizes, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
-
-.. seealso:: :py:func:`fixedSizeUnit`
-
-.. seealso:: :py:func:`setFixedSize`
 %End
 
     QgsTextFormat format() const;
@@ -170,82 +86,6 @@ Returns the text's alignment relative to the :py:func:`~QgsAnnotationRectangleTe
 Sets the text's ``alignment`` relative to the :py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
 
 .. seealso:: :py:func:`alignment`
-%End
-
-    bool backgroundEnabled() const;
-%Docstring
-Returns ``True`` if the item's background should be rendered.
-
-.. seealso:: :py:func:`setBackgroundEnabled`
-
-.. seealso:: :py:func:`backgroundSymbol`
-%End
-
-    void setBackgroundEnabled( bool enabled );
-%Docstring
-Sets whether the item's background should be rendered.
-
-.. seealso:: :py:func:`backgroundEnabled`
-
-.. seealso:: :py:func:`setBackgroundSymbol`
-%End
-
-    const QgsFillSymbol *backgroundSymbol() const;
-%Docstring
-Returns the symbol used to render the item's background.
-
-.. seealso:: :py:func:`backgroundEnabled`
-
-.. seealso:: :py:func:`setBackgroundSymbol`
-%End
-
-    void setBackgroundSymbol( QgsFillSymbol *symbol /Transfer/ );
-%Docstring
-Sets the ``symbol`` used to render the item's background.
-
-The item takes ownership of the symbol.
-
-.. seealso:: :py:func:`backgroundSymbol`
-
-.. seealso:: :py:func:`setBackgroundEnabled`
-%End
-
-    bool frameEnabled() const;
-%Docstring
-Returns ``True`` if the item's frame should be rendered.
-
-.. seealso:: :py:func:`setFrameEnabled`
-
-.. seealso:: :py:func:`frameSymbol`
-%End
-
-    void setFrameEnabled( bool enabled );
-%Docstring
-Sets whether the item's frame should be rendered.
-
-.. seealso:: :py:func:`frameEnabled`
-
-.. seealso:: :py:func:`setFrameSymbol`
-%End
-
-    const QgsFillSymbol *frameSymbol() const;
-%Docstring
-Returns the symbol used to render the item's frame.
-
-.. seealso:: :py:func:`frameEnabled`
-
-.. seealso:: :py:func:`setFrameSymbol`
-%End
-
-    void setFrameSymbol( QgsFillSymbol *symbol /Transfer/ );
-%Docstring
-Sets the ``symbol`` used to render the item's frame.
-
-The item takes ownership of the symbol.
-
-.. seealso:: :py:func:`frameSymbol`
-
-.. seealso:: :py:func:`setBackgroundEnabled`
 %End
 
     const QgsMargins &margins() const;
@@ -287,6 +127,11 @@ Returns the units for the margins between the item's frame and the interior text
 
 .. seealso:: :py:func:`margins`
 %End
+
+  protected:
+
+    virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback );
+
 
   private:
     QgsAnnotationRectangleTextItem( const QgsAnnotationRectangleTextItem &other );

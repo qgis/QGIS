@@ -20,7 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsannotationitem.h"
+#include "qgsannotationrectitem.h"
 #include "qgstextformat.h"
 #include "qgsmargins.h"
 
@@ -30,7 +30,7 @@
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
+class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationRectItem
 {
   public:
 
@@ -43,11 +43,7 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
 
     QString type() const override;
     Qgis::AnnotationItemFlags flags() const override;
-    void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const override;
-    Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override;
-    QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override SIP_FACTORY;
 
     /**
      * Creates a new rectangle text annotation item.
@@ -56,26 +52,6 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationRectangleTextItem *clone() const override SIP_FACTORY;
-    QgsRectangle boundingBox() const override;
-    QgsRectangle boundingBox( QgsRenderContext &context ) const override;
-
-    /**
-     * Returns the bounds of the text.
-     *
-     * The coordinate reference system for the bounds will be the parent layer's QgsAnnotationLayer::crs().
-     *
-     * \see setBounds()
-     */
-    QgsRectangle bounds() const { return mBounds; }
-
-    /**
-     * Sets the \a bounds of the text.
-     *
-     * The coordinate reference system for the bounds will be the parent layer's QgsAnnotationLayer::crs().
-     *
-     * \see bounds()
-     */
-    void setBounds( const QgsRectangle &bounds );
 
     /**
      * Returns the text rendered by the item.
@@ -90,56 +66,6 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
      * \see text()
      */
     void setText( const QString &text ) { mText = text; }
-
-    /**
-     * Returns the placement mode for the text.
-     *
-     * \see setPlacementMode()
-     */
-    Qgis::AnnotationPlacementMode placementMode() const;
-
-    /**
-     * Sets the placement \a mode for the text.
-     *
-     * \see placementMode()
-     */
-    void setPlacementMode( Qgis::AnnotationPlacementMode mode );
-
-    /**
-     * Returns the fixed size to use for the text, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
-     *
-     * Units are retrieved via fixedSizeUnit()
-     *
-     * \see setFixedSize()
-     * \see fixedSizeUnit()
-     */
-    QSizeF fixedSize() const;
-
-    /**
-     * Sets the fixed \a size to use for the text, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
-     *
-     * Units are set via setFixedSizeUnit()
-     *
-     * \see fixedSize()
-     * \see setFixedSizeUnit()
-     */
-    void setFixedSize( const QSizeF &size );
-
-    /**
-     * Returns the units to use for fixed text sizes, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
-     *
-     * \see setFixedSizeUnit()
-     * \see fixedSize()
-     */
-    Qgis::RenderUnit fixedSizeUnit() const;
-
-    /**
-     * Sets the \a unit to use for fixed text sizes, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
-     *
-     * \see fixedSizeUnit()
-     * \see setFixedSize()
-     */
-    void setFixedSizeUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns the text format used to render the text.
@@ -168,74 +94,6 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
      * \see alignment().
      */
     void setAlignment( Qt::Alignment alignment );
-
-    /**
-     * Returns TRUE if the item's background should be rendered.
-     *
-     * \see setBackgroundEnabled()
-     * \see backgroundSymbol()
-     */
-    bool backgroundEnabled() const { return mDrawBackground; }
-
-    /**
-     * Sets whether the item's background should be rendered.
-     *
-     * \see backgroundEnabled()
-     * \see setBackgroundSymbol()
-     */
-    void setBackgroundEnabled( bool enabled ) { mDrawBackground = enabled; }
-
-    /**
-     * Returns the symbol used to render the item's background.
-     *
-     * \see backgroundEnabled()
-     * \see setBackgroundSymbol()
-     */
-    const QgsFillSymbol *backgroundSymbol() const;
-
-    /**
-     * Sets the \a symbol used to render the item's background.
-     *
-     * The item takes ownership of the symbol.
-     *
-     * \see backgroundSymbol()
-     * \see setBackgroundEnabled()
-     */
-    void setBackgroundSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
-
-    /**
-     * Returns TRUE if the item's frame should be rendered.
-     *
-     * \see setFrameEnabled()
-     * \see frameSymbol()
-     */
-    bool frameEnabled() const { return mDrawFrame; }
-
-    /**
-     * Sets whether the item's frame should be rendered.
-     *
-     * \see frameEnabled()
-     * \see setFrameSymbol()
-     */
-    void setFrameEnabled( bool enabled ) { mDrawFrame = enabled; }
-
-    /**
-     * Returns the symbol used to render the item's frame.
-     *
-     * \see frameEnabled()
-     * \see setFrameSymbol()
-     */
-    const QgsFillSymbol *frameSymbol() const;
-
-    /**
-     * Sets the \a symbol used to render the item's frame.
-     *
-     * The item takes ownership of the symbol.
-     *
-     * \see frameSymbol()
-     * \see setBackgroundEnabled()
-     */
-    void setFrameSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the margins between the outside of the item's frame and the interior text.
@@ -273,21 +131,15 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
     */
     Qgis::RenderUnit marginsUnit() const { return mMarginUnit; }
 
-  private:
+  protected:
 
-    Qgis::AnnotationPlacementMode mPlacementMode = Qgis::AnnotationPlacementMode::SpatialBounds;
-    QgsRectangle mBounds;
-    QSizeF mFixedSize;
-    Qgis::RenderUnit mFixedSizeUnit = Qgis::RenderUnit::Millimeters;
+    void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback ) override;
+
+  private:
 
     QString mText;
     QgsTextFormat mTextFormat;
     Qt::Alignment mAlignment = Qt::AlignLeft;
-
-    bool mDrawBackground = true;
-    std::unique_ptr< QgsFillSymbol > mBackgroundSymbol;
-    bool mDrawFrame = true;
-    std::unique_ptr< QgsFillSymbol > mFrameSymbol;
 
     QgsMargins mMargins;
     Qgis::RenderUnit mMarginUnit = Qgis::RenderUnit::Millimeters;

@@ -389,7 +389,7 @@ class CORE_EXPORT QgsAnnotationItem
      *
      * \since QGIS 3.22
      */
-    void copyCommonProperties( const QgsAnnotationItem *other );
+    virtual void copyCommonProperties( const QgsAnnotationItem *other );
 
     /**
      * Writes common properties from the base class into an XML \a element.
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsAnnotationItem
      * \see writeXml()
      * \since QGIS 3.22
      */
-    bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Reads common properties from the base class from the given DOM \a element.
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsAnnotationItem
      * \see readXml()
      * \since QGIS 3.22
      */
-    bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+    virtual bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Renders the item's callout.

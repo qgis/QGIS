@@ -224,6 +224,7 @@ set(QGIS_CORE_SRCS
   annotations/qgsannotationpointtextitem.cpp
   annotations/qgsannotationpolygonitem.cpp
   annotations/qgsannotationrectangletextitem.cpp
+  annotations/qgsannotationrectitem.cpp
   annotations/qgshtmlannotation.cpp
   annotations/qgsrenderedannotationitemdetails.cpp
   annotations/qgssvgannotation.cpp
@@ -1344,6 +1345,7 @@ set(QGIS_CORE_HDRS
   annotations/qgsannotationpointtextitem.h
   annotations/qgsannotationpolygonitem.h
   annotations/qgsannotationrectangletextitem.h
+  annotations/qgsannotationrectitem.h
   annotations/qgsannotationregistry.h
   annotations/qgshtmlannotation.h
   annotations/qgsrenderedannotationitemdetails.h
