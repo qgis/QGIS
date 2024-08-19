@@ -30,6 +30,7 @@ class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeNode;
 class QgsSymbol;
 class QgsRenderContext;
+class QgsLayerTreeFilterProxyModel;
 
 #include "qgslegendsettings.h"
 
@@ -51,6 +52,22 @@ class CORE_EXPORT QgsLegendRenderer
      * and the model must exist for the lifetime of this renderer.
      */
     QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings );
+    ~QgsLegendRenderer();
+
+#ifndef SIP_RUN
+    QgsLegendRenderer( const QgsLegendRenderer &other ) = delete;
+    QgsLegendRenderer &operator=( const QgsLegendRenderer &other ) = delete;
+#endif
+
+    /**
+     * Returns the filter proxy model used for filtering the legend model content during
+     * rendering.
+     *
+     * Filters can be set on the proxy model to filter rendered legend content.
+     *
+     * \since QGIS 3.40
+     */
+    QgsLayerTreeFilterProxyModel *proxyModel();
 
     /**
      * Runs the layout algorithm and returns the minimum size required for the legend.
@@ -295,11 +312,16 @@ class CORE_EXPORT QgsLegendRenderer
     QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
 
     QgsLayerTreeModel *mLegendModel = nullptr;
+    std::unique_ptr< QgsLayerTreeFilterProxyModel >mProxyModel;
 
     QgsLegendSettings mSettings;
 
     QSizeF mLegendSize;
 
+#endif
+
+#ifdef SIP_RUN
+    QgsLegendRenderer( const QgsLegendRenderer &other );
 #endif
 
     void widthAndOffsetForTitleText( const Qt::AlignmentFlag halignment, double legendWidth, double &width, double &offset ) const;

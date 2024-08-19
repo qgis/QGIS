@@ -33,6 +33,7 @@
 #include "qgsmaplayerlegend.h"
 #include "qgspainteffect.h"
 #include "qgsproject.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsshadoweffect.h"
@@ -73,10 +74,8 @@ static QImage _base64ToImage( const QString &base64 )
   return QImage::fromData( bytearray, "PNG" );
 }
 
-static QImage _renderLegend( QgsLayerTreeModel *legendModel, QgsLegendSettings &settings )
+static QImage _renderLegend( QgsLegendRenderer &legendRenderer )
 {
-  settings.setTitle( QStringLiteral( "Legend" ) );
-  QgsLegendRenderer legendRenderer( legendModel, settings );
   const QSizeF size = legendRenderer.minimumSize();
 
   const int dpi = 96;
@@ -103,6 +102,14 @@ static QImage _renderLegend( QgsLayerTreeModel *legendModel, QgsLegendSettings &
 
   return img;
 }
+
+static QImage _renderLegend( QgsLayerTreeModel *legendModel, QgsLegendSettings &settings )
+{
+  settings.setTitle( QStringLiteral( "Legend" ) );
+  QgsLegendRenderer legendRenderer( legendModel, settings );
+  return _renderLegend( legendRenderer );
+}
+
 
 static QJsonObject _renderJsonLegend( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
 {
@@ -211,6 +218,9 @@ class TestQgsLegendRenderer : public QgsTest
 
     void testLabelLegend();
     void testHeatmap();
+
+    void testFilteredVector();
+    void testFilteredRaster();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -2043,6 +2053,38 @@ void TestQgsLegendRenderer::testHeatmap()
 
   QgsProject::instance()->removeMapLayer( vl );
   QVERIFY( _verifyImage( res, QStringLiteral( "heatmap" ) ) );
+}
+
+void TestQgsLegendRenderer::testFilteredVector()
+{
+  const QString testName = QStringLiteral( "legend_filtered_vector" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setTitle( QStringLiteral( "Legend" ) );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  QgsLegendRenderer legendRenderer( &legendModel, settings );
+  legendRenderer.proxyModel()->setFilters( Qgis::LayerFilter::VectorLayer );
+
+  const QImage res = _renderLegend( legendRenderer );
+  QVERIFY( _verifyImage( res, testName ) );
+}
+
+void TestQgsLegendRenderer::testFilteredRaster()
+{
+  const QString testName = QStringLiteral( "legend_filtered_raster" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setTitle( QStringLiteral( "Legend" ) );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  QgsLegendRenderer legendRenderer( &legendModel, settings );
+  legendRenderer.proxyModel()->setFilters( Qgis::LayerFilter::RasterLayer );
+
+  const QImage res = _renderLegend( legendRenderer );
+  QVERIFY( _verifyImage( res, testName ) );
 }
 
 

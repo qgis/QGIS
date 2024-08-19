@@ -78,6 +78,13 @@ If the list is empty, all types are shown.
     virtual QVariant data( const QModelIndex &index, int role ) const;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
 
+    bool nodeShown( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns ``True`` if the specified ``node`` will be shown in the model.
+
+.. versionadded:: 3.40
+%End
+
   public slots:
     virtual void setFilterText( const QString &filterText = QString() );
 %Docstring
