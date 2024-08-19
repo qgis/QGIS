@@ -795,6 +795,9 @@ void QgsMapToolModifyAnnotation::setHoveredItemFromPoint( const QgsPointXY &mapP
     double currentNodeDistance = std::numeric_limits< double >::max();
     mHoveredItemNodesSpatialIndex->intersects( searchRect, [&hoveredNode, &currentNodeDistance, &mapPoint, this]( int index )-> bool
     {
+      if ( index >= mHoveredItemNodes.size() )
+        return false;
+
       const QgsAnnotationItemNode &thisNode = mHoveredItemNodes.at( index );
       const double nodeDistance = thisNode.point().sqrDist( mapPoint );
       if ( nodeDistance < currentNodeDistance )
