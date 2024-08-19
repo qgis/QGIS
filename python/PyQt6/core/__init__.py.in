@@ -21,6 +21,8 @@ __author__ = 'Nathan Woodrow'
 __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Nathan Woodrow'
 
+import typing as _typing
+
 from qgis.PyQt.QtCore import NULL
 from qgis.PyQt.QtCore import Qt as _Qt
 from qgis._core import *
@@ -41,8 +43,6 @@ from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
 from .additions.validitycheck import check
-
-from typing import Optional, Union
 
 # Injections into classes
 QgsFeature.__geo_interface__ = property(_mapping_feature)
@@ -481,7 +481,7 @@ QgsException.__doc__ = "Defines a QGIS exception class."
 try:
    import numpy as _numpy
 
-   def _qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> Optional[_numpy.dtype]:
+   def _qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> _typing.Optional[_numpy.dtype]:
       qgis_to_numpy_dtype_dict = {
        Qgis.DataType.UnknownDataType: None,
        Qgis.DataType.Byte: _numpy.byte,
@@ -501,7 +501,7 @@ try:
        }
       return qgis_to_numpy_dtype_dict[dataType]
 
-   def _raster_block_as_numpy(self, use_masking:bool = True) -> Union[_numpy.ndarray, _numpy.ma.MaskedArray]:
+   def _raster_block_as_numpy(self, use_masking:bool = True) -> _typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]:
       raster_dtype = _qgis_data_type_to_numeric_data_type(self.dataType())
       if not raster_dtype:
          raise ValueError(f"The raster block data type '{str(self.dataType())}' is not compatible with NumPy arrays.")
