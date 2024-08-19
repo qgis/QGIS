@@ -101,11 +101,14 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   connect( toolButtonNewDatabase, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::createDb );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsNewSpatialiteLayerDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsNewSpatialiteLayerDialog::buttonBox_rejected );
-
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewSpatialiteLayerDialog::showHelp );
+  connect( mButtonUp, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::moveFieldsUp );
+  connect( mButtonDown, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::moveFieldsDown );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
+  mButtonUp->setEnabled( false );
+  mButtonDown->setEnabled( false );
 }
 
 void QgsNewSpatialiteLayerDialog::mGeometryTypeBox_currentIndexChanged( int index )
@@ -253,6 +256,8 @@ void QgsNewSpatialiteLayerDialog::nameChanged( const QString &name )
 void QgsNewSpatialiteLayerDialog::selectionChanged()
 {
   mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
+  mButtonUp->setDisabled( mAttributeView->selectedItems().isEmpty() );
+  mButtonDown->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
 bool QgsNewSpatialiteLayerDialog::createDb()
@@ -485,4 +490,24 @@ QString QgsNewSpatialiteLayerDialog::quotedIdentifier( QString id )
 void QgsNewSpatialiteLayerDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-spatialite-layer" ) );
+}
+
+void QgsNewSpatialiteLayerDialog::moveFieldsUp()
+{
+  int currentRow = mAttributeView->currentIndex().row();
+  if ( currentRow == 0 )
+    return;
+
+  mAttributeView->insertTopLevelItem( currentRow - 1, mAttributeView->takeTopLevelItem( currentRow ) );
+  mAttributeView->setCurrentIndex( mAttributeView->model()->index( currentRow - 1, 0 ) );
+}
+
+void QgsNewSpatialiteLayerDialog::moveFieldsDown()
+{
+  int currentRow = mAttributeView->currentIndex().row();
+  if ( currentRow == mAttributeView->topLevelItemCount() - 1 )
+    return;
+
+  mAttributeView->insertTopLevelItem( currentRow + 1, mAttributeView->takeTopLevelItem( currentRow ) );
+  mAttributeView->setCurrentIndex( mAttributeView->model()->index( currentRow + 1, 0 ) );
 }
