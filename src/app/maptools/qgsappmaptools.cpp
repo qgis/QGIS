@@ -23,7 +23,6 @@
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmeasuretool.h"
-#include "qgsmaptooltextannotation.h"
 #include "qgsmaptoolhtmlannotation.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmeasurebearing.h"
@@ -70,7 +69,6 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::MeasureArea, new QgsMeasureTool( canvas, true /* area */ ) );
   mTools.insert( Tool::MeasureAngle, new QgsMapToolMeasureAngle( canvas ) );
   mTools.insert( Tool::MeasureBearing, new QgsMapToolMeasureBearing( canvas ) );
-  mTools.insert( Tool::TextAnnotation, new QgsMapToolTextAnnotation( canvas ) );
   mTools.insert( Tool::FormAnnotation, new QgsMapToolFormAnnotation( canvas ) );
   mTools.insert( Tool::HtmlAnnotation, new QgsMapToolHtmlAnnotation( canvas ) );
   mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, cadDock, QgsMapToolCapture::CaptureNone ) );
