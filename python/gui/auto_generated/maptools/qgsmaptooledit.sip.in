@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptooledit.h                                             *
+ * src/gui/maptools/qgsmaptooledit.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -77,7 +77,7 @@ returned object
 Returns the current vector layer of the map canvas or 0
 %End
 
-    enum TopologicalResult /BaseType=IntEnum/
+    enum TopologicalResult
     {
       Success,
       InvalidCanvas,
@@ -115,7 +115,7 @@ Display a timed message bar noting the active vector layer is not editable.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptooledit.h                                             *
+ * src/gui/maptools/qgsmaptooledit.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptooldigitizefeature.h                                  *
+ * src/gui/maptools/qgsmaptooldigitizefeature.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -101,7 +101,7 @@ Called when the feature has been digitized
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptooldigitizefeature.h                                  *
+ * src/gui/maptools/qgsmaptooldigitizefeature.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

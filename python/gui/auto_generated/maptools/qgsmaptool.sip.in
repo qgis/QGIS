@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptool.h                                                 *
+ * src/gui/maptools/qgsmaptool.h                                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -379,7 +379,7 @@ QFlags<QgsMapTool::Flag> operator|(QgsMapTool::Flag f1, QFlags<QgsMapTool::Flag>
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptool.h                                                 *
+ * src/gui/maptools/qgsmaptool.h                                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

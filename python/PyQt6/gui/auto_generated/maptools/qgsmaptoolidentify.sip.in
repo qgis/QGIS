@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolidentify.h                                         *
+ * src/gui/maptools/qgsmaptoolidentify.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -231,7 +231,7 @@ QFlags<QgsMapToolIdentify::Type> operator|(QgsMapToolIdentify::Type f1, QFlags<Q
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaptoolidentify.h                                         *
+ * src/gui/maptools/qgsmaptoolidentify.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

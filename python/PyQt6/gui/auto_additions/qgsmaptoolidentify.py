@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/gui/qgsmaptoolidentify.h
+# The following has been generated automatically from src/gui/maptools/qgsmaptoolidentify.h
 QgsMapToolIdentify.DefaultQgsSetting = QgsMapToolIdentify.IdentifyMode.DefaultQgsSetting
 QgsMapToolIdentify.ActiveLayer = QgsMapToolIdentify.IdentifyMode.ActiveLayer
 QgsMapToolIdentify.TopDownStopAtFirst = QgsMapToolIdentify.IdentifyMode.TopDownStopAtFirst
@@ -24,3 +24,11 @@ QgsMapToolIdentify.Type.__bool__ = lambda flag: bool(_force_int(flag))
 QgsMapToolIdentify.Type.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsMapToolIdentify.Type.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsMapToolIdentify.Type.__or__ = lambda flag1, flag2: QgsMapToolIdentify.Type(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsMapToolIdentify.__group__ = ['maptools']
+except NameError:
+    pass
+try:
+    QgsMapToolIdentify.IdentifyResult.__group__ = ['maptools']
+except NameError:
+    pass
