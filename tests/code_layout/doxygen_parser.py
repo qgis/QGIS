@@ -386,9 +386,9 @@ class DoxygenParser():
             except:
                 pass
 
-            # ignore copy constructors
+            # ignore copy, move constructors
             name = elem.find('name').text
-            match = re.match(r'^\s*\(\s*(?:const)?\s*' + name + r'\s*&?\s*(?:[a-zA-Z0-9_]+)?\s*\)\s*(?:=\s*(?:default|delete)\s*)?$', elem.find('argsstring').text)
+            match = re.match(r'^\s*\(\s*(?:const)?\s*' + name + r'\s*&{0,2}\s*(?:[a-zA-Z0-9_]+)?\s*\)\s*(?:=\s*(?:default|delete)\s*)?$', elem.find('argsstring').text)
             if match:
                 return False
 
