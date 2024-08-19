@@ -32,6 +32,18 @@ All spacing and sizes are in millimeters.
 Constructor for QgsLegendRenderer. The ownership of the legend model is not changed,
 and the model must exist for the lifetime of this renderer.
 %End
+    ~QgsLegendRenderer();
+
+
+    QgsLayerTreeFilterProxyModel *proxyModel();
+%Docstring
+Returns the filter proxy model used for filtering the legend model content during
+rendering.
+
+Filters can be set on the proxy model to filter rendered legend content.
+
+.. versionadded:: 3.40
+%End
 
     QSizeF minimumSize( QgsRenderContext *renderContext = 0 );
 %Docstring
@@ -101,6 +113,8 @@ Returns the style for the given ``node``, within the specified ``model``.
 .. seealso:: :py:func:`setNodeLegendStyle`
 %End
 
+  private:
+    QgsLegendRenderer( const QgsLegendRenderer &other );
 };
 
 /************************************************************************

@@ -76,6 +76,13 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     virtual QVariant data( const QModelIndex &index, int role ) const override;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
+    /**
+     * Returns TRUE if the specified \a node will be shown in the model.
+     *
+     * \since QGIS 3.40
+     */
+    bool nodeShown( QgsLayerTreeNode *node ) const;
+
   public slots:
     //! Sets the filter text to search for a layer in the tree
     virtual void setFilterText( const QString &filterText = QString() );
@@ -96,8 +103,6 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
      * \note even when reimplemented, the layer type filter and the filter text will respected.
      */
     virtual bool layerShown( QgsMapLayer *layer ) const;
-
-    bool nodeShown( QgsLayerTreeNode *node ) const;
 
     //! This will call the virtual method and takes care of emitting dataChanged signal
     void setLayerCheckedPrivate( QgsMapLayer *layer, bool checked );
