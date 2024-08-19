@@ -22,7 +22,7 @@ The time in a mesh layer is defined by :
 - each dataset is associated with a relative times
 - time extent is defined by the first time and the last time of all dataset
 
-.. code-block:: raw
+.. code-block:: text
 
      Reference time :          AT
      Dataset 1 time            o-----RT------RT-----RT-----------RT
