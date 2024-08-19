@@ -166,12 +166,17 @@ class QgsAnnotationRectangleTextItemWidget : public QgsAnnotationItemBaseWidget,
   private slots:
 
     void onWidgetChanged();
+    void sizeModeChanged();
+    void setWidth();
+    void setHeight();
 
   private:
     void mInsertExpressionButton_clicked();
 
     QgsTextFormatWidget *mTextFormatWidget = nullptr;
     bool mBlockChangedSignal = false;
+    bool mUpdateItemPosition = false;
+
     std::unique_ptr< QgsAnnotationRectangleTextItem> mItem;
 };
 
