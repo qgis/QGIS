@@ -349,7 +349,6 @@
      <property name="title">
       <string>Add Annotation</string>
      </property>
-     <addaction name="mActionTextAnnotation"/>
      <addaction name="mActionFormAnnotation"/>
      <addaction name="mActionHtmlAnnotation"/>
     </widget>
@@ -1504,18 +1503,6 @@ Shift+O to turn segments into straight or curve lines.</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
-   </property>
-  </action>
-  <action name="mActionTextAnnotation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionTextAnnotation.svg</normaloff>:/images/themes/default/mActionTextAnnotation.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Text Annotation</string>
    </property>
   </action>
   <action name="mActionFormAnnotation">

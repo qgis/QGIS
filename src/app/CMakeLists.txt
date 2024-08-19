@@ -104,7 +104,6 @@ set(QGIS_APP_SRCS
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsplitparts.cpp
-  qgsmaptooltextannotation.cpp
 
   annotations/qgsannotationitempropertieswidget.cpp
   annotations/qgsannotationlayerproperties.cpp
