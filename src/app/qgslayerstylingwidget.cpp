@@ -81,10 +81,6 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
 
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) > ( &QgsProject::layerWillBeRemoved ), this, &QgsLayerStylingWidget::layerAboutToBeRemoved );
 
-  QgsSettings settings;
-  mLiveApplyCheck->setChecked( settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() );
-  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !mLiveApplyCheck->isChecked() );
-
   mAutoApplyTimer = new QTimer( this );
   mAutoApplyTimer->setSingleShot( true );
 
@@ -104,9 +100,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   connect( mAutoApplyTimer, &QTimer::timeout, this, &QgsLayerStylingWidget::apply );
 
   connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
-  connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsLayerStylingWidget::apply );
   connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
-  connect( mLiveApplyCheck, &QAbstractButton::toggled, this, &QgsLayerStylingWidget::liveApplyToggled );
 
   mLayerCombo->setFilters( Qgis::LayerFilter::HasGeometry
                            | Qgis::LayerFilter::RasterLayer
@@ -397,7 +391,7 @@ void QgsLayerStylingWidget::apply()
 
 void QgsLayerStylingWidget::autoApply()
 {
-  if ( mLiveApplyCheck->isChecked() && !mBlockAutoApply )
+  if ( !mBlockAutoApply )
   {
     mAutoApplyTimer->start( 100 );
   }
@@ -850,14 +844,6 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
     mAutoApplyTimer->stop();
     setLayer( nullptr );
   }
-}
-
-void QgsLayerStylingWidget::liveApplyToggled( bool liveUpdateEnabled )
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), liveUpdateEnabled );
-
-  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !liveUpdateEnabled );
 }
 
 void QgsLayerStylingWidget::pushUndoItem( const QString &name, bool triggerRepaint )

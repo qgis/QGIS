@@ -39,7 +39,7 @@
           <string>Not supported or no layer</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -76,7 +76,7 @@
             </sizepolicy>
            </property>
            <property name="sizeAdjustPolicy">
-            <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+            <enum>QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon</enum>
            </property>
           </widget>
          </item>
@@ -121,7 +121,7 @@
          <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -131,44 +131,15 @@
            </property>
           </spacer>
          </item>
-         <item>
-          <widget class="QCheckBox" name="mLiveApplyCheck">
-           <property name="toolTip">
-            <string>If checked, the map canvas will automatically update whenever an option has been changed without the requirement to click Apply</string>
-           </property>
-           <property name="text">
-            <string>Live update</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-           <property name="autoRepeat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDialogButtonBox" name="mButtonBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="standardButtons">
-            <set>QDialogButtonBox::Apply</set>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item row="1" column="0" rowspan="2">
         <widget class="QFrame" name="mOptionsListFrame">
          <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
+          <enum>QFrame::Shape::NoFrame</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Shadow::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="spacing">
@@ -201,19 +172,19 @@
              </size>
             </property>
             <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
+             <enum>QFrame::Shape::NoFrame</enum>
             </property>
             <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
+             <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
             </property>
             <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
             </property>
             <property name="textElideMode">
-             <enum>Qt::ElideNone</enum>
+             <enum>Qt::TextElideMode::ElideNone</enum>
             </property>
             <property name="resizeMode">
-             <enum>QListView::Adjust</enum>
+             <enum>QListView::ResizeMode::Adjust</enum>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -246,7 +217,6 @@
   <tabstop>mLayerCombo</tabstop>
   <tabstop>mUndoButton</tabstop>
   <tabstop>mRedoButton</tabstop>
-  <tabstop>mLiveApplyCheck</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
