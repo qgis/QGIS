@@ -55,6 +55,8 @@ Creates a new rectangle text annotation item.
 
     virtual QgsRectangle boundingBox() const;
 
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
+
 
     QgsRectangle bounds() const;
 %Docstring
@@ -86,6 +88,60 @@ Returns the text rendered by the item.
 Sets the ``text`` rendered by the item.
 
 .. seealso:: :py:func:`text`
+%End
+
+    Qgis::AnnotationPlacementMode placementMode() const;
+%Docstring
+Returns the placement mode for the text.
+
+.. seealso:: :py:func:`setPlacementMode`
+%End
+
+    void setPlacementMode( Qgis::AnnotationPlacementMode mode );
+%Docstring
+Sets the placement ``mode`` for the text.
+
+.. seealso:: :py:func:`placementMode`
+%End
+
+    QSizeF fixedSize() const;
+%Docstring
+Returns the fixed size to use for the text, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+Units are retrieved via :py:func:`~QgsAnnotationRectangleTextItem.fixedSizeUnit`
+
+.. seealso:: :py:func:`setFixedSize`
+
+.. seealso:: :py:func:`fixedSizeUnit`
+%End
+
+    void setFixedSize( const QSizeF &size );
+%Docstring
+Sets the fixed ``size`` to use for the text, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+Units are set via :py:func:`~QgsAnnotationRectangleTextItem.setFixedSizeUnit`
+
+.. seealso:: :py:func:`fixedSize`
+
+.. seealso:: :py:func:`setFixedSizeUnit`
+%End
+
+    Qgis::RenderUnit fixedSizeUnit() const;
+%Docstring
+Returns the units to use for fixed text sizes, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+.. seealso:: :py:func:`setFixedSizeUnit`
+
+.. seealso:: :py:func:`fixedSize`
+%End
+
+    void setFixedSizeUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` to use for fixed text sizes, when the :py:func:`~QgsAnnotationRectangleTextItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+.. seealso:: :py:func:`fixedSizeUnit`
+
+.. seealso:: :py:func:`setFixedSize`
 %End
 
     QgsTextFormat format() const;
