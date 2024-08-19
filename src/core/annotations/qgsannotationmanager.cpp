@@ -23,6 +23,7 @@
 #include "qgsannotationlayer.h"
 #include "qgssvgannotation.h"
 #include "qgsannotationpictureitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 
@@ -180,7 +181,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       QgsCoordinateTransform transform( source->mapPositionCrs(), layer->crs(), transformContext );
       try
       {
-        transform.transform( mapPosition );
+        mapPosition = transform.transform( mapPosition );
       }
       catch ( QgsCsException & )
       {
@@ -245,6 +246,56 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       item->setBounds( QgsRectangle( svg->relativePosition().x(), svg->relativePosition().y(),
                                      svg->relativePosition().x(), svg->relativePosition().y() ) );
       if ( QgsFillSymbol *fill = svg->fillSymbol() )
+      {
+        item->setBackgroundEnabled( true );
+        item->setBackgroundSymbol( fill->clone() );
+      }
+    }
+
+    return item;
+  }
+  else if ( const QgsTextAnnotation *text = dynamic_cast< const QgsTextAnnotation *>( annotation ) )
+  {
+    QgsPointXY mapPosition = text->mapPosition();
+    QgsCoordinateTransform transform( text->mapPositionCrs(), layer->crs(), transformContext );
+    try
+    {
+      transform.transform( mapPosition );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
+    }
+
+    std::unique_ptr< QgsAnnotationRectangleTextItem > item = std::make_unique< QgsAnnotationRectangleTextItem >( text->document()->toHtml(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
+    if ( !setCommonProperties( annotation, item.get() ) )
+      return nullptr;
+
+    QgsTextFormat format = item->format();
+    format.setAllowHtmlFormatting( true );
+    item->setFormat( format );
+
+    const QgsMargins margins = text->contentsMargin();
+    item->setFixedSize( QSizeF( text->frameSizeMm().width() - margins.left() - margins.right(),
+                                text->frameSizeMm().height() - margins.top() - margins.bottom() ) );
+    item->setFixedSizeUnit( Qgis::RenderUnit::Millimeters );
+
+    if ( text->hasFixedMapPosition() )
+    {
+      item->setPlacementMode( Qgis::AnnotationPlacementMode::FixedSize );
+
+      item->setOffsetFromCallout( QSizeF( text->frameOffsetFromReferencePointMm().x() + margins.left(),
+                                          text->frameOffsetFromReferencePointMm().y() + margins.top() ) );
+      item->setOffsetFromCalloutUnit( Qgis::RenderUnit::Millimeters );
+      item->setBackgroundEnabled( false );
+      item->setFrameEnabled( false );
+    }
+    else
+    {
+      item->setPlacementMode( Qgis::AnnotationPlacementMode::RelativeToMapFrame );
+      item->setBounds( QgsRectangle( text->relativePosition().x(), text->relativePosition().y(),
+                                     text->relativePosition().x(), text->relativePosition().y() ) );
+      if ( QgsFillSymbol *fill = text->fillSymbol() )
       {
         item->setBackgroundEnabled( true );
         item->setBackgroundSymbol( fill->clone() );

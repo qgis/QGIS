@@ -28,6 +28,8 @@
 #include "qgsunittypes.h"
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 QgsAnnotationRectangleTextItem::QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds )
   : QgsAnnotationItem()
@@ -50,7 +52,7 @@ QString QgsAnnotationRectangleTextItem::type() const
 void QgsAnnotationRectangleTextItem::render( QgsRenderContext &context, QgsFeedback *feedback )
 {
   QgsRectangle bounds = mBounds;
-  if ( context.coordinateTransform().isValid() )
+  if ( mPlacementMode != Qgis::AnnotationPlacementMode::RelativeToMapFrame && context.coordinateTransform().isValid() )
   {
     try
     {
@@ -62,7 +64,68 @@ void QgsAnnotationRectangleTextItem::render( QgsRenderContext &context, QgsFeedb
     }
   }
 
-  const QRectF painterBounds = context.mapToPixel().transformBounds( bounds.toRectF() );
+  QRectF painterBounds;
+  switch ( mPlacementMode )
+  {
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
+      painterBounds = context.mapToPixel().transformBounds( bounds.toRectF() );
+      break;
+
+    case Qgis::AnnotationPlacementMode::FixedSize:
+    {
+      const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+      const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        QgsGeometry anchor = calloutAnchor();
+
+        const double calloutOffsetWidthPixels = context.convertToPainterUnits( offsetFromCallout().width(), offsetFromCalloutUnit() );
+        const double calloutOffsetHeightPixels = context.convertToPainterUnits( offsetFromCallout().height(), offsetFromCalloutUnit() );
+
+        QPointF anchorPoint = anchor.asQPointF();
+        if ( context.coordinateTransform().isValid() )
+        {
+          double x = anchorPoint.x();
+          double y = anchorPoint.y();
+          double z = 0.0;
+          context.coordinateTransform().transformInPlace( x, y, z );
+          anchorPoint = QPointF( x, y );
+        }
+
+        context.mapToPixel().transformInPlace( anchorPoint.rx(), anchorPoint.ry() );
+
+        painterBounds = QRectF( anchorPoint.x() + calloutOffsetWidthPixels,
+                                anchorPoint.y() + calloutOffsetHeightPixels, widthPixels, heightPixels );
+      }
+      else
+      {
+        QPointF center = bounds.center().toQPointF();
+
+        context.mapToPixel().transformInPlace( center.rx(), center.ry() );
+        painterBounds = QRectF( center.x() - widthPixels * 0.5,
+                                center.y() - heightPixels * 0.5,
+                                widthPixels, heightPixels );
+      }
+      break;
+    }
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+      const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+      QPointF center = bounds.center().toQPointF();
+      center.rx() *= context.outputSize().width();
+      center.ry() *= context.outputSize().height();
+
+      painterBounds = QRectF( center.x() - widthPixels * 0.5,
+                              center.y() - heightPixels * 0.5,
+                              widthPixels, heightPixels );
+      break;
+    }
+  }
+
   if ( painterBounds.width() < 1 || painterBounds.height() < 1 )
     return;
 
@@ -73,7 +136,7 @@ void QgsAnnotationRectangleTextItem::render( QgsRenderContext &context, QgsFeedb
     mBackgroundSymbol->stopRender( context );
   }
 
-  if ( callout() )
+  if ( mPlacementMode != Qgis::AnnotationPlacementMode::RelativeToMapFrame && callout() )
   {
     QgsCallout::QgsCalloutContext calloutContext;
     renderCallout( context, painterBounds, 0, calloutContext, feedback );
@@ -126,6 +189,11 @@ bool QgsAnnotationRectangleTextItem::writeXml( QDomElement &element, QDomDocumen
   element.setAttribute( QStringLiteral( "yMin" ), qgsDoubleToString( mBounds.yMinimum() ) );
   element.setAttribute( QStringLiteral( "yMax" ), qgsDoubleToString( mBounds.yMaximum() ) );
 
+  element.setAttribute( QStringLiteral( "sizeMode" ), qgsEnumValueToKey( mPlacementMode ) );
+  element.setAttribute( QStringLiteral( "fixedWidth" ), qgsDoubleToString( mFixedSize.width() ) );
+  element.setAttribute( QStringLiteral( "fixedHeight" ), qgsDoubleToString( mFixedSize.height() ) );
+  element.setAttribute( QStringLiteral( "fixedSizeUnit" ), QgsUnitTypes::encodeUnit( mFixedSizeUnit ) );
+
   element.setAttribute( QStringLiteral( "backgroundEnabled" ), mDrawBackground ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( mBackgroundSymbol )
   {
@@ -146,31 +214,69 @@ bool QgsAnnotationRectangleTextItem::writeXml( QDomElement &element, QDomDocumen
   return true;
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationRectangleTextItem::nodesV2( const QgsAnnotationItemEditContext & ) const
+QList<QgsAnnotationItemNode> QgsAnnotationRectangleTextItem::nodesV2( const QgsAnnotationItemEditContext &context ) const
 {
-  QList<QgsAnnotationItemNode> res =
+  QList<QgsAnnotationItemNode> res;
+  switch ( mPlacementMode )
   {
-    QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
-    QgsAnnotationItemNode( QgsVertexId( 0, 0, 1 ), QgsPointXY( mBounds.xMaximum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
-    QgsAnnotationItemNode( QgsVertexId( 0, 0, 2 ), QgsPointXY( mBounds.xMaximum(), mBounds.yMaximum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
-    QgsAnnotationItemNode( QgsVertexId( 0, 0, 3 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMaximum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
-  };
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
+    {
+      res =
+      {
+        QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
+        QgsAnnotationItemNode( QgsVertexId( 0, 0, 1 ), QgsPointXY( mBounds.xMaximum(), mBounds.yMinimum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
+        QgsAnnotationItemNode( QgsVertexId( 0, 0, 2 ), QgsPointXY( mBounds.xMaximum(), mBounds.yMaximum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
+        QgsAnnotationItemNode( QgsVertexId( 0, 0, 3 ), QgsPointXY( mBounds.xMinimum(), mBounds.yMaximum() ), Qgis::AnnotationItemNodeType::VertexHandle ),
+      };
 
-  QgsPointXY calloutNodePoint;
-  if ( !calloutAnchor().isEmpty() )
-  {
-    calloutNodePoint = calloutAnchor().asPoint();
-  }
-  else
-  {
-    calloutNodePoint = mBounds.center();
-  }
-  res.append( QgsAnnotationItemNode( QgsVertexId( 1, 0, 0 ), calloutNodePoint, Qgis::AnnotationItemNodeType::CalloutHandle ) );
+      QgsPointXY calloutNodePoint;
+      if ( !calloutAnchor().isEmpty() )
+      {
+        calloutNodePoint = calloutAnchor().asPoint();
+      }
+      else
+      {
+        calloutNodePoint = mBounds.center();
+      }
+      res.append( QgsAnnotationItemNode( QgsVertexId( 1, 0, 0 ), calloutNodePoint, Qgis::AnnotationItemNodeType::CalloutHandle ) );
 
-  return res;
+      return res;
+    }
+
+    case Qgis::AnnotationPlacementMode::FixedSize:
+    {
+      res =
+      {
+        QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mBounds.center(), Qgis::AnnotationItemNodeType::VertexHandle )
+      };
+
+      QgsPointXY calloutNodePoint;
+      if ( !calloutAnchor().isEmpty() )
+      {
+        calloutNodePoint = calloutAnchor().asPoint();
+      }
+      else
+      {
+        calloutNodePoint = QgsPointXY( context.currentItemBounds().xMinimum(), context.currentItemBounds().yMinimum() );
+      }
+      res.append( QgsAnnotationItemNode( QgsVertexId( 1, 0, 0 ), calloutNodePoint, Qgis::AnnotationItemNodeType::CalloutHandle ) );
+
+      return res;
+    }
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      return
+      {
+        QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ),
+                               context.currentItemBounds().center(), Qgis::AnnotationItemNodeType::VertexHandle )
+      };
+    }
+  }
+  BUILTIN_UNREACHABLE
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationRectangleTextItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationRectangleTextItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context )
 {
   switch ( operation->type() )
   {
@@ -179,55 +285,112 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectangleTextItem::applyEdi
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
-        switch ( moveOperation->nodeId().vertex )
+        switch ( mPlacementMode )
         {
-          case 0:
-            mBounds = QgsRectangle( moveOperation->after().x(),
-                                    moveOperation->after().y(),
-                                    mBounds.xMaximum(),
-                                    mBounds.yMaximum() );
-            break;
-          case 1:
-            mBounds = QgsRectangle( mBounds.xMinimum(),
-                                    moveOperation->after().y(),
-                                    moveOperation->after().x(),
-                                    mBounds.yMaximum() );
-            break;
-          case 2:
-            mBounds = QgsRectangle( mBounds.xMinimum(),
-                                    mBounds.yMinimum(),
-                                    moveOperation->after().x(),
-                                    moveOperation->after().y() );
-            break;
-          case 3:
-            mBounds = QgsRectangle( moveOperation->after().x(),
-                                    mBounds.yMinimum(),
-                                    mBounds.xMaximum(),
-                                    moveOperation->after().y() );
-            break;
-          default:
-            break;
+          case Qgis::AnnotationPlacementMode::SpatialBounds:
+          {
+            switch ( moveOperation->nodeId().vertex )
+            {
+              case 0:
+                mBounds = QgsRectangle( moveOperation->after().x(),
+                                        moveOperation->after().y(),
+                                        mBounds.xMaximum(),
+                                        mBounds.yMaximum() );
+                break;
+              case 1:
+                mBounds = QgsRectangle( mBounds.xMinimum(),
+                                        moveOperation->after().y(),
+                                        moveOperation->after().x(),
+                                        mBounds.yMaximum() );
+                break;
+              case 2:
+                mBounds = QgsRectangle( mBounds.xMinimum(),
+                                        mBounds.yMinimum(),
+                                        moveOperation->after().x(),
+                                        moveOperation->after().y() );
+                break;
+              case 3:
+                mBounds = QgsRectangle( moveOperation->after().x(),
+                                        mBounds.yMinimum(),
+                                        mBounds.xMaximum(),
+                                        moveOperation->after().y() );
+                break;
+              default:
+                break;
+            }
+            return Qgis::AnnotationItemEditOperationResult::Success;
+          }
+
+          case Qgis::AnnotationPlacementMode::FixedSize:
+          {
+            mBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(),
+                      mBounds.width(),
+                      mBounds.height() );
+            return Qgis::AnnotationItemEditOperationResult::Success;
+          }
+
+          case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+          {
+            const double deltaX = moveOperation->translationXPixels() / context.renderContext().outputSize().width();
+            const double deltaY = moveOperation->translationYPixels() / context.renderContext().outputSize().height();
+            mBounds = QgsRectangle::fromCenterAndSize( QgsPointXY( mBounds.center().x() + deltaX, mBounds.center().y() + deltaY ),
+                      mBounds.width(), mBounds.height() );
+            return Qgis::AnnotationItemEditOperationResult::Success;
+          }
         }
       }
-      else
+      else if ( moveOperation->nodeId().part == 1 )
       {
         setCalloutAnchor( QgsGeometry::fromPoint( moveOperation->after() ) );
         if ( !callout() )
         {
           setCallout( QgsApplication::calloutRegistry()->defaultCallout() );
         }
+        return Qgis::AnnotationItemEditOperationResult::Success;
       }
-
-      return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
-      mBounds = QgsRectangle( mBounds.xMinimum() + moveOperation->translationX(),
-                              mBounds.yMinimum() + moveOperation->translationY(),
-                              mBounds.xMaximum() + moveOperation->translationX(),
-                              mBounds.yMaximum() + moveOperation->translationY() );
+      switch ( mPlacementMode )
+      {
+
+        case Qgis::AnnotationPlacementMode::SpatialBounds:
+          mBounds = QgsRectangle( mBounds.xMinimum() + moveOperation->translationX(),
+                                  mBounds.yMinimum() + moveOperation->translationY(),
+                                  mBounds.xMaximum() + moveOperation->translationX(),
+                                  mBounds.yMaximum() + moveOperation->translationY() );
+          break;
+
+        case Qgis::AnnotationPlacementMode::FixedSize:
+        {
+          if ( callout() && !calloutAnchor().isEmpty() )
+          {
+            const double xOffset = context.renderContext().convertFromPainterUnits( moveOperation->translationXPixels(), offsetFromCalloutUnit() );
+            const double yOffset = context.renderContext().convertFromPainterUnits( moveOperation->translationYPixels(), offsetFromCalloutUnit() );
+            setOffsetFromCallout( QSizeF( offsetFromCallout().width() + xOffset, offsetFromCallout().height() + yOffset ) );
+          }
+          else
+          {
+            mBounds = QgsRectangle( mBounds.xMinimum() + moveOperation->translationX(),
+                                    mBounds.yMinimum() + moveOperation->translationY(),
+                                    mBounds.xMaximum() + moveOperation->translationX(),
+                                    mBounds.yMaximum() + moveOperation->translationY() );
+          }
+          break;
+        }
+
+        case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+        {
+          const double deltaX = moveOperation->translationXPixels() / context.renderContext().outputSize().width();
+          const double deltaY = moveOperation->translationYPixels() / context.renderContext().outputSize().height();
+          mBounds = QgsRectangle::fromCenterAndSize( QgsPointXY( mBounds.center().x() + deltaX, mBounds.center().y() + deltaY ),
+                    mBounds.width(), mBounds.height() );
+          break;
+        }
+      }
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
@@ -238,7 +401,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectangleTextItem::applyEdi
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectangleTextItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectangleTextItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context )
 {
   switch ( operation->type() )
   {
@@ -247,46 +410,130 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectangleTextItem::
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
-        QgsRectangle modifiedBounds = mBounds;
-        switch ( moveOperation->nodeId().vertex )
+        switch ( mPlacementMode )
         {
-          case 0:
-            modifiedBounds.setXMinimum( moveOperation->after().x() );
-            modifiedBounds.setYMinimum( moveOperation->after().y() );
-            break;
-          case 1:
-            modifiedBounds.setXMaximum( moveOperation->after().x() );
-            modifiedBounds.setYMinimum( moveOperation->after().y() );
-            break;
-          case 2:
-            modifiedBounds.setXMaximum( moveOperation->after().x() );
-            modifiedBounds.setYMaximum( moveOperation->after().y() );
-            break;
-          case 3:
-            modifiedBounds.setXMinimum( moveOperation->after().x() );
-            modifiedBounds.setYMaximum( moveOperation->after().y() );
-            break;
-          default:
-            break;
+          case Qgis::AnnotationPlacementMode::SpatialBounds:
+          {
+            QgsRectangle modifiedBounds = mBounds;
+            switch ( moveOperation->nodeId().vertex )
+            {
+              case 0:
+                modifiedBounds.setXMinimum( moveOperation->after().x() );
+                modifiedBounds.setYMinimum( moveOperation->after().y() );
+                break;
+              case 1:
+                modifiedBounds.setXMaximum( moveOperation->after().x() );
+                modifiedBounds.setYMinimum( moveOperation->after().y() );
+                break;
+              case 2:
+                modifiedBounds.setXMaximum( moveOperation->after().x() );
+                modifiedBounds.setYMaximum( moveOperation->after().y() );
+                break;
+              case 3:
+                modifiedBounds.setXMinimum( moveOperation->after().x() );
+                modifiedBounds.setYMaximum( moveOperation->after().y() );
+                break;
+              default:
+                break;
+            }
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
+          }
+          case Qgis::AnnotationPlacementMode::FixedSize:
+          {
+            const QgsRectangle currentBounds = context.currentItemBounds();
+            const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(), currentBounds.width(), currentBounds.height() );
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+          }
+          case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+          {
+            const QgsRectangle currentBounds = context.currentItemBounds();
+            const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( currentBounds.center() + ( moveOperation->after() - moveOperation->before() ),
+                                           currentBounds.width(), currentBounds.height() );
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+          }
         }
-
-        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
       }
       else
       {
         QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
       }
+      break;
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
-      const QgsRectangle modifiedBounds( mBounds.xMinimum() + moveOperation->translationX(),
-                                         mBounds.yMinimum() + moveOperation->translationY(),
-                                         mBounds.xMaximum() + moveOperation->translationX(),
-                                         mBounds.yMaximum() + moveOperation->translationY() );
-      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
+      switch ( mPlacementMode )
+      {
+        case Qgis::AnnotationPlacementMode::SpatialBounds:
+        {
+          const QgsRectangle modifiedBounds( mBounds.xMinimum() + moveOperation->translationX(),
+                                             mBounds.yMinimum() + moveOperation->translationY(),
+                                             mBounds.xMaximum() + moveOperation->translationX(),
+                                             mBounds.yMaximum() + moveOperation->translationY() );
+          return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
+        }
+
+        case Qgis::AnnotationPlacementMode::FixedSize:
+        {
+          if ( callout() && !calloutAnchor().isEmpty() )
+          {
+            QgsGeometry anchor = calloutAnchor();
+
+            const double calloutOffsetWidthPixels = context.renderContext().convertToPainterUnits( offsetFromCallout().width(), offsetFromCalloutUnit() )
+                                                    + moveOperation->translationXPixels();
+            const double calloutOffsetHeightPixels = context.renderContext().convertToPainterUnits( offsetFromCallout().height(), offsetFromCalloutUnit() )
+                + moveOperation->translationYPixels();
+
+            QPointF anchorPoint = anchor.asQPointF();
+            if ( context.renderContext().coordinateTransform().isValid() )
+            {
+              double x = anchorPoint.x();
+              double y = anchorPoint.y();
+              double z = 0.0;
+              context.renderContext().coordinateTransform().transformInPlace( x, y, z );
+              anchorPoint = QPointF( x, y );
+            }
+
+            context.renderContext().mapToPixel().transformInPlace( anchorPoint.rx(), anchorPoint.ry() );
+
+            const double textOriginXPixels = anchorPoint.x() + calloutOffsetWidthPixels;
+            const double textOriginYPixels = anchorPoint.y() + calloutOffsetHeightPixels;
+
+            const double widthPixels = context.renderContext().convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+            const double heightPixels = context.renderContext().convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+            QgsLineString ls( QVector<QgsPointXY> { QgsPointXY( textOriginXPixels, textOriginYPixels ),
+                                                    QgsPointXY( textOriginXPixels + widthPixels, textOriginYPixels ),
+                                                    QgsPointXY( textOriginXPixels + widthPixels, textOriginYPixels + heightPixels ),
+                                                    QgsPointXY( textOriginXPixels, textOriginYPixels + heightPixels ),
+                                                    QgsPointXY( textOriginXPixels, textOriginYPixels )
+                                                  } );
+
+            QgsGeometry g( new QgsPolygon( ls.clone() ) );
+            g.transform( context.renderContext().mapToPixel().transform().inverted() );
+            g.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
+            return new QgsAnnotationItemEditOperationTransientResults( g );
+          }
+          else
+          {
+            const QgsRectangle currentBounds = context.currentItemBounds();
+            const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( mBounds.center() + QgsVector( moveOperation->translationX(), moveOperation->translationY() ),
+                                           currentBounds.width(), currentBounds.height() );
+            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+          }
+        }
+
+        case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+        {
+          const QgsRectangle currentBounds = context.currentItemBounds();
+          const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( currentBounds.center() + QgsVector( moveOperation->translationX(), moveOperation->translationY() ),
+                                         currentBounds.width(), currentBounds.height() );
+          return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+        }
+      }
+      break;
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
@@ -317,6 +564,12 @@ bool QgsAnnotationRectangleTextItem::readXml( const QDomElement &element, const 
   mBounds.setXMaximum( element.attribute( QStringLiteral( "xMax" ) ).toDouble() );
   mBounds.setYMinimum( element.attribute( QStringLiteral( "yMin" ) ).toDouble() );
   mBounds.setYMaximum( element.attribute( QStringLiteral( "yMax" ) ).toDouble() );
+  mPlacementMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "sizeMode" ) ), Qgis::AnnotationPlacementMode::SpatialBounds );
+  mFixedSize = QSizeF(
+                 element.attribute( QStringLiteral( "fixedWidth" ) ).toDouble(),
+                 element.attribute( QStringLiteral( "fixedHeight" ) ).toDouble()
+               );
+  mFixedSizeUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "fixedSizeUnit" ) ) );
 
   mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
   mMarginUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "marginUnit" ), QgsUnitTypes::encodeUnit( Qgis::RenderUnit::Millimeters ) ) );
@@ -347,6 +600,9 @@ QgsAnnotationRectangleTextItem *QgsAnnotationRectangleTextItem::clone() const
 
   item->setFormat( mTextFormat );
   item->setAlignment( mAlignment );
+  item->setPlacementMode( mPlacementMode );
+  item->setFixedSize( mFixedSize );
+  item->setFixedSizeUnit( mFixedSizeUnit );
 
   item->setBackgroundEnabled( mDrawBackground );
   if ( mBackgroundSymbol )
@@ -365,18 +621,177 @@ QgsAnnotationRectangleTextItem *QgsAnnotationRectangleTextItem::clone() const
 
 QgsRectangle QgsAnnotationRectangleTextItem::boundingBox() const
 {
-  QgsRectangle bounds = mBounds;
-  if ( callout() && !calloutAnchor().isEmpty() )
+  QgsRectangle bounds;
+  switch ( mPlacementMode )
   {
-    QgsGeometry anchor = calloutAnchor();
-    bounds.combineExtentWith( anchor.boundingBox() );
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
+    {
+      bounds = mBounds;
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        QgsGeometry anchor = calloutAnchor();
+        bounds.combineExtentWith( anchor.boundingBox() );
+      }
+      break;
+    }
+
+    case Qgis::AnnotationPlacementMode::FixedSize:
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        bounds = calloutAnchor().boundingBox();
+      }
+      else
+      {
+        bounds = QgsRectangle( mBounds.center(), mBounds.center() );
+      }
+      break;
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+      bounds = mBounds;
+      break;
   }
+
   return bounds;
+}
+
+QgsRectangle QgsAnnotationRectangleTextItem::boundingBox( QgsRenderContext &context ) const
+{
+  switch ( mPlacementMode )
+  {
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
+      return QgsAnnotationRectangleTextItem::boundingBox();
+
+    case Qgis::AnnotationPlacementMode::FixedSize:
+    {
+      const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+      const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+      QRectF boundsInPixels;
+      if ( callout() && !calloutAnchor().isEmpty() )
+      {
+        QgsGeometry anchor = calloutAnchor();
+
+        const double calloutOffsetWidthPixels = context.convertToPainterUnits( offsetFromCallout().width(), offsetFromCalloutUnit() );
+        const double calloutOffsetHeightPixels = context.convertToPainterUnits( offsetFromCallout().height(), offsetFromCalloutUnit() );
+
+        QPointF anchorPoint = anchor.asQPointF();
+        if ( context.coordinateTransform().isValid() )
+        {
+          double x = anchorPoint.x();
+          double y = anchorPoint.y();
+          double z = 0.0;
+          context.coordinateTransform().transformInPlace( x, y, z );
+          anchorPoint = QPointF( x, y );
+        }
+
+        context.mapToPixel().transformInPlace( anchorPoint.rx(), anchorPoint.ry() );
+
+        QgsRectangle textRect( anchorPoint.x() + calloutOffsetWidthPixels,
+                               anchorPoint.y() + calloutOffsetHeightPixels,
+                               anchorPoint.x() + calloutOffsetWidthPixels + widthPixels,
+                               anchorPoint.y() + calloutOffsetHeightPixels + heightPixels );
+        QgsRectangle anchorRect( anchorPoint.x(), anchorPoint.y(), anchorPoint.x(), anchorPoint.y() );
+        anchorRect.combineExtentWith( textRect );
+
+        boundsInPixels = anchorRect.toRectF();
+      }
+      else
+      {
+        QPointF center = mBounds.center().toQPointF();
+        if ( context.coordinateTransform().isValid() )
+        {
+          double x = center.x();
+          double y = center.y();
+          double z = 0.0;
+          context.coordinateTransform().transformInPlace( x, y, z );
+          center = QPointF( x, y );
+        }
+
+        context.mapToPixel().transformInPlace( center.rx(), center.ry() );
+        boundsInPixels = QRectF( center.x() - widthPixels * 0.5,
+                                 center.y() - heightPixels * 0.5,
+                                 widthPixels, heightPixels );
+      }
+      const QgsPointXY topLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.top() );
+      const QgsPointXY topRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.top() );
+      const QgsPointXY bottomLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.bottom() );
+      const QgsPointXY bottomRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.bottom() );
+
+      const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
+      QgsRectangle textRect = context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
+      return textRect;
+    }
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      const double widthPixels = context.convertToPainterUnits( mFixedSize.width(), mFixedSizeUnit );
+      const double heightPixels = context.convertToPainterUnits( mFixedSize.height(), mFixedSizeUnit );
+
+      QRectF boundsInPixels;
+
+      const double centerMapX = context.mapExtent().xMinimum() + mBounds.center().x() * context.mapExtent().width();
+      const double centerMapY = context.mapExtent().yMaximum() - mBounds.center().y() * context.mapExtent().height();
+      QPointF center( centerMapX, centerMapY );
+      if ( context.coordinateTransform().isValid() )
+      {
+        double x = centerMapX;
+        double y = centerMapY;
+        double z = 0.0;
+        context.coordinateTransform().transformInPlace( x, y, z );
+        center = QPointF( x, y );
+      }
+
+      context.mapToPixel().transformInPlace( center.rx(), center.ry() );
+      boundsInPixels = QRectF( center.x() - widthPixels * 0.5,
+                               center.y() - heightPixels * 0.5,
+                               widthPixels, heightPixels );
+
+      const QgsPointXY topLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.top() );
+      const QgsPointXY topRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.top() );
+      const QgsPointXY bottomLeft = context.mapToPixel().toMapCoordinates( boundsInPixels.left(), boundsInPixels.bottom() );
+      const QgsPointXY bottomRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.bottom() );
+
+      const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
+      QgsRectangle textRect = context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
+      return textRect;
+    }
+  }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsAnnotationRectangleTextItem::setBounds( const QgsRectangle &bounds )
 {
   mBounds = bounds;
+}
+
+Qgis::AnnotationPlacementMode QgsAnnotationRectangleTextItem::placementMode() const
+{
+  return mPlacementMode;
+}
+
+void QgsAnnotationRectangleTextItem::setPlacementMode( Qgis::AnnotationPlacementMode mode )
+{
+  mPlacementMode = mode;
+}
+
+QSizeF QgsAnnotationRectangleTextItem::fixedSize() const
+{
+  return mFixedSize;
+}
+
+void QgsAnnotationRectangleTextItem::setFixedSize( const QSizeF &size )
+{
+  mFixedSize = size;
+}
+
+Qgis::RenderUnit QgsAnnotationRectangleTextItem::fixedSizeUnit() const
+{
+  return mFixedSizeUnit;
+}
+
+void QgsAnnotationRectangleTextItem::setFixedSizeUnit( Qgis::RenderUnit unit )
+{
+  mFixedSizeUnit = unit;
 }
 
 const QgsFillSymbol *QgsAnnotationRectangleTextItem::backgroundSymbol() const
@@ -401,8 +816,18 @@ void QgsAnnotationRectangleTextItem::setFrameSymbol( QgsFillSymbol *symbol )
 
 Qgis::AnnotationItemFlags QgsAnnotationRectangleTextItem::flags() const
 {
-  return Qgis::AnnotationItemFlag::SupportsReferenceScale
-         | Qgis::AnnotationItemFlag::SupportsCallouts;
+  switch ( mPlacementMode )
+  {
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
+      return Qgis::AnnotationItemFlag::SupportsReferenceScale
+             | Qgis::AnnotationItemFlag::SupportsCallouts;
+    case Qgis::AnnotationPlacementMode::FixedSize:
+      return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
+             | Qgis::AnnotationItemFlag::SupportsCallouts;
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+      return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QgsTextFormat QgsAnnotationRectangleTextItem::format() const

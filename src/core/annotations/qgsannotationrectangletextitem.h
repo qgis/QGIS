@@ -57,6 +57,7 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationRectangleTextItem *clone() const override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox( QgsRenderContext &context ) const override;
 
     /**
      * Returns the bounds of the text.
@@ -89,6 +90,56 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
      * \see text()
      */
     void setText( const QString &text ) { mText = text; }
+
+    /**
+     * Returns the placement mode for the text.
+     *
+     * \see setPlacementMode()
+     */
+    Qgis::AnnotationPlacementMode placementMode() const;
+
+    /**
+     * Sets the placement \a mode for the text.
+     *
+     * \see placementMode()
+     */
+    void setPlacementMode( Qgis::AnnotationPlacementMode mode );
+
+    /**
+     * Returns the fixed size to use for the text, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
+     *
+     * Units are retrieved via fixedSizeUnit()
+     *
+     * \see setFixedSize()
+     * \see fixedSizeUnit()
+     */
+    QSizeF fixedSize() const;
+
+    /**
+     * Sets the fixed \a size to use for the text, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
+     *
+     * Units are set via setFixedSizeUnit()
+     *
+     * \see fixedSize()
+     * \see setFixedSizeUnit()
+     */
+    void setFixedSize( const QSizeF &size );
+
+    /**
+     * Returns the units to use for fixed text sizes, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
+     *
+     * \see setFixedSizeUnit()
+     * \see fixedSize()
+     */
+    Qgis::RenderUnit fixedSizeUnit() const;
+
+    /**
+     * Sets the \a unit to use for fixed text sizes, when the placementMode() is Qgis::AnnotationPlacementMode::FixedSize.
+     *
+     * \see fixedSizeUnit()
+     * \see setFixedSize()
+     */
+    void setFixedSizeUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns the text format used to render the text.
@@ -224,7 +275,11 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationItem
 
   private:
 
+    Qgis::AnnotationPlacementMode mPlacementMode = Qgis::AnnotationPlacementMode::SpatialBounds;
     QgsRectangle mBounds;
+    QSizeF mFixedSize;
+    Qgis::RenderUnit mFixedSizeUnit = Qgis::RenderUnit::Millimeters;
+
     QString mText;
     QgsTextFormat mTextFormat;
     Qt::Alignment mAlignment = Qt::AlignLeft;
