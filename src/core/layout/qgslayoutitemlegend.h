@@ -351,7 +351,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * A symbol size of 0.0 indicates no maximum is set.
      *
      * \see maximumSymbolSize()
-     * \since QGIS 3.16
+     * \since QGIS 3.16:
      */
     void setMaximumSymbolSize( double size );
 
@@ -642,6 +642,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setModelStyleOverrides( const QMap<QString, QString> &overrides );
 
     void ensureModelIsInitialized() const;
+
+    QgsLegendRenderer createRenderer() const;
+
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTree > mCustomLayerTree;
     bool mDeferLegendModelInitialization = true;
