@@ -101,6 +101,8 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
+  mButtonUp->setEnabled( false );
+  mButtonDown->setEnabled( false );
 
   mOkButton = mButtonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
@@ -111,6 +113,8 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewMemoryLayerDialog::selectionChanged );
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mRemoveAttributeButton_clicked );
+  connect( mButtonUp, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::moveFieldsUp );
+  connect( mButtonDown, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::moveFieldsDown );
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsNewMemoryLayerDialog::accept );
@@ -252,6 +256,8 @@ void QgsNewMemoryLayerDialog::fieldNameChanged( const QString &name )
 void QgsNewMemoryLayerDialog::selectionChanged()
 {
   mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
+  mButtonUp->setDisabled( mAttributeView->selectedItems().isEmpty() );
+  mButtonDown->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
 QgsFields QgsNewMemoryLayerDialog::fields() const
@@ -357,4 +363,24 @@ void QgsNewMemoryLayerDialog::mRemoveAttributeButton_clicked()
 void QgsNewMemoryLayerDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-temporary-scratch-layer" ) );
+}
+
+void QgsNewMemoryLayerDialog::moveFieldsUp()
+{
+  int currentRow = mAttributeView->currentIndex().row();
+  if ( currentRow == 0 )
+    return;
+
+  mAttributeView->insertTopLevelItem( currentRow - 1, mAttributeView->takeTopLevelItem( currentRow ) );
+  mAttributeView->setCurrentIndex( mAttributeView->model()->index( currentRow - 1, 0 ) );
+}
+
+void QgsNewMemoryLayerDialog::moveFieldsDown()
+{
+  int currentRow = mAttributeView->currentIndex().row();
+  if ( currentRow == mAttributeView->topLevelItemCount() - 1 )
+    return;
+
+  mAttributeView->insertTopLevelItem( currentRow + 1, mAttributeView->takeTopLevelItem( currentRow ) );
+  mAttributeView->setCurrentIndex( mAttributeView->model()->index( currentRow + 1, 0 ) );
 }

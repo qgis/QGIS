@@ -89,6 +89,8 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     void mRemoveAttributeButton_clicked();
     void selectionChanged();
     void showHelp();
+    void moveFieldsUp();
+    void moveFieldsDown();
 };
 
 #endif //QGSNEWMEMORYLAYERDIALOG_H

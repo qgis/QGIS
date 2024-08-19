@@ -125,6 +125,8 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void showHelp();
     void nameChanged( const QString & );
     void selectionChanged();
+    void moveFieldsUp();
+    void moveFieldsDown();
 
   private:
     QPushButton *mOkButton = nullptr;
