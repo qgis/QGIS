@@ -63,6 +63,7 @@ endif()
 
 if (WITH_BINDINGS)
   set(TESTS ${TESTS} testqgisapppython.cpp)
+  set(TESTS ${TESTS} testqgsprojectexpressions.cpp)
 endif()
 
 foreach(TESTSRC ${TESTS})

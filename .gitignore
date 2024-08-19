@@ -91,6 +91,8 @@ tests/testdata/raster/band3_float32_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_int16_noct_epsg4326.tif.aux.xml
 tests/testdata/tenbytenraster.asc.aux.xml
 tests/testdata/test_plugin_path/plugin_started.txt
+tests/testdata/test_qgis_config_path/profiles/default/*
+!tests/testdata/test_qgis_config_path/profiles/default/python
 tests/testdata/widget_config.qlr
 tests/testdata/zip/testtar.tgz.properties
 venv
