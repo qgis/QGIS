@@ -83,6 +83,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
 
   QgsSettings settings;
   mLiveApplyCheck->setChecked( settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() );
+  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !mLiveApplyCheck->isChecked() );
 
   mAutoApplyTimer = new QTimer( this );
   mAutoApplyTimer->setSingleShot( true );
@@ -851,10 +852,12 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
   }
 }
 
-void QgsLayerStylingWidget::liveApplyToggled( bool value )
+void QgsLayerStylingWidget::liveApplyToggled( bool liveUpdateEnabled )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), value );
+  settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), liveUpdateEnabled );
+
+  mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !liveUpdateEnabled );
 }
 
 void QgsLayerStylingWidget::pushUndoItem( const QString &name, bool triggerRepaint )
