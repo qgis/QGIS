@@ -1173,12 +1173,12 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
       if ( mOrientation == QgsColorRampWidget::Horizontal )
       {
         //horizontal
-        painter.drawLine( c + mMargin, mMargin, c + mMargin, height() - mMargin - 1 );
+        painter.drawLine( QLineF( c + mMargin, mMargin, c + mMargin, height() - mMargin - 1 ) );
       }
       else
       {
         //vertical
-        painter.drawLine( mMargin, c + mMargin, width() - mMargin - 1, c + mMargin );
+        painter.drawLine( QLineF( mMargin, c + mMargin, width() - mMargin - 1, c + mMargin ) );
       }
     }
   }
