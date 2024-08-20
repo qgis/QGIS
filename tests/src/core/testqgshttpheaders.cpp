@@ -44,6 +44,7 @@ class TestQgsHttpheaders: public QObject
 
     void setFromSettingsGoodKey();
     void setFromSettingsBadKey();
+    void setFromUrlQuery();
     void updateSettings();
 
     void createQgsOwsConnection();
@@ -176,6 +177,37 @@ void TestQgsHttpheaders::updateNetworkRequest()
 
   QVERIFY( request.hasRawHeader( QByteArray::fromStdString( QgsHttpHeaders::KEY_REFERER.toStdString() ) ) );
   QCOMPARE( request.rawHeader( QByteArray::fromStdString( QgsHttpHeaders::KEY_REFERER.toStdString() ) ), "my_ref" );
+}
+
+
+void TestQgsHttpheaders::setFromUrlQuery()
+{
+  {
+    // with only new http-header:referer
+    QUrlQuery url( "https://www.ogc.org/?p1=v1&http-header:other_http_header=value&http-header:referer=http://test.new.com" );
+    QgsHttpHeaders h;
+    h.setFromUrlQuery( url );
+    QCOMPARE( h[QgsHttpHeaders::KEY_REFERER ].toString(), QStringLiteral( "http://test.new.com" ) );
+    QCOMPARE( h[ "other_http_header" ].toString(), QStringLiteral( "value" ) );
+  }
+
+  {
+    // with both new http-header:referer and old referer
+    QUrlQuery url( "https://www.ogc.org/?p1=v1&referer=http://test.old.com&http-header:other_http_header=value&http-header:referer=http://test.new.com" );
+    QgsHttpHeaders h;
+    h.setFromUrlQuery( url );
+    QCOMPARE( h[QgsHttpHeaders::KEY_REFERER ].toString(), QStringLiteral( "http://test.new.com" ) );
+    QCOMPARE( h[ "other_http_header" ].toString(), QStringLiteral( "value" ) );
+  }
+
+  {
+    // with only old referer
+    QUrlQuery url( "https://www.ogc.org/?p1=v1&referer=http://test.old.com&http-header:other_http_header=value" );
+    QgsHttpHeaders h;
+    h.setFromUrlQuery( url );
+    QCOMPARE( h[QgsHttpHeaders::KEY_REFERER ].toString(), QStringLiteral( "http://test.old.com" ) );
+    QCOMPARE( h[ "other_http_header" ].toString(), QStringLiteral( "value" ) );
+  }
 }
 
 
