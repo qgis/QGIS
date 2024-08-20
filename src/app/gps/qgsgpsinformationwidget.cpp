@@ -379,6 +379,8 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       delete mMarkerList.takeFirst();
     }
+    QColor myColor;
+    QColor penColor;
   } //satellites
 #endif
   if ( mStackedWidget->currentIndex() == 3 ) //debug
@@ -402,8 +404,8 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       QColor bg( Qt::white ); // moved several items outside of the following if block to minimize loop time
       bg.setAlpha( 200 );
-      QColor myColor;
-      QColor penColor;
+      myColor = Qt::black;
+      penColor = Qt::black;
 
       // Add a marker to the polar plot
       if ( currentInfo.id > 0 )       // don't show satellite if id=0 (no satellite indication)
