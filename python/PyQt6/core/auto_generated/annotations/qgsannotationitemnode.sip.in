@@ -24,7 +24,7 @@ Contains information about a node used for editing an annotation item.
 
     QgsAnnotationItemNode();
 
-    QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type );
+    QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type, Qt::CursorShape cursor = Qt::CursorShape::ArrowCursor );
 %Docstring
 Constructor for QgsAnnotationItemNode, with the specified ``id``, ``point`` and ``type``.
 %End
@@ -73,6 +73,24 @@ Returns the node type.
 Sets the node type.
 
 .. seealso:: :py:func:`type`
+%End
+
+    Qt::CursorShape cursor() const;
+%Docstring
+Returns the mouse cursor shape to use when hovering the node.
+
+.. seealso:: :py:func:`setCursor`
+
+.. versionadded:: 3.34
+%End
+
+    void setCursor( Qt::CursorShape shape );
+%Docstring
+Sets the mouse cursor ``shape`` to use when hovering the node.
+
+.. seealso:: :py:func:`cursor`
+
+.. versionadded:: 3.34
 %End
 
     bool operator==( const QgsAnnotationItemNode &other ) const;

@@ -825,7 +825,7 @@ void QgsMapToolModifyAnnotation::setHoveredItemFromPoint( const QgsPointXY &mapP
     mHoveredNodeRubberBand->addPoint( hoveredNode.point() );
     mHoveredNodeRubberBand->show();
 
-    setCursor( Qt::ArrowCursor );
+    setCursor( hoveredNode.cursor() );
   }
 }
 
