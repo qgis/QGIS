@@ -226,9 +226,11 @@ Adds new features with given ``geometry``
 Delete a feature with given ``fid``
 %End
 
-    void linkFeature();
+    void linkFeature( const QString &filterExpression = QString() );
 %Docstring
 Links a new feature to the relation
+
+:param filterExpression: to filter the available features in the link dialog
 %End
 
     void onLinkFeatureDlgAccepted();

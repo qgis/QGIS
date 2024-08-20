@@ -210,6 +210,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void onDigitizingCompleted( const QgsFeature &feature );
     void onDigitizingCanceled( );
     void multiEditItemSelectionChanged();
+    void linkFeature();
 
   private:
 
@@ -261,6 +262,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     Buttons mButtonsVisibility = Button::AllButtons;
     bool mShowFirstFeature = true;
     bool mAllowAddChildFeatureWithNoGeometry = true;
+    QString mFilterExpression;
 
     QList<QTreeWidgetItem *> mMultiEditPreviousSelectedItems;
     QgsFeatureIds mMultiEdit1NJustAddedIds;

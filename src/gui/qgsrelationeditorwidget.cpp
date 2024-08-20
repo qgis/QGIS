@@ -93,6 +93,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   , mButtonsVisibility( qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsRelationEditorWidget::Button::AllButtons ) )
   , mShowFirstFeature( config.value( QStringLiteral( "show_first_feature" ), true ).toBool() )
   , mAllowAddChildFeatureWithNoGeometry( config.value( QStringLiteral( "allow_add_child_feature_with_no_geometry" ), false ).toBool() )
+  , mFilterExpression( config.value( QStringLiteral( "filter_expression" ) ).toString() )
 {
   QVBoxLayout *rootLayout = new QVBoxLayout( this );
   rootLayout->setContentsMargins( 0, 9, 0, 0 );
@@ -494,6 +495,11 @@ void QgsRelationEditorWidget::multiEditItemSelectionChanged()
   updateButtons();
 }
 
+void QgsRelationEditorWidget::linkFeature()
+{
+  QgsAbstractRelationEditorWidget::linkFeature( mFilterExpression );
+}
+
 void QgsRelationEditorWidget::toggleEditing( bool state )
 {
   QgsAbstractRelationEditorWidget::toggleEditing( state );
@@ -819,7 +825,8 @@ QVariantMap QgsRelationEditorWidget::config() const
 {
   return QVariantMap( {{"buttons", qgsFlagValueToKeys( visibleButtons() )},
     {"show_first_feature", mShowFirstFeature},
-    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry }
+    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry },
+    {"filter_expression", mFilterExpression }
   } );
 }
 
@@ -828,6 +835,7 @@ void QgsRelationEditorWidget::setConfig( const QVariantMap &config )
   mButtonsVisibility = qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsRelationEditorWidget::Button::AllButtons );
   mShowFirstFeature = config.value( QStringLiteral( "show_first_feature" ), true ).toBool();
   mAllowAddChildFeatureWithNoGeometry = config.value( QStringLiteral( "allow_add_child_feature_with_no_geometry" ), false ).toBool();
+  mFilterExpression = config.value( QStringLiteral( "filter_expression" ) ).toString();
   updateButtons();
 }
 
@@ -959,7 +967,8 @@ QVariantMap QgsRelationEditorConfigWidget::config()
   {
     {"buttons", qgsFlagValueToKeys( buttons )},
     {"show_first_feature", mShowFirstFeature->isChecked()},
-    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry->isChecked()}
+    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry->isChecked()},
+    {"filter_expression", mFilterExpression->toPlainText()}
   } );
 }
 
@@ -976,6 +985,7 @@ void QgsRelationEditorConfigWidget::setConfig( const QVariantMap &config )
   mRelationShowSaveChildEditsCheckBox->setChecked( buttons.testFlag( QgsRelationEditorWidget::Button::SaveChildEdits ) );
   mShowFirstFeature->setChecked( config.value( QStringLiteral( "show_first_feature" ), true ).toBool() );
   mAllowAddChildFeatureWithNoGeometry->setChecked( config.value( QStringLiteral( "allow_add_child_feature_with_no_geometry" ), false ).toBool() );
+  mFilterExpression->setPlainText( config.value( QStringLiteral( "filter_expression" ) ).toString() );
 }
 
 
