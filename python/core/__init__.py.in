@@ -522,7 +522,7 @@ try:
 
    QgsRasterBlock.as_numpy = _raster_block_as_numpy
 
-   def _raster_layer_as_numpy(self, use_masking=True, bands: _typing.Optional[_typing.List[int]] = None):
+   def _raster_layer_as_numpy(self, use_masking=True, bands: _typing.Optional[_typing.List[int]] = None) -> _typing.List[_typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]]:
       arrays = []
       band_range = bands if bands else range(self.bandCount())
 
@@ -559,6 +559,8 @@ QgsRasterLayer.as_numpy.__doc__ = """
 Returns the layer data as a numpy array.
 
 If `use_masking` is `True` then the returned arrays will be numpy masked arrays, masking the raster block's nodata values.
+
+If `bands` is provided, only the specified bands will be included in the returned array; otherwise, all bands will be used.
 
 :raises QgsNotSupportedException: if numpy is not available on the system
 
