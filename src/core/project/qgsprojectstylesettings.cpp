@@ -134,7 +134,7 @@ void QgsProjectStyleSettings::setDefaultTextFormat( const QgsTextFormat &textFor
 
 void QgsProjectStyleSettings::setDefaultSymbolOpacity( double opacity )
 {
-  if ( mDefaultSymbolOpacity == opacity )
+  if ( qgsDoubleNear( mDefaultSymbolOpacity, opacity ) )
     return;
 
   mDefaultSymbolOpacity = opacity;
