@@ -85,7 +85,7 @@ void QgsFeatureDownloaderProgressTask::finalize()
 
 void QgsFeatureDownloaderProgressTask::setDownloaded( long long count )
 {
-  setProgress( static_cast< double >( count ) / mTotalCount * 100 );
+  setProgress( static_cast< double >( count ) / static_cast< double >( mTotalCount ) * 100 );
 }
 
 
