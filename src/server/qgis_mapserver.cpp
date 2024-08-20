@@ -612,7 +612,8 @@ int main( int argc, char *argv[] )
                                          Qgis::ProjectReadFlag::DontResolveLayers
                                          | Qgis::ProjectReadFlag::DontLoadLayouts
                                          | Qgis::ProjectReadFlag::DontStoreOriginalStyles
-                                         | Qgis::ProjectReadFlag::DontLoad3DViews ) )
+                                         | Qgis::ProjectReadFlag::DontLoad3DViews
+                                         | Qgis::ProjectReadFlag::DontUpgradeAnnotations ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
     }

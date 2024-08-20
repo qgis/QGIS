@@ -109,7 +109,8 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
 
     // Always skip original styles storage
     Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles
-                                       | Qgis::ProjectReadFlag::DontLoad3DViews;
+                                       | Qgis::ProjectReadFlag::DontLoad3DViews
+                                       | Qgis::ProjectReadFlag::DontUpgradeAnnotations;
     if ( settings )
     {
       // Activate trust layer metadata flag
