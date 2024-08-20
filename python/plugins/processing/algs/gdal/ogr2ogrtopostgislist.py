@@ -48,7 +48,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
     GTYPE = 'GTYPE'
     GEOMTYPE = ['', 'NONE', 'GEOMETRY', 'POINT', 'LINESTRING', 'POLYGON', 'GEOMETRYCOLLECTION', 'MULTIPOINT',
                 'MULTIPOLYGON', 'MULTILINESTRING', 'CIRCULARSTRING', 'COMPOUNDCURVE', 'CURVEPOLYGON', 'MULTICURVE',
-                'MULTISURFACE']
+                'MULTISURFACE', 'CONVERT_TO_LINEAR', 'CONVERT_TO_CURVE']
     S_SRS = 'S_SRS'
     T_SRS = 'T_SRS'
     A_SRS = 'A_SRS'
@@ -175,7 +175,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.PROMOTETOMULTI,
                                                         self.tr('Promote to Multipart'),
-                                                        defaultValue=False))
+                                                        defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.PRECISION,
                                                         self.tr('Keep width and precision of input attributes'),
                                                         defaultValue=True))
@@ -328,7 +328,11 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             arguments.append(gt)
         if make_valid:
             arguments.append('-makevalid')
-        if promotetomulti and len(self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)]) < 1:
+        if promotetomulti and len(self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)]) > 0:
+            raise QgsProcessingException(
+                self.tr(
+                    'Only one of Promote to Multipart or Output geometry type can be enabled at a time.'))
+        elif promotetomulti and len(self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)]) < 1:
             arguments.append('-nlt PROMOTE_TO_MULTI')
         if precision is False:
             arguments.append('-lco PRECISION=NO')
