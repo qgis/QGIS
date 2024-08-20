@@ -2164,6 +2164,7 @@ The development version
       DontLoad3DViews,
       DontLoadProjectStyles,
       ForceReadOnlyLayers,
+      DontUpgradeAnnotations,
     };
 
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
