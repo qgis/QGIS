@@ -522,16 +522,43 @@ try:
 
    QgsRasterBlock.as_numpy = _raster_block_as_numpy
 
+   def _raster_layer_as_numpy(self, use_masking=True, bands: _typing.Optional[_typing.List[int]] = None):
+      arrays = []
+      band_range = bands if bands else range(self.bandCount())
+
+      for band in band_range:
+          block = self.dataProvider().block(band + 1, self.extent(), self.width(), self.height())
+          src_array = block.as_numpy(use_masking=use_masking)
+          arrays.append(src_array)
+
+      return _numpy.array(arrays)  # This converts any maskedArrays to numpy.array
+
+   QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+
 except ModuleNotFoundError:
    def _raster_block_as_numpy(self, use_masking:bool = True):
        raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
 
    QgsRasterBlock.as_numpy = _raster_block_as_numpy
 
+   def _raster_layer_as_numpy(self, use_masking:bool = True, bands: _typing.Optional[_typing.List[int]] = None):
+       raise QgsNotSupportedException('QgsRasterLayer.as_numpy is not available, numpy is not installed on the system')
+
+   QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+
 QgsRasterBlock.as_numpy.__doc__ = """
 Returns the block data as a numpy array.
 
 If `use_masking` is `True` then the returned array will be a numpy masked array, masking the raster block's nodata values.
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
+QgsRasterLayer.as_numpy.__doc__ = """
+Returns the layer data as a numpy array.
+
+If `use_masking` is `True` then the returned arrays will be numpy masked arrays, masking the raster block's nodata values.
 
 :raises QgsNotSupportedException: if numpy is not available on the system
 
