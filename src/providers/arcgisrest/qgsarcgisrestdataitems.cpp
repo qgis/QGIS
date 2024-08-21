@@ -461,7 +461,7 @@ QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem( QgsDataItem *parent, c
   , mHeaders( headers )
   , mUrlPrefix( urlPrefix )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mIconName = QStringLiteral( "mIconAfs.svg" );
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
 }
@@ -515,7 +515,7 @@ QgsArcGisMapServiceItem::QgsArcGisMapServiceItem( QgsDataItem *parent, const QSt
   , mUrlPrefix( urlPrefix )
   , mServiceType( serviceType )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mIconName = QStringLiteral( "mIconAms.svg" );
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
 }
