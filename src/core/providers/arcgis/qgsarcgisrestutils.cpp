@@ -1949,3 +1949,21 @@ Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QSt
   return Qgis::ArcGisRestServiceType::Unknown;
 }
 
+QString QgsArcGisRestUtils::typeToString( Qgis::ArcGisRestServiceType type )
+{
+  // note -- these values are different in the Portal REST responses vs the standard ArcGIS REST responses!
+  switch ( type )
+  {
+    case Qgis::ArcGisRestServiceType::FeatureServer:
+      return QStringLiteral( "Feature Service" );
+    case Qgis::ArcGisRestServiceType::MapServer:
+      return QStringLiteral( "Map Service" );
+    case Qgis::ArcGisRestServiceType::ImageServer:
+      return QStringLiteral( "Image Service" );
+    case Qgis::ArcGisRestServiceType::GlobeServer:
+    case Qgis::ArcGisRestServiceType::GPServer:
+    case Qgis::ArcGisRestServiceType::GeocodeServer:
+    case Qgis::ArcGisRestServiceType::Unknown:
+      return QString();
+  }
+}
