@@ -535,6 +535,8 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * Creates the drop-down menu entries
      */
     void prepareMenu();
+
+    friend class QgsColorTooltip;
 };
 
 #endif
