@@ -954,6 +954,17 @@ QgsRelationEditorConfigWidget::QgsRelationEditorConfigWidget( const QgsRelation 
   setupUi( this );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsRelationEditorConfigWidget::mEditExpression_clicked );
 
+  // Make filter depending on link button
+  filterExpressionLabel->setEnabled( mRelationShowLinkCheckBox->isChecked() );
+  mEditExpression->setEnabled( mRelationShowLinkCheckBox->isChecked() );
+  mFilterExpression->setEnabled( mRelationShowLinkCheckBox->isChecked() );
+  connect( mRelationShowLinkCheckBox, &QCheckBox::toggled, filterExpressionLabel, &QLabel::setEnabled );
+  connect( mRelationShowLinkCheckBox, &QCheckBox::toggled, mEditExpression, &QToolButton::setEnabled );
+  connect( mRelationShowLinkCheckBox, &QCheckBox::toggled, mFilterExpression, &QTextEdit::setEnabled );
+
+  // Make add feature with no geometry depending on add button
+  mAllowAddChildFeatureWithNoGeometry->setEnabled( mRelationShowAddChildCheckBox->isChecked() );
+  connect( mRelationShowAddChildCheckBox, &QCheckBox::toggled, mAllowAddChildFeatureWithNoGeometry, &QCheckBox::setEnabled );
 }
 
 void QgsRelationEditorConfigWidget::mEditExpression_clicked()
