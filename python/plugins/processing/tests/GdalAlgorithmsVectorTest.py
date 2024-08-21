@@ -805,7 +805,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-                                      '-append  -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-append -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
