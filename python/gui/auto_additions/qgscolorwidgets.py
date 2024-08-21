@@ -20,5 +20,6 @@ try:
 except NameError:
     pass
 QgsColorWidget.createDragIcon = staticmethod(QgsColorWidget.createDragIcon)
+QgsColorWidget.componentUnit = staticmethod(QgsColorWidget.componentUnit)
 QgsColorWidget.alterColor = staticmethod(QgsColorWidget.alterColor)
 QgsColorWidget.alterColorF = staticmethod(QgsColorWidget.alterColorF)
