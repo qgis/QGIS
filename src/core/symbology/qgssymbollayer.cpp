@@ -116,6 +116,8 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { static_cast< int >( QgsSymbolLayer::Property::RandomOffsetX ), QgsPropertyDefinition( "randomOffsetX", QObject::tr( "Horizontal random offset" ), QgsPropertyDefinition::Double, origin )},
     { static_cast< int >( QgsSymbolLayer::Property::RandomOffsetY ), QgsPropertyDefinition( "randomOffsetY", QObject::tr( "Vertical random offset" ), QgsPropertyDefinition::Double, origin )},
     { static_cast< int >( QgsSymbolLayer::Property::LineClipping ), QgsPropertyDefinition( "lineClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>during_render</b>|<b>before_render</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::SkipMultiples ), QgsPropertyDefinition( "skipMultiples", QObject::tr( "Skip multiples of" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ShowMarker ), QgsPropertyDefinition( "showMarker", QObject::tr( "Show marker" ), QgsPropertyDefinition::Boolean, origin )},
   };
 }
 

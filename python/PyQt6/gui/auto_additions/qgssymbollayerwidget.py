@@ -24,6 +24,7 @@ QgsPointPatternFillSymbolLayerWidget.create = staticmethod(QgsPointPatternFillSy
 QgsRandomMarkerFillSymbolLayerWidget.create = staticmethod(QgsRandomMarkerFillSymbolLayerWidget.create)
 QgsFontMarkerSymbolLayerWidget.create = staticmethod(QgsFontMarkerSymbolLayerWidget.create)
 QgsCentroidFillSymbolLayerWidget.create = staticmethod(QgsCentroidFillSymbolLayerWidget.create)
+QgsLinearReferencingSymbolLayerWidget.create = staticmethod(QgsLinearReferencingSymbolLayerWidget.create)
 QgsGeometryGeneratorSymbolLayerWidget.create = staticmethod(QgsGeometryGeneratorSymbolLayerWidget.create)
 try:
     QgsSymbolLayerWidget.__group__ = ['symbology']
@@ -111,6 +112,10 @@ except NameError:
     pass
 try:
     QgsCentroidFillSymbolLayerWidget.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsLinearReferencingSymbolLayerWidget.__group__ = ['symbology']
 except NameError:
     pass
 try:

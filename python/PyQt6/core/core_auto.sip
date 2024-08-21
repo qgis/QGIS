@@ -690,6 +690,7 @@
 %Include auto_generated/symbology/qgsinterpolatedlinerenderer.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgslegendsymbolitem.sip
+%Include auto_generated/symbology/qgslinearreferencingsymbollayer.sip
 %Include auto_generated/symbology/qgslinesymbol.sip
 %Include auto_generated/symbology/qgslinesymbollayer.sip
 %Include auto_generated/symbology/qgsmapinfosymbolconverter.sip

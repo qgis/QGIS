@@ -5366,6 +5366,38 @@ Qgis.MarkerLinePlacement.baseClass = Qgis
 Qgis.MarkerLinePlacements = lambda flags=0: Qgis.MarkerLinePlacement(flags)
 Qgis.MarkerLinePlacements.baseClass = Qgis
 MarkerLinePlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LinearReferencingPlacement.IntervalCartesian2D.__doc__ = "Place labels at regular intervals, using Cartesian distance calculations on a 2D plane"
+Qgis.LinearReferencingPlacement.IntervalZ.__doc__ = "Place labels at regular intervals, linearly interpolated using Z values"
+Qgis.LinearReferencingPlacement.IntervalM.__doc__ = "Place labels at regular intervals, linearly interpolated using M values"
+Qgis.LinearReferencingPlacement.Vertex.__doc__ = "Place labels on every vertex in the line"
+Qgis.LinearReferencingPlacement.__doc__ = """Defines how/where the labels should be placed in a linear referencing symbol layer.
+
+.. versionadded:: 3.40
+
+* ``IntervalCartesian2D``: Place labels at regular intervals, using Cartesian distance calculations on a 2D plane
+* ``IntervalZ``: Place labels at regular intervals, linearly interpolated using Z values
+* ``IntervalM``: Place labels at regular intervals, linearly interpolated using M values
+* ``Vertex``: Place labels on every vertex in the line
+
+"""
+# --
+Qgis.LinearReferencingPlacement.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LinearReferencingLabelSource.CartesianDistance2D.__doc__ = "Distance along line, calculated using Cartesian calculations on a 2D plane."
+Qgis.LinearReferencingLabelSource.Z.__doc__ = "Z values"
+Qgis.LinearReferencingLabelSource.M.__doc__ = "M values"
+Qgis.LinearReferencingLabelSource.__doc__ = """Defines what quantity to use for the labels shown in a linear referencing symbol layer.
+
+.. versionadded:: 3.40
+
+* ``CartesianDistance2D``: Distance along line, calculated using Cartesian calculations on a 2D plane.
+* ``Z``: Z values
+* ``M``: M values
+
+"""
+# --
+Qgis.LinearReferencingLabelSource.baseClass = Qgis
 QgsGradientFillSymbolLayer.GradientColorType = Qgis.GradientColorSource
 # monkey patching scoped based enum
 QgsGradientFillSymbolLayer.SimpleTwoColor = Qgis.GradientColorSource.SimpleTwoColor
