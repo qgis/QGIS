@@ -6043,6 +6043,24 @@ static QVariant fncColorHsva( const QVariantList &values, const QgsExpressionCon
   return QgsSymbolLayerUtils::encodeColor( color );
 }
 
+static QVariant fcnColorCmykF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const float cyan = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
+  const float magenta = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) );
+  const float yellow = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) );
+  const float black = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) );
+  const float alpha = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ) );
+
+  QColor color = QColor::fromCmykF( cyan, magenta, yellow, black, alpha );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4:%5' to color" ).arg( cyan ).arg( magenta ).arg( yellow ).arg( black ).arg( alpha ) );
+    color = QColor( 0, 0, 0 );
+  }
+
+  return color;
+}
+
 static QVariant fcnColorCmyk( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   // Cyan ranges from 0 - 100
@@ -8417,6 +8435,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "black" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "alpha" ) ),
                                             fncColorCmyka, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "color_cmykf" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "cyan" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "magenta" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "yellow" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "black" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "alpha" ), true, 1. ),
+                                            fcnColorCmykF, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_part" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "component" ) ),
                                             fncColorPart, QStringLiteral( "Color" ) )

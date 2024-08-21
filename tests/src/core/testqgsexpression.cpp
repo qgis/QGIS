@@ -1938,9 +1938,9 @@ class TestQgsExpression: public QObject
 
       QTest::newRow( "color rgb float" ) << "color_rgbf(1,0.4989,0)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0 ) );
       QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );
-      QTest::newRow( "qcolor cmyk" ) << "qcolor_cmyk(100,90.12,0,80.34)" << false << QVariant( QColor::fromCmykF( 1., 0.9012, 0, 0.8034 ) );
-      QTest::newRow( "qcolor cmyka" ) << "qcolor_cmyk(100,90.12,0,80.34,50.69)" << false << QVariant( QColor::fromCmykF( 1.f, 0.9012, 0, 0.8034, 0.5069 ) );
-      QTest::newRow( "qcolor cmyk invalid" ) << "qcolor_cmyk(150,10,0,0)" << true << QVariant();
+      QTest::newRow( "color cmyk float" ) << "color_cmykf(1,0.9012,0,0.8034)" << false << QVariant( QColor::fromCmykF( 1., 0.9012, 0, 0.8034 ) );
+      QTest::newRow( "color cmyka float" ) << "color_cmykf(1,0.9012,0,0.8034,0.5069)" << false << QVariant( QColor::fromCmykF( 1.f, 0.9012, 0, 0.8034, 0.5069 ) );
+      QTest::newRow( "color cmyk invalid float" ) << "color_cmykf(1.5,0.1,0,0)" << true << QVariant();
 
       // Precedence and associativity
       QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );
@@ -2305,10 +2305,21 @@ class TestQgsExpression: public QObject
           const QColor resultColor = result.value<QColor>();
           const QColor expectedColor = expected.value<QColor>();
           QCOMPARE( resultColor.spec(), expectedColor.spec() );
-          QVERIFY( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ) );
-          QVERIFY( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ) );
-          QVERIFY( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ) );
-          QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+          if ( resultColor.spec() == QColor::Spec::Cmyk )
+          {
+            QVERIFY( qgsDoubleNear( resultColor.cyanF(), expectedColor.cyanF(), 0.001 ) );
+            QVERIFY( qgsDoubleNear( resultColor.magentaF(), expectedColor.magentaF(), 0.001 ) );
+            QVERIFY( qgsDoubleNear( resultColor.yellowF(), expectedColor.yellowF(), 0.001 ) );
+            QVERIFY( qgsDoubleNear( resultColor.blackF(), expectedColor.blackF(), 0.001 ) );
+            QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+          }
+          else
+          {
+            QVERIFY( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ) );
+            QVERIFY( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ) );
+            QVERIFY( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ) );
+            QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+          }
           break;
         }
         default:

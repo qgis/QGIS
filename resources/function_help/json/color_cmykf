@@ -1,0 +1,29 @@
+{
+  "name": "color_cmykf",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a color object based on its cyan, magenta, yellow, black and alpha components.",
+  "arguments": [{
+    "arg": "cyan",
+    "description": "cyan component as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "magenta",
+    "description": "magenta component as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "yellow",
+    "description": "yellow component as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "black",
+    "description": "black component as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "alpha",
+    "optional": true,
+    "default": "1.0",
+    "description": "alpha component as a float value from 0.0 to 1.0"
+  }],
+  "examples": [{
+    "expression": "color_cmykf(1,0.9,0.81,0.62)",
+    "returns": "CMYKA: 1.00,0.90,0.81,0.62,1.00"
+  }],
+  "tags": ["cyan", "magenta", "yellow", "black", "alpha", "color", "components"]
+}
