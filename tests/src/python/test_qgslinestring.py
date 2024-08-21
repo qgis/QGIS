@@ -219,6 +219,155 @@ class TestQgsLineString(QgisTestCase):
         # 3d distance
         self.assertEqual(line.interpolateM(True).asWkt(2), 'LineStringZM (5 10 15 17, 6 11 16 17, 20 10 5 17, 30 10 12 19.05, 30 40 17 25, 20 40 19 27, 20 50 21 27, 25 50 22 27, 25 55 22 27)')
 
+    def testLineLocatePointByM(self):
+        line = QgsLineString()
+        # empty line
+        res, x, y, z, distance = line.lineLocatePointByM(5)
+        self.assertFalse(res)
+
+        # not m
+        line.fromWkt('LineString (10 6, 20 6)')
+        res, x, y, z, distance = line.lineLocatePointByM(5)
+        self.assertFalse(res)
+
+        # single point
+        line.fromWkt('LineStringM (10 6 0)')
+        res, x, y, z, distance = line.lineLocatePointByM(5)
+        self.assertFalse(res)
+
+        # valid cases
+        line.fromWkt('LineStringM (10 6 0, 20 6 10)')
+        res, x, y, z, distance = line.lineLocatePointByM(0)
+        self.assertTrue(res)
+        self.assertEqual(x, 10)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 0)
+
+        res, x, y, z, distance = line.lineLocatePointByM(10)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 10)
+
+        res, x, y, z, distance = line.lineLocatePointByM(5)
+        self.assertTrue(res)
+        self.assertEqual(x, 15)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 5)
+
+        res, x, y, z, distance = line.lineLocatePointByM(3)
+        self.assertTrue(res)
+        self.assertEqual(x, 13)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 3)
+
+        # m out of range
+        res, x, y, z, distance = line.lineLocatePointByM(15)
+        self.assertFalse(res)
+        res, x, y, z, distance = line.lineLocatePointByM(-5)
+        self.assertFalse(res)
+
+        line.fromWkt('LineStringM (10 6 1, 20 6 0)')
+        res, x, y, z, distance = line.lineLocatePointByM(1.0)
+        self.assertTrue(res)
+        self.assertEqual(x, 10)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 0)
+
+        res, x, y, z, distance = line.lineLocatePointByM(0.0)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 10)
+
+        res, x, y, z, distance = line.lineLocatePointByM(.5)
+        self.assertTrue(res)
+        self.assertEqual(x, 15)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 5)
+
+        res, x, y, z, distance = line.lineLocatePointByM(.3)
+        self.assertTrue(res)
+        self.assertEqual(x, 17)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 7)
+
+        line.fromWkt('LineStringM (10 6 10, 20 6 0, 20 16 -10)')
+        res, x, y, z, distance = line.lineLocatePointByM(5)
+        self.assertTrue(res)
+        self.assertEqual(x, 15)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 5)
+
+        res, x, y, z, distance = line.lineLocatePointByM(-5)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 11)
+        self.assertEqual(distance, 15)
+
+        line.setMAt(1, math.nan)
+
+        res, x, y, z, distance = line.lineLocatePointByM(0)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 10)
+
+        res, x, y, z, distance = line.lineLocatePointByM(5)
+        self.assertTrue(res)
+        self.assertEqual(x, 15)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 5)
+
+        res, x, y, z, distance = line.lineLocatePointByM(-5)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 11)
+        self.assertEqual(distance, 15)
+
+        res, x, y, z, distance = line.lineLocatePointByM(10)
+        self.assertTrue(res)
+        self.assertEqual(x, 10)
+        self.assertEqual(y, 6)
+        self.assertEqual(distance, 0)
+
+        res, x, y, z, distance = line.lineLocatePointByM(-10)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 16)
+        self.assertEqual(distance, 20)
+
+        # with nan m value to fill in
+        line.fromWkt('LineStringM (10 6 10, 20 6 0, 20 16 -10, 30 16 -10)')
+        line.setMAt(1, math.nan)
+        line.setMAt(2, math.nan)
+        res, x, y, z, distance = line.lineLocatePointByM(5)
+        self.assertTrue(res)
+        self.assertEqual(x, 17.5)
+        self.assertEqual(y, 6)
+        self.assertAlmostEqual(distance, 7.5, 3)
+
+        res, x, y, z, distance = line.lineLocatePointByM(0)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 11)
+        self.assertEqual(distance, 15)
+
+        # m value on constant m segment
+        line.fromWkt('LineStringM (10 6 10, 20 6 1, 20 16 1, 30 16 -10)')
+        res, x, y, z, distance = line.lineLocatePointByM(1)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 11)
+        self.assertAlmostEqual(distance, 15, 3)
+
+        line.fromWkt('LineStringM (10 6 10, 20 6 1, 20 16 1, 26 16 1)')
+        res, x, y, z, distance = line.lineLocatePointByM(1)
+        self.assertTrue(res)
+        self.assertEqual(x, 20)
+        self.assertEqual(y, 14)
+        self.assertEqual(distance, 18)
+
     def test_simplify_by_distance(self):
         """
         test simplifyByDistance
