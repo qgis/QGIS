@@ -38,12 +38,26 @@ void QgsStackedDiagram::addSubDiagram( QgsDiagram *diagram, QgsDiagramSettings *
   mSubDiagrams.append( DiagramData{diagram, s} );
 }
 
-QList< QgsDiagram * > QgsStackedDiagram::subDiagrams() const
+QList< QgsDiagram * > QgsStackedDiagram::subDiagrams( const QgsDiagramSettings &s ) const
 {
   QList< QgsDiagram * > diagrams;
-  for ( const auto &item : std::as_const( mSubDiagrams ) )
+
+  if ( s.stackedDiagramMode == QgsDiagramSettings::Horizontal )
   {
-    diagrams.append( item.diagram );
+    for ( const auto &item : std::as_const( mSubDiagrams ) )
+    {
+      diagrams.append( item.diagram );
+    }
+  }
+  else
+  {
+    // We'll draw vertical diagrams backwards,
+    // so we return the subdiagrams in reverse order
+    QList< DiagramData >::const_reverse_iterator iter = mSubDiagrams.rbegin();
+    for ( ; iter != mSubDiagrams.rend(); ++iter )
+    {
+      diagrams.append( iter->diagram );
+    }
   }
   return diagrams;
 }
@@ -71,7 +85,7 @@ void QgsStackedDiagram::subDiagramPosition( QPointF &newPos, const QgsRenderCont
   }
   else
   {
-    newPos += QPointF( 0, size.height() + spacing );
+    newPos -= QPointF( 0, size.height() + spacing );
   }
 }
 

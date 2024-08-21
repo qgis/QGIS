@@ -46,9 +46,12 @@ Adds a subdiagram to the stacked diagram object along with its corresponding set
           or more to the top (if stacked diagram is vertical).
 %End
 
-    QList< QgsDiagram * > subDiagrams() const;
+    QList< QgsDiagram * > subDiagrams( const QgsDiagramSettings &s ) const;
 %Docstring
 Returns an ordered list with the subdiagrams of the stacked diagram object.
+If the stacked diagram orientation is vertical, the list is returned backwards.
+
+:param s: stacked diagram settings
 %End
 
     QgsDiagramSettings *subDiagramSettings( const QgsDiagram *diagram ) const;

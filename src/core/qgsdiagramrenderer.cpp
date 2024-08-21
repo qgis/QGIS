@@ -507,7 +507,7 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
   {
     // Iterate subdiagrams and render them individually
     QgsStackedDiagram *stackedDiagram = qgis::down_cast< QgsStackedDiagram *>( mDiagram.get() );
-    QList< QgsDiagram * > subDiagrams = stackedDiagram->subDiagrams();
+    QList< QgsDiagram * > subDiagrams = stackedDiagram->subDiagrams( s );
     QPointF newPos = pos; // Each subdiagram will have its own newPos
 
     for ( const auto &subDiagram : std::as_const( subDiagrams ) )
