@@ -272,6 +272,84 @@ class TestQgsStackedDiagram : public QgsTest
       QGSVERIFYRENDERMAPSETTINGSCHECK( "verticallystackedhistograms", "verticallystackedhistograms", *mMapSettings, 200, 15 );
     }
 
+    void testVerticallyStackedHistogramsWithSpacing()
+    {
+      // Histogram 1
+      QgsDiagramSettings ds1;
+      QColor col1 = Qt::blue;
+      QColor col2 = Qt::red;
+      QColor col3 = Qt::yellow;
+      QColor col4 = Qt::green;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      col3.setAlphaF( 0.5 );
+      col4.setAlphaF( 0.5 );
+      ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.minimumScale = -1;
+      ds1.maximumScale = -1;
+      ds1.minimumSize = 0;
+      ds1.penColor = Qt::black;
+      ds1.penWidth = .5;
+      ds1.scaleByArea = true;
+      ds1.sizeType = Qgis::RenderUnit::Millimeters;
+      ds1.rotationOffset = 0;
+      ds1.diagramOrientation = QgsDiagramSettings::Up;
+
+      // Histogram 2
+      QgsDiagramSettings ds2;
+      col1 = Qt::blue;
+      col2 = Qt::red;
+      col3 = Qt::yellow;
+      col4 = Qt::green;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      col3.setAlphaF( 0.5 );
+      col4.setAlphaF( 0.5 );
+      ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.minimumScale = -1;
+      ds2.maximumScale = -1;
+      ds2.minimumSize = 0;
+      ds2.penColor = Qt::black;
+      ds2.penWidth = .5;
+      ds2.scaleByArea = true;
+      ds2.sizeType = Qgis::RenderUnit::Millimeters;
+      ds2.rotationOffset = 0;
+      ds2.diagramOrientation = QgsDiagramSettings::Down;
+
+      QgsDiagramSettings ds;
+      ds.stackedDiagramMode = QgsDiagramSettings::Vertical;
+      ds.categoryAttributes = ds1.categoryAttributes + ds2.categoryAttributes;
+      ds.setStackedDiagramSpacingUnit( Qgis::RenderUnit::Points );
+      ds.setStackedDiagramSpacing( 8 );
+
+      QgsStackedDiagram *stackedDiagram = new QgsStackedDiagram();
+      stackedDiagram->addSubDiagram( new QgsHistogramDiagram(), &ds1 );
+      stackedDiagram->addSubDiagram( new QgsHistogramDiagram(), &ds2 );
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 15000 );
+      dr->setUpperSize( QSizeF( 20, 20 ) );
+      dr->setClassificationField( QStringLiteral( "max(\"maennlich_18_64\", \"maennlich_ab_65\", \"weiblich_unter_6\", \"weiblich_6_17\", \"weiblich_18_64\", \"weiblich_ab_65\")" ) );  //#spellok
+      dr->setDiagram( stackedDiagram );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
+      mMapSettings->setExtent( extent );
+      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setOutputDpi( 96 );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "verticallystackedhistogramswithspacing", "verticallystackedhistogramswithspacing", *mMapSettings, 200, 15 );
+    }
+
     void testStackedHistogramsWithSpacing()
     {
       // Histogram 1
@@ -597,6 +675,79 @@ class TestQgsStackedDiagram : public QgsTest
       mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedpies", "stackedpies", *mMapSettings, 200, 15 );
+    }
+
+    void testStackedPiesVerticalWithSpacing()
+    {
+      // Pie 1
+      QgsDiagramSettings ds1;
+      QColor col1 = Qt::blue;
+      QColor col2 = Qt::red;
+      QColor col3 = Qt::yellow;
+      QColor col4 = Qt::green;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      col3.setAlphaF( 0.5 );
+      col4.setAlphaF( 0.5 );
+      ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.minimumScale = -1;
+      ds1.maximumScale = -1;
+      ds1.minimumSize = 0;
+      ds1.penColor = Qt::black;
+      ds1.penWidth = .5;
+      ds1.sizeType = Qgis::RenderUnit::Millimeters;
+      ds1.size = QSizeF( 10, 10 );
+      ds1.rotationOffset = 270;
+      ds1.setDirection( QgsDiagramSettings::Counterclockwise );
+
+      // Pie 2
+      QgsDiagramSettings ds2;
+      col1 = Qt::blue;
+      col2 = Qt::red;
+      col3 = Qt::yellow;
+      col4 = Qt::green;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      col3.setAlphaF( 0.5 );
+      col4.setAlphaF( 0.5 );
+      ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.minimumScale = -1;
+      ds2.maximumScale = -1;
+      ds2.minimumSize = 0;
+      ds2.penColor = Qt::black;
+      ds2.penWidth = .5;
+      ds2.sizeType = Qgis::RenderUnit::Millimeters;
+      ds2.size = QSizeF( 10, 10 );
+      ds2.rotationOffset = 270;
+      ds2.setDirection( QgsDiagramSettings::Counterclockwise );
+
+      QgsStackedDiagram *stackedDiagram = new QgsStackedDiagram();
+      stackedDiagram->addSubDiagram( new QgsPieDiagram(), &ds1 );
+      stackedDiagram->addSubDiagram( new QgsPieDiagram(), &ds2 );
+
+      QgsDiagramSettings ds;
+      ds.stackedDiagramMode = QgsDiagramSettings::Vertical;
+      ds.categoryAttributes = ds1.categoryAttributes + ds2.categoryAttributes;
+      ds.setStackedDiagramSpacingUnit( Qgis::RenderUnit::Points );
+      ds.setStackedDiagramSpacing( 8 );
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( stackedDiagram );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
+      mMapSettings->setExtent( extent );
+      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setOutputDpi( 96 );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedpiesverticalwithspacing", "stackedpiesverticalwithspacing", *mMapSettings, 200, 15 );
     }
 
     void testStackedPiesHorizontalWithSpacing()
