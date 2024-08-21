@@ -305,6 +305,10 @@ class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEdito
      */
     void setConfig( const QVariantMap &config ) override;
 
+    /**
+     * Opens an expression dialog and sets its value as filter expression for the linking dialog
+     */
+    void mEditExpression_clicked();
 };
 
 

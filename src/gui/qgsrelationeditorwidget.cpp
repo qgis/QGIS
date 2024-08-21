@@ -29,6 +29,8 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsactionmenu.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -950,6 +952,32 @@ QgsRelationEditorConfigWidget::QgsRelationEditorConfigWidget( const QgsRelation 
   : QgsAbstractRelationEditorConfigWidget( relation, parent )
 {
   setupUi( this );
+  connect( mEditExpression, &QAbstractButton::clicked, this, &QgsRelationEditorConfigWidget::mEditExpression_clicked );
+
+}
+
+void QgsRelationEditorConfigWidget::mEditExpression_clicked()
+{
+  QgsVectorLayer *vl = nullptr;
+
+  if ( nmRelation().isValid() )
+  {
+    vl = nmRelation().referencedLayer();
+  }
+  else
+  {
+    vl = relation().referencingLayer();
+  }
+
+  // Show expression builder
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
+  dlg.setWindowTitle( tr( "Edit Filter Expression of Target Layer" ) );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    mFilterExpression->setPlainText( dlg.expressionBuilder()->expressionText() );
+  }
 }
 
 QVariantMap QgsRelationEditorConfigWidget::config()
