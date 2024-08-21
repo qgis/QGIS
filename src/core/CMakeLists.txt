@@ -107,6 +107,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsinterpolatedlinerenderer.cpp
   symbology/qgsinvertedpolygonrenderer.cpp
   symbology/qgslegendsymbolitem.cpp
+  symbology/qgslinearreferencingsymbollayer.cpp
   symbology/qgslinesymbol.cpp
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmapinfosymbolconverter.cpp
@@ -1938,6 +1939,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsinterpolatedlinerenderer.h
   symbology/qgsinvertedpolygonrenderer.h
   symbology/qgslegendsymbolitem.h
+  symbology/qgslinearreferencingsymbollayer.h
   symbology/qgslinesymbol.h
   symbology/qgslinesymbollayer.h
   symbology/qgsmapinfosymbolconverter.h

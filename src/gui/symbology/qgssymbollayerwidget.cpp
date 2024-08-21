@@ -42,6 +42,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsiconutils.h"
+#include "qgslinearreferencingsymbollayer.h"
+#include "qgsnumericformatselectorwidget.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -5457,4 +5459,243 @@ void QgsFilledLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 QgsSymbolLayer *QgsFilledLineSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
+}
+
+//
+// QgsLinearReferencingSymbolLayerWidget
+//
+
+QgsLinearReferencingSymbolLayerWidget::QgsLinearReferencingSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+{
+  mLayer = nullptr;
+
+  setupUi( this );
+
+  mComboPlacement->addItem( tr( "Interval (Cartesian 2D Distances)" ), QVariant::fromValue( Qgis::LinearReferencingPlacement::IntervalCartesian2D ) );
+  mComboPlacement->addItem( tr( "Interval (Z Values)" ), QVariant::fromValue( Qgis::LinearReferencingPlacement::IntervalZ ) );
+  mComboPlacement->addItem( tr( "Interval (M Values)" ), QVariant::fromValue( Qgis::LinearReferencingPlacement::IntervalM ) );
+  mComboPlacement->addItem( tr( "On Every Vertex" ), QVariant::fromValue( Qgis::LinearReferencingPlacement::Vertex ) );
+
+  mComboQuantity->addItem( tr( "Cartesian 2D Distance" ), QVariant::fromValue( Qgis::LinearReferencingLabelSource::CartesianDistance2D ) );
+  mComboQuantity->addItem( tr( "Z Values" ), QVariant::fromValue( Qgis::LinearReferencingLabelSource::Z ) );
+  mComboQuantity->addItem( tr( "M Values" ), QVariant::fromValue( Qgis::LinearReferencingLabelSource::M ) );
+
+  mSpinSkipMultiples->setClearValue( 0, tr( "Not set" ) );
+  mSpinLabelOffsetX->setClearValue( 0 );
+  mSpinLabelOffsetY->setClearValue( 0 );
+  mSpinAverageAngleLength->setClearValue( 4.0 );
+  mLabelOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                    << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mAverageAngleUnit->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+
+  connect( mComboQuantity, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setLabelSource( mComboQuantity->currentData().value< Qgis::LinearReferencingLabelSource >() );
+      emit changed();
+    }
+  } );
+  connect( mTextFormatButton, &QgsFontButton::changed, this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setTextFormat( mTextFormatButton->textFormat() );
+      emit changed();
+    }
+  } );
+  connect( spinInterval, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setInterval( spinInterval->value() );
+      emit changed();
+    }
+  } );
+  connect( mSpinSkipMultiples, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setSkipMultiplesOf( mSpinSkipMultiples->value() );
+      emit changed();
+    }
+  } );
+  connect( mCheckRotate, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setRotateLabels( checked );
+      emit changed();
+    }
+    mSpinAverageAngleLength->setEnabled( checked );
+    mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
+  } );
+  connect( mCheckShowMarker, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setShowMarker( checked );
+      emit symbolChanged();
+    }
+  } );
+
+  connect( mSpinLabelOffsetX, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setLabelOffset( QPointF( mSpinLabelOffsetX->value(), mSpinLabelOffsetY->value() ) );
+      emit changed();
+    }
+  } );
+  connect( mSpinLabelOffsetY, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setLabelOffset( QPointF( mSpinLabelOffsetX->value(), mSpinLabelOffsetY->value() ) );
+      emit changed();
+    }
+  } );
+  connect( mLabelOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setLabelOffsetUnit( mLabelOffsetUnitWidget->unit() );
+      mLayer->setLabelOffsetMapUnitScale( mLabelOffsetUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+
+  connect( mComboPlacement, qOverload< int>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      const Qgis::LinearReferencingPlacement placement = mComboPlacement->currentData().value< Qgis::LinearReferencingPlacement >();
+      mLayer->setPlacement( placement );
+      switch ( placement )
+      {
+        case Qgis::LinearReferencingPlacement::IntervalCartesian2D:
+        case Qgis::LinearReferencingPlacement::IntervalZ:
+        case Qgis::LinearReferencingPlacement::IntervalM:
+          mIntervalWidget->show();
+          break;
+        case Qgis::LinearReferencingPlacement::Vertex:
+          mIntervalWidget->hide();
+          break;
+      }
+      emit changed();
+    }
+  } );
+
+  connect( mSpinAverageAngleLength, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setAverageAngleLength( mSpinAverageAngleLength->value() );
+      emit changed();
+    }
+  } );
+  connect( mAverageAngleUnit, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer && !mBlockChangesSignal )
+    {
+      mLayer->setAverageAngleUnit( mAverageAngleUnit->unit() );
+      mLayer->setAverageAngleMapUnitScale( mAverageAngleUnit->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+
+  connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLinearReferencingSymbolLayerWidget::changeNumberFormat );
+
+  mTextFormatButton->registerExpressionContextGenerator( this );
+}
+
+QgsLinearReferencingSymbolLayerWidget::~QgsLinearReferencingSymbolLayerWidget() = default;
+
+
+void QgsLinearReferencingSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer || layer->layerType() != QLatin1String( "LinearReferencing" ) )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = qgis::down_cast<QgsLinearReferencingSymbolLayer *>( layer );
+
+  mBlockChangesSignal = true;
+
+  mComboPlacement->setCurrentIndex( mComboPlacement->findData( QVariant::fromValue( mLayer->placement() ) ) );
+  switch ( mLayer->placement() )
+  {
+    case Qgis::LinearReferencingPlacement::IntervalCartesian2D:
+    case Qgis::LinearReferencingPlacement::IntervalZ:
+    case Qgis::LinearReferencingPlacement::IntervalM:
+      mIntervalWidget->show();
+      break;
+    case Qgis::LinearReferencingPlacement::Vertex:
+      mIntervalWidget->hide();
+      break;
+  }
+
+  mComboQuantity->setCurrentIndex( mComboQuantity->findData( QVariant::fromValue( mLayer->labelSource() ) ) );
+
+  mTextFormatButton->setTextFormat( mLayer->textFormat() );
+  spinInterval->setValue( mLayer->interval() );
+  mSpinSkipMultiples->setValue( mLayer->skipMultiplesOf() );
+  mCheckRotate->setChecked( mLayer->rotateLabels() );
+  mCheckShowMarker->setChecked( mLayer->showMarker() );
+  mSpinLabelOffsetX->setValue( mLayer->labelOffset().x() );
+  mSpinLabelOffsetY->setValue( mLayer->labelOffset().y() );
+  mLabelOffsetUnitWidget->setUnit( mLayer->labelOffsetUnit() );
+  mLabelOffsetUnitWidget->setMapUnitScale( mLayer->labelOffsetMapUnitScale() );
+
+  mAverageAngleUnit->setUnit( mLayer->averageAngleUnit() );
+  mAverageAngleUnit->setMapUnitScale( mLayer->averageAngleMapUnitScale() );
+  mSpinAverageAngleLength->setValue( mLayer->averageAngleLength() );
+
+  mSpinAverageAngleLength->setEnabled( mCheckRotate->isChecked() );
+  mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
+
+  registerDataDefinedButton( mIntervalDDBtn, QgsSymbolLayer::Property::Interval );
+  registerDataDefinedButton( mAverageAngleDDBtn, QgsSymbolLayer::Property::AverageAngleLength );
+  registerDataDefinedButton( mSkipMultiplesDDBtn, QgsSymbolLayer::Property::SkipMultiples );
+  registerDataDefinedButton( mShowMarkerDDBtn, QgsSymbolLayer::Property::ShowMarker );
+
+  mBlockChangesSignal = false;
+}
+
+QgsSymbolLayer *QgsLinearReferencingSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsLinearReferencingSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mTextFormatButton->setMapCanvas( context.mapCanvas() );
+  mTextFormatButton->setMessageBar( context.messageBar() );
+}
+
+void QgsLinearReferencingSymbolLayerWidget::changeNumberFormat()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
+    widget->setPanelTitle( tr( "Number Format" ) );
+    widget->setFormat( mLayer->numericFormat() );
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [ = ]
+    {
+      if ( !mBlockChangesSignal )
+      {
+        mLayer->setNumericFormat( widget->format() );
+        emit changed();
+      }
+    } );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    // TODO!! dialog mode
+  }
 }

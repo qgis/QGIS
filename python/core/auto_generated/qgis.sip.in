@@ -1628,6 +1628,21 @@ The development version
     typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
 
 
+    enum class LinearReferencingPlacement
+    {
+      IntervalCartesian2D,
+      IntervalZ,
+      IntervalM,
+      Vertex,
+    };
+
+    enum class LinearReferencingLabelSource
+    {
+      CartesianDistance2D,
+      Z,
+      M,
+    };
+
     enum class GradientColorSource
       {
       SimpleTwoColor,
