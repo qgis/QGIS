@@ -22,6 +22,11 @@
 #include "qgssymbollayerutils.h"
 
 //! helper class to generate color tooltip
+
+/**
+ * \ingroup gui
+ * \since QGIS 3.40
+ */
 class QgsColorTooltip
 {
   public:
@@ -63,11 +68,11 @@ class QgsColorTooltip
 
       if ( color.spec() == QColor::Spec::Cmyk )
       {
-        const float cyan = color.cyanF() * 100.f;
-        const float magenta = color.magentaF() * 100.f;
-        const float yellow = color.yellowF() * 100.f;
-        const float black = color.blackF() * 100.f;
-        const float alpha = color.alphaF() * 100.f;
+        const double cyan = color.cyanF() * 100.;
+        const double magenta = color.magentaF() * 100.;
+        const double yellow = color.yellowF() * 100.;
+        const double black = color.blackF() * 100.;
+        const double alpha = color.alphaF() * 100.;
 
         info += QStringLiteral( "<b>CMYKA</b> %1,%2,%3,%4,%5<p>" )
                 .arg( cyan, 0, 'f', 2 ).arg( magenta, 0, 'f', 2 )
