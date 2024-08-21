@@ -1139,6 +1139,28 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     listStr += QLatin1Char( ']' );
     return listStr;
   }
+  else if ( value.type() == QVariant::Color )
+  {
+    const QColor color = value.value<QColor>();
+
+    if ( !color.isValid() )
+    {
+      return tr( "<i>Invalid</i>" );
+    }
+    if ( color.spec() == QColor::Spec::Cmyk )
+    {
+      return QStringLiteral( "CMYKA: %1,%2,%3,%4,%5" )
+             .arg( color.cyanF(), 0, 'f', 2 ).arg( color.magentaF(), 0, 'f', 2 )
+             .arg( color.yellowF(), 0, 'f', 2 ).arg( color.blackF(), 0, 'f', 2 )
+             .arg( color.alphaF(), 0, 'f', 2 );
+    }
+    else
+    {
+      return QStringLiteral( "RGBA: %1,%2,%3,%4" )
+             .arg( color.redF(), 0, 'f', 2 ).arg( color.greenF(), 0, 'f', 2 )
+             .arg( color.blueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+    }
+  }
   else if ( value.userType() == QMetaType::Type::Int ||
             value.userType() == QMetaType::Type::UInt ||
             value.userType() == QMetaType::Type::LongLong ||
