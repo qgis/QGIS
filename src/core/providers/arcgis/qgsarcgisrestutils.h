@@ -117,6 +117,8 @@ class CORE_EXPORT QgsArcGisRestUtils
 
   public:
 
+    static QString typeToString( Qgis::ArcGisRestServiceType type );
+
     /**
      * Converts an ESRI REST field \a type to a QVariant type.
      */
