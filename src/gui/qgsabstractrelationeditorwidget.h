@@ -234,7 +234,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Links a new feature to the relation
-     * \param filterExpression to filter the available features in the link dialog
+     * \param filterExpression to filter the available features in the link dialog since QGIS 3.40
      */
     void linkFeature( const QString &filterExpression = QString() );
 

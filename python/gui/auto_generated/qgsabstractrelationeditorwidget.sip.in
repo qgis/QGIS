@@ -230,7 +230,7 @@ Delete a feature with given ``fid``
 %Docstring
 Links a new feature to the relation
 
-:param filterExpression: to filter the available features in the link dialog
+:param filterExpression: to filter the available features in the link dialog since QGIS 3.40
 %End
 
     void onLinkFeatureDlgAccepted();
