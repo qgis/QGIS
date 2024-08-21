@@ -114,6 +114,8 @@ QgsColorWidget::ComponentUnit QgsColorWidget::componentUnit( ColorComponent comp
     case QgsColorWidget::Blue:
       return ComponentUnit::Raw;
   }
+
+  BUILTIN_UNREACHABLE
 }
 
 int QgsColorWidget::componentValue( const QgsColorWidget::ColorComponent component ) const
