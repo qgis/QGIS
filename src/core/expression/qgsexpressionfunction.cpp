@@ -5869,6 +5869,22 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionCont
   return QStringLiteral( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
+static QVariant fcnColorRgbF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const float red = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
+  const float green = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) );
+  const float blue = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) );
+  const float alpha = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) );
+  QColor color = QColor::fromRgbF( red, green, blue, alpha );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( red ).arg( green ).arg( blue ).arg( alpha ) );
+    color = QColor( 0, 0, 0 );
+  }
+
+  return color;
+}
+
 static QVariant fcnTry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -8356,6 +8372,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "green" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "blue" ) ),
                                             fcnColorRgb, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "color_rgbf" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "red" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "green" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "blue" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "alpha" ), true, 1. ),
+                                            fcnColorRgbF, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_rgba" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "red" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "green" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "blue" ) )

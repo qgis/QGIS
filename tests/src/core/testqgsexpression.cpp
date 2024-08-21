@@ -1936,6 +1936,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
       QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
 
+      QTest::newRow( "color rgb float" ) << "color_rgbf(1,0.4989,0)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0 ) );
+      QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );
+      QTest::newRow( "qcolor cmyk" ) << "qcolor_cmyk(100,90.12,0,80.34)" << false << QVariant( QColor::fromCmykF( 1., 0.9012, 0, 0.8034 ) );
+      QTest::newRow( "qcolor cmyka" ) << "qcolor_cmyk(100,90.12,0,80.34,50.69)" << false << QVariant( QColor::fromCmykF( 1.f, 0.9012, 0, 0.8034, 0.5069 ) );
+      QTest::newRow( "qcolor cmyk invalid" ) << "qcolor_cmyk(150,10,0,0)" << true << QVariant();
+
       // Precedence and associativity
       QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
@@ -2294,7 +2300,17 @@ class TestQgsExpression: public QObject
         case QMetaType::Type::QByteArray:
           QCOMPARE( result.toByteArray(), expected.toByteArray() );
           break;
-
+        case QMetaType::Type::QColor:
+        {
+          const QColor resultColor = result.value<QColor>();
+          const QColor expectedColor = expected.value<QColor>();
+          QCOMPARE( resultColor.spec(), expectedColor.spec() );
+          QVERIFY( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ) );
+          QVERIFY( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ) );
+          QVERIFY( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ) );
+          QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+          break;
+        }
         default:
           if ( result.userType() == qMetaTypeId<QgsInterval>() )
           {
@@ -5138,6 +5154,12 @@ class TestQgsExpression: public QObject
       stringList << QStringLiteral( "One" ) << QStringLiteral( "Two" ) << QStringLiteral( "A very long string that is going to be truncated" );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
                 QStringLiteral( "[ 'One', 'Two', 'A very long string that is going to be tr… ]" ) );
+
+      QColor color = QColor::fromRgbF( 1., 0.5f, 0.25f, 0.1f );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "RGBA: 1.00,0.50,0.25,0.10" );
+
+      color = QColor::fromCmykF( 1., 0.5f, 0.25f, 0.1f, 0.2f );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "CMYKA: 1.00,0.50,0.25,0.10,0.20" );
     }
 
     void test_formatPreviewStringWithLocale()
