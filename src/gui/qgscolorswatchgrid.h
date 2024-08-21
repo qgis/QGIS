@@ -174,6 +174,8 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * \returns checkboard pixmap
      */
     QPixmap transparentBackground();
+
+    friend class QgsColorTooltip;
 };
 
 
