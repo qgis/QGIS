@@ -1602,17 +1602,17 @@ void QgsApplication::exitQgis()
 QString QgsApplication::showSettings()
 {
   QString myEnvironmentVar( getenv( "QGIS_PREFIX_PATH" ) );
-  QString myState = tr( "Application state:\n"
-                        "QGIS_PREFIX_PATH env var:\t\t%1\n"
-                        "Prefix:\t\t%2\n"
-                        "Plugin Path:\t\t%3\n"
-                        "Package Data Path:\t%4\n"
-                        "Active Theme Name:\t%5\n"
-                        "Active Theme Path:\t%6\n"
-                        "Default Theme Path:\t%7\n"
-                        "SVG Search Paths:\t%8\n"
-                        "User DB Path:\t%9\n"
-                        "Auth DB Path:\t%10\n" )
+  QString myState = tr( "QgsApplication state:\n"
+                        " - QGIS_PREFIX_PATH env var:   %1\n"
+                        " - Prefix:                     %2\n"
+                        " - Plugin Path:                %3\n"
+                        " - Package Data Path:          %4\n"
+                        " - Active Theme Name:          %5\n"
+                        " - Active Theme Path:          %6\n"
+                        " - Default Theme Path:         %7\n"
+                        " - SVG Search Paths:           %8\n"
+                        " - User DB Path:               %9\n"
+                        " - Auth DB Path:               %10\n" )
                     .arg( myEnvironmentVar,
                           prefixPath(),
                           pluginPath(),
@@ -1620,7 +1620,7 @@ QString QgsApplication::showSettings()
                           themeName(),
                           activeThemePath(),
                           defaultThemePath(),
-                          svgPaths().join( tr( "\n\t\t", "match indentation of application state" ) ),
+                          svgPaths().join( tr( "\n                               ", "match indentation of application state" ) ),
                           qgisMasterDatabaseFilePath() )
                     .arg( qgisAuthDatabaseFilePath() );
   return myState;
