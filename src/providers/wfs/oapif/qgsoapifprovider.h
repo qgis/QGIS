@@ -292,7 +292,7 @@ class QgsOapifFeatureDownloaderImpl final: public QObject, public QgsFeatureDown
     void run( bool serializeFeatures, long long maxFeatures ) override;
 
   private slots:
-    void createProgressDialog();
+    void createProgressTask();
 
   private:
 

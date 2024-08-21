@@ -90,7 +90,7 @@ class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeature
     void startHitsRequest();
     void gotHitsResponse();
 
-    void createProgressDialog();
+    void createProgressTask();
 
   private:
     QUrl buildURL( qint64 startIndex, long long maxFeatures, bool forHits );
