@@ -476,6 +476,7 @@ QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem( QgsDataItem *parent, c
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
+  mName = mName + " (" + QgsArcGisRestUtils::typeToString( Qgis::ArcGisRestServiceType::FeatureServer ) + ")";
 }
 
 void QgsArcGisFeatureServiceItem::setSupportedFormats( const QString &formats )
@@ -530,6 +531,7 @@ QgsArcGisMapServiceItem::QgsArcGisMapServiceItem( QgsDataItem *parent, const QSt
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
+  mName = mName + " (" + QgsArcGisRestUtils::typeToString( mServiceType ) + ")";
 }
 
 QVector<QgsDataItem *> QgsArcGisMapServiceItem::createChildren()
