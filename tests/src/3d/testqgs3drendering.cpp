@@ -34,6 +34,7 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsline3dsymbol.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgsframegraph.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -1573,12 +1574,17 @@ void TestQgs3DRendering::testAmbientOcclusion()
   mapSettings.setAmbientOcclusionSettings( aoSettings );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QString actualFG = engine.dumpFrameGraph();
+  QGSCOMPARELONGSTR( "ambient_occlusion_1", "framegraph.txt", actualFG.toUtf8() );
   QGSVERIFYIMAGECHECK( "ambient_occlusion_1", "ambient_occlusion_1", img, QString(), 40, QSize( 0, 0 ), 15 );
 
   aoSettings.setEnabled( true );
   mapSettings.setAmbientOcclusionSettings( aoSettings );
 
   img = Qgs3DUtils::captureSceneImage( engine, scene );
+  actualFG = engine.dumpFrameGraph();
+  // the framegraph dump is currently the same when enabled or disabled
+  QGSCOMPARELONGSTR( "ambient_occlusion_2", "framegraph.txt", actualFG.toUtf8() );
   QGSVERIFYIMAGECHECK( "ambient_occlusion_2", "ambient_occlusion_2", img, QString(), 40, QSize( 0, 0 ), 15 );
 
   delete scene;
