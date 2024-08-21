@@ -884,7 +884,35 @@ The ``use3DDistance`` controls whether 2D or 3D distances between vertices
 should be used during interpolation. This option is only considered for lines
 with z values.
 
+.. seealso:: :py:func:`lineLocatePointByM`
+
 .. versionadded:: 3.38
+%End
+
+    bool lineLocatePointByM( double m, double &x /Out/, double &y /Out/, double &z /Out/, double &distanceFromStart /Out/, bool use3DDistance = true ) const;
+%Docstring
+Attempts to locate a point on the linestring by m value.
+
+This method will linearly interpolate along line segments to find the point which corresponds to the specified m value.
+
+If the linestring contains sections with constant m values matching ``m``, then the interpolated point will be located
+at the center of these sections.
+
+Any missing (NaN) values in the linestring will be linearly interpolated from the
+m values of surrounding vertices (see :py:func:`~QgsLineString.interpolateM`).
+
+:param m: target m value
+:param use3DDistance: controls whether 2D or 3D distances between vertices should be used during interpolation. This option is only considered for lines with z values.
+
+:return: - ``True`` if a matching point was found, or ``False`` if it could not be found
+         - x: interpolated x coordinate
+         - y: interpolated y coordinate
+         - z: interpolated z coordinate (for 3D lines only)
+         - distanceFromStart: calculated distance from the start of the linestring to the located point
+
+.. seealso:: :py:func:`interpolateM`
+
+.. versionadded:: 3.40
 %End
 
   protected:

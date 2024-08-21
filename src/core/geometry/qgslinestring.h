@@ -1206,9 +1206,36 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * should be used during interpolation. This option is only considered for lines
      * with z values.
      *
+     * \see lineLocatePointByM()
      * \since QGIS 3.38
      */
     QgsLineString *interpolateM( bool use3DDistance = true ) const SIP_FACTORY;
+
+    /**
+     * Attempts to locate a point on the linestring by m value.
+     *
+     * This method will linearly interpolate along line segments to find the point which corresponds to the specified m value.
+     *
+     * If the linestring contains sections with constant m values matching \a m, then the interpolated point will be located
+     * at the center of these sections.
+     *
+     * Any missing (NaN) values in the linestring will be linearly interpolated from the
+     * m values of surrounding vertices (see interpolateM()).
+     *
+     * \param m target m value
+     * \param x interpolated x coordinate
+     * \param y interpolated y coordinate
+     * \param z interpolated z coordinate (for 3D lines only)
+     * \param distanceFromStart calculated distance from the start of the linestring to the located point
+     * \param use3DDistance controls whether 2D or 3D distances between vertices should be used during interpolation. This option is only considered for lines with z values.
+     *
+     * \returns TRUE if a matching point was found, or FALSE if it could not be found
+     *
+     * \see interpolateM()
+     *
+     * \since QGIS 3.40
+     */
+    bool lineLocatePointByM( double m, double &x SIP_OUT, double &y SIP_OUT, double &z SIP_OUT, double &distanceFromStart SIP_OUT, bool use3DDistance = true ) const;
 
   protected:
 
@@ -1232,6 +1259,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       mWkbType = type;
       importVerticesFromWkb( wkb );
     }
+
+    bool lineLocatePointByMPrivate( double m, double &x, double &y, double &z, double &distanceFromStart, bool use3DDistance, bool haveInterpolatedM ) const;
 
     friend class QgsPolygon;
     friend class QgsTriangle;
