@@ -1809,7 +1809,7 @@ void TestQgs3DRendering::do3DSceneExport( int zoomLevelsCount, int expectedObjec
   exporter.setScale( 1.0 );
 
   QVERIFY( exporter.parseVectorLayerEntity( scene->layerEntity( layerPoly ), layerPoly ) );
-  exporter.save( QString( "test3DSceneExporter-%1" ).arg( zoomLevelsCount ), "/tmp/" );
+  exporter.save( QString( "test3DSceneExporter-%1" ).arg( zoomLevelsCount ), QDir::tempPath() );
 
   int sum = 0;
   for ( auto o : exporter.mObjects )
