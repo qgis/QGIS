@@ -800,6 +800,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
+                                    'OVERWRITE': False,
                                     'APPEND': True}, context, feedback),
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
