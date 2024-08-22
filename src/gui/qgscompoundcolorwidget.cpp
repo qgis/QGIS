@@ -346,6 +346,11 @@ void QgsCompoundColorWidget::setAllowOpacity( const bool allowOpacity )
   }
 }
 
+void QgsCompoundColorWidget::setColorModelEditable( bool colorModelEditable )
+{
+  mColorModel->setVisible( colorModelEditable );
+}
+
 void QgsCompoundColorWidget::refreshSchemeComboBox()
 {
   mSchemeComboBox->blockSignals( true );

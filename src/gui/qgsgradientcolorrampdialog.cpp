@@ -53,9 +53,12 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  mColorWidget->setColorModelEditable( false );
+
   mStopColorSpec->addItem( tr( "RGB" ), static_cast< int >( QColor::Spec::Rgb ) );
   mStopColorSpec->addItem( tr( "HSV" ), static_cast< int >( QColor::Spec::Hsv ) );
   mStopColorSpec->addItem( tr( "HSL" ), static_cast< int >( QColor::Spec::Hsl ) );
+  mStopColorSpec->addItem( tr( "CMYK" ), static_cast< int >( QColor::Spec::Cmyk ) );
   mStopColorSpec->setCurrentIndex( mStopColorSpec->findData( static_cast< int >( ramp.colorSpec() ) ) );
 
   mStopDirection->addItem( tr( "Clockwise" ), static_cast< int >( Qgis::AngularDirection::Clockwise ) );
@@ -66,11 +69,18 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 
   connect( mStopColorSpec, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
-    mStopDirection->setEnabled( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) != QColor::Spec::Rgb );
+    const QColor::Spec colorSpec = static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() );
+    mStopDirection->setEnabled( colorSpec != QColor::Spec::Rgb );
+
+    if ( colorSpec != mColorWidget->color().spec() )
+    {
+      mColorWidget->setColor( mColorWidget->color().convertTo( colorSpec ) );
+    }
 
     if ( mBlockChanges )
       return;
-    mStopEditor->setSelectedStopColorSpec( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) );
+
+    mStopEditor->setSelectedStopColorSpec( colorSpec );
   } );
 
   connect( mStopDirection, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
