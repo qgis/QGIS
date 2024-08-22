@@ -1485,18 +1485,20 @@ void QgsColorSliderWidget::setComponent( const QgsColorWidget::ColorComponent co
   QgsColorWidget::setComponent( component );
   mRampWidget->setComponent( component );
   mSpinBox->setMaximum( convertRealToDisplay( static_cast<float>( componentRange() ) ) );
-  if ( componentUnit( component ) == ComponentUnit::Degree )
+
+  switch ( componentUnit( component ) )
   {
-    mSpinBox->setSuffix( QChar( 176 ) );
-  }
-  else if ( componentUnit( component ) == ComponentUnit::Percent )
-  {
-    mSpinBox->setSuffix( tr( "%" ) );
-  }
-  else
-  {
-    //clear suffix
-    mSpinBox->setSuffix( QString() );
+    case ComponentUnit::Degree:
+      mSpinBox->setSuffix( QChar( 176 ) );
+      break;
+
+    case ComponentUnit::Percent:
+      mSpinBox->setSuffix( tr( "%" ) );
+      break;
+
+    case ComponentUnit::Scaled0to255:
+      //clear suffix
+      mSpinBox->setSuffix( QString() );
   }
 }
 
@@ -1543,34 +1545,36 @@ void QgsColorSliderWidget::rampChanged( float value )
 
 float QgsColorSliderWidget::convertRealToDisplay( const float realValue ) const
 {
-  if ( componentUnit( mComponent ) == ComponentUnit::Percent )
+  switch ( componentUnit( mComponent ) )
   {
-    return realValue * 100.f;
+    case ComponentUnit::Percent:
+      return realValue * 100.f;
+
+    case ComponentUnit::Degree:
+      return realValue * HUE_MAX;
+
+    case ComponentUnit::Scaled0to255:
+      return realValue * 255.f;
   }
-  else if ( componentUnit( mComponent ) == ComponentUnit::Degree )
-  {
-    return realValue * HUE_MAX;
-  }
-  else
-  {
-    return realValue * 255.f;
-  }
+
+  BUILTIN_UNREACHABLE
 }
 
 float QgsColorSliderWidget::convertDisplayToReal( const float displayValue ) const
 {
-  if ( componentUnit( mComponent ) == ComponentUnit::Percent )
+  switch ( componentUnit( mComponent ) )
   {
-    return displayValue / 100.f;
+    case ComponentUnit::Percent:
+      return displayValue / 100.f;
+
+    case ComponentUnit::Degree:
+      return displayValue / HUE_MAX;
+
+    case ComponentUnit::Scaled0to255:
+      return displayValue / 255.f;
   }
-  else if ( componentUnit( mComponent ) == ComponentUnit::Degree )
-  {
-    return displayValue / HUE_MAX;
-  }
-  else
-  {
-    return displayValue / 255.f;
-  }
+
+  BUILTIN_UNREACHABLE
 }
 
 //
