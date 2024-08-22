@@ -62,6 +62,7 @@ QgsUrlOpenerAlgorithm *QgsUrlOpenerAlgorithm::createInstance() const
 void QgsUrlOpenerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL or file path" ), QStringLiteral( "https://www.qgis.org/" ), false, false ) );
+  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "SUCCESS" ), QObject::tr( "Successfully performed opening file or url" ) ) );
 }
 
 QVariantMap QgsUrlOpenerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -79,7 +80,7 @@ QVariantMap QgsUrlOpenerAlgorithm::processAlgorithm( const QVariantMap &paramete
     feedback->pushInfo( QObject::tr( "Failed opening %1" ).arg( url ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), result );
+  outputs.insert( QStringLiteral( "SUCCESS" ), result );
   return outputs;
 }
 
