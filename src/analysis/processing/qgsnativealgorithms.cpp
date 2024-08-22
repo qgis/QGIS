@@ -226,6 +226,7 @@
 #include "qgsalgorithmtruncatetable.h"
 #include "qgsalgorithmunion.h"
 #include "qgsalgorithmuniquevalueindex.h"
+#include "qgsalgorithmurlopener.h"
 #include "qgsalgorithmvectorize.h"
 #include "qgsalgorithmvirtualrastercalculator.h"
 #include "qgsalgorithmvoronoipolygons.h"
@@ -540,6 +541,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsTruncateTableAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
+  addAlgorithm( new QgsUrlOpenerAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorModelerAlgorithm() );
