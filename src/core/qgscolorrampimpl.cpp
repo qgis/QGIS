@@ -172,7 +172,7 @@ static QColor _interpolateHsl( const QColor &c1, const QColor &c2, const double 
   return QColor::fromHslF( hue > 1 ? hue - 1 : hue, saturation, lightness, alpha );
 }
 
-static QColor _interpolateCmyk( const QColor &c1, const QColor &c2, const double value, const Qgis::AngularDirection )
+static QColor interpolateCmyk( const QColor &c1, const QColor &c2, const double value, const Qgis::AngularDirection )
 {
   if ( std::isnan( value ) )
     return c2;
@@ -223,7 +223,7 @@ void QgsGradientStop::setColorSpec( QColor::Spec spec )
       mFunc = _interpolateRgb;
       break;
     case QColor::Cmyk:
-      mFunc = _interpolateCmyk;
+      mFunc = interpolateCmyk;
       break;
     case QColor::Hsv:
       mFunc = _interpolateHsv;
@@ -635,7 +635,7 @@ void QgsGradientColorRamp::setColorSpec( QColor::Spec spec )
       mFunc = _interpolateRgb;
       break;
     case QColor::Cmyk:
-      mFunc = _interpolateCmyk;
+      mFunc = interpolateCmyk;
       break;
     case QColor::Hsv:
       mFunc = _interpolateHsv;
