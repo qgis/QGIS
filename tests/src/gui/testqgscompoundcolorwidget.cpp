@@ -202,6 +202,18 @@ void TestQgsCompoundColorWidget::testModelChange()
 
   w.setColor( QColor( 1, 2, 3 ) );
   QCOMPARE( w.mColorModel->currentData(), QColor::Rgb );
+
+  w.setColor( QColor::fromCmykF( 0.5, 0.1, 0.2, 0.3 ) );
+  QCOMPARE( w.mColorModel->currentData(), QColor::Cmyk );
+
+  w.setColor( QColor::fromHsvF( 0.5, 0.1, 0.2 ) );
+  QCOMPARE( w.mColorModel->currentData(), QColor::Rgb );
+
+  QVERIFY( w.mColorModel->isVisible() );
+  w.setColorModelEditable( false );
+  QVERIFY( !w.mColorModel->isVisible() );
+  w.setColorModelEditable( true );
+  QVERIFY( w.mColorModel->isVisible() );
 }
 
 void TestQgsCompoundColorWidget::testTabChange()
