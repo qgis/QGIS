@@ -1,9 +1,9 @@
 # The following has been generated automatically from src/gui/qgscolorwidgets.h
 # monkey patching scoped based enum
-QgsColorWidget.ComponentUnit.Raw.__doc__ = "Raw values in the range 0-255"
+QgsColorWidget.ComponentUnit.Scaled0to255.__doc__ = "Values in the range 0-255"
 QgsColorWidget.ComponentUnit.Percent.__doc__ = "Percent values in the range 0-100"
 QgsColorWidget.ComponentUnit.Degree.__doc__ = "Degree values in the range 0-359"
-QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Raw``: ' + QgsColorWidget.ComponentUnit.Raw.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
+QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Scaled0to255``: ' + QgsColorWidget.ComponentUnit.Scaled0to255.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
 # --
 QgsColorWidget.ComponentUnit.baseClass = QgsColorWidget
 QgsColorTextWidget.ColorTextFormat.baseClass = QgsColorTextWidget

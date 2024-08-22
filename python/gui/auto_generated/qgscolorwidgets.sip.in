@@ -42,7 +42,7 @@ set to a color with an ambiguous hue (e.g., black or white shades).
 
     enum class ComponentUnit
     {
-      Raw,
+      Scaled0to255,
       Percent,
       Degree
     };

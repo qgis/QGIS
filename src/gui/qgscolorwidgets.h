@@ -65,7 +65,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      */
     enum class ComponentUnit
     {
-      Raw, //!< Raw values in the range 0-255
+      Scaled0to255, //!< Values in the range 0-255
       Percent, //!< Percent values in the range 0-100
       Degree //!< Degree values in the range 0-359
     };

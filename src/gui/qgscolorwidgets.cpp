@@ -112,7 +112,7 @@ QgsColorWidget::ComponentUnit QgsColorWidget::componentUnit( ColorComponent comp
     case QgsColorWidget::Red:
     case QgsColorWidget::Green:
     case QgsColorWidget::Blue:
-      return ComponentUnit::Raw;
+      return ComponentUnit::Scaled0to255;
   }
 
   BUILTIN_UNREACHABLE
