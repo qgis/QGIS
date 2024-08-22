@@ -61,6 +61,17 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     };
 
     /**
+     * Specified the color component unit
+     */
+    enum class ComponentUnit
+    {
+      Scaled0to255, //!< Values in the range 0-255
+      Percent, //!< Percent values in the range 0-100
+      Degree //!< Degree values in the range 0-359
+    };
+    Q_ENUM( ComponentUnit )
+
+    /**
      * Construct a new color widget.
      * \param parent parent QWidget for the widget
      * \param component color component the widget alters
@@ -106,6 +117,12 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param color for icon
      */
     static QPixmap createDragIcon( const QColor &color );
+
+    /**
+     * Returns color \a component unit
+     */
+    static ComponentUnit componentUnit( ColorComponent component );
+
 
   public slots:
 

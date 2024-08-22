@@ -93,6 +93,31 @@ QPixmap QgsColorWidget::createDragIcon( const QColor &color )
   return pixmap;
 }
 
+QgsColorWidget::ComponentUnit QgsColorWidget::componentUnit( ColorComponent component )
+{
+  switch ( component )
+  {
+    case QgsColorWidget::Hue:
+      return ComponentUnit::Degree;
+    case QgsColorWidget::Saturation:
+    case QgsColorWidget::Value:
+    case QgsColorWidget::Alpha:
+    case QgsColorWidget::Cyan:
+    case QgsColorWidget::Magenta:
+    case QgsColorWidget::Yellow:
+    case QgsColorWidget::Black:
+      return ComponentUnit::Percent;
+
+    case QgsColorWidget::Multiple:
+    case QgsColorWidget::Red:
+    case QgsColorWidget::Green:
+    case QgsColorWidget::Blue:
+      return ComponentUnit::Scaled0to255;
+  }
+
+  BUILTIN_UNREACHABLE
+}
+
 int QgsColorWidget::componentValue( const QgsColorWidget::ColorComponent component ) const
 {
   return static_cast<int>( std::round( componentValueF( component ) * static_cast<float>( componentRange( component ) ) ) );
@@ -1447,15 +1472,6 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( 1.f ) );
   mSpinBox->setValue( convertRealToDisplay( componentValueF() ) );
-  if ( component == QgsColorWidget::Hue )
-  {
-    //degrees suffix for hue
-    mSpinBox->setSuffix( QChar( 176 ) );
-  }
-  else if ( component == QgsColorWidget::Saturation || component == QgsColorWidget::Value || component == QgsColorWidget::Alpha )
-  {
-    mSpinBox->setSuffix( tr( "%" ) );
-  }
   hLayout->addWidget( mSpinBox );
   setLayout( hLayout );
 
@@ -1468,21 +1484,21 @@ void QgsColorSliderWidget::setComponent( const QgsColorWidget::ColorComponent co
 {
   QgsColorWidget::setComponent( component );
   mRampWidget->setComponent( component );
-  mSpinBox->setMaximum( convertRealToDisplay( componentRange() ) );
-  if ( component == QgsColorWidget::Hue )
+  mSpinBox->setMaximum( convertRealToDisplay( static_cast<float>( componentRange() ) ) );
+
+  switch ( componentUnit( component ) )
   {
-    //degrees suffix for hue
-    mSpinBox->setSuffix( QChar( 176 ) );
-  }
-  else if ( component == QgsColorWidget::Saturation || component == QgsColorWidget::Value || component == QgsColorWidget::Alpha )
-  {
-    //saturation, value and alpha are in %
-    mSpinBox->setSuffix( tr( "%" ) );
-  }
-  else
-  {
-    //clear suffix
-    mSpinBox->setSuffix( QString() );
+    case ComponentUnit::Degree:
+      mSpinBox->setSuffix( QChar( 176 ) );
+      break;
+
+    case ComponentUnit::Percent:
+      mSpinBox->setSuffix( tr( "%" ) );
+      break;
+
+    case ComponentUnit::Scaled0to255:
+      //clear suffix
+      mSpinBox->setSuffix( QString() );
   }
 }
 
@@ -1529,36 +1545,36 @@ void QgsColorSliderWidget::rampChanged( float value )
 
 float QgsColorSliderWidget::convertRealToDisplay( const float realValue ) const
 {
-  //scale saturation, value or alpha to 0->100 range. This makes more sense for users
-  //for whom "255" is a totally arbitrary value!
-  if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
+  switch ( componentUnit( mComponent ) )
   {
-    return realValue * 100.f;
+    case ComponentUnit::Percent:
+      return realValue * 100.f;
+
+    case ComponentUnit::Degree:
+      return realValue * HUE_MAX;
+
+    case ComponentUnit::Scaled0to255:
+      return realValue * 255.f;
   }
-  else if ( mComponent == QgsColorWidget::Hue )
-  {
-    return realValue * HUE_MAX;
-  }
-  else
-  {
-    return realValue * 255.f;
-  }
+
+  BUILTIN_UNREACHABLE
 }
 
 float QgsColorSliderWidget::convertDisplayToReal( const float displayValue ) const
 {
-  if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
+  switch ( componentUnit( mComponent ) )
   {
-    return displayValue / 100.f;
+    case ComponentUnit::Percent:
+      return displayValue / 100.f;
+
+    case ComponentUnit::Degree:
+      return displayValue / HUE_MAX;
+
+    case ComponentUnit::Scaled0to255:
+      return displayValue / 255.f;
   }
-  else if ( mComponent == QgsColorWidget::Hue )
-  {
-    return displayValue / HUE_MAX;
-  }
-  else
-  {
-    return displayValue / 255.f;
-  }
+
+  BUILTIN_UNREACHABLE
 }
 
 //

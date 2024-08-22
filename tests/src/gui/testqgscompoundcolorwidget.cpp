@@ -47,6 +47,7 @@ class TestQgsCompoundColorWidget : public QgsTest
     void testTabChange();
     void testInvalidColor();
     void testSliderWidgets();
+    void testSliderWidgetsCmyk();
 };
 
 void TestQgsCompoundColorWidget::initTestCase()
@@ -245,7 +246,7 @@ void TestQgsCompoundColorWidget::testInvalidColor()
 
 void TestQgsCompoundColorWidget::testSliderWidgets()
 {
-  QgsCompoundColorWidget w( nullptr, QColor::fromRgbF( 0.12f, 0.34f, 0.56, 0.78 ) );
+  QgsCompoundColorWidget w( nullptr, QColor::fromRgbF( 0.12f, 0.34f, 0.56f, 0.78f ) );
   w.setVisible( true );
 
   // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
@@ -283,6 +284,43 @@ void TestQgsCompoundColorWidget::testSliderWidgets()
   compareFloat( w.mSaturationSlider->mRampWidget->color().saturationF(), 0.5f );
   QCOMPARE( w.mValueSlider->mSpinBox->value(), 50 );
   compareFloat( w.mValueSlider->mRampWidget->color().greenF(), 0.5f );
+  // NOLINTEND(bugprone-narrowing-conversions)
+}
+
+void TestQgsCompoundColorWidget::testSliderWidgetsCmyk()
+{
+  QgsCompoundColorWidget w( nullptr, QColor::fromCmykF( 0.12f, 0.34f, 0.56f, 0.78f, 0.91f ) );
+  w.setVisible( true );
+
+  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
+  QCOMPARE( w.mCyanSlider->mSpinBox->value(), 12 );
+  compareFloat( w.mCyanSlider->mRampWidget->color().cyanF(), 0.12f );
+  QCOMPARE( w.mMagentaSlider->mSpinBox->value(), 34 );
+  compareFloat( w.mMagentaSlider->mRampWidget->color().magentaF(), 0.34f );
+  QCOMPARE( w.mYellowSlider->mSpinBox->value(), 56 );
+  compareFloat( w.mYellowSlider->mRampWidget->color().yellowF(), 0.56f );
+  QCOMPARE( w.mBlackSlider->mSpinBox->value(), 78 );
+  compareFloat( w.mBlackSlider->mRampWidget->color().blackF(), 0.78f );
+  QCOMPARE( w.mAlphaSlider->mSpinBox->value(), 91 );
+  compareFloat( w.mAlphaSlider->mRampWidget->color().alphaF(), 0.91f );
+
+  w.mCyanSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mCyanSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mMagentaSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mMagentaSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mYellowSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mYellowSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mBlackSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mBlackSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+  w.mAlphaSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mAlphaSlider->mRampWidget->width() ) / 2.f, 0.f ) );
+
+  QCOMPARE( w.mCyanSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mCyanSlider->mRampWidget->color().cyanF(), 0.5f );
+  QCOMPARE( w.mMagentaSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mMagentaSlider->mRampWidget->color().magentaF(), 0.5f );
+  QCOMPARE( w.mYellowSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mYellowSlider->mRampWidget->color().yellowF(), 0.5f );
+  QCOMPARE( w.mBlackSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mBlackSlider->mRampWidget->color().blackF(), 0.5f );
+  QCOMPARE( w.mAlphaSlider->mSpinBox->value(), 50 );
+  compareFloat( w.mAlphaSlider->mRampWidget->color().alphaF(), 0.5f );
   // NOLINTEND(bugprone-narrowing-conversions)
 }
 

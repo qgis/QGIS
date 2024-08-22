@@ -1,4 +1,11 @@
 # The following has been generated automatically from src/gui/qgscolorwidgets.h
+# monkey patching scoped based enum
+QgsColorWidget.ComponentUnit.Scaled0to255.__doc__ = "Values in the range 0-255"
+QgsColorWidget.ComponentUnit.Percent.__doc__ = "Percent values in the range 0-100"
+QgsColorWidget.ComponentUnit.Degree.__doc__ = "Degree values in the range 0-359"
+QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Scaled0to255``: ' + QgsColorWidget.ComponentUnit.Scaled0to255.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
+# --
+QgsColorWidget.ComponentUnit.baseClass = QgsColorWidget
 QgsColorTextWidget.ColorTextFormat.baseClass = QgsColorTextWidget
 try:
     QgsColorWidget.__attribute_docs__ = {'colorChanged': "Emitted when the widget's color changes\n\n:param color: new widget color\n", 'hovered': 'Emitted when mouse hovers over widget.\n'}
@@ -13,5 +20,6 @@ try:
 except NameError:
     pass
 QgsColorWidget.createDragIcon = staticmethod(QgsColorWidget.createDragIcon)
+QgsColorWidget.componentUnit = staticmethod(QgsColorWidget.componentUnit)
 QgsColorWidget.alterColor = staticmethod(QgsColorWidget.alterColor)
 QgsColorWidget.alterColorF = staticmethod(QgsColorWidget.alterColorF)

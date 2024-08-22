@@ -40,6 +40,13 @@ set to a color with an ambiguous hue (e.g., black or white shades).
       Black
     };
 
+    enum class ComponentUnit
+    {
+      Scaled0to255,
+      Percent,
+      Degree
+    };
+
     QgsColorWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = Multiple );
 %Docstring
 Construct a new color widget.
@@ -101,6 +108,12 @@ Create an icon for dragging colors
 
 :param color: for icon
 %End
+
+    static ComponentUnit componentUnit( ColorComponent component );
+%Docstring
+Returns color ``component`` unit
+%End
+
 
   public slots:
 
