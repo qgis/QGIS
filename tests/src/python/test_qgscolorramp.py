@@ -708,6 +708,42 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(r.color(-1), QColor(166, 97, 26))
         self.assertEqual(r.color(float('nan')), QColor(1, 133, 113))
 
+    def testCMYKColorRamp(self):
+        """
+        Test CMYK color ramp color interpolation
+        """
+
+        r = QgsGradientColorRamp(QColor.fromCmykF(0, 0, 0, 0, 0), QColor.fromCmykF(1, 0.8, 0.4, 0.6, 0.2))
+        r.setColorSpec(QColor.Spec.Cmyk)
+        stop1 = QgsGradientStop(0.4, QColor.fromCmykF(0.2, 0.4, 0.6, 0.8, 1.))
+        stop1.setColorSpec(QColor.Spec.Cmyk)
+        r.setStops([stop1])
+        self.assertAlmostEqual(r.color(0).cyanF(), 0, 3)
+        self.assertAlmostEqual(r.color(0).magentaF(), 0, 3)
+        self.assertAlmostEqual(r.color(0).yellowF(), 0, 3)
+        self.assertAlmostEqual(r.color(0).blackF(), 0, 3)
+        self.assertAlmostEqual(r.color(0).alphaF(), 0, 3)
+        self.assertAlmostEqual(r.color(0.2).cyanF(), 0.1, 3)
+        self.assertAlmostEqual(r.color(0.2).magentaF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.2).yellowF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.2).blackF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(0.2).alphaF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.4).cyanF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.4).magentaF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(0.4).yellowF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(0.4).blackF(), 0.8, 3)
+        self.assertAlmostEqual(r.color(0.4).alphaF(), 1, 3)
+        self.assertAlmostEqual(r.color(0.7).cyanF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(0.7).magentaF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(0.7).yellowF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.7).blackF(), 0.7, 3)
+        self.assertAlmostEqual(r.color(0.7).alphaF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(1.).cyanF(), 1, 3)
+        self.assertAlmostEqual(r.color(1.).magentaF(), 0.8, 3)
+        self.assertAlmostEqual(r.color(1.).yellowF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(1.).blackF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(1.).alphaF(), 0.2, 3)
+
 
 if __name__ == '__main__':
     unittest.main()
