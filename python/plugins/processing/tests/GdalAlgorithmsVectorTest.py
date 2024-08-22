@@ -885,7 +885,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'GTYPE': 15}, context, feedback),
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
-             '-lco DIM=2 ' + source + ' multilines '
+             '-lco DIM=2 ' + source_line + ' multilines '
                                       '-overwrite -nlt CONVERT_TO_LINEAR -lco GEOMETRY_NAME=geom -lco FID=id -nln public.multilines -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
