@@ -611,7 +611,7 @@ Sets whether the rendering optimization (geometry simplification) should be exec
 .. seealso:: :py:func:`useRenderingOptimization`
 %End
 
-    const QgsVectorSimplifyMethod &vectorSimplifyMethod() const;
+    QgsVectorSimplifyMethod &vectorSimplifyMethod();
 %Docstring
 Returns the simplification settings to use when rendering vector layers.
 
@@ -619,6 +619,7 @@ The default is to use no simplification.
 
 .. seealso:: :py:func:`setVectorSimplifyMethod`
 %End
+
 
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
