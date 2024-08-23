@@ -1756,16 +1756,15 @@ void TestQgs3DRendering::testDebugMap()
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator();
-  demTerrain->setLayer( layerDtm );
-  mapSettings.setTerrainGenerator( demTerrain );
-  mapSettings.setTerrainVerticalScale( 3 );
-
-  QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
-  defaultPointLight.setConstantAttenuation( 0 );
+  QgsDirectionalLightSettings defaultPointLight;
   mapSettings.setLightSources( {defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
+
+  QgsShadowSettings shadowSettings = mapSettings.shadowSettings();
+  shadowSettings.setRenderShadows( true );
+  shadowSettings.setSelectedDirectionalLight( 0 );
+  shadowSettings.setMaximumShadowRenderingDistance( 2500 );
+  mapSettings.setShadowSettings( shadowSettings );
 
   // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -1776,7 +1775,7 @@ void TestQgs3DRendering::testDebugMap()
   engine.setRootEntity( scene );
 
   // =========== set camera position
-  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
+  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2000, 40.0, -10.0 );
 
   // =========== activate debug depth map
   mapSettings.setDebugDepthMapSettings( true, Qt::Corner::BottomRightCorner, 0.5 );
@@ -1792,7 +1791,6 @@ void TestQgs3DRendering::testDebugMap()
 
   delete scene;
   mapSettings.setLayers( {} );
-  demTerrain->deleteLater();
 }
 
 void TestQgs3DRendering::do3DSceneExport( int zoomLevelsCount, int expectedObjectCount, int maxFaceCount, Qgs3DMapScene *scene, QgsPolygon3DSymbol *symbol3d, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine )

@@ -344,16 +344,19 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DRender::QFrameGraphNode *constructShadowRenderPass();
     Qt3DRender::QFrameGraphNode *constructForwardRenderPass();
-    Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     Qt3DRender::QFrameGraphNode *constructDepthRenderPass();
     Qt3DRender::QFrameGraphNode *constructAmbientOcclusionRenderPass();
     Qt3DRender::QFrameGraphNode *constructAmbientOcclusionBlurPass();
     Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
 
+    Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing();
+    Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
+    Qt3DRender::QFrameGraphNode *constructSubPostPassForTexturesPreview();
+
     Qt3DCore::QEntity *constructDepthRenderQuad();
 
-    bool mRenderCaptureEnabled = true;
+    bool mRenderCaptureEnabled = false;
 
     Q_DISABLE_COPY( QgsFrameGraph )
 };
