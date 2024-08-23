@@ -24,48 +24,53 @@
 
 ///@cond PRIVATE
 
-QString QgsUrlOpenerAlgorithm::name() const
+QString QgsOpenUrlAlgorithm::name() const
 {
   return QStringLiteral( "openurl" );
 }
 
-QString QgsUrlOpenerAlgorithm::displayName() const
+QString QgsOpenUrlAlgorithm::displayName() const
 {
   return tr( "Open file or URL" );
 }
 
-QStringList QgsUrlOpenerAlgorithm::tags() const
+QString QgsOpenUrlAlgorithm::shortDescription() const
+{
+  return tr( "Opens files in their default associated application, or URLs in the user's default web browser." );
+}
+
+QStringList QgsOpenUrlAlgorithm::tags() const
 {
   return tr( "open,url,internet,url,fetch,get,request,https,pdf,file" ).split( ',' );
 }
 
-QString QgsUrlOpenerAlgorithm::group() const
+QString QgsOpenUrlAlgorithm::group() const
 {
   return tr( "File tools" );
 }
 
-QString QgsUrlOpenerAlgorithm::groupId() const
+QString QgsOpenUrlAlgorithm::groupId() const
 {
   return QStringLiteral( "filetools" );
 }
 
-QString QgsUrlOpenerAlgorithm::shortHelpString() const
+QString QgsOpenUrlAlgorithm::shortHelpString() const
 {
   return tr( "This algorithm opens files in their default associated application, or URLs in the user's default web browser." );
 }
 
-QgsUrlOpenerAlgorithm *QgsUrlOpenerAlgorithm::createInstance() const
+QgsOpenUrlAlgorithm *QgsOpenUrlAlgorithm::createInstance() const
 {
-  return new QgsUrlOpenerAlgorithm();
+  return new QgsOpenUrlAlgorithm();
 }
 
-void QgsUrlOpenerAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsOpenUrlAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL or file path" ), QVariant(), false, false ) );
   addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "SUCCESS" ), QObject::tr( "Successfully performed opening file or url" ) ) );
 }
 
-QVariantMap QgsUrlOpenerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsOpenUrlAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
   if ( url.isEmpty() )

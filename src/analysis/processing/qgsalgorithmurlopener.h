@@ -30,20 +30,21 @@ class QgsProcessingFeedback;
 /**
  * Native url and file opener algorithm.
  */
-class QgsUrlOpenerAlgorithm : public QObject, public QgsProcessingAlgorithm
+class QgsOpenUrlAlgorithm : public QObject, public QgsProcessingAlgorithm
 {
     Q_OBJECT
 
   public:
-    QgsUrlOpenerAlgorithm() = default;
+    QgsOpenUrlAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
+    QString shortDescription() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsUrlOpenerAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsOpenUrlAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 

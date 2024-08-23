@@ -541,7 +541,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsTruncateTableAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
-  addAlgorithm( new QgsUrlOpenerAlgorithm() );
+  addAlgorithm( new QgsOpenUrlAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorModelerAlgorithm() );
