@@ -256,7 +256,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //    calculating real 3D points from mouse coordinates (for zoom, rotation, drag..)
     // Depth buffer render pass branch nodes:
     Qt3DRender::QCameraSelector *mDepthRenderCameraSelector = nullptr;
-    Qt3DRender::QRenderStateSet *mDepthRenderStateSet = nullptr;;
+    Qt3DRender::QRenderStateSet *mDepthRenderStateSet = nullptr;
     Qt3DRender::QLayerFilter *mDepthRenderLayerFilter = nullptr;
     Qt3DRender::QRenderTargetSelector *mDepthRenderCaptureTargetSelector = nullptr;
     Qt3DRender::QRenderCapture *mDepthRenderCapture = nullptr;
@@ -276,7 +276,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     // Ambient occlusion factor generation pass
     Qt3DRender::QCameraSelector *mAmbientOcclusionRenderCameraSelector = nullptr;
-    Qt3DRender::QRenderStateSet *mAmbientOcclusionRenderStateSet = nullptr;;
+    Qt3DRender::QRenderStateSet *mAmbientOcclusionRenderStateSet = nullptr;
     Qt3DRender::QLayerFilter *mAmbientOcclusionRenderLayerFilter = nullptr;
     Qt3DRender::QRenderTargetSelector *mAmbientOcclusionRenderCaptureTargetSelector = nullptr;
     // Ambient occlusion factor generation pass texture related objects:
@@ -284,7 +284,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     // Ambient occlusion factor blur pass
     Qt3DRender::QCameraSelector *mAmbientOcclusionBlurCameraSelector = nullptr;
-    Qt3DRender::QRenderStateSet *mAmbientOcclusionBlurStateSet = nullptr;;
+    Qt3DRender::QRenderStateSet *mAmbientOcclusionBlurStateSet = nullptr;
     Qt3DRender::QLayerFilter *mAmbientOcclusionBlurLayerFilter = nullptr;
     Qt3DRender::QRenderTargetSelector *mAmbientOcclusionBlurRenderCaptureTargetSelector = nullptr;
     // Ambient occlusion factor blur pass texture related objects:
