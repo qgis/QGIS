@@ -617,14 +617,15 @@ QgsPoint3DSymbol.setAltitudeClamping: src/3d/symbols/qgspoint3dsymbol.h#L66
 QgsPoint3DSymbol.setBillboardSymbol: src/3d/symbols/qgspoint3dsymbol.h#L160
 QgsPoint3DSymbol.setDefaultPropertiesFromLayer: src/3d/symbols/qgspoint3dsymbol.h#L61
 QgsPoint3DSymbol.setMaterialSettings: src/3d/symbols/qgspoint3dsymbol.h#L76
-QgsPoint3DSymbol.setShape: src/3d/symbols/qgspoint3dsymbol.h#L86
 QgsPoint3DSymbol.setShapeProperties: src/3d/symbols/qgspoint3dsymbol.h#L155
+QgsPoint3DSymbol.setShape: src/3d/symbols/qgspoint3dsymbol.h#L86
 QgsPoint3DSymbol.setTransform: src/3d/symbols/qgspoint3dsymbol.h#L165
-QgsPoint3DSymbol.shape: src/3d/symbols/qgspoint3dsymbol.h#L84
 QgsPoint3DSymbol.shapeFromString: src/3d/symbols/qgspoint3dsymbol.h#L79
 QgsPoint3DSymbol.shapeProperties: src/3d/symbols/qgspoint3dsymbol.h#L98
 QgsPoint3DSymbol.shapeProperty: src/3d/symbols/qgspoint3dsymbol.h#L109
+QgsPoint3DSymbol.shape: src/3d/symbols/qgspoint3dsymbol.h#L84
 QgsPoint3DSymbol.shapeToString: src/3d/symbols/qgspoint3dsymbol.h#L81
+QgsPoint3DSymbol: src/3d/symbols/qgspoint3dsymbol.h#L38
 QgsPoint3DSymbol.transform: src/3d/symbols/qgspoint3dsymbol.h#L163
 QgsPoint3DSymbol.type: src/3d/symbols/qgspoint3dsymbol.h#L55
 QgsPoint3DSymbol.writeXml: src/3d/symbols/qgspoint3dsymbol.h#L58
