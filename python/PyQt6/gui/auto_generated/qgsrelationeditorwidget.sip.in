@@ -191,6 +191,10 @@ Update the configuration widget to represent the given configuration.
 :param config: The configuration which should be represented by this widget
 %End
 
+    void mEditExpression_clicked();
+%Docstring
+Opens an expression dialog and sets its value as filter expression for the linking dialog
+%End
 };
 
 

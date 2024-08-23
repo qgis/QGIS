@@ -447,7 +447,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
   }
 }
 
-void QgsAbstractRelationEditorWidget::linkFeature()
+void QgsAbstractRelationEditorWidget::linkFeature( const QString &filterExpression )
 {
   QgsVectorLayer *layer = nullptr;
 
@@ -474,6 +474,7 @@ void QgsAbstractRelationEditorWidget::linkFeature()
 
   const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), mFeatureList.first() );
   selectionDlg->setWindowTitle( tr( "Link existing child features for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString ) );
+  selectionDlg->setFilterExpression( filterExpression, QgsAttributeForm::ReplaceFilter );
 
   connect( selectionDlg, &QDialog::accepted, this, &QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted );
   selectionDlg->show();

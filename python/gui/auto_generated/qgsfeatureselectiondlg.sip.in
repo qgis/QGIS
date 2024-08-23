@@ -48,6 +48,11 @@ Set the selected features
 :param ids: The feature ids to select
 %End
 
+    void setFilterExpression( const QString &filter, QgsAttributeForm::FilterType type );
+%Docstring
+Set form filter expression
+%End
+
   protected:
 
     virtual void keyPressEvent( QKeyEvent *evt );
