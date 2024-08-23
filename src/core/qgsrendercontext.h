@@ -641,7 +641,16 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * \see setVectorSimplifyMethod()
      */
-    const QgsVectorSimplifyMethod &vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
+    QgsVectorSimplifyMethod &vectorSimplifyMethod() { return mVectorSimplifyMethod; }
+
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * The default is to use no simplification.
+     *
+     * \see setVectorSimplifyMethod()
+     */
+    const QgsVectorSimplifyMethod &vectorSimplifyMethod() const SIP_SKIP { return mVectorSimplifyMethod; }
 
     /**
      * Sets the simplification setting to use when rendering vector layers.
