@@ -138,7 +138,7 @@ class QgsDataItem;
 class QgsTileScaleWidget;
 class QgsLabelingWidget;
 class QgsLayerStylingWidget;
-class QgsDiagramProperties;
+class QgsStackedDiagramProperties;
 class QgsLocatorWidget;
 class QgsNominatimGeocoder;
 class QgsDataSourceManagerDialog;

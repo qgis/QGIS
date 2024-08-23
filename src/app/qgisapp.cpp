@@ -269,7 +269,6 @@
 #include "qgsgpstoolbar.h"
 #include "qgsgpscanvasbridge.h"
 #include "qgsguivectorlayertools.h"
-#include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
 #include "qgslayertreefiltersettings.h"
@@ -384,6 +383,7 @@
 #include "qgselevationshadingrenderersettingswidget.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssnappingwidget.h"
+#include "qgsstackeddiagramproperties.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
 #include "qgsstatusbarcoordinateswidget.h"
@@ -8051,7 +8051,7 @@ void QgisApp::diagramProperties()
 
   QDialog dlg;
   dlg.setWindowTitle( tr( "Layer Diagram Properties" ) );
-  QgsDiagramProperties *gui = new QgsDiagramProperties( vlayer, &dlg, mMapCanvas );
+  QgsStackedDiagramProperties *gui = new QgsStackedDiagramProperties( vlayer, &dlg, mMapCanvas );
   gui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( gui );
@@ -8068,7 +8068,7 @@ void QgisApp::diagramProperties()
   connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked,
            &dlg, &QDialog::reject );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked,
-           gui, &QgsDiagramProperties::apply );
+           gui, &QgsStackedDiagramProperties::apply );
   connect( buttonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, gui, [ = ]
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );

@@ -26,7 +26,7 @@
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgsdiagramproperties.h"
+#include "qgsstackeddiagramproperties.h"
 #include "qgssourcefieldsproperties.h"
 #include "qgsattributesformproperties.h"
 #include "qgslabelingwidget.h"
@@ -335,9 +335,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   QVBoxLayout *diagLayout = new QVBoxLayout( mDiagramFrame );
   diagLayout->setContentsMargins( 0, 0, 0, 0 );
-  diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame, mCanvas );
+  diagramPropertiesDialog = new QgsStackedDiagramProperties( mLayer, mDiagramFrame, mCanvas );
   diagramPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
-  connect( diagramPropertiesDialog, &QgsDiagramProperties::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
+  connect( diagramPropertiesDialog, &QgsStackedDiagramProperties::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
 

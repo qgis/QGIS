@@ -18,8 +18,6 @@
 
 #define DIAGRAM_NAME_STACKED "Stacked"
 
-//#include "qgis_core.h"
-//#include "qgis.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>

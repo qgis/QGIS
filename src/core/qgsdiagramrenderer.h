@@ -104,6 +104,16 @@ class CORE_EXPORT QgsDiagramLayerSettings
     // *INDENT-ON*
 
     /**
+     * Diagram type
+     * \since QGIS 3.40
+     */
+    enum DiagramType
+    {
+      Single,
+      Stacked
+    };
+
+    /**
      * Returns the diagram property definitions.
      */
     static const QgsPropertiesDefinition &propertyDefinitions();

@@ -38,6 +38,7 @@ set(QGIS_GUI_SRCS
   vector/qgsfieldcalculator.cpp
   vector/qgsjoindialog.cpp
   vector/qgssourcefieldsproperties.cpp
+  vector/qgsstackeddiagramproperties.cpp
   vector/qgsvectorlayerlegendwidget.cpp
   vector/qgsvectorlayerproperties.cpp
   vector/qgswmsdimensiondialog.cpp
@@ -1499,6 +1500,7 @@ set(QGIS_GUI_HDRS
   vector/qgsfieldcalculator.h
   vector/qgsjoindialog.h
   vector/qgssourcefieldsproperties.h
+  vector/qgsstackeddiagramproperties.h
   vector/qgsvectorlayerlegendwidget.h
   vector/qgsvectorlayerproperties.h
   vector/qgswmsdimensiondialog.h
@@ -1656,6 +1658,7 @@ endif()
 
 add_library(qgis_gui ${LIBRARY_TYPE}
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
+  vector/qgsstackeddiagramproperties.h vector/qgsstackeddiagramproperties.cpp
 )
 
 # require c++17

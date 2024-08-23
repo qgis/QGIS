@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/diagram/qgsstackeddiagram.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -88,5 +88,5 @@ Calculates the position for the next subdiagram, updating the ``newPos`` object.
  *                                                                      *
  * src/core/diagram/qgsstackeddiagram.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

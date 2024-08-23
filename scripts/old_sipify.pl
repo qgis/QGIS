@@ -182,6 +182,7 @@ my @ALLOWED_NON_CLASS_ENUMS = (
   "QgsDataSourceUri::SslMode",
   "QgsDiagramLayerSettings::LinePlacementFlag",
   "QgsDiagramLayerSettings::Placement",
+  "QgsDiagramLayerSettings::DiagramType",
   "QgsDiagramSettings::DiagramOrientation",
   "QgsDiagramSettings::Direction",
   "QgsDiagramSettings::LabelPlacementMethod",

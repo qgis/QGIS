@@ -63,6 +63,12 @@ Stores the settings for rendering of all diagrams for a layer.
       StartAngle,
     };
 
+    enum DiagramType /BaseType=IntEnum/
+    {
+      Single,
+      Stacked
+    };
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the diagram property definitions.

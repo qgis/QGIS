@@ -64,6 +64,8 @@ QgsDiagramLayerSettings.Property.__doc__ = """Data definable properties.
 
 """
 # --
+QgsDiagramLayerSettings.Single = QgsDiagramLayerSettings.DiagramType.Single
+QgsDiagramLayerSettings.Stacked = QgsDiagramLayerSettings.DiagramType.Stacked
 QgsDiagramSettings.Height = QgsDiagramSettings.LabelPlacementMethod.Height
 QgsDiagramSettings.XHeight = QgsDiagramSettings.LabelPlacementMethod.XHeight
 QgsDiagramSettings.Up = QgsDiagramSettings.DiagramOrientation.Up
