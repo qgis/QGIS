@@ -346,6 +346,22 @@ class CORE_EXPORT QgsGeometry
                                           double outerRadius, double innerRadius = 0 );
 
     /**
+     * Creates a wedge shaped buffer from a \a center point.
+     *
+     * The wedges goes from the \a startAngle to \a endAngle in degrees.
+     *
+     * The outer radius of the buffer is specified via \a outerRadius, and optionally an
+     * \a innerRadius can also be specified.
+     *
+     * The returned geometry will be a CurvePolygon geometry containing circular strings. It may
+     * need to be segmentized to convert to a standard Polygon geometry.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsGeometry createWedgeBufferV2( const QgsPoint &center, double startAngle, double endAngle,
+                                          double outerRadius, double innerRadius = 0 );
+
+    /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
      * This class will take ownership of the buffer.
      * \note not available in Python bindings

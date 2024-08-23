@@ -437,6 +437,11 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
   const double startAngle = azimuth - angularWidth * 0.5;
   const double endAngle = azimuth + angularWidth * 0.5;
 
+  return createWedgeBufferV2( center, startAngle, endAngle, outerRadius, innerRadius );
+}
+
+QgsGeometry QgsGeometry::createWedgeBufferV2( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius = 0 )
+{
   const QgsPoint outerP1 = center.project( outerRadius, startAngle );
   const QgsPoint outerP2 = center.project( outerRadius, endAngle );
 
@@ -487,7 +492,6 @@ Qgis::WkbType QgsGeometry::wkbType() const
     return d->geometry->wkbType();
   }
 }
-
 
 Qgis::GeometryType QgsGeometry::type() const
 {
