@@ -77,7 +77,7 @@ QVariantMap QgsUrlOpenerAlgorithm::processAlgorithm( const QVariantMap &paramete
   if ( result )
     feedback->pushInfo( QObject::tr( "Successfully opened %1" ).arg( url ) );
   else
-    feedback->pushInfo( QObject::tr( "Failed opening %1" ).arg( url ) );
+    feedback->reportError( QObject::tr( "Failed opening %1" ).arg( url ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "SUCCESS" ), result );
