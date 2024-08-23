@@ -26,7 +26,7 @@
 
 QString QgsUrlOpenerAlgorithm::name() const
 {
-  return QStringLiteral( "urlopener" );
+  return QStringLiteral( "openurl" );
 }
 
 QString QgsUrlOpenerAlgorithm::displayName() const
