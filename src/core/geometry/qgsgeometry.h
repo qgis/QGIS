@@ -359,7 +359,7 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.40
      */
     static QgsGeometry createWedgeBufferV2( const QgsPoint &center, double startAngle, double endAngle,
-                                          double outerRadius, double innerRadius = 0 );
+                                            double outerRadius, double innerRadius = 0 );
 
     /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
