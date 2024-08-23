@@ -67,7 +67,7 @@ QgsOpenUrlAlgorithm *QgsOpenUrlAlgorithm::createInstance() const
 void QgsOpenUrlAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL or file path" ), QVariant(), false, false ) );
-  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "SUCCESS" ), QObject::tr( "Successfully performed opening file or url" ) ) );
+  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "SUCCESS" ), QObject::tr( "Successfully performed opening file or URL" ) ) );
 }
 
 QVariantMap QgsOpenUrlAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
