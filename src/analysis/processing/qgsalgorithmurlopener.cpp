@@ -67,12 +67,12 @@ void QgsUrlOpenerAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsUrlOpenerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
+  const QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL or file path specified" ) );
-  QUrl qurl = QUrl::fromUserInput( url );
+  const QUrl qurl = QUrl::fromUserInput( url );
 
-  bool result = QDesktopServices::openUrl( qurl );
+  const bool result = QDesktopServices::openUrl( qurl );
 
   if ( result )
     feedback->pushInfo( QObject::tr( "Successfully opened %1" ).arg( url ) );
