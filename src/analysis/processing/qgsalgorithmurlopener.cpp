@@ -51,7 +51,7 @@ QString QgsUrlOpenerAlgorithm::groupId() const
 
 QString QgsUrlOpenerAlgorithm::shortHelpString() const
 {
-  return tr( "This algorithm opens files in the corresponding programs or URLs in the webbrowser" );
+  return tr( "This algorithm opens files in their default associated application, or URLs in the user's default web browser." );
 }
 
 QgsUrlOpenerAlgorithm *QgsUrlOpenerAlgorithm::createInstance() const
