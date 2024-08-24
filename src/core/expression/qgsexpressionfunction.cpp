@@ -275,9 +275,12 @@ bool prepareLayerNode( QgsExpressionNode *layerNode, QgsExpression *parent, cons
     QVariant layer = layerNode->eval( parent, context );
     bool foundLayer = false;
 
-    std::shared_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( layer, context, parent, foundLayer );
+    QgsVectorLayerFeatureSource *featureSource = QgsExpressionUtils::getFeatureSource( layer, context, parent, foundLayer );
 
-    layerNode->setCachedStaticValue( QVariant::fromValue( featureSource ) );
+    if ( featureSource )
+    {
+      context->setThreadLocalCachedValue( QStringLiteral( "featuresource/%1" ).arg( featureSource->id() ), QVariant::fromValue( featureSource ) );
+    }
 
     return featureSource && foundLayer;
   }
@@ -6303,7 +6306,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   bool foundLayer = false;
-  std::shared_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent, foundLayer );
+  QgsVectorLayerFeatureSource *featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent, foundLayer );
 
   //no layer found
   if ( !featureSource || !foundLayer )
@@ -6334,7 +6337,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
   bool foundLayer = false;
 
-  std::shared_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent, foundLayer );
+  QgsVectorLayerFeatureSource *featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent, foundLayer );
 
   //no layer found
   if ( !featureSource || !foundLayer )

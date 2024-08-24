@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QSet>
 #include <QPointer>
+#include <QThreadStorage>
 
 #include "qgsexpressionfunction.h"
 #include "qgsfeature.h"
@@ -829,6 +830,46 @@ class CORE_EXPORT QgsExpressionContext
     void clearCachedValues() const;
 
     /**
+     * Sets a value to cache within the expression context. This can be used to cache the results
+     * of expensive expression sub-calculations, to speed up future evaluations using the same
+     * expression context.
+     * \param key unique key for retrieving cached value
+     * \param value value to cache
+     * \see hasThreadLocalCachedValue()
+     * \see threadLocalcachedValue()
+     * \see clearThreadLocalCachedValues()
+     */
+    void setThreadLocalCachedValue( const QString &key, const QVariant &value ) const;
+
+    /**
+     * Returns TRUE if the expression context contains a cached value with a matching key.
+     * \param key unique key used to store cached value
+     * \see setThreadLocalCachedValue()
+     * \see threadLocalcachedValue()
+     * \see clearThreadLocalCachedValues()
+     */
+    bool hasThreadLocalCachedValue( const QString &key ) const;
+
+    /**
+     * Returns the matching cached value, if set. This can be used to retrieve the previously stored results
+     * of an expensive expression sub-calculation.
+     * \param key unique key used to store cached value
+     * \returns matching cached value, or invalid QVariant if not set
+     * \see setThreadLocalCachedValue()
+     * \see hasThreadLocalCachedValue()
+     * \see clearThreadLocalCachedValues()
+     */
+    QVariant threadLocalcachedValue( const QString &key ) const;
+
+    /**
+     * Clears all cached values from the context.
+     * \see setThreadLocalCachedValue()
+     * \see hasThreadLocalCachedValue()
+     * \see threadLocalCachedValue()
+     */
+    void clearThreadLocalCachedValues() const;
+
+    /**
      * Returns the list of layer stores associated with the context.
      *
      * \since QGIS 3.30
@@ -920,6 +961,7 @@ class CORE_EXPORT QgsExpressionContext
 
     // Cache is mutable because we want to be able to add cached values to const contexts
     mutable QMap< QString, QVariant > mCachedValues;
+    mutable QThreadStorage< QMap< QString, QVariant > > mThreadLocalCachedValues;
 
 };
 

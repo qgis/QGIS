@@ -294,9 +294,9 @@ QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &valu
   return res;
 }
 
-std::shared_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e, bool &foundLayer )
+QgsVectorLayerFeatureSource *QgsExpressionUtils::getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e, bool &foundLayer )
 {
-  std::shared_ptr<QgsVectorLayerFeatureSource> featureSource = value.value<std::shared_ptr<QgsVectorLayerFeatureSource>>();
+  QgsVectorLayerFeatureSource *featureSource = value.value<QgsVectorLayerFeatureSource*>();
 
   if ( featureSource )
   {
@@ -308,7 +308,7 @@ std::shared_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      featureSource = std::make_shared<QgsVectorLayerFeatureSource>( vl );
+      featureSource = new QgsVectorLayerFeatureSource( vl ); // TODO unique_ptr?
     }
   }, foundLayer );
 
