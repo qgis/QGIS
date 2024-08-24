@@ -185,7 +185,7 @@ class TestQgsAnnotation(QgisTestCase):
 
         # should be no annotations in upgraded project
         self.assertFalse(p2.annotationManager().annotations())
-        # annotation layer should contain picture items
+        # annotation layer should contain text items
         items = p2.mainAnnotationLayer().items()
         self.assertEqual(len(items), 2)
 

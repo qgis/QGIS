@@ -35,12 +35,10 @@ QgsAnnotationRectItem::QgsAnnotationRectItem( const QgsRectangle &bounds )
   : QgsAnnotationItem()
   , mBounds( bounds )
 {
-  mBackgroundSymbol = std::make_unique< QgsFillSymbol >(
-                        QgsSymbolLayerList
+  mBackgroundSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList
   {
     new QgsSimpleFillSymbolLayer( QColor( 255, 255, 255 ), Qt::BrushStyle::SolidPattern, QColor( 0, 0, 0 ), Qt::PenStyle::NoPen )
-  }
-                      );
+  } );
   QgsSimpleLineSymbolLayer *borderSymbol = new QgsSimpleLineSymbolLayer( QColor( 0, 0, 0 ) );
   borderSymbol->setPenJoinStyle( Qt::MiterJoin );
   mFrameSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList{ borderSymbol } );
