@@ -25,6 +25,7 @@
 #include <random>
 
 #include "qgssymbol.h"
+#include "qgspolyhedralsurface.h"
 #include "qgssymbollayer.h"
 
 #include "qgsgeometrygeneratorsymbollayer.h"
@@ -1819,6 +1820,21 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
             const unsigned i = listPartIndex[idx];
             getPartGeometry( geomCollection->geometryN( i ), i );
           }
+        }
+        break;
+      }
+
+      case Qgis::WkbType::PolyhedralSurface:
+      {
+        const QgsPolyhedralSurface *polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( processedGeometry );
+
+        const int num = polySurface->numPatches();
+        for ( int i = 0; i < num; ++i )
+        {
+          if ( context.renderingStopped() )
+            break;
+
+          getPartGeometry( polySurface->patchN( i ), i );
         }
         break;
       }
