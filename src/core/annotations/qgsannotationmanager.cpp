@@ -206,7 +206,6 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       layer->setLinkedVisibilityLayer( source->mapLayer() );
 
     return true;
-
   };
 
   if ( const QgsSvgAnnotation *svg = dynamic_cast< const QgsSvgAnnotation *>( annotation ) )
