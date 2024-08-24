@@ -2621,17 +2621,17 @@ QgsLineString *QgsLineString::interpolateM( bool use3DDistance ) const
   const double *yData = mY.constData();
   const double *mData = mM.constData();
   const double *zData = is3D() ? mZ.constData() : nullptr;
-  use3DDistance &= is3D();
+  use3DDistance &= static_cast< bool >( zData );
 
   QVector< double > xOut( totalPoints );
   QVector< double > yOut( totalPoints );
   QVector< double > mOut( totalPoints );
-  QVector< double > zOut( is3D() ? totalPoints : 0 );
+  QVector< double > zOut( static_cast< bool >( zData ) ? totalPoints : 0 );
 
   double *xOutData = xOut.data();
   double *yOutData = yOut.data();
   double *mOutData = mOut.data();
-  double *zOutData = is3D() ? zOut.data() : nullptr;
+  double *zOutData = static_cast< bool >( zData ) ? zOut.data() : nullptr;
 
   int i = 0;
   double currentSegmentLength = 0;
