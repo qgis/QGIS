@@ -1825,6 +1825,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       }
 
       case Qgis::WkbType::PolyhedralSurface:
+      case Qgis::WkbType::TIN:
       {
         const QgsPolyhedralSurface *polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( processedGeometry );
 
