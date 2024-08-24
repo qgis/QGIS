@@ -58,9 +58,11 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QWidget, private Ui::QgsSt
     void mDiagramTypeComboBox_currentIndexChanged( int index );
 
   private:
+    void addSubDiagram();
+    void removeSubDiagram();
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgsDiagramProperties *gui = nullptr;
+    QgsDiagramProperties *defaultDiagram = nullptr;
 
 };
 

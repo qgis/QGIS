@@ -31,12 +31,15 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
 
   setupUi( this );
   connect( mDiagramTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged );
+  connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagram );
+  connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagram );
 
   // Initialize stacked diagram controls
   mDiagramTypeComboBox->addItem( tr( "Single diagram" ), QgsDiagramLayerSettings::Single );
   mDiagramTypeComboBox->addItem( tr( "Stacked diagrams" ), QgsDiagramLayerSettings::Stacked );
   mStackedDiagramModeComboBox->addItem( tr( "Horizontal" ), QgsDiagramSettings::Horizontal );
   mStackedDiagramModeComboBox->addItem( tr( "Vertical" ), QgsDiagramSettings::Vertical );
+  mRemoveSubDiagramButton->setEnabled( false );
 
   mStackedDiagramSpacingSpinBox->setClearValue( 0 );
   mStackedDiagramSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
@@ -47,23 +50,60 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
       Qgis::RenderUnit::Inches } );
 
   // Add default subdiagram tab
-  gui = new QgsDiagramProperties( layer, this, mMapCanvas );
-  gui->layout()->setContentsMargins( 0, 0, 0, 0 );
-  QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->addWidget( gui );
-  QWidget *w = new QWidget();
-  w->setLayout( vLayout );
+  addSubDiagram();
+}
 
-  connect( gui, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
+void QgsStackedDiagramProperties::addSubDiagram()
+{
+  if ( mSubDiagramsTabWidget->count() == 0 )
+  {
+    defaultDiagram = new QgsDiagramProperties( mLayer, this, mMapCanvas );
+    defaultDiagram->layout()->setContentsMargins( 6, 6, 6, 6 );
+    connect( defaultDiagram, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
 
-  mSubDiagramsTabWidget->addTab( w, tr( "Diagram 1" ) );
+    mSubDiagramsTabWidget->addTab( defaultDiagram, tr( "Diagram 1" ) );
+  }
+  else
+  {
+    QgsDiagramProperties *gui = new QgsDiagramProperties( mLayer, this, mMapCanvas );
+    gui->layout()->setContentsMargins( 6, 6, 6, 6 );
+    connect( gui, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
+
+    mSubDiagramsTabWidget->addTab( gui, tr( "Diagram %1" ).arg( mSubDiagramsTabWidget->count() + 1 ) );
+  }
+
+  mRemoveSubDiagramButton->setEnabled( mSubDiagramsTabWidget->count() > 2 );
+}
+
+void QgsStackedDiagramProperties::removeSubDiagram()
+{
+  if ( mSubDiagramsTabWidget->count() > 2 )
+  {
+    const int index = mSubDiagramsTabWidget->currentIndex();
+    delete mSubDiagramsTabWidget->widget( index );
+
+    mRemoveSubDiagramButton->setEnabled( mSubDiagramsTabWidget->count() > 2 );
+
+    for ( int i = index; i < mSubDiagramsTabWidget->count(); i++ )
+    {
+      mSubDiagramsTabWidget->setTabText( i, tr( "Diagram %1" ).arg( i + 1 ) );
+    }
+  }
 }
 
 void QgsStackedDiagramProperties::apply()
 {
   if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
   {
-    gui->apply();
+    defaultDiagram->apply();
+  }
+  else
+  {
+    // Get DiagramSettings from each subdiagram
+    // Create DiagramSetings for the StackedDiagram
+    // Add subdiagrams with their DiagramSettings to StackedDiagram
+    // Create DiagramRenderer using info from first diagram and setting Stacked Diagram and the stacked diagram's DiagramSettings
+    // Create DiagramLayerSettings from first diagram
   }
 }
 
@@ -71,7 +111,7 @@ void QgsStackedDiagramProperties::syncToLayer()
 {
   if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
   {
-    gui->syncToLayer();
+    defaultDiagram->syncToLayer();
   }
 }
 
@@ -80,9 +120,35 @@ void QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int 
   if ( index == 0 )
   {
     mStackedDiagramSettingsFrame->hide();
+
+    // Hide tabs other than the first one
+    for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+    {
+      if ( i < 1 )
+        continue;
+
+      mSubDiagramsTabWidget->setTabVisible( i, false );
+    }
   }
   else
   {
     mStackedDiagramSettingsFrame->show();
+
+    // TODO: Create the second tab or show all hidden tabs
+    if ( mSubDiagramsTabWidget->count() == 1 )
+    {
+      // Add second subdiagram tab
+      addSubDiagram();
+    }
+    else
+    {
+      for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+      {
+        if ( i < 1 )
+          continue;
+
+        mSubDiagramsTabWidget->setTabVisible( i, true );
+      }
+    }
   }
 }
