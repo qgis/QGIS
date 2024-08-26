@@ -118,7 +118,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsTiledSceneLayerChunkedEntity( const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes,
+    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes,
         double zValueScale, double zValueOffset );
 
     ~QgsTiledSceneLayerChunkedEntity();

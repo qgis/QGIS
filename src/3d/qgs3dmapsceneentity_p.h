@@ -34,6 +34,8 @@
 #include "qgsrange.h"
 #include "qgssettings.h"
 
+class Qgs3DMapSettings;
+
 #define SIP_NO_FILE
 
 
@@ -47,8 +49,9 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    Qgs3DMapSceneEntity( Qt3DCore::QNode *parent = nullptr )
+    Qgs3DMapSceneEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *parent = nullptr )
       : Qt3DCore::QEntity( parent )
+      , mMap( map )
     {
       const QgsSettings settings;
       mGpuMemoryLimit = settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble();
@@ -75,6 +78,12 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     //! Returns the near to far plane range for the entity using the specified \a viewMatrix
     virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const { Q_UNUSED( viewMatrix ) return QgsRange<float>( 1e9, 0 ); }
 
+    /**
+     * Returns the associated 3D map settings.
+     *
+     * \since QGIS 3.40
+     */
+    Qgs3DMapSettings *map() { return mMap; }
 
     //! Sets the limit of the GPU memory used to render the entity
     void setGpuMemoryLimit( double gpuMemoryLimit ) { mGpuMemoryLimit = gpuMemoryLimit; }
@@ -97,6 +106,8 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     void newEntityCreated( Qt3DCore::QEntity *entity );
 
   protected:
+    Qgs3DMapSettings *mMap = nullptr;
+
     //! Limit how much GPU memory this entity can use
     double mGpuMemoryLimit = 500.0; // in megabytes
     //! Whether the entity is currently over the GPU memory limit (used to report a warning to the user)

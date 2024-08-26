@@ -378,7 +378,7 @@ QgsRuleBased3DRenderer *QgsRuleBased3DRenderer::clone() const
   return r;
 }
 
-Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
+Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( Qgs3DMapSettings *map ) const
 {
   QgsVectorLayer *vl = layer();
 
@@ -393,7 +393,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
   constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
 
-  return new QgsRuleBasedChunkedEntity( vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mRootRule, map );
+  return new QgsRuleBasedChunkedEntity( map, vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mRootRule );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
