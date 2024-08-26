@@ -15,9 +15,7 @@
 
 #include "qgsgradientcolorrampdialog.h"
 
-#include "qgscolorramp.h"
 #include "qgsdialog.h"
-#include "qgscolordialog.h"
 #include "qgscptcityarchive.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -65,12 +63,12 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mStopDirection->addItem( tr( "Counterclockwise" ), static_cast< int >( Qgis::AngularDirection::CounterClockwise ) );
   mStopDirection->setCurrentIndex( mStopColorSpec->findData( static_cast< int >( ramp.direction() ) ) );
 
-  mStopDirection->setEnabled( supportDirection( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) ) );
+  mStopDirection->setEnabled( hasDirection( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) ) );
 
   connect( mStopColorSpec, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     const QColor::Spec colorSpec = static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() );
-    mStopDirection->setEnabled( supportDirection( colorSpec ) );
+    mStopDirection->setEnabled( hasDirection( colorSpec ) );
 
     if ( colorSpec != mColorWidget->color().spec() )
     {
@@ -369,7 +367,7 @@ void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop &sto
 
   // first stop cannot have color spec or direction set
   mStopColorSpec->setEnabled( !( stop.offset == 0 && stop.color == mRamp.color1() ) );
-  mStopDirection->setEnabled( !( stop.offset == 0 && stop.color == mRamp.color1() ) && supportDirection( mStopEditor->selectedStop().colorSpec() ) );
+  mStopDirection->setEnabled( !( stop.offset == 0 && stop.color == mRamp.color1() ) && hasDirection( mStopEditor->selectedStop().colorSpec() ) );
 
   updatePlot();
 }
@@ -539,7 +537,7 @@ void QgsGradientColorRampDialog::addMarkersForColor( double x, const QColor &col
     addPlotMarker( x, color.alphaF(), color, isSelected && mCurrentPlotColorComponent == 3 );
 }
 
-bool QgsGradientColorRampDialog::supportDirection( QColor::Spec colorSpec )
+bool QgsGradientColorRampDialog::hasDirection( QColor::Spec colorSpec )
 {
   switch ( colorSpec )
   {
@@ -637,7 +635,7 @@ void QgsGradientColorRampDialog::updateRampFromStopEditor()
 
   // first stop cannot have color spec or direction set
   mStopColorSpec->setEnabled( !( mStopEditor->selectedStop().offset == 0 && mStopEditor->selectedStop().color == mRamp.color1() ) );
-  mStopDirection->setEnabled( !( mStopEditor->selectedStop().offset == 0 && mStopEditor->selectedStop().color == mRamp.color1() ) && supportDirection( mStopEditor->selectedStop().colorSpec() ) );
+  mStopDirection->setEnabled( !( mStopEditor->selectedStop().offset == 0 && mStopEditor->selectedStop().color == mRamp.color1() ) && hasDirection( mStopEditor->selectedStop().colorSpec() ) );
 
   updateColorButtons();
   updatePlot();
