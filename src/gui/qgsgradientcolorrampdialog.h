@@ -121,6 +121,9 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     void updatePlot();
     void addPlotMarker( double x, double y, const QColor &color, bool isSelected = false );
     void addMarkersForColor( double x, const QColor &color, bool isSelected = false );
+
+    // Returns TRUE if it's possible to edit direction regarding given colorSpec
+    static bool supportDirection( QColor::Spec colorSpec );
 };
 
 
