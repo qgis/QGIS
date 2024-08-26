@@ -158,9 +158,9 @@ void TestQgsInvertedPolygon::projectionWithSimplificationTest()
   mapSettings.setExtent( QgsRectangle( -119.552, 25.255, -109.393, 32.651 ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
   simplifyMethod.setForceLocalOptimization( true );
-  simplifyMethod.setSimplifyAlgorithm( Qgis::VectorSimplificationAlgorithm::SnappedToGridGlobal );
+  simplifyMethod.setSimplifyAlgorithm( QgsVectorSimplifyMethod::SnappedToGridGlobal );
   simplifyMethod.setThreshold( 0.1f );
   mapSettings.setSimplifyMethod( simplifyMethod );
 
