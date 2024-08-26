@@ -415,7 +415,7 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
   return createWedgeBufferFromAngles( center, startAngle, endAngle, outerRadius, innerRadius, crs );
 }
 
-QgsGeometry QgsGeometry::createWedgeBufferAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius, const QgsCoordinateReferenceSystem &crs )
+QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius, const QgsCoordinateReferenceSystem &crs )
 {
   std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
 
