@@ -6060,6 +6060,23 @@ static QVariant fncColorHsva( const QVariantList &values, const QgsExpressionCon
   return QgsSymbolLayerUtils::encodeColor( color );
 }
 
+static QVariant fcnColorHsvF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  float hue = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
+  float saturation = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) );
+  float value = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) );
+  float alpha = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) );
+  QColor color = QColor::fromHsvF( hue, saturation, value, alpha );
+
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( hue ).arg( saturation ).arg( value ).arg( alpha ) );
+    color = QColor( 0, 0, 0 );
+  }
+
+  return color;
+}
+
 static QVariant fcnColorCmykF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const float cyan = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
@@ -8446,6 +8463,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "alpha" ) ),
                                             fncColorHsva, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "color_hsvf" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "hue" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "saturation" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "alpha" ), true, 1. ),
+                                            fcnColorHsvF, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_cmyk" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "cyan" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "magenta" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "yellow" ) )
