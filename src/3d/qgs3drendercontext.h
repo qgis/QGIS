@@ -51,19 +51,10 @@ class _3D_EXPORT Qgs3DRenderContext
     /**
      * Creates an initialized Qgs3DRenderContext instance from given Qgs3DMapSettings.
      */
-    static Qgs3DRenderContext fromMapSettings(const Qgs3DMapSettings* mapSettings );
-
-    /**
-     * Sets the coordinate reference system used in the 3D scene
-     *
-     * \see crs()
-     */
-    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
+    static Qgs3DRenderContext fromMapSettings( const Qgs3DMapSettings *mapSettings );
 
     /**
      * Returns the coordinate reference system used in the 3D scene.
-     *
-     * \see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
@@ -71,117 +62,41 @@ class _3D_EXPORT Qgs3DRenderContext
      * Returns the coordinate transform context, which stores various
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
-     *
-     * \see setTransformContext()
      */
     QgsCoordinateTransformContext transformContext() const { return mTransformContext; }
-
-    /**
-     * Sets the coordinate transform \a context, which stores various
-     * information regarding which datum transforms should be used when transforming points
-     * from a source to destination coordinate reference system.
-     *
-     * \see transformContext()
-     */
-    void setTransformContext( const QgsCoordinateTransformContext &context ) { mTransformContext = context; }
 
     /**
      * Returns the 3D scene's 2D extent in the 3D scene's CRS
      *
      * \see crs()
-     * \see setExtent()
      */
     QgsRectangle extent() const { return mExtent; }
 
     /**
-     * Sets the 3D scene's 2D \a extent in the 3D scene's CRS, while also setting the scene's origin to the extent's center
-     * This needs to be called during initialization, as terrain will only be generated
-     * within this extent and layer 3D data will only be loaded within this extent too.
-     *
-     * \see extent()
-     * \see setOrigin()
-     * \see setCrs()
-     */
-    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
-
-    /**
-     * Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
-     *
-     * We move the 3D world origin to the center of the extent of our terrain: this is done
-     * to minimize the impact of numerical errors when operating with 32-bit floats.
-     * Unfortunately this is not enough when working with a large area (still results in jitter
-     * with scenes spanning hundreds of kilometers and zooming in a lot).
-     *
-     * Need to look into more advanced techniques like "relative to center" or "relative to eye"
-     * to improve the precision.
-     *
-     * \see origin()
-     */
-    void setOrigin( const QgsVector3D &origin ) { mOrigin = origin; }
-
-    /**
      * Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
-     *
-     * \see setOrigin()
      */
     QgsVector3D origin() const { return mOrigin; }
 
     /**
-     * Sets the temporal \a range for the map.
-     *
-     * \see temporalRange()
-    */
-    void setTemporalRange( const QgsDateTimeRange &range ) { mTemporalRange = range; }
-
-    /**
      * Returns the temporal range for the map.
-     *
-     * \see setTemporalRange()
     */
     const QgsDateTimeRange &temporalRange() const { return mTemporalRange; }
 
     /**
-     * Sets color used for selected features
-     *
-     * \see selectionColor()
-     */
-    void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
-
-    /**
      * Returns color used for selected features
-     *
-     * \see setSelectionColor()
      */
     QColor selectionColor() const { return mSelectionColor; }
 
     /**
-     * Sets DPI used for conversion between real world units (e.g. mm) and pixels
-     *
-     * \see outputDpi()
-     */
-    void setOutputDpi( const double dpi ) {mDpi = dpi;}
-
-    /**
      * Returns DPI used for conversion between real world units (e.g. mm) and pixels
      * Default value is 96
-     *
-     * \see setOutputDpi()
      */
     double outputDpi() const { return mDpi; }
 
     /**
      * Returns the camera lens' field of view.
-     *
-     * \see setFieldOfView()
      */
     float fieldOfView() const { return mFieldOfView; }
-
-    /**
-     * Sets the camera lens' field of view.
-     *
-     * \see fieldOfView()
-     */
-    void setFieldOfView( const float fieldOfView ) { mFieldOfView = fieldOfView; }
 
     /**
      * Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y)).
@@ -199,43 +114,16 @@ class _3D_EXPORT Qgs3DRenderContext
 
     /**
      * Returns whether the 2D terrain surface will be rendered.
-     * \see setTerrainRenderingEnabled()
      */
     bool terrainRenderingEnabled() const { return mTerrainRenderingEnabled; }
 
     /**
-     * Sets whether the 2D terrain surface will be rendered in.
-     * \see terrainRenderingEnabled()
-     */
-    void setTerrainRenderingEnabled( bool terrainRenderingEnabled ) { mTerrainRenderingEnabled = terrainRenderingEnabled; }
-
-    /**
-     * Sets the vertical scale (exaggeration) of terrain.
-     * (1 = true scale, > 1 = hills get more pronounced)
-     *
-     * \see terrainVerticalScale()
-     */
-    void setTerrainVerticalScale( double zScale ) { mTerrainVerticalScale = zScale; }
-
-    /**
      * Returns vertical scale (exaggeration) of terrain
-     * \see setTerrainVerticalScale()
      */
     double terrainVerticalScale() const { return mTerrainVerticalScale; }
 
     /**
-     * Sets terrain generator.
-     *
-     * Ownership is NOT transferred, and belongs to the Qgs3DMapSettings.
-     *
-     * \see terrainGenerator()
-     */
-    void setTerrainGenerator( QgsTerrainGenerator *gen ) { mTerrainGenerator = gen; }
-
-    /**
      * Returns the terrain generator.
-     *
-     * \see setTerrainGenerator()
      */
     QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator; }
 
