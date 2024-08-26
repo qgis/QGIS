@@ -31,54 +31,9 @@
 
 class QgsFeature;
 
-
-#include "qgsexpressioncontext.h"
-#include "qgs3dmapsettingssnapshot.h"
+#include "qgs3drendercontext.h"
 
 #define SIP_NO_FILE
-
-
-/**
- * \ingroup 3d
- * \brief Rendering context for preparation of 3D entities.
- *
- * \note Not available in Python bindings
- */
-class Qgs3DRenderContext
-{
-  public:
-    Qgs3DRenderContext( const Qgs3DMapSettingsSnapshot &map ) : mMap( map ) {}
-
-    const Qgs3DMapSettingsSnapshot &map() const { return mMap; }
-
-    /**
-     * Sets the expression context. This context is used for all expression evaluation
-     * associated with this render context.
-     * \see expressionContext()
-     */
-    void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
-
-    /**
-     * Gets the expression context. This context should be used for all expression evaluation
-     * associated with this render context.
-     * \see setExpressionContext()
-     */
-    QgsExpressionContext &expressionContext() { return mExpressionContext; }
-
-    /**
-     * Gets the expression context (const version). This context should be used for all expression evaluation
-     * associated with this render context.
-     * \see setExpressionContext()
-     * \note not available in Python bindings
-     */
-    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
-
-  private:
-    Qgs3DMapSettingsSnapshot mMap;
-    //! Expression context
-    QgsExpressionContext mExpressionContext;
-
-};
 
 
 /**

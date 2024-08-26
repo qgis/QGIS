@@ -20,10 +20,7 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
+#include "qgsfeature3dhandler_p.h"
 #include "qgsrulebasedchunkloader_p.h"
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"

@@ -20,7 +20,7 @@ Definition of the world.
 .. warning::
 
    Qgs3DMapSettings are a QObject subclass, and accordingly are not
-   safe for access across different threads. See Qgs3DMapSettingsSnapshot instead
+   safe for access across different threads. See Qgs3DRenderContext instead
    for a safe snapshot of settings from Qgs3DMapSettings.
 %End
 
@@ -32,7 +32,6 @@ Definition of the world.
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
-
 
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

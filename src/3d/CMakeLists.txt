@@ -13,9 +13,9 @@ set(QGIS_3D_SRCS
   qgs3dmapexportsettings.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
-  qgs3dmapsettingssnapshot.cpp
   qgs3dmaptool.cpp
   qgs3dmapcanvas.cpp
+  qgs3drendercontext.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
   qgs3dwiredmesh_p.cpp
@@ -121,8 +121,8 @@ set(QGIS_3D_HDRS
   qgs3daxissettings.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
-  qgs3dmapsettingssnapshot.h
   qgs3dmaptool.h
+  qgs3drendercontext.h
   qgs3dsceneexporter.h
   qgs3dtypes.h
   qgs3dutils.h

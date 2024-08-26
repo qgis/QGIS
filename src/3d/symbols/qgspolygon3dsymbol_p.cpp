@@ -17,7 +17,7 @@
 
 #include "qgspolygon3dsymbol.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgstessellator.h"
 #include "qgsphongtexturedmaterialsettings.h"
@@ -90,15 +90,15 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
   outEdges.withAdjacency = true;
-  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context.map() );
+  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context );
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false,
+  outNormal.tessellator.reset( new QgsTessellator( context.origin().x(), context.origin().y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false,
                                texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
                                mSymbol->renderedFacade(),
                                texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol->invertNormals(),
+  outSelected.tessellator.reset( new QgsTessellator( context.origin().x(), context.origin().y(), true, mSymbol->invertNormals(),
                                  mSymbol->addBackFaces(), false,
                                  texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
                                  mSymbol->renderedFacade(),
@@ -138,7 +138,7 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
     }
   }
 
-  Qgs3DUtils::clampAltitudes( polyClone.get(), mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), offset, context.map() );
+  Qgs3DUtils::clampAltitudes( polyClone.get(), mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), offset, context );
 
   Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
   const uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
@@ -311,7 +311,7 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
 {
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( isSelected );
-  materialContext.setSelectionColor( context.map().selectionColor() );
+  materialContext.setSelectionColor( context.selectionColor() );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
   Qt3DRender::QMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ?

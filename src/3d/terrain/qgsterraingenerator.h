@@ -23,7 +23,7 @@
 
 class QgsAABB;
 class Qgs3DMapSettings;
-class Qgs3DMapSettingsSnapshot;
+class Qgs3DRenderContext;
 class QgsRectangle;
 class QgsTerrainEntity;
 
@@ -88,7 +88,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const;
 
     //! Returns height at (x,y) in terrain's CRS
-    virtual float heightAt( double x, double y, const Qgs3DMapSettingsSnapshot &map ) const;
+    virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const;
 
     //! Write terrain generator's configuration to XML
     virtual void writeXml( QDomElement &elem ) const = 0;
