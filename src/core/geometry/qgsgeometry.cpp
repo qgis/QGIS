@@ -409,6 +409,26 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
 
 QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius, const QgsCoordinateReferenceSystem &crs )
 {
+  const double startAngle = azimuth - angularWidth * 0.5;
+  const double endAngle = azimuth + angularWidth * 0.5;
+
+  return createWedgeBufferFromAngles( center, startAngle, endAngle, outerRadius, innerRadius, crs );
+}
+
+QgsGeometry QgsGeometry::createWedgeBufferAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius, const QgsCoordinateReferenceSystem &crs )
+{
+  std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
+
+  startAngle = QgsGeometryUtils::normalizedAngle( startAngle * M_PI / 180 ) * 180 / M_PI;
+  endAngle = QgsGeometryUtils::normalizedAngle( endAngle * M_PI / 180 ) * 180 / M_PI;
+
+  double angularWidth = endAngle - startAngle;
+  double averageAngle = QgsGeometryUtils::averageAngle( endAngle * M_PI / 180, startAngle * M_PI / 180 ) * 180 / M_PI;
+
+  bool useShortestArc = angularWidth >= 0 && angularWidth <= 180.0 || angularWidth <= 180.0 && angularWidth >= -360.0;
+  if ( !useShortestArc )
+    averageAngle += 180;
+
   if ( std::abs( angularWidth ) >= 360.0 )
   {
     std::unique_ptr< QgsCompoundCurve > outerCc = std::make_unique< QgsCompoundCurve >();
@@ -431,23 +451,6 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
 
     return QgsGeometry( std::move( cp ) );
   }
-
-  const double startAngle = azimuth - angularWidth * 0.5;
-  const double endAngle = azimuth + angularWidth * 0.5;
-
-  return createWedgeBufferFromAngles( center, startAngle, endAngle, outerRadius, innerRadius, crs );
-}
-
-QgsGeometry QgsGeometry::createWedgeBufferAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius, const QgsCoordinateReferenceSystem &crs )
-{
-  std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
-
-  double angularWidth = endAngle - startAngle;
-  double averageAngle = QgsGeometryUtils::averageAngle( endAngle * M_PI / 180, startAngle * M_PI / 180 ) * 180 / M_PI;
-
-  bool useShortestArc = angularWidth >= 0 && angularWidth <= 180.0 || angularWidth <= 0 && angularWidth >= -360.0;
-  if ( !useShortestArc )
-    averageAngle += 180;
 
   QgsDistanceArea da;
   if ( crs.isValid() && crs.isGeographic() )
