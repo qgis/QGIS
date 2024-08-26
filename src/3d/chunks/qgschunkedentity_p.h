@@ -65,7 +65,7 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory,
+    QgsChunkedEntity( Qgs3DMapSettings *map, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory,
                       int primitivesBudget = std::numeric_limits<int>::max(),
                       Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;

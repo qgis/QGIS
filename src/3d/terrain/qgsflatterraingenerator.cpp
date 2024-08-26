@@ -53,7 +53,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   // create material
 
-  const Qgs3DMapSettings &map = terrain()->map3D();
+  const Qgs3DMapSettings *map = terrain()->map();
 
   // create transform
 
@@ -64,7 +64,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   // set up transform according to the extent covered by the quad geometry
   const QgsAABB bbox = mNode->bbox();
 
-  const QgsAABB mapFullExtent = Qgs3DUtils::mapToWorldExtent( map.extent(), bbox.yMin, bbox.yMax, map.origin() );
+  const QgsAABB mapFullExtent = Qgs3DUtils::mapToWorldExtent( map->extent(), bbox.yMin, bbox.yMax, map->origin() );
 
   const QgsAABB commonExtent = QgsAABB( std::max( bbox.xMin, mapFullExtent.xMin ),
                                         bbox.yMin,
@@ -79,7 +79,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   transform->setScale3D( QVector3D( xSide, 1, zSide ) );
   transform->setTranslation( QVector3D( commonExtent.xMin + xSide / 2, 0, commonExtent.zMin + zSide / 2 ) );
 
-  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial(), !map.layers().empty() );
+  createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 
   entity->setParent( parent );
   return entity;
