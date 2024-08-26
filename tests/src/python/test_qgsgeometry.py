@@ -6221,7 +6221,7 @@ class TestQgsGeometry(QgisTestCase):
                  [QgsPoint(1, 11), 0, -1000, 0, 360, 2, 0, invalidCrs,
                   'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)))'],
                  [QgsPoint(1, 11), 0, 360, -180, 180, 2, 1, invalidCrs,
-                  'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)),CompoundCurve (CircularString (1 12, 2 11, 1 10, 0 11, 1 12)))']
+                  'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)),CompoundCurve (CircularString (1 12, 2 11, 1 10, 0 11, 1 12)))'],
                  [QgsPoint(1, 11), 10, 40, 350, 30, 2, 1, wgs84,
                   'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)),CompoundCurve (CircularString (1 12, 2 11, 1 10, 0 11, 1 12)))']
                  ]
