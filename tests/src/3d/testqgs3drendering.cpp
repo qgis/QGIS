@@ -1780,14 +1780,30 @@ void TestQgs3DRendering::testDebugMap()
   // =========== activate debug depth map
   mapSettings.setDebugDepthMapSettings( true, Qt::Corner::BottomRightCorner, 0.5 );
 
+  // force QT3D backend/frontend synchronization
+  {
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2005, 40.0, -10.0 );
+    Qgs3DUtils::captureSceneImage( engine, scene );
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2000, 40.0, -10.0 );
+  }
+
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "debug_map_1", "debug_map_1", img, QString(), 100, QSize( 0, 0 ), 15 );
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0)) // shadows do not work for QT6 see: https://github.com/qgis/QGIS/issues/58184
   // =========== activate debug shadow map
   mapSettings.setDebugShadowMapSettings( true, Qt::Corner::TopLeftCorner, 0.5 );
 
+  // force QT3D backend/frontend synchronization
+  {
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2005, 40.0, -10.0 );
+    Qgs3DUtils::captureSceneImage( engine, scene );
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2000, 40.0, -10.0 );
+  }
+
   img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "debug_map_2", "debug_map_2", img, QString(), 100, QSize( 0, 0 ), 15 );
+#endif
 
   delete scene;
   mapSettings.setLayers( {} );
