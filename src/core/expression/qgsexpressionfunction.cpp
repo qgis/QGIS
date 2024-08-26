@@ -5653,6 +5653,33 @@ static QVariant fcnLineInterpolatePoint( const QVariantList &values, const QgsEx
   return result;
 }
 
+static QVariant fcnLineInterpolatePointByM( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const double m = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const bool use3DDistance = values.at( 2 ).toBool();
+
+  double x, y, z, distance;
+
+  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( lineGeom.constGet() );
+  if ( !line )
+  {
+    return QVariant();
+  }
+
+  if ( line->lineLocatePointByM( m, x, y, z, distance, use3DDistance ) )
+  {
+    QgsPoint point( x, y );
+    if ( use3DDistance && QgsWkbTypes::hasZ( lineGeom.wkbType() ) )
+    {
+      point.addZValue( z );
+    }
+    return QVariant::fromValue( QgsGeometry( point.clone() ) );
+  }
+
+  return QVariant();
+}
+
 static QVariant fcnLineSubset( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5730,6 +5757,24 @@ static QVariant fcnLineLocatePoint( const QVariantList &values, const QgsExpress
   double distance = lineGeom.lineLocatePoint( pointGeom );
 
   return distance >= 0 ? distance : QVariant();
+}
+
+static QVariant fcnLineLocateM( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const double m = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const bool use3DDistance = values.at( 2 ).toBool();
+
+  double x, y, z, distance;
+
+  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( lineGeom.constGet() );
+  if ( !line )
+  {
+    return QVariant();
+  }
+
+  const bool found = line->lineLocatePointByM( m, x, y, z, distance, use3DDistance );
+  return found ? distance : QVariant();
 }
 
 static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -9083,10 +9128,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnShortestLine, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "line_interpolate_point" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ), fcnLineInterpolatePoint, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "line_interpolate_point_by_m" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "m" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "use_3d_distance" ), true, false ),
+                                            fcnLineInterpolatePointByM, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "line_interpolate_angle" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ), fcnLineInterpolateAngle, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "line_locate_point" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnLineLocatePoint, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "line_locate_m" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "m" ) )  << QgsExpressionFunction::Parameter( QStringLiteral( "use_3d_distance" ), true, false ),
+                                            fcnLineLocateM, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "angle_at_vertex" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "vertex" ) ), fcnAngleAtVertex, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "distance_to_vertex" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
