@@ -46,8 +46,6 @@
 
 constexpr const char *providerName = "quantizedmesh";
 constexpr const char *providerDescription = "Cesium Quantized Mesh tiles";
-// The Quantized Mesh TileJSON(-ish) metadata doesn't tell us, so choose something big enough for Earth
-const QgsDoubleRange dummyZRange = {-10000, 10000};
 
 class MissingFieldException : public std::exception
 {
@@ -202,9 +200,12 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   }
 }
 
+const QgsDoubleRange QgsQuantizedMeshMetadata::dummyZRange = {-10000, 10000};
+
 static QgsTileXYZ tileToTms( QgsTileXYZ &xyzTile )
 {
   // Flip Y axis for TMS schema
+  Q_ASSERT( xyzTile.zoomLevel() >= 0 );
   return {xyzTile.column(),
           ( 1 << xyzTile.zoomLevel() ) - xyzTile.row() - 1,
           xyzTile.zoomLevel()};
@@ -228,36 +229,21 @@ bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
   return false;
 }
 
-class QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
+double QgsQuantizedMeshMetadata::geometricErrorAtZoom( int zoom ) const
 {
-  public:
-    QgsQuantizedMeshIndex( QgsQuantizedMeshMetadata metadata,
-                           QgsCoordinateTransform wgs84ToCrs )
-      : mMetadata( metadata ), mWgs84ToCrs( wgs84ToCrs ) {}
-    QgsTiledSceneTile rootTile() const override;
-    long long parentTileId( long long id ) const override;
-    QVector< long long > childTileIds( long long id ) const override;
-    QgsTiledSceneTile getTile( long long id ) override;
-    QVector< long long > getTiles( const QgsTiledSceneRequest &request ) override;
-    Qgis::TileChildrenAvailability childAvailability( long long id ) const override;
-    bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) override;
-  protected:
-    QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) override;
-
-    // Tile ID coding scheme:
-    // From MSb, 2 bits zero, 1 bit one, 5 bits zoom, 28 bits X, 28 bits Y
-    static long long encodeTileId( QgsTileXYZ tile );
-    static QgsTileXYZ decodeTileId( long long id );
-    double geometricErrorAtZoom( uint8_t zoom ) const;
-
-    QgsQuantizedMeshMetadata mMetadata;
-    QgsCoordinateTransform mWgs84ToCrs;
-
-    static constexpr long long ROOT_TILE_ID = std::numeric_limits<long long>::max();
-};
+  // The specification doesn't mandate any precision, we can only make a guess
+  // based on each tile's maximum possible numerical precision and some
+  // reasonable-looking constant.
+  return 400000 / pow( 2, zoom );
+}
 
 long long QgsQuantizedMeshIndex::encodeTileId( QgsTileXYZ tile )
 {
+  if ( tile.zoomLevel() == -1 )
+  {
+    Q_ASSERT( tile.column() == 0 && tile.row() == 0 );
+    return ROOT_TILE_ID;
+  }
   Q_ASSERT( tile.zoomLevel() < ( 2 << 4 ) && ( tile.column() < ( 2 << 27 ) ) &&
             ( tile.row() < ( 2 << 27 ) ) );
   return tile.row() | ( ( long long )tile.column() << 28 ) |
@@ -276,21 +262,14 @@ QgsTileXYZ QgsQuantizedMeshIndex::decodeTileId( long long id )
            ( int )( ( id >> 56 ) & ( ( 2 << 4 ) - 1 ) ) );
 }
 
-double QgsQuantizedMeshIndex::geometricErrorAtZoom( uint8_t zoom ) const
-{
-  // The specification doesn't mandate any precision, we can only make a guess
-  // based on each tile's maximum possible numerical precision and some
-  // reasonable-looking constant.
-  return 400000 / pow( 2, zoom );
-}
-
 QgsTiledSceneTile QgsQuantizedMeshIndex::rootTile() const
 {
   // Returns virtual tile to paper over tiling schemes which have >1 tile at zoom 0
   auto tile = QgsTiledSceneTile( ROOT_TILE_ID );
   auto bounds = mWgs84ToCrs.transform( mMetadata.mCrs.bounds() );
-  tile.setBoundingVolume( QgsOrientedBox3D::fromBox3D(
-                            QgsBox3D( bounds, dummyZRange.lower(), dummyZRange.upper() ) ) );
+  tile.setBoundingVolume(
+    QgsOrientedBox3D::fromBox3D(
+      QgsBox3D( bounds, mMetadata.dummyZRange.lower(), mMetadata.dummyZRange.upper() ) ) );
   tile.setGeometricError( std::numeric_limits<double>::max() );
   return tile;
 }
@@ -330,8 +309,8 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
 
   sceneTile.setBoundingVolume(
     QgsOrientedBox3D::fromBox3D(
-      QgsBox3D( tileExtent, dummyZRange.lower(), dummyZRange.upper() ) ) );
-  sceneTile.setGeometricError( geometricErrorAtZoom( xyzTile.zoomLevel() ) );
+      QgsBox3D( tileExtent, mMetadata.dummyZRange.lower(), mMetadata.dummyZRange.upper() ) ) );
+  sceneTile.setGeometricError( mMetadata.geometricErrorAtZoom( xyzTile.zoomLevel() ) );
 
   if ( mMetadata.mTileScheme == QLatin1String( "tms" ) )
     xyzTile = tileToTms( xyzTile );
@@ -371,7 +350,7 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
   if ( request.requiredGeometricError() != 0 )
   {
     while ( zoomLevel < mMetadata.mMaxZoom &&
-            geometricErrorAtZoom( zoomLevel ) > request.requiredGeometricError() )
+            mMetadata.geometricErrorAtZoom( zoomLevel ) > request.requiredGeometricError() )
       zoomLevel++;
   }
   auto tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mMetadata.mTileMatrix );
@@ -489,7 +468,7 @@ QgsTiledSceneIndex QgsQuantizedMeshDataProvider::index() const
 
 QgsDoubleRange QgsQuantizedMeshDataProvider::zRange() const
 {
-  return dummyZRange;
+  return mMetadata->dummyZRange;
 }
 QgsCoordinateReferenceSystem QgsQuantizedMeshDataProvider::crs() const
 {
@@ -502,6 +481,11 @@ QgsRectangle QgsQuantizedMeshDataProvider::extent() const
 bool QgsQuantizedMeshDataProvider::isValid() const { return mIsValid; }
 QString QgsQuantizedMeshDataProvider::name() const { return providerName; }
 QString QgsQuantizedMeshDataProvider::description() const { return providerDescription; }
+
+const QgsQuantizedMeshMetadata &QgsQuantizedMeshDataProvider::quantizedMeshMetadata() const
+{
+  return *mMetadata;
+}
 
 QgsQuantizedMeshProviderMetadata::QgsQuantizedMeshProviderMetadata()
   : QgsProviderMetadata( providerName, providerDescription ) {}
