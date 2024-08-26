@@ -46,6 +46,7 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
                               QgsError &error );
 
     bool containsTile( QgsTileXYZ tile ) const;
+    double geometricErrorAtZoom( int zoom ) const;
 
     QgsRectangle mExtent;
     QgsTiledSceneBoundingVolume mBoundingVolume;
@@ -57,6 +58,37 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
     uint8_t mMaxZoom;
     std::vector<QString> mTileUrls;
     QgsTileMatrix mTileMatrix;
+
+    // The Quantized Mesh TileJSON(-ish) metadata doesn't tell us, so choose something big enough for Earth
+    static const QgsDoubleRange dummyZRange;
+};
+
+class CORE_EXPORT QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
+{
+  public:
+    QgsQuantizedMeshIndex( QgsQuantizedMeshMetadata metadata,
+                           QgsCoordinateTransform wgs84ToCrs )
+      : mMetadata( metadata ), mWgs84ToCrs( wgs84ToCrs ) {}
+    QgsTiledSceneTile rootTile() const override;
+    long long parentTileId( long long id ) const override;
+    QVector< long long > childTileIds( long long id ) const override;
+    QgsTiledSceneTile getTile( long long id ) override;
+    QVector< long long > getTiles( const QgsTiledSceneRequest &request ) override;
+    Qgis::TileChildrenAvailability childAvailability( long long id ) const override;
+    bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) override;
+
+    // Tile ID coding scheme:
+    // From MSb, 2 bits zero, 1 bit one, 5 bits zoom, 28 bits X, 28 bits Y
+    static long long encodeTileId( QgsTileXYZ tile );
+    static QgsTileXYZ decodeTileId( long long id );
+
+    static constexpr long long ROOT_TILE_ID = std::numeric_limits<long long>::max();
+
+  protected:
+    QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) override;
+
+    QgsQuantizedMeshMetadata mMetadata;
+    QgsCoordinateTransform mWgs84ToCrs;
 };
 
 class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
@@ -77,6 +109,8 @@ class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
+
+    const QgsQuantizedMeshMetadata &quantizedMeshMetadata() const;
 
   private:
     QString mUri; // For clone()
