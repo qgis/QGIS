@@ -553,6 +553,8 @@ bool QgsGradientColorRampDialog::supportDirection( QColor::Spec colorSpec )
     case QColor::Spec::Hsl:
       return true;
   }
+
+  BUILTIN_UNREACHABLE
 }
 
 void QgsGradientColorRampDialog::updatePlot()
