@@ -323,6 +323,23 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         exp = QgsExpression("True is False")  # the result does not matter
         self.assertEqual(exp.evalErrorString(), "")
 
+    def testEvalTemplate(self):
+        layer = QgsVectorLayer("Point?field=a:int&field=b:string", "test eval-template", "memory")
+        context = layer.createExpressionContext()
+
+        expression = QgsExpression("eval_template('123 [% \"b\" %] 789')")
+        expression.prepare(context)
+        columns = expression.referencedColumns()
+
+        # Insure prepare has returned all attributes as referenced columns with feature-less context
+        self.assertTrue(QgsFeatureRequest.ALL_ATTRIBUTES in columns)
+
+        feature = QgsFeature(layer.fields())
+        feature.setAttributes([1, '456'])
+        context.setFeature(feature)
+
+        self.assertEqual(expression.evaluate(context), '123 456 789')
+
     def testExceptionDuringEvalReturnsTraceback(self):
         QgsExpression.registerFunction(self.raise_exception)
         exp = QgsExpression('raise_exception()')

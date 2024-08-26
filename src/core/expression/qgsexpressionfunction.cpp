@@ -9148,7 +9148,28 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions
         << varFunction;
 
-    functions << new QgsStaticExpressionFunction( QStringLiteral( "eval_template" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "template" ) ), fcnEvalTemplate, QStringLiteral( "General" ), QString(), true );
+    QgsStaticExpressionFunction *evalTemplateFunction = new QgsStaticExpressionFunction( QStringLiteral( "eval_template" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "template" ) ), fcnEvalTemplate, QStringLiteral( "General" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    evalTemplateFunction->setIsStaticFunction(
+      []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
+    {
+      if ( node->args()->count() > 0 )
+      {
+        QgsExpressionNode *argNode = node->args()->at( 0 );
+
+        if ( argNode->isStatic( parent, context ) )
+        {
+          QString expString = argNode->eval( parent, context ).toString();
+
+          QgsExpression e( expString );
+
+          if ( e.rootNode() && e.rootNode()->isStatic( parent, context ) )
+            return true;
+        }
+      }
+
+      return false;
+    } );
+    functions << evalTemplateFunction;
 
     QgsStaticExpressionFunction *evalFunc = new QgsStaticExpressionFunction( QStringLiteral( "eval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ), fcnEval, QStringLiteral( "General" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     evalFunc->setIsStaticFunction(
