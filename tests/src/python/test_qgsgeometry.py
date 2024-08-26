@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsGeometry.
+        """QGIS Unit tests for QgsGeometry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -6199,7 +6199,7 @@ class TestQgsGeometry(QgisTestCase):
 
     def testCreateWedgeBuffer(self):
         invalidCrs = QgsCoordinateReferenceSystem()
-        wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" )
+        wgs84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs("EPSG:4326")
         tests = [[QgsPoint(1, 11), 0, 45, -22.5, 22.5, 2, 0, invalidCrs,
                   'CurvePolygon (CompoundCurve (CircularString (0.23463313526982044 12.84775906502257392, 1 13, 1.76536686473017967 12.84775906502257392),(1.76536686473017967 12.84775906502257392, 1 11),(1 11, 0.23463313526982044 12.84775906502257392)))'],
                  [QgsPoint(1, 11), 90, 45, 67.5, 112.5, 2, 0, invalidCrs,
