@@ -67,9 +67,9 @@ QgsRectangle QgsDemTerrainGenerator::rootChunkExtent() const
   return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
-float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettingsSnapshot &map ) const
+float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
 {
-  Q_UNUSED( map )
+  Q_UNUSED( context )
   if ( mHeightMapGenerator )
     return mHeightMapGenerator->heightAt( x, y );
   else

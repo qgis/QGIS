@@ -46,6 +46,7 @@ namespace Qt3DExtras
 
 #define SIP_NO_FILE
 
+class Qgs3DRenderContext;
 
 /**
  * \ingroup 3d
@@ -130,11 +131,11 @@ class _3D_EXPORT Qgs3DUtils
     static Qgs3DTypes::CullingMode cullingModeFromString( const QString &str );
 
     //! Clamps altitude of a vertex according to the settings, returns Z value
-    static float clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const QgsPoint &centroid, const Qgs3DMapSettingsSnapshot &map );
+    static float clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const QgsPoint &centroid, const Qgs3DRenderContext &context );
     //! Clamps altitude of vertices of a linestring according to the settings
-    static void clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DMapSettingsSnapshot &map );
+    static void clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DRenderContext &context );
     //! Clamps altitude of vertices of a polygon according to the settings
-    static bool clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const Qgs3DMapSettingsSnapshot &map );
+    static bool clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const Qgs3DRenderContext &context );
 
     //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
@@ -142,7 +143,7 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( const QgsFeature &f, const Qgs3DMapSettingsSnapshot &map, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
      * Returns TRUE if bbox is completely outside the current viewing volume.

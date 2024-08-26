@@ -21,6 +21,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
 #include "qgsmesh3dentity_p.h"
+#include "qgs3drendercontext.h"
 #include "qgs3dmapsettings.h"
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
@@ -92,7 +93,7 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
   const QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
   meshLayer->updateTriangularMesh( coordTrans );
   const QgsTriangularMesh triangularMesh = *meshLayer->triangularMeshByLodIndex( mSymbol->levelOfDetailIndex() );
-  QgsMeshDataset3DEntity *meshEntity = new QgsMeshDataset3DEntity( map.snapshot(), triangularMesh, meshLayer, mSymbol.get() );
+  QgsMeshDataset3DEntity *meshEntity = new QgsMeshDataset3DEntity( Qgs3DRenderContext::fromMapSettings( &map ), triangularMesh, meshLayer, mSymbol.get() );
   meshEntity->build();
   entity = meshEntity;
 

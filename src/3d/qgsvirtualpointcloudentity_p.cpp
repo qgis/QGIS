@@ -23,7 +23,7 @@
 
 
 QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *layer,
-    const Qgs3DMapSettingsSnapshot &map,
+    const Qgs3DRenderContext &context,
     const QgsCoordinateTransform &coordinateTransform,
     QgsPointCloud3DSymbol *symbol,
     float maximumScreenSpaceError,
@@ -33,7 +33,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
     int pointBudget )
   : Qgs3DMapSceneEntity( nullptr )
   , mLayer( layer )
-  , mMap( map )
+  , mRenderContext( context )
   , mCoordinateTransform( coordinateTransform )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
@@ -43,14 +43,14 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
 {
   mSymbol.reset( symbol );
   mBboxesEntity = new QgsChunkBoundsEntity( this );
-  const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( mMap.extent(), mMap.crs(), layer->crs(), mMap.transformContext() );
+  const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( mRenderContext.extent(), mRenderContext.crs(), layer->crs(), mRenderContext.transformContext() );
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
     const QgsPointCloudSubIndex &si = subIndexes.at( i );
     const QgsRectangle intersection = si.extent().intersect( mapExtent );
 
-    mBboxes << Qgs3DUtils::mapToWorldExtent( intersection, si.zRange().lower(), si.zRange().upper(), mMap.origin() );
+    mBboxes << Qgs3DUtils::mapToWorldExtent( intersection, si.zRange().lower(), si.zRange().upper(), mRenderContext.origin() );
 
     createChunkedEntityForSubIndex( i );
   }
@@ -86,7 +86,7 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
     return;
 
   QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity( si.index(),
-      mMap,
+      mRenderContext,
       mCoordinateTransform,
       static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
       mMaximumScreenSpaceError,

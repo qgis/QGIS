@@ -10,7 +10,6 @@
 
 
 
-
 class QgsPointCloudLayer3DRenderer : QgsAbstractPointCloud3DRenderer
 {
 %Docstring(signature="appended")

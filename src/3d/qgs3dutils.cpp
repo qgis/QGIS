@@ -32,11 +32,6 @@
 #include "qgschunkedentity_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsraycastingutils_p.h"
-
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -351,7 +346,7 @@ Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
     return Qgs3DTypes::NoCulling;
 }
 
-float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const QgsPoint &centroid, const Qgs3DMapSettingsSnapshot &map )
+float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const QgsPoint &centroid, const Qgs3DRenderContext &context )
 {
   float terrainZ = 0;
   switch ( altClamp )
@@ -360,7 +355,7 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
     case Qgis::AltitudeClamping::Terrain:
     {
       const QgsPointXY pt = altBind == Qgis::AltitudeBinding::Vertex ? p : centroid;
-      terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+      terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator() ? context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) : 0;
       break;
     }
 
@@ -383,11 +378,11 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
     }
   }
 
-  const float z = ( terrainZ + geomZ ) * static_cast<float>( map.terrainVerticalScale() ) + offset;
+  const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainVerticalScale() ) + offset;
   return z;
 }
 
-void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DMapSettingsSnapshot &map )
+void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DRenderContext &context )
 {
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
@@ -410,7 +405,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
             break;
         }
 
-        terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+        terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator() ? context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) : 0;
         break;
       }
 
@@ -431,13 +426,13 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
         break;
     }
 
-    const float z = ( terrainZ + geomZ ) * static_cast<float>( map.terrainVerticalScale() ) + offset;
+    const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainVerticalScale() ) + offset;
     lineString->setZAt( i, z );
   }
 }
 
 
-bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const Qgs3DMapSettingsSnapshot &map )
+bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const Qgs3DRenderContext &context )
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
@@ -458,7 +453,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping alt
   if ( !lineString )
     return false;
 
-  clampAltitudes( lineString, altClamp, altBind, centroid, offset, map );
+  clampAltitudes( lineString, altClamp, altBind, centroid, offset, context );
 
   for ( int i = 0; i < polygon->numInteriorRings(); ++i )
   {
@@ -467,7 +462,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping alt
     if ( !lineString )
       return false;
 
-    clampAltitudes( lineString, altClamp, altBind, centroid, offset, map );
+    clampAltitudes( lineString, altClamp, altBind, centroid, offset, context );
   }
   return true;
 }
@@ -493,7 +488,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSettingsSnapshot &map, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
+void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
@@ -504,7 +499,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSetti
     {
       geomZ = pt.z();
     }
-    const float terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale() : 0;
+    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator() ? context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * context.terrainVerticalScale() : 0;
     float h = 0.0f;
     switch ( altClamp )
     {
@@ -518,7 +513,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSetti
         h = terrainZ + geomZ;
         break;
     }
-    positions.append( QVector3D( pt.x() - map.origin().x(), h, -( pt.y() - map.origin().y() ) ) );
+    positions.append( QVector3D( pt.x() - context.origin().x(), h, -( pt.y() - context.origin().y() ) ) );
     QgsDebugMsgLevel( QStringLiteral( "%1 %2 %3" ).arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }

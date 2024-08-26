@@ -28,9 +28,9 @@
 //
 
 #include "qgschunkloader_p.h"
-#include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgs3drendercontext.h"
 #include <QFutureWatcher>
 
 #define SIP_NO_FILE
@@ -59,13 +59,13 @@ class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
   public:
     //! Constructs the factory (vl and rootRule must not be null)
-    QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettingsSnapshot &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel, double zMin, double zMax );
+    QgsRuleBasedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel, double zMin, double zMax );
     ~QgsRuleBasedChunkLoaderFactory() override;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
-    Qgs3DMapSettingsSnapshot mMap;
+    Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
     int mLeafLevel;

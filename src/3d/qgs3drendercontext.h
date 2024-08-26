@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmapsettingssnapshot.h
+  qgs3drendercontext.h
   --------------------------------------
   Date                 : August 2024
   Copyright            : (C) 2024 by Nyall Dawson
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPSETTINGSSNAPSHOT_H
-#define QGS3DMAPSETTINGSSNAPSHOT_H
+#ifndef QGS3DRENDERCONTEXT_H
+#define QGS3DRENDERCONTEXT_H
 
 #include "qgis_3d.h"
 #include "qgsvector3d.h"
@@ -22,27 +22,36 @@
 #include "qgsrange.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsexpressioncontext.h"
 
 #include <QColor>
 
 class QgsTerrainGenerator;
+class Qgs3DMapSettings;
 
 #define SIP_NO_FILE
 
 /**
  * \ingroup 3d
- * \brief A snapshot of properties from Qgs3DMapSettings, in a thread-safe, cheap-to-copy structure.
+ * \brief Rendering context for preparation of 3D entities.
+ *
+ * Contains a snapshot of properties from Qgs3DMapSettings, in a thread-safe, cheap-to-copy structure.
  *
  * \note Not available in Python bindings.
  *
  * \since QGIS 3.40
  */
-class _3D_EXPORT Qgs3DMapSettingsSnapshot
+class _3D_EXPORT Qgs3DRenderContext
 {
 
   public:
 
-    Qgs3DMapSettingsSnapshot() = default;
+    Qgs3DRenderContext() = default;
+
+    /**
+     * Creates an initialized Qgs3DRenderContext instance from given Qgs3DMapSettings.
+     */
+    static Qgs3DRenderContext fromMapSettings(const Qgs3DMapSettings* mapSettings );
 
     /**
      * Sets the coordinate reference system used in the 3D scene
@@ -230,6 +239,27 @@ class _3D_EXPORT Qgs3DMapSettingsSnapshot
      */
     QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator; }
 
+    /**
+     * Sets the expression context. This context is used for all expression evaluation
+     * associated with this render context.
+     * \see expressionContext()
+     */
+    void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
+
+    /**
+     * Gets the expression context. This context should be used for all expression evaluation
+     * associated with this render context.
+     * \see setExpressionContext()
+     */
+    QgsExpressionContext &expressionContext() { return mExpressionContext; }
+
+    /**
+     * Gets the expression context (const version). This context should be used for all expression evaluation
+     * associated with this render context.
+     * \see setExpressionContext()
+     * \note not available in Python bindings
+     */
+    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
 
   private:
     QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
@@ -245,10 +275,13 @@ class _3D_EXPORT Qgs3DMapSettingsSnapshot
     bool mTerrainRenderingEnabled = true;
     double mTerrainVerticalScale = 1;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
 
+    //! Expression context
+    QgsExpressionContext mExpressionContext;
+
     // not owned, currently a pointer to the Qgs3DMapSettings terrain generator.
     // TODO -- fix during implementation of https://github.com/qgis/QGIS-Enhancement-Proposals/issues/301
     QgsTerrainGenerator *mTerrainGenerator = nullptr;  //!< Implementation of the terrain generation
 };
 
 
-#endif // QGS3DMAPSETTINGSSNAPSHOT_H
+#endif // QGS3DRENDERCONTEXT_H
