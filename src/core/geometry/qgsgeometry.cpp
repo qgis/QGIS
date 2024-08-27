@@ -419,13 +419,13 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
 {
   std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
 
-  startAngle = QgsGeometryUtils::normalizedAngle( startAngle * M_PI / 180 ) * 180 / M_PI;
-  endAngle = QgsGeometryUtils::normalizedAngle( endAngle * M_PI / 180 ) * 180 / M_PI;
+  startAngle = QgsGeometryUtilsBase::normalizedAngle( startAngle * M_PI / 180 ) * 180 / M_PI;
+  endAngle = QgsGeometryUtilsBase::normalizedAngle( endAngle * M_PI / 180 ) * 180 / M_PI;
 
   double angularWidth = endAngle - startAngle;
   double averageAngle = QgsGeometryUtils::averageAngle( endAngle * M_PI / 180, startAngle * M_PI / 180 ) * 180 / M_PI;
 
-  bool useShortestArc = angularWidth >= 0 && angularWidth <= 180.0 || angularWidth <= 180.0 && angularWidth >= -360.0;
+  bool useShortestArc = ( angularWidth >= 0 && angularWidth <= 180.0 ) || ( angularWidth <= 180.0 && angularWidth >= -360.0 );
   if ( !useShortestArc )
     averageAngle += 180;
 

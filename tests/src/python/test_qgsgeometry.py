@@ -6229,8 +6229,8 @@ class TestQgsGeometry(QgisTestCase):
             endAngle = t[4]
             outer = t[5]
             inner = t[6]
-            o1 = QgsGeometry.createWedgeBuffer(point, azimuth, width, outer, inner, crs)
-            o2 = QgsGeometry.createWedgeBufferFromAngles(point, azimuth, width, outer, inner, crs)
+            o1 = QgsGeometry.createWedgeBuffer(point, azimuth, width, outer, inner)
+            o2 = QgsGeometry.createWedgeBufferFromAngles(point, azimuth, width, outer, inner)
             exp = t[7]
             result1 = o1.asWkt()
             result2 = o2.asWkt()
