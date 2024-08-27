@@ -37,6 +37,8 @@ class Qgs3DMapSettings;
  *
  * Contains a snapshot of properties from Qgs3DMapSettings, in a thread-safe, cheap-to-copy structure.
  *
+ * \warning For thread safety, no QObject based properties should be attached to this class.
+ *
  * \note Not available in Python bindings.
  *
  * \since QGIS 3.40
