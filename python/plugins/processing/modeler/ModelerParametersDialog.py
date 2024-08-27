@@ -72,7 +72,7 @@ class ModelerParametersDialog(QDialog):
         self.configuration = configuration
         self.context = createContext()
 
-        self.setWindowTitle(self._alg.displayName())
+        self.setWindowTitle(' - '.join([self._alg.group(), self._alg.displayName()]))
 
         self.widget = ModelerParametersWidget(alg, model, algName, configuration, context=self.context, dialog=self)
         QgsGui.enableAutoGeometryRestore(self)
