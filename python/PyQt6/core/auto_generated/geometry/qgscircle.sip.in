@@ -112,7 +112,7 @@ The azimuth always takes the default value.
 .. seealso:: :py:func:`from3TangentsMulti`
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -156,7 +156,7 @@ The azimuth always takes the default value.
 .. seealso:: :py:func:`from3Tangents`
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 

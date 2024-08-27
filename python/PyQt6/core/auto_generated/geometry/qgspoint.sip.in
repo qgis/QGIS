@@ -314,7 +314,7 @@ M value is preserved.
          inclination is 90. A 3D point is always returned if a 3D point is projected.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 

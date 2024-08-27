@@ -110,7 +110,7 @@ If ``ui`` is a URL, a local copy of the file will be made and will be used to cr
 Set the editor widget config for a widget which is not for a simple field.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 

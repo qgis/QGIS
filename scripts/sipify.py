@@ -751,10 +751,10 @@ def process_doxygen_line(line: str) -> str:
     # Convert ### style headings
     heading_match = re.match(r'^###\s+(.*)$', line)
     if heading_match:
-        line = f"{heading_match.group(1)}\n{'-' * len(heading_match.group(1))}"
+        line = f"{heading_match.group(1)}\n{'-' * (len(heading_match.group(1)) + 30)}"
     heading_match = re.match(r'^##\s+(.*)$', line)
     if heading_match:
-        line = f"{heading_match.group(1)}\n{'=' * len(heading_match.group(1))}"
+        line = f"{heading_match.group(1)}\n{'=' * (len(heading_match.group(1)) + 30)}"
 
     if line == '*':
         line = ''

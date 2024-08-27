@@ -61,7 +61,7 @@ Handles logging of database queries.
 static :py:func:`~log` method to register their queries.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
