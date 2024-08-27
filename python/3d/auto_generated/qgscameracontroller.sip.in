@@ -17,10 +17,6 @@ class QgsCameraController : QObject
 {
 %Docstring(signature="appended")
 Object that controls camera movement based on user input
-
-.. note::
-
-   Not available in Python bindings
 %End
 
 %TypeHeaderCode
