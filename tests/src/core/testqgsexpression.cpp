@@ -1919,6 +1919,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color part magenta" ) << "to_int(color_part(color_cmyk(0,10,90,76),'magenta'))" << false << QVariant( 10 );
       QTest::newRow( "color part yellow" ) << "to_int(color_part(color_cmyk(21,0,92,70),'yellow'))" << false << QVariant( 92 );
       QTest::newRow( "color part black" ) << "to_int(color_part(color_cmyk(21,0,92,70),'black'))" << false << QVariant( 70 );
+      QTest::newRow( "color part object" ) << "to_int(color_part(color_cmykf(0.1,0.2,0.3,0.9),'black'))" << false << QVariant( 90 );
       QTest::newRow( "set color part bad color" ) << "set_color_part('notacolor','red', 5)" << true << QVariant();
       QTest::newRow( "set color part bad part" ) << "set_color_part(color_rgb(255,127,0),'bad', 5)" << true << QVariant();
       QTest::newRow( "set color part red" ) << "color_part(set_color_part(color_rgba(200,127,150,100),'red',100),'red')" << false << QVariant( 100 );
@@ -1936,6 +1937,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "set color part magenta" ) << "to_int(color_part(set_color_part(color_cmyk(0,10,90,76),'magenta',31),'magenta'))" << false << QVariant( 31 );
       QTest::newRow( "set color part yellow" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'yellow',96),'yellow'))" << false << QVariant( 96 );
       QTest::newRow( "set color part black" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'black',100),'black'))" << false << QVariant( 100 );
+      QTest::newRow( "set color part object" ) << "to_int(color_part(set_color_part(color_cmykf(0.21,0,0.92,0.70),'black',100),'black'))" << false << QVariant( 100 );
 
       QTest::newRow( "color darker" ) << "darker('200,100,30',150)" << false << QVariant( "133,67,20,255" );
       QTest::newRow( "color darker bad color" ) << "darker('notacolor',150)" << true << QVariant();

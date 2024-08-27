@@ -6194,10 +6194,13 @@ static QVariant fncColorCmyka( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fncColorPart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
+  const QVariant variant = values.at( 0 );
+  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
+  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
   if ( ! color.isValid() )
   {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to color" ).arg( variant.toString() ) );
     return QVariant();
   }
 
@@ -6281,10 +6284,13 @@ static QVariant fcnCreateRamp( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fncSetColorPart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
+  const QVariant variant = values.at( 0 );
+  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
+  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
   if ( ! color.isValid() )
   {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to color" ).arg( variant.toString() ) );
     return QVariant();
   }
 
@@ -6323,7 +6329,7 @@ static QVariant fncSetColorPart( const QVariantList &values, const QgsExpression
     parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
     return QVariant();
   }
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return isQColor ? QVariant( color ) : QVariant( QgsSymbolLayerUtils::encodeColor( color ) );
 }
 
 static QVariant fncDarker( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
