@@ -56,6 +56,7 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QWidget, private Ui::QgsSt
   public slots:
     void apply();
     void mDiagramTypeComboBox_currentIndexChanged( int index );
+    void mSubDiagramsTabWidget_tabMoved( int from, int to );
 
   private slots:
 

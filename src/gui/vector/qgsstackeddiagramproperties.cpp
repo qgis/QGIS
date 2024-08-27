@@ -40,6 +40,7 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   connect( mDiagramTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged );
   connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagram );
   connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagram );
+  connect( mSubDiagramsTabWidget->tabBar(), &QTabBar::tabMoved, this, &QgsStackedDiagramProperties::mSubDiagramsTabWidget_tabMoved );
 
   // Initialize stacked diagram controls
   mDiagramTypeComboBox->addItem( tr( "Single diagram" ), QgsDiagramLayerSettings::Single );
@@ -84,6 +85,16 @@ void QgsStackedDiagramProperties::removeSubDiagram()
     {
       mSubDiagramsTabWidget->setTabText( i, tr( "Diagram %1" ).arg( i + 1 ) );
     }
+  }
+}
+
+void QgsStackedDiagramProperties::mSubDiagramsTabWidget_tabMoved( int from, int to )
+{
+  Q_UNUSED( from )
+  Q_UNUSED( to )
+  for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+  {
+    mSubDiagramsTabWidget->setTabText( i, tr( "Diagram %1" ).arg( i + 1 ) );
   }
 }
 
