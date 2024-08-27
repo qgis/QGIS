@@ -1671,16 +1671,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void generateTsFile( const QString &locale );
 
-    /**
-     * Translates the project with QTranslator and qm file
-     * \returns the result string (in case there is no QTranslator loaded the sourceText)
-     *
-     * \param context describing layer etc.
-     * \param sourceText is the identifier of this text
-     * \param disambiguation it's the disambiguation
-     * \param n if -1 uses the appropriate form
-     * \since QGIS 3.4
-     */
     QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const override;
 
     /**
