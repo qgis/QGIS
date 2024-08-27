@@ -692,6 +692,12 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
     return QVector< QVector< QgsPointXY > >();
   }
 
+  bool validFlag_pp1 = pp1.x() >= -180.0 && pp1.x() <= 180.0 && pp1.y() >= -90.0 && pp1.y() <= 90.0;
+  bool validFlag_pp2 = pp2.x() >= -180.0 && pp2.x() <= 180.0 && pp2.y() >= -90.0 && pp2.y() <= 90.0;
+  if (!validFlag_pp1 || !validFlag_pp2) {
+      return QVector< QVector< QgsPointXY > >();
+  }
+
   geod_geodesicline line;
   geod_inverseline( &line, mGeod.get(), pp1.y(), pp1.x(), pp2.y(), pp2.x(), GEOD_ALL );
   const double totalDist = line.s13;
