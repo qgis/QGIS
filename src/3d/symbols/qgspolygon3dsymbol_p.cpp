@@ -16,6 +16,7 @@
 #include "qgspolygon3dsymbol_p.h"
 
 #include "qgspolygon3dsymbol.h"
+#include "qgspolyhedralsurface.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
@@ -210,6 +211,14 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
         const QgsPolygon *poly = static_cast< const QgsPolygon *>( g2 );
         processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
       }
+    }
+  }
+  else if ( const QgsPolyhedralSurface *polySurface = qgsgeometry_cast< const QgsPolyhedralSurface *>( g ) )
+  {
+    for ( int i = 0; i < polySurface->numPatches(); ++i )
+    {
+      const QgsPolygon *poly = polySurface->patchN( i );
+      processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
     }
   }
   else
