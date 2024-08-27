@@ -1617,18 +1617,6 @@ Triggers the collection strings of .qgs to be included in ts file and calls :py:
 
     virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const;
 
-%Docstring
-Translates the project with QTranslator and qm file
-
-:return: the result string (in case there is no QTranslator loaded the sourceText)
-
-:param context: describing layer etc.
-:param sourceText: is the identifier of this text
-:param disambiguation: it's the disambiguation
-:param n: if -1 uses the appropriate form
-
-.. versionadded:: 3.4
-%End
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
