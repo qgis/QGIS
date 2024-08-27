@@ -43,3 +43,7 @@ try:
     QgsFractionNumericFormatWidget.__group__ = ['numericformats']
 except NameError:
     pass
+try:
+    QgsExpressionBasedNumericFormatWidget.__group__ = ['numericformats']
+except NameError:
+    pass
