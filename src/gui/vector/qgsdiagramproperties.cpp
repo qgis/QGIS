@@ -248,6 +248,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   mPaintEffect->setEnabled( false );
 
+  mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
+  mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
+  mOrientationUpButton->setProperty( "direction", QgsDiagramSettings::Up );
+  mOrientationDownButton->setProperty( "direction", QgsDiagramSettings::Down );
+
   syncToLayer();
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
@@ -372,10 +377,6 @@ void QgsDiagramProperties::syncToLayer()
       mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).rotationOffset ) );
       mAngleDirectionComboBox->setCurrentIndex( mAngleDirectionComboBox->findData( settingList.at( 0 ).direction() ) );
 
-      mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
-      mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
-      mOrientationUpButton->setProperty( "direction", QgsDiagramSettings::Up );
-      mOrientationDownButton->setProperty( "direction", QgsDiagramSettings::Down );
       switch ( settingList.at( 0 ).diagramOrientation )
       {
         case QgsDiagramSettings::Left:
