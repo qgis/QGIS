@@ -407,15 +407,15 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
   return collected;
 }
 
-QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius, const QgsCoordinateReferenceSystem &crs )
+QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius )
 {
   const double startAngle = azimuth - angularWidth * 0.5;
   const double endAngle = azimuth + angularWidth * 0.5;
 
-  return createWedgeBufferFromAngles( center, startAngle, endAngle, outerRadius, innerRadius, crs );
+  return createWedgeBufferFromAngles( center, startAngle, endAngle, outerRadius, innerRadius );
 }
 
-QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius, const QgsCoordinateReferenceSystem &crs )
+QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius )
 {
   std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
 
@@ -452,47 +452,17 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
     return QgsGeometry( std::move( cp ) );
   }
 
-  QgsDistanceArea da;
-  if ( crs.isValid() && crs.isGeographic() )
-  {
-    da.setSourceCrs( crs, QgsProject::instance()->transformContext() );
-    da.setEllipsoid( crs.ellipsoidAcronym() );
-  }
+  const QgsPoint outerP1 = center.project( outerRadius, startAngle );
+  const QgsPoint outerP2 = center.project( outerRadius, averageAngle );
+  const QgsPoint outerP3 = center.project( outerRadius, endAngle );
 
-  QgsPoint outerP1;
-  QgsPoint outerP2;
-  QgsPoint outerP3;
-  if ( crs.isGeographic() )
-  {
-    outerP1 = QgsPoint( da.computeSpheroidProject( center, outerRadius, startAngle * M_PI / 180 ) );
-    outerP2 = QgsPoint( da.computeSpheroidProject( center, outerRadius, averageAngle * M_PI / 180 ) );
-    outerP3 = QgsPoint( da.computeSpheroidProject( center, outerRadius, endAngle * M_PI / 180 ) );
-  }
-  else
-  {
-    outerP1 = center.project( outerRadius, startAngle );
-    outerP2 = center.project( outerRadius, averageAngle );
-    outerP3 = center.project( outerRadius, endAngle );
-  }
   wedge->addCurve( new QgsCircularString( outerP1, outerP2, outerP3 ) );
 
   if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
   {
-    QgsPoint innerP1;
-    QgsPoint innerP2;
-    QgsPoint innerP3;
-    if ( crs.isGeographic() )
-    {
-      innerP1 = QgsPoint( da.computeSpheroidProject( center, innerRadius, startAngle * M_PI / 180 ) );
-      innerP2 = QgsPoint( da.computeSpheroidProject( center, innerRadius, averageAngle * M_PI / 180 ) );
-      innerP3 = QgsPoint( da.computeSpheroidProject( center, innerRadius, endAngle * M_PI / 180 ) );
-    }
-    else
-    {
-      innerP1 = center.project( innerRadius, startAngle );
-      innerP2 = center.project( innerRadius, averageAngle );
-      innerP3 = center.project( innerRadius, endAngle );
-    }
+    const QgsPoint innerP1 = center.project( innerRadius, startAngle );
+    const QgsPoint innerP2 = center.project( innerRadius, averageAngle );
+    const QgsPoint innerP3 = center.project( innerRadius, endAngle );
     wedge->addCurve( new QgsLineString( outerP3, innerP3 ) );
     wedge->addCurve( new QgsCircularString( innerP3, innerP2, innerP1 ) );
     wedge->addCurve( new QgsLineString( innerP1, outerP1 ) );

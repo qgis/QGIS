@@ -273,7 +273,7 @@ Creates a new multipart geometry from a list of QgsGeometry objects
 %End
 
     static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
-                                          double outerRadius, double innerRadius = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+                                          double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
 
@@ -284,8 +284,6 @@ wedge will extend to half of the ``angularWidth`` either side of the ``azimuth``
 The outer radius of the buffer is specified via ``outerRadius``, and optionally an
 ``innerRadius`` can also be specified.
 
-If the ``crs`` is given and is geographic, the wedge is projected along the ellipsoïd.
-
 The returned geometry will be a CurvePolygon geometry containing circular strings. It may
 need to be segmentized to convert to a standard Polygon geometry.
 
@@ -293,7 +291,7 @@ need to be segmentized to convert to a standard Polygon geometry.
 %End
 
     static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle,
-                                            double outerRadius, double innerRadius = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+                                                    double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
 
@@ -301,8 +299,6 @@ The wedges goes from the ``startAngle`` to ``endAngle`` in degrees.
 
 The outer radius of the buffer is specified via ``outerRadius``, and optionally an
 ``innerRadius`` can also be specified.
-
-If the ``crs`` is given and is geographic, the wedge is projected along the ellipsoïd.
 
 The returned geometry will be a CurvePolygon geometry containing circular strings. It may
 need to be segmentized to convert to a standard Polygon geometry.

@@ -6198,32 +6198,28 @@ class TestQgsGeometry(QgisTestCase):
                             f"clipped: mismatch Expected:\n{exp}\nGot:\n{result}\n")
 
     def testCreateWedgeBuffer(self):
-        invalidCrs = QgsCoordinateReferenceSystem()
-        wgs84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs("EPSG:4326")
-        tests = [[QgsPoint(1, 11), 0, 45, -22.5, 22.5, 2, 0, invalidCrs,
+        tests = [[QgsPoint(1, 11), 0, 45, -22.5, 22.5, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (0.23463313526982044 12.84775906502257392, 1 13, 1.76536686473017967 12.84775906502257392),(1.76536686473017967 12.84775906502257392, 1 11),(1 11, 0.23463313526982044 12.84775906502257392)))'],
-                 [QgsPoint(1, 11), 90, 45, 67.5, 112.5, 2, 0, invalidCrs,
+                 [QgsPoint(1, 11), 90, 45, 67.5, 112.5, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (2.84775906502257348 11.76536686473017923, 3 11, 2.84775906502257348 10.23463313526982077),(2.84775906502257348 10.23463313526982077, 1 11),(1 11, 2.84775906502257348 11.76536686473017923)))'],
-                 [QgsPoint(1, 11), 180, 90, 135, 225, 2, 0, invalidCrs,
+                 [QgsPoint(1, 11), 180, 90, 135, 225, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (2.41421356237309492 9.58578643762690419, 1.00000000000000022 9, -0.41421356237309492 9.58578643762690419),(-0.41421356237309492 9.58578643762690419, 1 11),(1 11, 2.41421356237309492 9.58578643762690419)))'],
-                 [QgsPoint(1, 11), 0, 200, -100, 100, 2, 0, invalidCrs,
+                 [QgsPoint(1, 11), 0, 200, -100, 100, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (-0.96961550602441604 10.65270364466613984, 0.99999999999999956 13, 2.96961550602441626 10.65270364466613984),(2.96961550602441626 10.65270364466613984, 1 11),(1 11, -0.96961550602441604 10.65270364466613984)))'],
-                 [QgsPoint(1, 11), 0, 45, -22.5, 22.5, 2, 1, invalidCrs,
+                 [QgsPoint(1, 11), 0, 45, -22.5, 22.5, 2, 1,
                   'CurvePolygon (CompoundCurve (CircularString (0.23463313526982044 12.84775906502257392, 1 13, 1.76536686473017967 12.84775906502257392),(1.76536686473017967 12.84775906502257392, 1.38268343236508984 11.92387953251128607),CircularString (1.38268343236508984 11.92387953251128607, 0.99999999999999978 12, 0.61731656763491016 11.92387953251128607),(0.61731656763491016 11.92387953251128607, 0.23463313526982044 12.84775906502257392)))'],
-                 [QgsPoint(1, 11), 0, 200, -100, 100, 2, 1, invalidCrs,
+                 [QgsPoint(1, 11), 0, 200, -100, 100, 2, 1,
                   'CurvePolygon (CompoundCurve (CircularString (-0.96961550602441604 10.65270364466613984, 0.99999999999999956 13, 2.96961550602441626 10.65270364466613984),(2.96961550602441626 10.65270364466613984, 1.98480775301220813 10.82635182233306992),CircularString (1.98480775301220813 10.82635182233306992, 0.99999999999999978 12, 0.01519224698779198 10.82635182233306992),(0.01519224698779198 10.82635182233306992, -0.96961550602441604 10.65270364466613984)))'],
-                 [QgsPoint(1, 11, 3), 0, 45, -22.5, 22.5, 2, 0, invalidCrs,
+                 [QgsPoint(1, 11, 3), 0, 45, -22.5, 22.5, 2, 0,
                   'CurvePolygonZ (CompoundCurveZ (CircularStringZ (0.23463313526982044 12.84775906502257392 3, 1 13 3, 1.76536686473017967 12.84775906502257392 3),(1.76536686473017967 12.84775906502257392 3, 1 11 3),(1 11 3, 0.23463313526982044 12.84775906502257392 3)))'],
-                 [QgsPoint(1, 11, m=3), 0, 45, -22.5, 22.5, 2, 0, invalidCrs,
+                 [QgsPoint(1, 11, m=3), 0, 45, -22.5, 22.5, 2, 0,
                   'CurvePolygonM (CompoundCurveM (CircularStringM (0.23463313526982044 12.84775906502257392 3, 1 13 3, 1.76536686473017967 12.84775906502257392 3),(1.76536686473017967 12.84775906502257392 3, 1 11 3),(1 11 3, 0.23463313526982044 12.84775906502257392 3)))'],
-                 [QgsPoint(1, 11), 0, 360, -180, 180, 2, 0, invalidCrs,
+                 [QgsPoint(1, 11), 0, 360, -180, 180, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)))'],
-                 [QgsPoint(1, 11), 0, -1000, 0, 360, 2, 0, invalidCrs,
+                 [QgsPoint(1, 11), 0, -1000, 0, 360, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)))'],
-                 [QgsPoint(1, 11), 0, 360, -180, 180, 2, 1, invalidCrs,
+                 [QgsPoint(1, 11), 0, 360, -180, 180, 2, 1,
                   'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)),CompoundCurve (CircularString (1 12, 2 11, 1 10, 0 11, 1 12)))'],
-                 [QgsPoint(1, 11), 10, 40, 350, 30, 2, 1, wgs84,
-                  'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)),CompoundCurve (CircularString (1 12, 2 11, 1 10, 0 11, 1 12)))']
                  ]
         for t in tests:
             point = t[0]
@@ -6233,10 +6229,9 @@ class TestQgsGeometry(QgisTestCase):
             endAngle = t[4]
             outer = t[5]
             inner = t[6]
-            crs = t[7]
             o1 = QgsGeometry.createWedgeBuffer(point, azimuth, width, outer, inner, crs)
             o2 = QgsGeometry.createWedgeBufferFromAngles(point, azimuth, width, outer, inner, crs)
-            exp = t[8]
+            exp = t[7]
             result1 = o1.asWkt()
             result2 = o2.asWkt()
             self.assertTrue(compareWkt(result1, exp, 0.01),
