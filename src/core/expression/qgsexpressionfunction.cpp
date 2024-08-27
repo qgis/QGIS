@@ -5879,7 +5879,7 @@ static QVariant fcnColorRgbF( const QVariantList &values, const QgsExpressionCon
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( red ).arg( green ).arg( blue ).arg( alpha ) );
-    color = QColor( 0, 0, 0 );
+    return QVariant();
   }
 
   return color;
@@ -6014,7 +6014,7 @@ static QVariant fcnColorHslF( const QVariantList &values, const QgsExpressionCon
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( hue ).arg( saturation ).arg( lightness ).arg( alpha ) );
-    color = QColor( 0, 0, 0 );
+    return QVariant();
   }
 
   return color;
@@ -6071,7 +6071,7 @@ static QVariant fcnColorHsvF( const QVariantList &values, const QgsExpressionCon
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( hue ).arg( saturation ).arg( value ).arg( alpha ) );
-    color = QColor( 0, 0, 0 );
+    return QVariant();
   }
 
   return color;
@@ -6089,7 +6089,7 @@ static QVariant fcnColorCmykF( const QVariantList &values, const QgsExpressionCo
   if ( ! color.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4:%5' to color" ).arg( cyan ).arg( magenta ).arg( yellow ).arg( black ).arg( alpha ) );
-    color = QColor( 0, 0, 0 );
+    return QVariant();
   }
 
   return color;
