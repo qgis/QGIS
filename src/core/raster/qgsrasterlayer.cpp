@@ -2182,109 +2182,113 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   const QDomElement layerElement = layer_node.toElement();
   readCommonStyle( layerElement, context, categories );
 
-  // pipe element was introduced in the end of 1.9 development when there were
-  // already many project files in use so we support 1.9 backward compatibility
-  // even it was never officially released -> use pipe element if present, otherwise
-  // use layer node
-  QDomNode pipeNode = layer_node.firstChildElement( QStringLiteral( "pipe" ) );
-  if ( pipeNode.isNull() ) // old project
+  // pipe considers Symbology and Rendering components, why it's always handled as one
+  if ( categories.testFlag( Symbology ) || categories.testFlag( Rendering ) )
   {
-    pipeNode = layer_node;
-  }
-
-  //rasterlayerproperties element there -> old format (1.8 and early 1.9)
-  if ( !layer_node.firstChildElement( QStringLiteral( "rasterproperties" ) ).isNull() )
-  {
-    //copy node because layer_node is const
-    QDomNode layerNodeCopy = layer_node.cloneNode();
-    QDomDocument doc = layerNodeCopy.ownerDocument();
-    QDomElement rasterPropertiesElem = layerNodeCopy.firstChildElement( QStringLiteral( "rasterproperties" ) );
-    QgsProjectFileTransform::convertRasterProperties( doc, layerNodeCopy, rasterPropertiesElem,
-        this );
-    rasterRendererElem = layerNodeCopy.firstChildElement( QStringLiteral( "rasterrenderer" ) );
-    QgsDebugMsgLevel( doc.toString(), 4 );
-  }
-  else
-  {
-    rasterRendererElem = pipeNode.firstChildElement( QStringLiteral( "rasterrenderer" ) );
-  }
-
-  if ( !rasterRendererElem.isNull() )
-  {
-    const QString rendererType = rasterRendererElem.attribute( QStringLiteral( "type" ) );
-    QgsRasterRendererRegistryEntry rendererEntry;
-    if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
+    // pipe element was introduced in the end of 1.9 development when there were
+    // already many project files in use so we support 1.9 backward compatibility
+    // even it was never officially released -> use pipe element if present, otherwise
+    // use layer node
+    QDomNode pipeNode = layer_node.firstChildElement( QStringLiteral( "pipe" ) );
+    if ( pipeNode.isNull() ) // old project
     {
-      QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
-      mPipe->set( renderer );
+      pipeNode = layer_node;
     }
-  }
 
-  //brightness
-  QgsBrightnessContrastFilter *brightnessFilter = new QgsBrightnessContrastFilter();
-  mPipe->set( brightnessFilter );
-
-  //brightness coefficient
-  const QDomElement brightnessElem = pipeNode.firstChildElement( QStringLiteral( "brightnesscontrast" ) );
-  if ( !brightnessElem.isNull() )
-  {
-    brightnessFilter->readXml( brightnessElem );
-  }
-
-  //hue/saturation
-  QgsHueSaturationFilter *hueSaturationFilter = new QgsHueSaturationFilter();
-  mPipe->set( hueSaturationFilter );
-
-  //saturation coefficient
-  const QDomElement hueSaturationElem = pipeNode.firstChildElement( QStringLiteral( "huesaturation" ) );
-  if ( !hueSaturationElem.isNull() )
-  {
-    hueSaturationFilter->readXml( hueSaturationElem );
-  }
-
-  //resampler
-  QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
-  mPipe->set( resampleFilter );
-
-  //max oversampling
-  const QDomElement resampleElem = pipeNode.firstChildElement( QStringLiteral( "rasterresampler" ) );
-  if ( !resampleElem.isNull() )
-  {
-    resampleFilter->readXml( resampleElem );
-  }
-
-  //provider
-  if ( mDataProvider )
-  {
-    const QDomElement providerElem = pipeNode.firstChildElement( QStringLiteral( "provider" ) );
-    if ( !providerElem.isNull() )
+    //rasterlayerproperties element there -> old format (1.8 and early 1.9)
+    if ( !layer_node.firstChildElement( QStringLiteral( "rasterproperties" ) ).isNull() )
     {
-      mDataProvider->readXml( providerElem );
+      //copy node because layer_node is const
+      QDomNode layerNodeCopy = layer_node.cloneNode();
+      QDomDocument doc = layerNodeCopy.ownerDocument();
+      QDomElement rasterPropertiesElem = layerNodeCopy.firstChildElement( QStringLiteral( "rasterproperties" ) );
+      QgsProjectFileTransform::convertRasterProperties( doc, layerNodeCopy, rasterPropertiesElem,
+          this );
+      rasterRendererElem = layerNodeCopy.firstChildElement( QStringLiteral( "rasterrenderer" ) );
+      QgsDebugMsgLevel( doc.toString(), 4 );
     }
-  }
+    else
+    {
+      rasterRendererElem = pipeNode.firstChildElement( QStringLiteral( "rasterrenderer" ) );
+    }
 
-  // Resampling stage
-  const QDomNode resamplingStageElement = pipeNode.namedItem( QStringLiteral( "resamplingStage" ) );
-  if ( !resamplingStageElement.isNull() )
-  {
-    const QDomElement e = resamplingStageElement.toElement();
-    if ( e.text() == QLatin1String( "provider" ) )
-      setResamplingStage( Qgis::RasterResamplingStage::Provider );
-    else if ( e.text() == QLatin1String( "resamplingFilter" ) )
-      setResamplingStage( Qgis::RasterResamplingStage::ResampleFilter );
-  }
+    if ( !rasterRendererElem.isNull() )
+    {
+      const QString rendererType = rasterRendererElem.attribute( QStringLiteral( "type" ) );
+      QgsRasterRendererRegistryEntry rendererEntry;
+      if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
+      {
+        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+        mPipe->set( renderer );
+      }
+    }
 
-  // get and set the blend mode if it exists
-  const QDomNode blendModeNode = layer_node.namedItem( QStringLiteral( "blendMode" ) );
-  if ( !blendModeNode.isNull() )
-  {
-    const QDomElement e = blendModeNode.toElement();
-    setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
-  }
+    //brightness
+    QgsBrightnessContrastFilter *brightnessFilter = new QgsBrightnessContrastFilter();
+    mPipe->set( brightnessFilter );
 
-  const QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
-  if ( !elemDataDefinedProperties.isNull() )
-    mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
+    //brightness coefficient
+    const QDomElement brightnessElem = pipeNode.firstChildElement( QStringLiteral( "brightnesscontrast" ) );
+    if ( !brightnessElem.isNull() )
+    {
+      brightnessFilter->readXml( brightnessElem );
+    }
+
+    //hue/saturation
+    QgsHueSaturationFilter *hueSaturationFilter = new QgsHueSaturationFilter();
+    mPipe->set( hueSaturationFilter );
+
+    //saturation coefficient
+    const QDomElement hueSaturationElem = pipeNode.firstChildElement( QStringLiteral( "huesaturation" ) );
+    if ( !hueSaturationElem.isNull() )
+    {
+      hueSaturationFilter->readXml( hueSaturationElem );
+    }
+
+    //resampler
+    QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
+    mPipe->set( resampleFilter );
+
+    //max oversampling
+    const QDomElement resampleElem = pipeNode.firstChildElement( QStringLiteral( "rasterresampler" ) );
+    if ( !resampleElem.isNull() )
+    {
+      resampleFilter->readXml( resampleElem );
+    }
+
+    //provider
+    if ( mDataProvider )
+    {
+      const QDomElement providerElem = pipeNode.firstChildElement( QStringLiteral( "provider" ) );
+      if ( !providerElem.isNull() )
+      {
+        mDataProvider->readXml( providerElem );
+      }
+    }
+
+    // Resampling stage
+    const QDomNode resamplingStageElement = pipeNode.namedItem( QStringLiteral( "resamplingStage" ) );
+    if ( !resamplingStageElement.isNull() )
+    {
+      const QDomElement e = resamplingStageElement.toElement();
+      if ( e.text() == QLatin1String( "provider" ) )
+        setResamplingStage( Qgis::RasterResamplingStage::Provider );
+      else if ( e.text() == QLatin1String( "resamplingFilter" ) )
+        setResamplingStage( Qgis::RasterResamplingStage::ResampleFilter );
+    }
+
+    // get and set the blend mode if it exists
+    const QDomNode blendModeNode = layer_node.namedItem( QStringLiteral( "blendMode" ) );
+    if ( !blendModeNode.isNull() )
+    {
+      const QDomElement e = blendModeNode.toElement();
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
+    }
+
+    const QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
+    if ( !elemDataDefinedProperties.isNull() )
+      mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
+  }
 
   if ( categories.testFlag( MapTips ) )
   {
@@ -2492,6 +2496,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   // TODO: implement categories for raster layer
 
   QDomElement layerElement = layer_node.toElement();
+
   writeCommonStyle( layerElement, document, context, categories );
 
   // save map tip
@@ -2510,40 +2515,44 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
     writeRasterAttributeTableExternalPaths( layer_node, document, context );
   }
 
-  // Store pipe members into pipe element, in future, it will be
-  // possible to add custom filters into the pipe
-  QDomElement pipeElement  = document.createElement( QStringLiteral( "pipe" ) );
-
-  for ( int i = 0; i < mPipe->size(); i++ )
+  // pipe considers Symbology and Rendering components, why it's always handled as one
+  if ( categories.testFlag( Symbology ) || categories.testFlag( Rendering ) )
   {
-    QgsRasterInterface *interface = mPipe->at( i );
-    if ( !interface ) continue;
-    interface->writeXml( document, pipeElement );
+    // Store pipe members into pipe element, in future, it will be
+    // possible to add custom filters into the pipe
+    QDomElement pipeElement  = document.createElement( QStringLiteral( "pipe" ) );
+
+    for ( int i = 0; i < mPipe->size(); i++ )
+    {
+      QgsRasterInterface *interface = mPipe->at( i );
+      if ( !interface ) continue;
+      interface->writeXml( document, pipeElement );
+    }
+
+    QDomElement elemDataDefinedProperties = document.createElement( QStringLiteral( "pipe-data-defined-properties" ) );
+    mPipe->dataDefinedProperties().writeXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
+    layer_node.appendChild( elemDataDefinedProperties );
+
+    QDomElement resamplingStageElement = document.createElement( QStringLiteral( "resamplingStage" ) );
+    const QDomText resamplingStageText = document.createTextNode( resamplingStage() == Qgis::RasterResamplingStage::Provider ? QStringLiteral( "provider" ) : QStringLiteral( "resamplingFilter" ) );
+    resamplingStageElement.appendChild( resamplingStageText );
+    pipeElement.appendChild( resamplingStageElement );
+
+    layer_node.appendChild( pipeElement );
+
+    if ( !isValid() && !mOriginalStyleElement.isNull() )
+    {
+      QDomElement originalStyleElement = document.createElement( QStringLiteral( "originalStyle" ) );
+      originalStyleElement.appendChild( mOriginalStyleElement );
+      layer_node.appendChild( originalStyleElement );
+    }
+
+    // add blend mode node
+    QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
+    const QDomText blendModeText = document.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
+    blendModeElement.appendChild( blendModeText );
+    layer_node.appendChild( blendModeElement );
   }
-
-  QDomElement elemDataDefinedProperties = document.createElement( QStringLiteral( "pipe-data-defined-properties" ) );
-  mPipe->dataDefinedProperties().writeXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
-  layer_node.appendChild( elemDataDefinedProperties );
-
-  QDomElement resamplingStageElement = document.createElement( QStringLiteral( "resamplingStage" ) );
-  const QDomText resamplingStageText = document.createTextNode( resamplingStage() == Qgis::RasterResamplingStage::Provider ? QStringLiteral( "provider" ) : QStringLiteral( "resamplingFilter" ) );
-  resamplingStageElement.appendChild( resamplingStageText );
-  pipeElement.appendChild( resamplingStageElement );
-
-  layer_node.appendChild( pipeElement );
-
-  if ( !isValid() && !mOriginalStyleElement.isNull() )
-  {
-    QDomElement originalStyleElement = document.createElement( QStringLiteral( "originalStyle" ) );
-    originalStyleElement.appendChild( mOriginalStyleElement );
-    layer_node.appendChild( originalStyleElement );
-  }
-
-  // add blend mode node
-  QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
-  const QDomText blendModeText = document.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
-  blendModeElement.appendChild( blendModeText );
-  layer_node.appendChild( blendModeElement );
 
   return true;
 }
