@@ -2293,6 +2293,11 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     setMapTipsEnabled( mapTipElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt() == 1 );
   }
 
+  // read attribute table attribute table paths
+  if ( categories.testFlag( AttributeTable ) )
+  {
+    readRasterAttributeTableExternalPaths( layer_node, context );
+  }
   readCustomProperties( layer_node );
 
   emit rendererChanged();
@@ -2496,6 +2501,12 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
     QDomText mapTipText = document.createTextNode( mapTipTemplate() );
     mapTipElem.appendChild( mapTipText );
     layer_node.toElement().appendChild( mapTipElem );
+  }
+
+  // save attribute table attribute table paths
+  if ( categories.testFlag( AttributeTable ) )
+  {
+    writeRasterAttributeTableExternalPaths( layer_node, document, context );
   }
 
   // Store pipe members into pipe element, in future, it will be
