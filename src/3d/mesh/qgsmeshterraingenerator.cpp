@@ -37,7 +37,7 @@ QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, Q
 
 Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( Qgs3DRenderContext::fromMapSettings( terrain()->map() ), mTriangularMesh, mSymbol.get(), mNode->tileId(), parent );
+  QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( Qgs3DRenderContext::fromMapSettings( terrain()->mapSettings() ), mTriangularMesh, mSymbol.get(), mNode->tileId(), parent );
   entity->build();
   createTexture( entity );
 

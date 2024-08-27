@@ -37,7 +37,7 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   : QgsChunkLoader( node )
   , mTerrain( terrain )
 {
-  const Qgs3DMapSettings *map = mTerrain->map();
+  const Qgs3DMapSettings *map = mTerrain->mapSettings();
   const QgsChunkNodeId nodeId = node->tileId();
   const QgsRectangle extentTerrainCrs = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   mExtentMapCrs = Qgs3DUtils::tryReprojectExtent2D( extentTerrainCrs, map->terrainGenerator()->crs(), map->crs(), map->transformContext() );
