@@ -5864,6 +5864,49 @@ static QVariant fcnColorMixRgb( const QVariantList &values, const QgsExpressionC
   return QgsSymbolLayerUtils::encodeColor( newColor );
 }
 
+static QVariant fcnColorMix( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QVariant variant1 = values.at( 0 );
+  const QVariant variant2 = values.at( 1 );
+
+  if ( variant1.userType() != variant2.userType() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Both color arguments must have the same type (string or color object)" ) );
+    return QVariant();
+  }
+
+  const bool isQColor = variant1.userType() == QMetaType::Type::QColor;
+  QColor color1 = isQColor ? variant1.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant1.toString() );
+  QColor color2 = isQColor ? variant2.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant2.toString() );
+  if ( ( color1.spec() == QColor::Cmyk ) != ( color2.spec() == QColor::Cmyk ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Both color arguments must have compatible color type (CMYK or RGB/HSV/HSL)" ) );
+    return QVariant();
+  }
+
+  const float ratio = static_cast<float>( std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0., 1. ) );
+
+  QColor newColor;
+  const float alpha = color1.alphaF() * ( 1 - ratio ) + color2.alphaF() * ratio;
+  if ( color1.spec() == QColor::Spec::Cmyk )
+  {
+    float cyan = color1.cyanF() * ( 1 - ratio ) + color2.cyanF() * ratio;
+    float magenta = color1.magentaF() * ( 1 - ratio ) + color2.magentaF() * ratio;
+    float yellow = color1.yellowF() * ( 1 - ratio ) + color2.yellowF() * ratio;
+    float black = color1.blackF() * ( 1 - ratio ) + color2.blackF() * ratio;
+    newColor = QColor::fromCmykF( cyan, magenta, yellow, black, alpha );
+  }
+  else
+  {
+    float red = color1.redF() * ( 1 - ratio ) + color2.redF() * ratio;
+    float green = color1.greenF() * ( 1 - ratio ) + color2.greenF() * ratio;
+    float blue = color1.blueF() * ( 1 - ratio ) + color2.blueF() * ratio;
+    newColor = QColor::fromRgbF( red, green, blue, alpha );
+  }
+
+  return isQColor ? QVariant( newColor ) : QVariant( QgsSymbolLayerUtils::encodeColor( newColor ) );
+}
+
 static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   int red = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
@@ -8430,6 +8473,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "color2" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "ratio" ) ),
                                             fcnColorMixRgb, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "color_mix" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "color2" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "ratio" ) ),
+                                            fcnColorMix, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "red" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "green" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "blue" ) ),
