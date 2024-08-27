@@ -33,7 +33,7 @@ class CORE_EXPORT QgsProjectTranslator
 
     /**
      * The derived translate() translates with QTranslator and qm file the sourceText.
-     * It \returns the result string and in case there is no QTranslator loaded, the sourceText.
+     * It returns the result string and in case there is no QTranslator loaded, the sourceText.
      * This function can be called from wherever the QgsReadWriteContext is available.
      *
      * \param context describing layer etc.
@@ -43,7 +43,6 @@ class CORE_EXPORT QgsProjectTranslator
      *
      * \since QGIS 3.4
      */
-
     virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const = 0;
 
     virtual ~QgsProjectTranslator() = default;
