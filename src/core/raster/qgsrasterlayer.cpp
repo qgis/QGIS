@@ -2303,8 +2303,6 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     readRasterAttributeTableExternalPaths( layer_node, context );
   }
 
-  readCustomProperties( layer_node );
-
   emit rendererChanged();
   emitStyleChanged();
 
