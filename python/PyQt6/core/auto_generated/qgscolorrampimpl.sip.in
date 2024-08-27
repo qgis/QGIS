@@ -735,6 +735,10 @@ Generates the scheme using the current name and number of colors
 
 class QgsCptCityColorRamp : QgsGradientColorRamp
 {
+%Docstring(signature="appended")
+
+A color ramp from the CPT City collection.
+%End
 
 %TypeHeaderCode
 #include "qgscolorrampimpl.h"

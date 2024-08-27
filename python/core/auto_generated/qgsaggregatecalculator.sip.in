@@ -14,10 +14,13 @@
 class QgsAggregateCalculator
 {
 %Docstring(signature="appended")
-Utility class for calculating aggregates for a field (or expression) over the features
-from a vector layer. It is recommended that :py:func:`QgsVectorLayer.aggregate()` is used rather then
-directly using this class, as the :py:class:`QgsVectorLayer` method can handle delegating aggregate calculation
-to a data provider for remote calculation.
+Utility class for calculating aggregates for a field (or expression) over the features from a vector layer.
+
+.. note::
+
+   It is recommended that :py:func:`QgsVectorLayer.aggregate()` is used rather then
+   directly using this class, as the :py:class:`QgsVectorLayer` method can handle delegating aggregate calculation
+   to a data provider for remote calculation.
 %End
 
 %TypeHeaderCode

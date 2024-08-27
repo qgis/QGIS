@@ -35,7 +35,8 @@ class QgsRenderContext;
 
 /**
  * \ingroup core
- * \brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
+ * \brief Handles automatic layout and rendering of legends.
+ *
  * The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
  * within QgsLegendRenderer.
  *

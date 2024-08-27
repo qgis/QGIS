@@ -33,8 +33,9 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  * \class QgsAggregateCalculator
- * \brief Utility class for calculating aggregates for a field (or expression) over the features
- * from a vector layer. It is recommended that QgsVectorLayer::aggregate() is used rather then
+ * \brief Utility class for calculating aggregates for a field (or expression) over the features from a vector layer.
+ *
+ * \note It is recommended that QgsVectorLayer::aggregate() is used rather then
  * directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
  * to a data provider for remote calculation.
  */

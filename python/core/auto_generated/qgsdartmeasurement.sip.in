@@ -11,6 +11,9 @@
 
 class QgsDartMeasurement
 {
+%Docstring(signature="appended")
+Emits dart measurements for display in CDash reports.
+%End
 
 %TypeHeaderCode
 #include "qgsdartmeasurement.h"

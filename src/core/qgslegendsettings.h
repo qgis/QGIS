@@ -30,9 +30,9 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  * \brief The QgsLegendSettings class stores the appearance and layout settings
- * for legend drawing with QgsLegendRenderer. The content of the legend is given
- * in QgsLegendModel class.
+ * for legend drawing with QgsLegendRenderer.
  *
+ * The content of the legend is driven by the QgsLegendModel class.
  */
 class CORE_EXPORT QgsLegendSettings
 {

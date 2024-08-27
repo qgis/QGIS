@@ -33,6 +33,7 @@ class QgsSymbolLayerReference;
  * \class QgsTextMaskSettings
   * \ingroup core
   * \brief Container for settings relating to a selective masking around a text.
+  *
   * A selective masking only makes sense in contexts where the text is rendered over some other map layers, especially for labeling.
   * \note QgsTextMaskSettings objects are implicitly shared.
   * \since QGIS 3.12

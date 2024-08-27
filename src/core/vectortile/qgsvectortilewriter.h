@@ -30,7 +30,9 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief Takes care of writing vector tiles. The intended use is to set up the class
+ * \brief Takes care of writing vector tiles.
+ *
+ * The intended use is to set up the class
  * by setting the destination URI, extent, zoom level range and input vector
  * layers. Then with a call to writeTiles() the data gets written. In case
  * of a failure, errorMessage() returns the cause of the problem during writing.
