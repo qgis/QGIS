@@ -13,7 +13,9 @@
 class QgsTileXYZ
 {
 %Docstring(signature="appended")
-Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
+Stores coordinates of a tile in a tile matrix set.
+
+Tile matrix is identified
 by the :py:func:`~zoomLevel`, and the position within tile matrix is given by :py:func:`~column`
 and :py:func:`~row`.
 

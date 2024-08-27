@@ -26,6 +26,7 @@
 /**
  * \ingroup core
  * \brief Defines left outer join from our vector layer to some other vector layer.
+ *
  * The join is done based on [our layer].targetField = [join layer].joinField
  *
  */

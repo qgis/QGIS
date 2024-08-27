@@ -83,9 +83,12 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
  * \ingroup core
  *
  * \brief Class that can do a refinement of faces of a mesh.
+ *
  * This refinement is operated only on faces with 3 or 4 vertices (triangles or quads) by adding a vertex on the middle of each refined face.
  * For quad faces, a vertex is added on the centroid of the original face.
+ *
  * New vertices Z value are interpolated between original vertices.
+ *
  * Original triangle faces are replaced by four triangles, and original quad faces are replaced by four quads.
  * Neighboring faces are triangulated to take account of the new vertex in the shared edge.
  *

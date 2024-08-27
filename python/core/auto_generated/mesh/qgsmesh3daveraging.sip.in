@@ -260,6 +260,7 @@ class QgsMeshRelativeHeightAveragingMethod: QgsMesh3DAveragingMethod
 %Docstring(signature="appended")
 
 Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when :py:func:`~countedFromTop`)
+
 The range is defined in the same length units as defined by model (e.g. meters)
 
 if :py:func:`~countedFromTop`, the method represents averaging based on depth below surface.
@@ -329,6 +330,7 @@ class QgsMeshElevationAveragingMethod: QgsMesh3DAveragingMethod
 %Docstring(signature="appended")
 
 Elevation averaging method averages the values based on range defined absolute value to the model's datum
+
 The range is defined in the same length units as defined by model (e.g. meters)
 
 For example one can pull out results irrespective of water level change such as between -16m and -10m.

@@ -39,9 +39,12 @@ class QgsPointXY;
 
 /**
  * \ingroup core
- * \brief QgsRasterProjector implements approximate projection support for
- * it calculates grid of points in source CRS for target CRS + extent
- * which are used to calculate affine transformation matrices.
+ * \brief Implements approximate projection support for optimised raster transformation.
+ *
+ * QgsRasterProjector calculates a grid of points in the source CRS for a specific target CRS and extent.
+ * These are used to calculate affine transformation matrices, which can be used instead of raw
+ * PROJ transformations for optimised bulk reprojection of points.
+ *
  * \class QgsRasterProjector
  */
 class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface

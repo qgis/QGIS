@@ -37,6 +37,8 @@ class QgsPolymorphicRelation;
 /**
  * \ingroup core
  * \class QgsRelation
+ *
+ * \brief Represents a relationship between two vector layers.
  */
 class CORE_EXPORT QgsRelation
 {

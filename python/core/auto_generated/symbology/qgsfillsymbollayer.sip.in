@@ -194,6 +194,9 @@ Returns the map unit scale for the fill's offset.
 
 class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+A fill symbol layer which draws a smooth color gradient over a polygon.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"

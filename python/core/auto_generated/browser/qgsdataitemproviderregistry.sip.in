@@ -15,6 +15,7 @@ class QgsDataItemProviderRegistry : QObject
 {
 %Docstring(signature="appended")
 This class keeps a list of data item providers that may add items to the browser tree.
+
 When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
 
 :py:class:`QgsDataItemProviderRegistry` is not usually directly created, but rather accessed through

@@ -203,6 +203,7 @@ class QgsColorRamp;
 /**
  * \ingroup core
  * \class QgsGradientFillSymbolLayer
+ * A fill symbol layer which draws a smooth color gradient over a polygon.
  */
 class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 {

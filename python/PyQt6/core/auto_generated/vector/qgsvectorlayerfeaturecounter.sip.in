@@ -12,6 +12,7 @@ class QgsVectorLayerFeatureCounter : QgsTask
 %Docstring(signature="appended")
 
 Counts the features in a :py:class:`QgsVectorLayer` in task.
+
 You should most likely not use this directly and instead call
 :py:func:`QgsVectorLayer.countSymbolFeatures()` and connect to the signal
 :py:func:`QgsVectorLayer.symbolFeatureCountMapChanged()`.

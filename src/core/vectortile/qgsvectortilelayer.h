@@ -32,6 +32,7 @@ class QgsVectorTileRawData;
 /**
  * \ingroup core
  * \brief Implements a map layer that is dedicated to rendering of vector tiles.
+ *
  * Vector tiles compared to "ordinary" vector layers are pre-processed data
  * optimized for fast rendering. A dataset is provided with a series of zoom levels
  * for different map scales. Each zoom level has a matrix of tiles that contain

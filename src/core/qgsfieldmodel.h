@@ -31,6 +31,7 @@ class QgsVectorLayer;
  * \ingroup core
  * \brief The QgsFieldModel class is a model to display the list of fields in widgets
  * (optionally associated with a vector layer).
+ *
  * If allowed, expressions might be added to the end of the model.
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
  */

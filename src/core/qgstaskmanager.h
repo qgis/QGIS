@@ -38,8 +38,9 @@ typedef QList< QgsTask * > QgsTaskList;
 /**
  * \ingroup core
  * \class QgsTask
- * \brief Abstract base class for long running background tasks. Tasks can be controlled directly,
- * or added to a QgsTaskManager for automatic management.
+ * \brief Abstract base class for long running background tasks.
+ *
+ * Tasks can be controlled directly, or added to a QgsTaskManager for automatic management.
  *
  * Derived classes should implement the process they want to execute in the background
  * within the run() method. This method will be called when the
@@ -385,8 +386,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
 /**
  * \ingroup core
  * \class QgsTaskManager
- * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
- * or accessed via QgsApplication::taskManager().
+ * \brief Task manager for managing a set of long-running QgsTask tasks.
+ *
+ * This class can be created directly, or accessed via QgsApplication::taskManager().
  */
 class CORE_EXPORT QgsTaskManager : public QObject
 {

@@ -39,6 +39,7 @@ class QgsMapSettings : QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
 The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
+
 The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
 
 In order to set up :py:class:`QgsMapSettings` instance, it is necessary to set at least
