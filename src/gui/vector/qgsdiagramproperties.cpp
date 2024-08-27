@@ -92,9 +92,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
   mDiagramTypeComboBox->blockSignals( true );
-  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) );
-  mDiagramTypeComboBox->addItem( icon, tr( "No Diagrams" ), "None" );
-  icon = QgsApplication::getThemeIcon( QStringLiteral( "pie-chart.svg" ) );
+  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "pie-chart.svg" ) );
   mDiagramTypeComboBox->addItem( icon, tr( "Pie Chart" ), DIAGRAM_NAME_PIE );
   icon = QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) );
   mDiagramTypeComboBox->addItem( icon, tr( "Text Diagram" ), DIAGRAM_NAME_TEXT );
@@ -279,9 +277,6 @@ void QgsDiagramProperties::syncToLayer()
   const QgsDiagramRenderer *dr = mLayer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
-    mDiagramTypeComboBox->blockSignals( true );
-    mDiagramTypeComboBox->setCurrentIndex( 0 );
-    mDiagramTypeComboBox->blockSignals( false );
     mFixedSizeRadio->setChecked( true );
     mDiagramUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
     mDiagramLineUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
@@ -549,96 +544,90 @@ void QgsDiagramProperties::updateProperty()
 
 void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
 {
-  if ( index == 0 )
+  mDiagramFrame->setEnabled( true );
+
+  mDiagramType = mDiagramTypeComboBox->itemData( index ).toString();
+
+  if ( DIAGRAM_NAME_TEXT == mDiagramType )
   {
-    mDiagramFrame->setEnabled( false );
+    mTextOptionsFrame->show();
+    mBackgroundColorLabel->show();
+    mBackgroundColorButton->show();
+    mBackgroundColorDDBtn->show();
+    mDiagramFontButton->show();
   }
   else
   {
-    mDiagramFrame->setEnabled( true );
+    mTextOptionsFrame->hide();
+    mBackgroundColorLabel->hide();
+    mBackgroundColorButton->hide();
+    mBackgroundColorDDBtn->hide();
+    mDiagramFontButton->hide();
+  }
 
-    mDiagramType = mDiagramTypeComboBox->itemData( index ).toString();
+  if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType || DIAGRAM_NAME_STACKED_BAR == mDiagramType )
+  {
+    mBarWidthLabel->show();
+    mBarWidthSpinBox->show();
+    mBarSpacingLabel->show();
+    mBarSpacingSpinBox->show();
+    mBarSpacingUnitComboBox->show();
+    mBarOptionsFrame->show();
+    mShowAxisGroupBox->show();
+    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
+      mAttributeBasedScalingRadio->setChecked( true );
+    mFixedSizeRadio->setEnabled( DIAGRAM_NAME_STACKED_BAR == mDiagramType );
+    mDiagramSizeSpinBox->setEnabled( DIAGRAM_NAME_STACKED_BAR == mDiagramType );
+    mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
+    mSizeLabel->setText( tr( "Bar length" ) );
+    mFrameIncreaseSize->setVisible( false );
+  }
+  else
+  {
+    mBarWidthLabel->hide();
+    mBarWidthSpinBox->hide();
+    mBarSpacingLabel->hide();
+    mBarSpacingSpinBox->hide();
+    mBarSpacingUnitComboBox->hide();
+    mShowAxisGroupBox->hide();
+    mBarOptionsFrame->hide();
+    mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
+    mSizeLabel->setText( tr( "Size" ) );
+    mAttributeBasedScalingRadio->setEnabled( true );
+    mFixedSizeRadio->setEnabled( true );
+    mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
+    mFrameIncreaseSize->setVisible( true );
+  }
 
-    if ( DIAGRAM_NAME_TEXT == mDiagramType )
-    {
-      mTextOptionsFrame->show();
-      mBackgroundColorLabel->show();
-      mBackgroundColorButton->show();
-      mBackgroundColorDDBtn->show();
-      mDiagramFontButton->show();
-    }
-    else
-    {
-      mTextOptionsFrame->hide();
-      mBackgroundColorLabel->hide();
-      mBackgroundColorButton->hide();
-      mBackgroundColorDDBtn->hide();
-      mDiagramFontButton->hide();
-    }
+  if ( DIAGRAM_NAME_TEXT == mDiagramType || DIAGRAM_NAME_PIE == mDiagramType )
+  {
+    mScaleDependencyComboBox->show();
+    mScaleDependencyLabel->show();
+  }
+  else
+  {
+    mScaleDependencyComboBox->hide();
+    mScaleDependencyLabel->hide();
+  }
 
-    if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType || DIAGRAM_NAME_STACKED_BAR == mDiagramType )
-    {
-      mBarWidthLabel->show();
-      mBarWidthSpinBox->show();
-      mBarSpacingLabel->show();
-      mBarSpacingSpinBox->show();
-      mBarSpacingUnitComboBox->show();
-      mBarOptionsFrame->show();
-      mShowAxisGroupBox->show();
-      if ( DIAGRAM_NAME_HISTOGRAM == mDiagramType )
-        mAttributeBasedScalingRadio->setChecked( true );
-      mFixedSizeRadio->setEnabled( DIAGRAM_NAME_STACKED_BAR == mDiagramType );
-      mDiagramSizeSpinBox->setEnabled( DIAGRAM_NAME_STACKED_BAR == mDiagramType );
-      mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, so that the following value matches the specified bar length:" ) );
-      mSizeLabel->setText( tr( "Bar length" ) );
-      mFrameIncreaseSize->setVisible( false );
-    }
-    else
-    {
-      mBarWidthLabel->hide();
-      mBarWidthSpinBox->hide();
-      mBarSpacingLabel->hide();
-      mBarSpacingSpinBox->hide();
-      mBarSpacingUnitComboBox->hide();
-      mShowAxisGroupBox->hide();
-      mBarOptionsFrame->hide();
-      mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
-      mSizeLabel->setText( tr( "Size" ) );
-      mAttributeBasedScalingRadio->setEnabled( true );
-      mFixedSizeRadio->setEnabled( true );
-      mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
-      mFrameIncreaseSize->setVisible( true );
-    }
-
-    if ( DIAGRAM_NAME_TEXT == mDiagramType || DIAGRAM_NAME_PIE == mDiagramType )
-    {
-      mScaleDependencyComboBox->show();
-      mScaleDependencyLabel->show();
-    }
-    else
-    {
-      mScaleDependencyComboBox->hide();
-      mScaleDependencyLabel->hide();
-    }
-
-    if ( DIAGRAM_NAME_PIE == mDiagramType )
-    {
-      mAngleOffsetComboBox->show();
-      mAngleDirectionComboBox->show();
-      mAngleDirectionLabel->show();
-      mAngleOffsetLabel->show();
-      mStartAngleDDBtn->show();
-    }
-    else
-    {
-      mAngleOffsetComboBox->hide();
-      mAngleDirectionComboBox->hide();
-      mAngleDirectionLabel->hide();
-      mAngleOffsetLabel->hide();
-      mStartAngleDDBtn->hide();
-    }
+  if ( DIAGRAM_NAME_PIE == mDiagramType )
+  {
+    mAngleOffsetComboBox->show();
+    mAngleDirectionComboBox->show();
+    mAngleDirectionLabel->show();
+    mAngleOffsetLabel->show();
+    mStartAngleDDBtn->show();
+  }
+  else
+  {
+    mAngleOffsetComboBox->hide();
+    mAngleDirectionComboBox->hide();
+    mAngleDirectionLabel->hide();
+    mAngleOffsetLabel->hide();
+    mStartAngleDDBtn->hide();
   }
 }
+
 QString QgsDiagramProperties::guessLegendText( const QString &expression )
 {
   //trim unwanted characters from expression text for legend
@@ -779,7 +768,7 @@ void QgsDiagramProperties::mEngineSettingsButton_clicked()
 std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings()
 {
   std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings>();
-  ds->enabled = ( mDiagramTypeComboBox->currentIndex() != 0 );
+  ds->enabled = ( mDiagramTypeComboBox->currentIndex() != -1 );
   ds->font = mDiagramFontButton->currentFont();
   ds->opacity = mOpacityWidget->opacity();
 
@@ -938,7 +927,7 @@ QgsDiagramLayerSettings QgsDiagramProperties::createDiagramLayerSettings()
 void QgsDiagramProperties::apply()
 {
   const int index = mDiagramTypeComboBox->currentIndex();
-  const bool diagramsEnabled = ( index != 0 );
+  const bool diagramsEnabled = ( index != -1 );
 
   std::unique_ptr< QgsDiagram > diagram;
 

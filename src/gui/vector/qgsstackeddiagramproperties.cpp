@@ -20,6 +20,7 @@
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 
+#include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
 #include "qgsproject.h"
 #include "qgsstackeddiagram.h"
@@ -43,6 +44,8 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   connect( mSubDiagramsTabWidget->tabBar(), &QTabBar::tabMoved, this, &QgsStackedDiagramProperties::mSubDiagramsTabWidget_tabMoved );
 
   // Initialize stacked diagram controls
+  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "No Diagrams" ), "None" );
   mDiagramTypeComboBox->addItem( tr( "Single diagram" ), QgsDiagramLayerSettings::Single );
   mDiagramTypeComboBox->addItem( tr( "Stacked diagrams" ), QgsDiagramLayerSettings::Stacked );
   mStackedDiagramModeComboBox->addItem( tr( "Horizontal" ), QgsDiagramSettings::Horizontal );
@@ -100,7 +103,19 @@ void QgsStackedDiagramProperties::mSubDiagramsTabWidget_tabMoved( int from, int 
 
 void QgsStackedDiagramProperties::apply()
 {
-  if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
+  if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == "None" )
+  {
+    std::unique_ptr< QgsDiagramRenderer > renderer;
+    mLayer->setDiagramRenderer( renderer.release() );
+
+    QgsDiagramLayerSettings dls;
+    mLayer->setDiagramLayerSettings( dls );
+
+    // refresh
+    QgsProject::instance()->setDirty( true );
+    mLayer->triggerRepaint();
+  }
+  else if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
   {
     static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->apply();
   }
@@ -175,8 +190,9 @@ void QgsStackedDiagramProperties::syncToLayer()
 
 void QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
 {
-  if ( index == 0 )
+  if ( index == 0 ) // No diagram
   {
+    mDiagramsFrame->setEnabled( false );
     mStackedDiagramSettingsFrame->hide();
 
     // Hide tabs other than the first one
@@ -188,11 +204,26 @@ void QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int 
       mSubDiagramsTabWidget->setTabVisible( i, false );
     }
   }
-  else
+  else if ( index == 1 ) // Single
   {
+    mDiagramsFrame->setEnabled( true );
+    mStackedDiagramSettingsFrame->hide();
+
+    // Hide tabs other than the first one
+    for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+    {
+      if ( i < 1 )
+        continue;
+
+      mSubDiagramsTabWidget->setTabVisible( i, false );
+    }
+  }
+  else // Stacked
+  {
+    mDiagramsFrame->setEnabled( true );
     mStackedDiagramSettingsFrame->show();
 
-    // TODO: Create the second tab or show all hidden tabs
+    // Create the second tab or show all hidden tabs
     if ( mSubDiagramsTabWidget->count() == 1 )
     {
       // Add second subdiagram tab
