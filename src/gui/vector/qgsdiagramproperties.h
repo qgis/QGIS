@@ -68,7 +68,6 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void mFindMaximumValueButton_clicked();
     void mRemoveCategoryPushButton_clicked();
     void mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void mEngineSettingsButton_clicked();
     void showAddAttributeExpressionDialog();
     void mDiagramStackedWidget_currentChanged( int index );
     void updatePlacementWidgets();

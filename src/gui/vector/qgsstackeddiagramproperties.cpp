@@ -22,6 +22,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
+#include "qgslabelengineconfigdialog.h"
 #include "qgsproject.h"
 #include "qgsstackeddiagram.h"
 #include "qgsstackeddiagramproperties.h"
@@ -39,6 +40,7 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
 
   setupUi( this );
   connect( mDiagramTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged );
+  connect( mEngineSettingsButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::mEngineSettingsButton_clicked );
   connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagram );
   connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagram );
   connect( mSubDiagramsTabWidget->tabBar(), &QTabBar::tabMoved, this, &QgsStackedDiagramProperties::mSubDiagramsTabWidget_tabMoved );
@@ -239,5 +241,23 @@ void QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int 
         mSubDiagramsTabWidget->setTabVisible( i, true );
       }
     }
+  }
+}
+
+void QgsStackedDiagramProperties::mEngineSettingsButton_clicked()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( mMapCanvas );
+    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsLabelEngineConfigDialog dialog( mMapCanvas, this );
+    dialog.exec();
+    // reactivate button's window
+    activateWindow();
   }
 }

@@ -26,7 +26,6 @@
 #include "qgsdatadefinedsizelegendwidget.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrenderer.h"
-#include "qgslabelengineconfigdialog.h"
 #include "qgsfeatureiterator.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsmapcanvas.h"
@@ -75,7 +74,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   connect( mFindMaximumValueButton, &QPushButton::clicked, this, &QgsDiagramProperties::mFindMaximumValueButton_clicked );
   connect( mRemoveCategoryPushButton, &QPushButton::clicked, this, &QgsDiagramProperties::mRemoveCategoryPushButton_clicked );
   connect( mDiagramAttributesTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked );
-  connect( mEngineSettingsButton, &QPushButton::clicked, this, &QgsDiagramProperties::mEngineSettingsButton_clicked );
   connect( mDiagramStackedWidget, &QStackedWidget::currentChanged, this, &QgsDiagramProperties::mDiagramStackedWidget_currentChanged );
 
   // get rid of annoying outer focus rect on Mac
@@ -744,24 +742,6 @@ void QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked( QTree
 
     case ColumnLegendText:
       break;
-  }
-}
-
-void QgsDiagramProperties::mEngineSettingsButton_clicked()
-{
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( panel && panel->dockMode() )
-  {
-    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( mMapCanvas );
-    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
-    panel->openPanel( widget );
-  }
-  else
-  {
-    QgsLabelEngineConfigDialog dialog( mMapCanvas, this );
-    dialog.exec();
-    // reactivate button's window
-    activateWindow();
   }
 }
 
