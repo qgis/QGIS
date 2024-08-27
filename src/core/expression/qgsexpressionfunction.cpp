@@ -5821,13 +5821,23 @@ static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
-  int avg = ( color.red() + color.green() + color.blue() ) / 3;
-  int alpha = color.alpha();
+  const QVariant variant = values.at( 0 );
+  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
+  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
 
-  color.setRgb( avg, avg, avg, alpha );
+  const float alpha = color.alphaF();
+  if ( color.spec() == QColor::Spec::Cmyk )
+  {
+    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3;
+    color = QColor::fromCmykF( avg, avg, avg, color.blackF(), alpha );
+  }
+  else
+  {
+    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3;
+    color.setRgbF( avg, avg, avg, alpha );
+  }
 
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return isQColor ? QVariant( color ) : QVariant( QgsSymbolLayerUtils::encodeColor( color ) );
 }
 
 static QVariant fcnColorMixRgb( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

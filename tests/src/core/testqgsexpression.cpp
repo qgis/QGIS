@@ -1894,6 +1894,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color cmyk" ) << "color_cmyk(100,50,33,10)" << false << QVariant( "0,115,154" );
       QTest::newRow( "color cmyka" ) << "color_cmyka(50,25,90,60,200)" << false << QVariant( "51,76,10,200" );
       QTest::newRow( "color grayscale average" ) << "color_grayscale_average('255,100,50')" << false << QVariant( "135,135,135,255" );
+      QTest::newRow( "color grayscale average object" ) << "color_grayscale_average(color_rgbf(0.6,0.5,0.1))" << false << QVariant( QColor::fromRgbF( 0.4, 0.4, 0.4 ) );
+      QTest::newRow( "color grayscale average cmyk" ) << "color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))" << false << QVariant( QColor::fromCmykF( 0.4, 0.4, 0.4, 0.8 ) );
       QTest::newRow( "color mix rgb" ) << "color_mix_rgb('0,0,0,100','255,255,255',0.5)" << false << QVariant( "127,127,127,177" );
 
       QTest::newRow( "color part bad color" ) << "color_part('notacolor','red')" << true << QVariant();
