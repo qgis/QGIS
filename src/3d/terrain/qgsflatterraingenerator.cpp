@@ -53,7 +53,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   // create material
 
-  const Qgs3DMapSettings *map = terrain()->map();
+  const Qgs3DMapSettings *map = terrain()->mapSettings();
 
   // create transform
 

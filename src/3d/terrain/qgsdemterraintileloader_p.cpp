@@ -93,7 +93,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
     return nullptr;
   }
 
-  Qgs3DMapSettings *map = terrain()->map();
+  Qgs3DMapSettings *map = terrain()->mapSettings();
   QgsChunkNodeId nodeId = mNode->tileId();
   QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   double x0 = extent.xMinimum() - map->origin().x();
