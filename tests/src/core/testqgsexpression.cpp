@@ -1943,6 +1943,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color darker bad color" ) << "darker('notacolor',150)" << true << QVariant();
       QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
       QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
+      QTest::newRow( "color darker object " ) << "darker(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.76 ) );
+      QTest::newRow( "color darker bad color object" ) << "darker(color_cmykf(1.5,1.5,1.5,1.5),150)" << true << QVariant();
+      QTest::newRow( "color lighter object" ) << "lighter(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.46 ) );
+      QTest::newRow( "color lighter bad color object" ) << "lighter(color_cmykf(1.5,1.5,1.5,1.5),150)" << true << QVariant();
 
       QTest::newRow( "color rgb float" ) << "color_rgbf(1,0.4989,0)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0 ) );
       QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );
@@ -2322,33 +2326,33 @@ class TestQgsExpression: public QObject
           switch ( resultColor.spec() )
           {
             case QColor::Spec::Cmyk:
-              QVERIFY( qgsDoubleNear( resultColor.cyanF(), expectedColor.cyanF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.magentaF(), expectedColor.magentaF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.yellowF(), expectedColor.yellowF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.blackF(), expectedColor.blackF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QVERIFY2( qgsDoubleNear( resultColor.cyanF(), expectedColor.cyanF(), 0.001 ), QString( "cyan: %2!=%3" ).arg( resultColor.cyanF(), 0, 'f', 3 ).arg( expectedColor.cyanF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.magentaF(), expectedColor.magentaF(), 0.001 ), QString( "magenta: %2!=%3" ).arg( resultColor.magentaF(), 0, 'f', 3 ).arg( expectedColor.magentaF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.yellowF(), expectedColor.yellowF(), 0.001 ), QString( "yellow: %2!=%3" ).arg( resultColor.yellowF(), 0, 'f', 3 ).arg( expectedColor.yellowF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.blackF(), expectedColor.blackF(), 0.001 ), QString( "black: %2!=%3" ).arg( resultColor.blackF(), 0, 'f', 3 ).arg( expectedColor.blackF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ), QString( "alpha: %2!=%3" ).arg( resultColor.alphaF(), 0, 'f', 3 ).arg( expectedColor.alphaF(), 0, 'f', 3 ).toLatin1() );
               break;
 
             case QColor::Spec::Hsl:
-              QVERIFY( qgsDoubleNear( resultColor.hslHueF(), expectedColor.hslHueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.hslSaturationF(), expectedColor.hslSaturationF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.lightnessF(), expectedColor.lightnessF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QVERIFY2( qgsDoubleNear( resultColor.hslHueF(), expectedColor.hslHueF(), 0.001 ), QString( "hslHue: %2!=%3" ).arg( resultColor.hslHueF(), 0, 'f', 3 ).arg( expectedColor.hslHueF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.hslSaturationF(), expectedColor.hslSaturationF(), 0.001 ), QString( "hslSaturation: %2!=%3" ).arg( resultColor.hslSaturationF(), 0, 'f', 3 ).arg( expectedColor.hslSaturationF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.lightnessF(), expectedColor.lightnessF(), 0.001 ), QString( "lightness: %2!=%3" ).arg( resultColor.lightnessF(), 0, 'f', 3 ).arg( expectedColor.lightnessF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ), QString( "alpha: %2!=%3" ).arg( resultColor.alphaF(), 0, 'f', 3 ).arg( expectedColor.alphaF(), 0, 'f', 3 ).toLatin1() );
               break;
 
             case QColor::Spec::Hsv:
-              QVERIFY( qgsDoubleNear( resultColor.hsvHueF(), expectedColor.hsvHueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.hsvSaturationF(), expectedColor.hsvSaturationF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.valueF(), expectedColor.valueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QVERIFY2( qgsDoubleNear( resultColor.hsvHueF(), expectedColor.hsvHueF(), 0.001 ), QString( "hsvHue: %2!=%3" ).arg( resultColor.hsvHueF(), 0, 'f', 3 ).arg( expectedColor.hsvHueF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.hsvSaturationF(), expectedColor.hsvSaturationF(), 0.001 ), QString( "hsvSaturation: %2!=%3" ).arg( resultColor.hsvSaturationF(), 0, 'f', 3 ).arg( expectedColor.hsvSaturationF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.valueF(), expectedColor.valueF(), 0.001 ), QString( "value: %2!=%3" ).arg( resultColor.valueF(), 0, 'f', 3 ).arg( expectedColor.valueF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ), QString( "alpha: %2!=%3" ).arg( resultColor.alphaF(), 0, 'f', 3 ).arg( expectedColor.alphaF(), 0, 'f', 3 ).toLatin1() );
               break;
 
             case QColor::Spec::ExtendedRgb:
             case QColor::Spec::Rgb:
-              QVERIFY( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QVERIFY2( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ), QString( "red: %2!=%3" ).arg( resultColor.redF(), 0, 'f', 3 ).arg( expectedColor.redF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ), QString( "green: %2!=%3" ).arg( resultColor.greenF(), 0, 'f', 3 ).arg( expectedColor.greenF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ), QString( "blue: %2!=%3" ).arg( resultColor.blueF(), 0, 'f', 3 ).arg( expectedColor.blueF(), 0, 'f', 3 ).toLatin1() );
+              QVERIFY2( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ), QString( "alpha: %2!=%3" ).arg( resultColor.alphaF(), 0, 'f', 3 ).arg( expectedColor.alphaF(), 0, 'f', 3 ).toLatin1() );
               break;
 
             case QColor::Spec::Invalid:
