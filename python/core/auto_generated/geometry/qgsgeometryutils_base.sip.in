@@ -81,7 +81,7 @@ offset from the segment by the specified ``offset`` amount.
 :param offset: perpendicular offset from segment to apply to point. A negative ``offset`` shifts the point to the left of the segment, while a positive ``offset`` will shift it to the right of the segment.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -311,7 +311,7 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
          - intersection: is the result intersection, of it can be found.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 

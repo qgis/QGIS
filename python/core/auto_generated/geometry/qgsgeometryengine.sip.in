@@ -26,7 +26,7 @@ a large number of spatial relationships will be tested (such as calling :py:func
 geometry should first be prepared by calling :py:func:`~prepareGeometry` before performing the tests.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 

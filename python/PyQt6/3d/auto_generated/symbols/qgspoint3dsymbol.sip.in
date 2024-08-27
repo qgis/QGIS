@@ -126,47 +126,47 @@ Sets a key-value dictionary of point shape ``properties``.
 The available properties depend on the point :py:func:`~QgsPoint3DSymbol.shape`.
 
 Cylinders (:py:class:`Qgis`.Point3DShape.Cylinder)
---------------------------------------
+--------------------------------------------------------------------
 
 - ``radius``
 - ``length``
 
 Spheres (:py:class:`Qgis`.Point3DShape.Sphere)
-----------------------------------
+----------------------------------------------------------------
 
 - ``radius``
 
 Cones (:py:class:`Qgis`.Point3DShape.Cone)
-------------------------------
+------------------------------------------------------------
 
 - ``length``
 - ``topRadius``
 - ``bottomRadius``
 
 Cubes (:py:class:`Qgis`.Point3DShape.Cube)
-------------------------------
+------------------------------------------------------------
 
 - ``size``
 
 Torus (:py:class:`Qgis`.Point3DShape.Torus)
--------------------------------
+-------------------------------------------------------------
 
 - ``radius``
 - ``minorRadius``
 
 Flat Planes (:py:class:`Qgis`.Point3DShape.Plane)
--------------------------------------
+-------------------------------------------------------------------
 
 - ``size``
 
 Extruded Text (:py:class:`Qgis`.Point3DShape.ExtrudedText)
-----------------------------------------------
+----------------------------------------------------------------------------
 
 - ``depth``
 - ``text`` (string)
 
 Models (:py:class:`Qgis`.Point3DShape.Model)
---------------------------------
+--------------------------------------------------------------
 
 - ``model`` (path to model file)
 

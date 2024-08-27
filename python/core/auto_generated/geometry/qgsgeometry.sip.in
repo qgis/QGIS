@@ -237,7 +237,7 @@ The first list of :py:class:`QgsPointXY` objects specifies the exterior ring of 
 lists specify any interior rings.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -448,7 +448,7 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
    modified using the iterator. See :py:func:`~QgsGeometry.transformVertices` for a safe method to modify vertices "in-place".
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -475,7 +475,7 @@ This method forces a detach. Use :py:func:`~QgsGeometry.constParts` to avoid the
 if the parts are not going to be modified.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -516,7 +516,7 @@ Unlike :py:func:`~QgsGeometry.parts`, this method does not force a detach and is
 iteration only is required.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -2951,7 +2951,7 @@ a large number of spatial relationships will be tested (such as calling :py:func
 geometry should first be prepared by calling :py:func:`~QgsGeometry.prepareGeometry` before performing the tests.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 

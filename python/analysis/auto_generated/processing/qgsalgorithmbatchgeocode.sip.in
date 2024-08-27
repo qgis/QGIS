@@ -18,7 +18,7 @@ A base class for batch geocoder algorithms, which takes a :py:class:`QgsGeocoder
 a Processing algorithm for batch geocoding operations.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
