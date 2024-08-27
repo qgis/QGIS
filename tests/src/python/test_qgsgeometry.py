@@ -6903,6 +6903,14 @@ class TestQgsGeometry(QgisTestCase):
                                        QgsWkbTypes.Type.MultiCurve),
                          ['MultiCurve (LineString (0 0, 1 1))'])
 
+        # Polygon to PolyhedralSurface
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 5 5, 1 1))',
+                                       QgsWkbTypes.Type.PolyhedralSurface),
+                         ['PolyhedralSurface (((1 1, 1 2, 2 2, 5 5, 1 1)))'])
+        self.assertEqual(coerce_to_wkt('Polygon Z((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2))',
+                                       QgsWkbTypes.Type.PolyhedralSurfaceZ),
+                         ['PolyhedralSurfaceZ (((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2)))'])
+
     def testTriangularWaves(self):
         """Test triangular waves"""
         self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').triangularWaves(1, 2).asWkt(3), 'Point (1 1)')
