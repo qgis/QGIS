@@ -49,7 +49,7 @@
            <string>Add subdiagram to the stacked diagram</string>
           </property>
           <property name="text">
-           <string/>
+           <string>Add subdiagram</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -69,7 +69,7 @@
            <string>Remove subdiagram from the stacked diagram</string>
           </property>
           <property name="text">
-           <string/>
+           <string>Remove subdiagram</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">

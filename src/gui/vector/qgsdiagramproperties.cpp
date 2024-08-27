@@ -775,40 +775,12 @@ void QgsDiagramProperties::mEngineSettingsButton_clicked()
   }
 }
 
-void QgsDiagramProperties::apply()
+std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings()
 {
-  const int index = mDiagramTypeComboBox->currentIndex();
-  const bool diagramsEnabled = ( index != 0 );
-
-  std::unique_ptr< QgsDiagram > diagram;
-
-  if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
-  {
-    QMessageBox::warning( this, tr( "Diagrams: No attributes added." ),
-                          tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ) );
-  }
-
-  if ( mDiagramType == DIAGRAM_NAME_TEXT )
-  {
-    diagram = std::make_unique< QgsTextDiagram >();
-  }
-  else if ( mDiagramType == DIAGRAM_NAME_PIE )
-  {
-    diagram = std::make_unique< QgsPieDiagram >();
-  }
-  else if ( mDiagramType == DIAGRAM_NAME_STACKED_BAR )
-  {
-    diagram = std::make_unique< QgsStackedBarDiagram >();
-  }
-  else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
-  {
-    diagram = std::make_unique< QgsHistogramDiagram >();
-  }
-
-  QgsDiagramSettings ds;
-  ds.enabled = ( mDiagramTypeComboBox->currentIndex() != 0 );
-  ds.font = mDiagramFontButton->currentFont();
-  ds.opacity = mOpacityWidget->opacity();
+  std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings>();
+  ds->enabled = ( mDiagramTypeComboBox->currentIndex() != 0 );
+  ds->font = mDiagramFontButton->currentFont();
+  ds->opacity = mOpacityWidget->opacity();
 
   QList<QColor> categoryColors;
   QList<QString> categoryAttributes;
@@ -823,64 +795,69 @@ void QgsDiagramProperties::apply()
     categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, RoleAttributeExpression ).toString() );
     categoryLabels.append( mDiagramAttributesTreeWidget->topLevelItem( i )->text( 2 ) );
   }
-  ds.categoryColors = categoryColors;
-  ds.categoryAttributes = categoryAttributes;
-  ds.categoryLabels = categoryLabels;
-  ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
-  ds.sizeType = mDiagramUnitComboBox->unit();
-  ds.sizeScale = mDiagramUnitComboBox->getMapUnitScale();
-  ds.lineSizeUnit = mDiagramLineUnitComboBox->unit();
-  ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
-  ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->currentData().toInt() );
-  ds.scaleByArea = ( mDiagramType == DIAGRAM_NAME_STACKED_BAR ) ? false : mScaleDependencyComboBox->currentData().toBool();
+  ds->categoryColors = categoryColors;
+  ds->categoryAttributes = categoryAttributes;
+  ds->categoryLabels = categoryLabels;
+  ds->size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
+  ds->sizeType = mDiagramUnitComboBox->unit();
+  ds->sizeScale = mDiagramUnitComboBox->getMapUnitScale();
+  ds->lineSizeUnit = mDiagramLineUnitComboBox->unit();
+  ds->lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
+  ds->labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->currentData().toInt() );
+  ds->scaleByArea = ( mDiagramType == DIAGRAM_NAME_STACKED_BAR ) ? false : mScaleDependencyComboBox->currentData().toBool();
 
   if ( mIncreaseSmallDiagramsCheck->isChecked() )
   {
-    ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
+    ds->minimumSize = mIncreaseMinimumSizeSpinBox->value();
   }
   else
   {
-    ds.minimumSize = 0;
+    ds->minimumSize = 0;
   }
 
-  ds.backgroundColor = mBackgroundColorButton->color();
-  ds.penColor = mDiagramPenColorButton->color();
-  ds.penWidth = mPenWidthSpinBox->value();
-  ds.minimumScale = mScaleRangeWidget->minimumScale();
-  ds.maximumScale = mScaleRangeWidget->maximumScale();
-  ds.scaleBasedVisibility = mScaleVisibilityGroupBox->isChecked();
+  ds->backgroundColor = mBackgroundColorButton->color();
+  ds->penColor = mDiagramPenColorButton->color();
+  ds->penWidth = mPenWidthSpinBox->value();
+  ds->minimumScale = mScaleRangeWidget->minimumScale();
+  ds->maximumScale = mScaleRangeWidget->maximumScale();
+  ds->scaleBasedVisibility = mScaleVisibilityGroupBox->isChecked();
 
   // Diagram angle offset (pie)
-  ds.rotationOffset = mAngleOffsetComboBox->currentData().toInt();
-  ds.setDirection( static_cast< QgsDiagramSettings::Direction>( mAngleDirectionComboBox->currentData().toInt() ) );
+  ds->rotationOffset = mAngleOffsetComboBox->currentData().toInt();
+  ds->setDirection( static_cast< QgsDiagramSettings::Direction>( mAngleDirectionComboBox->currentData().toInt() ) );
 
   // Diagram orientation (histogram)
-  ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
+  ds->diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
 
-  ds.barWidth = mBarWidthSpinBox->value();
+  ds->barWidth = mBarWidthSpinBox->value();
 
-  ds.setAxisLineSymbol( mAxisLineStyleButton->clonedSymbol< QgsLineSymbol >() );
-  ds.setShowAxis( mShowAxisGroupBox->isChecked() );
+  ds->setAxisLineSymbol( mAxisLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  ds->setShowAxis( mShowAxisGroupBox->isChecked() );
 
-  ds.setSpacing( mBarSpacingSpinBox->value() );
-  ds.setSpacingUnit( mBarSpacingUnitComboBox->unit() );
-  ds.setSpacingMapUnitScale( mBarSpacingUnitComboBox->getMapUnitScale() );
+  ds->setSpacing( mBarSpacingSpinBox->value() );
+  ds->setSpacingUnit( mBarSpacingUnitComboBox->unit() );
+  ds->setSpacingMapUnitScale( mBarSpacingUnitComboBox->getMapUnitScale() );
 
   if ( mPaintEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) || mPaintEffect->enabled() ) )
-    ds.setPaintEffect( mPaintEffect->clone() );
+    ds->setPaintEffect( mPaintEffect->clone() );
   else
-    ds.setPaintEffect( nullptr );
+    ds->setPaintEffect( nullptr );
 
-  QgsDiagramRenderer *renderer = nullptr;
+  return ds;
+}
+
+std::unique_ptr<QgsDiagramRenderer> QgsDiagramProperties::createRendererBaseInfo( const QgsDiagramSettings &ds )
+{
+  std::unique_ptr< QgsDiagramRenderer > renderer;
   if ( mFixedSizeRadio->isChecked() )
   {
-    QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+    std::unique_ptr< QgsSingleCategoryDiagramRenderer > dr = std::make_unique< QgsSingleCategoryDiagramRenderer >();
     dr->setDiagramSettings( ds );
-    renderer = dr;
+    renderer = std::move( dr );
   }
   else
   {
-    QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+    std::unique_ptr< QgsLinearlyInterpolatedDiagramRenderer > dr = std::make_unique< QgsLinearlyInterpolatedDiagramRenderer >();
     dr->setLowerValue( 0.0 );
     dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
     dr->setUpperValue( mMaxValueSpinBox->value() );
@@ -901,12 +878,15 @@ void QgsDiagramProperties::apply()
 
     dr->setDataDefinedSizeLegend( mSizeLegend ? new QgsDataDefinedSizeLegend( *mSizeLegend ) : nullptr );
 
-    renderer = dr;
+    renderer = std::move( dr );
   }
-  renderer->setDiagram( diagram.release() );
-  renderer->setAttributeLegend( mCheckBoxAttributeLegend->isChecked() );
-  mLayer->setDiagramRenderer( renderer );
 
+  renderer->setAttributeLegend( mCheckBoxAttributeLegend->isChecked() );
+  return renderer;
+}
+
+QgsDiagramLayerSettings QgsDiagramProperties::createDiagramLayerSettings()
+{
   QgsDiagramLayerSettings dls;
   dls.setDataDefinedProperties( mDataDefinedProperties );
   dls.setDistance( mDiagramDistanceSpinBox->value() );
@@ -951,6 +931,45 @@ void QgsDiagramProperties::apply()
     flags |= QgsDiagramLayerSettings::MapOrientation;
   dls.setLinePlacementFlags( flags );
 
+  return dls;
+}
+
+void QgsDiagramProperties::apply()
+{
+  const int index = mDiagramTypeComboBox->currentIndex();
+  const bool diagramsEnabled = ( index != 0 );
+
+  std::unique_ptr< QgsDiagram > diagram;
+
+  if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
+  {
+    QMessageBox::warning( this, tr( "Diagrams: No attributes added." ),
+                          tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ) );
+  }
+
+  if ( mDiagramType == DIAGRAM_NAME_TEXT )
+  {
+    diagram = std::make_unique< QgsTextDiagram >();
+  }
+  else if ( mDiagramType == DIAGRAM_NAME_PIE )
+  {
+    diagram = std::make_unique< QgsPieDiagram >();
+  }
+  else if ( mDiagramType == DIAGRAM_NAME_STACKED_BAR )
+  {
+    diagram = std::make_unique< QgsStackedBarDiagram >();
+  }
+  else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
+  {
+    diagram = std::make_unique< QgsHistogramDiagram >();
+  }
+
+  std::unique_ptr< QgsDiagramSettings > ds = createDiagramSettings();
+  std::unique_ptr< QgsDiagramRenderer > renderer = createRendererBaseInfo( *ds );
+  renderer->setDiagram( diagram.release() );
+  mLayer->setDiagramRenderer( renderer.release() );
+
+  QgsDiagramLayerSettings dls = createDiagramLayerSettings();
   mLayer->setDiagramLayerSettings( dls );
 
   // refresh

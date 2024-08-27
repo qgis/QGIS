@@ -120,6 +120,29 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QgsExpressionContext createExpressionContext() const override;
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key );
+
+    /**
+     * Creates a QgsDiagramSettings object from the GUI settings.
+     *
+     * \since QGIS 3.40
+     */
+    std::unique_ptr<QgsDiagramSettings> createDiagramSettings();
+
+    /**
+     * Creates a QgsDiagramRenderer object from the GUI settings.
+     *
+     * \since QGIS 3.40
+     */
+    std::unique_ptr<QgsDiagramRenderer> createRendererBaseInfo( const QgsDiagramSettings &ds );
+
+    /**
+     * Creates a QgsDiagramLayerSettings object from the GUI settings.
+     *
+     * \since QGIS 3.40
+     */
+    QgsDiagramLayerSettings createDiagramLayerSettings();
+
+    friend class QgsStackedDiagramProperties;
 };
 
 

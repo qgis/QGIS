@@ -15,9 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsstackeddiagramproperties.h"
-#include "qgsdiagramproperties.h"
+#include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgspiediagram.h"
+#include "diagram/qgstextdiagram.h"
+#include "diagram/qgsstackedbardiagram.h"
 
+#include "qgsdiagramproperties.h"
+#include "qgsproject.h"
+#include "qgsstackeddiagram.h"
+#include "qgsstackeddiagramproperties.h"
+#include "qgsvectorlayer.h"
 
 QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas )
   : QWidget{parent}
@@ -55,22 +62,11 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
 
 void QgsStackedDiagramProperties::addSubDiagram()
 {
-  if ( mSubDiagramsTabWidget->count() == 0 )
-  {
-    defaultDiagram = new QgsDiagramProperties( mLayer, this, mMapCanvas );
-    defaultDiagram->layout()->setContentsMargins( 6, 6, 6, 6 );
-    connect( defaultDiagram, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
+  QgsDiagramProperties *gui = new QgsDiagramProperties( mLayer, this, mMapCanvas );
+  gui->layout()->setContentsMargins( 6, 6, 6, 6 );
+  connect( gui, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
 
-    mSubDiagramsTabWidget->addTab( defaultDiagram, tr( "Diagram 1" ) );
-  }
-  else
-  {
-    QgsDiagramProperties *gui = new QgsDiagramProperties( mLayer, this, mMapCanvas );
-    gui->layout()->setContentsMargins( 6, 6, 6, 6 );
-    connect( gui, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
-
-    mSubDiagramsTabWidget->addTab( gui, tr( "Diagram %1" ).arg( mSubDiagramsTabWidget->count() + 1 ) );
-  }
+  mSubDiagramsTabWidget->addTab( gui, tr( "Diagram %1" ).arg( mSubDiagramsTabWidget->count() + 1 ) );
 
   mRemoveSubDiagramButton->setEnabled( mSubDiagramsTabWidget->count() > 2 );
 }
@@ -95,15 +91,66 @@ void QgsStackedDiagramProperties::apply()
 {
   if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
   {
-    defaultDiagram->apply();
+    static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->apply();
   }
-  else
+  else // Stacked diagram
   {
-    // Get DiagramSettings from each subdiagram
+    // TODO: Validate that we have at least 2 diagrams
+
     // Create DiagramSetings for the StackedDiagram
+    std::unique_ptr< QgsDiagramSettings> ds = std::make_unique<QgsDiagramSettings>();
+    ds->stackedDiagramMode = static_cast<QgsDiagramSettings::StackedDiagramMode>( mStackedDiagramModeComboBox->currentData().toInt() );
+    ds->setStackedDiagramSpacingUnit( mStackedDiagramSpacingUnitComboBox->unit() );
+    ds->setStackedDiagramSpacing( mStackedDiagramSpacingSpinBox->value() );
+
     // Add subdiagrams with their DiagramSettings to StackedDiagram
+    std::unique_ptr< QgsStackedDiagram > stackedDiagram = std::make_unique< QgsStackedDiagram >();
+
+    // Get DiagramSettings from each subdiagram
+    for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+    {
+      QgsDiagramProperties *diagramProperties = static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( i ) );
+      std::unique_ptr< QgsDiagramSettings > ds1 = diagramProperties->createDiagramSettings();
+      ds->categoryAttributes += ds1->categoryAttributes;
+      ds->categoryLabels += ds1->categoryLabels;
+      ds->categoryColors += ds1->categoryColors;
+
+      std::unique_ptr< QgsDiagram > diagram;
+
+      if ( diagramProperties->mDiagramType == DIAGRAM_NAME_TEXT )
+      {
+        diagram = std::make_unique< QgsTextDiagram >();
+      }
+      else if ( diagramProperties->mDiagramType == DIAGRAM_NAME_PIE )
+      {
+        diagram = std::make_unique< QgsPieDiagram >();
+      }
+      else if ( diagramProperties->mDiagramType == DIAGRAM_NAME_STACKED_BAR )
+      {
+        diagram = std::make_unique< QgsStackedBarDiagram >();
+      }
+      else // if ( diagramProperties->mDiagramType == DIAGRAM_NAME_HISTOGRAM )
+      {
+        diagram = std::make_unique< QgsHistogramDiagram >();
+      }
+      stackedDiagram->addSubDiagram( diagram.release(), ds1.release() );
+    }
+
+    // Get first diagram to configure some stacked diagram settings from it
+    QgsDiagramProperties *firstDiagramProperties = static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) );
+
     // Create DiagramRenderer using info from first diagram and setting Stacked Diagram and the stacked diagram's DiagramSettings
+    std::unique_ptr< QgsDiagramRenderer > renderer = firstDiagramProperties->createRendererBaseInfo( *ds );
+    renderer->setDiagram( stackedDiagram.release() );
+    mLayer->setDiagramRenderer( renderer.release() );
+
     // Create DiagramLayerSettings from first diagram
+    QgsDiagramLayerSettings dls = firstDiagramProperties->createDiagramLayerSettings();
+    mLayer->setDiagramLayerSettings( dls );
+
+    // refresh
+    QgsProject::instance()->setDirty( true );
+    mLayer->triggerRepaint();
   }
 }
 
@@ -111,7 +158,7 @@ void QgsStackedDiagramProperties::syncToLayer()
 {
   if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
   {
-    defaultDiagram->syncToLayer();
+    static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->syncToLayer();
   }
 }
 
