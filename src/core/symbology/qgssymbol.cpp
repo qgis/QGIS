@@ -2317,3 +2317,16 @@ Qgis::SymbolRenderHints QgsSymbol::renderHints() const
   return hints;
 
 }
+
+Qgis::SymbolFlags QgsSymbol::flags() const
+{
+  Qgis::SymbolFlags res = mSymbolFlags;
+  for ( const QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->flags() & Qgis::SymbolLayerFlag::AffectsLabeling )
+    {
+      res.setFlag( Qgis::SymbolFlag::AffectsLabeling );
+    }
+  }
+  return res;
+}

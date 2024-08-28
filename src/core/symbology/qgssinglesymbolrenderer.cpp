@@ -44,6 +44,14 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   Q_ASSERT( symbol );
 }
 
+Qgis::FeatureRendererFlags QgsSingleSymbolRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  if ( mSymbol && mSymbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+  return res;
+}
+
 QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer() = default;
 
 QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const

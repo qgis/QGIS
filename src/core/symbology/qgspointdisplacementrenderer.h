@@ -47,6 +47,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      */
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
+    Qgis::FeatureRendererFlags flags() const override;
     QgsPointDisplacementRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;

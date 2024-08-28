@@ -25,6 +25,8 @@ of ``symbol`` is transferred to the renderer.
 %End
     ~QgsSingleSymbolRenderer();
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;

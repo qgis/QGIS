@@ -40,7 +40,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      */
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-
+    Qgis::FeatureRendererFlags flags() const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
 
