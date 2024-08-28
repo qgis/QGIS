@@ -38,7 +38,33 @@ def process_file(file_path):
 
         if re.match(r'^\s*(?:#ifdef|#ifndef|#else|#endif)', line):
             output.append(line)
-        elif match := re.match(r'^(\s*)//!\s*(.*?)$', line):
+            i += 1
+            continue
+
+        if match := re.match(r'^(\s*)/\*[*!]\s*([^\s*].*)\s*$', line):
+            # Convert blocks starting with /*! format to /** standard,
+            # and convert
+            # /**Some docs
+            # to
+            # /**
+            #  * Some docs
+            indent, content = match.groups()
+            output.append(f'{indent}/**')
+            line = f'{indent} * {content[0].upper()}{content[1:]}'
+
+        if match := re.match(r'^(.*)/\*[!*](?!\*)(<*)[ \t\r\n\f]*(.*?)[ \t\r\n\f]*\*/[ \t\r\n\f]*$', line):
+            # Convert single line doxygen blocks:
+            #  /*!< comment */   to   //!< comment
+            #  /** comment */    to   //! comment
+            prefix, tag, content = match.groups()
+            line = f'{prefix}//!{tag} {content}'
+
+        if match := re.match(r'^(.*)//!<\s*(.)(.*)$', line):
+            # Uppercase initial character in //!< comment
+            prefix, first, remaining = match.groups()
+            line = f'{prefix}//!< {first.upper()}{remaining}'
+
+        if match := re.match(r'^(\s*)//!\s*(.*?)$', line):
             indentation, comment = match.groups()
             # found a //! comment
             # check next line to see if it also begins with //!
