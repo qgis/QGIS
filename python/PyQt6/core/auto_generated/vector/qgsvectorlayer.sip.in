@@ -2282,13 +2282,22 @@ Returns the configuration flags of the field at given index
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
 %Docstring
-\copydoc editorWidgetSetup
+Sets the editor widget ``setup`` for the field at the specified ``index``.
+
+The editor widget setup defines which :py:class:`QgsFieldFormatter` and editor widget will be used
+for the field.
+
+.. seealso:: :py:func:`editorWidgetSetup`
 %End
 
     QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 %Docstring
+Returns the editor widget setup for the field at the specified ``index``.
+
 The editor widget setup defines which :py:class:`QgsFieldFormatter` and editor widget will be used
-for the field at `index`.
+for the field.
+
+.. seealso:: :py:func:`setEditorWidgetSetup`
 %End
 
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const ${SIP_FINAL};

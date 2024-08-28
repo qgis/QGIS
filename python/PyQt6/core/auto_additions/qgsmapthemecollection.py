@@ -4,7 +4,7 @@ try:
 except NameError:
     pass
 try:
-    QgsMapThemeCollection.__attribute_docs__ = {'mapThemesChanged': 'Emitted when map themes within the collection are changed.\n', 'mapThemeChanged': 'Emitted when a map theme changes definition.\n', 'mapThemeRenamed': 'Emitted when a map theme within the collection is renamed.\n\n.. versionadded:: 3.14\n', 'projectChanged': 'Emitted when the project changes\n\n\\copydoc :py:func:`~QgsMapThemeCollection.project`\n'}
+    QgsMapThemeCollection.__attribute_docs__ = {'mapThemesChanged': 'Emitted when map themes within the collection are changed.\n', 'mapThemeChanged': 'Emitted when a map theme changes definition.\n', 'mapThemeRenamed': 'Emitted when a map theme within the collection is renamed.\n\n.. versionadded:: 3.14\n', 'projectChanged': 'Emitted when the project changes\n\n.. seealso:: :py:func:`project`\n\n.. seealso:: :py:func:`setProject`\n'}
 except NameError:
     pass
 QgsMapThemeCollection.createThemeFromCurrentState = staticmethod(QgsMapThemeCollection.createThemeFromCurrentState)

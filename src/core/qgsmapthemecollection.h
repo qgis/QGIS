@@ -324,13 +324,18 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void applyTheme( const QString &name, QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
 
     /**
-     * The QgsProject on which this map theme collection works.
+     * Returns the QgsProject on which this map theme collection works.
      *
+     * \see setProject()
+     * \see projectChanged()
      */
     QgsProject *project();
 
     /**
-     * \copydoc project()
+     * Sets the \a project on which this map theme collection works.
+     *
+     * \see project()
+     * \see projectChanged()
      */
     void setProject( QgsProject *project );
 
@@ -370,7 +375,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Emitted when the project changes
      *
-     * \copydoc project()
+     * \see project()
+     * \see setProject()
      */
     void projectChanged();
 
