@@ -211,7 +211,7 @@ Aborts the network request immediately.
 
   signals:
 
-    void downloadProgress( qint64, qint64 );
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 %Docstring
 Emitted when when data arrives during a request.
 %End
@@ -225,7 +225,7 @@ Emitted once a request has finished downloading.
    Use the :py:func:`~QgsBlockingNetworkRequest.finished` signal instead.
 %End
 
-    void uploadProgress( qint64, qint64 );
+    void uploadProgress( qint64 bytesReceived, qint64 bytesTotal );
 %Docstring
 Emitted when when data are sent during a request.
 

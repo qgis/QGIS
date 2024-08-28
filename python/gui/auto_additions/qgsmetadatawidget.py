@@ -8,3 +8,7 @@ QgsMetadataWidget.parseLicenses = staticmethod(QgsMetadataWidget.parseLicenses)
 QgsMetadataWidget.parseLinkTypes = staticmethod(QgsMetadataWidget.parseLinkTypes)
 QgsMetadataWidget.parseMimeTypes = staticmethod(QgsMetadataWidget.parseMimeTypes)
 QgsMetadataWidget.parseTypes = staticmethod(QgsMetadataWidget.parseTypes)
+try:
+    QgsMetadataWidget.__signal_arguments__ = {'titleChanged': ['title: str']}
+except NameError:
+    pass

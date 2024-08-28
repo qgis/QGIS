@@ -5,6 +5,10 @@ QgsExternalResourceWidget.Web = QgsExternalResourceWidget.DocumentViewerContent.
 QgsExternalResourceWidget.Audio = QgsExternalResourceWidget.DocumentViewerContent.Audio
 QgsExternalResourceWidget.Video = QgsExternalResourceWidget.DocumentViewerContent.Video
 try:
-    QgsExternalResourceWidget.__attribute_docs__ = {'valueChanged': 'emitteed as soon as the current document changes\n'}
+    QgsExternalResourceWidget.__attribute_docs__ = {'valueChanged': 'Emitted as soon as the current document changes\n'}
+except NameError:
+    pass
+try:
+    QgsExternalResourceWidget.__signal_arguments__ = {'valueChanged': ['value: str']}
 except NameError:
     pass

@@ -29,6 +29,10 @@ QgsLayerTreeModel.index2legendNode = staticmethod(QgsLayerTreeModel.index2legend
 QgsLayerTreeModel.scaleIconSize = staticmethod(QgsLayerTreeModel.scaleIconSize)
 QgsLayerTreeModel.iconGroup = staticmethod(QgsLayerTreeModel.iconGroup)
 try:
+    QgsLayerTreeModel.__signal_arguments__ = {'messageEmitted': ['message: str', 'level: Qgis.MessageLevel = Qgis.MessageLevel.Info', 'duration: int = 5']}
+except NameError:
+    pass
+try:
     QgsLayerTreeModel.__group__ = ['layertree']
 except NameError:
     pass

@@ -61,6 +61,10 @@ try:
 except NameError:
     pass
 try:
+    QgsBrowserModel.__signal_arguments__ = {'stateChanged': ['index: QModelIndex', 'oldState: Qgis.BrowserItemState'], 'connectionsChanged': ['providerKey: str']}
+except NameError:
+    pass
+try:
     QgsBrowserModel.__group__ = ['browser']
 except NameError:
     pass

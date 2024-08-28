@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSensorManager.__signal_arguments__ = {'sensorAdded': ['id: str'], 'sensorAboutToBeRemoved': ['id: str'], 'sensorRemoved': ['id: str'], 'sensorNameChanged': ['id: str'], 'sensorStatusChanged': ['id: str'], 'sensorDataCaptured': ['id: str'], 'sensorErrorOccurred': ['id: str']}
+except NameError:
+    pass
+try:
     QgsSensorManager.__group__ = ['sensor']
 except NameError:
     pass

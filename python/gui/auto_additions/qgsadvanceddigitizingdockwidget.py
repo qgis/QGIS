@@ -6,3 +6,7 @@ try:
 except NameError:
     pass
 QgsAdvancedDigitizingDockWidget.CadConstraint.removeSuffix = staticmethod(QgsAdvancedDigitizingDockWidget.CadConstraint.removeSuffix)
+try:
+    QgsAdvancedDigitizingDockWidget.__signal_arguments__ = {'pushWarning': ['message: str'], 'pointChangedV2': ['point: QgsPoint'], 'cadEnabledChanged': ['enabled: bool'], 'valueXChanged': ['value: str'], 'valueYChanged': ['value: str'], 'valueZChanged': ['value: str'], 'valueMChanged': ['value: str'], 'valueAngleChanged': ['value: str'], 'valueDistanceChanged': ['value: str'], 'valueBearingChanged': ['value: str'], 'lockXChanged': ['locked: bool'], 'lockYChanged': ['locked: bool'], 'lockZChanged': ['locked: bool'], 'lockMChanged': ['locked: bool'], 'lockAngleChanged': ['locked: bool'], 'lockDistanceChanged': ['locked: bool'], 'relativeXChanged': ['relative: bool'], 'relativeYChanged': ['relative: bool'], 'relativeZChanged': ['relative: bool'], 'relativeMChanged': ['relative: bool'], 'relativeAngleChanged': ['relative: bool'], 'softLockLineExtensionChanged': ['locked: bool'], 'softLockXyChanged': ['locked: bool'], 'enabledChangedX': ['enabled: bool'], 'enabledChangedY': ['enabled: bool'], 'enabledChangedZ': ['enabled: bool'], 'enabledChangedM': ['enabled: bool'], 'enabledChangedAngle': ['enabled: bool'], 'enabledChangedDistance': ['enabled: bool'], 'valueCommonAngleSnappingChanged': ['angle: float']}
+except NameError:
+    pass

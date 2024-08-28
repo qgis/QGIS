@@ -3,3 +3,7 @@ try:
     QgsFieldComboBox.__attribute_docs__ = {'fieldChanged': 'Emitted when the currently selected field changes.\n'}
 except NameError:
     pass
+try:
+    QgsFieldComboBox.__signal_arguments__ = {'fieldChanged': ['fieldName: str']}
+except NameError:
+    pass

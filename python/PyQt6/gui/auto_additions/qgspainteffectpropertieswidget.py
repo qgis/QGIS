@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsPaintEffectPropertiesWidget.__signal_arguments__ = {'changeEffect': ['effect: QgsPaintEffect']}
+except NameError:
+    pass
+try:
     QgsPaintEffectPropertiesWidget.__group__ = ['effects']
 except NameError:
     pass

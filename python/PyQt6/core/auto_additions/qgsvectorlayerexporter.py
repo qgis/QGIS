@@ -6,6 +6,10 @@ except NameError:
 QgsVectorLayerExporter.exportLayer = staticmethod(QgsVectorLayerExporter.exportLayer)
 QgsVectorLayerExporterTask.withLayerOwnership = staticmethod(QgsVectorLayerExporterTask.withLayerOwnership)
 try:
+    QgsVectorLayerExporterTask.__signal_arguments__ = {'errorOccurred': ['error: Qgis.VectorExportResult', 'errorMessage: str']}
+except NameError:
+    pass
+try:
     QgsVectorLayerExporter.__group__ = ['vector']
 except NameError:
     pass

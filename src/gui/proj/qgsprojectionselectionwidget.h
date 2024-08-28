@@ -200,7 +200,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     /**
      * Emitted when the selected CRS is changed
      */
-    void crsChanged( const QgsCoordinateReferenceSystem & );
+    void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Emitted when the not set option is selected.

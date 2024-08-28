@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsFeatureListView.__signal_arguments__ = {'currentEditSelectionChanged': ['feat: QgsFeature'], 'currentEditSelectionProgressChanged': ['progress: int', 'count: int'], 'displayExpressionChanged': ['expression: str'], 'willShowContextMenu': ['menu: QgsActionMenu', 'atIndex: QModelIndex']}
+except NameError:
+    pass
+try:
     QgsFeatureListView.__group__ = ['attributetable']
 except NameError:
     pass

@@ -23,6 +23,10 @@ try:
 except NameError:
     pass
 try:
+    QgsModelComponentGraphicItem.__signal_arguments__ = {'aboutToChange': ['text: str', 'id: int = 0']}
+except NameError:
+    pass
+try:
     QgsModelComponentGraphicItem.__group__ = ['processing', 'models']
 except NameError:
     pass

@@ -8,3 +8,7 @@ try:
 except NameError:
     pass
 QgsMapThemeCollection.createThemeFromCurrentState = staticmethod(QgsMapThemeCollection.createThemeFromCurrentState)
+try:
+    QgsMapThemeCollection.__signal_arguments__ = {'mapThemeChanged': ['theme: str'], 'mapThemeRenamed': ['name: str', 'newName: str']}
+except NameError:
+    pass

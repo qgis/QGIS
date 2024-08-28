@@ -8,6 +8,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProcessingRegistry.__signal_arguments__ = {'providerAdded': ['id: str'], 'providerRemoved': ['id: str'], 'parameterTypeAdded': ['type: QgsProcessingParameterType'], 'parameterTypeRemoved': ['type: QgsProcessingParameterType']}
+except NameError:
+    pass
+try:
     QgsProcessingAlgorithmInformation.__group__ = ['processing']
 except NameError:
     pass

@@ -5,6 +5,10 @@ except NameError:
     pass
 QgsFontDownloadDetails.standardizeFamily = staticmethod(QgsFontDownloadDetails.standardizeFamily)
 try:
+    QgsFontManager.__signal_arguments__ = {'fontDownloaded': ['families: List[str]', 'licenseDetails: str'], 'fontDownloadErrorOccurred': ['url: QUrl', 'identifier: str', 'error: str']}
+except NameError:
+    pass
+try:
     QgsFontDownloadDetails.__group__ = ['textrenderer']
 except NameError:
     pass

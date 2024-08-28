@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProjectGpsSettings.__signal_arguments__ = {'automaticallyAddTrackVerticesChanged': ['enabled: bool'], 'automaticallyCommitFeaturesChanged': ['enabled: bool'], 'destinationFollowsActiveLayerChanged': ['follows: bool'], 'destinationLayerChanged': ['layer: QgsVectorLayer'], 'destinationTimeStampFieldChanged': ['field: str']}
+except NameError:
+    pass
+try:
     QgsProjectGpsSettings.__group__ = ['project']
 except NameError:
     pass

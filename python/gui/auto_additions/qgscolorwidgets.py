@@ -29,3 +29,15 @@ QgsColorWidget.createDragIcon = staticmethod(QgsColorWidget.createDragIcon)
 QgsColorWidget.componentUnit = staticmethod(QgsColorWidget.componentUnit)
 QgsColorWidget.alterColor = staticmethod(QgsColorWidget.alterColor)
 QgsColorWidget.alterColorF = staticmethod(QgsColorWidget.alterColorF)
+try:
+    QgsColorWidget.__signal_arguments__ = {'colorChanged': ['color: QColor']}
+except NameError:
+    pass
+try:
+    QgsColorWidgetAction.__signal_arguments__ = {'colorChanged': ['color: QColor']}
+except NameError:
+    pass
+try:
+    QgsColorRampWidget.__signal_arguments__ = {'valueChangedF': ['value: float']}
+except NameError:
+    pass

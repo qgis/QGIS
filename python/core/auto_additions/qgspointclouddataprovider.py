@@ -8,6 +8,10 @@ QgsPointCloudDataProvider.translatedLasClassificationCodes = staticmethod(QgsPoi
 QgsPointCloudDataProvider.dataFormatIds = staticmethod(QgsPointCloudDataProvider.dataFormatIds)
 QgsPointCloudDataProvider.translatedDataFormatIds = staticmethod(QgsPointCloudDataProvider.translatedDataFormatIds)
 try:
+    QgsPointCloudDataProvider.__signal_arguments__ = {'indexGenerationStateChanged': ['state: QgsPointCloudDataProvider.PointCloudIndexGenerationState']}
+except NameError:
+    pass
+try:
     QgsPointCloudDataProvider.__group__ = ['pointcloud']
 except NameError:
     pass

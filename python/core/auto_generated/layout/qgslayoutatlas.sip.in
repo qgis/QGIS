@@ -360,7 +360,7 @@ Refreshes the current atlas feature, by refetching its attributes from the vecto
 Emitted when one of the atlas parameters changes.
 %End
 
-    void toggled( bool );
+    void toggled( bool enabled );
 %Docstring
 Emitted when atlas is enabled or disabled.
 %End

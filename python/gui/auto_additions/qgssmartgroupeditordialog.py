@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSmartGroupCondition.__signal_arguments__ = {'removed': ['id: int']}
+except NameError:
+    pass
+try:
     QgsSmartGroupCondition.__group__ = ['symbology']
 except NameError:
     pass

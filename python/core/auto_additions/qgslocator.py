@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLocator.__signal_arguments__ = {'foundResult': ['result: QgsLocatorResult']}
+except NameError:
+    pass
+try:
     QgsLocator.__group__ = ['locator']
 except NameError:
     pass

@@ -10,6 +10,10 @@ except NameError:
 QgsAuthManager.hasConfigId = staticmethod(QgsAuthManager.hasConfigId)
 QgsAuthManager.passwordHelperEnabled = staticmethod(QgsAuthManager.passwordHelperEnabled)
 try:
+    QgsAuthManager.__signal_arguments__ = {'passwordHelperMessageOut': ['message: str', 'tag: str = QgsAuthManager.AUTH_MAN_TAG', 'level: QgsAuthManager.MessageLevel = QgsAuthManager.INFO'], 'masterPasswordVerified': ['verified: bool']}
+except NameError:
+    pass
+try:
     QgsAuthManager.__group__ = ['auth']
 except NameError:
     pass

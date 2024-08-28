@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayerTreeViewIndicator.__signal_arguments__ = {'clicked': ['index: QModelIndex']}
+except NameError:
+    pass
+try:
     QgsLayerTreeViewIndicator.__group__ = ['layertree']
 except NameError:
     pass

@@ -13,3 +13,7 @@ QgsMapLayer.extensionPropertyType = staticmethod(QgsMapLayer.extensionPropertyTy
 QgsMapLayer.formatLayerName = staticmethod(QgsMapLayer.formatLayerName)
 QgsMapLayer.generateId = staticmethod(QgsMapLayer.generateId)
 QgsMapLayer.providerReadFlags = staticmethod(QgsMapLayer.providerReadFlags)
+try:
+    QgsMapLayer.__signal_arguments__ = {'beforeResolveReferences': ['project: QgsProject'], 'statusChanged': ['status: str'], 'idChanged': ['id: str'], 'repaintRequested': ['deferredUpdate: bool = False'], 'blendModeChanged': ['blendMode: QPainter.CompositionMode'], 'opacityChanged': ['opacity: float'], 'autoRefreshIntervalChanged': ['interval: int'], 'styleLoaded': ['categories: QgsMapLayer.StyleCategories'], 'customPropertyChanged': ['key: str']}
+except NameError:
+    pass

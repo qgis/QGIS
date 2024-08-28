@@ -5,6 +5,10 @@ except NameError:
     pass
 QgsAuthConfigUriEdit.hasConfigId = staticmethod(QgsAuthConfigUriEdit.hasConfigId)
 try:
+    QgsAuthConfigSelect.__signal_arguments__ = {'selectedConfigIdChanged': ['authcfg: str'], 'selectedConfigIdRemoved': ['authcfg: str']}
+except NameError:
+    pass
+try:
     QgsAuthConfigSelect.__group__ = ['auth']
 except NameError:
     pass

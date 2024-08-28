@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAnnotationItemRegistry.__signal_arguments__ = {'typeAdded': ['type: str', 'name: str']}
+except NameError:
+    pass
+try:
     QgsAnnotationItemAbstractMetadata.__group__ = ['annotations']
 except NameError:
     pass

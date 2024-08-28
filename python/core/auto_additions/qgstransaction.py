@@ -5,3 +5,7 @@ except NameError:
     pass
 QgsTransaction.create = staticmethod(QgsTransaction.create)
 QgsTransaction.supportsTransaction = staticmethod(QgsTransaction.supportsTransaction)
+try:
+    QgsTransaction.__signal_arguments__ = {'dirtied': ['sql: str', 'name: str']}
+except NameError:
+    pass

@@ -12,6 +12,10 @@ try:
 except NameError:
     pass
 try:
+    QgsExternalStorageContent.__signal_arguments__ = {'errorOccurred': ['errorString: str'], 'progressChanged': ['progress: float']}
+except NameError:
+    pass
+try:
     QgsExternalStorage.__group__ = ['externalstorage']
 except NameError:
     pass

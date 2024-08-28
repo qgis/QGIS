@@ -3,3 +3,7 @@ try:
     QgsFeaturePickerModel.__attribute_docs__ = {'featureChanged': 'Emitted when the current feature changes\n'}
 except NameError:
     pass
+try:
+    QgsFeaturePickerModel.__signal_arguments__ = {'featureChanged': ['feature: QgsFeature']}
+except NameError:
+    pass

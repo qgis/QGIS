@@ -7,3 +7,7 @@ try:
     QgsAbstractContentCacheBase.__attribute_docs__ = {'remoteContentFetched': 'Emitted when the cache has finished retrieving content from a remote ``url``.\n'}
 except NameError:
     pass
+try:
+    QgsAbstractContentCacheBase.__signal_arguments__ = {'remoteContentFetched': ['url: str']}
+except NameError:
+    pass

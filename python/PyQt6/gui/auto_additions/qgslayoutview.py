@@ -9,6 +9,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutView.__signal_arguments__ = {'layoutSet': ['layout: QgsLayout'], 'toolSet': ['tool: QgsLayoutViewTool'], 'cursorPosChanged': ['layoutPoint: QPointF'], 'pageChanged': ['page: int'], 'statusMessage': ['message: str'], 'itemFocused': ['item: QgsLayoutItem']}
+except NameError:
+    pass
+try:
     QgsLayoutView.__group__ = ['layout']
 except NameError:
     pass

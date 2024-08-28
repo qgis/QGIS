@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsElevationProfileCanvas.__signal_arguments__ = {'activeJobCountChanged': ['count: int'], 'canvasPointHovered': ['point: QgsPointXY', 'profilePoint: QgsProfilePoint']}
+except NameError:
+    pass
+try:
     QgsElevationProfileCanvas.__group__ = ['elevation']
 except NameError:
     pass

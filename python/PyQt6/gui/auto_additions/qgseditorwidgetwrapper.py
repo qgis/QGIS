@@ -9,6 +9,10 @@ except NameError:
 QgsEditorWidgetWrapper.fromWidget = staticmethod(QgsEditorWidgetWrapper.fromWidget)
 QgsEditorWidgetWrapper.isInTable = staticmethod(QgsEditorWidgetWrapper.isInTable)
 try:
+    QgsEditorWidgetWrapper.__signal_arguments__ = {'valueChanged': ['value: object'], 'valuesChanged': ['value: object', 'additionalFieldValues: List[object] = []'], 'constraintStatusChanged': ['constraint: str', 'desc: str', 'err: str', 'status: QgsEditorWidgetWrapper.ConstraintResult'], 'constraintResultVisibleChanged': ['visible: bool']}
+except NameError:
+    pass
+try:
     QgsEditorWidgetWrapper.__group__ = ['editorwidgets', 'core']
 except NameError:
     pass

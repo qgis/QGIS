@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapLayerAction.__signal_arguments__ = {'triggeredForFeaturesV2': ['layer: QgsMapLayer', 'featureList: List[QgsFeature]', 'context: QgsMapLayerActionContext'], 'triggeredForFeatureV2': ['layer: QgsMapLayer', 'feature: QgsFeature', 'context: QgsMapLayerActionContext'], 'triggeredForLayerV2': ['layer: QgsMapLayer', 'context: QgsMapLayerActionContext']}
+except NameError:
+    pass
+try:
     QgsMapLayerAction.__group__ = ['actions']
 except NameError:
     pass

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsRasterFileWriterTask.__signal_arguments__ = {'writeComplete': ['outputUrl: str'], 'errorOccurred': ['error: int', 'errorMessage: str']}
+except NameError:
+    pass
+try:
     QgsRasterFileWriterTask.__group__ = ['raster']
 except NameError:
     pass

@@ -9,6 +9,10 @@ except NameError:
     pass
 QgsFieldConditionalFormatWidget.defaultPresets = staticmethod(QgsFieldConditionalFormatWidget.defaultPresets)
 try:
+    QgsFieldConditionalFormatWidget.__signal_arguments__ = {'rulesUpdated': ['fieldName: str']}
+except NameError:
+    pass
+try:
     QgsFieldConditionalFormatWidget.__group__ = ['attributetable']
 except NameError:
     pass

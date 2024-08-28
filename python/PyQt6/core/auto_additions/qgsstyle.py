@@ -134,6 +134,10 @@ QgsStyle.defaultStyle = staticmethod(QgsStyle.defaultStyle)
 QgsStyle.defaultTextFormatForProject = staticmethod(QgsStyle.defaultTextFormatForProject)
 QgsStyle.isXmlStyleFile = staticmethod(QgsStyle.isXmlStyleFile)
 try:
+    QgsStyle.__signal_arguments__ = {'symbolSaved': ['name: str', 'symbol: QgsSymbol'], 'symbolChanged': ['name: str'], 'entityTagsChanged': ['entity: QgsStyle.StyleEntity', 'name: str', 'newTags: List[str]'], 'favoritedChanged': ['entity: QgsStyle.StyleEntity', 'name: str', 'isFavorite: bool'], 'entityAdded': ['entity: QgsStyle.StyleEntity', 'name: str'], 'entityRemoved': ['entity: QgsStyle.StyleEntity', 'name: str'], 'entityRenamed': ['entity: QgsStyle.StyleEntity', 'oldName: str', 'newName: str'], 'entityChanged': ['entity: QgsStyle.StyleEntity', 'name: str'], 'symbolRemoved': ['name: str'], 'symbolRenamed': ['oldName: str', 'newName: str'], 'rampRenamed': ['oldName: str', 'newName: str'], 'rampAdded': ['name: str'], 'rampRemoved': ['name: str'], 'rampChanged': ['name: str'], 'textFormatRenamed': ['oldName: str', 'newName: str'], 'textFormatAdded': ['name: str'], 'textFormatRemoved': ['name: str'], 'textFormatChanged': ['name: str'], 'labelSettingsRenamed': ['oldName: str', 'newName: str'], 'labelSettingsAdded': ['name: str'], 'labelSettingsRemoved': ['name: str'], 'labelSettingsChanged': ['name: str']}
+except NameError:
+    pass
+try:
     QgsStyle.__group__ = ['symbology']
 except NameError:
     pass

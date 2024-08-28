@@ -12,6 +12,18 @@ try:
 except NameError:
     pass
 try:
+    QgsDateTimeEdit.__signal_arguments__ = {'valueChanged': ['date: QDateTime']}
+except NameError:
+    pass
+try:
+    QgsTimeEdit.__signal_arguments__ = {'timeValueChanged': ['time: QTime']}
+except NameError:
+    pass
+try:
+    QgsDateEdit.__signal_arguments__ = {'dateValueChanged': ['date: QDate']}
+except NameError:
+    pass
+try:
     QgsDateTimeEdit.__group__ = ['editorwidgets']
 except NameError:
     pass

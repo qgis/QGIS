@@ -92,7 +92,7 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
     /**
      * Emitted when the \a unit is changed.
      */
-    void changed( int );
+    void changed( int unit );
 
   private slots:
 

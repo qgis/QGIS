@@ -9,6 +9,10 @@ except NameError:
     pass
 QgsNewsFeedParser.keyForFeed = staticmethod(QgsNewsFeedParser.keyForFeed)
 try:
+    QgsNewsFeedParser.__signal_arguments__ = {'fetched': ['entries: List[QgsNewsFeedParser.Entry]'], 'entryAdded': ['entry: QgsNewsFeedParser.Entry'], 'entryUpdated': ['entry: QgsNewsFeedParser.Entry'], 'entryDismissed': ['entry: QgsNewsFeedParser.Entry'], 'imageFetched': ['key: int', 'pixmap: QPixmap']}
+except NameError:
+    pass
+try:
     QgsNewsFeedParser.__group__ = ['network']
 except NameError:
     pass

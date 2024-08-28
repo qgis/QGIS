@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutComboBox.__signal_arguments__ = {'layoutChanged': ['layout: QgsMasterLayoutInterface']}
+except NameError:
+    pass
+try:
     QgsLayoutComboBox.__group__ = ['layout']
 except NameError:
     pass

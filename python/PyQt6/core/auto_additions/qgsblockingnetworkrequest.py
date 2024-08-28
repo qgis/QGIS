@@ -22,6 +22,10 @@ try:
 except NameError:
     pass
 try:
+    QgsBlockingNetworkRequest.__signal_arguments__ = {'downloadProgress': ['bytesReceived: int', 'bytesTotal: int'], 'uploadProgress': ['bytesReceived: int', 'bytesTotal: int']}
+except NameError:
+    pass
+try:
     QgsBlockingNetworkRequest.__group__ = ['network']
 except NameError:
     pass

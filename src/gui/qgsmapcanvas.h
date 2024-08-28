@@ -1036,7 +1036,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void xyCoordinates( const QgsPointXY &p );
 
     //! Emitted when the scale of the map changes
-    void scaleChanged( double );
+    void scaleChanged( double scale );
 
     /**
      * Emitted when the scale locked state of the map changes
@@ -1053,12 +1053,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     /**
      * Emitted when the rotation of the map changes
      */
-    void rotationChanged( double );
+    void rotationChanged( double rotation );
 
     /**
      * Emitted when the scale of the map changes
      */
-    void magnificationChanged( double );
+    void magnificationChanged( double magnification );
 
     /**
      * Emitted when canvas background color changes
@@ -1077,7 +1077,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * - anything related to rendering progress is not visible outside of map canvas
      * - additional drawing shall be done directly within the renderer job or independently as a map canvas item
      */
-    void renderComplete( QPainter * );
+    void renderComplete( QPainter *painter );
 
     // ### QGIS 3: renamte to mapRefreshFinished()
     //! Emitted when canvas finished a refresh request.
@@ -1115,10 +1115,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void selectionChanged( QgsMapLayer *layer );
 
     //! Emitted when zoom last status changed
-    void zoomLastStatusChanged( bool );
+    void zoomLastStatusChanged( bool available );
 
     //! Emitted when zoom next status changed
-    void zoomNextStatusChanged( bool );
+    void zoomNextStatusChanged( bool available );
 
     /**
      * Emitted when map CRS has changed
@@ -1147,7 +1147,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void themeChanged( const QString &theme );
 
     //! emit a message (usually to be displayed in a message bar)
-    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Emitted whenever an error is encountered during a map render operation.

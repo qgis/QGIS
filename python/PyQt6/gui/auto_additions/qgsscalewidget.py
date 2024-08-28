@@ -5,3 +5,7 @@ except NameError:
     pass
 QgsScaleWidget.toString = staticmethod(QgsScaleWidget.toString)
 QgsScaleWidget.toDouble = staticmethod(QgsScaleWidget.toDouble)
+try:
+    QgsScaleWidget.__signal_arguments__ = {'scaleChanged': ['scale: float']}
+except NameError:
+    pass

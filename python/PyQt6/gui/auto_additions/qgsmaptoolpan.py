@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapToolPan.__signal_arguments__ = {'panDistanceBearingChanged': ['distance: float', 'unit: Qgis.DistanceUnit', 'bearing: float']}
+except NameError:
+    pass
+try:
     QgsMapToolPan.__group__ = ['maptools']
 except NameError:
     pass

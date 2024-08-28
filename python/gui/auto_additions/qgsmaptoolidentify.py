@@ -7,6 +7,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapToolIdentify.__signal_arguments__ = {'identifyProgress': ['processed: int', 'total: int'], 'identifyMessage': ['message: str'], 'changedRasterResults': ['results: List[QgsMapToolIdentify.IdentifyResult]']}
+except NameError:
+    pass
+try:
     QgsMapToolIdentify.__group__ = ['maptools']
 except NameError:
     pass

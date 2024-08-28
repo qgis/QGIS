@@ -8,6 +8,10 @@ try:
 except NameError:
     pass
 try:
+    QgsCoordinateReferenceSystemRegistry.__signal_arguments__ = {'userCrsChanged': ['id: str'], 'userCrsAdded': ['id: str'], 'userCrsRemoved': ['id: int'], 'recentCrsPushed': ['crs: QgsCoordinateReferenceSystem'], 'recentCrsRemoved': ['crs: QgsCoordinateReferenceSystem']}
+except NameError:
+    pass
+try:
     QgsCoordinateReferenceSystemRegistry.__group__ = ['proj']
 except NameError:
     pass

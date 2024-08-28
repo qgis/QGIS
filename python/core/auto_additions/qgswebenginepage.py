@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsWebEnginePage.__signal_arguments__ = {'loadProgress': ['progress: int'], 'loadFinished': ['ok: bool']}
+except NameError:
+    pass
+try:
     QgsWebEnginePage.__group__ = ['web']
 except NameError:
     pass

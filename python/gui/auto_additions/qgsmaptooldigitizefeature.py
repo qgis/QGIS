@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapToolDigitizeFeature.__signal_arguments__ = {'digitizingCompleted': ['feature: QgsFeature']}
+except NameError:
+    pass
+try:
     QgsMapToolDigitizeFeature.__group__ = ['maptools']
 except NameError:
     pass

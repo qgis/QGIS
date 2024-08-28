@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayout.__signal_arguments__ = {'selectedItemChanged': ['selected: QgsLayoutItem'], 'backgroundTaskCountChanged': ['total: int'], 'itemAdded': ['item: QgsLayoutItem']}
+except NameError:
+    pass
+try:
     QgsLayout.__group__ = ['layout']
 except NameError:
     pass

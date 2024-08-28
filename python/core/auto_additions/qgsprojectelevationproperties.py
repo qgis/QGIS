@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProjectElevationProperties.__signal_arguments__ = {'elevationRangeChanged': ['range: QgsDoubleRange']}
+except NameError:
+    pass
+try:
     QgsProjectElevationProperties.__group__ = ['project']
 except NameError:
     pass

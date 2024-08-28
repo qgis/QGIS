@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsMessageLog.logMessage = staticmethod(QgsMessageLog.logMessage)
+try:
+    QgsMessageLog.__signal_arguments__ = {'messageReceived': ['received: bool']}
+except NameError:
+    pass

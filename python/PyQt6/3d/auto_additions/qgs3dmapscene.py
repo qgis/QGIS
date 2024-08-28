@@ -6,3 +6,7 @@ try:
 except NameError:
     pass
 Qgs3DMapScene.openScenes = staticmethod(Qgs3DMapScene.openScenes)
+try:
+    Qgs3DMapScene.__signal_arguments__ = {'fpsCountChanged': ['fpsCount: float'], 'fpsCounterEnabledChanged': ['fpsCounterEnabled: bool'], 'viewed2DExtentFrom3DChanged': ['extent: List[QgsPointXY]']}
+except NameError:
+    pass

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutRenderContext.__signal_arguments__ = {'flagsChanged': ['flags: QgsLayoutRenderContext.Flags']}
+except NameError:
+    pass
+try:
     QgsLayoutRenderContext.__group__ = ['layout']
 except NameError:
     pass

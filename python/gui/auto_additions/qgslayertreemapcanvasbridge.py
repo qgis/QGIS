@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayerTreeMapCanvasBridge.__signal_arguments__ = {'canvasLayersChanged': ['layers: List[QgsMapLayer]']}
+except NameError:
+    pass
+try:
     QgsLayerTreeMapCanvasBridge.__group__ = ['layertree']
 except NameError:
     pass

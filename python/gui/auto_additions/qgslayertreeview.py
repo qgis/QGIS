@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayerTreeView.__signal_arguments__ = {'currentLayerChanged': ['layer: QgsMapLayer'], 'datasetsDropped': ['event: QDropEvent'], 'contextMenuAboutToShow': ['menu: QMenu']}
+except NameError:
+    pass
+try:
     QgsLayerTreeProxyModel.__group__ = ['layertree']
 except NameError:
     pass

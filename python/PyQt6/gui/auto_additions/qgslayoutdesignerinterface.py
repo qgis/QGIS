@@ -10,6 +10,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutDesignerInterface.__signal_arguments__ = {'mapPreviewRefreshed': ['map: QgsLayoutItemMap']}
+except NameError:
+    pass
+try:
     QgsLayoutDesignerInterface.__group__ = ['layout']
 except NameError:
     pass

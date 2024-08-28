@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsGpsConnection.__signal_arguments__ = {'stateChanged': ['info: QgsGpsInformation'], 'nmeaSentenceReceived': ['substring: str'], 'fixStatusChanged': ['status: Qgis.GpsFixStatus'], 'positionChanged': ['point: QgsPoint']}
+except NameError:
+    pass
+try:
     QgsGpsConnection.__group__ = ['gps']
 except NameError:
     pass

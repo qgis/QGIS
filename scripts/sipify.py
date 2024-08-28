@@ -7,7 +7,7 @@ import re
 import sys
 from collections import defaultdict
 from enum import Enum, auto
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple, Optional
 
 import yaml
 
@@ -123,6 +123,8 @@ class Context:
         self.struct_docstrings = defaultdict(dict)
         self.current_method_name: str = ''
         self.static_methods = defaultdict(dict)
+        self.current_signal_args = []
+        self.signal_arguments = defaultdict(dict)
 
     def current_fully_qualified_class_name(self) -> str:
         return '.'.join(
@@ -1233,6 +1235,135 @@ def detect_non_method_member(line):
     return re.match(_pattern, line)
 
 
+def convert_type(cpp_type: str) -> str:
+    """
+    Converts C++ types to Python types
+    """
+    type_mapping = {
+        'int': 'int',
+        'float': 'float',
+        'double': 'float',
+        'bool': 'bool',
+        'char': 'str',
+        'QString': 'str',
+        'void': 'None',
+        'qint64': 'int',
+        'unsigned long long': 'int',
+        'long long': 'int',
+        'qlonglong': 'int',
+        'long': 'int',
+        'QStringList': 'List[str]',
+        'QVariantList': 'List[object]',
+        'QVariantMap': 'Dict[str, object]',
+        'QVariant': 'object'
+    }
+
+    # Handle templates
+    template_match = re.match(r'(\w+)\s*<\s*(.+)\s*>', cpp_type)
+    if template_match:
+        container, inner_type = template_match.groups()
+        if container in ('QVector', 'QList'):
+            return f"List[{convert_type(inner_type.strip())}]"
+        elif container in ('QSet',):
+            return f"Set[{convert_type(inner_type.strip())}]"
+        elif container in ('QHash', 'QMap'):
+            key_type, value_type = [t.strip() for t in inner_type.split(',')]
+            return f"Dict[{convert_type(key_type)}, {convert_type(value_type)}]"
+        else:
+            return f"{container}[{convert_type(inner_type.strip())}]"
+
+    if cpp_type not in type_mapping:
+        if cpp_type.startswith('Q'):
+            cpp_type = cpp_type.replace('::', '.')
+            return cpp_type
+
+        assert False, cpp_type
+
+    return type_mapping[cpp_type]
+
+
+def parse_argument(arg: str) -> Tuple[str, str, Optional[str]]:
+    # Remove leading/trailing whitespace and 'const'
+    arg = re.sub(r'^\s*const\s+', '', arg.strip())
+
+    # Extract default value if present
+    default_match = re.search(r'=\s*(.+)$', arg)
+    default_value = default_match.group(1).strip() if default_match else None
+    arg = re.sub(r'\s*=\s*.+$', '', arg)
+
+    # Handle pointers and references
+    is_pointer = '*' in arg
+    arg = arg.replace('*', '').replace('&', '').strip()
+
+    # Split type and variable name
+    parts = arg.split()
+    if len(parts) > 1:
+        cpp_type = ' '.join(parts[:-1])
+        var_name = parts[-1]
+    else:
+        cpp_type = arg
+        var_name = ''
+
+    python_type = convert_type(cpp_type)
+    if is_pointer and default_value:
+        python_type = f"Optional[{python_type}]"
+
+    # Convert default value
+    if default_value:
+        default_value_map = {
+            'QVariantList()': '[]'
+        }
+        if default_value in default_value_map:
+            default_value = default_value_map[default_value]
+        elif default_value == "nullptr":
+            default_value = "None"
+        elif python_type == 'int':
+            pass
+        elif cpp_type in ("QString", ):
+            if default_value == 'QString()':
+                default_value = 'None'
+                python_type = f'Optional[{python_type}]'
+            elif default_value.startswith('Q'):
+                default_value = default_value.replace('::', '.')
+            else:
+                default_value = f'"{default_value}"'
+        elif cpp_type in ("bool",):
+            default_value = f'{"False" if default_value == "false" else "True"}'
+        elif cpp_type.startswith('Q'):
+            default_value = default_value.replace('::', '.')
+        else:
+            assert False, (default_value, cpp_type)
+
+    return var_name, python_type, default_value
+
+
+def cpp_to_python_signature(cpp_function: str) -> str:
+
+    # Extract function name and arguments
+    match = re.match(r'(\w+)\s*\((.*)\)\s*(?:const)?\s*(?:->)?\s*([\w:]+)?', cpp_function)
+    if not match:
+        raise ValueError("Invalid C++ function signature")
+
+    func_name, args_str, return_type = match.groups()
+    args = [arg.strip() for arg in args_str.split(',') if arg.strip()]
+
+    # Parse arguments
+    python_args = []
+    for arg in args:
+        var_name, python_type, default_value = parse_argument(arg)
+        if default_value:
+            python_args.append(f"{var_name}: {python_type} = {default_value}")
+        else:
+            python_args.append(f"{var_name}: {python_type}")
+
+    # Construct Python function signature
+    python_signature = f"def {func_name}({', '.join(python_args)})"
+    if return_type:
+        python_signature += f" -> {convert_type(return_type)}"
+
+    return python_signature
+
+
 while CONTEXT.line_idx < CONTEXT.line_count:
 
     CONTEXT.python_signature = ''
@@ -2286,7 +2417,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         CONTEXT.current_line = f"{match.group(1)}{match.group(3)};"
 
-    pattern = r'^\s*((?:const |virtual |static |inline ))*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(\w+|operator.{1,2})\(.*$'
+    pattern = r'^\s*((?:const |virtual |static |inline ))*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(\w+|operator.{1,2})(\(.*)$'
     match = re.match(pattern, CONTEXT.current_line)
     if match:
         CONTEXT.current_method_name = match.group(3)
@@ -2299,6 +2430,22 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     CONTEXT.current_method_name] = False
         else:
             CONTEXT.static_methods[class_name][CONTEXT.current_method_name] = is_static
+
+        if CONTEXT.access[-1] == Visibility.Signals:
+            CONTEXT.current_signal_args = []
+            signal_args = match.group(4).strip()
+            if signal_args.startswith('('):
+                signal_args = signal_args[1:]
+            if signal_args.endswith(');'):
+                signal_args = signal_args[:-2]
+
+            if signal_args.strip():
+                CONTEXT.current_signal_args = split_args(signal_args)
+            dbg_info('SIGARG ' + CONTEXT.current_method_name + " " + str(CONTEXT.current_signal_args))
+            if ');' in match.group(4):
+                CONTEXT.signal_arguments[class_name][
+                    CONTEXT.current_method_name] = CONTEXT.current_signal_args[:]
+                dbg_info('SIGARG finalizing' + CONTEXT.current_method_name + " " + str(CONTEXT.current_signal_args))
 
         if not re.search(r'(void|SIP_PYOBJECT|operator|return|QFlag)',
                          return_type_candidate):
@@ -2321,6 +2468,20 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                                  CONTEXT.return_type)
             if set_match:
                 CONTEXT.return_type = f"set of {set_match.group(1)}"
+    elif CONTEXT.access[-1] == Visibility.Signals and CONTEXT.current_line.strip() not in ('', 'signals:'):
+        dbg_info('SIGARG4 ' + CONTEXT.current_method_name + " " + CONTEXT.current_line)
+        signal_args = CONTEXT.current_line.strip()
+        if signal_args.endswith(');'):
+            signal_args = signal_args[:-2]
+
+        if signal_args.strip():
+            CONTEXT.current_signal_args.extend(split_args(signal_args))
+        dbg_info('SIGARG5 ' + CONTEXT.current_method_name + " " + str(CONTEXT.current_signal_args))
+        if ');' in CONTEXT.current_line:
+            class_name = CONTEXT.current_fully_qualified_class_name()
+            CONTEXT.signal_arguments[class_name][
+                CONTEXT.current_method_name] = CONTEXT.current_signal_args[:]
+            dbg_info('SIGARG finalizing' + CONTEXT.current_method_name + " " + str(CONTEXT.current_signal_args))
 
     # deleted functions
     if re.match(
@@ -2623,6 +2784,23 @@ for class_name, static_methods in CONTEXT.static_methods.items():
 
         CONTEXT.output_python.append(f'{class_name}.{method_name} = staticmethod({class_name}.{method_name})\n')
 
+for class_name, signal_arguments in CONTEXT.signal_arguments.items():
+    python_signatures = {}
+
+    for signal, arguments in signal_arguments.items():
+        python_args = []
+        for argument in arguments:
+            var_name, python_type, default_value = parse_argument(argument)
+            if default_value:
+                python_args.append(f"{var_name}: {python_type} = {default_value}")
+            else:
+                python_args.append(f"{var_name}: {python_type}")
+        if python_args:
+            python_signatures[signal] = python_args
+
+    if python_signatures:
+        CONTEXT.output_python.append(
+            f'try:\n    {class_name}.__signal_arguments__ = {str(python_signatures)}\nexcept NameError:\n    pass\n')
 
 for class_name, doc_string in CONTEXT.struct_docstrings.items():
     CONTEXT.output_python.append(f'{class_name}.__doc__ = """{doc_string}"""\n')
@@ -2634,6 +2812,7 @@ if group_match:
         for class_name in CONTEXT.all_fully_qualified_class_names:
             CONTEXT.output_python.append(
                 f'try:\n    {class_name}.__group__ = {groups}\nexcept NameError:\n    pass\n')
+
 
 if args.python_output and CONTEXT.output_python:
 

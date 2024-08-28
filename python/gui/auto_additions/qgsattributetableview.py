@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAttributeTableView.__signal_arguments__ = {'willShowContextMenu': ['menu: QMenu', 'atIndex: QModelIndex'], 'columnResized': ['column: int', 'width: int']}
+except NameError:
+    pass
+try:
     QgsAttributeTableView.__group__ = ['attributetable']
 except NameError:
     pass

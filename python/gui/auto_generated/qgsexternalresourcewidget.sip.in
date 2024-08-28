@@ -201,9 +201,9 @@ Returns message bar used to report messages
 %End
 
   signals:
-    void valueChanged( const QString & );
+    void valueChanged( const QString &value );
 %Docstring
-emitteed as soon as the current document changes
+Emitted as soon as the current document changes
 %End
 
 };

@@ -21,6 +21,10 @@ except NameError:
 QgsMapTool.searchRadiusMM = staticmethod(QgsMapTool.searchRadiusMM)
 QgsMapTool.searchRadiusMU = staticmethod(QgsMapTool.searchRadiusMU)
 try:
+    QgsMapTool.__signal_arguments__ = {'messageEmitted': ['message: str', ': Qgis.MessageLevel = Qgis.MessageLevel.Info']}
+except NameError:
+    pass
+try:
     QgsMapTool.__group__ = ['maptools']
 except NameError:
     pass

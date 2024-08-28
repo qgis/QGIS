@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAuthSslConfigWidget.__signal_arguments__ = {'configEnabledChanged': ['enabled: bool'], 'certFoundInAuthDatabase': ['found: bool'], 'hostPortValidityChanged': ['valid: bool'], 'readyToSaveChanged': ['cansave: bool']}
+except NameError:
+    pass
+try:
     QgsAuthSslConfigWidget.__group__ = ['auth']
 except NameError:
     pass

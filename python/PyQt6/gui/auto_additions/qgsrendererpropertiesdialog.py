@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsRendererPropertiesDialog.__signal_arguments__ = {'showPanel': ['panel: QgsPanelWidget']}
+except NameError:
+    pass
+try:
     QgsRendererPropertiesDialog.__group__ = ['symbology']
 except NameError:
     pass

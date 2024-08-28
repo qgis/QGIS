@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsDataItemProviderRegistry.__signal_arguments__ = {'providerAdded': ['provider: QgsDataItemProvider'], 'providerWillBeRemoved': ['provider: QgsDataItemProvider']}
+except NameError:
+    pass
+try:
     QgsDataItemProviderRegistry.__group__ = ['browser']
 except NameError:
     pass

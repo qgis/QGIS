@@ -33,6 +33,10 @@ QgsSearchWidgetWrapper.exclusiveFilterFlags = staticmethod(QgsSearchWidgetWrappe
 QgsSearchWidgetWrapper.nonExclusiveFilterFlags = staticmethod(QgsSearchWidgetWrapper.nonExclusiveFilterFlags)
 QgsSearchWidgetWrapper.toString = staticmethod(QgsSearchWidgetWrapper.toString)
 try:
+    QgsSearchWidgetWrapper.__signal_arguments__ = {'expressionChanged': ['exp: str']}
+except NameError:
+    pass
+try:
     QgsSearchWidgetWrapper.__group__ = ['editorwidgets', 'core']
 except NameError:
     pass

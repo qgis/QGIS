@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsNetworkContentFetcher.__signal_arguments__ = {'downloadProgress': ['bytesReceived: int', 'bytesTotal: int'], 'errorOccurred': ['code: QNetworkReply.NetworkError', 'errorMsg: str']}
+except NameError:
+    pass
+try:
     QgsNetworkContentFetcher.__group__ = ['network']
 except NameError:
     pass

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapToolEmitPoint.__signal_arguments__ = {'canvasClicked': ['point: QgsPointXY', 'button: Qt.MouseButton']}
+except NameError:
+    pass
+try:
     QgsMapToolEmitPoint.__group__ = ['maptools']
 except NameError:
     pass

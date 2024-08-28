@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProcessingAlgRunnerTask.__signal_arguments__ = {'executed': ['successful: bool', 'results: Dict[str, object]']}
+except NameError:
+    pass
+try:
     QgsProcessingAlgRunnerTask.__group__ = ['processing']
 except NameError:
     pass

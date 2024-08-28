@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutPageCollection.__signal_arguments__ = {'pageAboutToBeRemoved': ['pageNumber: int']}
+except NameError:
+    pass
+try:
     QgsLayoutPageCollection.__group__ = ['layout']
 except NameError:
     pass

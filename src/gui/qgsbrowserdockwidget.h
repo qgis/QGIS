@@ -224,7 +224,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
     //! Emitted when a file needs to be opened
     void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
     //! Emitted when drop uri list needs to be handled
-    void handleDropUriList( const QgsMimeDataUtils::UriList & );
+    void handleDropUriList( const QgsMimeDataUtils::UriList &uris );
     //! Connections changed in the browser
     void connectionsChanged();
 

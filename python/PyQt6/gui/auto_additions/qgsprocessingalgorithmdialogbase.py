@@ -19,6 +19,10 @@ except NameError:
     pass
 QgsProcessingAlgorithmDialogBase.formatStringForLog = staticmethod(QgsProcessingAlgorithmDialogBase.formatStringForLog)
 try:
+    QgsProcessingAlgorithmDialogBase.__signal_arguments__ = {'algorithmAboutToRun': ['context: QgsProcessingContext'], 'algorithmFinished': ['successful: bool', 'result: Dict[str, object]']}
+except NameError:
+    pass
+try:
     QgsProcessingAlgorithmDialogBase.__group__ = ['processing']
 except NameError:
     pass

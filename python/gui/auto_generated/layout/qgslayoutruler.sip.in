@@ -72,7 +72,7 @@ the view.
 %End
 
   signals:
-    void cursorPosChanged( QPointF );
+    void cursorPosChanged( QPointF position );
 %Docstring
 Emitted when mouse cursor coordinates change
 %End

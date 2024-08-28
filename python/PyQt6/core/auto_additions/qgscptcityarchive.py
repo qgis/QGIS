@@ -24,6 +24,10 @@ QgsCptCityArchive.archiveRegistry = staticmethod(QgsCptCityArchive.archiveRegist
 QgsCptCityDataItem.findItem = staticmethod(QgsCptCityDataItem.findItem)
 QgsCptCityDirectoryItem.dataItem = staticmethod(QgsCptCityDirectoryItem.dataItem)
 try:
+    QgsCptCityDataItem.__signal_arguments__ = {'beginInsertItems': ['parent: QgsCptCityDataItem', 'first: int', 'last: int'], 'beginRemoveItems': ['parent: QgsCptCityDataItem', 'first: int', 'last: int']}
+except NameError:
+    pass
+try:
     QgsCptCityArchive.__group__ = ['symbology']
 except NameError:
     pass

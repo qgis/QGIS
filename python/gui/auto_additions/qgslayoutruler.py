@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutRuler.__signal_arguments__ = {'cursorPosChanged': ['position: QPointF']}
+except NameError:
+    pass
+try:
     QgsLayoutRuler.__group__ = ['layout']
 except NameError:
     pass

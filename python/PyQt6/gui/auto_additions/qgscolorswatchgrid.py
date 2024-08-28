@@ -7,3 +7,11 @@ try:
     QgsColorSwatchGridAction.__attribute_docs__ = {'colorChanged': 'Emitted when a color has been selected from the widget\n\n:param color: selected color\n'}
 except NameError:
     pass
+try:
+    QgsColorSwatchGrid.__signal_arguments__ = {'colorChanged': ['color: QColor']}
+except NameError:
+    pass
+try:
+    QgsColorSwatchGridAction.__signal_arguments__ = {'colorChanged': ['color: QColor']}
+except NameError:
+    pass

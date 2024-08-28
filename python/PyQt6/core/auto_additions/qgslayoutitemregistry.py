@@ -24,6 +24,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutItemRegistry.__signal_arguments__ = {'typeAdded': ['type: int', 'name: str'], 'multiFrameTypeAdded': ['type: int', 'name: str']}
+except NameError:
+    pass
+try:
     QgsLayoutItemAbstractMetadata.__group__ = ['layout']
 except NameError:
     pass

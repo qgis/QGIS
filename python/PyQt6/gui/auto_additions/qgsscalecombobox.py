@@ -5,3 +5,7 @@ except NameError:
     pass
 QgsScaleComboBox.toString = staticmethod(QgsScaleComboBox.toString)
 QgsScaleComboBox.toDouble = staticmethod(QgsScaleComboBox.toDouble)
+try:
+    QgsScaleComboBox.__signal_arguments__ = {'scaleChanged': ['scale: float']}
+except NameError:
+    pass

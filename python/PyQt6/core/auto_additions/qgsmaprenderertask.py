@@ -7,6 +7,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapRendererTask.__signal_arguments__ = {'errorOccurred': ['error: int']}
+except NameError:
+    pass
+try:
     QgsMapRendererTask.__group__ = ['maprenderer']
 except NameError:
     pass
