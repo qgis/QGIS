@@ -1756,16 +1756,15 @@ void TestQgs3DRendering::testDebugMap()
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator();
-  demTerrain->setLayer( layerDtm );
-  mapSettings.setTerrainGenerator( demTerrain );
-  mapSettings.setTerrainVerticalScale( 3 );
-
-  QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
-  defaultPointLight.setConstantAttenuation( 0 );
+  QgsDirectionalLightSettings defaultPointLight;
   mapSettings.setLightSources( {defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
+
+  QgsShadowSettings shadowSettings = mapSettings.shadowSettings();
+  shadowSettings.setRenderShadows( true );
+  shadowSettings.setSelectedDirectionalLight( 0 );
+  shadowSettings.setMaximumShadowRenderingDistance( 2500 );
+  mapSettings.setShadowSettings( shadowSettings );
 
   // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -1776,23 +1775,38 @@ void TestQgs3DRendering::testDebugMap()
   engine.setRootEntity( scene );
 
   // =========== set camera position
-  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
+  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2000, 40.0, -10.0 );
 
   // =========== activate debug depth map
   mapSettings.setDebugDepthMapSettings( true, Qt::Corner::BottomRightCorner, 0.5 );
 
+  // force QT3D backend/frontend synchronization
+  {
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2005, 40.0, -10.0 );
+    Qgs3DUtils::captureSceneImage( engine, scene );
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2000, 40.0, -10.0 );
+  }
+
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "debug_map_1", "debug_map_1", img, QString(), 100, QSize( 0, 0 ), 15 );
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0)) // shadows do not work for QT6 see: https://github.com/qgis/QGIS/issues/58184
   // =========== activate debug shadow map
   mapSettings.setDebugShadowMapSettings( true, Qt::Corner::TopLeftCorner, 0.5 );
 
+  // force QT3D backend/frontend synchronization
+  {
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2005, 40.0, -10.0 );
+    Qgs3DUtils::captureSceneImage( engine, scene );
+    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2000, 40.0, -10.0 );
+  }
+
   img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "debug_map_2", "debug_map_2", img, QString(), 100, QSize( 0, 0 ), 15 );
+#endif
 
   delete scene;
   mapSettings.setLayers( {} );
-  demTerrain->deleteLater();
 }
 
 void TestQgs3DRendering::do3DSceneExport( int zoomLevelsCount, int expectedObjectCount, int maxFaceCount, Qgs3DMapScene *scene, QgsPolygon3DSymbol *symbol3d, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine )
