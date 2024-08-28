@@ -132,6 +132,35 @@ Draws text at a point origin using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 %End
 
+    static void drawDocument( QPointF point,
+                              const QgsTextFormat &format,
+                              const QgsTextDocument &document,
+                              const QgsTextDocumentMetrics &metrics,
+                              QgsRenderContext &context,
+                              Qgis::TextHorizontalAlignment alignment,
+                              double rotation );
+%Docstring
+Draws a text document at a point origin using the specified settings.
+
+Calling this method is more efficient than calling :py:func:`~QgsTextRenderer.drawText` if the text document and metrics have already
+been calculated.
+
+.. warning::
+
+   Unlike :py:func:`~QgsTextRenderer.drawText`, this method does not automatically update data defined properties in the text ``format``. This
+   is the caller's responsibility to do, and must be done prior to generating the text ``document`` and ``metrics``.
+
+:param point: origin of text, in painter units
+:param format: base text format
+:param document: text document to draw
+:param metrics: precalculated text metrics
+:param context: destination render context
+:param horizontalAlignment: horizontal alignment
+:param rotation: text rotation
+
+.. versionadded:: 3.40
+%End
+
     static void drawTextOnLine( const QPolygonF &line, const QString &text,
                                 QgsRenderContext &context, const QgsTextFormat &format,
                                 double offsetAlongLine = 0, double offsetFromLine = 0 );
