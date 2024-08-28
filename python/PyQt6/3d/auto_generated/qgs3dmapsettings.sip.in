@@ -80,10 +80,15 @@ with scenes spanning hundreds of kilometers and zooming in a lot).
 
 Need to look into more advanced techniques like "relative to center" or "relative to eye"
 to improve the precision.
+
+.. seealso:: :py:func:`origin`
 %End
+
     QgsVector3D origin() const;
 %Docstring
-Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
+Returns coordinates in map CRS at which 3D scene has origin (0,0,0).
+
+.. seealso:: :py:func:`setOrigin`
 %End
 
     QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
@@ -97,11 +102,16 @@ Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets coordinate reference system used in the 3D scene
+Sets coordinate reference system used in the 3D scene.
+
+.. seealso:: :py:func:`crs`
 %End
+
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns coordinate reference system used in the 3D scene
+Returns coordinate reference system used in the 3D scene.
+
+.. seealso:: :py:func:`setCrs`
 %End
 
     QgsCoordinateTransformContext transformContext() const;
@@ -533,7 +543,6 @@ Sets DPI used for conversion between real world units (e.g. mm) and pixels
 
 .. versionadded:: 3.10
 %End
-
 
     double outputDpi() const;
 %Docstring

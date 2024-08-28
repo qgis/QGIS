@@ -29,6 +29,7 @@
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgs3drendercontext.h"
+#include "qgsthreadingutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -118,6 +119,8 @@ Qgs3DMapSettings::~Qgs3DMapSettings()
 
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectDirtyBlocker blocker( QgsProject::instance() );
   QDomElement elemOrigin = elem.firstChildElement( QStringLiteral( "origin" ) );
   mOrigin = QgsVector3D(
@@ -315,6 +318,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QDomElement elem = doc.createElement( QStringLiteral( "qgis3d" ) );
 
   QDomElement elemOrigin = doc.createElement( QStringLiteral( "origin" ) );
@@ -450,6 +455,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
 
 void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   for ( int i = 0; i < mLayers.count(); ++i )
   {
     QgsMapLayerRef &layerRef = mLayers[i];
@@ -459,8 +466,17 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   mTerrainGenerator->resolveReferences( project );
 }
 
+QgsRectangle Qgs3DMapSettings::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent;
+}
+
 void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( extent == mExtent )
     return;
 
@@ -475,33 +491,94 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
   emit extentChanged();
 }
 
+void Qgs3DMapSettings::setOrigin( const QgsVector3D &origin )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mOrigin = origin;
+}
+
+QgsVector3D Qgs3DMapSettings::origin() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mOrigin;
+}
+
 QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin );
 }
 
 QgsVector3D Qgs3DMapSettings::worldToMapCoordinates( const QgsVector3D &worldCoords ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return Qgs3DUtils::worldToMapCoordinates( worldCoords, mOrigin );
 }
 
 void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mCrs = crs;
+}
+
+QgsCoordinateReferenceSystem Qgs3DMapSettings::crs() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCrs;
 }
 
 QgsCoordinateTransformContext Qgs3DMapSettings::transformContext() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTransformContext;
 }
 
 void Qgs3DMapSettings::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mTransformContext = context;
+}
+
+const QgsPathResolver &Qgs3DMapSettings::pathResolver() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mPathResolver;
+}
+
+void Qgs3DMapSettings::setPathResolver( const QgsPathResolver &resolver )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mPathResolver = resolver;
+}
+
+QgsMapThemeCollection *Qgs3DMapSettings::mapThemeCollection() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMapThemes;
+}
+
+void Qgs3DMapSettings::setMapThemeCollection( QgsMapThemeCollection *mapThemes )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mMapThemes = mapThemes;
 }
 
 void Qgs3DMapSettings::setBackgroundColor( const QColor &color )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( color == mBackgroundColor )
     return;
 
@@ -511,11 +588,15 @@ void Qgs3DMapSettings::setBackgroundColor( const QColor &color )
 
 QColor Qgs3DMapSettings::backgroundColor() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mBackgroundColor;
 }
 
 void Qgs3DMapSettings::setSelectionColor( const QColor &color )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( color == mSelectionColor )
     return;
 
@@ -525,11 +606,15 @@ void Qgs3DMapSettings::setSelectionColor( const QColor &color )
 
 QColor Qgs3DMapSettings::selectionColor() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSelectionColor;
 }
 
 void Qgs3DMapSettings::setTerrainVerticalScale( double zScale )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( zScale == mTerrainVerticalScale )
     return;
 
@@ -539,11 +624,15 @@ void Qgs3DMapSettings::setTerrainVerticalScale( double zScale )
 
 double Qgs3DMapSettings::terrainVerticalScale() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTerrainVerticalScale;
 }
 
 void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayerRef> lst;
   lst.reserve( layers.count() );
   for ( QgsMapLayer *layer : layers )
@@ -560,6 +649,8 @@ void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 
 QList<QgsMapLayer *> Qgs3DMapSettings::layers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> lst;
   lst.reserve( mLayers.count() );
   for ( const QgsMapLayerRef &layerRef : mLayers )
@@ -572,6 +663,8 @@ QList<QgsMapLayer *> Qgs3DMapSettings::layers() const
 
 void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationProperties *properties, const QgsRectangle &fullExtent )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setExtent( fullExtent );
   if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
   {
@@ -618,6 +711,8 @@ void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationPropertie
 
 void Qgs3DMapSettings::setMapTileResolution( int res )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mMapTileResolution == res )
     return;
 
@@ -627,11 +722,15 @@ void Qgs3DMapSettings::setMapTileResolution( int res )
 
 int Qgs3DMapSettings::mapTileResolution() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMapTileResolution;
 }
 
 void Qgs3DMapSettings::setMaxTerrainScreenError( float error )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mMaxTerrainScreenError == error )
     return;
 
@@ -641,11 +740,15 @@ void Qgs3DMapSettings::setMaxTerrainScreenError( float error )
 
 float Qgs3DMapSettings::maxTerrainScreenError() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMaxTerrainScreenError;
 }
 
 void Qgs3DMapSettings::setMaxTerrainGroundError( float error )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mMaxTerrainGroundError == error )
     return;
 
@@ -655,19 +758,32 @@ void Qgs3DMapSettings::setMaxTerrainGroundError( float error )
 
 void Qgs3DMapSettings::setTerrainElevationOffset( float offset )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mTerrainElevationOffset == offset )
     return;
   mTerrainElevationOffset = offset;
   emit terrainElevationOffsetChanged( mTerrainElevationOffset );
 }
 
+float Qgs3DMapSettings::terrainElevationOffset() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mTerrainElevationOffset;
+}
+
 float Qgs3DMapSettings::maxTerrainGroundError() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMaxTerrainGroundError;
 }
 
 void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mTerrainGenerator )
   {
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
@@ -681,8 +797,17 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
   emit terrainGeneratorChanged();
 }
 
+QgsTerrainGenerator *Qgs3DMapSettings::terrainGenerator() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mTerrainGenerator.get();
+}
+
 void Qgs3DMapSettings::setTerrainShadingEnabled( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mTerrainShadingEnabled == enabled )
     return;
 
@@ -690,8 +815,17 @@ void Qgs3DMapSettings::setTerrainShadingEnabled( bool enabled )
   emit terrainShadingChanged();
 }
 
+bool Qgs3DMapSettings::isTerrainShadingEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mTerrainShadingEnabled;
+}
+
 void Qgs3DMapSettings::setTerrainShadingMaterial( const QgsPhongMaterialSettings &material )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mTerrainShadingMaterial == material )
     return;
 
@@ -699,8 +833,17 @@ void Qgs3DMapSettings::setTerrainShadingMaterial( const QgsPhongMaterialSettings
   emit terrainShadingChanged();
 }
 
+QgsPhongMaterialSettings Qgs3DMapSettings::terrainShadingMaterial() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mTerrainShadingMaterial;
+}
+
 void Qgs3DMapSettings::setTerrainMapTheme( const QString &theme )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mTerrainMapTheme == theme )
     return;
 
@@ -708,8 +851,17 @@ void Qgs3DMapSettings::setTerrainMapTheme( const QString &theme )
   emit terrainMapThemeChanged();
 }
 
+QString Qgs3DMapSettings::terrainMapTheme() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mTerrainMapTheme;
+}
+
 void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mShowTerrainBoundingBoxes == enabled )
     return;
 
@@ -717,8 +869,18 @@ void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )
   emit showTerrainBoundingBoxesChanged();
 }
 
+bool Qgs3DMapSettings::showTerrainBoundingBoxes() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowTerrainBoundingBoxes;
+}
+
+
 void Qgs3DMapSettings::setShowTerrainTilesInfo( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mShowTerrainTileInfo == enabled )
     return;
 
@@ -726,8 +888,17 @@ void Qgs3DMapSettings::setShowTerrainTilesInfo( bool enabled )
   emit showTerrainTilesInfoChanged();
 }
 
+bool Qgs3DMapSettings::showTerrainTilesInfo() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowTerrainTileInfo;
+}
+
 void Qgs3DMapSettings::setShowCameraViewCenter( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mShowCameraViewCenter == enabled )
     return;
 
@@ -735,8 +906,17 @@ void Qgs3DMapSettings::setShowCameraViewCenter( bool enabled )
   emit showCameraViewCenterChanged();
 }
 
+bool Qgs3DMapSettings::showCameraViewCenter() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowCameraViewCenter;
+}
+
 void Qgs3DMapSettings::setShowCameraRotationCenter( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mShowCameraRotationCenter == enabled )
     return;
 
@@ -744,9 +924,17 @@ void Qgs3DMapSettings::setShowCameraRotationCenter( bool enabled )
   emit showCameraRotationCenterChanged();
 }
 
+bool Qgs3DMapSettings::showCameraRotationCenter() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowCameraRotationCenter;
+}
 
 void Qgs3DMapSettings::setShowLightSourceOrigins( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mShowLightSources == enabled )
     return;
 
@@ -754,8 +942,17 @@ void Qgs3DMapSettings::setShowLightSourceOrigins( bool enabled )
   emit showLightSourceOriginsChanged();
 }
 
+bool Qgs3DMapSettings::showLightSourceOrigins() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowLightSources;
+}
+
 void Qgs3DMapSettings::setShowLabels( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mShowLabels == enabled )
     return;
 
@@ -763,37 +960,75 @@ void Qgs3DMapSettings::setShowLabels( bool enabled )
   emit showLabelsChanged();
 }
 
+bool Qgs3DMapSettings::showLabels() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowLabels;
+}
+
 void Qgs3DMapSettings::setEyeDomeLightingEnabled( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mEyeDomeLightingEnabled == enabled )
     return;
   mEyeDomeLightingEnabled = enabled;
   emit eyeDomeLightingEnabledChanged();
 }
 
+bool Qgs3DMapSettings::eyeDomeLightingEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mEyeDomeLightingEnabled;
+}
+
 void Qgs3DMapSettings::setEyeDomeLightingStrength( double strength )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mEyeDomeLightingStrength == strength )
     return;
   mEyeDomeLightingStrength = strength;
   emit eyeDomeLightingStrengthChanged();
 }
 
+double Qgs3DMapSettings::eyeDomeLightingStrength() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mEyeDomeLightingStrength;
+}
+
 void Qgs3DMapSettings::setEyeDomeLightingDistance( int distance )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mEyeDomeLightingDistance == distance )
     return;
   mEyeDomeLightingDistance = distance;
   emit eyeDomeLightingDistanceChanged();
 }
 
+int Qgs3DMapSettings::eyeDomeLightingDistance() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mEyeDomeLightingDistance;
+}
+
 QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLightSources;
 }
 
 void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // have lights actually changed?
   if ( mLightSources.count() == lights.count() )
   {
@@ -832,8 +1067,17 @@ void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
   emit lightSourcesChanged();
 }
 
+float Qgs3DMapSettings::fieldOfView() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mFieldOfView;
+}
+
 void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mFieldOfView == fieldOfView )
     return;
 
@@ -841,8 +1085,17 @@ void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
   emit fieldOfViewChanged();
 }
 
+Qt3DRender::QCameraLens::ProjectionType Qgs3DMapSettings::projectionType() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mProjectionType;
+}
+
 void Qgs3DMapSettings::setProjectionType( const Qt3DRender::QCameraLens::ProjectionType projectionType )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mProjectionType == projectionType )
     return;
 
@@ -850,8 +1103,17 @@ void Qgs3DMapSettings::setProjectionType( const Qt3DRender::QCameraLens::Project
   emit projectionTypeChanged();
 }
 
+Qgis::NavigationMode Qgs3DMapSettings::cameraNavigationMode() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCameraNavigationMode;
+}
+
 void Qgs3DMapSettings::setCameraNavigationMode( Qgis::NavigationMode navigationMode )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mCameraNavigationMode == navigationMode )
     return;
 
@@ -859,8 +1121,17 @@ void Qgs3DMapSettings::setCameraNavigationMode( Qgis::NavigationMode navigationM
   emit cameraNavigationModeChanged();
 }
 
+double Qgs3DMapSettings::cameraMovementSpeed() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCameraMovementSpeed;
+}
+
 void Qgs3DMapSettings::setCameraMovementSpeed( double movementSpeed )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mCameraMovementSpeed == movementSpeed )
     return;
 
@@ -868,50 +1139,169 @@ void Qgs3DMapSettings::setCameraMovementSpeed( double movementSpeed )
   emit cameraMovementSpeedChanged();
 }
 
+void Qgs3DMapSettings::setOutputDpi( const double dpi )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mDpi = dpi;
+}
+
+double Qgs3DMapSettings::outputDpi() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDpi;
+}
+
+QgsSkyboxSettings Qgs3DMapSettings::skyboxSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSkyboxSettings;
+}
+
+QgsShadowSettings Qgs3DMapSettings::shadowSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShadowSettings;
+}
+
+QgsAmbientOcclusionSettings Qgs3DMapSettings::ambientOcclusionSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mAmbientOcclusionSettings;
+}
+
 void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mSkyboxSettings = skyboxSettings;
   emit skyboxSettingsChanged();
 }
 
 void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSettings )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mShadowSettings = shadowSettings;
   emit shadowSettingsChanged();
 }
 
 void Qgs3DMapSettings::setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &ambientOcclusionSettings )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mAmbientOcclusionSettings = ambientOcclusionSettings;
   emit ambientOcclusionSettingsChanged();
 }
 
+bool Qgs3DMapSettings::isSkyboxEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mIsSkyboxEnabled;
+}
+
+void Qgs3DMapSettings::setIsSkyboxEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mIsSkyboxEnabled = enabled;
+}
+
+bool Qgs3DMapSettings::isFpsCounterEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mIsFpsCounterEnabled;
+}
+
 void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mDebugShadowMapEnabled = enabled;
   mDebugShadowMapCorner = corner;
   mDebugShadowMapSize = size;
   emit debugShadowMapSettingsChanged();
 }
 
+bool Qgs3DMapSettings::debugShadowMapEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDebugShadowMapEnabled;
+}
+
+Qt::Corner Qgs3DMapSettings::debugShadowMapCorner() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDebugShadowMapCorner;
+}
+
+double Qgs3DMapSettings::debugShadowMapSize() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDebugShadowMapSize;
+}
+
 void Qgs3DMapSettings::setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mDebugDepthMapEnabled = enabled;
   mDebugDepthMapCorner = corner;
   mDebugDepthMapSize = size;
   emit debugDepthMapSettingsChanged();
 }
 
+bool Qgs3DMapSettings::debugDepthMapEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDebugDepthMapEnabled;
+}
+
+Qt::Corner Qgs3DMapSettings::debugDepthMapCorner() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDebugDepthMapCorner;
+}
+
+double Qgs3DMapSettings::debugDepthMapSize() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDebugDepthMapSize;
+}
+
 void Qgs3DMapSettings::setIsFpsCounterEnabled( bool fpsCounterEnabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( fpsCounterEnabled == mIsFpsCounterEnabled )
     return;
   mIsFpsCounterEnabled = fpsCounterEnabled;
   emit fpsCounterEnabledChanged( mIsFpsCounterEnabled );
 }
 
+bool Qgs3DMapSettings::terrainRenderingEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mTerrainRenderingEnabled;
+}
+
 void Qgs3DMapSettings::setTerrainRenderingEnabled( bool terrainRenderingEnabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( terrainRenderingEnabled == mTerrainRenderingEnabled )
     return;
   mTerrainRenderingEnabled = terrainRenderingEnabled;
@@ -920,21 +1310,43 @@ void Qgs3DMapSettings::setTerrainRenderingEnabled( bool terrainRenderingEnabled 
 
 Qgis::RendererUsage Qgs3DMapSettings::rendererUsage() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mRendererUsage;
 }
 
 void Qgs3DMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mRendererUsage = rendererUsage;
+}
+
+Qgis::ViewSyncModeFlags Qgs3DMapSettings::viewSyncMode() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mViewSyncMode;
 }
 
 void Qgs3DMapSettings::setViewSyncMode( Qgis::ViewSyncModeFlags mode )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mViewSyncMode = mode;
+}
+
+bool Qgs3DMapSettings::viewFrustumVisualizationEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mVisualizeViewFrustum;
 }
 
 void Qgs3DMapSettings::setViewFrustumVisualizationEnabled( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mVisualizeViewFrustum != enabled )
   {
     mVisualizeViewFrustum = enabled;
@@ -942,8 +1354,17 @@ void Qgs3DMapSettings::setViewFrustumVisualizationEnabled( bool enabled )
   }
 }
 
+Qgs3DAxisSettings Qgs3DMapSettings::get3DAxisSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return m3dAxisSettings;
+}
+
 void Qgs3DMapSettings::setIsDebugOverlayEnabled( bool debugOverlayEnabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( debugOverlayEnabled == mIsDebugOverlayEnabled )
     return;
 
@@ -951,9 +1372,17 @@ void Qgs3DMapSettings::setIsDebugOverlayEnabled( bool debugOverlayEnabled )
   emit debugOverlayEnabledChanged( mIsDebugOverlayEnabled );
 }
 
+bool Qgs3DMapSettings::showExtentIn2DView() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowExtentIn2DView;
+}
 
 void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   connect( this, &Qgs3DMapSettings::selectionColorChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapSettings::settingsChanged );
@@ -992,6 +1421,8 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
 
 void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings, bool force )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( axisSettings == m3dAxisSettings )
   {
     if ( force )
@@ -1009,8 +1440,17 @@ void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings,
   }
 }
 
+bool Qgs3DMapSettings::isDebugOverlayEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mIsDebugOverlayEnabled;
+}
+
 void Qgs3DMapSettings::setShowExtentIn2DView( bool show )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( show == mShowExtentIn2DView )
     return;
 
