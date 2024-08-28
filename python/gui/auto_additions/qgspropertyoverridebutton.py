@@ -3,3 +3,7 @@ try:
     QgsPropertyOverrideButton.__attribute_docs__ = {'changed': 'Emitted when property definition changes\n', 'activated': 'Emitted when the activated status of the widget changes\n', 'createAuxiliaryField': 'Emitted when creating a new auxiliary field\n'}
 except NameError:
     pass
+try:
+    QgsPropertyOverrideButton.__signal_arguments__ = {'activated': ['isActive: bool']}
+except NameError:
+    pass

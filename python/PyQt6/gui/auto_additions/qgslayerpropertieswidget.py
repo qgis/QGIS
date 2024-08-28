@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayerPropertiesWidget.__signal_arguments__ = {'changeLayer': ['layer: QgsSymbolLayer']}
+except NameError:
+    pass
+try:
     QgsLayerPropertiesWidget.__group__ = ['symbology']
 except NameError:
     pass

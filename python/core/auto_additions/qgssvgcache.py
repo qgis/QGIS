@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSvgCache.__signal_arguments__ = {'remoteSvgFetched': ['url: str']}
+except NameError:
+    pass
+try:
     QgsSvgCache.__group__ = ['symbology']
 except NameError:
     pass

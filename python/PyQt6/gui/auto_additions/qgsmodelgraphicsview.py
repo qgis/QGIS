@@ -9,6 +9,10 @@ try:
 except NameError:
     pass
 try:
+    QgsModelGraphicsView.__signal_arguments__ = {'algorithmDropped': ['algorithmId: str', 'pos: QPointF'], 'inputDropped': ['inputId: str', 'pos: QPointF'], 'itemFocused': ['item: QgsModelComponentGraphicItem'], 'macroCommandStarted': ['text: str'], 'beginCommand': ['text: str']}
+except NameError:
+    pass
+try:
     QgsModelGraphicsView.__group__ = ['processing', 'models']
 except NameError:
     pass

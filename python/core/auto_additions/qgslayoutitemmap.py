@@ -13,6 +13,10 @@ except NameError:
     pass
 QgsLayoutItemMap.create = staticmethod(QgsLayoutItemMap.create)
 try:
+    QgsLayoutItemMap.__signal_arguments__ = {'mapRotationChanged': ['newRotation: float'], 'themeChanged': ['theme: str']}
+except NameError:
+    pass
+try:
     QgsLayoutItemMapAtlasClippingSettings.__group__ = ['layout']
 except NameError:
     pass

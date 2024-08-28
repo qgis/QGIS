@@ -12,6 +12,10 @@ except NameError:
     pass
 QgsLocatorFilter.stringMatches = staticmethod(QgsLocatorFilter.stringMatches)
 QgsLocatorFilter.fuzzyScore = staticmethod(QgsLocatorFilter.fuzzyScore)
+try:
+    QgsLocatorFilter.__signal_arguments__ = {'resultFetched': ['result: QgsLocatorResult']}
+except NameError:
+    pass
 QgsLocatorResult.ResultAction.__doc__ = """The ResultAction stores basic information for additional
 actions to be used in a locator widget for the result.
 They could be used in a context menu for instance.

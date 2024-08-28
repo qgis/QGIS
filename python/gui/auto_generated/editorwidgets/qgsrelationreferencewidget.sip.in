@@ -271,14 +271,14 @@ unset the currently related feature
 
   signals:
 
- void foreignKeyChanged( const QVariant & ) /Deprecated/;
+ void foreignKeyChanged( const QVariant &key ) /Deprecated/;
 %Docstring
 Emitted when the foreign key changed
 
 .. deprecated:: 3.10
 %End
 
-    void foreignKeysChanged( const QVariantList & );
+    void foreignKeysChanged( const QVariantList &keys );
 %Docstring
 Emitted when the foreign keys changed
 

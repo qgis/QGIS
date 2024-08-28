@@ -29,6 +29,10 @@ except NameError:
 QgsProject.instance = staticmethod(QgsProject.instance)
 QgsProject.setInstance = staticmethod(QgsProject.setInstance)
 try:
+    QgsProject.__signal_arguments__ = {'readProject': ['document: QDomDocument'], 'readProjectWithContext': ['document: QDomDocument', 'context: QgsReadWriteContext'], 'writeProject': ['document: QDomDocument'], 'readMapLayer': ['mapLayer: QgsMapLayer', 'layerNode: QDomElement'], 'writeMapLayer': ['mapLayer: QgsMapLayer', 'layerElem: QDomElement', 'doc: QDomDocument'], 'readVersionMismatchOccurred': ['fileVersion: str'], 'layerLoaded': ['i: int', 'n: int'], 'loadingLayer': ['layerName: str'], 'loadingLayerMessageReceived': ['layerName: str', 'messages: List[QgsReadWriteContext.ReadWriteMessage]'], 'nonIdentifiableLayersChanged': ['nonIdentifiableLayers: List[str]'], 'snappingConfigChanged': ['config: QgsSnappingConfig'], 'ellipsoidChanged': ['ellipsoid: str'], 'missingDatumTransforms': ['missingTransforms: List[str]'], 'layersWillBeRemoved': ['layers: List[QgsMapLayer]'], 'layerWillBeRemoved': ['layer: QgsMapLayer'], 'layersRemoved': ['layerIds: List[str]'], 'layerRemoved': ['layerId: str'], 'layersAdded': ['layers: List[QgsMapLayer]'], 'layerWasAdded': ['layer: QgsMapLayer'], 'legendLayersAdded': ['layers: List[QgsMapLayer]'], 'isDirtyChanged': ['dirty: bool']}
+except NameError:
+    pass
+try:
     QgsProject.__group__ = ['project']
 except NameError:
     pass

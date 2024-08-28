@@ -7,6 +7,10 @@ try:
 except NameError:
     pass
 QgsMesh.compareFaces = staticmethod(QgsMesh.compareFaces)
+try:
+    QgsMeshDataProvider.__signal_arguments__ = {'datasetGroupsAdded': ['count: int']}
+except NameError:
+    pass
 QgsMesh.__doc__ = """
 Mesh - vertices, edges and faces
 

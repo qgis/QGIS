@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsReport.__signal_arguments__ = {'nameChanged': ['name: str']}
+except NameError:
+    pass
+try:
     QgsReport.__group__ = ['layout']
 except NameError:
     pass

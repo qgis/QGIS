@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutUndoStack.__signal_arguments__ = {'undoRedoOccurredForItems': ['itemUuids: Set[str]']}
+except NameError:
+    pass
+try:
     QgsLayoutUndoStack.__group__ = ['layout']
 except NameError:
     pass

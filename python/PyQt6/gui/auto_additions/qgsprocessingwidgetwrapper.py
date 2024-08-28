@@ -15,6 +15,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAbstractProcessingParameterWidgetWrapper.__signal_arguments__ = {'widgetValueHasChanged': ['wrapper: QgsAbstractProcessingParameterWidgetWrapper']}
+except NameError:
+    pass
+try:
     QgsProcessingContextGenerator.__group__ = ['processing']
 except NameError:
     pass

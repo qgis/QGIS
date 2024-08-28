@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutUnitsComboBox.__signal_arguments__ = {'changed': ['unit: int']}
+except NameError:
+    pass
+try:
     QgsLayoutUnitsComboBox.__group__ = ['layout']
 except NameError:
     pass

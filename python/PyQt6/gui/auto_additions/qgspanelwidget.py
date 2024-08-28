@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsPanelWidget.findParentPanel = staticmethod(QgsPanelWidget.findParentPanel)
+try:
+    QgsPanelWidget.__signal_arguments__ = {'panelAccepted': ['panel: QgsPanelWidget'], 'showPanel': ['panel: QgsPanelWidget']}
+except NameError:
+    pass

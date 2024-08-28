@@ -9,6 +9,10 @@ except NameError:
     pass
 QgsHistoryProviderRegistry.userHistoryDbPath = staticmethod(QgsHistoryProviderRegistry.userHistoryDbPath)
 try:
+    QgsHistoryProviderRegistry.__signal_arguments__ = {'entryAdded': ['id: int', 'entry: QgsHistoryEntry', 'backend: Qgis.HistoryProviderBackend'], 'entryUpdated': ['id: int', 'entry: Dict[str, object]', 'backend: Qgis.HistoryProviderBackend'], 'historyCleared': ['backend: Qgis.HistoryProviderBackend', 'providerId: str']}
+except NameError:
+    pass
+try:
     QgsHistoryProviderRegistry.__group__ = ['history']
 except NameError:
     pass

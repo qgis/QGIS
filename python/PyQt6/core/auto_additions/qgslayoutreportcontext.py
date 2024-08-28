@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutReportContext.__signal_arguments__ = {'layerChanged': ['layer: QgsVectorLayer']}
+except NameError:
+    pass
+try:
     QgsLayoutReportContext.__group__ = ['layout']
 except NameError:
     pass

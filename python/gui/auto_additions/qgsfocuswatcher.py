@@ -3,3 +3,7 @@ try:
     QgsFocusWatcher.__attribute_docs__ = {'focusChanged': "Emitted when parent object's focus changes.\n\n:param focused: ``True`` if object gained focus, ``False`` if object lost focus\n", 'focusIn': 'Emitted when parent object gains focus.\n', 'focusOut': 'Emitted when parent object loses focus.\n'}
 except NameError:
     pass
+try:
+    QgsFocusWatcher.__signal_arguments__ = {'focusChanged': ['focused: bool']}
+except NameError:
+    pass

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutViewTool.__signal_arguments__ = {'itemFocused': ['item: QgsLayoutItem']}
+except NameError:
+    pass
+try:
     QgsLayoutViewTool.__group__ = ['layout']
 except NameError:
     pass

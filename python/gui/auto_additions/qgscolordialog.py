@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsColorDialog.getColor = staticmethod(QgsColorDialog.getColor)
+try:
+    QgsColorDialog.__signal_arguments__ = {'currentColorChanged': ['color: QColor']}
+except NameError:
+    pass

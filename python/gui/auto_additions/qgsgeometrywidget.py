@@ -3,3 +3,7 @@ try:
     QgsGeometryWidget.__attribute_docs__ = {'geometryValueChanged': 'Emitted whenever the geometry value of the widget is changed.\n\n.. seealso:: :py:func:`geometryValue`\n\n.. seealso:: :py:func:`setGeometryValue`\n'}
 except NameError:
     pass
+try:
+    QgsGeometryWidget.__signal_arguments__ = {'geometryValueChanged': ['value: QgsReferencedGeometry']}
+except NameError:
+    pass

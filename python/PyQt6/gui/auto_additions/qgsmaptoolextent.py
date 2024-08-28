@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapToolExtent.__signal_arguments__ = {'extentChanged': ['extent: QgsRectangle']}
+except NameError:
+    pass
+try:
     QgsMapToolExtent.__group__ = ['maptools']
 except NameError:
     pass

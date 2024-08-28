@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSensorGuiRegistry.__signal_arguments__ = {'sensorAdded': ['type: str', 'name: str']}
+except NameError:
+    pass
+try:
     QgsSensorAbstractGuiMetadata.__group__ = ['sensor']
 except NameError:
     pass

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSearchWidgetToolButton.__signal_arguments__ = {'activeFlagsChanged': ['flags: QgsSearchWidgetWrapper.FilterFlags']}
+except NameError:
+    pass
+try:
     QgsSearchWidgetToolButton.__group__ = ['editorwidgets']
 except NameError:
     pass

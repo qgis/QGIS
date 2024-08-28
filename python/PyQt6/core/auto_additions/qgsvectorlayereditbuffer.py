@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsVectorLayerEditBuffer.__signal_arguments__ = {'featureAdded': ['fid: QgsFeatureId'], 'featureDeleted': ['fid: QgsFeatureId'], 'geometryChanged': ['fid: QgsFeatureId', 'geom: QgsGeometry'], 'attributeValueChanged': ['fid: QgsFeatureId', 'idx: int', 'value: object'], 'attributeAdded': ['idx: int'], 'attributeDeleted': ['idx: int'], 'attributeRenamed': ['idx: int', 'newName: str'], 'committedAttributesDeleted': ['layerId: str', 'deletedAttributes: QgsAttributeList'], 'committedAttributesAdded': ['layerId: str', 'addedAttributes: List[QgsField]'], 'committedAttributesRenamed': ['layerId: str', 'renamedAttributes: QgsFieldNameMap'], 'committedFeaturesAdded': ['layerId: str', 'addedFeatures: QgsFeatureList'], 'committedFeaturesRemoved': ['layerId: str', 'deletedFeatureIds: QgsFeatureIds'], 'committedAttributeValuesChanges': ['layerId: str', 'changedAttributesValues: QgsChangedAttributesMap'], 'committedGeometriesChanges': ['layerId: str', 'changedGeometries: QgsGeometryMap']}
+except NameError:
+    pass
+try:
     QgsVectorLayerEditBuffer.__group__ = ['vector']
 except NameError:
     pass

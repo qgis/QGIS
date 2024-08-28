@@ -7,6 +7,10 @@ try:
 except NameError:
     pass
 try:
+    QgsDoubleSpinBox.__signal_arguments__ = {'textEdited': ['text: str']}
+except NameError:
+    pass
+try:
     QgsDoubleSpinBox.__group__ = ['editorwidgets']
 except NameError:
     pass

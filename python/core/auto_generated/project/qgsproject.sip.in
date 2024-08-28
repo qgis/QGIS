@@ -1685,17 +1685,17 @@ Emitted when the project is about to be cleared.
 .. versionadded:: 3.34
 %End
 
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &document );
 %Docstring
 Emitted when a project is being read.
 %End
 
-    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+    void readProjectWithContext( const QDomDocument &document, QgsReadWriteContext &context );
 %Docstring
 Emitted when a project is being read. And passing the /a context
 %End
 
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument &document );
 %Docstring
 Emitted when the project is being written.
 %End
@@ -1725,7 +1725,7 @@ additional information to the layer.
 Emitted when the project file has been written and closed.
 %End
 
- void oldProjectVersionWarning( const QString & ) /Deprecated/;
+ void oldProjectVersionWarning( const QString &warning ) /Deprecated/;
 %Docstring
 Emitted when an old project file is read.
 

@@ -7,6 +7,10 @@ try:
 except NameError:
     pass
 try:
+    QgsRelationReferenceWidget.__signal_arguments__ = {'foreignKeysChanged': ['keys: List[object]']}
+except NameError:
+    pass
+try:
     QgsRelationReferenceWidget.__group__ = ['editorwidgets']
 except NameError:
     pass

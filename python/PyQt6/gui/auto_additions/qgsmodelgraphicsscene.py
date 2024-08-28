@@ -13,6 +13,10 @@ try:
 except NameError:
     pass
 try:
+    QgsModelGraphicsScene.__signal_arguments__ = {'componentAboutToChange': ['text: str', 'id: int = 0'], 'selectedItemChanged': ['selected: QgsModelComponentGraphicItem'], 'runFromChild': ['childId: str'], 'showChildAlgorithmOutputs': ['childId: str'], 'showChildAlgorithmLog': ['childId: str']}
+except NameError:
+    pass
+try:
     QgsModelGraphicsScene.__group__ = ['processing', 'models']
 except NameError:
     pass

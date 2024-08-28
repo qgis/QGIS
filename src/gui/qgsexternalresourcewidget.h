@@ -204,8 +204,8 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QgsMessageBar *messageBar() const;
 
   signals:
-    //! emitteed as soon as the current document changes
-    void valueChanged( const QString & );
+    //! Emitted as soon as the current document changes
+    void valueChanged( const QString &value );
 
   private slots:
     void loadDocument( const QString &path );

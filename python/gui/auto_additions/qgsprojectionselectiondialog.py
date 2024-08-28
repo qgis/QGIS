@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsCrsSelectionWidget.__signal_arguments__ = {'crsDoubleClicked': ['crs: QgsCoordinateReferenceSystem'], 'hasValidSelectionChanged': ['isValid: bool']}
+except NameError:
+    pass
+try:
     QgsCrsSelectionWidget.__group__ = ['proj']
 except NameError:
     pass

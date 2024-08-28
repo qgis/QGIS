@@ -41,6 +41,10 @@ QgsRasterDataProvider.identifyFormatName = staticmethod(QgsRasterDataProvider.id
 QgsRasterDataProvider.identifyFormatFromName = staticmethod(QgsRasterDataProvider.identifyFormatFromName)
 QgsRasterDataProvider.identifyFormatLabel = staticmethod(QgsRasterDataProvider.identifyFormatLabel)
 QgsRasterDataProvider.identifyFormatToCapability = staticmethod(QgsRasterDataProvider.identifyFormatToCapability)
+try:
+    QgsImageFetcher.__signal_arguments__ = {'finish': ['legend: QImage'], 'progress': ['received: int', 'total: int'], 'error': ['msg: str']}
+except NameError:
+    pass
 QgsRasterDataProvider.VirtualRasterInputLayers.__doc__ = """Struct that stores information of the raster used in :py:class:`QgsVirtualRasterProvider` for the calculations,
 this struct is  stored in the DecodedUriParameters
 

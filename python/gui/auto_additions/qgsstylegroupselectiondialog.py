@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsStyleGroupSelectionDialog.__signal_arguments__ = {'tagSelected': ['tagName: str'], 'tagDeselected': ['tagName: str'], 'smartgroupSelected': ['groupName: str'], 'smartgroupDeselected': ['groupName: str']}
+except NameError:
+    pass
+try:
     QgsStyleGroupSelectionDialog.__group__ = ['symbology']
 except NameError:
     pass

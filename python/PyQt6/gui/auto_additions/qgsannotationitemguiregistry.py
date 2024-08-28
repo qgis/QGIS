@@ -8,6 +8,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAnnotationItemGuiRegistry.__signal_arguments__ = {'typeAdded': ['metadataId: int']}
+except NameError:
+    pass
+try:
     QgsAnnotationItemAbstractGuiMetadata.__group__ = ['annotations']
 except NameError:
     pass

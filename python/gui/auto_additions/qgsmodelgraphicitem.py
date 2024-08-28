@@ -8,6 +8,10 @@ try:
 except NameError:
     pass
 try:
+    QgsModelDesignerFoldButtonGraphicItem.__signal_arguments__ = {'folded': ['folded: bool']}
+except NameError:
+    pass
+try:
     QgsModelDesignerFlatButtonGraphicItem.__group__ = ['processing', 'models']
 except NameError:
     pass

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProcessingLayerOutputDestinationWidget.__signal_arguments__ = {'skipOutputChanged': ['skipped: bool']}
+except NameError:
+    pass
+try:
     QgsProcessingLayerOutputDestinationWidget.__group__ = ['processing']
 except NameError:
     pass

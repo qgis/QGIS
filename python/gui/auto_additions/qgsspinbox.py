@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSpinBox.__signal_arguments__ = {'textEdited': ['text: str']}
+except NameError:
+    pass
+try:
     QgsSpinBox.__group__ = ['editorwidgets']
 except NameError:
     pass

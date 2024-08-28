@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutAtlas.__signal_arguments__ = {'toggled': ['enabled: bool'], 'coverageLayerChanged': ['layer: QgsVectorLayer'], 'messagePushed': ['message: str'], 'numberFeaturesChanged': ['numFeatures: int'], 'featureChanged': ['feature: QgsFeature']}
+except NameError:
+    pass
+try:
     QgsLayoutAtlas.__group__ = ['layout']
 except NameError:
     pass

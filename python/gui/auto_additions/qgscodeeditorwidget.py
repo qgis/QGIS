@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsCodeEditorWidget.__signal_arguments__ = {'searchBarToggled': ['visible: bool'], 'filePathChanged': ['path: str']}
+except NameError:
+    pass
+try:
     QgsCodeEditorWidget.__group__ = ['codeeditors']
 except NameError:
     pass

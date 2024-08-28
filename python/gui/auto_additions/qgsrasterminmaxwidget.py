@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsRasterMinMaxWidget.__signal_arguments__ = {'load': ['bandNo: int', 'min: float', 'max: float']}
+except NameError:
+    pass
+try:
     QgsRasterMinMaxWidget.__group__ = ['raster']
 except NameError:
     pass

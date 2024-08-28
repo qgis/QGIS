@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 QgsVectorLayer.drawVertexMarker = staticmethod(QgsVectorLayer.drawVertexMarker)
+try:
+    QgsVectorLayer.__signal_arguments__ = {'selectionChanged': ['selected: QgsFeatureIds', 'deselected: QgsFeatureIds', 'clearAndSelect: bool'], 'beforeCommitChanges': ['stopEditing: bool'], 'attributeAdded': ['idx: int'], 'beforeAddingExpressionField': ['fieldName: str'], 'attributeDeleted': ['idx: int'], 'beforeRemovingExpressionField': ['idx: int'], 'featureAdded': ['fid: QgsFeatureId'], 'featureDeleted': ['fid: QgsFeatureId'], 'featuresDeleted': ['fids: QgsFeatureIds'], 'attributeValueChanged': ['fid: QgsFeatureId', 'idx: int', 'value: object'], 'geometryChanged': ['fid: QgsFeatureId', 'geometry: QgsGeometry'], 'committedAttributesDeleted': ['layerId: str', 'deletedAttributes: QgsAttributeList'], 'committedAttributesAdded': ['layerId: str', 'addedAttributes: List[QgsField]'], 'committedFeaturesAdded': ['layerId: str', 'addedFeatures: QgsFeatureList'], 'committedFeaturesRemoved': ['layerId: str', 'deletedFeatureIds: QgsFeatureIds'], 'committedAttributeValuesChanges': ['layerId: str', 'changedAttributesValues: QgsChangedAttributesMap'], 'committedGeometriesChanges': ['layerId: str', 'changedGeometries: QgsGeometryMap'], 'labelingFontNotFound': ['layer: QgsVectorLayer', 'fontfamily: str'], 'featureBlendModeChanged': ['blendMode: QPainter.CompositionMode'], 'editCommandStarted': ['text: str'], 'readCustomSymbology': ['element: QDomElement', 'errorMessage: str'], 'raiseError': ['msg: str']}
+except NameError:
+    pass
 QgsVectorLayer.LayerOptions.__doc__ = """Setting options for loading vector layers."""
 QgsVectorLayer.DeleteContext.__doc__ = """Context for cascade delete features
 

@@ -6,3 +6,7 @@ except NameError:
 QgsCompoundColorWidget.importUserPaletteFromFile = staticmethod(QgsCompoundColorWidget.importUserPaletteFromFile)
 QgsCompoundColorWidget.createNewUserPalette = staticmethod(QgsCompoundColorWidget.createNewUserPalette)
 QgsCompoundColorWidget.removeUserPalette = staticmethod(QgsCompoundColorWidget.removeUserPalette)
+try:
+    QgsCompoundColorWidget.__signal_arguments__ = {'currentColorChanged': ['color: QColor']}
+except NameError:
+    pass

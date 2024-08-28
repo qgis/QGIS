@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsPlotCanvas.__signal_arguments__ = {'toolChanged': ['newTool: QgsPlotTool'], 'contextMenuAboutToShow': ['menu: QMenu', 'event: QgsPlotMouseEvent']}
+except NameError:
+    pass
+try:
     QgsPlotCanvas.__group__ = ['plot']
 except NameError:
     pass

@@ -7,3 +7,7 @@ try:
     QgsUnitSelectionWidget.__attribute_docs__ = {'changed': 'Emitted when the selected unit is changed, or the definition of the map unit scale is changed.\n'}
 except NameError:
     pass
+try:
+    QgsMapUnitScaleWidget.__signal_arguments__ = {'mapUnitScaleChanged': ['scale: QgsMapUnitScale']}
+except NameError:
+    pass

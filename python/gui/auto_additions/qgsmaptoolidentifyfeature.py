@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapToolIdentifyFeature.__signal_arguments__ = {'featureIdentified': ['feature: QgsFeature']}
+except NameError:
+    pass
+try:
     QgsMapToolIdentifyFeature.__group__ = ['maptools']
 except NameError:
     pass

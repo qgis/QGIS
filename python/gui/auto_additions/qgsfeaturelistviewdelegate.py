@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsFeatureListViewDelegate.__signal_arguments__ = {'editButtonClicked': ['index: QModelIndex']}
+except NameError:
+    pass
+try:
     QgsFeatureListViewDelegate.__group__ = ['attributetable']
 except NameError:
     pass

@@ -12,6 +12,10 @@ except NameError:
     pass
 QgsDualView.requiredAttributes = staticmethod(QgsDualView.requiredAttributes)
 try:
+    QgsDualView.__signal_arguments__ = {'displayExpressionChanged': ['expression: str'], 'filterExpressionSet': ['expression: str', 'type: QgsAttributeForm.FilterType'], 'formModeChanged': ['mode: QgsAttributeEditorContext.Mode'], 'showContextMenuExternally': ['menu: QgsActionMenu', 'fid: QgsFeatureId']}
+except NameError:
+    pass
+try:
     QgsDualView.__group__ = ['attributetable']
 except NameError:
     pass

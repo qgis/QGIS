@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSvgSelectorWidget.__signal_arguments__ = {'svgSelected': ['path: str'], 'svgParametersChanged': ['parameters: Dict[str, QgsProperty]']}
+except NameError:
+    pass
+try:
     QgsSvgSelectorFilterModel.__group__ = ['symbology']
 except NameError:
     pass

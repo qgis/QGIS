@@ -230,7 +230,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /**
      * Emitted when a feature's attribute value has been changed.
      */
-    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
+    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
     /**
      * Emitted when an attribute was added to the buffer.

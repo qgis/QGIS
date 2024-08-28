@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsMapRendererJob.__signal_arguments__ = {'layerRenderingStarted': ['layerId: str'], 'layerRendered': ['layerId: str']}
+except NameError:
+    pass
+try:
     QgsMapRendererJob.__group__ = ['maprenderer']
 except NameError:
     pass

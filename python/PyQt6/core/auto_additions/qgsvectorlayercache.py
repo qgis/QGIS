@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsVectorLayerCache.__signal_arguments__ = {'attributeValueChanged': ['fid: QgsFeatureId', 'field: int', 'value: object'], 'featureAdded': ['fid: QgsFeatureId']}
+except NameError:
+    pass
+try:
     QgsVectorLayerCache.__group__ = ['vector']
 except NameError:
     pass

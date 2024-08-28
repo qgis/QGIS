@@ -8,6 +8,10 @@ try:
 except NameError:
     pass
 try:
+    QgsFetchedContent.__signal_arguments__ = {'errorOccurred': ['code: QNetworkReply.NetworkError', 'errorMsg: str']}
+except NameError:
+    pass
+try:
     QgsFetchedContent.__group__ = ['network']
 except NameError:
     pass

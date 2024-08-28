@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProjectionSelectionTreeWidget.__signal_arguments__ = {'hasValidSelectionChanged': ['isValid: bool']}
+except NameError:
+    pass
+try:
     QgsProjectionSelectionTreeWidget.__group__ = ['proj']
 except NameError:
     pass

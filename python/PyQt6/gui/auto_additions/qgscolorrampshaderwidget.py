@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsColorRampShaderWidget.__signal_arguments__ = {'minimumMaximumChangedFromTree': ['minimum: float', 'maximum: float'], 'classificationModeChanged': ['mode: Qgis.ShaderClassificationMethod']}
+except NameError:
+    pass
+try:
     QgsColorRampShaderWidget.__group__ = ['raster']
 except NameError:
     pass

@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsGeometryValidator.validateGeometry = staticmethod(QgsGeometryValidator.validateGeometry)
+try:
+    QgsGeometryValidator.__signal_arguments__ = {'errorFound': ['error: QgsGeometry.Error'], 'validationFinished': ['summary: str']}
+except NameError:
+    pass

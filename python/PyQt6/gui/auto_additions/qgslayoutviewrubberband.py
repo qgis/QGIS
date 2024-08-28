@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutViewRubberBand.__signal_arguments__ = {'sizeChanged': ['size: str']}
+except NameError:
+    pass
+try:
     QgsLayoutViewRubberBand.__group__ = ['layout']
 except NameError:
     pass

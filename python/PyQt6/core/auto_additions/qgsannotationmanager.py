@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAnnotationManager.__signal_arguments__ = {'annotationAdded': ['annotation: QgsAnnotation'], 'annotationAboutToBeRemoved': ['annotation: QgsAnnotation']}
+except NameError:
+    pass
+try:
     QgsAnnotationManager.__group__ = ['annotations']
 except NameError:
     pass

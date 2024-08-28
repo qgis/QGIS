@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsElevationControllerWidget.__signal_arguments__ = {'rangeChanged': ['range: QgsDoubleRange'], 'fixedRangeSizeChanged': ['size: float'], 'invertedChanged': ['inverted: bool']}
+except NameError:
+    pass
+try:
     QgsElevationControllerSettingsAction.__group__ = ['elevation']
 except NameError:
     pass

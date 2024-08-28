@@ -4,3 +4,7 @@ try:
 except NameError:
     pass
 QgsMapLayerStyleManager.isDefault = staticmethod(QgsMapLayerStyleManager.isDefault)
+try:
+    QgsMapLayerStyleManager.__signal_arguments__ = {'styleAdded': ['name: str'], 'styleRemoved': ['name: str'], 'styleRenamed': ['oldName: str', 'newName: str'], 'currentStyleChanged': ['currentName: str']}
+except NameError:
+    pass

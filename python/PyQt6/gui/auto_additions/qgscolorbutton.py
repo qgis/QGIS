@@ -7,3 +7,7 @@ try:
 except NameError:
     pass
 QgsColorButton.createMenuIcon = staticmethod(QgsColorButton.createMenuIcon)
+try:
+    QgsColorButton.__signal_arguments__ = {'colorChanged': ['color: QColor'], 'colorClicked': ['color: QColor']}
+except NameError:
+    pass

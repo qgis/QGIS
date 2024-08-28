@@ -282,13 +282,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      * Emitted when the foreign key changed
      * \deprecated QGIS 3.10
      */
-    Q_DECL_DEPRECATED void foreignKeyChanged( const QVariant & ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void foreignKeyChanged( const QVariant &key ) SIP_DEPRECATED;
 
     /**
      * Emitted when the foreign keys changed
      * \since QGIS 3.10
      */
-    void foreignKeysChanged( const QVariantList & );
+    void foreignKeysChanged( const QVariantList &keys );
 
   private slots:
     void highlightActionTriggered( QAction *action );

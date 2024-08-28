@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsTableEditorDialog.__signal_arguments__ = {'includeHeaderChanged': ['included: bool']}
+except NameError:
+    pass
+try:
     QgsTableEditorDialog.__group__ = ['tableeditor']
 except NameError:
     pass

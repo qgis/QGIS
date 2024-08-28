@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsGpsLogger.__signal_arguments__ = {'trackIsEmptyChanged': ['isEmpty: bool'], 'trackVertexAdded': ['vertex: QgsPoint'], 'stateChanged': ['info: QgsGpsInformation']}
+except NameError:
+    pass
+try:
     QgsGpsLogger.__group__ = ['gps']
 except NameError:
     pass

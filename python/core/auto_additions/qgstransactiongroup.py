@@ -3,3 +3,7 @@ try:
     QgsTransactionGroup.__attribute_docs__ = {'commitError': 'Will be emitted whenever there is a commit error\n'}
 except NameError:
     pass
+try:
+    QgsTransactionGroup.__signal_arguments__ = {'commitError': ['msg: str']}
+except NameError:
+    pass

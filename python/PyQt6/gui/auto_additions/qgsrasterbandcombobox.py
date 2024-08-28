@@ -5,6 +5,10 @@ except NameError:
     pass
 QgsRasterBandComboBox.displayBandName = staticmethod(QgsRasterBandComboBox.displayBandName)
 try:
+    QgsRasterBandComboBox.__signal_arguments__ = {'bandChanged': ['band: int']}
+except NameError:
+    pass
+try:
     QgsRasterBandComboBox.__group__ = ['raster']
 except NameError:
     pass

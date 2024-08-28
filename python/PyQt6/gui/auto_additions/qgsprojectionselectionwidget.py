@@ -11,6 +11,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProjectionSelectionWidget.__signal_arguments__ = {'crsChanged': ['crs: QgsCoordinateReferenceSystem']}
+except NameError:
+    pass
+try:
     QgsProjectionSelectionWidget.__group__ = ['proj']
 except NameError:
     pass

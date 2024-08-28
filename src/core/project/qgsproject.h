@@ -1729,17 +1729,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a project is being read.
      */
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &document );
 
     /**
      * Emitted when a project is being read. And passing the /a context
      */
-    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+    void readProjectWithContext( const QDomDocument &document, QgsReadWriteContext &context );
 
     /**
      * Emitted when the project is being written.
      */
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument &document );
 
     /**
      * Emitted after the basic initialization of a layer from the project
@@ -1771,7 +1771,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \deprecated QGIS 3.40. Use readVersionMismatchOccurred() instead.
      */
-    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString & ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString &warning ) SIP_DEPRECATED;
 
     /**
      * Emitted when a project is read and the version of QGIS used to save

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsCodeEditorDockWidget.__signal_arguments__ = {'visibilityChanged': ['isVisible: bool']}
+except NameError:
+    pass
+try:
     QgsCodeEditorDockWidget.__group__ = ['codeeditors']
 except NameError:
     pass

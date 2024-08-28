@@ -314,7 +314,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     void changed();
 
     //! Emitted when atlas is enabled or disabled.
-    void toggled( bool );
+    void toggled( bool enabled );
 
     //! Emitted when the coverage layer for the atlas changes.
     void coverageLayerChanged( QgsVectorLayer *layer );

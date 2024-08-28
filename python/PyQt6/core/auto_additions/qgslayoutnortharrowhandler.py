@@ -6,6 +6,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutNorthArrowHandler.__signal_arguments__ = {'arrowRotationChanged': ['newRotation: float']}
+except NameError:
+    pass
+try:
     QgsLayoutNorthArrowHandler.__group__ = ['layout']
 except NameError:
     pass

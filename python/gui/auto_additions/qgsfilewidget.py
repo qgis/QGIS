@@ -7,3 +7,7 @@ except NameError:
     pass
 QgsFileWidget.splitFilePaths = staticmethod(QgsFileWidget.splitFilePaths)
 QgsFileWidget.isMultiFiles = staticmethod(QgsFileWidget.isMultiFiles)
+try:
+    QgsFileWidget.__signal_arguments__ = {'fileChanged': ['path: str']}
+except NameError:
+    pass

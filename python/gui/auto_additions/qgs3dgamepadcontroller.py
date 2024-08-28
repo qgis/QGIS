@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsGamepad3DMapController.__signal_arguments__ = {'connectedChanged': ['value: bool'], 'axisLeftXChanged': ['value: float'], 'axisLeftYChanged': ['value: float'], 'axisRightXChanged': ['value: float'], 'axisRightYChanged': ['value: float'], 'buttonAChanged': ['value: bool'], 'buttonBChanged': ['value: bool'], 'buttonXChanged': ['value: bool'], 'buttonYChanged': ['value: bool'], 'buttonL1Changed': ['value: bool'], 'buttonR1Changed': ['value: bool'], 'buttonL2Changed': ['value: float'], 'buttonR2Changed': ['value: float'], 'buttonSelectChanged': ['value: bool'], 'buttonStartChanged': ['value: bool'], 'buttonL3Changed': ['value: bool'], 'buttonR3Changed': ['value: bool'], 'buttonUpChanged': ['value: bool'], 'buttonDownChanged': ['value: bool'], 'buttonLeftChanged': ['value: bool'], 'buttonRightChanged': ['value: bool'], 'buttonCenterChanged': ['value: bool'], 'buttonGuideChanged': ['value: bool']}
+except NameError:
+    pass
+try:
     QgsGamepad3DMapController.__group__ = ['inputcontroller']
 except NameError:
     pass

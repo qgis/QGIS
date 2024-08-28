@@ -246,7 +246,7 @@ Emitted when a feature's geometry is changed.
 :param geom: new feature geometry
 %End
 
-    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
+    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 %Docstring
 Emitted when a feature's attribute value has been changed.
 %End

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsProcessingHistoryProvider.__signal_arguments__ = {'executePython': ['commands: str'], 'createTest': ['command: str']}
+except NameError:
+    pass
+try:
     QgsProcessingHistoryProvider.__group__ = ['processing']
 except NameError:
     pass

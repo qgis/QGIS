@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsGraduatedHistogramWidget.__signal_arguments__ = {'rangesModified': ['rangesAdded: bool']}
+except NameError:
+    pass
+try:
     QgsGraduatedHistogramWidget.__group__ = ['symbology']
 except NameError:
     pass

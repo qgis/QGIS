@@ -8,6 +8,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutItemGuiRegistry.__signal_arguments__ = {'typeAdded': ['metadataId: int']}
+except NameError:
+    pass
+try:
     QgsLayoutItemAbstractGuiMetadata.__group__ = ['layout']
 except NameError:
     pass

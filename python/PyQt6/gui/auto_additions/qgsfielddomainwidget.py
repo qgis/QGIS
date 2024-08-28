@@ -3,3 +3,7 @@ try:
     QgsFieldDomainWidget.__attribute_docs__ = {'validityChanged': 'Emitted whenever the validity of the field domain configuration in the widget changes.\n\n.. seealso:: :py:func:`isValid`\n'}
 except NameError:
     pass
+try:
+    QgsFieldDomainWidget.__signal_arguments__ = {'validityChanged': ['isValid: bool']}
+except NameError:
+    pass

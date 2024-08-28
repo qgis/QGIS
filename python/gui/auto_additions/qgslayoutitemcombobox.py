@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutItemComboBox.__signal_arguments__ = {'itemChanged': ['item: QgsLayoutItem']}
+except NameError:
+    pass
+try:
     QgsLayoutItemComboBox.__group__ = ['layout']
 except NameError:
     pass

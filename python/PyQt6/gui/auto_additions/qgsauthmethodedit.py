@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAuthMethodEdit.__signal_arguments__ = {'validityChanged': ['valid: bool']}
+except NameError:
+    pass
+try:
     QgsAuthMethodEdit.__group__ = ['auth']
 except NameError:
     pass

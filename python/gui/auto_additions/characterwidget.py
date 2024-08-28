@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    CharacterWidget.__signal_arguments__ = {'characterSelected': ['character: QChar']}
+except NameError:
+    pass
+try:
     CharacterWidget.__group__ = ['symbology']
 except NameError:
     pass

@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsFileDownloader.__signal_arguments__ = {'downloadCompleted': ['url: QUrl'], 'downloadError': ['errorMessages: List[str]'], 'downloadProgress': ['bytesReceived: int', 'bytesTotal: int']}
+except NameError:
+    pass
+try:
     QgsFileDownloader.__group__ = ['network']
 except NameError:
     pass

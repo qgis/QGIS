@@ -3,3 +3,7 @@ try:
     QgsRatioLockButton.__attribute_docs__ = {'lockChanged': 'Emitted whenever the lock state changes.\n'}
 except NameError:
     pass
+try:
+    QgsRatioLockButton.__signal_arguments__ = {'lockChanged': ['locked: bool']}
+except NameError:
+    pass

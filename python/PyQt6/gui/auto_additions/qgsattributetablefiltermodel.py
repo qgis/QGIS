@@ -38,6 +38,10 @@ try:
 except NameError:
     pass
 try:
+    QgsAttributeTableFilterModel.__signal_arguments__ = {'sortColumnChanged': ['column: int', 'order: Qt.SortOrder'], 'filterError': ['errorMessage: str']}
+except NameError:
+    pass
+try:
     QgsAttributeTableFilterModel.__group__ = ['attributetable']
 except NameError:
     pass

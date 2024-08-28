@@ -69,7 +69,7 @@ life of the combo box.
   signals:
 
 
-    void changed( int );
+    void changed( int unit );
 %Docstring
 Emitted when the ``unit`` is changed.
 %End

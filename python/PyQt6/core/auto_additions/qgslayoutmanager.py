@@ -41,6 +41,10 @@ try:
 except NameError:
     pass
 try:
+    QgsLayoutManager.__signal_arguments__ = {'layoutAboutToBeAdded': ['name: str'], 'layoutAdded': ['name: str'], 'layoutRemoved': ['name: str'], 'layoutAboutToBeRemoved': ['name: str'], 'layoutRenamed': ['layout: QgsMasterLayoutInterface', 'newName: str']}
+except NameError:
+    pass
+try:
     QgsLayoutManager.__group__ = ['layout']
 except NameError:
     pass

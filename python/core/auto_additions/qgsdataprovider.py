@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 QgsDataProvider.sublayerSeparator = staticmethod(QgsDataProvider.sublayerSeparator)
+try:
+    QgsDataProvider.__signal_arguments__ = {'notify': ['msg: str']}
+except NameError:
+    pass
 QgsDataProvider.ProviderOptions.__doc__ = """Setting options for creating vector data providers.
 
 .. note::

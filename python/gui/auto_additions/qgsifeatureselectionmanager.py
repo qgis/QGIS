@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsIFeatureSelectionManager.__signal_arguments__ = {'selectionChanged': ['selected: QgsFeatureIds', 'deselected: QgsFeatureIds', 'clearAndSelect: bool']}
+except NameError:
+    pass
+try:
     QgsIFeatureSelectionManager.__group__ = ['attributetable']
 except NameError:
     pass
