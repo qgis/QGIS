@@ -144,6 +144,33 @@ class CORE_EXPORT QgsTextRenderer
                           bool drawAsOutlines = true );
 
     /**
+     * Draws a text document at a point origin using the specified settings.
+     *
+     * Calling this method is more efficient than calling drawText() if the text document and metrics have already
+     * been calculated.
+     *
+     * \warning Unlike drawText(), this method does not automatically update data defined properties in the text \a format. This
+     * is the caller's responsibility to do, and must be done prior to generating the text \a document and \a metrics.
+     *
+     * \param point origin of text, in painter units
+     * \param format base text format
+     * \param document text document to draw
+     * \param metrics precalculated text metrics
+     * \param context destination render context
+     * \param horizontalAlignment horizontal alignment
+     * \param rotation text rotation
+     *
+     * \since QGIS 3.40
+     */
+    static void drawDocument( QPointF point,
+                              const QgsTextFormat &format,
+                              const QgsTextDocument &document,
+                              const QgsTextDocumentMetrics &metrics,
+                              QgsRenderContext &context,
+                              Qgis::TextHorizontalAlignment alignment,
+                              double rotation );
+
+    /**
      * Draws text along a line using the specified settings.
      *
      * \param line line to render text along, in painter units
