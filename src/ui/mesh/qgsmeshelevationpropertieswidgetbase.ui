@@ -37,7 +37,7 @@
     <widget class="QComboBox" name="mModeComboBox"/>
    </item>
    <item row="2" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QgsCollapsibleGroupBox" name="mProfileChartGroupBox">
      <property name="title">
       <string>Profile Chart Appearance</string>
      </property>
@@ -404,6 +404,12 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
