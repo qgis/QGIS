@@ -274,12 +274,20 @@ legend items of passed layer tree model.
 
     QgsProject *project();
 %Docstring
-The :py:class:`QgsProject` on which this map theme collection works.
+Returns the :py:class:`QgsProject` on which this map theme collection works.
+
+.. seealso:: :py:func:`setProject`
+
+.. seealso:: :py:func:`projectChanged`
 %End
 
     void setProject( QgsProject *project );
 %Docstring
-\copydoc :py:func:`~QgsMapThemeCollection.project`
+Sets the ``project`` on which this map theme collection works.
+
+.. seealso:: :py:func:`project`
+
+.. seealso:: :py:func:`projectChanged`
 %End
 
     QList< QgsMapLayer * > masterLayerOrder() const;
@@ -322,7 +330,9 @@ Emitted when a map theme within the collection is renamed.
 %Docstring
 Emitted when the project changes
 
-\copydoc :py:func:`~QgsMapThemeCollection.project`
+.. seealso:: :py:func:`project`
+
+.. seealso:: :py:func:`setProject`
 %End
 
 };

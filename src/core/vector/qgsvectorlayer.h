@@ -2191,14 +2191,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Qgis::FieldConfigurationFlags fieldConfigurationFlags( int index ) const;
 
     /**
-     * \copydoc editorWidgetSetup
+     * Sets the editor widget \a setup for the field at the specified \a index.
+     *
+     * The editor widget setup defines which QgsFieldFormatter and editor widget will be used
+     * for the field.
+     *
+     * \see editorWidgetSetup()
      */
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
 
     /**
-     * The editor widget setup defines which QgsFieldFormatter and editor widget will be used
-     * for the field at `index`.
+     * Returns the editor widget setup for the field at the specified \a index.
      *
+     * The editor widget setup defines which QgsFieldFormatter and editor widget will be used
+     * for the field.
+     *
+     * \see setEditorWidgetSetup()
      */
     QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 

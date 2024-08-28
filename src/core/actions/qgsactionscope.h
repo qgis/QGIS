@@ -70,49 +70,85 @@ class CORE_EXPORT QgsActionScope
     bool operator==( const QgsActionScope &other ) const;
 
     /**
+     * Returns the expression context scope for the action scope.
+     *
      * An expression scope may offer additional variables for an action scope.
      * This can be an `field_name` for the attribute which was clicked or
      * `click_x` and `click_y` for actions which are available as map canvas clicks.
      *
+     * \see setExpressionContextScope()
      */
     QgsExpressionContextScope expressionContextScope() const;
 
     /**
-     * \copydoc expressionContextScope()
+     * Sets the expression context scope for the action scope.
+     *
+     * An expression scope may offer additional variables for an action scope.
+     * This can be an `field_name` for the attribute which was clicked or
+     * `click_x` and `click_y` for actions which are available as map canvas clicks.
+     *
+     * \see expressionContextScope()
      */
     void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
 
     /**
-     * A unique identifier for this action scope.
+     * Returns the unique identifier for this action scope.
      *
+     * \see setId()
      */
     QString id() const;
 
-    //! \copydoc id()
+    /**
+     * Sets the unique \a id for this action scope.
+     *
+     * \see id()
+     */
     void setId( const QString &id );
 
     /**
+     * Returns the action scope's title.
+     *
      * The title is a human readable and translated string that will be
      * presented to the user in the properties dialog.
      *
+     * \see setTitle()
      */
     QString title() const;
-    //! \copydoc title()
+
+    /**
+     * Sets the action scope's \a title.
+     *
+     * The title should be a human readable and translated string that will be
+     * presented to the user in the properties dialog.
+     *
+     * \see title()
+     */
     void setTitle( const QString &title );
 
     /**
+     * Returns the action scope's description.
+     *
      * The description should be a longer description of where actions in this scope
      * are available. It is not necessary to list the available expression variables
      * in here, they are extracted automatically from the expressionContextScope().
      *
+     * \see setDescription()
      */
     QString description() const;
-    //! \copydoc description()
+
+    /**
+     * Sets the action scope's \a description.
+     *
+     * The description should be a longer description of where actions in this scope
+     * are available. It is not necessary to list the available expression variables
+     * in here, they are extracted automatically from the expressionContextScope().
+     *
+     * \see description()
+     */
     void setDescription( const QString &description );
 
     /**
-     * Returns if this scope is valid.
-     *
+     * Returns TRUE if this scope is valid.
      */
     bool isValid() const;
 #ifdef SIP_RUN
