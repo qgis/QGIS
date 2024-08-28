@@ -56,13 +56,6 @@ class CORE_EXPORT QgsExpressionBasedNumericFormat : public QgsNumericFormat
      */
     QString expression() const { return mExpressionString; }
 
-  protected:
-
-    /**
-     * Sets the format's \a configuration.
-     */
-    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
-
   private:
 
     QString mExpressionString;

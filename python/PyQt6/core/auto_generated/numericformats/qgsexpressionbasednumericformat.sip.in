@@ -53,13 +53,6 @@ Returns the expression used to calculate the text representation of a value.
 .. seealso:: :py:func:`setExpression`
 %End
 
-  protected:
-
-    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
-%Docstring
-Sets the format's ``configuration``.
-%End
-
 };
 
 /************************************************************************
