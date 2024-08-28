@@ -330,6 +330,8 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
     Qgis::RenderUnit mAverageAngleLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
 
+    QString mLabelProviderId;
+
 };
 
 #endif // QGSLINEARREFERENCINGSYMBOLLAYER_H

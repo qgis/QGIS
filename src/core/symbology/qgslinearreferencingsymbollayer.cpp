@@ -25,6 +25,99 @@
 #include "qgsgeometryutils.h"
 #include "qgsunittypes.h"
 #include "qgssymbollayerutils.h"
+#include "qgstextlabelfeature.h"
+#include "qgsgeos.h"
+#include "qgspallabeling.h"
+#include "labelposition.h"
+#include "feature.h"
+
+///@cond PRIVATE
+class QgsTextLabelFeatureWithFormat : public QgsTextLabelFeature
+{
+  public:
+    QgsTextLabelFeatureWithFormat( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, const QgsTextFormat &format )
+      : QgsTextLabelFeature( id, std::move( geometry ), size )
+      , mFormat( format )
+    {}
+
+    QgsTextFormat mFormat;
+
+};
+
+class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLabelProvider
+{
+  public:
+    QgsLinearReferencingSymbolLayerLabelProvider()
+      : QgsAbstractLabelProvider( nullptr )
+    {
+      mPlacement = Qgis::LabelPlacement::OverPoint;
+      mFlags |= DrawLabels;
+
+      // always consider these labels highest priority
+      // TODO possibly expose as a setting for the symbol layer?
+      mPriority = 0;
+    }
+
+    ~QgsLinearReferencingSymbolLayerLabelProvider()
+    {
+      qDeleteAll( mLabels );
+    }
+
+    void addLabel( const QPointF &painterPoint, double angleRadians, const QString &text, QgsRenderContext &context, const QgsTextFormat &format )
+    {
+      // labels must be registered in destination map units
+      QgsPoint mapPoint( painterPoint );
+      mapPoint.transform( context.mapToPixel().transform().inverted() );
+
+      QgsTextDocument doc;
+      if ( format.allowHtmlFormatting() && !text.isEmpty() )
+      {
+        doc = QgsTextDocument::fromHtml( QStringList() << text );
+      }
+      else
+      {
+        doc = QgsTextDocument::fromPlainText( { text } );
+      }
+      QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, format, context );
+      const QSizeF size = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
+
+      double uPP = context.mapToPixel().mapUnitsPerPixel();
+      std::unique_ptr< QgsTextLabelFeatureWithFormat > feature = std::make_unique< QgsTextLabelFeatureWithFormat >( mLabels.size(),
+          QgsGeos::asGeos( &mapPoint ), QSizeF( size.width() * uPP, size.height() * uPP ), format );
+
+      feature->setDocument( doc, documentMetrics );
+      feature->setFixedAngle( angleRadians );
+      feature->setHasFixedAngle( true );
+      // above right
+      // TODO: we could potentially expose this, and use a non-fixed mode to allow fallback positions
+      feature->setQuadOffset( QPointF( 1, 1 ) );
+
+      mLabels.append( feature.release() );
+    }
+
+    QList<QgsLabelFeature *> labelFeatures( QgsRenderContext & ) final
+    {
+      return mLabels;
+    }
+
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const final
+    {
+      // as per vector label rendering...
+      QgsMapToPixel xform = context.mapToPixel();
+      xform.setMapRotation( 0, 0, 0 );
+      const QPointF outPt = context.mapToPixel().transform( label->getX(), label->getY() ).toQPointF();
+
+      QgsTextLabelFeatureWithFormat *lf = qgis::down_cast<QgsTextLabelFeatureWithFormat *>( label->getFeaturePart()->feature() );
+      QgsTextRenderer::drawDocument( outPt,
+                                     lf->mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left,
+                                     label->getAlpha() );
+    }
+
+  private:
+    QList<QgsLabelFeature *> mLabels;
+
+};
+///@endcond
 
 QgsLinearReferencingSymbolLayer::QgsLinearReferencingSymbolLayer()
   : QgsLineSymbolLayer()
@@ -232,6 +325,14 @@ void QgsLinearReferencingSymbolLayer::startRender( QgsSymbolRenderContext &conte
     mMarkerSymbol->setRenderHints( hints );
 
     mMarkerSymbol->startRender( context.renderContext(), context.fields() );
+  }
+
+  if ( QgsLabelingEngine *labelingEngine = context.renderContext().labelingEngine() )
+  {
+    // rendering with a labeling engine. In this scenario we will register rendered text as labels, so that they participate in the labeling problem
+    // for the map
+    QgsLinearReferencingSymbolLayerLabelProvider *provider = new QgsLinearReferencingSymbolLayerLabelProvider();
+    mLabelProviderId = labelingEngine->addProvider( provider );
   }
 }
 
@@ -698,8 +799,16 @@ void QgsLinearReferencingSymbolLayer::renderPolylineInterval( const QgsLineStrin
       return;
   }
 
+  QgsLinearReferencingSymbolLayerLabelProvider *labelProvider = nullptr;
+  if ( QgsLabelingEngine *labelingEngine = context.renderContext().labelingEngine() )
+  {
+    // rendering with a labeling engine. In this scenario we will register rendered text as labels, so that they participate in the labeling problem
+    // for the map
+    labelProvider = qgis::down_cast< QgsLinearReferencingSymbolLayerLabelProvider * >( labelingEngine->providerById( mLabelProviderId ) );
+  }
+
   func( line, painterUnitsGeometry.get(), emitFirstPoint, distance, averageAngleLengthPainterUnits, [&context, &numericContext, skipMultiples, showMarker,
-                  labelOffsetPainterUnits, hasZ, hasM, this]( double x, double y, double z, double m, double distanceFromStart, double angle ) -> bool
+                  labelOffsetPainterUnits, hasZ, hasM, labelProvider, this]( double x, double y, double z, double m, double distanceFromStart, double angle ) -> bool
   {
     if ( context.renderContext().renderingStopped() )
       return false;
@@ -742,7 +851,19 @@ void QgsLinearReferencingSymbolLayer::renderPolylineInterval( const QgsLineStrin
     const double dy = labelOffsetPainterUnits.x() * std::cos( angleRadians + M_PI_2 )
     + labelOffsetPainterUnits.y() * std::cos( angleRadians );
 
-    QgsTextRenderer::drawText( QPointF( pt.x() + dx, pt.y() + dy ), angleRadians, Qgis::TextHorizontalAlignment::Left, { mNumericFormat->formatDouble( labelValue, numericContext ) }, context.renderContext(), mTextFormat );
+    const QString text = mNumericFormat->formatDouble( labelValue, numericContext );
+    if ( !labelProvider )
+    {
+      // render text directly
+      QgsTextRenderer::drawText( QPointF( pt.x() + dx, pt.y() + dy ), angleRadians, Qgis::TextHorizontalAlignment::Left, { text }, context.renderContext(), mTextFormat );
+    }
+    else
+    {
+      // register as a label
+      labelProvider->addLabel(
+        QPointF( pt.x() + dx, pt.y() + dy ), angleRadians, text, context.renderContext(), mTextFormat
+      );
+    }
 
     return true;
   } );
@@ -757,6 +878,14 @@ void QgsLinearReferencingSymbolLayer::renderPolylineVertex( const QgsLineString 
 
   QgsNumericFormatContext numericContext;
   numericContext.setExpressionContext( context.renderContext().expressionContext() );
+
+  QgsLinearReferencingSymbolLayerLabelProvider *labelProvider = nullptr;
+  if ( QgsLabelingEngine *labelingEngine = context.renderContext().labelingEngine() )
+  {
+    // rendering with a labeling engine. In this scenario we will register rendered text as labels, so that they participate in the labeling problem
+    // for the map
+    labelProvider = qgis::down_cast< QgsLinearReferencingSymbolLayerLabelProvider * >( labelingEngine->providerById( mLabelProviderId ) );
+  }
 
   const double *xData = line->xData();
   const double *yData = line->yData();
@@ -918,8 +1047,19 @@ void QgsLinearReferencingSymbolLayer::renderPolylineVertex( const QgsLineString 
     if ( !labelVertex )
       continue;
 
-    QgsTextRenderer::drawText( QPointF( pt.x() + dx, pt.y() + dy ), angleRadians, Qgis::TextHorizontalAlignment::Left, { mNumericFormat->formatDouble( labelValue, numericContext ) }, context.renderContext(), mTextFormat );
-
+    const QString text = mNumericFormat->formatDouble( labelValue, numericContext );
+    if ( !labelProvider )
+    {
+      // render text directly
+      QgsTextRenderer::drawText( QPointF( pt.x() + dx, pt.y() + dy ), angleRadians, Qgis::TextHorizontalAlignment::Left, { text }, context.renderContext(), mTextFormat );
+    }
+    else
+    {
+      // register as a label
+      labelProvider->addLabel(
+        QPointF( pt.x() + dx, pt.y() + dy ), angleRadians, text, context.renderContext(), mTextFormat
+      );
+    }
     prevX = thisX;
     prevY = thisY;
   }
