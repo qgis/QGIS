@@ -27,11 +27,11 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QParameter>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QParameter>
 
 typedef Qt3DRender::QAttribute Qt3DQAttribute;
 typedef Qt3DRender::QBuffer Qt3DQBuffer;
