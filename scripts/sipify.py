@@ -712,6 +712,10 @@ def process_doxygen_line(line: str) -> str:
     if CONTEXT.doxy_inside_sip_run == 2:
         return ""
 
+    if r'\copydoc' in line:
+        exit_with_error(
+            '\\copydoc doxygen command cannot be used for methods exposed to Python')
+
     if re.search(r'<(?:dl|dt|dd>)', line):
         exit_with_error(
             "Don't use raw html <dl>, <dt> or <dd> tags in documentation. "
