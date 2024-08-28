@@ -49,10 +49,12 @@ QgsNumericFormat *QgsExpressionBasedNumericFormat::clone() const
   return new QgsExpressionBasedNumericFormat( *this );
 }
 
-QgsNumericFormat *QgsExpressionBasedNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
+QgsNumericFormat *QgsExpressionBasedNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext & ) const
 {
   std::unique_ptr< QgsExpressionBasedNumericFormat > res = std::make_unique< QgsExpressionBasedNumericFormat >();
-  res->setConfiguration( configuration, context );
+  res->mExpressionString = configuration.value( QStringLiteral( "expression" ), QStringLiteral( "@value" ) ).toString();
+  res->mExpression = QgsExpression( mExpressionString );
+
   return res.release();
 }
 
@@ -68,10 +70,3 @@ void QgsExpressionBasedNumericFormat::setExpression( const QString &expression )
   mExpressionString = expression;
   mExpression = QgsExpression( mExpressionString );
 }
-
-void QgsExpressionBasedNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext & )
-{
-  mExpressionString = configuration.value( QStringLiteral( "expression" ), QStringLiteral( "@value" ) ).toString();
-  mExpression = QgsExpression( mExpressionString );
-}
-
