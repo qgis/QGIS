@@ -2643,14 +2643,14 @@ class TestQgsGeometry(QgisTestCase):
                     message += ' failed'
                 message_with_wkt = message + f'\nOriginal geom: {geoms[t].asWkt()}'
                 if type(parts[t]) is list:
-                    if type(parts[t][0]) == QgsPointXY:
+                    if type(parts[t][0]) is QgsPointXY:
                         self.assertEqual(geoms[t].addPointsXYV2(parts[t], geom_type), expected_result, message_with_wkt)
-                    elif type(parts[t][0]) == QgsPoint:
+                    elif type(parts[t][0]) is QgsPoint:
                         self.assertEqual(geoms[t].addPointsV2(parts[t]), expected_result, message_with_wkt)
                     else:
                         self.fail(message_with_wkt + '\n could not detect what Python method to use for add part')
                 else:
-                    if type(parts[t]) == QgsGeometry:
+                    if type(parts[t]) is QgsGeometry:
                         self.assertEqual(geoms[t].addPartGeometry(parts[t]), expected_result, message)
                     else:
                         self.assertEqual(geoms[t].addPartV2(parts[t], geom_type), expected_result, message_with_wkt)
@@ -2848,14 +2848,14 @@ class TestQgsGeometry(QgisTestCase):
                     message += ' failed'
                 message_with_wkt = message + f'\nOriginal geom: {geoms[t].asWkt()}'
                 if type(parts[t]) is list:
-                    if type(parts[t][0]) == QgsPointXY:
+                    if type(parts[t][0]) is QgsPointXY:
                         self.assertEqual(geoms[t].addPointsXY(parts[t], geom_type), expected_result, message_with_wkt)
-                    elif type(parts[t][0]) == QgsPoint:
+                    elif type(parts[t][0]) is QgsPoint:
                         self.assertEqual(geoms[t].addPoints(parts[t]), expected_result, message_with_wkt)
                     else:
                         self.fail(message_with_wkt + '\n could not detect what Python method to use for add part')
                 else:
-                    if type(parts[t]) == QgsGeometry:
+                    if type(parts[t]) is QgsGeometry:
                         self.assertEqual(geoms[t].addPartGeometry(parts[t]), expected_result, message)
                     else:
                         self.assertEqual(geoms[t].addPart(parts[t], geom_type), expected_result, message_with_wkt)
