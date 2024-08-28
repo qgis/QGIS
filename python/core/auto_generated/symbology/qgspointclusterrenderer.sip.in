@@ -22,6 +22,8 @@ A renderer that automatically clusters points with the same geographic position.
 
     QgsPointClusterRenderer();
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+
     virtual QgsPointClusterRenderer *clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );

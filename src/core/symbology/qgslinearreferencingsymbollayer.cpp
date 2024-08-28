@@ -296,7 +296,8 @@ QString QgsLinearReferencingSymbolLayer::layerType() const
 
 Qgis::SymbolLayerFlags QgsLinearReferencingSymbolLayer::flags() const
 {
-  return Qgis::SymbolLayerFlag::DisableFeatureClipping;
+  return Qgis::SymbolLayerFlag::DisableFeatureClipping
+         | Qgis::SymbolLayerFlag::AffectsLabeling;
 }
 
 QgsSymbol *QgsLinearReferencingSymbolLayer::subSymbol()

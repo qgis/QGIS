@@ -754,6 +754,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolRotationMode )
 
     /**
+     * \brief Flags controlling behavior of vector feature renderers.
+     *
+     * \since QGIS 3.40
+     */
+    enum class FeatureRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      AffectsLabeling = 1 << 0, //!< If present, indicates that the renderer will participate in the map labeling problem
+    };
+    Q_ENUM( FeatureRendererFlag )
+
+    /**
+     * \brief Flags controlling behavior of vector feature renderers.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( FeatureRendererFlags, FeatureRendererFlag )
+    Q_FLAG( FeatureRendererFlags )
+
+    /**
      * \brief Flags controlling behavior of symbols
      *
      * \since QGIS 3.20
@@ -761,6 +780,7 @@ class CORE_EXPORT Qgis
     enum class SymbolFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
+      AffectsLabeling = 1 << 1, //!< If present, indicates that the symbol will participate in the map labeling problem \since QGIS 3.40
     };
     Q_ENUM( SymbolFlag )
     //! Symbol flags
@@ -794,6 +814,7 @@ class CORE_EXPORT Qgis
     {
       DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
       CanCalculateMaskGeometryPerFeature = 1 << 1, //!< If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. \since QGIS 3.38
+      AffectsLabeling = 1 << 2, //!< If present, indicates that the symbol layer will participate in the map labeling problem \since QGIS 3.40
     };
     Q_ENUM( SymbolLayerFlag )
     //! Symbol layer flags
@@ -5603,6 +5624,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )

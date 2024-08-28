@@ -312,6 +312,13 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QgsFeatureRenderer::Capabilities capabilities() { return QgsFeatureRenderer::Capabilities(); }
 
     /**
+     * Returns flags associated with the renderer.
+     *
+     * \since QGIS 3.40
+     */
+    virtual Qgis::FeatureRendererFlags flags() const;
+
+    /**
      * Returns list of symbols used by the renderer.
      * \param context render context
      */

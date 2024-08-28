@@ -971,6 +971,32 @@ QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( const QgsFeature &, QgsRender
   return nullptr;
 }
 
+Qgis::FeatureRendererFlags QgsRuleBasedRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+
+  std::function< void( Rule *rule ) > exploreRule;
+  exploreRule = [&res, &exploreRule]( Rule * rule )
+  {
+    if ( !rule )
+      return;
+
+    if ( QgsSymbol *symbol = rule->symbol() )
+    {
+      if ( symbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+        res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+    }
+
+    for ( Rule *child : rule->children() )
+    {
+      exploreRule( child );
+    }
+  };
+  exploreRule( mRootRule );
+
+  return res;
+}
+
 bool QgsRuleBasedRenderer::renderFeature( const QgsFeature &feature,
     QgsRenderContext &context,
     int layer,

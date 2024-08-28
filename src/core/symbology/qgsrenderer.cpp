@@ -159,6 +159,11 @@ QString QgsFeatureRenderer::dump() const
   return QStringLiteral( "UNKNOWN RENDERER\n" );
 }
 
+Qgis::FeatureRendererFlags QgsFeatureRenderer::flags() const
+{
+  return Qgis::FeatureRendererFlags();
+}
+
 QgsSymbolList QgsFeatureRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context )

@@ -57,6 +57,7 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
 
     QgsMergedFeatureRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    Qgis::FeatureRendererFlags flags() const override;
 
     /**
      * Renders a given feature.

@@ -155,6 +155,16 @@ QgsSymbol *QgsGrassEditRenderer::symbolForFeature( const QgsFeature &feature, Qg
   return symbol;
 }
 
+Qgis::FeatureRendererFlags QgsGrassEditRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  if ( mLineRenderer->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+  if ( mMarkerRenderer->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+  return res;
+}
+
 void QgsGrassEditRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   QgsFeatureRenderer::startRender( context, fields );

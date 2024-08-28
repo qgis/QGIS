@@ -1418,12 +1418,30 @@ Qgis.SymbolRotationMode.__doc__ = """Modes for handling how symbol and text enti
 # --
 Qgis.SymbolRotationMode.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.FeatureRendererFlag.AffectsLabeling.__doc__ = "If present, indicates that the renderer will participate in the map labeling problem"
+Qgis.FeatureRendererFlag.__doc__ = """Flags controlling behavior of vector feature renderers.
+
+.. versionadded:: 3.40
+
+* ``AffectsLabeling``: If present, indicates that the renderer will participate in the map labeling problem
+
+"""
+# --
+Qgis.FeatureRendererFlag.baseClass = Qgis
+Qgis.FeatureRendererFlags.baseClass = Qgis
+FeatureRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__ = "If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results"
+Qgis.SymbolFlag.AffectsLabeling.__doc__ = "If present, indicates that the symbol will participate in the map labeling problem \n.. versionadded:: 3.40"
 Qgis.SymbolFlag.__doc__ = """Flags controlling behavior of symbols
 
 .. versionadded:: 3.20
 
 * ``RendererShouldUseSymbolLevels``: If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
+* ``AffectsLabeling``: If present, indicates that the symbol will participate in the map labeling problem
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -1450,6 +1468,7 @@ SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags i
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
 Qgis.SymbolLayerFlag.CanCalculateMaskGeometryPerFeature.__doc__ = "If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. \n.. versionadded:: 3.38"
+Qgis.SymbolLayerFlag.AffectsLabeling.__doc__ = "If present, indicates that the symbol layer will participate in the map labeling problem \n.. versionadded:: 3.40"
 Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 
 .. note::
@@ -1464,6 +1483,10 @@ Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 * ``CanCalculateMaskGeometryPerFeature``: If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes.
 
   .. versionadded:: 3.38
+
+* ``AffectsLabeling``: If present, indicates that the symbol layer will participate in the map labeling problem
+
+  .. versionadded:: 3.40
 
 
 """

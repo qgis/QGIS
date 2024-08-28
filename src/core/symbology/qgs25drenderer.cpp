@@ -128,6 +128,15 @@ QDomElement Qgs25DRenderer::save( QDomDocument &doc, const QgsReadWriteContext &
   return rendererElem;
 }
 
+Qgis::FeatureRendererFlags Qgs25DRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  if ( mSymbol && mSymbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+
+  return res;
+}
+
 QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   Qgs25DRenderer *renderer = new Qgs25DRenderer();

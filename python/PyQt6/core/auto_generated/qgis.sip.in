@@ -483,9 +483,18 @@ The development version
       IgnoreMapRotation,
     };
 
+    enum class FeatureRendererFlag /BaseType=IntFlag/
+    {
+      AffectsLabeling,
+    };
+
+    typedef QFlags<Qgis::FeatureRendererFlag> FeatureRendererFlags;
+
+
     enum class SymbolFlag /BaseType=IntFlag/
     {
       RendererShouldUseSymbolLevels,
+      AffectsLabeling,
     };
     typedef QFlags<Qgis::SymbolFlag> SymbolFlags;
 
@@ -501,6 +510,7 @@ The development version
     {
       DisableFeatureClipping,
       CanCalculateMaskGeometryPerFeature,
+      AffectsLabeling,
     };
     typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
 
@@ -3226,6 +3236,8 @@ QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCap
 QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
 
 QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
+
+QFlags<Qgis::FeatureRendererFlag> operator|(Qgis::FeatureRendererFlag f1, QFlags<Qgis::FeatureRendererFlag> f2);
 
 QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
 
