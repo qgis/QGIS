@@ -64,6 +64,8 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
 
   // Add default subdiagram tab
   addSubDiagram();
+
+  syncToLayer();
 }
 
 void QgsStackedDiagramProperties::addSubDiagram()
@@ -90,6 +92,68 @@ void QgsStackedDiagramProperties::removeSubDiagram()
     {
       mSubDiagramsTabWidget->setTabText( i, tr( "Diagram %1" ).arg( i + 1 ) );
     }
+  }
+}
+
+void QgsStackedDiagramProperties::syncToLayer()
+{
+  const QgsDiagramRenderer *dr = mLayer->diagramRenderer();
+
+  if ( dr && dr->diagram() )
+  {
+    if ( dr->diagram()->diagramName() == DIAGRAM_NAME_STACKED )
+    {
+      mDiagramTypeComboBox->blockSignals( true );
+      mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( QgsDiagramLayerSettings::Stacked ) );
+      mDiagramTypeComboBox->blockSignals( false );
+      //force a refresh of widget status to match diagram type
+      mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+
+      const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
+      mStackedDiagramModeComboBox->setCurrentIndex( settingList.at( 0 ).stackedDiagramMode );
+      mStackedDiagramSpacingSpinBox->setValue( settingList.at( 0 ).stackedDiagramSpacing() );
+      mStackedDiagramSpacingUnitComboBox->setUnit( settingList.at( 0 ).stackedDiagramSpacingUnit() );
+
+      // Create as many tabs as necessary
+      const QgsStackedDiagram *stackedDiagram = dynamic_cast< const QgsStackedDiagram *>( dr->diagram() );
+      const int subDiagramCount = stackedDiagram->subDiagramCount();
+      while ( mSubDiagramsTabWidget->count() < subDiagramCount )
+      {
+        addSubDiagram();
+      }
+
+      // Call subdiagrams' syncToLayer with the corresponding subdiagram index
+      for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+      {
+        QgsDiagramProperties *diagramProperties = static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( i ) );
+        diagramProperties->mSubDiagramIndex = i;
+        diagramProperties->syncToLayer();
+      }
+    }
+    else
+    {
+      mDiagramTypeComboBox->blockSignals( true );
+      mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( QgsDiagramLayerSettings::Single ) );
+      mDiagramTypeComboBox->blockSignals( false );
+      //force a refresh of widget status to match diagram type
+      mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+
+      // Delegate to single diagram's syncToLayer
+      // If the diagram name is unknown, the single diagram will choose a default one (pie)
+      static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->syncToLayer();
+    }
+  }
+  else
+  {
+    mDiagramTypeComboBox->blockSignals( true );
+    mDiagramTypeComboBox->setCurrentIndex( 0 ); // No Diagram
+    mDiagramTypeComboBox->blockSignals( false );
+    //force a refresh of widget status to match diagram type
+    mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+
+    // Delegate to first diagram's syncToLayer
+    // It will add required reasonable defaults
+    static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->syncToLayer();
   }
 }
 
@@ -179,14 +243,6 @@ void QgsStackedDiagramProperties::apply()
     // refresh
     QgsProject::instance()->setDirty( true );
     mLayer->triggerRepaint();
-  }
-}
-
-void QgsStackedDiagramProperties::syncToLayer()
-{
-  if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
-  {
-    static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->syncToLayer();
   }
 }
 

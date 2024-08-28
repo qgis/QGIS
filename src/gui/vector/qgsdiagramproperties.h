@@ -83,6 +83,13 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
   private:
 
+    /**
+     * Subdiagram position in a stacked diagram.
+     * If the diagram is not part of a stacked diagram its value is -1.
+     * Used to access corresponding diagram settings.
+     */
+    int mSubDiagramIndex = -1;
+
     QgsVectorLayer *mLayer = nullptr;
     //! Point placement button group
     QButtonGroup *mPlacePointBtnGrp = nullptr;

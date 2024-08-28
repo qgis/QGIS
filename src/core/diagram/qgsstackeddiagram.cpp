@@ -38,6 +38,20 @@ void QgsStackedDiagram::addSubDiagram( QgsDiagram *diagram, QgsDiagramSettings *
   mSubDiagrams.append( DiagramData{diagram, s} );
 }
 
+int QgsStackedDiagram::subDiagramCount() const
+{
+  return mSubDiagrams.count();
+}
+
+QString QgsStackedDiagram::subDiagramType( int index ) const
+{
+  if ( index >= 0 && index < mSubDiagrams.count() )
+  {
+    return mSubDiagrams.at( index ).diagram->diagramName();
+  }
+  return QString();
+}
+
 QList< QgsDiagram * > QgsStackedDiagram::subDiagrams( const QgsDiagramSettings &s ) const
 {
   QList< QgsDiagram * > diagrams;
@@ -60,6 +74,15 @@ QList< QgsDiagram * > QgsStackedDiagram::subDiagrams( const QgsDiagramSettings &
     }
   }
   return diagrams;
+}
+
+QgsDiagramSettings *QgsStackedDiagram::subDiagramSettings( int index ) const
+{
+  if ( index >= 0 && index < mSubDiagrams.count() )
+  {
+    return mSubDiagrams.at( index ).settings;
+  }
+  return nullptr;
 }
 
 QgsDiagramSettings *QgsStackedDiagram::subDiagramSettings( const QgsDiagram *diagram ) const

@@ -61,6 +61,16 @@ class CORE_EXPORT QgsStackedDiagram : public QgsDiagram SIP_NODEFAULTCTORS
     void addSubDiagram( QgsDiagram *diagram, QgsDiagramSettings *s );
 
     /**
+     * Returns the number of subdiagrams that this stacked diagram is composed of.
+     */
+    int subDiagramCount() const;
+
+    /**
+     * Returns the type of the subdiagram located at a given \a index.
+     */
+    QString subDiagramType( int index ) const;
+
+    /**
      * Returns an ordered list with the subdiagrams of the stacked diagram object.
      * If the stacked diagram orientation is vertical, the list is returned backwards.
      * \param s stacked diagram settings
@@ -69,6 +79,9 @@ class CORE_EXPORT QgsStackedDiagram : public QgsDiagram SIP_NODEFAULTCTORS
 
     //! Returns the settings associated to the \a diagram.
     QgsDiagramSettings *subDiagramSettings( const QgsDiagram *diagram ) const;
+
+    //! Returns the diagram settings for the diagram located at a given \a index.
+    QgsDiagramSettings *subDiagramSettings( int index ) const;
 
     /**
      * Calculates the position for the next subdiagram, updating the \a newPos object.
