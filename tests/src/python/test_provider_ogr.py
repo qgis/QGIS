@@ -3551,7 +3551,7 @@ class PyQgsOGRProvider(QgisTestCase):
         with open(datasource_2d, 'w') as f:
             f.write('id,WKT\n')
             for i in range(9):
-                f.write(f'{i},POINT ({2*i} {i-3})\n')
+                f.write(f'{i},POINT ({2 * i} {i - 3})\n')
 
         vl = QgsVectorLayer(f'{datasource_2d}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.isValid())
@@ -3568,7 +3568,7 @@ class PyQgsOGRProvider(QgisTestCase):
         with open(datasource_3d, 'w') as f:
             f.write('id,WKT\n')
             for i in range(13):
-                f.write(f'{i},POINT Z({2*i} {i-3} {i-5})\n')
+                f.write(f'{i},POINT Z({2 * i} {i - 3} {i - 5})\n')
 
         vl = QgsVectorLayer(f'{datasource_3d}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.isValid())
