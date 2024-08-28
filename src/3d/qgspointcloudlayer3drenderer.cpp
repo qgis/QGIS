@@ -78,7 +78,7 @@ void QgsPointCloud3DRenderContext::cancelRendering() const
 
 void QgsPointCloud3DRenderContext::updateExtent()
 {
-  if ( mLayerExtent.isEmpty() )
+  if ( extent().isEmpty() )
   {
     // an empty extent means no filter, so let's pass it without transformation
     mLayerExtent = QgsRectangle();
