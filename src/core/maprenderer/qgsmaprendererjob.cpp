@@ -625,6 +625,11 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     {
       job.renderer->setLayerRenderingTimeHint( job.estimatedRenderingTime );
       job.context()->setFeedback( job.renderer->feedback() );
+
+      if ( job.renderer->flags().testFlag( Qgis::MapLayerRendererFlag::AffectsLabeling ) )
+      {
+        mAdditionalLabelLayers.append( ml );
+      }
     }
 
     // If we are drawing with an alternative blending mode then we need to render to a separate image
@@ -992,6 +997,19 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   }
 
   return secondPassJobs;
+}
+
+QList<QPointer<QgsMapLayer> > QgsMapRendererJob::participatingLabelLayers( QgsLabelingEngine *engine )
+{
+  QList<QPointer<QgsMapLayer> > res = _qgis_listRawToQPointer( engine->participatingLayers() );
+
+  for ( auto it : std::as_const( mAdditionalLabelLayers ) )
+  {
+    if ( !res.contains( it ) )
+      res.append( it );
+  }
+
+  return res;
 }
 
 void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) const

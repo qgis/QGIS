@@ -1538,6 +1538,7 @@ The development version
     {
       RenderPartialOutputs,
       RenderPartialOutputOverPreviousCachedImage,
+      AffectsLabeling,
     };
 
     typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;

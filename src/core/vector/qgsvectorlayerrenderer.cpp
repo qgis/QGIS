@@ -227,6 +227,14 @@ bool QgsVectorLayerRenderer::forceRasterRender() const
   return mForceRasterRender;
 }
 
+Qgis::MapLayerRendererFlags QgsVectorLayerRenderer::flags() const
+{
+  Qgis::MapLayerRendererFlags res;
+  if ( mRenderer && mRenderer->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::MapLayerRendererFlag::AffectsLabeling );
+  return res;
+}
+
 bool QgsVectorLayerRenderer::render()
 {
   if ( mGeometryType == Qgis::GeometryType::Null || mGeometryType == Qgis::GeometryType::Unknown )
