@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>504</width>
-        <height>445</height>
+        <height>447</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -186,8 +186,8 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mTerrainGroupBox" native="true">
-         <property name="title" stdset="0">
+        <widget class="QgsCollapsibleGroupBox" name="mTerrainGroupBox">
+         <property name="title">
           <string>Terrain</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
@@ -382,6 +382,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -398,9 +404,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QWidget</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMessageBar</class>
