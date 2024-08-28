@@ -75,7 +75,7 @@ Build-Depends:
  qtpositioning5-dev,
  qttools5-dev-tools,
  qttools5-dev,
-#jammy bullseye# libpdal-dev, pdal,
+#pdal# libpdal-dev, pdal,
  libprotobuf-dev,
  protobuf-compiler,
  libzstd-dev,
