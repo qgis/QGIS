@@ -107,12 +107,6 @@ ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jammy"))
-	CMAKE_OPTS += -DWITH_PDAL=TRUE
-else
-	CMAKE_OPTS += -DWITH_PDAL=FALSE
-endif
-
 ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 	CMAKE_OPTS += \
 		-DWITH_GRASS=TRUE \
@@ -200,6 +194,16 @@ endif
 # - remove remaining comments
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
+
+ifneq (,$(findstring $(DISTRIBUTION),"jammy"))
+	CONTROL_EXPRESSIONS += pdal
+	CMAKE_OPTS += -DWITH_PDAL=TRUE
+else ifneq (,$(findstring -noble-ubuntugis-,$(DEB_BUILD_NAME)))
+	CONTROL_EXPRESSIONS += pdal
+	CMAKE_OPTS += -DWITH_PDAL=TRUE
+else
+	CMAKE_OPTS += -DWITH_PDAL=FALSE
+endif
 
 ifneq (,$(WITH_APIDOC))
 CONTROL_EXPRESSIONS += apidoc
