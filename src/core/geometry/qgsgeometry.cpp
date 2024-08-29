@@ -425,15 +425,14 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   const double DEG_TO_RAD = M_PI / HALF_CIRCLE_DEGREES;
   const double RAD_TO_DEG = HALF_CIRCLE_DEGREES / M_PI;
 
-  startAngle = QgsGeometryUtilsBase::normalizedAngle(startAngle * DEG_TO_RAD) * RAD_TO_DEG;
-  endAngle = QgsGeometryUtilsBase::normalizedAngle(endAngle * DEG_TO_RAD) * RAD_TO_DEG;
+  startAngle = QgsGeometryUtilsBase::normalizedAngle( startAngle * DEG_TO_RAD ) * RAD_TO_DEG;
+  endAngle = QgsGeometryUtilsBase::normalizedAngle( endAngle * DEG_TO_RAD ) * RAD_TO_DEG;
 
-  const double angularWidth = endAngle - startAngle;
-  const bool useShortestArc = (angularWidth >= 0 && angularWidth <= HALF_CIRCLE_DEGREES) || 
-                            (angularWidth <= -HALF_CIRCLE_DEGREES && angularWidth >= -FULL_CIRCLE_DEGREES);
+  const double angularWidth = QgsGeometryUtilsBase::normalizedAngle( endAngle - startAngle * DEG_TO_RAD ) * RAD_TO_DEG;
+  const bool useShortestArc = angularWidth <= HALF_CIRCLE_DEGREES;
 
-  const double averageAngle = QgsGeometryUtilsBase::averageAngle(endAngle * DEG_TO_RAD, startAngle * DEG_TO_RAD) * RAD_TO_DEG +
-                            (useShortestArc ? 0 : HALF_CIRCLE_DEGREES);
+  const double averageAngle = QgsGeometryUtilsBase::averageAngle( endAngle * DEG_TO_RAD, startAngle * DEG_TO_RAD ) * RAD_TO_DEG +
+                              ( useShortestArc ? 0 : HALF_CIRCLE_DEGREES );
 
   if ( std::abs( angularWidth ) >= 360.0 )
   {
