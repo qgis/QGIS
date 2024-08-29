@@ -75,6 +75,13 @@ QgsNumericFormat *QgsNumericFormatSelectorWidget::format() const
   return mCurrentFormat->clone();
 }
 
+void QgsNumericFormatSelectorWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
+  if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
+    w->registerExpressionContextGenerator( mExpressionContextGenerator );
+}
+
 void QgsNumericFormatSelectorWidget::formatTypeChanged()
 {
   const QString newId = mCategoryCombo->currentData().toString();
@@ -142,6 +149,7 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
     stackedWidget->setCurrentWidget( w );
     // start receiving updates from widget
     connect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::formatChanged );
+    w->registerExpressionContextGenerator( mExpressionContextGenerator );
   }
   else
   {

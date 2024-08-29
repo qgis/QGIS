@@ -26,6 +26,18 @@
 #include "qgis.h"
 #include <QDialogButtonBox>
 
+void QgsNumericFormatWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
+}
+
+QgsExpressionContext QgsNumericFormatWidget::createExpressionContext() const
+{
+  if ( mExpressionContextGenerator )
+    return mExpressionContextGenerator->createExpressionContext();
+  return QgsExpressionContext();
+}
+
 //
 // QgsBasicNumericFormatWidget
 //
@@ -629,7 +641,7 @@ QgsExpressionBasedNumericFormatWidget::QgsExpressionBasedNumericFormatWidget( co
 
 QgsExpressionContext QgsExpressionBasedNumericFormatWidget::createExpressionContext() const
 {
-  QgsExpressionContext context;
+  QgsExpressionContext context = QgsNumericFormatWidget::createExpressionContext();
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 1234.5678 ) );
@@ -653,3 +665,4 @@ QgsNumericFormat *QgsExpressionBasedNumericFormatWidget::format()
 {
   return mFormat->clone();
 }
+

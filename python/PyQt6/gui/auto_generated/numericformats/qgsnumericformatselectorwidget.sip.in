@@ -42,6 +42,14 @@ Returns a new format object representing the settings currently configured in th
 The caller takes ownership of the returned object.
 %End
 
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context generator class that will be used to retrieve
+an expression context for the widget when required.
+
+.. versionadded:: 3.40
+%End
+
   signals:
 
     void changed();
