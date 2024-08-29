@@ -234,7 +234,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         {
           const unsigned g = feature.geometry( i );
           const unsigned cmdId = g & 0x7;
-          const unsigned cmdCount = g >> 3;
+          const int cmdCount = static_cast<int>( g >> 3 );
           if ( cmdId == 1 ) // MoveTo
           {
             if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
@@ -248,7 +248,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             else
               tmpPoints.reserve( static_cast<int>( tmpPoints.size() ) + cmdCount );
 
-            for ( unsigned j = 0; j < cmdCount; j++ )
+            for ( int j = 0; j < cmdCount; j++ )
             {
               const int v = static_cast<int>( feature.geometry( i + 1 ) );
               const int w = static_cast<int>( feature.geometry( i + 2 ) );
@@ -286,8 +286,8 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
               QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
               break;
             }
-            tmpPoints.reserve( static_cast<int>( tmpPoints.size() ) + cmdCount );
-            for ( unsigned j = 0; j < cmdCount; j++ )
+            tmpPoints.reserve( tmpPoints.size() + cmdCount );
+            for ( int j = 0; j < cmdCount; j++ )
             {
               const int v = static_cast<int>( feature.geometry( i + 1 ) );
               const int w = static_cast<int>( feature.geometry( i + 2 ) );
