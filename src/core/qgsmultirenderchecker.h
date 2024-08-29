@@ -27,23 +27,20 @@ class QgsLayout;
  *
  * Its main purpose is for the unit testing framework.
  *
- * It will either
- * <ul>
- *   <li>take an externally rendered image (setRenderedImage())</li>
- *   <li>render the image based on provided mapSettings (setMapSettings())</li>
- * </ul>
+ * It will either:
+ *
+ * - take an externally rendered image (setRenderedImage())
+ * - render the image based on provided mapSettings (setMapSettings())
  *
  * This image will then be compared against one or several images in a folder inside
  * the control directory (tests/testdata/control_images/{controlName}).
  *
  * There are modes for single and for multiple reference images.
- * <ul>
- *   <li>If there are no subfolders in the control directory, it will assume an image
- *       with the name {controlImage}.png in the control directory itself.</li>
  *
- *   <li>If there are subfolders inside the control directory, it will search for images
- *       with the name {controlImage}.png in every subfolder.</li>
- * </ul>
+ * - If there are no subfolders in the control directory, it will assume an image
+ *   with the name {controlImage}.png in the control directory itself.
+ * - If there are subfolders inside the control directory, it will search for images
+ *   with the name {controlImage}.png in every subfolder.
  *
  * For every control image there may be one or several randomly named anomaly images defining
  * allowed anomalies.
