@@ -652,7 +652,7 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   }
   else if ( diagramType == QLatin1String( "Stacked" ) )
   {
-    mDiagram.reset( new QgsStackedDiagram() );
+    _readXmlSubdiagrams( elem, context );
   }
   else
   {
@@ -660,6 +660,67 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
     mDiagram.reset( new QgsHistogramDiagram() );
   }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+}
+
+void QgsDiagramRenderer::_readXmlSubdiagrams( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( context )
+  const QDomElement subdiagramsElem = elem.firstChildElement( QStringLiteral( "Subdiagrams" ) );
+
+  if ( !subdiagramsElem.isNull() )
+  {
+    const QDomNodeList subdiagrams = elem.elementsByTagName( QStringLiteral( "Subdiagram" ) );
+
+    if ( subdiagrams.length() > 0 )
+    {
+      std::unique_ptr< QgsStackedDiagram > stackedDiagram = std::make_unique< QgsStackedDiagram >();
+
+      for ( int i = 0; i < subdiagrams.size(); i++ )
+      {
+        const QDomElement subdiagramElem = subdiagrams.at( i ).toElement();
+        const QString diagramType = subdiagramElem.attribute( QStringLiteral( "diagramType" ) );
+        const QDomElement categoryElem = subdiagramElem.firstChildElement( QStringLiteral( "DiagramCategory" ) );
+
+        if ( !categoryElem.isNull() )
+        {
+          std::unique_ptr< QgsDiagram > diagram;
+          std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings >();
+          ds->readXml( categoryElem, context );
+
+          if ( diagramType == QLatin1String( "Pie" ) )
+          {
+            diagram = std::make_unique< QgsPieDiagram >();
+          }
+          else if ( diagramType == QLatin1String( "Text" ) )
+          {
+            diagram = std::make_unique< QgsTextDiagram >();
+          }
+          else if ( diagramType == QLatin1String( "Histogram" ) )
+          {
+            diagram = std::make_unique< QgsHistogramDiagram >();
+          }
+          else if ( diagramType == QLatin1String( "StackedBar" ) )
+          {
+            diagram = std::make_unique< QgsStackedBarDiagram >();
+          }
+
+          if ( diagram )
+          {
+            stackedDiagram->addSubDiagram( diagram.release(), ds.release() );
+          }
+        }
+      }
+
+      if ( stackedDiagram->subDiagramCount() > 1 )
+      {
+        mDiagram.reset( stackedDiagram.release() );
+        return;
+      }
+    }
+  }
+
+  // Fallback
+  mDiagram.reset( new QgsStackedDiagram() );
 }
 
 void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -672,6 +733,24 @@ void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc
     rendererElem.setAttribute( QStringLiteral( "diagramType" ), mDiagram->diagramName() );
   }
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
+}
+
+void QgsDiagramRenderer::_writeXmlSubDiagrams( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QDomElement subDiagramsElem = doc.createElement( QStringLiteral( "Subdiagrams" ) );
+
+  // Iterate subdiagrams and write their settings to a DOM object
+  const QgsStackedDiagram *stackedDiagram = qgis::down_cast< const QgsStackedDiagram *>( mDiagram.get() );
+
+  for ( int i = 0; i < stackedDiagram->subDiagramCount(); i++ )
+  {
+    QDomElement subDiagramElem = doc.createElement( QStringLiteral( "Subdiagram" ) );
+    subDiagramElem.setAttribute( QStringLiteral( "diagramType" ), stackedDiagram->subDiagramType( i ) );
+    const QgsDiagramSettings *subSettings = stackedDiagram->subDiagramSettings( i );
+    subSettings->writeXml( subDiagramElem, doc, context );
+    subDiagramsElem.appendChild( subDiagramElem );
+  }
+  rendererElem.appendChild( subDiagramsElem );
 }
 
 QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() const
@@ -736,9 +815,14 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
   QDomElement rendererElem = doc.createElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
   mSettings.writeXml( rendererElem, doc, context );
   _writeXml( rendererElem, doc, context );
+
+  if ( mDiagram->diagramName() == QStringLiteral( "Stacked" ) )
+  {
+    _writeXmlSubDiagrams( rendererElem, doc, context );
+  }
+
   layerElem.appendChild( rendererElem );
 }
-
 
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
 {
@@ -917,6 +1001,12 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
   }
 
   _writeXml( rendererElem, doc, context );
+
+  if ( mDiagram->diagramName() == QStringLiteral( "Stacked" ) )
+  {
+    _writeXmlSubDiagrams( rendererElem, doc, context );
+  }
+
   layerElem.appendChild( rendererElem );
 }
 

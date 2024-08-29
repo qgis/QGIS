@@ -853,10 +853,22 @@ class CORE_EXPORT QgsDiagramRenderer
     void _readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /**
+     * Reads Stacked Diagram's subdiagram state from a DOM element.
+     * \see _writeXmlSubDiagrams()
+     */
+    void _readXmlSubdiagrams( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    /**
      * Writes internal QgsDiagramRenderer diagram state to a DOM element.
      * \see _readXml()
      */
     void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Writes Stacked Diagram's subdiagram state to a DOM element.
+     * \see _readXmlSubdiagrams()
+     */
+    void _writeXmlSubDiagrams( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     //! Reference to the object that does the real diagram rendering
     std::unique_ptr< QgsDiagram > mDiagram;

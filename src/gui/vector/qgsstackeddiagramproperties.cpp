@@ -221,7 +221,7 @@ void QgsStackedDiagramProperties::apply()
       {
         diagram = std::make_unique< QgsStackedBarDiagram >();
       }
-      else // if ( diagramProperties->mDiagramType == DIAGRAM_NAME_HISTOGRAM )
+      else // DIAGRAM_NAME_HISTOGRAM
       {
         diagram = std::make_unique< QgsHistogramDiagram >();
       }

@@ -806,11 +806,25 @@ Reads internal QgsDiagramRenderer state from a DOM element.
 .. seealso:: _writeXml
 %End
 
+    void _readXmlSubdiagrams( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads Stacked Diagram's subdiagram state from a DOM element.
+
+.. seealso:: _writeXmlSubDiagrams
+%End
+
     void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes internal QgsDiagramRenderer diagram state to a DOM element.
 
 .. seealso:: _readXml
+%End
+
+    void _writeXmlSubDiagrams( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes Stacked Diagram's subdiagram state to a DOM element.
+
+.. seealso:: _readXmlSubdiagrams
 %End
 
 
