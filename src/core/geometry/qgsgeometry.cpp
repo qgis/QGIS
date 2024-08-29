@@ -419,15 +419,21 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
 {
   std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
 
-  startAngle = QgsGeometryUtilsBase::normalizedAngle( startAngle * M_PI / 180 ) * 180 / M_PI;
-  endAngle = QgsGeometryUtilsBase::normalizedAngle( endAngle * M_PI / 180 ) * 180 / M_PI;
+  const double HALF_CIRCLE_DEGREES = 180.0;
+  const double FULL_CIRCLE_DEGREES = 360.0;
+  // maybe we have/need a method for these two:
+  const double DEG_TO_RAD = M_PI / HALF_CIRCLE_DEGREES;
+  const double RAD_TO_DEG = HALF_CIRCLE_DEGREES / M_PI;
 
-  double angularWidth = endAngle - startAngle;
-  double averageAngle = QgsGeometryUtilsBase::averageAngle( endAngle * M_PI / 180, startAngle * M_PI / 180 ) * 180 / M_PI;
+  startAngle = QgsGeometryUtilsBase::normalizedAngle(startAngle * DEG_TO_RAD) * RAD_TO_DEG;
+  endAngle = QgsGeometryUtilsBase::normalizedAngle(endAngle * DEG_TO_RAD) * RAD_TO_DEG;
 
-  bool useShortestArc = ( angularWidth >= 0 && angularWidth <= 180.0 ) || ( angularWidth <= -180.0 && angularWidth >= -360.0 );
-  if ( !useShortestArc )
-    averageAngle += 180;
+  const double angularWidth = endAngle - startAngle;
+  const bool useShortestArc = (angularWidth >= 0 && angularWidth <= HALF_CIRCLE_DEGREES) || 
+                            (angularWidth <= -HALF_CIRCLE_DEGREES && angularWidth >= -FULL_CIRCLE_DEGREES);
+
+  const double averageAngle = QgsGeometryUtilsBase::averageAngle(endAngle * DEG_TO_RAD, startAngle * DEG_TO_RAD) * RAD_TO_DEG +
+                            (useShortestArc ? 0 : HALF_CIRCLE_DEGREES);
 
   if ( std::abs( angularWidth ) >= 360.0 )
   {
