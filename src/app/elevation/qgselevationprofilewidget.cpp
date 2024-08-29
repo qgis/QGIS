@@ -57,6 +57,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsterrainprovider.h"
 #include "qgsprofilesourceregistry.h"
+#include "qgsnewnamedialog.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -416,6 +417,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   } );
 
   mOptionsMenu->addAction( mSettingsAction );
+
+  mOptionsMenu->addSeparator();
+
+  mRenameProfileAction = new QAction( tr( "Rename profile" ), this );
+  connect( mRenameProfileAction, &QAction::triggered, this, &QgsElevationProfileWidget::renameProfileTriggered );
+  mOptionsMenu->addAction( mRenameProfileAction );
 
   mBtnOptions = new QToolButton();
   mBtnOptions->setAutoRaise( true );
@@ -960,6 +967,18 @@ void QgsElevationProfileWidget::axisScaleLockToggled( bool active )
 {
   settingLockAxis->setValue( active );
   mCanvas->setLockAxisScales( active );
+}
+
+void QgsElevationProfileWidget::renameProfileTriggered()
+{
+  QgsNewNameDialog dlg( tr( "elevation profile" ), canvasName(), {}, {}, Qt::CaseSensitive, this );
+  dlg.setWindowTitle( tr( "Rename elevation profile" ) );
+  dlg.setHintString( tr( "Enter a new elevation profile title" ) );
+  dlg.setAllowEmptyName( false );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    setCanvasName( dlg.name() );
+  }
 }
 
 void QgsElevationProfileWidget::createOrUpdateRubberBands( )
