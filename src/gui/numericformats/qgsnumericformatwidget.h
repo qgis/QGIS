@@ -31,7 +31,7 @@ class QgsExpressionBasedNumericFormat;
  * \brief Base class for widgets which allow control over the properties of QgsNumericFormat subclasses
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget
+class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -59,12 +59,26 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget
      */
     virtual QgsNumericFormat *format() = 0 SIP_TRANSFERBACK;
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the widget when required.
+     *
+     * \since QGIS 3.40
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
   signals:
 
     /**
      * Emitted whenever the configuration of the numeric format is changed.
      */
     void changed();
+
+  private:
+
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
 };
 
@@ -367,7 +381,7 @@ class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget,
  * \brief A widget which allow control over the properties of a QgsExpressionBasedNumericFormat.
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormatWidget, public QgsExpressionContextGenerator, private Ui::QgsExpressionBasedNumericFormatWidgetBase
+class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsExpressionBasedNumericFormatWidgetBase
 {
     Q_OBJECT
 

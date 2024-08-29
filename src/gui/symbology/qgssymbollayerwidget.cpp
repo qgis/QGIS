@@ -5684,6 +5684,7 @@ void QgsLinearReferencingSymbolLayerWidget::changeNumberFormat()
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
     widget->setPanelTitle( tr( "Number Format" ) );
     widget->setFormat( mLayer->numericFormat() );
+    widget->registerExpressionContextGenerator( this );
     connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [ = ]
     {
       if ( !mBlockChangesSignal )

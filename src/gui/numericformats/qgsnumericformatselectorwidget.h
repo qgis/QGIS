@@ -23,6 +23,7 @@
 
 class QgsNumericFormat;
 class QgsBasicNumericFormat;
+class QgsExpressionContextGenerator;
 
 
 /**
@@ -56,6 +57,13 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
      */
     QgsNumericFormat *format() const SIP_TRANSFERBACK;
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the widget when required.
+     * \since QGIS 3.40
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
   signals:
 
     /**
@@ -75,6 +83,8 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
 
     std::unique_ptr< QgsNumericFormat > mCurrentFormat;
     std::unique_ptr< QgsBasicNumericFormat > mPreviewFormat;
+
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
 
 #endif //QGSNUMERICFORMATSELECTORWIDGET_H
