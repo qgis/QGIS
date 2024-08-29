@@ -105,7 +105,11 @@ Returns ``True`` if the menu has no valid actions.
 %End
 
   signals:
+
     void reinit();
+%Docstring
+Emitted after actions have been reloaded.
+%End
 
 };
 
