@@ -49,7 +49,7 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   //
   // https://bugreports.qt.io/browse/QTBUG-19794
 
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   QgsFeature *cachedFeature = mFeatureCache.object( id );
   if ( cachedFeature )
   {
