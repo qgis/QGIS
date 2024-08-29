@@ -6004,7 +6004,7 @@ static QVariant fncColorRgba( const QVariantList &values, const QgsExpressionCon
   return QgsSymbolLayerUtils::encodeColor( color );
 }
 
-QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+QVariant fcnRampColorObject( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGradientColorRamp expRamp;
   const QgsColorRamp *ramp = nullptr;
@@ -6026,7 +6026,13 @@ QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *,
 
   double value = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   QColor color = ramp->color( value );
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return color;
+}
+
+QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
+{
+  QColor color = fcnRampColorObject( values, context, parent, node ).value<QColor>();
+  return color.isValid() ? QgsSymbolLayerUtils::encodeColor( color ) : QVariant();
 }
 
 static QVariant fcnColorHsl( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -8503,6 +8509,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "ramp_color" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "ramp_name" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
                                             fcnRampColor, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "ramp_color_object" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "ramp_name" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
+                                            fcnRampColorObject, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "create_ramp" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "discrete" ), true, false ),
                                             fcnCreateRamp, QStringLiteral( "Color" ) )
