@@ -40,6 +40,11 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   mLimitsComboBox->addItem( tr( "Exclude Lower, Include Upper" ), QVariant::fromValue( Qgis::RangeLimits::ExcludeLowerIncludeUpper ) );
   mLimitsComboBox->addItem( tr( "Exclude Lower and Upper" ), QVariant::fromValue( Qgis::RangeLimits::ExcludeBoth ) );
 
+  // Avoid wrapped label items taking unnecessary higher space within stacked widgets
+  mFixedRangePerBandLabel->setSizePolicy(mFixedRangePerBandLabel->sizePolicy().setHeightForWidth( False ) );
+  label_11->setSizePolicy(label_11->sizePolicy().setHeightForWidth( False ) );
+  label_15->setSizePolicy(label_15->sizePolicy().setHeightForWidth( False ) );
+
   mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
   mSymbologyStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
