@@ -2915,6 +2915,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layers" ), layers, true ) );
 
   mProjectScope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( this ) );
+  mProjectScope->addFunction( QStringLiteral( "project_color_object" ), new GetNamedProjectColorObject( this ) );
 
   return createExpressionContextScope();
 }
@@ -5267,11 +5268,10 @@ void QgsProject::loadProjectFlags( const QDomDocument *doc )
 }
 
 /// @cond PRIVATE
-GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
-  : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+
+QHash< QString, QColor > loadColorsFromProject( const QgsProject *project )
 {
-  if ( !project )
-    return;
+  QHash< QString, QColor > colors;
 
   //build up color list from project. Do this in advance for speed
   QStringList colorStrings = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
@@ -5289,9 +5289,21 @@ GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
       label = colorLabels.at( colorIndex );
     }
 
-    mColors.insert( label.toLower(), color );
+    colors.insert( label.toLower(), color );
     colorIndex++;
   }
+
+  return colors;
+}
+
+
+GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+{
+  if ( !project )
+    return;
+
+  mColors = loadColorsFromProject( project );
 }
 
 GetNamedProjectColor::GetNamedProjectColor( const QHash<QString, QColor> &colors )
@@ -5314,6 +5326,37 @@ QVariant GetNamedProjectColor::func( const QVariantList &values, const QgsExpres
 QgsScopedExpressionFunction *GetNamedProjectColor::clone() const
 {
   return new GetNamedProjectColor( mColors );
+}
+
+GetNamedProjectColorObject::GetNamedProjectColorObject( const QgsProject *project )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color_object" ), 1, QStringLiteral( "Color" ) )
+{
+  if ( !project )
+    return;
+
+  mColors = loadColorsFromProject( project );
+}
+
+GetNamedProjectColorObject::GetNamedProjectColorObject( const QHash<QString, QColor> &colors )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color_object" ), 1, QStringLiteral( "Color" ) )
+  , mColors( colors )
+{
+}
+
+QVariant GetNamedProjectColorObject::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  const QString colorName = values.at( 0 ).toString().toLower();
+  if ( mColors.contains( colorName ) )
+  {
+    return mColors.value( colorName );
+  }
+  else
+    return QVariant();
+}
+
+QgsScopedExpressionFunction *GetNamedProjectColorObject::clone() const
+{
+  return new GetNamedProjectColorObject( mColors );
 }
 
 // ----------------

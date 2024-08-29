@@ -823,6 +823,15 @@ void TestQgsExpressionContext::projectScope()
   QCOMPARE( expProjectColorCaseInsensitive.evaluate( &contextColors ).toString(), QString( "30,60,20" ) );
   QgsExpression badProjectColor( QStringLiteral( "project_color('dusk falls in san juan del sur')" ) );
   QCOMPARE( badProjectColor.evaluate( &contextColors ), QVariant() );
+
+  QgsExpression expProjectColorObject( QStringLiteral( "project_color_object('murky depths of hades')" ) );
+  QCOMPARE( expProjectColorObject.evaluate( &contextColors ), QVariant( QColor::fromRgb( 30, 60, 20 ) ) );
+  //matching color names should be case insensitive
+  QgsExpression expProjectColorObjectCaseInsensitive( QStringLiteral( "project_color_object('Murky Depths of hades')" ) );
+  QCOMPARE( expProjectColorObjectCaseInsensitive.evaluate( &contextColors ), QVariant( QColor::fromRgb( 30, 60, 20 ) ) );
+  QgsExpression badProjectColorObject( QStringLiteral( "project_color_object('dusk falls in san juan del sur')" ) );
+  QCOMPARE( badProjectColorObject.evaluate( &contextColors ), QVariant() );
+
 }
 
 void TestQgsExpressionContext::layerScope()

@@ -130,7 +130,7 @@ qgis_functions = [
     "geomFromWKT", "geom_from_gml", "relate", "intersects_bbox", "bbox", "translate", "buffer", "point_on_surface", "reverse",
     "exterior_ring", "interior_ring_n", "geometry_n", "bounds", "num_points", "num_interior_rings", "num_rings", "num_geometries",
     "bounds_width", "bounds_height", "is_closed", "convex_hull", "sym_difference", "combine", "_union", "geom_to_wkt", "geomToWKT",
-    "transform", "uuid", "_uuid", "layer_property", "var", "_specialcol_", "project_color"]
+    "transform", "uuid", "_uuid", "layer_property", "var", "_specialcol_", "project_color", "project_color_object"]
 
 
 # constants
