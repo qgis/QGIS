@@ -716,6 +716,14 @@ def process_doxygen_line(line: str) -> str:
         exit_with_error(
             "Don't use raw html <dl>, <dt> or <dd> tags in documentation. "
             "Use markdown headings instead")
+    if re.search(r'<h\d>', line):
+        exit_with_error(
+            "Don't use raw html heading tags in documentation. "
+            "Use markdown headings instead")
+    if re.search(r'<li>', line):
+        exit_with_error(
+            "Don't use raw html lists in documentation. "
+            "Use markdown lists instead")
 
     # Detect code snippet
     code_match = re.search(r'\\code(\{\.?(\w+)})?', line)
