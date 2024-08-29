@@ -2256,11 +2256,11 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
 
   // XMP metadata date format differs from PDF dictionary one
   const QDateTime creationDateTime = layout->project()->metadata().creationDateTime();
-  const QByteArray metaDataDate = creationDateTime.toOffsetFromUtc( creationDateTime.offsetFromUtc() ).toString( Qt::ISODate ).toUtf8();
-  const QByteArray title = pdfWriter->title().toUtf8();
-  const QByteArray creator = getCreator().toUtf8();
-  const QByteArray producer = creator;
-  const QByteArray author = layout->project()->metadata().author().toUtf8();
+  const QString metaDataDate = creationDateTime.toOffsetFromUtc( creationDateTime.offsetFromUtc() ).toString( Qt::ISODate );
+  const QString title = pdfWriter->title();
+  const QString creator = getCreator();
+  const QString producer = creator;
+  const QString author = layout->project()->metadata().author();
 
   // heavily inspired from qpdf.cpp QPdfEnginePrivate::writeXmpDocumentMetaData
 
@@ -2363,28 +2363,6 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
 
   w.writeEndDocument();
   output.write( "<?xpacket end='w'?>" );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   pdfWriter->setDocumentXmpMetadata( xmpMetadata );
 }

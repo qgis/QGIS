@@ -451,9 +451,10 @@ class TestQgsLayoutExporter(QgisTestCase):
     def testExportToPdf(self):
         md = QgsProject.instance().metadata()
 
-        projTitle = 'proj title /<é'
+        projTitle = 'proj titlea /<é'
+        projAuthor = 'proj author /<é'
         md.setTitle(projTitle)
-        md.setAuthor('proj author')
+        md.setAuthor(projAuthor)
         md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
         md.setIdentifier('proj identifier')
         md.setAbstract('proj abstract')
@@ -525,7 +526,7 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         d = gdal.Open(pdf_file_path)
         metadata = d.GetMetadata()
-        self.assertEqual(metadata['AUTHOR'], 'proj author')
+        self.assertEqual(metadata['AUTHOR'], projAuthor)
         self.assertEqual(metadata['CREATION_DATE'], "D:20110503090405+10'0'")
         self.assertEqual(metadata['KEYWORDS'], 'KWx: kw3,kw4;kw: kw1,kw2')
         self.assertEqual(metadata['SUBJECT'], 'proj abstract')
@@ -547,7 +548,7 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         creator = xmpDoc.findall("rdf:RDF/rdf:Description/dc:creator/rdf:Seq/rdf:li", namespaces)
         self.assertEqual(len(creator), 1)
-        self.assertEqual(creator[0].text, 'proj author')
+        self.assertEqual(creator[0].text, projAuthor)
 
         producer = xmpDoc.findall("rdf:RDF/rdf:Description[@pdf:Producer]", namespaces)
         self.assertEqual(len(producer), 1)
