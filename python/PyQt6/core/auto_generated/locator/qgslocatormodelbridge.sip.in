@@ -12,6 +12,7 @@
 
 
 
+
 class QgsLocatorModelBridge : QObject
 {
 %Docstring(signature="appended")
@@ -111,6 +112,13 @@ Update the canvas extent used to create search context
     void updateCanvasCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Update the canvas CRS used to create search context
+%End
+
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+%Docstring
+This will call filters implementation of selection/deselection of results
+
+.. versionadded:: 3.40
 %End
 
 };
