@@ -729,9 +729,9 @@ bool QgsStyle::load( const QString &filename )
     while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       QDomDocument doc;
-      QString symbolName = statement.columnAsText( SymbolName );
+      QString symbolName = statement.columnAsText( static_cast< int >( SymbolTableColumn::Name ) );
       QgsScopedRuntimeProfile profile( symbolName );
-      QString xmlstring = statement.columnAsText( SymbolXML );
+      QString xmlstring = statement.columnAsText( static_cast< int >( SymbolTableColumn::XML ) );
       if ( !doc.setContent( xmlstring ) )
       {
         QgsDebugError( "Cannot open symbol " + symbolName );
@@ -752,9 +752,9 @@ bool QgsStyle::load( const QString &filename )
     while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       QDomDocument doc;
-      const QString rampName = statement.columnAsText( ColorrampName );
+      const QString rampName = statement.columnAsText( static_cast< int >( ColorRampTableColumn::Name ) );
       QgsScopedRuntimeProfile profile( rampName );
-      QString xmlstring = statement.columnAsText( ColorrampXML );
+      QString xmlstring = statement.columnAsText( static_cast< int >( ColorRampTableColumn::XML ) );
       if ( !doc.setContent( xmlstring ) )
       {
         QgsDebugError( "Cannot open symbol " + rampName );
@@ -774,9 +774,9 @@ bool QgsStyle::load( const QString &filename )
     while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       QDomDocument doc;
-      const QString formatName = statement.columnAsText( TextFormatName );
+      const QString formatName = statement.columnAsText( static_cast< int >( TextFormatTableColumn::Name ) );
       QgsScopedRuntimeProfile profile( formatName );
-      const QString xmlstring = statement.columnAsText( TextFormatXML );
+      const QString xmlstring = statement.columnAsText( static_cast< int >( TextFormatTableColumn::XML ) );
       if ( !doc.setContent( xmlstring ) )
       {
         QgsDebugError( "Cannot open text format " + formatName );
@@ -796,9 +796,9 @@ bool QgsStyle::load( const QString &filename )
     while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       QDomDocument doc;
-      const QString settingsName = statement.columnAsText( LabelSettingsName );
+      const QString settingsName = statement.columnAsText( static_cast< int >( LabelSettingsTableColumn::Name ) );
       QgsScopedRuntimeProfile profile( settingsName );
-      const QString xmlstring = statement.columnAsText( LabelSettingsXML );
+      const QString xmlstring = statement.columnAsText( static_cast< int >( LabelSettingsTableColumn::XML ) );
       if ( !doc.setContent( xmlstring ) )
       {
         QgsDebugError( "Cannot open label settings " + settingsName );
@@ -2370,8 +2370,8 @@ QgsSymbolGroupMap QgsStyle::smartgroupsListMap()
   QgsSymbolGroupMap groupNames;
   while ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QString group = statement.columnAsText( SmartgroupName );
-    groupNames.insert( sqlite3_column_int( statement.get(), SmartgroupId ), group );
+    QString group = statement.columnAsText( static_cast< int >( SmartGroupTableColumn::Name ) );
+    groupNames.insert( sqlite3_column_int( statement.get(), static_cast< int >( SmartGroupTableColumn::Id ) ), group );
   }
 
   return groupNames;

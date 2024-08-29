@@ -22,57 +22,6 @@ typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 
-enum SymbolTable /BaseType=IntEnum/
-{
-  SymbolId,
-  SymbolName,
-  SymbolXML,
-  SymbolFavoriteId,
-};
-
-enum TagTable /BaseType=IntEnum/
-{
-  TagId,
-  TagName,
-};
-
-enum TagmapTable /BaseType=IntEnum/
-{
-  TagmapTagId,
-  TagmapSymbolId,
-};
-
-enum ColorrampTable /BaseType=IntEnum/
-{
-  ColorrampId,
-  ColorrampName,
-  ColorrampXML,
-  ColorrampFavoriteId,
-};
-
-enum TextFormatTable /BaseType=IntEnum/
-{
-  TextFormatId,
-  TextFormatName,
-  TextFormatXML,
-  TextFormatFavoriteId,
-};
-
-enum LabelSettingsTable /BaseType=IntEnum/
-{
-  LabelSettingsId,
-  LabelSettingsName,
-  LabelSettingsXML,
-  LabelSettingsFavoriteId,
-};
-
-enum SmartgroupTable /BaseType=IntEnum/
-{
-  SmartgroupId,
-  SmartgroupName,
-  SmartgroupXML,
-};
-
 class QgsStyle : QObject
 {
 
@@ -80,6 +29,57 @@ class QgsStyle : QObject
 #include "qgsstyle.h"
 %End
   public:
+
+    enum class SymbolTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class TagTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+    };
+
+    enum class TagmapTableColumn /BaseType=IntEnum/
+    {
+      TagId,
+      SymbolId,
+    };
+
+    enum class ColorRampTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class TextFormatTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class LabelSettingsTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class SmartGroupTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+    };
 
     QgsStyle( QObject *parent /TransferThis/ = 0 );
 %Docstring
