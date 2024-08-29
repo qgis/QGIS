@@ -244,9 +244,9 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             }
 
             if ( feature.type() == vector_tile::Tile_GeomType_POINT )
-              outputPoints.reserve( outputPoints.size() + cmdCount );
+              outputPoints.reserve( static_cast<int>( outputPoints.size() ) + cmdCount );
             else
-              tmpPoints.reserve( tmpPoints.size() + cmdCount );
+              tmpPoints.reserve( static_cast<int>( tmpPoints.size() ) + cmdCount );
 
             for ( unsigned j = 0; j < cmdCount; j++ )
             {
@@ -286,7 +286,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
               QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
               break;
             }
-            tmpPoints.reserve( tmpPoints.size() + cmdCount );
+            tmpPoints.reserve( static_cast<int>( tmpPoints.size() ) + cmdCount );
             for ( unsigned j = 0; j < cmdCount; j++ )
             {
               const int v = static_cast<int>( feature.geometry( i + 1 ) );
