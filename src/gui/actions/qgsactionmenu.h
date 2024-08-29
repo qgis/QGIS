@@ -126,6 +126,10 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     bool isEmpty() const;
 
   signals:
+
+    /**
+     * Emitted after actions have been reloaded.
+     */
     void reinit();
 
   private slots:
