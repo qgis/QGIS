@@ -291,7 +291,7 @@ void QgsBrowserLayerProperties::setCondensedMode( bool )
 
 void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 {
-  if ( !url.fragment().isEmpty() && url.toString().startsWith( QStringLiteral( "#" ) ) )
+  if ( !url.fragment().isEmpty() && url.toString().startsWith( QLatin1Char( '#' ) ) )
   {
     mMetadataTextBrowser->scrollToAnchor( url.fragment() );
     return;

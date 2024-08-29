@@ -496,9 +496,9 @@ bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
 
   if ( !externalEditorCommand.isEmpty() )
   {
-    externalEditorCommand = externalEditorCommand.replace( QStringLiteral( "<file>" ), mFilePath );
-    externalEditorCommand = externalEditorCommand.replace( QStringLiteral( "<line>" ), QString::number( line + 1 ) );
-    externalEditorCommand = externalEditorCommand.replace( QStringLiteral( "<col>" ), QString::number( column + 1 ) );
+    externalEditorCommand = externalEditorCommand.replace( QLatin1String( "<file>" ), mFilePath );
+    externalEditorCommand = externalEditorCommand.replace( QLatin1String( "<line>" ), QString::number( line + 1 ) );
+    externalEditorCommand = externalEditorCommand.replace( QLatin1String( "<col>" ), QString::number( column + 1 ) );
 
     const QStringList commandParts = QProcess::splitCommand( externalEditorCommand );
     if ( QProcess::startDetached( commandParts.at( 0 ), commandParts.mid( 1 ), dir.absolutePath() ) )

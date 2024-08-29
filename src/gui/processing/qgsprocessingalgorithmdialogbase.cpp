@@ -790,7 +790,7 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
         flags << QgsProcessing::documentationFlagToString( flag );
       }
     }
-    result += QStringLiteral( "<ul><li><i>%1</i></li></ul>" ).arg( flags.join( QStringLiteral( "</i></li><li><i>" ) ) );
+    result += QStringLiteral( "<ul><li><i>%1</i></li></ul>" ).arg( flags.join( QLatin1String( "</i></li><li><i>" ) ) );
   }
   return result;
 }

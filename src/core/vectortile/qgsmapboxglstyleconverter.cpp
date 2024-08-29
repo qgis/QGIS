@@ -2507,7 +2507,7 @@ QString QgsMapBoxGlStyleConverter::parseArrayStops( const QVariantList &stops, Q
 
     // top zoom and value
     caseString += QStringLiteral( "%1 THEN array(%3)" ).arg(
-                    conditions.join( QStringLiteral( " AND " ) ),
+                    conditions.join( QLatin1String( " AND " ) ),
                     valuesFixed.join( ',' )
                   );
   }

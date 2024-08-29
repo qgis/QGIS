@@ -44,7 +44,7 @@ namespace
     res += QStringLiteral( "[" ) + QString::number( elements[0], 'g', 7 );
     for ( uint32_t i = 1; i < numElements; ++i )
       res += QStringLiteral( "," ) + QString::number( elements[i], 'g', 7 );
-    res += QStringLiteral( "]" );
+    res += QLatin1Char( ']' );
 
     return res;
   }
