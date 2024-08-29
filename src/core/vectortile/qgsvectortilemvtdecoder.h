@@ -64,6 +64,7 @@ class CORE_EXPORT QgsVectorTileMVTDecoder
                                          const QSet< QString > *layerSubset = nullptr ) const;
 
   private:
+    //! map of tiles for each source
     QMap<QString, vector_tile::Tile> tiles;
     QgsTileXYZ mTileID;
     QgsVectorTileMatrixSet mStructure;

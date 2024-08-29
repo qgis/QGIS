@@ -78,9 +78,13 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
 
   public:
 
+    //! Role to set column attribute in the request so it can be retrieved later
     static int DATA_COLUMN;
+    //! Role to set row attribute in the request so it can be retrieved later
     static int DATA_ROW;
+    //! Role to set zoom attribute in the request so it can be retrieved later
     static int DATA_ZOOM;
+    //! Role to set source ID attribute in the request so it can be retrieved later
     static int DATA_SOURCE_ID;
 
     /**
