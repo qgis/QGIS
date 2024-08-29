@@ -522,7 +522,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
     /**
      * Sets state from DOM document.
      *
-     * \param metadataElement The DOM element corresponding to ``resourceMetadata'' tag
+     * \param metadataElement The DOM element corresponding to ``resourceMetadata`` tag
      *
      * \returns TRUE if successful
      *
@@ -534,7 +534,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
     /**
      * Stores state in a DOM node.
      *
-     * \param metadataElement is a DOM element corresponding to ``resourceMetadata'' tag
+     * \param metadataElement is a DOM element corresponding to ``resourceMetadata`` tag
      * \param document is a the DOM document being written
      *
      * \returns TRUE if successful
