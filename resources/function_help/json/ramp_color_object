@@ -1,0 +1,37 @@
+{
+  "name": "ramp_color_object",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a color object from a color ramp. Contrary to ramp_color which returns a color string representation, ramp_color_object returns a color object.",
+  "variants": [{
+    "variant": "Saved ramp variant",
+    "variant_description": "Returns a color object from a saved ramp",
+    "arguments": [{
+      "arg": "ramp_name",
+      "description": "the name of the color ramp as a string, for example 'Spectral'"
+    }, {
+      "arg": "value",
+      "description": "the position on the ramp to select the color from as a real number between 0 and 1"
+    }],
+    "examples": [{
+      "expression": "ramp_color_object('Spectral',0.3)",
+      "returns": "RGBA: 0.99,0.75,0.45,1.00"
+    }],
+    "notes": "The color ramps available vary between QGIS installations. This function may not give the expected results if you move your QGIS project between installations."
+  }, {
+    "variant": "Expression-created ramp variant",
+    "variant_description": "Returns a color object from an expression-created ramp",
+    "arguments": [{
+      "arg": "ramp",
+      "description": "the color ramp"
+    }, {
+      "arg": "value",
+      "description": "the position on the ramp to select the color from as a real number between 0 and 1"
+    }],
+    "examples": [{
+      "expression": "ramp_color_object(create_ramp(map(0,color_rgbf(0,0,0),1,color_rgbf(1,0,0))),1)",
+      "returns": "RGBA: 1.00,0.00,0.00,1.00"
+    }]
+  }],
+  "tags": ["ramp", "color"]
+}

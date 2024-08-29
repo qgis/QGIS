@@ -1888,6 +1888,9 @@ class TestQgsExpression: public QObject
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
+      QTest::newRow( "ramp color error" ) << "ramp_color('NotExistingRamp',0.3)" << true << QVariant();
+      QTest::newRow( "ramp color object" ) << "ramp_color_object('Spectral',0.3)" << false << QVariant( QColor::fromRgbF( 0.994, 0.746, 0.454 ) );
+      QTest::newRow( "ramp color object error" ) << "ramp_color_object('NotExistingRamp',0.3)" << true << QVariant();
       QTest::newRow( "create ramp color, wrong parameter" ) << "create_ramp(1)" << true << QVariant();
       QTest::newRow( "create ramp color, no color" ) << "create_ramp(map())" << true << QVariant();
       QTest::newRow( "create ramp color, one color" ) << "ramp_color(create_ramp(map(0,'0,0,0')),0.5)" << false << QVariant( "0,0,0,255" );
