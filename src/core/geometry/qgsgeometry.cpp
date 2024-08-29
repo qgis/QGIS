@@ -425,7 +425,7 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   double angularWidth = endAngle - startAngle;
   double averageAngle = QgsGeometryUtilsBase::averageAngle( endAngle * M_PI / 180, startAngle * M_PI / 180 ) * 180 / M_PI;
 
-  bool useShortestArc = ( angularWidth >= 0 && angularWidth <= 180.0 ) || ( angularWidth <= 180.0 && angularWidth >= -360.0 );
+  bool useShortestArc = ( angularWidth >= 0 && angularWidth <= 180.0 ) || ( angularWidth <= -180.0 && angularWidth >= -360.0 );
   if ( !useShortestArc )
     averageAngle += 180;
 
