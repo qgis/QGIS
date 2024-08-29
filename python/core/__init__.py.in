@@ -134,6 +134,67 @@ QgsMapToPixelSimplifier.SnapToGrid = Qgis.VectorSimplificationAlgorithm.SnapToGr
 QgsMapToPixelSimplifier.Visvalingam = Qgis.VectorSimplificationAlgorithm.Visvalingam
 QgsMapToPixelSimplifier.SnappedToGridGlobal = Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal
 
+SymbolTable = QgsStyle.SymbolTableColumn
+SymbolTable.SymbolId = QgsStyle.SymbolTableColumn.Id.value
+SymbolId = QgsStyle.SymbolTableColumn.Id.value
+SymbolTable.SymbolName = QgsStyle.SymbolTableColumn.Name.value
+SymbolName = QgsStyle.SymbolTableColumn.Name.value
+SymbolTable.SymbolXML = QgsStyle.SymbolTableColumn.XML.value
+SymbolXML = QgsStyle.SymbolTableColumn.XML.value
+SymbolTable.SymbolFavoriteId = QgsStyle.SymbolTableColumn.FavoriteId.value
+SymbolFavoriteId = QgsStyle.SymbolTableColumn.FavoriteId.value
+
+TagTable = QgsStyle.TagTableColumn
+TagTable.TagId = QgsStyle.TagTableColumn.Id.value
+TagId = QgsStyle.TagTableColumn.Id.value
+TagTable.TagName = QgsStyle.TagTableColumn.Name.value
+TagName = QgsStyle.TagTableColumn.Name.value
+
+TagmapTable = QgsStyle.TagmapTableColumn
+TagmapTable.TagmapTagId = QgsStyle.TagmapTableColumn.TagId.value
+TagmapTagId = QgsStyle.TagmapTableColumn.TagId.value
+TagmapTable.TagmapSymbolId = QgsStyle.TagmapTableColumn.SymbolId.value
+TagmapSymbolId = QgsStyle.TagmapTableColumn.SymbolId.value
+
+ColorrampTable = QgsStyle.ColorRampTableColumn
+ColorrampTable.ColorrampId = QgsStyle.ColorRampTableColumn.Id.value
+ColorrampId = QgsStyle.ColorRampTableColumn.Id.value
+ColorrampTable.ColorrampName = QgsStyle.ColorRampTableColumn.Name.value
+ColorrampName = QgsStyle.ColorRampTableColumn.Name.value
+ColorrampTable.ColorrampXML = QgsStyle.ColorRampTableColumn.XML.value
+ColorrampXML = QgsStyle.ColorRampTableColumn.XML.value
+ColorrampTable.ColorrampFavoriteId = QgsStyle.ColorRampTableColumn.FavoriteId.value
+ColorrampFavoriteId = QgsStyle.ColorRampTableColumn.FavoriteId.value
+
+TextFormatTable = QgsStyle.TextFormatTableColumn
+TextFormatTable.TextFormatId = QgsStyle.TextFormatTableColumn.Id.value
+TextFormatId = QgsStyle.TextFormatTableColumn.Id.value
+TextFormatTable.TextFormatName = QgsStyle.TextFormatTableColumn.Name.value
+TextFormatName = QgsStyle.TextFormatTableColumn.Name.value
+TextFormatTable.TextFormatXML = QgsStyle.TextFormatTableColumn.XML.value
+TextFormatXML = QgsStyle.TextFormatTableColumn.XML.value
+TextFormatTable.TextFormatFavoriteId = QgsStyle.TextFormatTableColumn.FavoriteId.value
+TextFormatFavoriteId = QgsStyle.TextFormatTableColumn.FavoriteId.value
+
+LabelSettingsTable = QgsStyle.LabelSettingsTableColumn
+LabelSettingsTable.LabelSettingsId = QgsStyle.LabelSettingsTableColumn.Id.value
+LabelSettingsId = QgsStyle.LabelSettingsTableColumn.Id.value
+LabelSettingsTable.LabelSettingsName = QgsStyle.LabelSettingsTableColumn.Name.value
+LabelSettingsName = QgsStyle.LabelSettingsTableColumn.Name.value
+LabelSettingsTable.LabelSettingsXML = QgsStyle.LabelSettingsTableColumn.XML.value
+LabelSettingsXML = QgsStyle.LabelSettingsTableColumn.XML.value
+LabelSettingsTable.LabelSettingsFavoriteId = QgsStyle.LabelSettingsTableColumn.FavoriteId.value
+LabelSettingsFavoriteId = QgsStyle.LabelSettingsTableColumn.FavoriteId.value
+
+SmartgroupTable = QgsStyle.SmartGroupTableColumn
+SmartgroupTable.SmartgroupId = QgsStyle.SmartGroupTableColumn.Id.value
+SmartgroupId = QgsStyle.SmartGroupTableColumn.Id.value
+SmartgroupTable.SmartgroupName = QgsStyle.SmartGroupTableColumn.Name.value
+SmartgroupName = QgsStyle.SmartGroupTableColumn.Name.value
+SmartgroupTable.SmartgroupXML = QgsStyle.SmartGroupTableColumn.XML.value
+SmartgroupXML = QgsStyle.SmartGroupTableColumn.XML.value
+
+
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
 

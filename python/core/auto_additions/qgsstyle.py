@@ -1,5 +1,56 @@
 # The following has been generated automatically from src/core/symbology/qgsstyle.h
 # monkey patching scoped based enum
+QgsStyle.SymbolTableColumn.Id.__doc__ = "Symbol ID"
+QgsStyle.SymbolTableColumn.Name.__doc__ = "Symbol Name"
+QgsStyle.SymbolTableColumn.XML.__doc__ = "Symbol definition (as XML)"
+QgsStyle.SymbolTableColumn.FavoriteId.__doc__ = "Symbol is favorite flag"
+QgsStyle.SymbolTableColumn.__doc__ = "Columns available in the Symbols table.\n\n.. versionadded:: 3.40.\n\n" + '* ``Id``: ' + QgsStyle.SymbolTableColumn.Id.__doc__ + '\n' + '* ``Name``: ' + QgsStyle.SymbolTableColumn.Name.__doc__ + '\n' + '* ``XML``: ' + QgsStyle.SymbolTableColumn.XML.__doc__ + '\n' + '* ``FavoriteId``: ' + QgsStyle.SymbolTableColumn.FavoriteId.__doc__
+# --
+QgsStyle.SymbolTableColumn.baseClass = QgsStyle
+# monkey patching scoped based enum
+QgsStyle.TagTableColumn.Id.__doc__ = "Tag ID"
+QgsStyle.TagTableColumn.Name.__doc__ = "Tag name"
+QgsStyle.TagTableColumn.__doc__ = "Columns available in the Tags table.\n\n.. versionadded:: 3.40.\n\n" + '* ``Id``: ' + QgsStyle.TagTableColumn.Id.__doc__ + '\n' + '* ``Name``: ' + QgsStyle.TagTableColumn.Name.__doc__
+# --
+QgsStyle.TagTableColumn.baseClass = QgsStyle
+# monkey patching scoped based enum
+QgsStyle.TagmapTableColumn.TagId.__doc__ = "Tag ID"
+QgsStyle.TagmapTableColumn.SymbolId.__doc__ = "Symbol ID"
+QgsStyle.TagmapTableColumn.__doc__ = "Columns available in the tag to symbol table.\n\n.. versionadded:: 3.40.\n\n" + '* ``TagId``: ' + QgsStyle.TagmapTableColumn.TagId.__doc__ + '\n' + '* ``SymbolId``: ' + QgsStyle.TagmapTableColumn.SymbolId.__doc__
+# --
+QgsStyle.TagmapTableColumn.baseClass = QgsStyle
+# monkey patching scoped based enum
+QgsStyle.ColorRampTableColumn.Id.__doc__ = "Color ramp ID"
+QgsStyle.ColorRampTableColumn.Name.__doc__ = "Color ramp name"
+QgsStyle.ColorRampTableColumn.XML.__doc__ = "Color ramp definition (as XML)"
+QgsStyle.ColorRampTableColumn.FavoriteId.__doc__ = "Color ramp is favorite flag"
+QgsStyle.ColorRampTableColumn.__doc__ = "Columns available in the color ramp table.\n\n.. versionadded:: 3.40.\n\n" + '* ``Id``: ' + QgsStyle.ColorRampTableColumn.Id.__doc__ + '\n' + '* ``Name``: ' + QgsStyle.ColorRampTableColumn.Name.__doc__ + '\n' + '* ``XML``: ' + QgsStyle.ColorRampTableColumn.XML.__doc__ + '\n' + '* ``FavoriteId``: ' + QgsStyle.ColorRampTableColumn.FavoriteId.__doc__
+# --
+QgsStyle.ColorRampTableColumn.baseClass = QgsStyle
+# monkey patching scoped based enum
+QgsStyle.TextFormatTableColumn.Id.__doc__ = "Text format ID"
+QgsStyle.TextFormatTableColumn.Name.__doc__ = "Text format name"
+QgsStyle.TextFormatTableColumn.XML.__doc__ = "Text format definition (as XML)"
+QgsStyle.TextFormatTableColumn.FavoriteId.__doc__ = "Text format is favorite flag"
+QgsStyle.TextFormatTableColumn.__doc__ = "Columns available in the text format table.\n\n.. versionadded:: 3.40.\n\n" + '* ``Id``: ' + QgsStyle.TextFormatTableColumn.Id.__doc__ + '\n' + '* ``Name``: ' + QgsStyle.TextFormatTableColumn.Name.__doc__ + '\n' + '* ``XML``: ' + QgsStyle.TextFormatTableColumn.XML.__doc__ + '\n' + '* ``FavoriteId``: ' + QgsStyle.TextFormatTableColumn.FavoriteId.__doc__
+# --
+QgsStyle.TextFormatTableColumn.baseClass = QgsStyle
+# monkey patching scoped based enum
+QgsStyle.LabelSettingsTableColumn.Id.__doc__ = "Label settings ID"
+QgsStyle.LabelSettingsTableColumn.Name.__doc__ = "Label settings name"
+QgsStyle.LabelSettingsTableColumn.XML.__doc__ = "Label settings definition (as XML)"
+QgsStyle.LabelSettingsTableColumn.FavoriteId.__doc__ = "Label settings is favorite flag"
+QgsStyle.LabelSettingsTableColumn.__doc__ = "Columns available in the label settings table.\n\n.. versionadded:: 3.40.\n\n" + '* ``Id``: ' + QgsStyle.LabelSettingsTableColumn.Id.__doc__ + '\n' + '* ``Name``: ' + QgsStyle.LabelSettingsTableColumn.Name.__doc__ + '\n' + '* ``XML``: ' + QgsStyle.LabelSettingsTableColumn.XML.__doc__ + '\n' + '* ``FavoriteId``: ' + QgsStyle.LabelSettingsTableColumn.FavoriteId.__doc__
+# --
+QgsStyle.LabelSettingsTableColumn.baseClass = QgsStyle
+# monkey patching scoped based enum
+QgsStyle.SmartGroupTableColumn.Id.__doc__ = "Smart group ID"
+QgsStyle.SmartGroupTableColumn.Name.__doc__ = "Smart group name"
+QgsStyle.SmartGroupTableColumn.XML.__doc__ = "Smart group definition (as XML)"
+QgsStyle.SmartGroupTableColumn.__doc__ = "Columns available in the smart group table.\n\n.. versionadded:: 3.40.\n\n" + '* ``Id``: ' + QgsStyle.SmartGroupTableColumn.Id.__doc__ + '\n' + '* ``Name``: ' + QgsStyle.SmartGroupTableColumn.Name.__doc__ + '\n' + '* ``XML``: ' + QgsStyle.SmartGroupTableColumn.XML.__doc__
+# --
+QgsStyle.SmartGroupTableColumn.baseClass = QgsStyle
+# monkey patching scoped based enum
 QgsStyle.TextFormatContext.Labeling.__doc__ = "Text format used in labeling"
 QgsStyle.TextFormatContext.__doc__ = "Text format context.\n\n.. versionadded:: 3.20\n\n" + '* ``Labeling``: ' + QgsStyle.TextFormatContext.Labeling.__doc__
 # --
