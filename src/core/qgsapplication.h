@@ -1082,7 +1082,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     void customVariablesChanged();
 
     /**
-     * Emitted when the string representating the `NULL` value is changed.
+     * Emitted when the string representing the `NULL` value is changed.
      *
      * \see setNullRepresentation()
      * \see nullRepresentation()

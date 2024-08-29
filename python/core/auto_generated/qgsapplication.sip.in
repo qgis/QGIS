@@ -1097,7 +1097,7 @@ Emitted whenever a custom global variable changes.
 
     void nullRepresentationChanged();
 %Docstring
-Emitted when the string representating the `NULL` value is changed.
+Emitted when the string representing the `NULL` value is changed.
 
 .. seealso:: :py:func:`setNullRepresentation`
 
