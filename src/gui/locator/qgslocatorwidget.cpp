@@ -83,6 +83,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsLocatorWidget::scheduleDelayedPopup );
   connect( mResultsView, &QAbstractItemView::activated, this, &QgsLocatorWidget::acceptCurrentEntry );
+  connect( mResultsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLocatorWidget::selectionChanged );
   connect( mResultsView, &QAbstractItemView::customContextMenuRequested, this, &QgsLocatorWidget::showContextMenu );
 
   connect( mModelBridge, &QgsLocatorModelBridge::resultAdded, this, &QgsLocatorWidget::resultAdded );
@@ -371,6 +372,14 @@ void QgsLocatorWidget::acceptCurrentEntry()
     mLineEdit->clearFocus();
     mModelBridge->triggerResult( index );
   }
+}
+
+void QgsLocatorWidget::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  if ( !mResultsView->isVisible() )
+    return;
+
+  mModelBridge->selectionChanged( selected, deselected );
 }
 
 ///@cond PRIVATE

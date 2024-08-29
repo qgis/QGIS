@@ -210,6 +210,22 @@ E.g. a file search filter would open file associated with the triggered
 result.
 %End
 
+    virtual void resultSelected( const QgsLocatorResult &result );
+%Docstring
+This is called when the ``result`` is selected by the user.
+The filter subclass can implement logic here.
+
+.. versionadded:: 3.40
+%End
+
+    virtual void resultDeselected( const QgsLocatorResult &result );
+%Docstring
+This is called when a ``result`` is deselected.
+The filter subclass can implement logic here.
+
+.. versionadded:: 3.40
+%End
+
     virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
 %Docstring
 Triggers a filter ``result`` from this filter for an entry in the context menu.
