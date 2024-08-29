@@ -52,21 +52,18 @@ QgsNumericFormat *QgsExpressionBasedNumericFormat::clone() const
 QgsNumericFormat *QgsExpressionBasedNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext & ) const
 {
   std::unique_ptr< QgsExpressionBasedNumericFormat > res = std::make_unique< QgsExpressionBasedNumericFormat >();
-  res->mExpressionString = configuration.value( QStringLiteral( "expression" ), QStringLiteral( "@value" ) ).toString();
-  res->mExpression = QgsExpression( mExpressionString );
-
+  res->mExpression = QgsExpression( configuration.value( QStringLiteral( "expression" ), QStringLiteral( "@value" ) ).toString() );
   return res.release();
 }
 
 QVariantMap QgsExpressionBasedNumericFormat::configuration( const QgsReadWriteContext & ) const
 {
   QVariantMap res;
-  res.insert( QStringLiteral( "expression" ), mExpressionString );
+  res.insert( QStringLiteral( "expression" ), mExpression.expression() );
   return res;
 }
 
 void QgsExpressionBasedNumericFormat::setExpression( const QString &expression )
 {
-  mExpressionString = expression;
-  mExpression = QgsExpression( mExpressionString );
+  mExpression = QgsExpression( expression );
 }
