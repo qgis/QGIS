@@ -20,7 +20,7 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include "qgsblockingnetworkrequest.h"
-#include "qgssetrequestinitiator_p.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsfileutils.h"
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
