@@ -109,7 +109,7 @@ Returns the total elapsed time for the rendering test.
 
 .. note::
 
-   this only records time for actual render part.
+   This only records time for actual render part.
 %End
     void setElapsedTimeTarget( int target );
 
@@ -202,7 +202,7 @@ Test using renderer to generate the image to be compared.
 
 .. note::
 
-   make sure to call setExpectedImage and setMapRenderer first
+   Make sure to call setExpectedImage and setMapRenderer first
 %End
 
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString(), QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
@@ -217,7 +217,10 @@ Test using two arbitrary images (map renderer will not be used)
                       for that by providing a tolerance.
 :param renderedImageFile: to optionally override the output filename
 :param flags: render checker flags
-\note: make sure to call setExpectedImage and setRenderedImage first.
+
+.. note::
+
+   Make sure to call setExpectedImage and setRenderedImage first.
 %End
 
     bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );

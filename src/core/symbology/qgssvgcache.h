@@ -108,7 +108,9 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
  *
  * E.g:
  *
+ * \code{.unparsed}
  *   <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
+ * \endcode
  *
  * \note QgsSvgCache is not usually directly created, but rather accessed through QgsApplication::svgCache().
 */

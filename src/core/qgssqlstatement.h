@@ -267,13 +267,13 @@ class CORE_EXPORT QgsSQLStatement
          *
          * For any implementation this should look like
          *
-         * C++:
+         * \code{.cpp}
+         *   v.visit( *this );
+         * \endcode
          *
-         *     v.visit( *this );
-         *
-         * Python:
-         *
-         *     v.visit( self)
+         * \code{py}
+         *   v.visit(self)
+         * \endcode
          *
          * \param v A visitor that visits this node.
          */

@@ -1462,8 +1462,8 @@ Splits features cut by the given line
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated:: QGIS 3.12.
+   Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -2727,7 +2727,7 @@ Emitted when a new feature has been added to the layer
 Emitted when a feature has been deleted.
 
 If you do expensive operations in a slot connected to this, you should prefer to use
-featuresDeleted( const :py:class:`QgsFeatureIds`& ).
+:py:func:`~QgsVectorLayer.featuresDeleted`.
 
 :param fid: The id of the feature which has been deleted
 %End

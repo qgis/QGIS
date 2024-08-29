@@ -669,9 +669,9 @@ Returns the indexes of the vertices before and after the given vertex index.
 
 This function takes into account the following factors:
 
-# If the given vertex index is at the end of a linestring,
+- If the given vertex index is at the end of a linestring,
   the adjacent index will be -1 (for "no adjacent vertex")
-# If the given vertex index is at the end of a linear ring
+- If the given vertex index is at the end of a linear ring
   (such as in a polygon), the adjacent index will take into
   account the first vertex is equal to the last vertex (and will
   skip equal vertex positions).

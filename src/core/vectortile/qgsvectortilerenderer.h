@@ -113,9 +113,9 @@ class CORE_EXPORT QgsVectorTileRendererData
  *
  * For rendering it is expected that client code calls:
  *
- * # startRender() to prepare renderer
- * # renderTile() for each tile
- * # stopRender() to clean up renderer and free resources
+ * - startRender() to prepare renderer
+ * - renderTile() for each tile
+ * - stopRender() to clean up renderer and free resources
  *
  * \since QGIS 3.14
  */

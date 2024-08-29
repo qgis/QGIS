@@ -45,8 +45,7 @@ class CORE_EXPORT QgsRasterLayerUtils
      * \param elevationRange elevation range for rendering
      * \param matched will be set to TRUE if a band matching the temporal and elevation range was found
      *
-     * \returns Matched band, or -1 if the layer does not have any elevation
-     * or temporal settings which affect the rendered band.
+     * \returns Matched band, or -1 if the layer does not have any elevation or temporal settings which affect the rendered band.
      */
     static int renderedBandForElevationAndTemporalRange(
       QgsRasterLayer *layer,

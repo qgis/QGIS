@@ -91,9 +91,6 @@ Returns flags containing the supported capabilities of the data provider.
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
-%Docstring
-It makes no sense to set input on provider */
-%End
 
     virtual QgsRectangle extent() const = 0;
 
