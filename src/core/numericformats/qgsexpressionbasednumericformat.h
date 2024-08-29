@@ -47,7 +47,7 @@ class CORE_EXPORT QgsExpressionBasedNumericFormat : public QgsNumericFormat
      *
      * \see expression()
      */
-    void setExpression( const QString &expression );
+    void setExpression( const QString &expression ); // cppcheck-suppress functionConst
 
     /**
      * Returns the expression used to calculate the text representation of a value.
