@@ -54,11 +54,10 @@ class CORE_EXPORT QgsExpressionBasedNumericFormat : public QgsNumericFormat
      *
      * \see setExpression()
      */
-    QString expression() const { return mExpressionString; }
+    QString expression() const { return mExpression.expression(); }
 
   private:
 
-    QString mExpressionString;
     mutable QgsExpression mExpression;
 };
 
