@@ -2281,14 +2281,14 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
 
   QXmlStreamWriter w( &output );
   w.setAutoFormatting( true );
-  w.writeNamespace( adobeNS, "x" );
-  w.writeNamespace( rdfNS, "rdf" );
-  w.writeNamespace( dcNS, "dc" );
-  w.writeNamespace( xmpNS, "xmp" );
-  w.writeNamespace( xmpMMNS, "xmpMM" );
-  w.writeNamespace( pdfNS, "pdf" );
-  w.writeNamespace( pdfaidNS, "pdfaid" );
-  w.writeNamespace( pdfxidNS, "pdfxid" );
+  w.writeNamespace( adobeNS, "x" );  //#spellok
+  w.writeNamespace( rdfNS, "rdf" );  //#spellok
+  w.writeNamespace( dcNS, "dc" );  //#spellok
+  w.writeNamespace( xmpNS, "xmp" );  //#spellok
+  w.writeNamespace( xmpMMNS, "xmpMM" );  //#spellok
+  w.writeNamespace( pdfNS, "pdf" );  //#spellok
+  w.writeNamespace( pdfaidNS, "pdfaid" );  //#spellok
+  w.writeNamespace( pdfxidNS, "pdfxid" );  //#spellok
 
   w.writeStartElement( adobeNS, "xmpmeta" );
   w.writeStartElement( rdfNS, "RDF" );
