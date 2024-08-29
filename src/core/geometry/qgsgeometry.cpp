@@ -420,8 +420,6 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
 
   const double HALF_CIRCLE_DEGREES = 180.0;
-  const double FULL_CIRCLE_DEGREES = 360.0;
-  // maybe we have/need a method for these two:
   const double DEG_TO_RAD = M_PI / HALF_CIRCLE_DEGREES;
   const double RAD_TO_DEG = HALF_CIRCLE_DEGREES / M_PI;
 
