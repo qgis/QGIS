@@ -250,8 +250,8 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
 
             for ( unsigned j = 0; j < cmdCount; j++ )
             {
-              const unsigned v = feature.geometry( i + 1 );
-              const unsigned w = feature.geometry( i + 2 );
+              const int v = static_cast<int>( feature.geometry( i + 1 ) );
+              const int w = static_cast<int>( feature.geometry( i + 2 ) );
               const int dx = ( ( v >> 1 ) ^ ( -( v & 1 ) ) );
               const int dy = ( ( w >> 1 ) ^ ( -( w & 1 ) ) );
               cursorx += dx;
@@ -289,10 +289,10 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             tmpPoints.reserve( tmpPoints.size() + cmdCount );
             for ( unsigned j = 0; j < cmdCount; j++ )
             {
-              const unsigned v = feature.geometry( i + 1 );
-              const unsigned w = feature.geometry( i + 2 );
-              const int dx = ( ( v >> 1 ) ^ ( -( v & 1 ) ) );
-              const int dy = ( ( w >> 1 ) ^ ( -( w & 1 ) ) );
+              const int v = static_cast<int>( feature.geometry( i + 1 ) );
+              const int w = static_cast<int>( feature.geometry( i + 2 ) );
+              const int dx = ( v >> 1 ) ^ ( -( v & 1 ) );
+              const int dy = ( w >> 1 ) ^ ( -( w & 1 ) );
               cursorx += dx;
               cursory += dy;
               const double px = tileXMin + tileDX * double( cursorx ) / double( extent );
