@@ -954,6 +954,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const Q
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
+  QgsExpression::registerFunction( new GetNamedProjectColorObject( nullptr ) );
   QgsExpression::registerFunction( new GetSensorData( ) );
   QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
   QgsExpression::registerFunction( new GetLayoutMapLayerCredits( nullptr ) );
@@ -1430,4 +1431,3 @@ QgsScopedExpressionFunction *LoadLayerFunction::clone() const
   return new LoadLayerFunction();
 }
 ///@endcond
-

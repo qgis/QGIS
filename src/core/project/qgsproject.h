@@ -2583,8 +2583,28 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
   private:
 
     QHash< QString, QColor > mColors;
-
 };
+
+class GetNamedProjectColorObject : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedProjectColorObject( const QgsProject *project );
+
+    /**
+     * Optimized constructor for GetNamedProjectColor when a list of map is already available
+     * and does not need to be read from a project.
+     */
+    GetNamedProjectColorObject( const QHash< QString, QColor > &colors );
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+
+    QHash< QString, QColor > mColors;
+};
+
+
 
 class GetSensorData : public QgsScopedExpressionFunction
 {
