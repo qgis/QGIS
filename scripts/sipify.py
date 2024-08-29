@@ -712,6 +712,11 @@ def process_doxygen_line(line: str) -> str:
     if CONTEXT.doxy_inside_sip_run == 2:
         return ""
 
+    if re.search(r'<(?:dl|dt|dd>)', line):
+        exit_with_error(
+            "Don't use raw html <dl>, <dt> or <dd> tags in documentation. "
+            "Use markdown headings instead")
+
     # Detect code snippet
     code_match = re.search(r'\\code(\{\.?(\w+)})?', line)
     if code_match:
