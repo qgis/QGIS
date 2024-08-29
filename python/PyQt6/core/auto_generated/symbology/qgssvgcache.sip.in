@@ -30,7 +30,9 @@ Supported parameters are:
 
 E.g:
 
-<circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
+.. code-block:: text
+
+       <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
 
 .. note::
 

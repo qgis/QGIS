@@ -76,8 +76,10 @@ class CORE_EXPORT QgsPointCloudBlock
 
     /**
      * Changes the number of points in the block.
+     *
      * This is used in order to remove all points after point \a size.
-     * If a \a size larger than \a pointCount() is used, data for the new points will be uninitialized
+     *
+     * If a \a size larger than pointCount() is used, data for the new points will be uninitialized.
      *
      * \since QGIS 3.26
      */

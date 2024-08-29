@@ -237,13 +237,9 @@ Support the visitor pattern.
 
 For any implementation this should look like
 
-C++:
+.. code-block:: python
 
-v.visit( *this );
-
-Python:
-
-v.visit( self)
+       v.visit(self)
 
 :param v: A visitor that visits this node.
 %End

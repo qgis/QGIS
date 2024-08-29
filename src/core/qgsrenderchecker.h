@@ -124,7 +124,7 @@ class CORE_EXPORT QgsRenderChecker
     /**
      * Returns the total elapsed time for the rendering test.
      *
-     * \note this only records time for actual render part.
+     * \note This only records time for actual render part.
      */
     int elapsedTime() const { return mElapsedTime; }
     void setElapsedTimeTarget( int target ) { mElapsedTimeTarget = target; }
@@ -212,28 +212,30 @@ class CORE_EXPORT QgsRenderChecker
 
     /**
      * Test using renderer to generate the image to be compared.
-     * \param testName - to be used as the basis for writing a file to
+     * \param testName to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
-     * \param mismatchCount - defaults to 0 - the number of pixels that
+     * \param mismatchCount defaults to 0. The number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
      * \param flags render checker flags
-     * \note make sure to call setExpectedImage and setMapRenderer first
+     *
+     * \note Make sure to call setExpectedImage and setMapRenderer first
      */
     bool runTest( const QString &testName, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 
     /**
      * Test using two arbitrary images (map renderer will not be used)
-     * \param testName - to be used as the basis for writing a file to
+     * \param testName to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
-     * \param mismatchCount - defaults to 0 - the number of pixels that
+     * \param mismatchCount defaults to 0. The number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
      * \param renderedImageFile to optionally override the output filename
      * \param flags render checker flags
-     * \note: make sure to call setExpectedImage and setRenderedImage first.
+     *
+     * \note Make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString(), QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 

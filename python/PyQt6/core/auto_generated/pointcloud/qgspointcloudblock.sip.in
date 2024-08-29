@@ -78,8 +78,10 @@ Returns the custom offset of the block.
     void setPointCount( int size );
 %Docstring
 Changes the number of points in the block.
+
 This is used in order to remove all points after point ``size``.
-If a ``size`` larger than ``pointCount``() is used, data for the new points will be uninitialized
+
+If a ``size`` larger than :py:func:`~QgsPointCloudBlock.pointCount` is used, data for the new points will be uninitialized.
 
 .. versionadded:: 3.26
 %End

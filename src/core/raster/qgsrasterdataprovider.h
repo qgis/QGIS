@@ -112,7 +112,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual Qgis::RasterProviderCapabilities providerCapabilities() const;
 
-    /* It makes no sense to set input on provider */
+    // It makes no sense to set input on provider
     bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ) return false; }
 
     QgsRectangle extent() const override = 0;

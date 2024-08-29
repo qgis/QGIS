@@ -130,8 +130,11 @@ Slot to update tree when a new symbol from style
 
     void changeLayer( QgsSymbolLayer *layer );
 %Docstring
-alters tree and sets proper widget when Layer Type is changed
-\note: The layer is received from the LayerPropertiesWidget
+Alters tree and sets proper widget when Layer Type is changed
+
+.. note::
+
+   The layer is received from the LayerPropertiesWidget
 %End
 
   signals:
@@ -225,8 +228,11 @@ Slot to update tree when a new symbol from style
 
     void changeLayer( QgsSymbolLayer *layer );
 %Docstring
-alters tree and sets proper widget when Layer Type is changed
-\note: The layer is received from the LayerPropertiesWidget
+Alters tree and sets proper widget when Layer Type is changed
+
+.. note::
+
+   The layer is received from the LayerPropertiesWidget
 %End
 
   protected:

@@ -63,9 +63,10 @@ class QgsLineString;
  *
  * It is expected that client code:
  *
- * # calls init()
- * # calls addLineString() many times
- * # calls createGeometry()
+ * - calls init()
+ * - calls addLineString() many times
+ * - calls createGeometry()
+ *
  */
 struct QgsLineVertexData
 {

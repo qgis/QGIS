@@ -98,7 +98,7 @@ Returns ``True`` if the algorithm was successfully set.
 
     bool reattach() const;
 %Docstring
-Attempts to re-attach the child to the algorithm specified by ``algorithmId``().
+Attempts to re-attach the child to the algorithm specified by :py:func:`~QgsProcessingModelChildAlgorithm.algorithmId`.
 
 This can be run to relink the child to algorithms from providers which were not
 originally available for the model to link to.
