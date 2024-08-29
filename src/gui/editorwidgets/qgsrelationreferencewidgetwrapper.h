@@ -30,12 +30,12 @@ class QgsMessageBar;
  *
  * Options:
  *
- * - <b>ShowForm</b> <i>If TRUE, an embedded form with the referenced feature will be shown.</i>
- * - <b>MapIdentification</b> <i>Will offer a map tool to pick a referenced feature on the map canvas. Only use for layers with geometry.</i>
- * - <b>ReadOnly</b> <i>If TRUE, will represent the referenced widget in a read-only line edit. Can speed up loading.</i>
- * - <b>AllowNULL</b> <i>Will offer NULL as a value.</i>
- * - <b>Relation</b> <i>The ID of the relation that will be used to define this widget.</i>
- * - ReadOnly
+ * - **ShowForm** If TRUE, an embedded form with the referenced feature will be shown.
+ * - **MapIdentification** Will offer a map tool to pick a referenced feature on the map canvas. Only use for layers with geometry.
+ * - **ReadOnly** If TRUE, will represent the referenced widget in a read-only line edit. Can speed up loading.
+ * - **AllowNULL** Will offer NULL as a value.
+ * - **Relation** The ID of the relation that will be used to define this widget.
+ * - **ReadOnly**
  *
  */
 class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapper

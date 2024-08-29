@@ -724,6 +724,10 @@ def process_doxygen_line(line: str) -> str:
         exit_with_error(
             "Don't use raw html lists in documentation. "
             "Use markdown lists instead")
+    if re.search(r'<[ib]>', line):
+        exit_with_error(
+            "Don't use raw <i> or <b> tags in documentation. "
+            "Use markdown instead")
 
     # Detect code snippet
     code_match = re.search(r'\\code(\{\.?(\w+)})?', line)
