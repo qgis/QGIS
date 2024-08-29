@@ -71,7 +71,7 @@ void QgsLocatorModelBridge::selectionChanged( const QItemSelection &selected, co
     QgsLocatorResult result = mProxyModel->data( selectedIndex, static_cast< int >( QgsLocatorModel::CustomRole::ResultData ) ).value< QgsLocatorResult >();
     if ( result.filter )
     {
-      result.filter->resultDeselected( result );
+      result.filter->resultSelected( result );
     }
   }
 }
