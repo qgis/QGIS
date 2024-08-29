@@ -291,7 +291,7 @@ need to be segmentized to convert to a standard Polygon geometry.
 %End
 
     static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle,
-                                                    double outerRadius, double innerRadius = 0 );
+        double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
 
