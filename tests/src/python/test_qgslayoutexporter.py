@@ -450,7 +450,9 @@ class TestQgsLayoutExporter(QgisTestCase):
 
     def testExportToPdf(self):
         md = QgsProject.instance().metadata()
-        md.setTitle('proj title')
+
+        projTitle = 'proj title /<é'
+        md.setTitle(projTitle)
         md.setAuthor('proj author')
         md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
         md.setIdentifier('proj identifier')
@@ -527,7 +529,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(metadata['CREATION_DATE'], "D:20110503090405+10'0'")
         self.assertEqual(metadata['KEYWORDS'], 'KWx: kw3,kw4;kw: kw1,kw2')
         self.assertEqual(metadata['SUBJECT'], 'proj abstract')
-        self.assertEqual(metadata['TITLE'], 'proj title')
+        self.assertEqual(metadata['TITLE'], projTitle)
         qgisId = f"QGIS {Qgis.version()}"
         self.assertEqual(metadata['CREATOR'], qgisId)
 
@@ -541,7 +543,7 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         title = xmpDoc.findall("rdf:RDF/rdf:Description/dc:title/rdf:Alt/rdf:li", namespaces)
         self.assertEqual(len(title), 1)
-        self.assertEqual(title[0].text, 'proj title')
+        self.assertEqual(title[0].text, projTitle)
 
         creator = xmpDoc.findall("rdf:RDF/rdf:Description/dc:creator/rdf:Seq/rdf:li", namespaces)
         self.assertEqual(len(creator), 1)

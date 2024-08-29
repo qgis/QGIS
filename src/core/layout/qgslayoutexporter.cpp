@@ -41,6 +41,7 @@
 #include <QColorSpace>
 #include <QPdfOutputIntent>
 #endif
+#include <QXmlStreamWriter>
 
 #include "gdal.h"
 #include "cpl_conv.h"
@@ -2248,43 +2249,142 @@ QString QgsLayoutExporter::getCreator()
 void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout )
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-  QUuid uuid = pdfWriter->documentId();
+  QUuid documentId = pdfWriter->documentId();
 #else
-  QUuid uuid = QUuid::createUuid();
+  QUuid documentId = QUuid::createUuid();
 #endif
 
   // XMP metadata date format differs from PDF dictionary one
   const QDateTime creationDateTime = layout->project()->metadata().creationDateTime();
-  const QByteArray creationDateMetadata = creationDateTime.toOffsetFromUtc( creationDateTime.offsetFromUtc() ).toString( Qt::ISODate ).toUtf8();
-
-  const QByteArray author = layout->project()->metadata().author().toUtf8();
+  const QByteArray metaDataDate = creationDateTime.toOffsetFromUtc( creationDateTime.offsetFromUtc() ).toString( Qt::ISODate ).toUtf8();
+  const QByteArray title = pdfWriter->title().toUtf8();
   const QByteArray creator = getCreator().toUtf8();
-  const QByteArray xmpMetadata =
-    "<?xpacket begin='' ?>\n"
-    "<x:xmpmeta xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:pdf=\"http://ns.adobe.com/pdf/1.3/\" xmlns:pdfaid=\"http://www.aiim.org/pdfa/ns/id/\" xmlns:pdfxid=\"http://www.npes.org/pdfx/ns/id/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:x=\"adobe:ns:meta/\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\">\n"
-    " <rdf:RDF>\n"
-    "  <rdf:Description rdf:about=\"\">\n"
-    "   <dc:title>\n"
-    "    <rdf:Alt>\n"
-    "     <rdf:li xml:lang=\"x-default\">" + pdfWriter->title().toUtf8() + "</rdf:li>\n"
-    "    </rdf:Alt>\n"
-    "   </dc:title>\n"
-    "   <dc:creator>\n"
-    "    <rdf:Seq>\n"
-    "     <rdf:li>" + author + "</rdf:li>\n"
-    "    </rdf:Seq>\n"
-    "   </dc:creator>\n"
-    "  </rdf:Description>\n"
-    "  <rdf:Description pdf:Producer=\"" + creator + "\" pdf:Trapped=\"False\" rdf:about=\"\"/>\n"
-    "  <rdf:Description rdf:about=\"\" xmp:CreateDate=\"" + creationDateMetadata + "\" xmp:CreatorTool=\"" + creator + "\" xmp:MetadataDate=\"" + creationDateMetadata + "\" xmp:ModifyDate=\"" + creationDateMetadata + "\"/>\n"
-    "  <rdf:Description rdf:about=\"\" xmpMM:DocumentID=\"uuid:" + uuid.toByteArray( QUuid::WithBraces ) + "\" xmpMM:RenditionClass=\"default\" xmpMM:VersionID=\"1\"/>\n"
+  const QByteArray producer = creator;
+  const QByteArray author = layout->project()->metadata().author().toUtf8();
+
+  // heavily inspired from qpdf.cpp QPdfEnginePrivate::writeXmpDocumentMetaData
+
+  const QLatin1String xmlNS( "http://www.w3.org/XML/1998/namespace" );
+  const QLatin1String adobeNS( "adobe:ns:meta/" );
+  const QLatin1String rdfNS( "http://www.w3.org/1999/02/22-rdf-syntax-ns#" );
+  const QLatin1String dcNS( "http://purl.org/dc/elements/1.1/" );
+  const QLatin1String xmpNS( "http://ns.adobe.com/xap/1.0/" );
+  const QLatin1String xmpMMNS( "http://ns.adobe.com/xap/1.0/mm/" );
+  const QLatin1String pdfNS( "http://ns.adobe.com/pdf/1.3/" );
+  const QLatin1String pdfaidNS( "http://www.aiim.org/pdfa/ns/id/" );
+  const QLatin1String pdfxidNS( "http://www.npes.org/pdfx/ns/id/" );
+
+  QByteArray xmpMetadata;
+  QBuffer output( &xmpMetadata );
+  output.open( QIODevice::WriteOnly );
+  output.write( "<?xpacket begin='' ?>" );
+
+  QXmlStreamWriter w( &output );
+  w.setAutoFormatting( true );
+  w.writeNamespace( adobeNS, "x" );
+  w.writeNamespace( rdfNS, "rdf" );
+  w.writeNamespace( dcNS, "dc" );
+  w.writeNamespace( xmpNS, "xmp" );
+  w.writeNamespace( xmpMMNS, "xmpMM" );
+  w.writeNamespace( pdfNS, "pdf" );
+  w.writeNamespace( pdfaidNS, "pdfaid" );
+  w.writeNamespace( pdfxidNS, "pdfxid" );
+
+  w.writeStartElement( adobeNS, "xmpmeta" );
+  w.writeStartElement( rdfNS, "RDF" );
+
+  // DC
+  w.writeStartElement( rdfNS, "Description" );
+  w.writeAttribute( rdfNS, "about", "" );
+  w.writeStartElement( dcNS, "title" );
+  w.writeStartElement( rdfNS, "Alt" );
+  w.writeStartElement( rdfNS, "li" );
+  w.writeAttribute( xmlNS, "lang", "x-default" );
+  w.writeCharacters( title );
+  w.writeEndElement();
+  w.writeEndElement();
+  w.writeEndElement();
+
+  w.writeStartElement( dcNS, "creator" );
+  w.writeStartElement( rdfNS, "Seq" );
+  w.writeStartElement( rdfNS, "li" );
+  w.writeCharacters( author );
+  w.writeEndElement();
+  w.writeEndElement();
+  w.writeEndElement();
+
+  w.writeEndElement();
+
+  // PDF
+  w.writeStartElement( rdfNS, "Description" );
+  w.writeAttribute( rdfNS, "about", "" );
+  w.writeAttribute( pdfNS, "Producer", producer );
+  w.writeAttribute( pdfNS, "Trapped", "False" );
+  w.writeEndElement();
+
+  // XMP
+  w.writeStartElement( rdfNS, "Description" );
+  w.writeAttribute( rdfNS, "about", "" );
+  w.writeAttribute( xmpNS, "CreatorTool", creator );
+  w.writeAttribute( xmpNS, "CreateDate", metaDataDate );
+  w.writeAttribute( xmpNS, "ModifyDate", metaDataDate );
+  w.writeAttribute( xmpNS, "MetadataDate", metaDataDate );
+  w.writeEndElement();
+
+  // XMPMM
+  w.writeStartElement( rdfNS, "Description" );
+  w.writeAttribute( rdfNS, "about", "" );
+  w.writeAttribute( xmpMMNS, "DocumentID", "uuid:" + documentId.toString( QUuid::WithoutBraces ) );
+  w.writeAttribute( xmpMMNS, "VersionID", "1" );
+  w.writeAttribute( xmpMMNS, "RenditionClass", "default" );
+  w.writeEndElement();
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-    // see qpdf.cpp QPdfEnginePrivate::writeXmpDocumentMetaData
-    + ( pdfWriter->pdfVersion() == QPagedPaintDevice::PdfVersion_X4 ? "  <rdf:Description pdfxid:GTS_PDFXVersion=\"PDF/X-4\" rdf:about=\"\"/>\n" : "" ) +
+
+  // Version-specific
+  switch ( pdfWriter->pdfVersion() )
+  {
+    case QPagedPaintDevice::PdfVersion_1_4:
+    case QPagedPaintDevice::PdfVersion_A1b: // A1b and 1.6 are not used by QGIS
+    case QPagedPaintDevice::PdfVersion_1_6:
+      break;
+    case QPagedPaintDevice::PdfVersion_X4:
+      w.writeStartElement( rdfNS, "Description" );
+      w.writeAttribute( rdfNS, "about", "" );
+      w.writeAttribute( pdfxidNS, "GTS_PDFXVersion", "PDF/X-4" );
+      w.writeEndElement();
+      break;
+  }
+
 #endif
-    " </rdf:RDF>\n"
-    "</x:xmpmeta>\n"
-    "<?xpacket end='w'?>\n";
+
+  w.writeEndElement(); // </RDF>
+  w.writeEndElement(); // </xmpmeta>
+
+  w.writeEndDocument();
+  output.write( "<?xpacket end='w'?>" );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   pdfWriter->setDocumentXmpMetadata( xmpMetadata );
 }
