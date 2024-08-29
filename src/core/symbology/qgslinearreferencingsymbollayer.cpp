@@ -665,6 +665,7 @@ void QgsLinearReferencingSymbolLayer::renderPolylineInterval( const QgsLineStrin
   }
 
   QgsNumericFormatContext numericContext;
+  numericContext.setExpressionContext( context.renderContext().expressionContext() );
 
   std::unique_ptr< QgsLineString > painterUnitsGeometry( line->clone() );
   if ( context.renderContext().coordinateTransform().isValid() )
@@ -755,6 +756,7 @@ void QgsLinearReferencingSymbolLayer::renderPolylineVertex( const QgsLineString 
   averageAngleLengthPainterUnits = std::max( averageAngleLengthPainterUnits, 0.1 );
 
   QgsNumericFormatContext numericContext;
+  numericContext.setExpressionContext( context.renderContext().expressionContext() );
 
   const double *xData = line->xData();
   const double *yData = line->yData();
