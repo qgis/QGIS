@@ -27,21 +27,23 @@
  *
  * Each QgsAction can be available in one or several action scopes.
  *
- * Examples:
- * ---------
+ * ## Examples
  *
- * <dl>
- *   <dt>Canvas</dt>
- *   <dd>Show for canvas tools. Adds `@click_x` and `@click_y` in map coordinates.</dd>
- *   <dt>Feature</dt>
- *   <dd>Show in feature specific places like the attribute table or feature
- *   form.</dd>
- *   <dt>Field</dt>
- *   <dd>Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.</dd>
- *   <dt>Layer</dt>
- *   <dd>Show in attribute table and work on the layer or selection.</dd>
- * </dl>
+ * ### Canvas
  *
+ * Show for canvas tools. Adds `@click_x` and `@click_y` in map coordinates.
+ *
+ * ### Feature
+ *
+ * Show in feature specific places like the attribute table or feature form.
+ *
+ * ### Field
+ *
+ * Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.
+ *
+ * ### Layer
+ *
+ * Show in attribute table and work on the layer or selection.
  */
 class CORE_EXPORT QgsActionScope
 {
