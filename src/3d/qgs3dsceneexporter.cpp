@@ -351,12 +351,32 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
 
   // Generate vertice data
   Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
+  if ( positionAttribute == nullptr )
+  {
+    QgsDebugError( QString( "Will not export '%1' has geometry with no position attribute!" ).arg( layerName ) );
+    return;
+  }
   const QByteArray verticesBytes = getData( positionAttribute->buffer() );
+  if ( verticesBytes.isNull() )
+  {
+    QgsDebugError( QString( "Geometry for '%1' has position attribute with empty data!" ).arg( layerName ) );
+    return;
+  }
   const QVector<float> positionBuffer = getAttributeData<float>( positionAttribute, verticesBytes );
 
   // Generate index data
   Qt3DQAttribute *indexAttribute = tileGeometry->indexAttribute();
+  if ( indexAttribute == nullptr )
+  {
+    QgsDebugError( QString( "Will not export '%1' has geometry with no index attribute!" ).arg( layerName ) );
+    return;
+  }
   const QByteArray indexBytes = getData( indexAttribute->buffer() );
+  if ( indexBytes.isNull() )
+  {
+    QgsDebugError( QString( "Geometry for '%1' has index attribute with empty data!" ).arg( layerName ) );
+    return;
+  }
   const QVector<uint> indexesBuffer = getIndexData( indexAttribute,  indexBytes );
 
   QString objectNamePrefix = layerName;
@@ -465,18 +485,39 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
     Qt3DQAttribute *indexAttribute = findAttribute( geometry, QStringLiteral( "" ), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
+    {
+      QgsDebugError( QString( "Will not export '%1' has geometry with no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
-    const QByteArray vertexBytes = getData( positionAttribute->buffer() );
-    const QByteArray indexBytes = getData( indexAttribute->buffer() );
+    }
+
+    const QByteArray vertexBytes = positionAttribute->buffer()->data();
+    const QByteArray indexBytes = indexAttribute->buffer()->data();
+    if ( vertexBytes.isNull() || indexBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has position or index attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
+
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
     Qt3DQAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DQAttribute::VertexAttribute );
+    if ( instanceDataAttribute == nullptr )
+    {
+      QgsDebugError( QString( "Will not export '%1' has geometry with no instanceData attribute!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     const QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
+    if ( instancePositionBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has instanceData attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
+
     for ( int i = 0; i < instancePosition.size(); i += 3 )
     {
-      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "shape_geometry" ) ) );
+      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "instance_point" ) ) );
       objects.push_back( object );
       object->setupPositionCoordinates( positionData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
       object->setupFaces( indexData );
@@ -492,6 +533,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       }
     }
   }
+
   return objects;
 }
 
@@ -578,12 +620,30 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     parent = parent->parent();
   }
 
-  Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
+  Qt3DQAttribute *positionAttribute = nullptr;
   Qt3DQAttribute *indexAttribute = nullptr;
   QByteArray indexBytes, vertexBytes;
   QVector<uint> indexDataTmp;
   QVector<uint> indexData;
   QVector<float> positionData;
+
+  positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
+  if ( positionAttribute == nullptr )
+  {
+    QgsDebugError( QString( "Will not export '%1' has geometry with no position attribute!" ).arg( objectNamePrefix ) );
+    return nullptr;
+  }
+
+  vertexBytes = getData( positionAttribute->buffer() );
+  if ( vertexBytes.isNull() )
+  {
+    QgsDebugError( QString( "Will not export '%1' as geometry has empty position data!" ).arg( objectNamePrefix ) );
+    return nullptr;
+  }
+
+  positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+
+  // === Search for face index data
   for ( Qt3DQAttribute *attribute : geometry->attributes() )
   {
     if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
@@ -596,14 +656,8 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     indexDataTmp = getIndexData( indexAttribute, indexBytes );
   }
 
-  if ( positionAttribute != nullptr )
-  {
-    vertexBytes = getData( positionAttribute->buffer() );
-    positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-  }
-
   // For tessellated polygons that don't have index attributes
-  if ( positionAttribute != nullptr && indexAttribute == nullptr )
+  if ( indexAttribute == nullptr )
   {
     for ( uint i = 0; i < static_cast<uint>( positionData.size() / 3 ); ++i )
     {
@@ -638,12 +692,6 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
         indexData.push_back( indexDataTmp[static_cast<int>( i )] );
       }
     }
-  }
-
-  if ( positionAttribute == nullptr )
-  {
-    QgsDebugError( "Geometry renderer with null data was being processed" );
-    return nullptr;
   }
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
@@ -681,12 +729,17 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     Qt3DQAttribute *indexAttribute = findAttribute( geom, QStringLiteral( "" ), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
-      QgsDebugError( "Position or index attribute was not found" );
+      QgsDebugError( QString( "Will not export '%1' has geometry with no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
 
     const QByteArray vertexBytes = getData( positionAttribute->buffer() );
     const QByteArray indexBytes = getData( indexAttribute->buffer() );
+    if ( vertexBytes.isNull() || indexBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has position or index attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
@@ -710,9 +763,17 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     if ( geometry == nullptr )
       continue;
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    const QByteArray positionBytes = getData( positionAttribute->buffer() );
-    if ( positionBytes.size() == 0 )
+    if ( positionAttribute == nullptr )
+    {
+      QgsDebugError( QString( "Will not export '%1' has geometry with no position attribute!" ).arg( objectNamePrefix ) );
       continue;
+    }
+    const QByteArray positionBytes = getData( positionAttribute->buffer() );
+    if ( positionBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has position attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     const QVector<float> positions = getAttributeData<float>( positionAttribute, positionBytes );
     points << positions;
   }
@@ -775,7 +836,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
     obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ) );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Scene exported to %1" ).arg( objFilePath ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Scene exported to '%1'" ).arg( objFilePath ), 2 );
 }
 
 QString Qgs3DSceneExporter::getObjectName( const QString &name )
