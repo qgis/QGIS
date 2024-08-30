@@ -55,6 +55,8 @@ Set ``userData`` for the locator result
 
     QString group;
 
+    double groupScore;
+
     struct ResultAction
     {
       public:

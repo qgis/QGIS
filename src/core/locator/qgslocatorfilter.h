@@ -98,6 +98,15 @@ class CORE_EXPORT QgsLocatorResult
     QString group;
 
     /**
+     * Specifies the score of the group to allow ordering.
+     * Score must be positive, higher scores are shown first.
+     * If the scores are left to 0 or are identical,
+     * the sorting of groups is made alphabetically.
+     * \since QGIS 3.40
+     */
+    double groupScore = 0;
+
+    /**
      * The ResultAction stores basic information for additional
      * actions to be used in a locator widget for the result.
      * They could be used in a context menu for instance.
