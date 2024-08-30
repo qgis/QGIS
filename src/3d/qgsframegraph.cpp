@@ -19,6 +19,7 @@
 #include "qgspostprocessingentity.h"
 #include "qgspreviewquad.h"
 #include "qgs3dutils.h"
+#include "qgsfgutils.h"
 #include "qgsambientocclusionrenderentity.h"
 #include "qgsambientocclusionblurentity.h"
 
@@ -49,7 +50,6 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QAbstractTexture>
-#include "qgsfgutils.h"
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/QClipPlane>
 
@@ -847,13 +847,13 @@ QString QgsFrameGraph::dumpFrameGraph() const
   context.lowestId = mMainCamera->id().id();
   QStringList strList = QgsFgUtils::dumpFrameGraph( dynamic_cast<Qt3DRender::QFrameGraphNode *>( top ), context );
 
-  return qPrintable( strList.join( "\n" ) ) + QString( "\n" );
+  return strList.join( "\n" ) + QString( "\n" );
 }
 
 QString QgsFrameGraph::dumpSceneGraph() const
 {
   QStringList strList = QgsFgUtils::dumpSceneGraph( mRootEntity, QgsFgUtils::FgDumpContext() );
-  return qPrintable( strList.join( "\n" ) ) + QString( "\n" );
+  return strList.join( "\n" ) + QString( "\n" );
 }
 
 void QgsFrameGraph::setClearColor( const QColor &clearColor )
