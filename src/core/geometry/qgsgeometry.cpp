@@ -453,7 +453,7 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   }
 
   const QgsPoint outerP1 = center.project( outerRadius, startAngle );
-  const QgsPoint outerP3 = center.project( outerRadius, endAngle );
+  const QgsPoint outerP2 = center.project( outerRadius, endAngle );
 
   wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP1, outerP2, center, useShortestArc ) ) );
 
