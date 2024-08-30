@@ -419,15 +419,11 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
 {
   std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
 
-  const double HALF_CIRCLE_DEGREES = 180.0;
   const double DEG_TO_RAD = M_PI / HALF_CIRCLE_DEGREES;
   const double RAD_TO_DEG = HALF_CIRCLE_DEGREES / M_PI;
 
-  startAngle = QgsGeometryUtilsBase::normalizedAngle( startAngle * DEG_TO_RAD ) * RAD_TO_DEG;
-  endAngle = QgsGeometryUtilsBase::normalizedAngle( endAngle * DEG_TO_RAD ) * RAD_TO_DEG;
-
-  const double angularWidth = QgsGeometryUtilsBase::normalizedAngle( endAngle - startAngle * DEG_TO_RAD ) * RAD_TO_DEG;
-  const bool useShortestArc = angularWidth <= HALF_CIRCLE_DEGREES;
+  const double angularWidth =  endAngle - startAngle;
+  const bool useShortestArc = QgsGeometryUtilsBase::normalizedAngle( angularWidth * DEG_TO_RAD ) * RAD_TO_DEG <= 180.0;
 
   if ( std::abs( angularWidth ) >= 360.0 )
   {
