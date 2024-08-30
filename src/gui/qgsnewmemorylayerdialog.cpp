@@ -352,6 +352,11 @@ void QgsNewMemoryLayerDialog::mAddAttributeButton_clicked()
     mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << fieldName << fieldType << width << precision ) );
 
     mFieldNameEdit->clear();
+
+    if ( !mFieldNameEdit->hasFocus() )
+    {
+      mFieldNameEdit->setFocus( Qt::MouseFocusReason );
+    }
   }
 }
 
