@@ -165,7 +165,7 @@ Qt3DQAttribute *findAttribute( Qt3DQGeometry *geometry, const QString &name, Qt3
   for ( Qt3DQAttribute *attribute : geometry->attributes() )
   {
     if ( attribute->attributeType() != type ) continue;
-    if ( attribute->name() == name ) return attribute;
+    if ( name.isEmpty() || attribute->name() == name ) return attribute;
   }
   return nullptr;
 }
@@ -463,12 +463,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
   for ( Qt3DQGeometry *geometry : geometriesList )
   {
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    Qt3DQAttribute *indexAttribute = nullptr;
-    for ( Qt3DQAttribute *attribute : geometry->attributes() )
-    {
-      if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
-        indexAttribute = attribute;
-    }
+    Qt3DQAttribute *indexAttribute = findAttribute( geometry, QStringLiteral( "" ), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
       continue;
     const QByteArray vertexBytes = getData( positionAttribute->buffer() );
@@ -683,15 +678,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency ) continue;
     Qt3DQGeometry *geom = renderer->geometry();
     Qt3DQAttribute *positionAttribute = findAttribute( geom, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    Qt3DQAttribute *indexAttribute = nullptr;
-    for ( Qt3DQAttribute *attribute : geom->attributes() )
-    {
-      if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
-      {
-        indexAttribute = attribute;
-        break;
-      }
-    }
+    Qt3DQAttribute *indexAttribute = findAttribute( geom, QStringLiteral( "" ), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
       QgsDebugError( "Position or index attribute was not found" );
