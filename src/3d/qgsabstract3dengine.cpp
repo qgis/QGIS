@@ -16,6 +16,7 @@
 #include "qgsabstract3dengine.h"
 
 #include "qgsframegraph.h"
+#include "qgslogger.h"
 
 #include <Qt3DRender/QRenderCapture>
 #include <Qt3DRender/QRenderSettings>
@@ -64,8 +65,8 @@ void QgsAbstract3DEngine::dumpFrameGraphToConsole() const
 {
   if ( mFrameGraph )
   {
-    qDebug() << "FrameGraph:\n" << mFrameGraph->dumpFrameGraph();
-    qDebug() << "SceneGraph:\n" << mFrameGraph->dumpSceneGraph();
+    QgsDebugMsgLevel( QString( "FrameGraph:\n%1" ).arg( mFrameGraph->dumpFrameGraph() ), 1 );
+    QgsDebugMsgLevel( QString( "SceneGraph:\n%1" ).arg( mFrameGraph->dumpSceneGraph() ), 1 );
   }
 }
 
