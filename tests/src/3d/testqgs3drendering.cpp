@@ -1827,7 +1827,7 @@ void TestQgs3DRendering::do3DSceneExport( const QString &testName, int zoomLevel
   exporter.save( objFileName, QDir::tempPath() );
 
   int sum = 0;
-  for ( auto o : exporter.mObjects )
+  for ( auto o : qAsConst( exporter.mObjects ) )
   {
     if ( !terrainEntity ) // not comptabible with terrain entity
       QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
@@ -1838,7 +1838,7 @@ void TestQgs3DRendering::do3DSceneExport( const QString &testName, int zoomLevel
   QCOMPARE( exporter.mExportedFeatureIds.size(), expectedFeatureCount );
   QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
 
-  QFile file( QString( "%1/%2.obj" ).arg( QDir::tempPath() ).arg( objFileName ) );
+  QFile file( QString( "%1/%2.obj" ).arg( QDir::tempPath(), objFileName ) );
   file.open( QIODevice::ReadOnly | QIODevice::Text );
   QTextStream fileStream( &file );
 

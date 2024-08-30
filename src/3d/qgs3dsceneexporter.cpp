@@ -162,7 +162,8 @@ QByteArray getData( Qt3DQBuffer *buffer )
 
 Qt3DQAttribute *findAttribute( Qt3DQGeometry *geometry, const QString &name, Qt3DQAttribute::AttributeType type )
 {
-  for ( Qt3DQAttribute *attribute : geometry->attributes() )
+  QVector<Qt3DQAttribute *> attributes = geometry->attributes();
+  for ( Qt3DQAttribute *attribute : attributes )
   {
     if ( attribute->attributeType() != type ) continue;
     if ( name.isEmpty() || attribute->name() == name ) return attribute;
@@ -174,7 +175,8 @@ template<typename Component>
 Component *findTypedComponent( Qt3DCore::QEntity *entity )
 {
   if ( entity == nullptr ) return nullptr;
-  for ( Qt3DCore::QComponent *component : entity->components() )
+  QVector<Qt3DCore::QComponent *> components = entity->components();
+  for ( Qt3DCore::QComponent *component : components )
   {
     Component *typedComponent = qobject_cast<Component *>( component );
     if ( typedComponent != nullptr )
@@ -223,7 +225,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
   else
   {
     // TODO: handle pointcloud/mesh/etc. layers
-    QgsDebugMsgLevel( QStringLiteral( "Type '%1' of layer '%2' is not exportable." ).arg( layer->name() ).arg( rendererType ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Type '%1' of layer '%2' is not exportable." ).arg( layer->name(), rendererType ), 2 );
     return false;
   }
 
@@ -549,7 +551,8 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
     sceneScale = entityTransform->scale();
     sceneTranslation = entityTransform->translation();
   }
-  for ( const QString &entityName : sceneLoader->entityNames() )
+  QStringList entityNames = sceneLoader->entityNames();
+  for ( const QString &entityName : entityNames )
   {
     Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
     Qgs3DExportObject *object = processGeometryRenderer( mesh, objectNamePrefix, sceneScale, sceneTranslation );
@@ -823,7 +826,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
 
   float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
   float minX = maxfloat, minY = maxfloat, minZ = maxfloat, maxX = minFloat, maxY = minFloat, maxZ = minFloat;
-  for ( Qgs3DExportObject *obj : mObjects )
+  for ( Qgs3DExportObject *obj : qAsConst( mObjects ) )
   {
     obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
   }
@@ -845,7 +848,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   out << "mtllib " << mtlLibName << "\n";
 
   QTextStream mtlOut( &mtlFile );
-  for ( Qgs3DExportObject *obj : mObjects )
+  for ( Qgs3DExportObject *obj : qAsConst( mObjects ) )
   {
     if ( obj == nullptr ) continue;
     // Set object name

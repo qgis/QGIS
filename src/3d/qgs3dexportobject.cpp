@@ -93,9 +93,9 @@ void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
   if ( mType != TriangularFaces ) return;
-  for ( const unsigned int vertice : mIndexes )
+  for ( const unsigned int vertice : qAsConst( mIndexes ) )
   {
-    const unsigned int heightIndex = vertice * 3 + 1;
+    const int heightIndex = static_cast<int>( vertice ) * 3 + 1;
     minX = std::min( minX, mVertexPosition[heightIndex - 1] );
     maxX = std::max( maxX, mVertexPosition[heightIndex - 1] );
     minY = std::min( minY, mVertexPosition[heightIndex] );
@@ -119,7 +119,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   // Construct vertices
   // As we can have holes in the face list and we only write vertices from theses faces
   // then the vertex list in the obj is not the whole from mVertexPosition!
-  for ( const unsigned int vertice : mIndexes )
+  for ( const unsigned int vertice : qAsConst( mIndexes ) )
   {
     const int i = static_cast<int>( vertice * 3 );
     // for now just ignore wrong vertex positions
@@ -179,14 +179,14 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   else if ( mType == LineStrip )
   {
     out << "l";
-    for ( const unsigned int i : mIndexes )
+    for ( const unsigned int i : qAsConst( mIndexes ) )
       out << " " << getVertexIndex( i );
     out << "\n";
   }
   else if ( mType == Points )
   {
     out << "p";
-    for ( const unsigned int i : mIndexes )
+    for ( const unsigned int i : qAsConst( mIndexes ) )
       out << " " << getVertexIndex( i );
     out << "\n";
   }
