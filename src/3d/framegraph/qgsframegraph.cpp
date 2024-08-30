@@ -759,7 +759,7 @@ void QgsFrameGraph::setEnableRenderView( const QString &name, bool enable )
 {
   if ( mRenderViewMap [name] != nullptr )
   {
-    mRenderViewMap [name]->enableSubTree( enable );
+    mRenderViewMap [name]->setEnabled( enable );
   }
 }
 
@@ -768,6 +768,10 @@ QgsAbstractRenderView *QgsFrameGraph::renderView( const QString &name )
   return mRenderViewMap [name];
 }
 
+bool QgsFrameGraph::isRenderViewEnabled( const QString &name )
+{
+  return mRenderViewMap [name] != nullptr && mRenderViewMap [name]->isEnabled();
+}
 
 QgsPreviewQuad *QgsFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerTexCoords, const QSizeF &sizeTexCoords, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
 {

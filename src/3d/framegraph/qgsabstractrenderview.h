@@ -41,6 +41,7 @@ namespace Qt3DRender
   class QViewport;
   class QTexture2D;
   class QSubtreeEnabler;
+  class QRenderTargetSelector;
 }
 
 class QgsFrameGraph;
@@ -49,7 +50,9 @@ class QgsFrameGraph;
  * \ingroup 3d
  * \brief Base class for 3D render view
  *
- * Will be used with QgsShadowRenderingFrameGraph::registerRenderView
+ * An instance of QgsAbstractRenderView is a branch (ie. a render pass, ie. a render view) of in the framegraph
+ *
+ * Will be used with QgsFrameGraph::registerRenderView.
  *
  * \note Not available in Python bindings
  * \since QGIS 3.40
@@ -62,44 +65,46 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
     /**
      * Constructor for QgsAbstractRenderView with the specified \a parent object.
      */
-    QgsAbstractRenderView( QObject *parent = nullptr );
+    QgsAbstractRenderView( QObject *parent, const QString &viewName );
 
-    //! set output to screen (ie. nullptr) or to a render target output
+    //! Set output to screen (ie. nullptr) or to a render target output
     virtual void setTargetOutputs( const QList<Qt3DRender::QRenderTargetOutput *> &targetOutputList );
 
-    //! Returns list of all target outputs
-    virtual QList<Qt3DRender::QRenderTargetOutput *> targetOutputs() const { return mTargetOutputs; };
+    //! Returns the list of all target outputs
+    virtual QList<Qt3DRender::QRenderTargetOutput *> targetOutputs() const;
 
-    //! Updates map sizes for all target outputs
+    //! Updates texture sizes for all target outputs
     virtual void updateTargetOutputSize( int width, int height );
 
     //! Returns the 2D texture attached at the \a attachment point, if any
-    virtual Qt3DRender::QTexture2D *outputTexture( Qt3DRender::QRenderTargetOutput::AttachmentPoint attachment );
+    virtual Qt3DRender::QTexture2D *outputTexture( Qt3DRender::QRenderTargetOutput::AttachmentPoint attachment ) const;
 
-    //! Returns the layer to be used by entities to be included in this renderview
-    virtual Qt3DRender::QLayer *layerToFilter() = 0;
+    //! Returns the layer to be used by entities to be included in this render view
+    Qt3DRender::QLayer *layerToFilter() const;
 
-    //! Returns the viewport associated to this renderview
-    virtual Qt3DRender::QViewport *viewport() = 0;
+    //! Returns the viewport associated to this render view
+    virtual Qt3DRender::QViewport *viewport() const;
 
-    //! Returns the top node of this renderview branch. Will be used to register the renderview.
-    virtual Qt3DRender::QFrameGraphNode *topGraphNode() = 0;
+    //! Returns the top node of this render view branch. Will be used to register the render view.
+    Qt3DRender::QFrameGraphNode *topGraphNode() const;
 
-    //! Enable or disable via \a enable the renderview sub tree
-    virtual void enableSubTree( bool enable ) = 0;
+    //! Enable or disable via \a enable the render view sub tree
+    virtual void setEnabled( bool enable );
 
-    //! Returns true if renderview is enabled
-    virtual bool isSubTreeEnabled() = 0;
+    //! Returns true if render view is enabled
+    virtual bool isEnabled() const;
 
   protected:
-    std::pair<Qt3DRender::QFrameGraphNode *, Qt3DRender::QSubtreeEnabler *> createSubtreeEnabler( Qt3DRender::QFrameGraphNode *parent = nullptr );
-
     //! Handles target outputs changes
-    virtual void onTargetOutputUpdate() = 0;
+    virtual void onTargetOutputUpdate();
 
     //! Stores target outputs
     QList<Qt3DRender::QRenderTargetOutput *> mTargetOutputs;
 
+    Qt3DRender::QFrameGraphNode *mRoot = nullptr;
+    Qt3DRender::QSubtreeEnabler *mRendererEnabler = nullptr;
+    Qt3DRender::QLayer *mLayer = nullptr;
+    Qt3DRender::QRenderTargetSelector *mRenderTargetSelector = nullptr;
 };
 
 #endif // QGSABSTRACTRENDERVIEW_H
