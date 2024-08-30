@@ -117,6 +117,8 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
     out << "s off\n";
 
   // Construct vertices
+  // As we can have holes in the face list and we only write vertices from theses faces
+  // then the vertex list in the obj is not the whole from mVertexPosition!
   for ( const unsigned int vertice : mIndexes )
   {
     const int i = static_cast<int>( vertice * 3 );
@@ -145,13 +147,13 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   {
     QgsDebugError( "Vertex normals count and vertex positions count are different" );
   }
-  int verticesCount = mIndexes.size();
+  const int verticesCount = mIndexes.size();
 
   // we use negative indexes as this is the way to use relative values to reference vertex positions
   // Positive values are absolute vertex position from the beginning of the file.
   auto getVertexIndex = [&]( unsigned int i ) -> QString
   {
-    const int negativeIndex = static_cast<int>( - ( verticesCount - i ) - mIndexes[0] ); // mIndexes[0] is used to shift the index according to the first index (not always 0)
+    const int negativeIndex = static_cast<int>( i - verticesCount );
     if ( hasNormals && !hasTextures )
       return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
     if ( !hasNormals && hasTextures )
@@ -164,13 +166,13 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   if ( mType == TriangularFaces )
   {
     // Construct triangular faces
+    // As we have "compressed" the vertex/normal section above by using only the vertices referenced by the faces
+    // we do not need to the 'mIndexes[i]' value but only the 'i' value.
     for ( int i = 0; i < mIndexes.size(); i += 3 )
     {
-      if ( mIndexes[i] == mIndexes[i + 1] && mIndexes[i + 1] == mIndexes[i + 2] )
-        continue;
-      out << "f " << getVertexIndex( mIndexes[i] );
-      out << " " << getVertexIndex( mIndexes[i + 1] );
-      out << " " << getVertexIndex( mIndexes[i + 2] );
+      out << "f " << getVertexIndex( i );
+      out << " " << getVertexIndex( i + 1 );
+      out << " " << getVertexIndex( i + 2 );
       out << "\n";
     }
   }
