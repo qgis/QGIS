@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 
 #include <QObject>
+#include <Qt3DRender/QRenderTargetOutput>
 
 #define SIP_NO_FILE
 
@@ -38,6 +39,7 @@ namespace Qt3DRender
   class QFrameGraphNode;
   class QLayer;
   class QViewport;
+  class QTexture2D;
   class QSubtreeEnabler;
 }
 
@@ -62,6 +64,18 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
      */
     QgsAbstractRenderView( QObject *parent = nullptr );
 
+    //! set output to screen (ie. nullptr) or to a render target output
+    virtual void setTargetOutputs( const QList<Qt3DRender::QRenderTargetOutput *> &targetOutputList );
+
+    //! Returns list of all target outputs
+    virtual QList<Qt3DRender::QRenderTargetOutput *> targetOutputs() const { return mTargetOutputs; };
+
+    //! Updates map sizes for all target outputs
+    virtual void updateTargetOutputSize( int width, int height );
+
+    //! Returns the 2D texture attached at the \a attachment point, if any
+    virtual Qt3DRender::QTexture2D *outputTexture( Qt3DRender::QRenderTargetOutput::AttachmentPoint attachment );
+
     //! Returns the layer to be used by entities to be included in this renderview
     virtual Qt3DRender::QLayer *layerToFilter() = 0;
 
@@ -79,6 +93,13 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
 
   protected:
     std::pair<Qt3DRender::QFrameGraphNode *, Qt3DRender::QSubtreeEnabler *> createSubtreeEnabler( Qt3DRender::QFrameGraphNode *parent = nullptr );
+
+    //! Handles target outputs changes
+    virtual void onTargetOutputUpdate() = 0;
+
+    //! Stores target outputs
+    QList<Qt3DRender::QRenderTargetOutput *> mTargetOutputs;
+
 };
 
 #endif // QGSABSTRACTRENDERVIEW_H
