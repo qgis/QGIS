@@ -429,9 +429,6 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   const double angularWidth = QgsGeometryUtilsBase::normalizedAngle( endAngle - startAngle * DEG_TO_RAD ) * RAD_TO_DEG;
   const bool useShortestArc = angularWidth <= HALF_CIRCLE_DEGREES;
 
-  const double averageAngle = QgsGeometryUtilsBase::averageAngle( endAngle * DEG_TO_RAD, startAngle * DEG_TO_RAD ) * RAD_TO_DEG +
-                              ( useShortestArc ? 0 : HALF_CIRCLE_DEGREES );
-
   if ( std::abs( angularWidth ) >= 360.0 )
   {
     std::unique_ptr< QgsCompoundCurve > outerCc = std::make_unique< QgsCompoundCurve >();
@@ -456,23 +453,20 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   }
 
   const QgsPoint outerP1 = center.project( outerRadius, startAngle );
-  const QgsPoint outerP2 = center.project( outerRadius, averageAngle );
   const QgsPoint outerP3 = center.project( outerRadius, endAngle );
 
-  wedge->addCurve( new QgsCircularString( outerP1, outerP2, outerP3 ) );
+  wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP1, outerP2, center, useShortestArc ) ) );
 
   if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
   {
     const QgsPoint innerP1 = center.project( innerRadius, startAngle );
-    const QgsPoint innerP2 = center.project( innerRadius, averageAngle );
-    const QgsPoint innerP3 = center.project( innerRadius, endAngle );
-    wedge->addCurve( new QgsLineString( outerP3, innerP3 ) );
-    wedge->addCurve( new QgsCircularString( innerP3, innerP2, innerP1 ) );
-    wedge->addCurve( new QgsLineString( innerP1, outerP1 ) );
+    const QgsPoint innerP2 = center.project( innerRadius, endAngle );
+    wedge->addCurve( new QgsLineString( outerP2, innerP2 ) );
+    wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( innerP2, innerP1, center, useShortestArc ) ) );
   }
   else
   {
-    wedge->addCurve( new QgsLineString( outerP3, center ) );
+    wedge->addCurve( new QgsLineString( outerP2, center ) );
     wedge->addCurve( new QgsLineString( center, outerP1 ) );
   }
 
