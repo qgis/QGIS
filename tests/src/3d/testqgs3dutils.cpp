@@ -33,7 +33,7 @@ class TestQgs3DUtils : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgs3DUtils() : QgsTest( QStringLiteral( "3D Utils" ) ) { }
+    TestQgs3DUtils() : QgsTest( QStringLiteral( "3D Utils" ), QStringLiteral( "3d" ) ) { }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -297,16 +297,23 @@ void TestQgs3DUtils::testExportToObj()
 
   // case where all vertices are used
   {
-    Qgs3DExportObject object( "exported" );
+    Qgs3DExportObject object( "all_faces" );
     object.setupPositionCoordinates( positionData, scale, translation );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
     // exported vertice indexes
     QVector<uint> indexData =
     {
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-      10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+      0, 1, 2,
+      3, 4, 5,
+      6, 7, 8,
+      9, 10, 11,
+      12, 13, 14,
+      15, 16, 17,
+      18, 19, 20,
+      21, 22, 23,
+      24, 25, 26,
+      27, 28, 29,
     };
 
     object.setupFaces( indexData );
@@ -316,7 +323,7 @@ void TestQgs3DUtils::testExportToObj()
     QCOMPARE( object.normals().size(), normalsData.size() );
 
 
-    QFile file( myTmpDir + "out.obj" );
+    QFile file( myTmpDir + "all_faces.obj" );
     file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
     QTextStream out( &file );
 
@@ -326,82 +333,8 @@ void TestQgs3DUtils::testExportToObj()
     out.flush();
     out.seek( 0 );
 
-    QString expected = "o exported\n"
-                       "s off\n"
-                       "v -0.456616 0.00187836 -0.413774\n"
-                       "vn 0 1 0\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn 0 1 0\n"
-                       "v -0.25705 0.00187836 -0.230477\n"
-                       "vn 0 1 0\n"
-                       "v -0.25705 0.00187836 -0.230477\n"
-                       "vn 0 1 0\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn 0 1 0\n"
-                       "v 0.0184382 0.00187836 0.177332\n"
-                       "vn 0 1 0\n"
-                       "v -0.25705 0.00187836 -0.230477\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 0.00187836 0.177332\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v -0.25705 -0.00187836 -0.230477\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v -0.25705 -0.00187836 -0.230477\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 0.00187836 0.177332\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 -0.00187836 0.177332\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 0.00187836 0.177332\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v 0.0184382 -0.00187836 0.177332\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v 0.0184382 -0.00187836 0.177332\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 -0.00187836 -0.0764642\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.456616 0.00187836 -0.413774\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.4718 -0.00187836 -0.0764642\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.4718 -0.00187836 -0.0764642\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.456616 0.00187836 -0.413774\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.456616 -0.00187836 -0.413774\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.456616 0.00187836 -0.413774\n"
-                       "vn 0.676449 0 -0.736489\n"
-                       "v -0.25705 0.00187836 -0.230477\n"
-                       "vn 0.676449 0 -0.736489\n"
-                       "v -0.456616 -0.00187836 -0.413774\n"
-                       "vn 0.676449 0 -0.736489\n"
-                       "v -0.456616 -0.00187836 -0.413774\n"
-                       "vn 0.676449 0 -0.736489\n"
-                       "v -0.25705 0.00187836 -0.230477\n"
-                       "vn 0.676449 0 -0.736489\n"
-                       "v -0.25705 -0.00187836 -0.230477\n"
-                       "vn 0.676449 0 -0.736489\n"
-                       "f -30//-30 -29//-29 -28//-28\n"
-                       "f -27//-27 -26//-26 -25//-25\n"
-                       "f -24//-24 -23//-23 -22//-22\n"
-                       "f -21//-21 -20//-20 -19//-19\n"
-                       "f -18//-18 -17//-17 -16//-16\n"
-                       "f -15//-15 -14//-14 -13//-13\n"
-                       "f -12//-12 -11//-11 -10//-10\n"
-                       "f -9//-9 -8//-8 -7//-7\n"
-                       "f -6//-6 -5//-5 -4//-4\n"
-                       "f -3//-3 -2//-2 -1//-1\n"
-                       ;
-
     QString actual = out.readAll();
-    QCOMPARE( actual, expected );
+    QGSCOMPARELONGSTR( "export_obj", "all_faces.obj", actual.toUtf8() );
   }
 
   // case where only a subset of vertices are used
@@ -409,12 +342,19 @@ void TestQgs3DUtils::testExportToObj()
     // exported vertice indexes
     QVector<uint> indexData =
     {
-      6, 7, 8, 9,
-      10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      20, 21, 22, 23
+      // 0, 1, 2,
+      // 3, 4, 5,
+      6, 7, 8,
+      9, 10, 11,
+      12, 13, 14,
+      15, 16, 17,
+      // 18, 19, 20,
+      21, 22, 23,
+      // 24, 25, 26,
+      // 27, 28, 29,
     };
 
-    Qgs3DExportObject object( "exported2" );
+    Qgs3DExportObject object( "sparse_faces" );
     object.setupPositionCoordinates( positionData, scale, translation );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
@@ -424,7 +364,7 @@ void TestQgs3DUtils::testExportToObj()
     object.setupNormalCoordinates( normalsData );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
-    QFile file( myTmpDir + "out2.obj" );
+    QFile file( myTmpDir + "sparse_faces.obj" );
     file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
     QTextStream out( &file );
     out << "o " << object.name() << "\n";
@@ -433,54 +373,8 @@ void TestQgs3DUtils::testExportToObj()
     out.flush();
     out.seek( 0 );
 
-    QString expected = "o exported2\n"
-                       "s off\n"
-                       "v -0.25705 0.00187836 -0.230477\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 0.00187836 0.177332\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v -0.25705 -0.00187836 -0.230477\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v -0.25705 -0.00187836 -0.230477\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 0.00187836 0.177332\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 -0.00187836 0.177332\n"
-                       "vn 0.828644 0 -0.559776\n"
-                       "v 0.0184382 0.00187836 0.177332\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v 0.0184382 -0.00187836 0.177332\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v 0.0184382 -0.00187836 0.177332\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 -0.00187836 -0.0764642\n"
-                       "vn -0.459744 0 0.888052\n"
-                       "v -0.4718 0.00187836 -0.0764642\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.456616 0.00187836 -0.413774\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.4718 -0.00187836 -0.0764642\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.4718 -0.00187836 -0.0764642\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.456616 0.00187836 -0.413774\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "v -0.456616 -0.00187836 -0.413774\n"
-                       "vn -0.998988 0 -0.0449705\n"
-                       "f -18//-18 -17//-17 -16//-16\n"
-                       "f -15//-15 -14//-14 -13//-13\n"
-                       "f -12//-12 -11//-11 -10//-10\n"
-                       "f -9//-9 -8//-8 -7//-7\n"
-                       "f -6//-6 -5//-5 -4//-4\n"
-                       "f -3//-3 -2//-2 -1//-1\n"
-                       ;
-
     QString actual = out.readAll();
-    QCOMPARE( actual, expected );
+    QGSCOMPARELONGSTR( "export_obj", "sparse_faces.obj", actual.toUtf8() );
   }
 }
 
