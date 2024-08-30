@@ -453,7 +453,7 @@ QgsActionMenu.QgsActionMenu: src/gui/actions/qgsactionmenu.h#L66
 QgsActionMenu.QgsActionMenu: src/gui/actions/qgsactionmenu.h#L76
 QgsActionMenu.expressionContextScope: src/gui/actions/qgsactionmenu.h#L112
 QgsActionMenu.isEmpty: src/gui/actions/qgsactionmenu.h#L126
-QgsActionMenu.reinit: src/gui/actions/qgsactionmenu.h#L129
+QgsActionMenu.reinit: src/gui/actions/qgsactionmenu.h#L133
 QgsActionMenu.setActionContextGenerator: src/gui/actions/qgsactionmenu.h#L85
 QgsActionMenu.setExpressionContextScope: src/gui/actions/qgsactionmenu.h#L106
 QgsActionMenu.setFeature: src/gui/actions/qgsactionmenu.h#L93
