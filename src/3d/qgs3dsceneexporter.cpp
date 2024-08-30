@@ -570,6 +570,8 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   if ( ! geometry )
     return nullptr;
 
+  // === Compute triangleIndexStartingIndiceToKeep according to duplicated features
+  //
   // In the case of polygons, we have multiple feature geometries within the same geometry object (QgsTessellatedPolygonGeometry).
   // The QgsTessellatedPolygonGeometry class holds the list of all feature ids included.
   // To avoid exporting the same geometry (it can be included in multiple QgsTessellatedPolygonGeometry) more than once,
@@ -582,22 +584,26 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   {
     QVector<QgsFeatureId> featureIds = tessGeom->featureIds();
 
+    QSet<QgsFeatureId> tempFeatToAdd;
     QVector<uint> triangleIndex = tessGeom->triangleIndexStartingIndices();
+
     for ( int idx = 0; idx < featureIds.size(); idx++ )
     {
       const QgsFeatureId feat = featureIds[idx];
       if ( ! mExportedFeatureIds.contains( feat ) )
       {
-        // add the feature as it was unknown
-        mExportedFeatureIds.insert( feat );
+        // add the feature (as it was unknown) to temp set and not to the mExportedFeatureIds (as featureIds can have the same id multiple times)
+        tempFeatToAdd += feat;
 
         // keep the feature triangle indexes
-        const uint startIdx = triangleIndex[idx];
-        const uint endIdx = idx < triangleIndex.size() - 1 ? triangleIndex[idx + 1] : std::numeric_limits<uint>::max();
+        const uint startIdx = triangleIndex[idx] * 3;
+        const uint endIdx = idx < triangleIndex.size() - 1 ? triangleIndex[idx + 1] * 3 : std::numeric_limits<uint>::max();
 
-        triangleIndexStartingIndiceToKeep.append( std::pair<uint, uint>( startIdx, endIdx ) );
+        if ( startIdx < endIdx ) // keep only valid intervals
+          triangleIndexStartingIndiceToKeep.append( std::pair<uint, uint>( startIdx, endIdx ) );
       }
     }
+    mExportedFeatureIds += tempFeatToAdd;
 
     if ( triangleIndexStartingIndiceToKeep.isEmpty() ) // all featureid are already exported
     {
@@ -605,6 +611,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     }
   }
 
+  // === Compute inherited scale and translation from child entity to parent
   float scale = 1.0f;
   QVector3D translation( 0.0f, 0.0f, 0.0f );
   QObject *parent = geomRenderer->parent();
@@ -627,6 +634,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   QVector<uint> indexData;
   QVector<float> positionData;
 
+  // === Extract position data
   positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
   if ( positionAttribute == nullptr )
   {
@@ -644,19 +652,26 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   positionData = getAttributeData<float>( positionAttribute, vertexBytes );
 
   // === Search for face index data
-  for ( Qt3DQAttribute *attribute : geometry->attributes() )
+  QVector<Qt3DQAttribute *> attributes = geometry->attributes();
+  for ( Qt3DQAttribute *attribute : attributes )
   {
     if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
+    {
       indexAttribute = attribute;
+      indexBytes = getData( indexAttribute->buffer() );
+      if ( indexBytes.isNull() )
+      {
+        QgsDebugError( QString( "Geometry for '%1' has index attribute with empty data!" ).arg( objectNamePrefix ) );
+      }
+      else
+      {
+        indexDataTmp = getIndexData( indexAttribute, indexBytes );
+        break;
+      }
+    }
   }
 
-  if ( indexAttribute != nullptr )
-  {
-    indexBytes = getData( indexAttribute->buffer() );
-    indexDataTmp = getIndexData( indexAttribute, indexBytes );
-  }
-
-  // For tessellated polygons that don't have index attributes
+  // for tessellated polygons that don't have index attributes, build them from positionData
   if ( indexAttribute == nullptr )
   {
     for ( uint i = 0; i < static_cast<uint>( positionData.size() / 3 ); ++i )
@@ -665,35 +680,40 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     }
   }
 
-  if ( triangleIndexStartingIndiceToKeep.empty() )
+  // === Filter face index data if needed
+  if ( triangleIndexStartingIndiceToKeep.isEmpty() )
   {
+    // when geometry is NOT a QgsTessellatedPolygonGeometry, no filter, take them all
     indexData.append( indexDataTmp );
   }
   else
   {
+    // when geometry is a QgsTessellatedPolygonGeometry, filter according to triangleIndexStartingIndiceToKeep
     int intervalIdx = 0;
     const int triangleIndexStartingIndiceToKeepSize = triangleIndexStartingIndiceToKeep.size();
     const uint indexDataTmpSize = static_cast<uint>( indexDataTmp.size() );
     for ( uint i = 0; i < indexDataTmpSize; ++i )
     {
+      uint idx = indexDataTmp[static_cast<int>( i )];
       // search for valid triangle index interval
       while ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-              && i > triangleIndexStartingIndiceToKeep[intervalIdx].first * 3
-              && i >= triangleIndexStartingIndiceToKeep[intervalIdx].second * 3 )
+              && idx > triangleIndexStartingIndiceToKeep[intervalIdx].first
+              && idx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
         intervalIdx++;
       }
 
       // keep only the one within the triangle index interval
       if ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-           && i >= triangleIndexStartingIndiceToKeep[intervalIdx].first * 3
-           && i < triangleIndexStartingIndiceToKeep[intervalIdx].second * 3 )
+           && idx >= triangleIndexStartingIndiceToKeep[intervalIdx].first
+           && idx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
-        indexData.push_back( indexDataTmp[static_cast<int>( i )] );
+        indexData.push_back( idx );
       }
     }
   }
 
+  // === Create Qgs3DExportObject
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
   object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
