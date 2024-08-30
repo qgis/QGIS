@@ -290,6 +290,22 @@ need to be segmentized to convert to a standard Polygon geometry.
 .. versionadded:: 3.2
 %End
 
+    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle,
+        double outerRadius, double innerRadius = 0 );
+%Docstring
+Creates a wedge shaped buffer from a ``center`` point.
+
+The wedges goes from the ``startAngle`` to ``endAngle`` in degrees.
+
+The outer radius of the buffer is specified via ``outerRadius``, and optionally an
+``innerRadius`` can also be specified.
+
+The returned geometry will be a CurvePolygon geometry containing circular strings. It may
+need to be segmentized to convert to a standard Polygon geometry.
+
+.. versionadded:: 3.40
+%End
+
 
     void fromWkb( const QByteArray &wkb );
 %Docstring
