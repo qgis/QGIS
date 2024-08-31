@@ -31,6 +31,7 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkdiskcache.h"
 #include "qgsserverlogger.h"
 #include "qgsserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
@@ -88,9 +89,14 @@ void QgsServer::setupNetworkAccessManager()
   const QSettings settings;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
   QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
-  const qint64 cacheSize = sSettings()->cacheSize();
   const QString cacheDirectory = sSettings()->cacheDirectory();
   cache->setCacheDirectory( cacheDirectory );
+  qint64 cacheSize = sSettings()->cacheSize();
+  if ( cacheSize == 0 )
+  {
+    // Calculatre maximum cache size based on available free space
+    cacheSize = QgsNetworkDiskCache::smartCacheSize( cacheDirectory );
+  }
   cache->setMaximumCacheSize( cacheSize );
   QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
