@@ -19,7 +19,15 @@ QgsProcessingToolboxModelNode.NodeRecent.__doc__ = "Recent algorithms node"
 QgsProcessingToolboxModelNode.Favorite = QgsProcessingToolboxModelNode.NodeType.Favorite
 QgsProcessingToolboxModelNode.Favorite.is_monkey_patched = True
 QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
-QgsProcessingToolboxModelNode.NodeType.__doc__ = "Enumeration of possible model node types\n\n" + '* ``NodeProvider``: ' + QgsProcessingToolboxModelNode.NodeType.Provider.__doc__ + '\n' + '* ``NodeGroup``: ' + QgsProcessingToolboxModelNode.NodeType.Group.__doc__ + '\n' + '* ``NodeAlgorithm``: ' + QgsProcessingToolboxModelNode.NodeType.Algorithm.__doc__ + '\n' + '* ``NodeRecent``: ' + QgsProcessingToolboxModelNode.NodeType.Recent.__doc__ + '\n' + '* ``Favorite``: ' + QgsProcessingToolboxModelNode.NodeType.Favorite.__doc__
+QgsProcessingToolboxModelNode.NodeType.__doc__ = """Enumeration of possible model node types
+
+* ``NodeProvider``: Provider node
+* ``NodeGroup``: Group node
+* ``NodeAlgorithm``: Algorithm node
+* ``NodeRecent``: Recent algorithms node
+* ``Favorite``: Favorites algorithms node, since QGIS 3.40
+
+"""
 # --
 QgsProcessingToolboxModelNode.NodeType.baseClass = QgsProcessingToolboxModelNode
 QgsProcessingToolboxModel.Roles = QgsProcessingToolboxModel.CustomRole
@@ -52,7 +60,23 @@ QgsProcessingToolboxModel.RoleProviderFlags = QgsProcessingToolboxModel.CustomRo
 QgsProcessingToolboxModel.Roles.RoleProviderFlags = QgsProcessingToolboxModel.CustomRole.ProviderFlags
 QgsProcessingToolboxModel.RoleProviderFlags.is_monkey_patched = True
 QgsProcessingToolboxModel.RoleProviderFlags.__doc__ = "Returns the node's provider flags"
-QgsProcessingToolboxModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsProcessingToolboxModel.Roles\n\n.. versionadded:: 3.36\n\n" + '* ``RoleNodeType``: ' + QgsProcessingToolboxModel.CustomRole.NodeType.__doc__ + '\n' + '* ``RoleAlgorithmFlags``: ' + QgsProcessingToolboxModel.CustomRole.AlgorithmFlags.__doc__ + '\n' + '* ``RoleAlgorithmId``: ' + QgsProcessingToolboxModel.CustomRole.AlgorithmId.__doc__ + '\n' + '* ``RoleAlgorithmName``: ' + QgsProcessingToolboxModel.CustomRole.AlgorithmName.__doc__ + '\n' + '* ``RoleAlgorithmShortDescription``: ' + QgsProcessingToolboxModel.CustomRole.AlgorithmShortDescription.__doc__ + '\n' + '* ``RoleAlgorithmTags``: ' + QgsProcessingToolboxModel.CustomRole.AlgorithmTags.__doc__ + '\n' + '* ``RoleProviderFlags``: ' + QgsProcessingToolboxModel.CustomRole.ProviderFlags.__doc__
+QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsProcessingToolboxModel.Roles
+
+.. versionadded:: 3.36
+
+* ``RoleNodeType``: Corresponds to the node's type
+* ``RoleAlgorithmFlags``: Returns the node's algorithm flags, for algorithm nodes
+* ``RoleAlgorithmId``: Algorithm ID, for algorithm nodes
+* ``RoleAlgorithmName``: Untranslated algorithm name, for algorithm nodes
+* ``RoleAlgorithmShortDescription``: Short algorithm description, for algorithm nodes
+* ``RoleAlgorithmTags``: List of algorithm tags, for algorithm nodes
+* ``RoleProviderFlags``: Returns the node's provider flags
+
+"""
 # --
 QgsProcessingToolboxModel.CustomRole.baseClass = QgsProcessingToolboxModel
 # monkey patching scoped based enum
@@ -72,7 +96,14 @@ QgsProcessingToolboxProxyModel.FilterShowKnownIssues = QgsProcessingToolboxProxy
 QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues = QgsProcessingToolboxProxyModel.Filter.ShowKnownIssues
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues.is_monkey_patched = True
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues.__doc__ = "Show algorithms with known issues (hidden by default)"
-QgsProcessingToolboxProxyModel.Filter.__doc__ = "Available filter flags for filtering the model\n\n" + '* ``FilterToolbox``: ' + QgsProcessingToolboxProxyModel.Filter.Toolbox.__doc__ + '\n' + '* ``FilterModeler``: ' + QgsProcessingToolboxProxyModel.Filter.Modeler.__doc__ + '\n' + '* ``FilterInPlace``: ' + QgsProcessingToolboxProxyModel.Filter.InPlace.__doc__ + '\n' + '* ``FilterShowKnownIssues``: ' + QgsProcessingToolboxProxyModel.Filter.ShowKnownIssues.__doc__
+QgsProcessingToolboxProxyModel.Filter.__doc__ = """Available filter flags for filtering the model
+
+* ``FilterToolbox``: Filters out any algorithms and content which should not be shown in the toolbox
+* ``FilterModeler``: Filters out any algorithms and content which should not be shown in the modeler
+* ``FilterInPlace``: Only show algorithms which support in-place edits
+* ``FilterShowKnownIssues``: Show algorithms with known issues (hidden by default)
+
+"""
 # --
 QgsProcessingToolboxProxyModel.Filter.baseClass = QgsProcessingToolboxProxyModel
 QgsProcessingToolboxProxyModel.Filters = lambda flags=0: QgsProcessingToolboxProxyModel.Filter(flags)

@@ -15,7 +15,19 @@ QgsAttributeTableFilterModel.TypeRole = QgsAttributeTableFilterModel.CustomRole.
 QgsAttributeTableFilterModel.Role.TypeRole = QgsAttributeTableFilterModel.CustomRole.Type
 QgsAttributeTableFilterModel.TypeRole.is_monkey_patched = True
 QgsAttributeTableFilterModel.TypeRole.__doc__ = ""
-QgsAttributeTableFilterModel.CustomRole.__doc__ = "The additional roles defined by this filter model.\nThe values of these roles start just after the roles defined by\n:py:class:`QgsAttributeTableModel` so they do not conflict.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsAttributeTableFilterModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``TypeRole``: ' + QgsAttributeTableFilterModel.CustomRole.Type.__doc__
+QgsAttributeTableFilterModel.CustomRole.__doc__ = """The additional roles defined by this filter model.
+The values of these roles start just after the roles defined by
+:py:class:`QgsAttributeTableModel` so they do not conflict.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsAttributeTableFilterModel.Role
+
+.. versionadded:: 3.36
+
+* ``TypeRole``: 
+
+"""
 # --
 QgsAttributeTableFilterModel.CustomRole.baseClass = QgsAttributeTableFilterModel
 try:

@@ -4,7 +4,13 @@ QgsSymbol.PropertyOpacity = QgsSymbol.Property.Opacity
 QgsSymbol.Property.PropertyOpacity = QgsSymbol.Property.Opacity
 QgsSymbol.PropertyOpacity.is_monkey_patched = True
 QgsSymbol.PropertyOpacity.__doc__ = "Opacity"
-QgsSymbol.Property.__doc__ = "Data definable properties.\n\n.. versionadded:: 3.18\n\n" + '* ``PropertyOpacity``: ' + QgsSymbol.Property.Opacity.__doc__
+QgsSymbol.Property.__doc__ = """Data definable properties.
+
+.. versionadded:: 3.18
+
+* ``PropertyOpacity``: Opacity
+
+"""
 # --
 QgsSymbol.symbolTypeToString = staticmethod(QgsSymbol.symbolTypeToString)
 QgsSymbol.symbolTypeForGeometryType = staticmethod(QgsSymbol.symbolTypeForGeometryType)

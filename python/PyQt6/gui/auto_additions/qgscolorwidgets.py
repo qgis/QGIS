@@ -15,7 +15,13 @@ QgsColorWidget.Black = QgsColorWidget.ColorComponent.Black
 QgsColorWidget.ComponentUnit.Scaled0to255.__doc__ = "Values in the range 0-255"
 QgsColorWidget.ComponentUnit.Percent.__doc__ = "Percent values in the range 0-100"
 QgsColorWidget.ComponentUnit.Degree.__doc__ = "Degree values in the range 0-359"
-QgsColorWidget.ComponentUnit.__doc__ = "Specified the color component unit\n\n" + '* ``Scaled0to255``: ' + QgsColorWidget.ComponentUnit.Scaled0to255.__doc__ + '\n' + '* ``Percent``: ' + QgsColorWidget.ComponentUnit.Percent.__doc__ + '\n' + '* ``Degree``: ' + QgsColorWidget.ComponentUnit.Degree.__doc__
+QgsColorWidget.ComponentUnit.__doc__ = """Specified the color component unit
+
+* ``Scaled0to255``: Values in the range 0-255
+* ``Percent``: Percent values in the range 0-100
+* ``Degree``: Degree values in the range 0-359
+
+"""
 # --
 QgsColorWidget.ComponentUnit.baseClass = QgsColorWidget
 QgsColorRampWidget.Horizontal = QgsColorRampWidget.Orientation.Horizontal

@@ -264,7 +264,98 @@ QgsLayoutObject.ElevationProfileMinimumElevation.__doc__ = "Minimum elevation va
 QgsLayoutObject.ElevationProfileMaximumElevation = QgsLayoutObject.DataDefinedProperty.ElevationProfileMaximumElevation
 QgsLayoutObject.ElevationProfileMaximumElevation.is_monkey_patched = True
 QgsLayoutObject.ElevationProfileMaximumElevation.__doc__ = "Maximum elevation value for elevation profile (since QGIS 3.30)"
-QgsLayoutObject.DataDefinedProperty.__doc__ = "Data defined properties for different item types\n\n" + '* ``NoProperty``: ' + QgsLayoutObject.DataDefinedProperty.NoProperty.__doc__ + '\n' + '* ``AllProperties``: ' + QgsLayoutObject.DataDefinedProperty.AllProperties.__doc__ + '\n' + '* ``TestProperty``: ' + QgsLayoutObject.DataDefinedProperty.TestProperty.__doc__ + '\n' + '* ``PresetPaperSize``: ' + QgsLayoutObject.DataDefinedProperty.PresetPaperSize.__doc__ + '\n' + '* ``PaperWidth``: ' + QgsLayoutObject.DataDefinedProperty.PaperWidth.__doc__ + '\n' + '* ``PaperHeight``: ' + QgsLayoutObject.DataDefinedProperty.PaperHeight.__doc__ + '\n' + '* ``NumPages``: ' + QgsLayoutObject.DataDefinedProperty.NumPages.__doc__ + '\n' + '* ``PaperOrientation``: ' + QgsLayoutObject.DataDefinedProperty.PaperOrientation.__doc__ + '\n' + '* ``PageNumber``: ' + QgsLayoutObject.DataDefinedProperty.PageNumber.__doc__ + '\n' + '* ``PositionX``: ' + QgsLayoutObject.DataDefinedProperty.PositionX.__doc__ + '\n' + '* ``PositionY``: ' + QgsLayoutObject.DataDefinedProperty.PositionY.__doc__ + '\n' + '* ``ItemWidth``: ' + QgsLayoutObject.DataDefinedProperty.ItemWidth.__doc__ + '\n' + '* ``ItemHeight``: ' + QgsLayoutObject.DataDefinedProperty.ItemHeight.__doc__ + '\n' + '* ``ItemRotation``: ' + QgsLayoutObject.DataDefinedProperty.ItemRotation.__doc__ + '\n' + '* ``Transparency``: ' + QgsLayoutObject.DataDefinedProperty.Transparency.__doc__ + '\n' + '* ``Opacity``: ' + QgsLayoutObject.DataDefinedProperty.Opacity.__doc__ + '\n' + '* ``BlendMode``: ' + QgsLayoutObject.DataDefinedProperty.BlendMode.__doc__ + '\n' + '* ``ExcludeFromExports``: ' + QgsLayoutObject.DataDefinedProperty.ExcludeFromExports.__doc__ + '\n' + '* ``FrameColor``: ' + QgsLayoutObject.DataDefinedProperty.FrameColor.__doc__ + '\n' + '* ``BackgroundColor``: ' + QgsLayoutObject.DataDefinedProperty.BackgroundColor.__doc__ + '\n' + '* ``MarginLeft``: ' + QgsLayoutObject.DataDefinedProperty.MarginLeft.__doc__ + '\n' + '* ``MarginTop``: ' + QgsLayoutObject.DataDefinedProperty.MarginTop.__doc__ + '\n' + '* ``MarginRight``: ' + QgsLayoutObject.DataDefinedProperty.MarginRight.__doc__ + '\n' + '* ``MarginBottom``: ' + QgsLayoutObject.DataDefinedProperty.MarginBottom.__doc__ + '\n' + '* ``MapRotation``: ' + QgsLayoutObject.DataDefinedProperty.MapRotation.__doc__ + '\n' + '* ``MapScale``: ' + QgsLayoutObject.DataDefinedProperty.MapScale.__doc__ + '\n' + '* ``MapXMin``: ' + QgsLayoutObject.DataDefinedProperty.MapXMin.__doc__ + '\n' + '* ``MapYMin``: ' + QgsLayoutObject.DataDefinedProperty.MapYMin.__doc__ + '\n' + '* ``MapXMax``: ' + QgsLayoutObject.DataDefinedProperty.MapXMax.__doc__ + '\n' + '* ``MapYMax``: ' + QgsLayoutObject.DataDefinedProperty.MapYMax.__doc__ + '\n' + '* ``MapAtlasMargin``: ' + QgsLayoutObject.DataDefinedProperty.MapAtlasMargin.__doc__ + '\n' + '* ``MapLayers``: ' + QgsLayoutObject.DataDefinedProperty.MapLayers.__doc__ + '\n' + '* ``MapStylePreset``: ' + QgsLayoutObject.DataDefinedProperty.MapStylePreset.__doc__ + '\n' + '* ``MapLabelMargin``: ' + QgsLayoutObject.DataDefinedProperty.MapLabelMargin.__doc__ + '\n' + '* ``MapGridEnabled``: ' + QgsLayoutObject.DataDefinedProperty.MapGridEnabled.__doc__ + '\n' + '* ``MapGridIntervalX``: ' + QgsLayoutObject.DataDefinedProperty.MapGridIntervalX.__doc__ + '\n' + '* ``MapGridIntervalY``: ' + QgsLayoutObject.DataDefinedProperty.MapGridIntervalY.__doc__ + '\n' + '* ``MapGridOffsetX``: ' + QgsLayoutObject.DataDefinedProperty.MapGridOffsetX.__doc__ + '\n' + '* ``MapGridOffsetY``: ' + QgsLayoutObject.DataDefinedProperty.MapGridOffsetY.__doc__ + '\n' + '* ``MapGridFrameSize``: ' + QgsLayoutObject.DataDefinedProperty.MapGridFrameSize.__doc__ + '\n' + '* ``MapGridFrameMargin``: ' + QgsLayoutObject.DataDefinedProperty.MapGridFrameMargin.__doc__ + '\n' + '* ``MapGridLabelDistance``: ' + QgsLayoutObject.DataDefinedProperty.MapGridLabelDistance.__doc__ + '\n' + '* ``MapGridCrossSize``: ' + QgsLayoutObject.DataDefinedProperty.MapGridCrossSize.__doc__ + '\n' + '* ``MapGridFrameLineThickness``: ' + QgsLayoutObject.DataDefinedProperty.MapGridFrameLineThickness.__doc__ + '\n' + '* ``MapGridAnnotationDisplayLeft``: ' + QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayLeft.__doc__ + '\n' + '* ``MapGridAnnotationDisplayRight``: ' + QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayRight.__doc__ + '\n' + '* ``MapGridAnnotationDisplayTop``: ' + QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayTop.__doc__ + '\n' + '* ``MapGridAnnotationDisplayBottom``: ' + QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayBottom.__doc__ + '\n' + '* ``MapGridFrameDivisionsLeft``: ' + QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsLeft.__doc__ + '\n' + '* ``MapGridFrameDivisionsRight``: ' + QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsRight.__doc__ + '\n' + '* ``MapGridFrameDivisionsTop``: ' + QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsTop.__doc__ + '\n' + '* ``MapGridFrameDivisionsBottom``: ' + QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsBottom.__doc__ + '\n' + '* ``MapCrs``: ' + QgsLayoutObject.DataDefinedProperty.MapCrs.__doc__ + '\n' + '* ``StartDateTime``: ' + QgsLayoutObject.DataDefinedProperty.StartDateTime.__doc__ + '\n' + '* ``EndDateTime``: ' + QgsLayoutObject.DataDefinedProperty.EndDateTime.__doc__ + '\n' + '* ``MapZRangeLower``: ' + QgsLayoutObject.DataDefinedProperty.MapZRangeLower.__doc__ + '\n' + '* ``MapZRangeUpper``: ' + QgsLayoutObject.DataDefinedProperty.MapZRangeUpper.__doc__ + '\n' + '* ``PictureSource``: ' + QgsLayoutObject.DataDefinedProperty.PictureSource.__doc__ + '\n' + '* ``PictureSvgBackgroundColor``: ' + QgsLayoutObject.DataDefinedProperty.PictureSvgBackgroundColor.__doc__ + '\n' + '* ``PictureSvgStrokeColor``: ' + QgsLayoutObject.DataDefinedProperty.PictureSvgStrokeColor.__doc__ + '\n' + '* ``PictureSvgStrokeWidth``: ' + QgsLayoutObject.DataDefinedProperty.PictureSvgStrokeWidth.__doc__ + '\n' + '* ``SourceUrl``: ' + QgsLayoutObject.DataDefinedProperty.SourceUrl.__doc__ + '\n' + '* ``LegendTitle``: ' + QgsLayoutObject.DataDefinedProperty.LegendTitle.__doc__ + '\n' + '* ``LegendColumnCount``: ' + QgsLayoutObject.DataDefinedProperty.LegendColumnCount.__doc__ + '\n' + '* ``ScalebarLeftSegments``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarLeftSegments.__doc__ + '\n' + '* ``ScalebarRightSegments``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarRightSegments.__doc__ + '\n' + '* ``ScalebarSegmentWidth``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarSegmentWidth.__doc__ + '\n' + '* ``ScalebarMinimumWidth``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarMinimumWidth.__doc__ + '\n' + '* ``ScalebarMaximumWidth``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarMaximumWidth.__doc__ + '\n' + '* ``ScalebarHeight``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarHeight.__doc__ + '\n' + '* ``ScalebarRightSegmentSubdivisions``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarRightSegmentSubdivisions.__doc__ + '\n' + '* ``ScalebarSubdivisionHeight``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarSubdivisionHeight.__doc__ + '\n' + '* ``ScalebarFillColor``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarFillColor.__doc__ + '\n' + '* ``ScalebarFillColor2``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarFillColor2.__doc__ + '\n' + '* ``ScalebarLineColor``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarLineColor.__doc__ + '\n' + '* ``ScalebarLineWidth``: ' + QgsLayoutObject.DataDefinedProperty.ScalebarLineWidth.__doc__ + '\n' + '* ``AttributeTableSourceLayer``: ' + QgsLayoutObject.DataDefinedProperty.AttributeTableSourceLayer.__doc__ + '\n' + '* ``ElevationProfileTolerance``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileTolerance.__doc__ + '\n' + '* ``ElevationProfileDistanceMajorInterval``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileDistanceMajorInterval.__doc__ + '\n' + '* ``ElevationProfileDistanceMinorInterval``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileDistanceMinorInterval.__doc__ + '\n' + '* ``ElevationProfileDistanceLabelInterval``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileDistanceLabelInterval.__doc__ + '\n' + '* ``ElevationProfileElevationMajorInterval``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileElevationMajorInterval.__doc__ + '\n' + '* ``ElevationProfileElevationMinorInterval``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileElevationMinorInterval.__doc__ + '\n' + '* ``ElevationProfileElevationLabelInterval``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileElevationLabelInterval.__doc__ + '\n' + '* ``ElevationProfileMinimumDistance``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileMinimumDistance.__doc__ + '\n' + '* ``ElevationProfileMaximumDistance``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileMaximumDistance.__doc__ + '\n' + '* ``ElevationProfileMinimumElevation``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileMinimumElevation.__doc__ + '\n' + '* ``ElevationProfileMaximumElevation``: ' + QgsLayoutObject.DataDefinedProperty.ElevationProfileMaximumElevation.__doc__
+QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for different item types
+
+* ``NoProperty``: No property
+* ``AllProperties``: All properties for item
+* ``TestProperty``: Dummy property with no effect on item
+* ``PresetPaperSize``: Preset paper size for composition
+* ``PaperWidth``: Paper width (deprecated)
+* ``PaperHeight``: Paper height (deprecated)
+* ``NumPages``: Number of pages in composition (deprecated)
+* ``PaperOrientation``: Paper orientation
+* ``PageNumber``: Page number for item placement
+* ``PositionX``: X position on page
+* ``PositionY``: Y position on page
+* ``ItemWidth``: Width of item
+* ``ItemHeight``: Height of item
+* ``ItemRotation``: Rotation of item
+* ``Transparency``: Item transparency (deprecated)
+* ``Opacity``: Item opacity
+* ``BlendMode``: Item blend mode
+* ``ExcludeFromExports``: Exclude item from exports
+* ``FrameColor``: Item frame color
+* ``BackgroundColor``: Item background color
+* ``MarginLeft``: Left margin (since QGIS 3.30)
+* ``MarginTop``: Top margin (since QGIS 3.30)
+* ``MarginRight``: Right margin (since QGIS 3.30)
+* ``MarginBottom``: Bottom margin (since QGIS 3.30)
+* ``MapRotation``: Map rotation
+* ``MapScale``: Map scale
+* ``MapXMin``: Map extent x minimum
+* ``MapYMin``: Map extent y minimum
+* ``MapXMax``: Map extent x maximum
+* ``MapYMax``: Map extent y maximum
+* ``MapAtlasMargin``: Map atlas margin
+* ``MapLayers``: Map layer set
+* ``MapStylePreset``: Layer and style map theme
+* ``MapLabelMargin``: Map label margin
+* ``MapGridEnabled``: Map grid enabled
+* ``MapGridIntervalX``: Map grid interval X
+* ``MapGridIntervalY``: Map grid interval Y
+* ``MapGridOffsetX``: Map grid offset X
+* ``MapGridOffsetY``: Map grid offset Y
+* ``MapGridFrameSize``: Map grid frame size
+* ``MapGridFrameMargin``: Map grid frame margin
+* ``MapGridLabelDistance``: Map grid label distance
+* ``MapGridCrossSize``: Map grid cross size
+* ``MapGridFrameLineThickness``: Map grid frame line thickness
+* ``MapGridAnnotationDisplayLeft``: Map annotation display left
+* ``MapGridAnnotationDisplayRight``: Map annotation display right
+* ``MapGridAnnotationDisplayTop``: Map annotation display top
+* ``MapGridAnnotationDisplayBottom``: Map annotation display bottom
+* ``MapGridFrameDivisionsLeft``: Map frame division display left
+* ``MapGridFrameDivisionsRight``: Map frame division display right
+* ``MapGridFrameDivisionsTop``: Map frame division display top
+* ``MapGridFrameDivisionsBottom``: Map frame division display bottom
+* ``MapCrs``: Map CRS
+* ``StartDateTime``: Temporal range's start DateTime
+* ``EndDateTime``: Temporal range's end DateTime
+* ``MapZRangeLower``: Map frame Z-range lower value (since QGIS 3.38)
+* ``MapZRangeUpper``: Map frame Z-range lower value (since QGIS 3.38)
+* ``PictureSource``: Picture source url
+* ``PictureSvgBackgroundColor``: SVG background color
+* ``PictureSvgStrokeColor``: SVG stroke color
+* ``PictureSvgStrokeWidth``: SVG stroke width
+* ``SourceUrl``: Html source url
+* ``LegendTitle``: Legend title
+* ``LegendColumnCount``: Legend column count
+* ``ScalebarLeftSegments``: Number of segments on the left of 0 (since QGIS 3.26)
+* ``ScalebarRightSegments``: Number of segments on the right of 0 (since QGIS 3.26)
+* ``ScalebarSegmentWidth``: Scalebar width in map units of a single segment (since QGIS 3.26)
+* ``ScalebarMinimumWidth``: Scalebar segment minimum width (since QGIS 3.26)
+* ``ScalebarMaximumWidth``: Scalebar segment maximum width (since QGIS 3.26)
+* ``ScalebarHeight``: Scalebar height (since QGIS 3.26)
+* ``ScalebarRightSegmentSubdivisions``: Number of subdivisions per segment on right of 0 (since QGIS 3.26)
+* ``ScalebarSubdivisionHeight``: Scalebar subdivision height (since QGIS 3.26)
+* ``ScalebarFillColor``: Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
+* ``ScalebarFillColor2``: Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
+* ``ScalebarLineColor``: Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
+* ``ScalebarLineWidth``: Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
+* ``AttributeTableSourceLayer``: Attribute table source layer
+* ``ElevationProfileTolerance``: Tolerance distance for elevation profiles (since QGIS 3.30)
+* ``ElevationProfileDistanceMajorInterval``: Major grid line interval for elevation profile distance axis (since QGIS 3.30)
+* ``ElevationProfileDistanceMinorInterval``: Minor grid line interval for elevation profile distance axis (since QGIS 3.30)
+* ``ElevationProfileDistanceLabelInterval``: Label interval for elevation profile distance axis (since QGIS 3.30)
+* ``ElevationProfileElevationMajorInterval``: Major grid line interval for elevation profile elevation axis (since QGIS 3.30)
+* ``ElevationProfileElevationMinorInterval``: Minor grid line interval for elevation profile elevation axis (since QGIS 3.30)
+* ``ElevationProfileElevationLabelInterval``: Label interval for elevation profile elevation axis (since QGIS 3.30)
+* ``ElevationProfileMinimumDistance``: Minimum distance value for elevation profile (since QGIS 3.30)
+* ``ElevationProfileMaximumDistance``: Maximum distance value for elevation profile (since QGIS 3.30)
+* ``ElevationProfileMinimumElevation``: Minimum elevation value for elevation profile (since QGIS 3.30)
+* ``ElevationProfileMaximumElevation``: Maximum elevation value for elevation profile (since QGIS 3.30)
+
+"""
 # --
 QgsLayoutObject.EvaluatedValue = QgsLayoutObject.PropertyValueType.EvaluatedValue
 QgsLayoutObject.OriginalValue = QgsLayoutObject.PropertyValueType.OriginalValue

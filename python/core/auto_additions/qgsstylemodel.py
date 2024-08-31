@@ -38,7 +38,26 @@ QgsStyleModel.IsTitleRole = QgsStyleModel.CustomRole.IsTitle
 QgsStyleModel.Role.IsTitleRole = QgsStyleModel.CustomRole.IsTitle
 QgsStyleModel.IsTitleRole.is_monkey_patched = True
 QgsStyleModel.IsTitleRole.__doc__ = "True if the index corresponds to a title item (since QGIS 3.26)"
-QgsStyleModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsStyleModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``TypeRole``: ' + QgsStyleModel.CustomRole.Type.__doc__ + '\n' + '* ``TagRole``: ' + QgsStyleModel.CustomRole.Tag.__doc__ + '\n' + '* ``EntityName``: ' + QgsStyleModel.CustomRole.EntityName.__doc__ + '\n' + '* ``SymbolTypeRole``: ' + QgsStyleModel.CustomRole.SymbolType.__doc__ + '\n' + '* ``IsFavoriteRole``: ' + QgsStyleModel.CustomRole.IsFavorite.__doc__ + '\n' + '* ``LayerTypeRole``: ' + QgsStyleModel.CustomRole.LayerType.__doc__ + '\n' + '* ``CompatibleGeometryTypesRole``: ' + QgsStyleModel.CustomRole.CompatibleGeometryTypes.__doc__ + '\n' + '* ``StyleName``: ' + QgsStyleModel.CustomRole.StyleName.__doc__ + '\n' + '* ``StyleFileName``: ' + QgsStyleModel.CustomRole.StyleFileName.__doc__ + '\n' + '* ``IsTitleRole``: ' + QgsStyleModel.CustomRole.IsTitle.__doc__
+QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsStyleModel.Role
+
+.. versionadded:: 3.36
+
+* ``TypeRole``: Style entity type, see QgsStyle.StyleEntity
+* ``TagRole``: String list of tags
+* ``EntityName``: Entity name (since QGIS 3.26)
+* ``SymbolTypeRole``: Symbol type (for symbol or legend patch shape entities)
+* ``IsFavoriteRole``: Whether entity is flagged as a favorite
+* ``LayerTypeRole``: Layer type (for label settings entities)
+* ``CompatibleGeometryTypesRole``: Compatible layer geometry types (for 3D symbols)
+* ``StyleName``: Name of associated QgsStyle (QgsStyle.name()) (since QGIS 3.26)
+* ``StyleFileName``: File name of associated QgsStyle (QgsStyle.fileName()) (since QGIS 3.26)
+* ``IsTitleRole``: True if the index corresponds to a title item (since QGIS 3.26)
+
+"""
 # --
 QgsStyleModel.CustomRole.baseClass = QgsStyleModel
 try:

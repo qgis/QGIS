@@ -33,6 +33,23 @@ QgsDatabaseTableModel.RoleEmpty = QgsDatabaseTableModel.CustomRole.Empty
 QgsDatabaseTableModel.Role.RoleEmpty = QgsDatabaseTableModel.CustomRole.Empty
 QgsDatabaseTableModel.RoleEmpty.is_monkey_patched = True
 QgsDatabaseTableModel.RoleEmpty.__doc__ = "Entry is an empty entry"
-QgsDatabaseTableModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsDatabaseTableModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``RoleTableName``: ' + QgsDatabaseTableModel.CustomRole.TableName.__doc__ + '\n' + '* ``RoleSchema``: ' + QgsDatabaseTableModel.CustomRole.Schema.__doc__ + '\n' + '* ``RoleTableFlags``: ' + QgsDatabaseTableModel.CustomRole.TableFlags.__doc__ + '\n' + '* ``RoleComment``: ' + QgsDatabaseTableModel.CustomRole.Comment.__doc__ + '\n' + '* ``RoleCustomInfo``: ' + QgsDatabaseTableModel.CustomRole.CustomInfo.__doc__ + '\n' + '* ``RoleWkbType``: ' + QgsDatabaseTableModel.CustomRole.WkbType.__doc__ + '\n' + '* ``RoleCrs``: ' + QgsDatabaseTableModel.CustomRole.Crs.__doc__ + '\n' + '* ``RoleEmpty``: ' + QgsDatabaseTableModel.CustomRole.Empty.__doc__
+QgsDatabaseTableModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsDatabaseTableModel.Role
+
+.. versionadded:: 3.36
+
+* ``RoleTableName``: Table name
+* ``RoleSchema``: Table schema
+* ``RoleTableFlags``: Table flags role
+* ``RoleComment``: Comment role
+* ``RoleCustomInfo``: Custom info variant map role
+* ``RoleWkbType``: WKB type for primary (first) geometry column in table
+* ``RoleCrs``: CRS for primary (first) geometry column in table
+* ``RoleEmpty``: Entry is an empty entry
+
+"""
 # --
 QgsDatabaseTableModel.CustomRole.baseClass = QgsDatabaseTableModel

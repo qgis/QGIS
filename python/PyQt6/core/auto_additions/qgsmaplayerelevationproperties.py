@@ -12,7 +12,16 @@ QgsMapLayerElevationProperties.RasterPerBandLowerElevation.__doc__ = "Lower elev
 QgsMapLayerElevationProperties.RasterPerBandUpperElevation = QgsMapLayerElevationProperties.Property.RasterPerBandUpperElevation
 QgsMapLayerElevationProperties.RasterPerBandUpperElevation.is_monkey_patched = True
 QgsMapLayerElevationProperties.RasterPerBandUpperElevation.__doc__ = "Upper elevation for each raster band (since QGIS 3.38)"
-QgsMapLayerElevationProperties.Property.__doc__ = "Data definable properties.\n\n.. versionadded:: 3.26\n\n" + '* ``ZOffset``: ' + QgsMapLayerElevationProperties.Property.ZOffset.__doc__ + '\n' + '* ``ExtrusionHeight``: ' + QgsMapLayerElevationProperties.Property.ExtrusionHeight.__doc__ + '\n' + '* ``RasterPerBandLowerElevation``: ' + QgsMapLayerElevationProperties.Property.RasterPerBandLowerElevation.__doc__ + '\n' + '* ``RasterPerBandUpperElevation``: ' + QgsMapLayerElevationProperties.Property.RasterPerBandUpperElevation.__doc__
+QgsMapLayerElevationProperties.Property.__doc__ = """Data definable properties.
+
+.. versionadded:: 3.26
+
+* ``ZOffset``: 
+* ``ExtrusionHeight``: Extrusion height
+* ``RasterPerBandLowerElevation``: Lower elevation for each raster band (since QGIS 3.38)
+* ``RasterPerBandUpperElevation``: Upper elevation for each raster band (since QGIS 3.38)
+
+"""
 # --
 QgsMapLayerElevationProperties.FlagDontInvalidateCachedRendersWhenRangeChanges = QgsMapLayerElevationProperties.Flag.FlagDontInvalidateCachedRendersWhenRangeChanges
 QgsMapLayerElevationProperties.Flags = lambda flags=0: QgsMapLayerElevationProperties.Flag(flags)

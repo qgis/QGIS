@@ -145,8 +145,8 @@ class CORE_EXPORT Qgis
       PointCloudLayer = 512, //!< QgsPointCloudLayer \since QGIS 3.18
       AnnotationLayer = 1024, //!< QgsAnnotationLayer \since QGIS 3.22
       TiledSceneLayer = 2048, //!< QgsTiledSceneLayer \since QGIS 3.34
-      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer,
-      SpatialLayer = RasterLayer | HasGeometry | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer //!< \since QGIS 3.24
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer, //!< All layers
+      SpatialLayer = RasterLayer | HasGeometry | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer //!< All spatial layers. \since QGIS 3.24
     };
     Q_DECLARE_FLAGS( LayerFilters, LayerFilter )
     Q_FLAG( LayerFilters )

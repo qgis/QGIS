@@ -21,7 +21,24 @@ QgsBrowserModel.LayerMetadataRole = QgsBrowserModel.CustomRole.LayerMetadata
 QgsBrowserModel.ItemDataRole.LayerMetadataRole = QgsBrowserModel.CustomRole.LayerMetadata
 QgsBrowserModel.LayerMetadataRole.is_monkey_patched = True
 QgsBrowserModel.LayerMetadataRole.__doc__ = ""
-QgsBrowserModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsBrowserModel.ItemDataRole\n\n.. versionadded:: 3.36\n\n" + '* ``PathRole``: ' + QgsBrowserModel.CustomRole.Path.__doc__ + '\n' + '* ``CommentRole``: ' + QgsBrowserModel.CustomRole.Comment.__doc__ + '\n' + '* ``SortRole``: ' + QgsBrowserModel.CustomRole.Sort.__doc__ + '\n' + '* ``ProviderKeyRole``: ' + QgsBrowserModel.CustomRole.ProviderKey.__doc__ + '\n' + '* ``LayerMetadataRole``: ' + QgsBrowserModel.CustomRole.LayerMetadata.__doc__
+QgsBrowserModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsBrowserModel.ItemDataRole
+
+.. versionadded:: 3.36
+
+* ``PathRole``: Item path used to access path in the tree, see QgsDataItem.mPath
+* ``CommentRole``: Item comment
+* ``SortRole``: Custom sort role, see QgsDataItem.sortKey()
+* ``ProviderKeyRole``: Data item provider key that created the item, see QgsDataItem.providerKey()
+
+  .. versionadded:: 3.12
+
+* ``LayerMetadataRole``: 
+
+"""
 # --
 QgsBrowserModel.CustomRole.baseClass = QgsBrowserModel
 try:

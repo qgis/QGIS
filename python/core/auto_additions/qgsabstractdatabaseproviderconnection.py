@@ -21,7 +21,20 @@ QgsAbstractDatabaseProviderConnection.Foreign.__doc__ = "Foreign data wrapper"
 QgsAbstractDatabaseProviderConnection.IncludeSystemTables = QgsAbstractDatabaseProviderConnection.TableFlag.IncludeSystemTables
 QgsAbstractDatabaseProviderConnection.IncludeSystemTables.is_monkey_patched = True
 QgsAbstractDatabaseProviderConnection.IncludeSystemTables.__doc__ = "Include system tables (since QGIS 3.30)"
-QgsAbstractDatabaseProviderConnection.TableFlag.__doc__ = "Flags for table properties.\n\nFlags can be useful for filtering the tables returned\nfrom :py:func:`~QgsAbstractDatabaseProviderConnection.tables`.\n\n" + '* ``Aspatial``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial.__doc__ + '\n' + '* ``Vector``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Vector.__doc__ + '\n' + '* ``Raster``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Raster.__doc__ + '\n' + '* ``View``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.View.__doc__ + '\n' + '* ``MaterializedView``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.MaterializedView.__doc__ + '\n' + '* ``Foreign``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Foreign.__doc__ + '\n' + '* ``IncludeSystemTables``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.IncludeSystemTables.__doc__
+QgsAbstractDatabaseProviderConnection.TableFlag.__doc__ = """Flags for table properties.
+
+Flags can be useful for filtering the tables returned
+from :py:func:`~QgsAbstractDatabaseProviderConnection.tables`.
+
+* ``Aspatial``: Aspatial table (it does not contain any geometry column)
+* ``Vector``: Vector table (it does contain one geometry column)
+* ``Raster``: Raster table
+* ``View``: View table
+* ``MaterializedView``: Materialized view table
+* ``Foreign``: Foreign data wrapper
+* ``IncludeSystemTables``: Include system tables (since QGIS 3.30)
+
+"""
 # --
 QgsAbstractDatabaseProviderConnection.TableFlag.baseClass = QgsAbstractDatabaseProviderConnection
 QgsAbstractDatabaseProviderConnection.TableFlags.baseClass = QgsAbstractDatabaseProviderConnection

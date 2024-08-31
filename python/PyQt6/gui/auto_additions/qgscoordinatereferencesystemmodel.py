@@ -33,7 +33,24 @@ QgsCoordinateReferenceSystemModel.RoleProj = QgsCoordinateReferenceSystemModel.C
 QgsCoordinateReferenceSystemModel.Roles.RoleProj = QgsCoordinateReferenceSystemModel.CustomRole.Proj
 QgsCoordinateReferenceSystemModel.RoleProj.is_monkey_patched = True
 QgsCoordinateReferenceSystemModel.RoleProj.__doc__ = "The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database)."
-QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsCoordinateReferenceSystemModel.Roles\n\n.. versionadded:: 3.36\n\n" + '* ``RoleNodeType``: ' + QgsCoordinateReferenceSystemModel.CustomRole.NodeType.__doc__ + '\n' + '* ``RoleName``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Name.__doc__ + '\n' + '* ``RoleAuthId``: ' + QgsCoordinateReferenceSystemModel.CustomRole.AuthId.__doc__ + '\n' + '* ``RoleDeprecated``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Deprecated.__doc__ + '\n' + '* ``RoleType``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Type.__doc__ + '\n' + '* ``RoleGroupId``: ' + QgsCoordinateReferenceSystemModel.CustomRole.GroupId.__doc__ + '\n' + '* ``RoleWkt``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Wkt.__doc__ + '\n' + '* ``RoleProj``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Proj.__doc__
+QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsCoordinateReferenceSystemModel.Roles
+
+.. versionadded:: 3.36
+
+* ``RoleNodeType``: Corresponds to the node's type
+* ``RoleName``: The coordinate reference system name
+* ``RoleAuthId``: The coordinate reference system authority name and id
+* ``RoleDeprecated``: ``True`` if the CRS is deprecated
+* ``RoleType``: The coordinate reference system type
+* ``RoleGroupId``: The node ID (for group nodes)
+* ``RoleWkt``: The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+* ``RoleProj``: The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+
+"""
 # --
 QgsCoordinateReferenceSystemModel.CustomRole.baseClass = QgsCoordinateReferenceSystemModel
 QgsCoordinateReferenceSystemProxyModel.FilterHorizontal = QgsCoordinateReferenceSystemProxyModel.Filter.FilterHorizontal
