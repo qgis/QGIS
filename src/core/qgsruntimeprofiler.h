@@ -54,7 +54,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
       Group, //!< Node group
       Elapsed, //!< Node elapsed time
       ParentElapsed, //!< Total elapsed time for node's parent
-      Id, //!< Internal node ID (since QGIS 3.34)
+      Id, //!< Internal node ID \since QGIS 3.34
     };
     // *INDENT-ON*
 

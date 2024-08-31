@@ -20,7 +20,7 @@ QgsAbstractDatabaseProviderConnection.Foreign.is_monkey_patched = True
 QgsAbstractDatabaseProviderConnection.Foreign.__doc__ = "Foreign data wrapper"
 QgsAbstractDatabaseProviderConnection.IncludeSystemTables = QgsAbstractDatabaseProviderConnection.TableFlag.IncludeSystemTables
 QgsAbstractDatabaseProviderConnection.IncludeSystemTables.is_monkey_patched = True
-QgsAbstractDatabaseProviderConnection.IncludeSystemTables.__doc__ = "Include system tables (since QGIS 3.30)"
+QgsAbstractDatabaseProviderConnection.IncludeSystemTables.__doc__ = "Include system tables \n.. versionadded:: 3.30"
 QgsAbstractDatabaseProviderConnection.TableFlag.__doc__ = """Flags for table properties.
 
 Flags can be useful for filtering the tables returned
@@ -32,7 +32,10 @@ from :py:func:`~QgsAbstractDatabaseProviderConnection.tables`.
 * ``View``: View table
 * ``MaterializedView``: Materialized view table
 * ``Foreign``: Foreign data wrapper
-* ``IncludeSystemTables``: Include system tables (since QGIS 3.30)
+* ``IncludeSystemTables``: Include system tables
+
+  .. versionadded:: 3.30
+
 
 """
 # --

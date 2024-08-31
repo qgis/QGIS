@@ -243,43 +243,43 @@ QgsSymbolLayer.PropertyDashPatternOffset.__doc__ = "Dash pattern offset,"
 QgsSymbolLayer.PropertyTrimStart = QgsSymbolLayer.Property.TrimStart
 QgsSymbolLayer.Property.PropertyTrimStart = QgsSymbolLayer.Property.TrimStart
 QgsSymbolLayer.PropertyTrimStart.is_monkey_patched = True
-QgsSymbolLayer.PropertyTrimStart.__doc__ = "Trim distance from start of line (since QGIS 3.20)"
+QgsSymbolLayer.PropertyTrimStart.__doc__ = "Trim distance from start of line \n.. versionadded:: 3.20"
 QgsSymbolLayer.PropertyTrimEnd = QgsSymbolLayer.Property.TrimEnd
 QgsSymbolLayer.Property.PropertyTrimEnd = QgsSymbolLayer.Property.TrimEnd
 QgsSymbolLayer.PropertyTrimEnd.is_monkey_patched = True
-QgsSymbolLayer.PropertyTrimEnd.__doc__ = "Trim distance from end of line (since QGIS 3.20)"
+QgsSymbolLayer.PropertyTrimEnd.__doc__ = "Trim distance from end of line \n.. versionadded:: 3.20"
 QgsSymbolLayer.PropertyLineStartWidthValue = QgsSymbolLayer.Property.LineStartWidthValue
 QgsSymbolLayer.Property.PropertyLineStartWidthValue = QgsSymbolLayer.Property.LineStartWidthValue
 QgsSymbolLayer.PropertyLineStartWidthValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineStartWidthValue.__doc__ = "Start line width for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineStartWidthValue.__doc__ = "Start line width for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyLineEndWidthValue = QgsSymbolLayer.Property.LineEndWidthValue
 QgsSymbolLayer.Property.PropertyLineEndWidthValue = QgsSymbolLayer.Property.LineEndWidthValue
 QgsSymbolLayer.PropertyLineEndWidthValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineEndWidthValue.__doc__ = "End line width for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineEndWidthValue.__doc__ = "End line width for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyLineStartColorValue = QgsSymbolLayer.Property.LineStartColorValue
 QgsSymbolLayer.Property.PropertyLineStartColorValue = QgsSymbolLayer.Property.LineStartColorValue
 QgsSymbolLayer.PropertyLineStartColorValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineStartColorValue.__doc__ = "Start line color for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineStartColorValue.__doc__ = "Start line color for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyLineEndColorValue = QgsSymbolLayer.Property.LineEndColorValue
 QgsSymbolLayer.Property.PropertyLineEndColorValue = QgsSymbolLayer.Property.LineEndColorValue
 QgsSymbolLayer.PropertyLineEndColorValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineEndColorValue.__doc__ = "End line color for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineEndColorValue.__doc__ = "End line color for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyMarkerClipping = QgsSymbolLayer.Property.MarkerClipping
 QgsSymbolLayer.Property.PropertyMarkerClipping = QgsSymbolLayer.Property.MarkerClipping
 QgsSymbolLayer.PropertyMarkerClipping.is_monkey_patched = True
-QgsSymbolLayer.PropertyMarkerClipping.__doc__ = "Marker clipping mode (since QGIS 3.24)"
+QgsSymbolLayer.PropertyMarkerClipping.__doc__ = "Marker clipping mode \n.. versionadded:: 3.24"
 QgsSymbolLayer.PropertyRandomOffsetX = QgsSymbolLayer.Property.RandomOffsetX
 QgsSymbolLayer.Property.PropertyRandomOffsetX = QgsSymbolLayer.Property.RandomOffsetX
 QgsSymbolLayer.PropertyRandomOffsetX.is_monkey_patched = True
-QgsSymbolLayer.PropertyRandomOffsetX.__doc__ = "Random offset X (since QGIS 3.24)"
+QgsSymbolLayer.PropertyRandomOffsetX.__doc__ = "Random offset X \n.. versionadded:: 3.24"
 QgsSymbolLayer.PropertyRandomOffsetY = QgsSymbolLayer.Property.RandomOffsetY
 QgsSymbolLayer.Property.PropertyRandomOffsetY = QgsSymbolLayer.Property.RandomOffsetY
 QgsSymbolLayer.PropertyRandomOffsetY.is_monkey_patched = True
-QgsSymbolLayer.PropertyRandomOffsetY.__doc__ = "Random offset Y (since QGIS 3.24)"
+QgsSymbolLayer.PropertyRandomOffsetY.__doc__ = "Random offset Y \n.. versionadded:: 3.24"
 QgsSymbolLayer.PropertyLineClipping = QgsSymbolLayer.Property.LineClipping
 QgsSymbolLayer.Property.PropertyLineClipping = QgsSymbolLayer.Property.LineClipping
 QgsSymbolLayer.PropertyLineClipping.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineClipping.__doc__ = "Line clipping mode (since QGIS 3.24)"
+QgsSymbolLayer.PropertyLineClipping.__doc__ = "Line clipping mode \n.. versionadded:: 3.24"
 QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
 * ``PropertySize``: Symbol size
@@ -342,16 +342,46 @@ QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 * ``PropertyFontFamily``: Font family
 * ``PropertyFontStyle``: Font style
 * ``PropertyDashPatternOffset``: Dash pattern offset,
-* ``PropertyTrimStart``: Trim distance from start of line (since QGIS 3.20)
-* ``PropertyTrimEnd``: Trim distance from end of line (since QGIS 3.20)
-* ``PropertyLineStartWidthValue``: Start line width for interpolated line renderer (since QGIS 3.22)
-* ``PropertyLineEndWidthValue``: End line width for interpolated line renderer (since QGIS 3.22)
-* ``PropertyLineStartColorValue``: Start line color for interpolated line renderer (since QGIS 3.22)
-* ``PropertyLineEndColorValue``: End line color for interpolated line renderer (since QGIS 3.22)
-* ``PropertyMarkerClipping``: Marker clipping mode (since QGIS 3.24)
-* ``PropertyRandomOffsetX``: Random offset X (since QGIS 3.24)
-* ``PropertyRandomOffsetY``: Random offset Y (since QGIS 3.24)
-* ``PropertyLineClipping``: Line clipping mode (since QGIS 3.24)
+* ``PropertyTrimStart``: Trim distance from start of line
+
+  .. versionadded:: 3.20
+
+* ``PropertyTrimEnd``: Trim distance from end of line
+
+  .. versionadded:: 3.20
+
+* ``PropertyLineStartWidthValue``: Start line width for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+* ``PropertyLineEndWidthValue``: End line width for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+* ``PropertyLineStartColorValue``: Start line color for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+* ``PropertyLineEndColorValue``: End line color for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+* ``PropertyMarkerClipping``: Marker clipping mode
+
+  .. versionadded:: 3.24
+
+* ``PropertyRandomOffsetX``: Random offset X
+
+  .. versionadded:: 3.24
+
+* ``PropertyRandomOffsetY``: Random offset Y
+
+  .. versionadded:: 3.24
+
+* ``PropertyLineClipping``: Line clipping mode
+
+  .. versionadded:: 3.24
+
 
 """
 # --

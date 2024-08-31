@@ -94,8 +94,8 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
       {
       ZOffset, //! Z offset
       ExtrusionHeight, //!< Extrusion height
-      RasterPerBandLowerElevation, //!< Lower elevation for each raster band (since QGIS 3.38)
-      RasterPerBandUpperElevation, //!< Upper elevation for each raster band (since QGIS 3.38)
+      RasterPerBandLowerElevation, //!< Lower elevation for each raster band \since QGIS 3.38
+      RasterPerBandUpperElevation, //!< Upper elevation for each raster band \since QGIS 3.38
     };
     // *INDENT-ON*
 

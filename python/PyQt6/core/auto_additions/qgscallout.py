@@ -20,34 +20,34 @@ QgsCallout.LabelAnchorPointPosition.is_monkey_patched = True
 QgsCallout.LabelAnchorPointPosition.__doc__ = "Label's anchor point position"
 QgsCallout.OriginX = QgsCallout.Property.OriginX
 QgsCallout.OriginX.is_monkey_patched = True
-QgsCallout.OriginX.__doc__ = "X-coordinate of callout origin (label anchor) (since QGIS 3.20)"
+QgsCallout.OriginX.__doc__ = "X-coordinate of callout origin (label anchor) \n.. versionadded:: 3.20"
 QgsCallout.OriginY = QgsCallout.Property.OriginY
 QgsCallout.OriginY.is_monkey_patched = True
-QgsCallout.OriginY.__doc__ = "Y-coordinate of callout origin (label anchor) (since QGIS 3.20)"
+QgsCallout.OriginY.__doc__ = "Y-coordinate of callout origin (label anchor) \n.. versionadded:: 3.20"
 QgsCallout.DestinationX = QgsCallout.Property.DestinationX
 QgsCallout.DestinationX.is_monkey_patched = True
-QgsCallout.DestinationX.__doc__ = "X-coordinate of callout destination (feature anchor) (since QGIS 3.20)"
+QgsCallout.DestinationX.__doc__ = "X-coordinate of callout destination (feature anchor) \n.. versionadded:: 3.20"
 QgsCallout.DestinationY = QgsCallout.Property.DestinationY
 QgsCallout.DestinationY.is_monkey_patched = True
-QgsCallout.DestinationY.__doc__ = "Y-coordinate of callout destination (feature anchor) (since QGIS 3.20)"
+QgsCallout.DestinationY.__doc__ = "Y-coordinate of callout destination (feature anchor) \n.. versionadded:: 3.20"
 QgsCallout.Curvature = QgsCallout.Property.Curvature
 QgsCallout.Curvature.is_monkey_patched = True
-QgsCallout.Curvature.__doc__ = "Curvature of curved line callouts (since QGIS 3.20)"
+QgsCallout.Curvature.__doc__ = "Curvature of curved line callouts \n.. versionadded:: 3.20"
 QgsCallout.Orientation = QgsCallout.Property.Orientation
 QgsCallout.Orientation.is_monkey_patched = True
-QgsCallout.Orientation.__doc__ = "Orientation of curved line callouts (since QGIS 3.20)"
+QgsCallout.Orientation.__doc__ = "Orientation of curved line callouts \n.. versionadded:: 3.20"
 QgsCallout.Margins = QgsCallout.Property.Margins
 QgsCallout.Margins.is_monkey_patched = True
-QgsCallout.Margins.__doc__ = "Margin from text (since QGIS 3.20)"
+QgsCallout.Margins.__doc__ = "Margin from text \n.. versionadded:: 3.20"
 QgsCallout.WedgeWidth = QgsCallout.Property.WedgeWidth
 QgsCallout.WedgeWidth.is_monkey_patched = True
-QgsCallout.WedgeWidth.__doc__ = "Balloon callout wedge width (since QGIS 3.20)"
+QgsCallout.WedgeWidth.__doc__ = "Balloon callout wedge width \n.. versionadded:: 3.20"
 QgsCallout.CornerRadius = QgsCallout.Property.CornerRadius
 QgsCallout.CornerRadius.is_monkey_patched = True
-QgsCallout.CornerRadius.__doc__ = "Balloon callout corner radius (since QGIS 3.20)"
+QgsCallout.CornerRadius.__doc__ = "Balloon callout corner radius \n.. versionadded:: 3.20"
 QgsCallout.BlendMode = QgsCallout.Property.BlendMode
 QgsCallout.BlendMode.is_monkey_patched = True
-QgsCallout.BlendMode.__doc__ = "Callout blend mode (since QGIS 3.20)"
+QgsCallout.BlendMode.__doc__ = "Callout blend mode \n.. versionadded:: 3.20"
 QgsCallout.Property.__doc__ = """Data definable properties.
 
 * ``MinimumCalloutLength``: Minimum length of callouts
@@ -56,16 +56,46 @@ QgsCallout.Property.__doc__ = """Data definable properties.
 * ``DrawCalloutToAllParts``: Whether callout lines should be drawn to all feature parts
 * ``AnchorPointPosition``: Feature's anchor point position
 * ``LabelAnchorPointPosition``: Label's anchor point position
-* ``OriginX``: X-coordinate of callout origin (label anchor) (since QGIS 3.20)
-* ``OriginY``: Y-coordinate of callout origin (label anchor) (since QGIS 3.20)
-* ``DestinationX``: X-coordinate of callout destination (feature anchor) (since QGIS 3.20)
-* ``DestinationY``: Y-coordinate of callout destination (feature anchor) (since QGIS 3.20)
-* ``Curvature``: Curvature of curved line callouts (since QGIS 3.20)
-* ``Orientation``: Orientation of curved line callouts (since QGIS 3.20)
-* ``Margins``: Margin from text (since QGIS 3.20)
-* ``WedgeWidth``: Balloon callout wedge width (since QGIS 3.20)
-* ``CornerRadius``: Balloon callout corner radius (since QGIS 3.20)
-* ``BlendMode``: Callout blend mode (since QGIS 3.20)
+* ``OriginX``: X-coordinate of callout origin (label anchor)
+
+  .. versionadded:: 3.20
+
+* ``OriginY``: Y-coordinate of callout origin (label anchor)
+
+  .. versionadded:: 3.20
+
+* ``DestinationX``: X-coordinate of callout destination (feature anchor)
+
+  .. versionadded:: 3.20
+
+* ``DestinationY``: Y-coordinate of callout destination (feature anchor)
+
+  .. versionadded:: 3.20
+
+* ``Curvature``: Curvature of curved line callouts
+
+  .. versionadded:: 3.20
+
+* ``Orientation``: Orientation of curved line callouts
+
+  .. versionadded:: 3.20
+
+* ``Margins``: Margin from text
+
+  .. versionadded:: 3.20
+
+* ``WedgeWidth``: Balloon callout wedge width
+
+  .. versionadded:: 3.20
+
+* ``CornerRadius``: Balloon callout corner radius
+
+  .. versionadded:: 3.20
+
+* ``BlendMode``: Callout blend mode
+
+  .. versionadded:: 3.20
+
 
 """
 # --

@@ -207,8 +207,8 @@ class CORE_EXPORT QgsStyle : public QObject
       SmartgroupEntity, //!< Smart groups
       TextFormatEntity, //!< Text formats
       LabelSettingsEntity, //!< Label settings
-      LegendPatchShapeEntity, //!< Legend patch shape (since QGIS 3.14)
-      Symbol3DEntity, //!< 3D symbol entity (since QGIS 3.14)
+      LegendPatchShapeEntity, //!< Legend patch shape \since QGIS 3.14
+      Symbol3DEntity, //!< 3D symbol entity \since QGIS 3.14
     };
 
     /**

@@ -35,7 +35,7 @@ QgsCodeEditorColorScheme.ColorRole.ErrorBackground.__doc__ = "Error background c
 QgsCodeEditorColorScheme.ColorRole.FoldIconForeground.__doc__ = "Fold icon foreground color"
 QgsCodeEditorColorScheme.ColorRole.FoldIconHalo.__doc__ = "Fold icon halo color"
 QgsCodeEditorColorScheme.ColorRole.IndentationGuide.__doc__ = "Indentation guide line"
-QgsCodeEditorColorScheme.ColorRole.SearchMatchBackground.__doc__ = "Background color for search matches (since QGIS 3.38)"
+QgsCodeEditorColorScheme.ColorRole.SearchMatchBackground.__doc__ = "Background color for search matches \n.. versionadded:: 3.38"
 QgsCodeEditorColorScheme.ColorRole.__doc__ = """Color roles.
 
 * ``Default``: Default text color
@@ -73,7 +73,10 @@ QgsCodeEditorColorScheme.ColorRole.__doc__ = """Color roles.
 * ``FoldIconForeground``: Fold icon foreground color
 * ``FoldIconHalo``: Fold icon halo color
 * ``IndentationGuide``: Indentation guide line
-* ``SearchMatchBackground``: Background color for search matches (since QGIS 3.38)
+* ``SearchMatchBackground``: Background color for search matches
+
+  .. versionadded:: 3.38
+
 
 """
 # --

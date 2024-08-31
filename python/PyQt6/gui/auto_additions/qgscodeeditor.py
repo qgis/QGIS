@@ -39,13 +39,16 @@ This enum contains the roles which the different numbered margins are used for.
 QgsCodeEditor.MarginRole.baseClass = QgsCodeEditor
 # monkey patching scoped based enum
 QgsCodeEditor.Flag.CodeFolding.__doc__ = "Indicates that code folding should be enabled for the editor"
-QgsCodeEditor.Flag.ImmediatelyUpdateHistory.__doc__ = "Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close. Since QGIS 3.32."
+QgsCodeEditor.Flag.ImmediatelyUpdateHistory.__doc__ = "Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close \n.. versionadded:: 3.32"
 QgsCodeEditor.Flag.__doc__ = """Flags controlling behavior of code editor
 
 .. versionadded:: 3.28
 
 * ``CodeFolding``: Indicates that code folding should be enabled for the editor
-* ``ImmediatelyUpdateHistory``: Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close. Since QGIS 3.32.
+* ``ImmediatelyUpdateHistory``: Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close
+
+  .. versionadded:: 3.32
+
 
 """
 # --

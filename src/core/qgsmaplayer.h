@@ -180,10 +180,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
       CustomProperties   = 1 << 11, //!< Custom properties (by plugins for instance)
       GeometryOptions    = 1 << 12, //!< Geometry validation configuration
       Relations          = 1 << 13, //!< Relations
-      Temporal           = 1 << 14, //!< Temporal properties (since QGIS 3.14)
-      Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
-      Elevation          = 1 << 16, //!< Elevation settings (since QGIS 3.18)
-      Notes              = 1 << 17, //!< Layer user notes (since QGIS 3.20)
+      Temporal           = 1 << 14, //!< Temporal properties \since QGIS 3.14
+      Legend             = 1 << 15, //!< Legend settings \since QGIS 3.16
+      Elevation          = 1 << 16, //!< Elevation settings \since QGIS 3.18
+      Notes              = 1 << 17, //!< Layer user notes \since QGIS 3.20
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
                            MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
@@ -642,7 +642,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     enum ReadFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
-      FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
+      FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load \since QGIS 3.16
       FlagReadExtentFromXml = 1 << 2, //!< Read extent from xml and skip get extent from provider.
       FlagForceReadOnly = 1 << 3, //!< Force open as read only.
     };

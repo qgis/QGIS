@@ -202,16 +202,16 @@ class CORE_EXPORT QgsSymbolLayer
       FontFamily SIP_MONKEYPATCH_COMPAT_NAME( PropertyFontFamily ), //!< Font family
       FontStyle SIP_MONKEYPATCH_COMPAT_NAME( PropertyFontStyle ), //!< Font style
       DashPatternOffset SIP_MONKEYPATCH_COMPAT_NAME( PropertyDashPatternOffset ), //!< Dash pattern offset,
-      TrimStart SIP_MONKEYPATCH_COMPAT_NAME( PropertyTrimStart ), //!< Trim distance from start of line (since QGIS 3.20)
-      TrimEnd SIP_MONKEYPATCH_COMPAT_NAME( PropertyTrimEnd ), //!< Trim distance from end of line (since QGIS 3.20)
-      LineStartWidthValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineStartWidthValue ), //!< Start line width for interpolated line renderer (since QGIS 3.22)
-      LineEndWidthValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineEndWidthValue ), //!< End line width for interpolated line renderer (since QGIS 3.22)
-      LineStartColorValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineStartColorValue ), //!< Start line color for interpolated line renderer (since QGIS 3.22)
-      LineEndColorValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineEndColorValue ), //!< End line color for interpolated line renderer (since QGIS 3.22)
-      MarkerClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyMarkerClipping ), //!< Marker clipping mode (since QGIS 3.24)
-      RandomOffsetX SIP_MONKEYPATCH_COMPAT_NAME( PropertyRandomOffsetX ), //!< Random offset X (since QGIS 3.24)
-      RandomOffsetY SIP_MONKEYPATCH_COMPAT_NAME( PropertyRandomOffsetY ), //!< Random offset Y (since QGIS 3.24)
-      LineClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineClipping ), //!< Line clipping mode (since QGIS 3.24)
+      TrimStart SIP_MONKEYPATCH_COMPAT_NAME( PropertyTrimStart ), //!< Trim distance from start of line \since QGIS 3.20
+      TrimEnd SIP_MONKEYPATCH_COMPAT_NAME( PropertyTrimEnd ), //!< Trim distance from end of line \since QGIS 3.20
+      LineStartWidthValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineStartWidthValue ), //!< Start line width for interpolated line renderer \since QGIS 3.22
+      LineEndWidthValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineEndWidthValue ), //!< End line width for interpolated line renderer \since QGIS 3.22
+      LineStartColorValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineStartColorValue ), //!< Start line color for interpolated line renderer \since QGIS 3.22
+      LineEndColorValue SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineEndColorValue ), //!< End line color for interpolated line renderer \since QGIS 3.22
+      MarkerClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyMarkerClipping ), //!< Marker clipping mode \since QGIS 3.24
+      RandomOffsetX SIP_MONKEYPATCH_COMPAT_NAME( PropertyRandomOffsetX ), //!< Random offset X \since QGIS 3.24
+      RandomOffsetY SIP_MONKEYPATCH_COMPAT_NAME( PropertyRandomOffsetY ), //!< Random offset Y \since QGIS 3.24
+      LineClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineClipping ), //!< Line clipping mode \since QGIS 3.24
     };
     // *INDENT-ON*
 

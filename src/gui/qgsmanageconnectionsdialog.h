@@ -52,9 +52,9 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       ArcgisMapServer, // TODO QGIS 4: remove
       ArcgisFeatureServer,
       VectorTile,
-      TiledScene, //!< Tiled scene connection (since QGIS 3.34)
-      SensorThings, //!< SensorThings connections (since QGIS 3.36)
-      CloudStorage, //!< Cloud storage connections (since QGIS 3.40)
+      TiledScene, //!< Tiled scene connection \since QGIS 3.34
+      SensorThings, //!< SensorThings connections \since QGIS 3.36
+      CloudStorage, //!< Cloud storage connections \since QGIS 3.40
     };
 
     /**
