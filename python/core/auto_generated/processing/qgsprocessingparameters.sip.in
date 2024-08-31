@@ -1484,7 +1484,7 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of strings (e.g. field names or point cloud attributes).
 
-.. versionadded:: 3.32.
+.. versionadded:: 3.32
 %End
 
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );

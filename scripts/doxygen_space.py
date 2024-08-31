@@ -64,6 +64,11 @@ def process_file(file_path):
             prefix, first, remaining = match.groups()
             line = f'{prefix}//!< {first.upper()}{remaining}'
 
+        if match := re.match(r'^(.*)\\since (?:QGIS )?(\d+\.\d+(?:\.\d+)?)[.]?$', line):
+            # Standard since annotation
+            prefix, version = match.groups()
+            line = f'{prefix}\\since QGIS {version}'
+
         if match := re.match(r'^(\s*)//!\s*(.*?)$', line):
             indentation, comment = match.groups()
             # found a //! comment

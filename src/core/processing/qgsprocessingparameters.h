@@ -1580,7 +1580,7 @@ class CORE_EXPORT QgsProcessingParameters
     /**
      * Evaluates the parameter with matching \a definition to a list of strings (e.g. field names or point cloud attributes).
      *
-     * \since QGIS 3.32.
+     * \since QGIS 3.32
      */
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 

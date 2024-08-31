@@ -40,7 +40,7 @@ New dialog constructor.
 
    Earlier versions had a similar constructor but with extra arguments for ``regexp`` which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use :py:func:`~QgsNewNameDialog.setRegularExpression` instead.
 
-.. versionadded:: 3.22.
+.. versionadded:: 3.22
 %End
 
     void setHintString( const QString &hintString );
