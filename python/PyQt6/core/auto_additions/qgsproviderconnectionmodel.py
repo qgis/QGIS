@@ -17,6 +17,19 @@ QgsProviderConnectionModel.RoleEmpty = QgsProviderConnectionModel.CustomRole.Emp
 QgsProviderConnectionModel.Role.RoleEmpty = QgsProviderConnectionModel.CustomRole.Empty
 QgsProviderConnectionModel.RoleEmpty.is_monkey_patched = True
 QgsProviderConnectionModel.RoleEmpty.__doc__ = "Entry is an empty entry"
-QgsProviderConnectionModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsProviderConnectionModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``RoleConnectionName``: ' + QgsProviderConnectionModel.CustomRole.ConnectionName.__doc__ + '\n' + '* ``RoleUri``: ' + QgsProviderConnectionModel.CustomRole.Uri.__doc__ + '\n' + '* ``RoleConfiguration``: ' + QgsProviderConnectionModel.CustomRole.Configuration.__doc__ + '\n' + '* ``RoleEmpty``: ' + QgsProviderConnectionModel.CustomRole.Empty.__doc__
+QgsProviderConnectionModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsProviderConnectionModel.Role
+
+.. versionadded:: 3.36
+
+* ``RoleConnectionName``: Connection name
+* ``RoleUri``: Connection URI string
+* ``RoleConfiguration``: Connection configuration variant map
+* ``RoleEmpty``: Entry is an empty entry
+
+"""
 # --
 QgsProviderConnectionModel.CustomRole.baseClass = QgsProviderConnectionModel

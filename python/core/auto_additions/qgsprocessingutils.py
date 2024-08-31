@@ -24,7 +24,20 @@ QgsProcessingUtils.LayerHint.VectorTile.__doc__ = "Vector tile layer type, since
 QgsProcessingUtils.TiledScene = QgsProcessingUtils.LayerHint.TiledScene
 QgsProcessingUtils.TiledScene.is_monkey_patched = True
 QgsProcessingUtils.LayerHint.TiledScene.__doc__ = "Tiled scene layer type, since QGIS 3.34"
-QgsProcessingUtils.LayerHint.__doc__ = "Layer type hints.\n\n.. versionadded:: 3.4\n\n" + '* ``UnknownType``: ' + QgsProcessingUtils.LayerHint.UnknownType.__doc__ + '\n' + '* ``Vector``: ' + QgsProcessingUtils.LayerHint.Vector.__doc__ + '\n' + '* ``Raster``: ' + QgsProcessingUtils.LayerHint.Raster.__doc__ + '\n' + '* ``Mesh``: ' + QgsProcessingUtils.LayerHint.Mesh.__doc__ + '\n' + '* ``PointCloud``: ' + QgsProcessingUtils.LayerHint.PointCloud.__doc__ + '\n' + '* ``Annotation``: ' + QgsProcessingUtils.LayerHint.Annotation.__doc__ + '\n' + '* ``VectorTile``: ' + QgsProcessingUtils.LayerHint.VectorTile.__doc__ + '\n' + '* ``TiledScene``: ' + QgsProcessingUtils.LayerHint.TiledScene.__doc__
+QgsProcessingUtils.LayerHint.__doc__ = """Layer type hints.
+
+.. versionadded:: 3.4
+
+* ``UnknownType``: Unknown layer type
+* ``Vector``: Vector layer type
+* ``Raster``: Raster layer type
+* ``Mesh``: Mesh layer type, since QGIS 3.6
+* ``PointCloud``: Point cloud layer type, since QGIS 3.22
+* ``Annotation``: Annotation layer type, since QGIS 3.22
+* ``VectorTile``: Vector tile layer type, since QGIS 3.32
+* ``TiledScene``: Tiled scene layer type, since QGIS 3.34
+
+"""
 # --
 QgsProcessingUtils.LayerHint.baseClass = QgsProcessingUtils
 QgsProcessingUtils.compatibleRasterLayers = staticmethod(QgsProcessingUtils.compatibleRasterLayers)

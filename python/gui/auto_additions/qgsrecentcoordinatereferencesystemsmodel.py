@@ -9,7 +9,12 @@ QgsRecentCoordinateReferenceSystemsModel.RoleAuthId = QgsRecentCoordinateReferen
 QgsRecentCoordinateReferenceSystemsModel.Roles.RoleAuthId = QgsRecentCoordinateReferenceSystemsModel.CustomRole.AuthId
 QgsRecentCoordinateReferenceSystemsModel.RoleAuthId.is_monkey_patched = True
 QgsRecentCoordinateReferenceSystemsModel.RoleAuthId.__doc__ = "CRS authority ID"
-QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = "Custom model roles.\n\n" + '* ``RoleCrs``: ' + QgsRecentCoordinateReferenceSystemsModel.CustomRole.Crs.__doc__ + '\n' + '* ``RoleAuthId``: ' + QgsRecentCoordinateReferenceSystemsModel.CustomRole.AuthId.__doc__
+QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = """Custom model roles.
+
+* ``RoleCrs``: Coordinate reference system
+* ``RoleAuthId``: CRS authority ID
+
+"""
 # --
 QgsRecentCoordinateReferenceSystemsModel.CustomRole.baseClass = QgsRecentCoordinateReferenceSystemsModel
 try:

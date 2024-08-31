@@ -1936,6 +1936,24 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             f"{CONTEXT.actual_class}::{enum_qualname} is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line")
 
                 if is_scope_based and enum_member:
+                    value_comment_parts = value_comment.replace('\\n', '\n').split('\n')
+                    value_comment_indented = ''
+                    for part_idx, part in enumerate(value_comment_parts):
+                        if part_idx == 0:
+                            if part.strip().startswith('..'):
+                                exit_with_error(f'Enum member description missing for {CONTEXT.actual_class}::{enum_qualname}')
+                            value_comment_indented += part.rstrip()
+                        else:
+                            if part.startswith(".."):
+                                value_comment_indented += "\n"
+
+                            value_comment_indented += '  ' + part.rstrip()
+                            if part.startswith(".."):
+                                value_comment_indented += "\n"
+
+                        if part_idx < len(value_comment_parts) - 1:
+                            value_comment_indented += '\n'
+
                     if monkeypatch and enum_mk_base:
                         if CONTEXT.actual_class:
                             CONTEXT.output_python.append(
@@ -1948,7 +1966,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"'* ``{compat_name}``: ' + {CONTEXT.actual_class}.{enum_qualname}.{enum_member}.__doc__")
+                                f"* ``{compat_name}``: {value_comment_indented}")
                         else:
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name} = {enum_qualname}.{enum_member}\n")
@@ -1957,7 +1975,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
+                                f"* ``{compat_name}``: {value_comment_indented}")
                     else:
                         if monkeypatch:
                             CONTEXT.output_python.append(
@@ -1969,12 +1987,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             CONTEXT.output_python.append(
                                 f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"'* ``{compat_name}``: ' + {CONTEXT.actual_class}.{enum_qualname}.{enum_member}.__doc__")
+                                f"* ``{compat_name}``: {value_comment_indented}")
                         else:
                             CONTEXT.output_python.append(
                                 f"{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"'* ``{compat_name}``: ' + {enum_qualname}.{enum_member}.__doc__")
+                                f"* ``{compat_name}``: {value_comment_indented}")
 
                 if not is_scope_based and CONTEXT.is_qt6 and enum_member:
                     basename = '.'.join(CONTEXT.class_and_struct)
@@ -1991,17 +2009,13 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             write_output("ENU4", f"{CONTEXT.current_line}\n")
 
             if is_scope_based:
-                CONTEXT.comment = CONTEXT.comment.replace('\n', '\\n').replace(
-                    '"', '\\"')
-
+                enum_member_doc_string = "\n".join(enum_members_doc)
                 if CONTEXT.actual_class:
                     CONTEXT.output_python.append(
-                        f'{CONTEXT.actual_class}.{enum_qualname}.__doc__ = "{CONTEXT.comment}\\n\\n" + ' +
-                        " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
+                        f'{CONTEXT.actual_class}.{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
                 else:
                     CONTEXT.output_python.append(
-                        f'{enum_qualname}.__doc__ = \'{CONTEXT.comment}\\n\\n\' + ' +
-                        " + '\\n' + ".join(enum_members_doc) + '\n# --\n')
+                        f'{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
 
             # enums don't have Docstring apparently
             CONTEXT.comment = ''

@@ -5,7 +5,17 @@ QgsLayoutManagerModel.LayoutRole = QgsLayoutManagerModel.CustomRole.Layout
 QgsLayoutManagerModel.Role.LayoutRole = QgsLayoutManagerModel.CustomRole.Layout
 QgsLayoutManagerModel.LayoutRole.is_monkey_patched = True
 QgsLayoutManagerModel.LayoutRole.__doc__ = "Layout object"
-QgsLayoutManagerModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsLayoutManagerModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``LayoutRole``: ' + QgsLayoutManagerModel.CustomRole.Layout.__doc__
+QgsLayoutManagerModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsLayoutManagerModel.Role
+
+.. versionadded:: 3.36
+
+* ``LayoutRole``: Layout object
+
+"""
 # --
 QgsLayoutManagerModel.CustomRole.baseClass = QgsLayoutManagerModel
 QgsLayoutManagerProxyModel.FilterPrintLayouts = QgsLayoutManagerProxyModel.Filter.FilterPrintLayouts

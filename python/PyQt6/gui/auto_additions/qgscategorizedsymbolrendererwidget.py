@@ -5,7 +5,17 @@ QgsCategorizedSymbolRendererWidget.ValueRole = QgsCategorizedSymbolRendererWidge
 QgsCategorizedSymbolRendererWidget.CustomRoles.ValueRole = QgsCategorizedSymbolRendererWidget.CustomRole.Value
 QgsCategorizedSymbolRendererWidget.ValueRole.is_monkey_patched = True
 QgsCategorizedSymbolRendererWidget.ValueRole.__doc__ = "Category value"
-QgsCategorizedSymbolRendererWidget.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsCategorizedSymbolRendererWidget.CustomRoles\n\n.. versionadded:: 3.36\n\n" + '* ``ValueRole``: ' + QgsCategorizedSymbolRendererWidget.CustomRole.Value.__doc__
+QgsCategorizedSymbolRendererWidget.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsCategorizedSymbolRendererWidget.CustomRoles
+
+.. versionadded:: 3.36
+
+* ``ValueRole``: Category value
+
+"""
 # --
 QgsCategorizedSymbolRendererWidget.CustomRole.baseClass = QgsCategorizedSymbolRendererWidget
 QgsCategorizedSymbolRendererWidget.create = staticmethod(QgsCategorizedSymbolRendererWidget.create)
