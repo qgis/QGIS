@@ -108,7 +108,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a checkbox
       AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
       ActionHierarchical         = 0x10000, //!< Check/uncheck action has consequences on children (or parents for leaf node)
-      UseThreadedHitTest         = 0x20000, //!< Run legend hit tests in a background thread (since QGIS 3.30)
+      UseThreadedHitTest         = 0x20000, //!< Run legend hit tests in a background thread \since QGIS 3.30
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

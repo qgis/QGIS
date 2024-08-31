@@ -11,7 +11,7 @@ QgsStyleModel.TagRole.is_monkey_patched = True
 QgsStyleModel.TagRole.__doc__ = "String list of tags"
 QgsStyleModel.EntityName = QgsStyleModel.CustomRole.EntityName
 QgsStyleModel.EntityName.is_monkey_patched = True
-QgsStyleModel.EntityName.__doc__ = "Entity name (since QGIS 3.26)"
+QgsStyleModel.EntityName.__doc__ = "Entity name \n.. versionadded:: 3.26"
 QgsStyleModel.SymbolTypeRole = QgsStyleModel.CustomRole.SymbolType
 QgsStyleModel.Role.SymbolTypeRole = QgsStyleModel.CustomRole.SymbolType
 QgsStyleModel.SymbolTypeRole.is_monkey_patched = True
@@ -30,14 +30,14 @@ QgsStyleModel.CompatibleGeometryTypesRole.is_monkey_patched = True
 QgsStyleModel.CompatibleGeometryTypesRole.__doc__ = "Compatible layer geometry types (for 3D symbols)"
 QgsStyleModel.StyleName = QgsStyleModel.CustomRole.StyleName
 QgsStyleModel.StyleName.is_monkey_patched = True
-QgsStyleModel.StyleName.__doc__ = "Name of associated QgsStyle (QgsStyle.name()) (since QGIS 3.26)"
+QgsStyleModel.StyleName.__doc__ = "Name of associated QgsStyle (QgsStyle.name()) \n.. versionadded:: 3.26"
 QgsStyleModel.StyleFileName = QgsStyleModel.CustomRole.StyleFileName
 QgsStyleModel.StyleFileName.is_monkey_patched = True
-QgsStyleModel.StyleFileName.__doc__ = "File name of associated QgsStyle (QgsStyle.fileName()) (since QGIS 3.26)"
+QgsStyleModel.StyleFileName.__doc__ = "File name of associated QgsStyle (QgsStyle.fileName()) \n.. versionadded:: 3.26"
 QgsStyleModel.IsTitleRole = QgsStyleModel.CustomRole.IsTitle
 QgsStyleModel.Role.IsTitleRole = QgsStyleModel.CustomRole.IsTitle
 QgsStyleModel.IsTitleRole.is_monkey_patched = True
-QgsStyleModel.IsTitleRole.__doc__ = "True if the index corresponds to a title item (since QGIS 3.26)"
+QgsStyleModel.IsTitleRole.__doc__ = "True if the index corresponds to a title item \n.. versionadded:: 3.26"
 QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -48,14 +48,26 @@ QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 
 * ``TypeRole``: Style entity type, see QgsStyle.StyleEntity
 * ``TagRole``: String list of tags
-* ``EntityName``: Entity name (since QGIS 3.26)
+* ``EntityName``: Entity name
+
+  .. versionadded:: 3.26
+
 * ``SymbolTypeRole``: Symbol type (for symbol or legend patch shape entities)
 * ``IsFavoriteRole``: Whether entity is flagged as a favorite
 * ``LayerTypeRole``: Layer type (for label settings entities)
 * ``CompatibleGeometryTypesRole``: Compatible layer geometry types (for 3D symbols)
-* ``StyleName``: Name of associated QgsStyle (QgsStyle.name()) (since QGIS 3.26)
-* ``StyleFileName``: File name of associated QgsStyle (QgsStyle.fileName()) (since QGIS 3.26)
-* ``IsTitleRole``: True if the index corresponds to a title item (since QGIS 3.26)
+* ``StyleName``: Name of associated QgsStyle (QgsStyle.name())
+
+  .. versionadded:: 3.26
+
+* ``StyleFileName``: File name of associated QgsStyle (QgsStyle.fileName())
+
+  .. versionadded:: 3.26
+
+* ``IsTitleRole``: True if the index corresponds to a title item
+
+  .. versionadded:: 3.26
+
 
 """
 # --

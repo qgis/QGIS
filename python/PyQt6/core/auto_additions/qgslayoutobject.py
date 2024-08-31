@@ -62,16 +62,16 @@ QgsLayoutObject.BackgroundColor.is_monkey_patched = True
 QgsLayoutObject.BackgroundColor.__doc__ = "Item background color"
 QgsLayoutObject.MarginLeft = QgsLayoutObject.DataDefinedProperty.MarginLeft
 QgsLayoutObject.MarginLeft.is_monkey_patched = True
-QgsLayoutObject.MarginLeft.__doc__ = "Left margin (since QGIS 3.30)"
+QgsLayoutObject.MarginLeft.__doc__ = "Left margin \n.. versionadded:: 3.30"
 QgsLayoutObject.MarginTop = QgsLayoutObject.DataDefinedProperty.MarginTop
 QgsLayoutObject.MarginTop.is_monkey_patched = True
-QgsLayoutObject.MarginTop.__doc__ = "Top margin (since QGIS 3.30)"
+QgsLayoutObject.MarginTop.__doc__ = "Top margin \n.. versionadded:: 3.30"
 QgsLayoutObject.MarginRight = QgsLayoutObject.DataDefinedProperty.MarginRight
 QgsLayoutObject.MarginRight.is_monkey_patched = True
-QgsLayoutObject.MarginRight.__doc__ = "Right margin (since QGIS 3.30)"
+QgsLayoutObject.MarginRight.__doc__ = "Right margin \n.. versionadded:: 3.30"
 QgsLayoutObject.MarginBottom = QgsLayoutObject.DataDefinedProperty.MarginBottom
 QgsLayoutObject.MarginBottom.is_monkey_patched = True
-QgsLayoutObject.MarginBottom.__doc__ = "Bottom margin (since QGIS 3.30)"
+QgsLayoutObject.MarginBottom.__doc__ = "Bottom margin \n.. versionadded:: 3.30"
 QgsLayoutObject.MapRotation = QgsLayoutObject.DataDefinedProperty.MapRotation
 QgsLayoutObject.MapRotation.is_monkey_patched = True
 QgsLayoutObject.MapRotation.__doc__ = "Map rotation"
@@ -167,10 +167,10 @@ QgsLayoutObject.EndDateTime.is_monkey_patched = True
 QgsLayoutObject.EndDateTime.__doc__ = "Temporal range's end DateTime"
 QgsLayoutObject.MapZRangeLower = QgsLayoutObject.DataDefinedProperty.MapZRangeLower
 QgsLayoutObject.MapZRangeLower.is_monkey_patched = True
-QgsLayoutObject.MapZRangeLower.__doc__ = "Map frame Z-range lower value (since QGIS 3.38)"
+QgsLayoutObject.MapZRangeLower.__doc__ = "Map frame Z-range lower value \n.. versionadded:: 3.38"
 QgsLayoutObject.MapZRangeUpper = QgsLayoutObject.DataDefinedProperty.MapZRangeUpper
 QgsLayoutObject.MapZRangeUpper.is_monkey_patched = True
-QgsLayoutObject.MapZRangeUpper.__doc__ = "Map frame Z-range lower value (since QGIS 3.38)"
+QgsLayoutObject.MapZRangeUpper.__doc__ = "Map frame Z-range lower value \n.. versionadded:: 3.38"
 QgsLayoutObject.PictureSource = QgsLayoutObject.DataDefinedProperty.PictureSource
 QgsLayoutObject.PictureSource.is_monkey_patched = True
 QgsLayoutObject.PictureSource.__doc__ = "Picture source url"
@@ -194,28 +194,28 @@ QgsLayoutObject.LegendColumnCount.is_monkey_patched = True
 QgsLayoutObject.LegendColumnCount.__doc__ = "Legend column count"
 QgsLayoutObject.ScalebarLeftSegments = QgsLayoutObject.DataDefinedProperty.ScalebarLeftSegments
 QgsLayoutObject.ScalebarLeftSegments.is_monkey_patched = True
-QgsLayoutObject.ScalebarLeftSegments.__doc__ = "Number of segments on the left of 0 (since QGIS 3.26)"
+QgsLayoutObject.ScalebarLeftSegments.__doc__ = "Number of segments on the left of 0 \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarRightSegments = QgsLayoutObject.DataDefinedProperty.ScalebarRightSegments
 QgsLayoutObject.ScalebarRightSegments.is_monkey_patched = True
-QgsLayoutObject.ScalebarRightSegments.__doc__ = "Number of segments on the right of 0 (since QGIS 3.26)"
+QgsLayoutObject.ScalebarRightSegments.__doc__ = "Number of segments on the right of 0 \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarSegmentWidth = QgsLayoutObject.DataDefinedProperty.ScalebarSegmentWidth
 QgsLayoutObject.ScalebarSegmentWidth.is_monkey_patched = True
-QgsLayoutObject.ScalebarSegmentWidth.__doc__ = "Scalebar width in map units of a single segment (since QGIS 3.26)"
+QgsLayoutObject.ScalebarSegmentWidth.__doc__ = "Scalebar width in map units of a single segment \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarMinimumWidth = QgsLayoutObject.DataDefinedProperty.ScalebarMinimumWidth
 QgsLayoutObject.ScalebarMinimumWidth.is_monkey_patched = True
-QgsLayoutObject.ScalebarMinimumWidth.__doc__ = "Scalebar segment minimum width (since QGIS 3.26)"
+QgsLayoutObject.ScalebarMinimumWidth.__doc__ = "Scalebar segment minimum width \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarMaximumWidth = QgsLayoutObject.DataDefinedProperty.ScalebarMaximumWidth
 QgsLayoutObject.ScalebarMaximumWidth.is_monkey_patched = True
-QgsLayoutObject.ScalebarMaximumWidth.__doc__ = "Scalebar segment maximum width (since QGIS 3.26)"
+QgsLayoutObject.ScalebarMaximumWidth.__doc__ = "Scalebar segment maximum width \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarHeight = QgsLayoutObject.DataDefinedProperty.ScalebarHeight
 QgsLayoutObject.ScalebarHeight.is_monkey_patched = True
-QgsLayoutObject.ScalebarHeight.__doc__ = "Scalebar height (since QGIS 3.26)"
+QgsLayoutObject.ScalebarHeight.__doc__ = "Scalebar height \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarRightSegmentSubdivisions = QgsLayoutObject.DataDefinedProperty.ScalebarRightSegmentSubdivisions
 QgsLayoutObject.ScalebarRightSegmentSubdivisions.is_monkey_patched = True
-QgsLayoutObject.ScalebarRightSegmentSubdivisions.__doc__ = "Number of subdivisions per segment on right of 0 (since QGIS 3.26)"
+QgsLayoutObject.ScalebarRightSegmentSubdivisions.__doc__ = "Number of subdivisions per segment on right of 0 \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarSubdivisionHeight = QgsLayoutObject.DataDefinedProperty.ScalebarSubdivisionHeight
 QgsLayoutObject.ScalebarSubdivisionHeight.is_monkey_patched = True
-QgsLayoutObject.ScalebarSubdivisionHeight.__doc__ = "Scalebar subdivision height (since QGIS 3.26)"
+QgsLayoutObject.ScalebarSubdivisionHeight.__doc__ = "Scalebar subdivision height \n.. versionadded:: 3.26"
 QgsLayoutObject.ScalebarFillColor = QgsLayoutObject.DataDefinedProperty.ScalebarFillColor
 QgsLayoutObject.ScalebarFillColor.is_monkey_patched = True
 QgsLayoutObject.ScalebarFillColor.__doc__ = "Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)"
@@ -233,37 +233,37 @@ QgsLayoutObject.AttributeTableSourceLayer.is_monkey_patched = True
 QgsLayoutObject.AttributeTableSourceLayer.__doc__ = "Attribute table source layer"
 QgsLayoutObject.ElevationProfileTolerance = QgsLayoutObject.DataDefinedProperty.ElevationProfileTolerance
 QgsLayoutObject.ElevationProfileTolerance.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileTolerance.__doc__ = "Tolerance distance for elevation profiles (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileTolerance.__doc__ = "Tolerance distance for elevation profiles \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileDistanceMajorInterval = QgsLayoutObject.DataDefinedProperty.ElevationProfileDistanceMajorInterval
 QgsLayoutObject.ElevationProfileDistanceMajorInterval.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileDistanceMajorInterval.__doc__ = "Major grid line interval for elevation profile distance axis (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileDistanceMajorInterval.__doc__ = "Major grid line interval for elevation profile distance axis \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileDistanceMinorInterval = QgsLayoutObject.DataDefinedProperty.ElevationProfileDistanceMinorInterval
 QgsLayoutObject.ElevationProfileDistanceMinorInterval.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileDistanceMinorInterval.__doc__ = "Minor grid line interval for elevation profile distance axis (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileDistanceMinorInterval.__doc__ = "Minor grid line interval for elevation profile distance axis \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileDistanceLabelInterval = QgsLayoutObject.DataDefinedProperty.ElevationProfileDistanceLabelInterval
 QgsLayoutObject.ElevationProfileDistanceLabelInterval.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileDistanceLabelInterval.__doc__ = "Label interval for elevation profile distance axis (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileDistanceLabelInterval.__doc__ = "Label interval for elevation profile distance axis \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileElevationMajorInterval = QgsLayoutObject.DataDefinedProperty.ElevationProfileElevationMajorInterval
 QgsLayoutObject.ElevationProfileElevationMajorInterval.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileElevationMajorInterval.__doc__ = "Major grid line interval for elevation profile elevation axis (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileElevationMajorInterval.__doc__ = "Major grid line interval for elevation profile elevation axis \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileElevationMinorInterval = QgsLayoutObject.DataDefinedProperty.ElevationProfileElevationMinorInterval
 QgsLayoutObject.ElevationProfileElevationMinorInterval.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileElevationMinorInterval.__doc__ = "Minor grid line interval for elevation profile elevation axis (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileElevationMinorInterval.__doc__ = "Minor grid line interval for elevation profile elevation axis \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileElevationLabelInterval = QgsLayoutObject.DataDefinedProperty.ElevationProfileElevationLabelInterval
 QgsLayoutObject.ElevationProfileElevationLabelInterval.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileElevationLabelInterval.__doc__ = "Label interval for elevation profile elevation axis (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileElevationLabelInterval.__doc__ = "Label interval for elevation profile elevation axis \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileMinimumDistance = QgsLayoutObject.DataDefinedProperty.ElevationProfileMinimumDistance
 QgsLayoutObject.ElevationProfileMinimumDistance.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileMinimumDistance.__doc__ = "Minimum distance value for elevation profile (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileMinimumDistance.__doc__ = "Minimum distance value for elevation profile \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileMaximumDistance = QgsLayoutObject.DataDefinedProperty.ElevationProfileMaximumDistance
 QgsLayoutObject.ElevationProfileMaximumDistance.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileMaximumDistance.__doc__ = "Maximum distance value for elevation profile (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileMaximumDistance.__doc__ = "Maximum distance value for elevation profile \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileMinimumElevation = QgsLayoutObject.DataDefinedProperty.ElevationProfileMinimumElevation
 QgsLayoutObject.ElevationProfileMinimumElevation.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileMinimumElevation.__doc__ = "Minimum elevation value for elevation profile (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileMinimumElevation.__doc__ = "Minimum elevation value for elevation profile \n.. versionadded:: 3.30"
 QgsLayoutObject.ElevationProfileMaximumElevation = QgsLayoutObject.DataDefinedProperty.ElevationProfileMaximumElevation
 QgsLayoutObject.ElevationProfileMaximumElevation.is_monkey_patched = True
-QgsLayoutObject.ElevationProfileMaximumElevation.__doc__ = "Maximum elevation value for elevation profile (since QGIS 3.30)"
+QgsLayoutObject.ElevationProfileMaximumElevation.__doc__ = "Maximum elevation value for elevation profile \n.. versionadded:: 3.30"
 QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for different item types
 
 * ``NoProperty``: No property
@@ -286,10 +286,22 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for dif
 * ``ExcludeFromExports``: Exclude item from exports
 * ``FrameColor``: Item frame color
 * ``BackgroundColor``: Item background color
-* ``MarginLeft``: Left margin (since QGIS 3.30)
-* ``MarginTop``: Top margin (since QGIS 3.30)
-* ``MarginRight``: Right margin (since QGIS 3.30)
-* ``MarginBottom``: Bottom margin (since QGIS 3.30)
+* ``MarginLeft``: Left margin
+
+  .. versionadded:: 3.30
+
+* ``MarginTop``: Top margin
+
+  .. versionadded:: 3.30
+
+* ``MarginRight``: Right margin
+
+  .. versionadded:: 3.30
+
+* ``MarginBottom``: Bottom margin
+
+  .. versionadded:: 3.30
+
 * ``MapRotation``: Map rotation
 * ``MapScale``: Map scale
 * ``MapXMin``: Map extent x minimum
@@ -321,8 +333,14 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for dif
 * ``MapCrs``: Map CRS
 * ``StartDateTime``: Temporal range's start DateTime
 * ``EndDateTime``: Temporal range's end DateTime
-* ``MapZRangeLower``: Map frame Z-range lower value (since QGIS 3.38)
-* ``MapZRangeUpper``: Map frame Z-range lower value (since QGIS 3.38)
+* ``MapZRangeLower``: Map frame Z-range lower value
+
+  .. versionadded:: 3.38
+
+* ``MapZRangeUpper``: Map frame Z-range lower value
+
+  .. versionadded:: 3.38
+
 * ``PictureSource``: Picture source url
 * ``PictureSvgBackgroundColor``: SVG background color
 * ``PictureSvgStrokeColor``: SVG stroke color
@@ -330,30 +348,87 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for dif
 * ``SourceUrl``: Html source url
 * ``LegendTitle``: Legend title
 * ``LegendColumnCount``: Legend column count
-* ``ScalebarLeftSegments``: Number of segments on the left of 0 (since QGIS 3.26)
-* ``ScalebarRightSegments``: Number of segments on the right of 0 (since QGIS 3.26)
-* ``ScalebarSegmentWidth``: Scalebar width in map units of a single segment (since QGIS 3.26)
-* ``ScalebarMinimumWidth``: Scalebar segment minimum width (since QGIS 3.26)
-* ``ScalebarMaximumWidth``: Scalebar segment maximum width (since QGIS 3.26)
-* ``ScalebarHeight``: Scalebar height (since QGIS 3.26)
-* ``ScalebarRightSegmentSubdivisions``: Number of subdivisions per segment on right of 0 (since QGIS 3.26)
-* ``ScalebarSubdivisionHeight``: Scalebar subdivision height (since QGIS 3.26)
+* ``ScalebarLeftSegments``: Number of segments on the left of 0
+
+  .. versionadded:: 3.26
+
+* ``ScalebarRightSegments``: Number of segments on the right of 0
+
+  .. versionadded:: 3.26
+
+* ``ScalebarSegmentWidth``: Scalebar width in map units of a single segment
+
+  .. versionadded:: 3.26
+
+* ``ScalebarMinimumWidth``: Scalebar segment minimum width
+
+  .. versionadded:: 3.26
+
+* ``ScalebarMaximumWidth``: Scalebar segment maximum width
+
+  .. versionadded:: 3.26
+
+* ``ScalebarHeight``: Scalebar height
+
+  .. versionadded:: 3.26
+
+* ``ScalebarRightSegmentSubdivisions``: Number of subdivisions per segment on right of 0
+
+  .. versionadded:: 3.26
+
+* ``ScalebarSubdivisionHeight``: Scalebar subdivision height
+
+  .. versionadded:: 3.26
+
 * ``ScalebarFillColor``: Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
 * ``ScalebarFillColor2``: Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
 * ``ScalebarLineColor``: Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
 * ``ScalebarLineWidth``: Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
 * ``AttributeTableSourceLayer``: Attribute table source layer
-* ``ElevationProfileTolerance``: Tolerance distance for elevation profiles (since QGIS 3.30)
-* ``ElevationProfileDistanceMajorInterval``: Major grid line interval for elevation profile distance axis (since QGIS 3.30)
-* ``ElevationProfileDistanceMinorInterval``: Minor grid line interval for elevation profile distance axis (since QGIS 3.30)
-* ``ElevationProfileDistanceLabelInterval``: Label interval for elevation profile distance axis (since QGIS 3.30)
-* ``ElevationProfileElevationMajorInterval``: Major grid line interval for elevation profile elevation axis (since QGIS 3.30)
-* ``ElevationProfileElevationMinorInterval``: Minor grid line interval for elevation profile elevation axis (since QGIS 3.30)
-* ``ElevationProfileElevationLabelInterval``: Label interval for elevation profile elevation axis (since QGIS 3.30)
-* ``ElevationProfileMinimumDistance``: Minimum distance value for elevation profile (since QGIS 3.30)
-* ``ElevationProfileMaximumDistance``: Maximum distance value for elevation profile (since QGIS 3.30)
-* ``ElevationProfileMinimumElevation``: Minimum elevation value for elevation profile (since QGIS 3.30)
-* ``ElevationProfileMaximumElevation``: Maximum elevation value for elevation profile (since QGIS 3.30)
+* ``ElevationProfileTolerance``: Tolerance distance for elevation profiles
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileDistanceMajorInterval``: Major grid line interval for elevation profile distance axis
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileDistanceMinorInterval``: Minor grid line interval for elevation profile distance axis
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileDistanceLabelInterval``: Label interval for elevation profile distance axis
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileElevationMajorInterval``: Major grid line interval for elevation profile elevation axis
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileElevationMinorInterval``: Minor grid line interval for elevation profile elevation axis
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileElevationLabelInterval``: Label interval for elevation profile elevation axis
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileMinimumDistance``: Minimum distance value for elevation profile
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileMaximumDistance``: Maximum distance value for elevation profile
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileMinimumElevation``: Minimum elevation value for elevation profile
+
+  .. versionadded:: 3.30
+
+* ``ElevationProfileMaximumElevation``: Maximum elevation value for elevation profile
+
+  .. versionadded:: 3.30
+
 
 """
 # --

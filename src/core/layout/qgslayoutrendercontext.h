@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagRenderLabelsByMapLayer = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
       FlagLosslessImageRendering = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
       FlagSynchronousLegendGraphics = 1 << 11, //!< Query legend graphics synchronously.
-      FlagAlwaysUseGlobalMasks = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. (Since QGIS 3.38)
+      FlagAlwaysUseGlobalMasks = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

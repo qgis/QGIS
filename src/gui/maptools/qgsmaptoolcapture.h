@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     {
       NoCapabilities = 1 << 0, //!< No specific capabilities
       SupportsCurves = 1 << 1, //!< Supports curved geometries input
-      ValidateGeometries = 1 << 2, //!< Tool supports geometry validation (since QGIS 3.22)
+      ValidateGeometries = 1 << 2, //!< Tool supports geometry validation \since QGIS 3.22
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )

@@ -199,7 +199,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
       SkipNonSpatialFormats = 1 << 2, //!< Filter out any formats which do not have spatial support (e.g. those which cannot save geometries)
-      SupportsMultipleLayers = 1 << 3, //!< Filter to only formats which support multiple layers (since QGIS 3.32)
+      SupportsMultipleLayers = 1 << 3, //!< Filter to only formats which support multiple layers \since QGIS 3.32
     };
     Q_DECLARE_FLAGS( VectorFormatOptions, VectorFormatOption )
 

@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       WmsLegend, //!< WMS legend node type
       DataDefinedSizeLegend, //!< Marker symbol legend node type
       EmbeddedWidget, //!< Embedded widget placeholder node type
-      ColorRampLegend, //!< Color ramp legend (since QGIS 3.18)
+      ColorRampLegend, //!< Color ramp legend \since QGIS 3.18
     };
 
     //! Returns pointer to the parent layer node

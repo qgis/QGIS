@@ -90,16 +90,16 @@ class CORE_EXPORT QgsCallout
       DrawCalloutToAllParts, //!< Whether callout lines should be drawn to all feature parts
       AnchorPointPosition, //!< Feature's anchor point position
       LabelAnchorPointPosition, //!< Label's anchor point position
-      OriginX, //!< X-coordinate of callout origin (label anchor) (since QGIS 3.20)
-      OriginY, //!< Y-coordinate of callout origin (label anchor) (since QGIS 3.20)
-      DestinationX, //!< X-coordinate of callout destination (feature anchor) (since QGIS 3.20)
-      DestinationY, //!< Y-coordinate of callout destination (feature anchor) (since QGIS 3.20)
-      Curvature, //!< Curvature of curved line callouts (since QGIS 3.20)
-      Orientation, //!< Orientation of curved line callouts (since QGIS 3.20)
-      Margins, //!< Margin from text (since QGIS 3.20)
-      WedgeWidth, //!< Balloon callout wedge width (since QGIS 3.20)
-      CornerRadius, //!< Balloon callout corner radius (since QGIS 3.20)
-      BlendMode, //!< Callout blend mode (since QGIS 3.20)
+      OriginX, //!< X-coordinate of callout origin (label anchor) \since QGIS 3.20
+      OriginY, //!< Y-coordinate of callout origin (label anchor) \since QGIS 3.20
+      DestinationX, //!< X-coordinate of callout destination (feature anchor) \since QGIS 3.20
+      DestinationY, //!< Y-coordinate of callout destination (feature anchor) \since QGIS 3.20
+      Curvature, //!< Curvature of curved line callouts \since QGIS 3.20
+      Orientation, //!< Orientation of curved line callouts \since QGIS 3.20
+      Margins, //!< Margin from text \since QGIS 3.20
+      WedgeWidth, //!< Balloon callout wedge width \since QGIS 3.20
+      CornerRadius, //!< Balloon callout corner radius \since QGIS 3.20
+      BlendMode, //!< Callout blend mode \since QGIS 3.20
     };
     // *INDENT-ON*
 

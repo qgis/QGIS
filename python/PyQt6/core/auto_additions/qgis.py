@@ -614,7 +614,7 @@ QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
 QgsDataProvider.ReadFlag.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
 QgsDataProvider.FlagTrustDataSource.is_monkey_patched = True
-QgsDataProvider.FlagTrustDataSource.__doc__ = "Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16"
+QgsDataProvider.FlagTrustDataSource.__doc__ = "Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load \n.. versionadded:: 3.16"
 QgsDataProvider.SkipFeatureCount = Qgis.DataProviderReadFlag.SkipFeatureCount
 QgsDataProvider.SkipFeatureCount.is_monkey_patched = True
 QgsDataProvider.SkipFeatureCount.__doc__ = "Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing."
@@ -627,16 +627,16 @@ QgsDataProvider.SkipGetExtent.is_monkey_patched = True
 QgsDataProvider.SkipGetExtent.__doc__ = "Skip the extent from provider"
 QgsDataProvider.SkipFullScan = Qgis.DataProviderReadFlag.SkipFullScan
 QgsDataProvider.SkipFullScan.is_monkey_patched = True
-QgsDataProvider.SkipFullScan.__doc__ = "Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)"
+QgsDataProvider.SkipFullScan.__doc__ = "Skip expensive full scan on files (i.e. on delimited text) \n.. versionadded:: 3.24"
 QgsDataProvider.ForceReadOnly = Qgis.DataProviderReadFlag.ForceReadOnly
 QgsDataProvider.ForceReadOnly.is_monkey_patched = True
-QgsDataProvider.ForceReadOnly.__doc__ = "Open layer in a read-only mode (since QGIS 3.28)"
+QgsDataProvider.ForceReadOnly.__doc__ = "Open layer in a read-only mode \n.. versionadded:: 3.28"
 QgsDataProvider.SkipCredentialsRequest = Qgis.DataProviderReadFlag.SkipCredentialsRequest
 QgsDataProvider.SkipCredentialsRequest.is_monkey_patched = True
-QgsDataProvider.SkipCredentialsRequest.__doc__ = "Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32)."
+QgsDataProvider.SkipCredentialsRequest.__doc__ = "Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread \n.. versionadded:: 3.32"
 QgsDataProvider.ParallelThreadLoading = Qgis.DataProviderReadFlag.ParallelThreadLoading
 QgsDataProvider.ParallelThreadLoading.is_monkey_patched = True
-QgsDataProvider.ParallelThreadLoading.__doc__ = "Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1)."
+QgsDataProvider.ParallelThreadLoading.__doc__ = "Provider is created in a parallel thread than the one where it will live \n.. versionadded:: 3.32.1"
 Qgis.DataProviderReadFlag.__doc__ = """Flags which control data provider construction.
 
 .. note::
@@ -645,14 +645,29 @@ Qgis.DataProviderReadFlag.__doc__ = """Flags which control data provider constru
 
 .. versionadded:: 3.40
 
-* ``FlagTrustDataSource``: Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
+* ``FlagTrustDataSource``: Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load
+
+  .. versionadded:: 3.16
+
 * ``SkipFeatureCount``: Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.
 * ``FlagLoadDefaultStyle``: Reset the layer's style to the default for the datasource
 * ``SkipGetExtent``: Skip the extent from provider
-* ``SkipFullScan``: Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)
-* ``ForceReadOnly``: Open layer in a read-only mode (since QGIS 3.28)
-* ``SkipCredentialsRequest``: Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32).
-* ``ParallelThreadLoading``: Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1).
+* ``SkipFullScan``: Skip expensive full scan on files (i.e. on delimited text)
+
+  .. versionadded:: 3.24
+
+* ``ForceReadOnly``: Open layer in a read-only mode
+
+  .. versionadded:: 3.28
+
+* ``SkipCredentialsRequest``: Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread
+
+  .. versionadded:: 3.32
+
+* ``ParallelThreadLoading``: Provider is created in a parallel thread than the one where it will live
+
+  .. versionadded:: 3.32.1
+
 
 """
 # --
@@ -713,10 +728,10 @@ QgsVectorDataProvider.ChangeFeatures.is_monkey_patched = True
 QgsVectorDataProvider.ChangeFeatures.__doc__ = "Supports joint updates for attributes and geometry. Providers supporting this should still define ChangeGeometries | ChangeAttributeValues."
 QgsVectorDataProvider.RenameAttributes = Qgis.VectorProviderCapability.RenameAttributes
 QgsVectorDataProvider.RenameAttributes.is_monkey_patched = True
-QgsVectorDataProvider.RenameAttributes.__doc__ = "Supports renaming attributes (fields). Since QGIS 2.16"
+QgsVectorDataProvider.RenameAttributes.__doc__ = "Supports renaming attributes (fields) \n.. versionadded:: 2.16"
 QgsVectorDataProvider.FastTruncate = Qgis.VectorProviderCapability.FastTruncate
 QgsVectorDataProvider.FastTruncate.is_monkey_patched = True
-QgsVectorDataProvider.FastTruncate.__doc__ = "Supports fast truncation of the layer (removing all features). Since QGIS 3.0"
+QgsVectorDataProvider.FastTruncate.__doc__ = "Supports fast truncation of the layer (removing all features) \n.. versionadded:: 3.0"
 QgsVectorDataProvider.ReadLayerMetadata = Qgis.VectorProviderCapability.ReadLayerMetadata
 QgsVectorDataProvider.ReadLayerMetadata.is_monkey_patched = True
 QgsVectorDataProvider.ReadLayerMetadata.__doc__ = "Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider.layerMetadata()"
@@ -725,7 +740,7 @@ QgsVectorDataProvider.WriteLayerMetadata.is_monkey_patched = True
 QgsVectorDataProvider.WriteLayerMetadata.__doc__ = "Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider.writeLayerMetadata()"
 QgsVectorDataProvider.CancelSupport = Qgis.VectorProviderCapability.CancelSupport
 QgsVectorDataProvider.CancelSupport.is_monkey_patched = True
-QgsVectorDataProvider.CancelSupport.__doc__ = "Supports interruption of pending queries from a separated thread. Since QGIS 3.2"
+QgsVectorDataProvider.CancelSupport.__doc__ = "Supports interruption of pending queries from a separated thread \n.. versionadded:: 3.2"
 QgsVectorDataProvider.CreateRenderer = Qgis.VectorProviderCapability.CreateRenderer
 QgsVectorDataProvider.CreateRenderer.is_monkey_patched = True
 QgsVectorDataProvider.CreateRenderer.__doc__ = "Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider.createRenderer()."
@@ -737,7 +752,7 @@ QgsVectorDataProvider.ReloadData.is_monkey_patched = True
 QgsVectorDataProvider.ReloadData.__doc__ = "Provider is able to force reload data"
 QgsVectorDataProvider.FeatureSymbology = Qgis.VectorProviderCapability.FeatureSymbology
 QgsVectorDataProvider.FeatureSymbology.is_monkey_patched = True
-QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embedded symbology associated with individual features. Since QGIS 3.20."
+QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embedded symbology associated with individual features \n.. versionadded:: 3.20"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -765,15 +780,27 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
 * ``TransactionSupport``: Supports transactions
 * ``CircularGeometries``: Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
 * ``ChangeFeatures``: Supports joint updates for attributes and geometry. Providers supporting this should still define ChangeGeometries | ChangeAttributeValues.
-* ``RenameAttributes``: Supports renaming attributes (fields). Since QGIS 2.16
-* ``FastTruncate``: Supports fast truncation of the layer (removing all features). Since QGIS 3.0
+* ``RenameAttributes``: Supports renaming attributes (fields)
+
+  .. versionadded:: 2.16
+
+* ``FastTruncate``: Supports fast truncation of the layer (removing all features)
+
+  .. versionadded:: 3.0
+
 * ``ReadLayerMetadata``: Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider.layerMetadata()
 * ``WriteLayerMetadata``: Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider.writeLayerMetadata()
-* ``CancelSupport``: Supports interruption of pending queries from a separated thread. Since QGIS 3.2
+* ``CancelSupport``: Supports interruption of pending queries from a separated thread
+
+  .. versionadded:: 3.2
+
 * ``CreateRenderer``: Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider.createRenderer().
 * ``CreateLabeling``: Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider.createLabeling().
 * ``ReloadData``: Provider is able to force reload data
-* ``FeatureSymbology``: Provider is able retrieve embedded symbology associated with individual features. Since QGIS 3.20.
+* ``FeatureSymbology``: Provider is able retrieve embedded symbology associated with individual features
+
+  .. versionadded:: 3.20
+
 * ``EditingCapabilities``: Bitmask of all editing capabilities
 
 """
@@ -1134,7 +1161,7 @@ QgsSnappingConfig.MiddleOfSegmentFlag.__doc__ = "On Middle segment"
 QgsSnappingConfig.LineEndpointFlag = Qgis.SnappingType.LineEndpoint
 QgsSnappingConfig.SnappingTypes.LineEndpointFlag = Qgis.SnappingType.LineEndpoint
 QgsSnappingConfig.LineEndpointFlag.is_monkey_patched = True
-QgsSnappingConfig.LineEndpointFlag.__doc__ = "Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)"
+QgsSnappingConfig.LineEndpointFlag.__doc__ = "Start or end points of lines, or first vertex in polygon rings only \n.. versionadded:: 3.20"
 Qgis.SnappingType.__doc__ = """SnappingTypeFlag defines on what object the snapping is performed
 
 .. versionadded:: 3.26
@@ -1145,7 +1172,10 @@ Qgis.SnappingType.__doc__ = """SnappingTypeFlag defines on what object the snapp
 * ``AreaFlag``: On Area
 * ``CentroidFlag``: On centroid
 * ``MiddleOfSegmentFlag``: On Middle segment
-* ``LineEndpointFlag``: Start or end points of lines, or first vertex in polygon rings only (since QGIS 3.20)
+* ``LineEndpointFlag``: Start or end points of lines, or first vertex in polygon rings only
+
+  .. versionadded:: 3.20
+
 
 """
 # --
@@ -1161,21 +1191,30 @@ QgsSymbol.DynamicRotation.is_monkey_patched = True
 QgsSymbol.DynamicRotation.__doc__ = "Rotation of symbol may be changed during rendering and symbol should not be cached"
 QgsSymbol.IsSymbolLayerSubSymbol = Qgis.SymbolRenderHint.IsSymbolLayerSubSymbol
 QgsSymbol.IsSymbolLayerSubSymbol.is_monkey_patched = True
-QgsSymbol.IsSymbolLayerSubSymbol.__doc__ = "Symbol is being rendered as a sub-symbol of a QgsSymbolLayer (since QGIS 3.38)"
+QgsSymbol.IsSymbolLayerSubSymbol.__doc__ = "Symbol is being rendered as a sub-symbol of a QgsSymbolLayer \n.. versionadded:: 3.38"
 QgsSymbol.ForceVectorRendering = Qgis.SymbolRenderHint.ForceVectorRendering
 QgsSymbol.ForceVectorRendering.is_monkey_patched = True
-QgsSymbol.ForceVectorRendering.__doc__ = "Symbol must be rendered using vector methods, and optimisations like pre-rendered images must be disabled (since QGIS 3.40)"
+QgsSymbol.ForceVectorRendering.__doc__ = "Symbol must be rendered using vector methods, and optimisations like pre-rendered images must be disabled \n.. versionadded:: 3.40"
 QgsSymbol.ExcludeSymbolBuffers = Qgis.SymbolRenderHint.ExcludeSymbolBuffers
 QgsSymbol.ExcludeSymbolBuffers.is_monkey_patched = True
-QgsSymbol.ExcludeSymbolBuffers.__doc__ = "Do not render symbol buffers. (Since QGIS 3.40)"
+QgsSymbol.ExcludeSymbolBuffers.__doc__ = "Do not render symbol buffers. \n.. versionadded:: 3.40"
 Qgis.SymbolRenderHint.__doc__ = """Flags controlling behavior of symbols during rendering
 
 .. versionadded:: 3.20
 
 * ``DynamicRotation``: Rotation of symbol may be changed during rendering and symbol should not be cached
-* ``IsSymbolLayerSubSymbol``: Symbol is being rendered as a sub-symbol of a QgsSymbolLayer (since QGIS 3.38)
-* ``ForceVectorRendering``: Symbol must be rendered using vector methods, and optimisations like pre-rendered images must be disabled (since QGIS 3.40)
-* ``ExcludeSymbolBuffers``: Do not render symbol buffers. (Since QGIS 3.40)
+* ``IsSymbolLayerSubSymbol``: Symbol is being rendered as a sub-symbol of a QgsSymbolLayer
+
+  .. versionadded:: 3.38
+
+* ``ForceVectorRendering``: Symbol must be rendered using vector methods, and optimisations like pre-rendered images must be disabled
+
+  .. versionadded:: 3.40
+
+* ``ExcludeSymbolBuffers``: Do not render symbol buffers.
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -1231,7 +1270,7 @@ Qgis.SymbolPreviewFlags.baseClass = Qgis
 SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
-Qgis.SymbolLayerFlag.CanCalculateMaskGeometryPerFeature.__doc__ = "If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. (Since QGIS 3.38)"
+Qgis.SymbolLayerFlag.CanCalculateMaskGeometryPerFeature.__doc__ = "If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. \n.. versionadded:: 3.38"
 Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 
 .. note::
@@ -1243,7 +1282,10 @@ Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 .. versionadded:: 3.22
 
 * ``DisableFeatureClipping``: If present, indicates that features should never be clipped to the map extent during rendering
-* ``CanCalculateMaskGeometryPerFeature``: If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. (Since QGIS 3.38)
+* ``CanCalculateMaskGeometryPerFeature``: If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes.
+
+  .. versionadded:: 3.38
+
 
 """
 # --
@@ -1364,13 +1406,13 @@ QgsDataItem.Delete.is_monkey_patched = True
 QgsDataItem.Delete.__doc__ = "Item can be deleted"
 QgsDataItem.ItemRepresentsFile = Qgis.BrowserItemCapability.ItemRepresentsFile
 QgsDataItem.ItemRepresentsFile.is_monkey_patched = True
-QgsDataItem.ItemRepresentsFile.__doc__ = "Item's path() directly represents a file on disk (since QGIS 3.22)"
+QgsDataItem.ItemRepresentsFile.__doc__ = "Item's path() directly represents a file on disk \n.. versionadded:: 3.22"
 QgsDataItem.RefreshChildrenWhenItemIsRefreshed = Qgis.BrowserItemCapability.RefreshChildrenWhenItemIsRefreshed
 QgsDataItem.RefreshChildrenWhenItemIsRefreshed.is_monkey_patched = True
-QgsDataItem.RefreshChildrenWhenItemIsRefreshed.__doc__ = "When the item is refreshed, all its populated children will also be refreshed in turn (since QGIS 3.26)"
+QgsDataItem.RefreshChildrenWhenItemIsRefreshed.__doc__ = "When the item is refreshed, all its populated children will also be refreshed in turn \n.. versionadded:: 3.26"
 QgsDataItem.ReadOnly = Qgis.BrowserItemCapability.ReadOnly
 QgsDataItem.ReadOnly.is_monkey_patched = True
-QgsDataItem.ReadOnly.__doc__ = "Item is read only (since QGIS 3.40)"
+QgsDataItem.ReadOnly.__doc__ = "Item is read only \n.. versionadded:: 3.40"
 Qgis.BrowserItemCapability.__doc__ = """Browser item capabilities.
 
 .. versionadded:: 3.20
@@ -1382,9 +1424,18 @@ Qgis.BrowserItemCapability.__doc__ = """Browser item capabilities.
 * ``Collapse``: The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
 * ``Rename``: Item can be renamed
 * ``Delete``: Item can be deleted
-* ``ItemRepresentsFile``: Item's path() directly represents a file on disk (since QGIS 3.22)
-* ``RefreshChildrenWhenItemIsRefreshed``: When the item is refreshed, all its populated children will also be refreshed in turn (since QGIS 3.26)
-* ``ReadOnly``: Item is read only (since QGIS 3.40)
+* ``ItemRepresentsFile``: Item's path() directly represents a file on disk
+
+  .. versionadded:: 3.22
+
+* ``RefreshChildrenWhenItemIsRefreshed``: When the item is refreshed, all its populated children will also be refreshed in turn
+
+  .. versionadded:: 3.26
+
+* ``ReadOnly``: Item is read only
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -1479,7 +1530,7 @@ QgsLayerItem.PointCloud.is_monkey_patched = True
 QgsLayerItem.PointCloud.__doc__ = "Point cloud layer"
 QgsLayerItem.TiledScene = Qgis.BrowserLayerType.TiledScene
 QgsLayerItem.TiledScene.is_monkey_patched = True
-QgsLayerItem.TiledScene.__doc__ = "Tiled scene layer (since QGIS 3.34)"
+QgsLayerItem.TiledScene.__doc__ = "Tiled scene layer \n.. versionadded:: 3.34"
 Qgis.BrowserLayerType.__doc__ = """Browser item layer types
 
 .. versionadded:: 3.20
@@ -1497,7 +1548,10 @@ Qgis.BrowserLayerType.__doc__ = """Browser item layer types
 * ``Mesh``: Mesh layer
 * ``VectorTile``: Vector tile layer
 * ``PointCloud``: Point cloud layer
-* ``TiledScene``: Tiled scene layer (since QGIS 3.34)
+* ``TiledScene``: Tiled scene layer
+
+  .. versionadded:: 3.34
+
 
 """
 # --
@@ -1781,7 +1835,7 @@ QgsPalLayerSettings.PerimeterCurved.is_monkey_patched = True
 QgsPalLayerSettings.PerimeterCurved.__doc__ = "Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only."
 QgsPalLayerSettings.OutsidePolygons = Qgis.LabelPlacement.OutsidePolygons
 QgsPalLayerSettings.OutsidePolygons.is_monkey_patched = True
-QgsPalLayerSettings.OutsidePolygons.__doc__ = "Candidates are placed outside of polygon boundaries. Applies to polygon layers only. Since QGIS 3.14"
+QgsPalLayerSettings.OutsidePolygons.__doc__ = "Candidates are placed outside of polygon boundaries. Applies to polygon layers only \n.. versionadded:: 3.14"
 Qgis.LabelPlacement.__doc__ = """Placement modes which determine how label candidates are generated for a feature.
 
 .. note::
@@ -1798,7 +1852,10 @@ Qgis.LabelPlacement.__doc__ = """Placement modes which determine how label candi
 * ``Free``: Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
 * ``OrderedPositionsAroundPoint``: Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only.
 * ``PerimeterCurved``: Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
-* ``OutsidePolygons``: Candidates are placed outside of polygon boundaries. Applies to polygon layers only. Since QGIS 3.14
+* ``OutsidePolygons``: Candidates are placed outside of polygon boundaries. Applies to polygon layers only
+
+  .. versionadded:: 3.14
+
 
 """
 # --
@@ -1843,7 +1900,7 @@ QgsPalLayerSettings.BottomRight.is_monkey_patched = True
 QgsPalLayerSettings.BottomRight.__doc__ = "Label on bottom right of point"
 QgsPalLayerSettings.OverPoint = Qgis.LabelPredefinedPointPosition.OverPoint
 QgsPalLayerSettings.OverPoint.is_monkey_patched = True
-QgsPalLayerSettings.OverPoint.__doc__ = "Label directly centered over point (since QGIS 3.38)"
+QgsPalLayerSettings.OverPoint.__doc__ = "Label directly centered over point \n.. versionadded:: 3.38"
 Qgis.LabelPredefinedPointPosition.__doc__ = """Positions for labels when using the Qgis.LabelPlacement.OrderedPositionsAroundPoint placement mode.
 
 .. note::
@@ -1864,7 +1921,10 @@ Qgis.LabelPredefinedPointPosition.__doc__ = """Positions for labels when using t
 * ``BottomMiddle``: Label directly below point
 * ``BottomSlightlyRight``: Label below point, slightly right of center
 * ``BottomRight``: Label on bottom right of point
-* ``OverPoint``: Label directly centered over point (since QGIS 3.38)
+* ``OverPoint``: Label directly centered over point
+
+  .. versionadded:: 3.38
+
 
 """
 # --
@@ -2099,13 +2159,13 @@ QgsProviderMetadata.FilterMeshDataset.__doc__ = "Mesh datasets"
 QgsProviderMetadata.FilterPointCloud = Qgis.FileFilterType.PointCloud
 QgsProviderMetadata.FilterType.FilterPointCloud = Qgis.FileFilterType.PointCloud
 QgsProviderMetadata.FilterPointCloud.is_monkey_patched = True
-QgsProviderMetadata.FilterPointCloud.__doc__ = "Point clouds (since QGIS 3.18)"
+QgsProviderMetadata.FilterPointCloud.__doc__ = "Point clouds \n.. versionadded:: 3.18"
 QgsProviderMetadata.VectorTile = Qgis.FileFilterType.VectorTile
 QgsProviderMetadata.VectorTile.is_monkey_patched = True
-QgsProviderMetadata.VectorTile.__doc__ = "Vector tile layers (since QGIS 3.32)"
+QgsProviderMetadata.VectorTile.__doc__ = "Vector tile layers \n.. versionadded:: 3.32"
 QgsProviderMetadata.TiledScene = Qgis.FileFilterType.TiledScene
 QgsProviderMetadata.TiledScene.is_monkey_patched = True
-QgsProviderMetadata.TiledScene.__doc__ = "Tiled scene layers (since QGIS 3.34)"
+QgsProviderMetadata.TiledScene.__doc__ = "Tiled scene layers \n.. versionadded:: 3.34"
 Qgis.FileFilterType.__doc__ = """Type of file filters
 
 Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterType
@@ -2116,9 +2176,18 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterT
 * ``FilterRaster``: Raster layers
 * ``FilterMesh``: Mesh layers
 * ``FilterMeshDataset``: Mesh datasets
-* ``FilterPointCloud``: Point clouds (since QGIS 3.18)
-* ``VectorTile``: Vector tile layers (since QGIS 3.32)
-* ``TiledScene``: Tiled scene layers (since QGIS 3.34)
+* ``FilterPointCloud``: Point clouds
+
+  .. versionadded:: 3.18
+
+* ``VectorTile``: Vector tile layers
+
+  .. versionadded:: 3.32
+
+* ``TiledScene``: Tiled scene layers
+
+  .. versionadded:: 3.34
+
 
 """
 # --
@@ -2280,13 +2349,16 @@ Qgis.RasterResamplingStage.__doc__ = """Stage at which raster resampling occurs.
 Qgis.RasterResamplingStage.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ = "The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied."
-Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = "Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values (since QGIS 3.38)"
+Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = "Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values \n.. versionadded:: 3.38"
 Qgis.RasterRendererFlag.__doc__ = """Flags which control behavior of raster renderers.
 
 .. versionadded:: 3.28
 
 * ``InternalLayerOpacityHandling``: The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied.
-* ``UseNoDataForOutOfRangePixels``: Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values (since QGIS 3.38)
+* ``UseNoDataForOutOfRangePixels``: Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values
+
+  .. versionadded:: 3.38
+
 
 """
 # --
@@ -3184,10 +3256,10 @@ QgsFeatureRequest.ExactIntersect.is_monkey_patched = True
 QgsFeatureRequest.ExactIntersect.__doc__ = "Use exact geometry intersection (slower) instead of bounding boxes"
 QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation = Qgis.FeatureRequestFlag.IgnoreStaticNodesDuringExpressionCompilation
 QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.is_monkey_patched = True
-QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.__doc__ = "If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)"
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.__doc__ = "If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. \n.. versionadded:: 3.18"
 QgsFeatureRequest.EmbeddedSymbols = Qgis.FeatureRequestFlag.EmbeddedSymbols
 QgsFeatureRequest.EmbeddedSymbols.is_monkey_patched = True
-QgsFeatureRequest.EmbeddedSymbols.__doc__ = "Retrieve any embedded feature symbology (since QGIS 3.20)"
+QgsFeatureRequest.EmbeddedSymbols.__doc__ = "Retrieve any embedded feature symbology \n.. versionadded:: 3.20"
 Qgis.FeatureRequestFlag.__doc__ = """Flags for controlling feature requests.
 
 .. note::
@@ -3200,8 +3272,14 @@ Qgis.FeatureRequestFlag.__doc__ = """Flags for controlling feature requests.
 * ``NoGeometry``: Geometry is not required. It may still be returned if e.g. required for a filter condition.
 * ``SubsetOfAttributes``: Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
 * ``ExactIntersect``: Use exact geometry intersection (slower) instead of bounding boxes
-* ``IgnoreStaticNodesDuringExpressionCompilation``: If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)
-* ``EmbeddedSymbols``: Retrieve any embedded feature symbology (since QGIS 3.20)
+* ``IgnoreStaticNodesDuringExpressionCompilation``: If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only.
+
+  .. versionadded:: 3.18
+
+* ``EmbeddedSymbols``: Retrieve any embedded feature symbology
+
+  .. versionadded:: 3.20
+
 
 """
 # --
@@ -3305,14 +3383,20 @@ Qgis.FileOperationFlag.baseClass = Qgis
 Qgis.FileOperationFlags.baseClass = Qgis
 FileOperationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
-Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22."
-Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26."
+Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \n.. versionadded:: 3.22"
+Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest \n.. versionadded:: 3.26"
 Qgis.MapLayerProperty.__doc__ = """Generic map layer properties.
 
 .. versionadded:: 3.22
 
-* ``UsersCannotToggleEditing``: Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
-* ``IsBasemapLayer``: Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26.
+* ``UsersCannotToggleEditing``: Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually
+
+  .. versionadded:: 3.22
+
+* ``IsBasemapLayer``: Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest
+
+  .. versionadded:: 3.26
+
 
 """
 # --
@@ -3337,15 +3421,21 @@ Qgis.AutoRefreshMode.__doc__ = """Map layer automatic refresh modes.
 Qgis.AutoRefreshMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
-Qgis.DataProviderFlag.FastExtent2D.__doc__ = "Provider's 2D extent retrieval via QgsDataProvider.extent() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38."
-Qgis.DataProviderFlag.FastExtent3D.__doc__ = "Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38."
+Qgis.DataProviderFlag.FastExtent2D.__doc__ = "Provider's 2D extent retrieval via QgsDataProvider.extent() is always guaranteed to be trivial/fast to calculate \n.. versionadded:: 3.38"
+Qgis.DataProviderFlag.FastExtent3D.__doc__ = "Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate \n.. versionadded:: 3.38"
 Qgis.DataProviderFlag.__doc__ = """Generic data provider flags.
 
 .. versionadded:: 3.26
 
 * ``IsBasemapSource``: Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer.
-* ``FastExtent2D``: Provider's 2D extent retrieval via QgsDataProvider.extent() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38.
-* ``FastExtent3D``: Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate. Since QGIS 3.38.
+* ``FastExtent2D``: Provider's 2D extent retrieval via QgsDataProvider.extent() is always guaranteed to be trivial/fast to calculate
+
+  .. versionadded:: 3.38
+
+* ``FastExtent3D``: Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate
+
+  .. versionadded:: 3.38
+
 
 """
 # --
@@ -3598,15 +3688,21 @@ Qgis.Axis.__doc__ = """Cartesian axes.
 Qgis.Axis.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box will vary depending on map scale"
-Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__ = "Item supports reference scale based rendering (since QGIS 3.40)"
-Qgis.AnnotationItemFlag.SupportsCallouts.__doc__ = "Item supports callouts (since QGIS 3.40)"
+Qgis.AnnotationItemFlag.SupportsReferenceScale.__doc__ = "Item supports reference scale based rendering \n.. versionadded:: 3.40"
+Qgis.AnnotationItemFlag.SupportsCallouts.__doc__ = "Item supports callouts \n.. versionadded:: 3.40"
 Qgis.AnnotationItemFlag.__doc__ = """Flags for annotation items.
 
 .. versionadded:: 3.22
 
 * ``ScaleDependentBoundingBox``: Item's bounding box will vary depending on map scale
-* ``SupportsReferenceScale``: Item supports reference scale based rendering (since QGIS 3.40)
-* ``SupportsCallouts``: Item supports callouts (since QGIS 3.40)
+* ``SupportsReferenceScale``: Item supports reference scale based rendering
+
+  .. versionadded:: 3.40
+
+* ``SupportsCallouts``: Item supports callouts
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -3645,13 +3741,16 @@ Qgis.AnnotationItemGuiFlags.baseClass = Qgis
 AnnotationItemGuiFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.AnnotationItemNodeType.VertexHandle.__doc__ = "Node is a handle for manipulating vertices"
-Qgis.AnnotationItemNodeType.CalloutHandle.__doc__ = "Node is a handle for manipulating callouts (since QGIS 3.40)"
+Qgis.AnnotationItemNodeType.CalloutHandle.__doc__ = "Node is a handle for manipulating callouts \n.. versionadded:: 3.40"
 Qgis.AnnotationItemNodeType.__doc__ = """Annotation item node types.
 
 .. versionadded:: 3.22
 
 * ``VertexHandle``: Node is a handle for manipulating vertices
-* ``CalloutHandle``: Node is a handle for manipulating callouts (since QGIS 3.40)
+* ``CalloutHandle``: Node is a handle for manipulating callouts
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -3685,7 +3784,7 @@ QgsTemporalNavigationObject.FixedRange.is_monkey_patched = True
 QgsTemporalNavigationObject.FixedRange.__doc__ = "Temporal navigation relies on a fixed datetime range"
 QgsTemporalNavigationObject.Movie = Qgis.TemporalNavigationMode.Movie
 QgsTemporalNavigationObject.Movie.is_monkey_patched = True
-QgsTemporalNavigationObject.Movie.__doc__ = "Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range (since QGIS 3.36)"
+QgsTemporalNavigationObject.Movie.__doc__ = "Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range \n.. versionadded:: 3.36"
 Qgis.TemporalNavigationMode.__doc__ = """Temporal navigation modes.
 
 .. note::
@@ -3697,7 +3796,10 @@ Qgis.TemporalNavigationMode.__doc__ = """Temporal navigation modes.
 * ``NavigationOff``: Temporal navigation is disabled
 * ``Animated``: Temporal navigation relies on frames within a datetime range
 * ``FixedRange``: Temporal navigation relies on a fixed datetime range
-* ``Movie``: Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range (since QGIS 3.36)
+* ``Movie``: Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range
+
+  .. versionadded:: 3.36
+
 
 """
 # --
@@ -3842,10 +3944,10 @@ QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider.__doc__ = "Mo
 QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly = Qgis.RasterTemporalMode.RedrawLayerOnly
 QgsRasterLayerTemporalProperties.TemporalMode.ModeRedrawLayerOnly = Qgis.RasterTemporalMode.RedrawLayerOnly
 QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.is_monkey_patched = True
-QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = "Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. (since QGIS 3.22)"
+QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = "Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. \n.. versionadded:: 3.22"
 QgsRasterLayerTemporalProperties.FixedRangePerBand = Qgis.RasterTemporalMode.FixedRangePerBand
 QgsRasterLayerTemporalProperties.FixedRangePerBand.is_monkey_patched = True
-QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed temporal range per band (since QGIS 3.38)"
+QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed temporal range per band \n.. versionadded:: 3.38"
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues = Qgis.RasterTemporalMode.RepresentsTemporalValues
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.__doc__ = "Pixel values represent an datetime"
@@ -3855,8 +3957,14 @@ Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
 
 * ``ModeFixedTemporalRange``: Mode when temporal properties have fixed start and end datetimes.
 * ``ModeTemporalRangeFromDataProvider``: Mode when raster layer delegates temporal range handling to the dataprovider.
-* ``ModeRedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. (since QGIS 3.22)
-* ``FixedRangePerBand``: Layer has a fixed temporal range per band (since QGIS 3.38)
+* ``ModeRedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range.
+
+  .. versionadded:: 3.22
+
+* ``FixedRangePerBand``: Layer has a fixed temporal range per band
+
+  .. versionadded:: 3.38
+
 * ``RepresentsTemporalValues``: Pixel values represent an datetime
 
 """
@@ -3988,19 +4096,19 @@ QgsMapSettings.Render3DMap.is_monkey_patched = True
 QgsMapSettings.Render3DMap.__doc__ = "Render is for a 3D map"
 QgsMapSettings.HighQualityImageTransforms = Qgis.MapSettingsFlag.HighQualityImageTransforms
 QgsMapSettings.HighQualityImageTransforms.is_monkey_patched = True
-QgsMapSettings.HighQualityImageTransforms.__doc__ = "Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)"
+QgsMapSettings.HighQualityImageTransforms.__doc__ = "Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map \n.. versionadded:: 3.24"
 QgsMapSettings.SkipSymbolRendering = Qgis.MapSettingsFlag.SkipSymbolRendering
 QgsMapSettings.SkipSymbolRendering.is_monkey_patched = True
-QgsMapSettings.SkipSymbolRendering.__doc__ = "Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)"
+QgsMapSettings.SkipSymbolRendering.__doc__ = "Disable symbol rendering while still drawing labels if enabled \n.. versionadded:: 3.24"
 QgsMapSettings.ForceRasterMasks = Qgis.MapSettingsFlag.ForceRasterMasks
 QgsMapSettings.ForceRasterMasks.is_monkey_patched = True
-QgsMapSettings.ForceRasterMasks.__doc__ = "Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. (since QGIS 3.26.1)"
+QgsMapSettings.ForceRasterMasks.__doc__ = "Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. \n.. versionadded:: 3.26.1"
 QgsMapSettings.RecordProfile = Qgis.MapSettingsFlag.RecordProfile
 QgsMapSettings.RecordProfile.is_monkey_patched = True
-QgsMapSettings.RecordProfile.__doc__ = "Enable run-time profiling while rendering (since QGIS 3.34)"
+QgsMapSettings.RecordProfile.__doc__ = "Enable run-time profiling while rendering \n.. versionadded:: 3.34"
 QgsMapSettings.AlwaysUseGlobalMasks = Qgis.MapSettingsFlag.AlwaysUseGlobalMasks
 QgsMapSettings.AlwaysUseGlobalMasks.is_monkey_patched = True
-QgsMapSettings.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. (Since QGIS 3.38)"
+QgsMapSettings.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \n.. versionadded:: 3.38"
 Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
 .. versionadded:: 3.22
@@ -4019,11 +4127,26 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 * ``RenderBlocking``: Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
 * ``LosslessImageRendering``: Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
 * ``Render3DMap``: Render is for a 3D map
-* ``HighQualityImageTransforms``: Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)
-* ``SkipSymbolRendering``: Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
-* ``ForceRasterMasks``: Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. (since QGIS 3.26.1)
-* ``RecordProfile``: Enable run-time profiling while rendering (since QGIS 3.34)
-* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. (Since QGIS 3.38)
+* ``HighQualityImageTransforms``: Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map
+
+  .. versionadded:: 3.24
+
+* ``SkipSymbolRendering``: Disable symbol rendering while still drawing labels if enabled
+
+  .. versionadded:: 3.24
+
+* ``ForceRasterMasks``: Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output.
+
+  .. versionadded:: 3.26.1
+
+* ``RecordProfile``: Enable run-time profiling while rendering
+
+  .. versionadded:: 3.34
+
+* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports.
+
+  .. versionadded:: 3.38
+
 
 """
 # --
@@ -4084,19 +4207,19 @@ QgsRenderContext.ApplyClipAfterReprojection.is_monkey_patched = True
 QgsRenderContext.ApplyClipAfterReprojection.__doc__ = "Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform()."
 QgsRenderContext.RenderingSubSymbol = Qgis.RenderContextFlag.RenderingSubSymbol
 QgsRenderContext.RenderingSubSymbol.is_monkey_patched = True
-QgsRenderContext.RenderingSubSymbol.__doc__ = "Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol. (Since QGIS 3.24)"
+QgsRenderContext.RenderingSubSymbol.__doc__ = "Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol. \n.. versionadded:: 3.24"
 QgsRenderContext.HighQualityImageTransforms = Qgis.RenderContextFlag.HighQualityImageTransforms
 QgsRenderContext.HighQualityImageTransforms.is_monkey_patched = True
-QgsRenderContext.HighQualityImageTransforms.__doc__ = "Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)"
+QgsRenderContext.HighQualityImageTransforms.__doc__ = "Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map \n.. versionadded:: 3.24"
 QgsRenderContext.SkipSymbolRendering = Qgis.RenderContextFlag.SkipSymbolRendering
 QgsRenderContext.SkipSymbolRendering.is_monkey_patched = True
-QgsRenderContext.SkipSymbolRendering.__doc__ = "Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)"
+QgsRenderContext.SkipSymbolRendering.__doc__ = "Disable symbol rendering while still drawing labels if enabled \n.. versionadded:: 3.24"
 QgsRenderContext.RecordProfile = Qgis.RenderContextFlag.RecordProfile
 QgsRenderContext.RecordProfile.is_monkey_patched = True
-QgsRenderContext.RecordProfile.__doc__ = "Enable run-time profiling while rendering (since QGIS 3.34)"
+QgsRenderContext.RecordProfile.__doc__ = "Enable run-time profiling while rendering \n.. versionadded:: 3.34"
 QgsRenderContext.AlwaysUseGlobalMasks = Qgis.RenderContextFlag.AlwaysUseGlobalMasks
 QgsRenderContext.AlwaysUseGlobalMasks.is_monkey_patched = True
-QgsRenderContext.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. (Since QGIS 3.38)"
+QgsRenderContext.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \n.. versionadded:: 3.38"
 Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 
 .. versionadded:: 3.22
@@ -4117,11 +4240,26 @@ Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 * ``ApplyScalingWorkaroundForTextRendering``: Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
 * ``Render3DMap``: Render is for a 3D map
 * ``ApplyClipAfterReprojection``: Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
-* ``RenderingSubSymbol``: Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol. (Since QGIS 3.24)
-* ``HighQualityImageTransforms``: Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)
-* ``SkipSymbolRendering``: Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
-* ``RecordProfile``: Enable run-time profiling while rendering (since QGIS 3.34)
-* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. (Since QGIS 3.38)
+* ``RenderingSubSymbol``: Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol.
+
+  .. versionadded:: 3.24
+
+* ``HighQualityImageTransforms``: Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map
+
+  .. versionadded:: 3.24
+
+* ``SkipSymbolRendering``: Disable symbol rendering while still drawing labels if enabled
+
+  .. versionadded:: 3.24
+
+* ``RecordProfile``: Enable run-time profiling while rendering
+
+  .. versionadded:: 3.34
+
+* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports.
+
+  .. versionadded:: 3.38
+
 
 """
 # --
@@ -4188,10 +4326,10 @@ QgsLabelingEngineSettings.DrawUnplacedLabels.is_monkey_patched = True
 QgsLabelingEngineSettings.DrawUnplacedLabels.__doc__ = "Whether to render unplaced labels as an indicator/warning for users"
 QgsLabelingEngineSettings.CollectUnplacedLabels = Qgis.LabelingFlag.CollectUnplacedLabels
 QgsLabelingEngineSettings.CollectUnplacedLabels.is_monkey_patched = True
-QgsLabelingEngineSettings.CollectUnplacedLabels.__doc__ = "Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20"
+QgsLabelingEngineSettings.CollectUnplacedLabels.__doc__ = "Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered) \n.. versionadded:: 3.20"
 QgsLabelingEngineSettings.DrawLabelMetrics = Qgis.LabelingFlag.DrawLabelMetrics
 QgsLabelingEngineSettings.DrawLabelMetrics.is_monkey_patched = True
-QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label metric guides (for debugging). Since QGIS 3.30"
+QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label metric guides (for debugging) \n.. versionadded:: 3.30"
 Qgis.LabelingFlag.__doc__ = """Various flags that affect drawing and placement of labels.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.Flag
@@ -4204,8 +4342,14 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.F
 * ``DrawLabelRectOnly``: Whether to only draw the label rect and not the actual label text (used for unit tests)
 * ``DrawCandidates``: Whether to draw rectangles of generated candidates (good for debugging)
 * ``DrawUnplacedLabels``: Whether to render unplaced labels as an indicator/warning for users
-* ``CollectUnplacedLabels``: Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20
-* ``DrawLabelMetrics``: Whether to render label metric guides (for debugging). Since QGIS 3.30
+* ``CollectUnplacedLabels``: Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered)
+
+  .. versionadded:: 3.20
+
+* ``DrawLabelMetrics``: Whether to render label metric guides (for debugging)
+
+  .. versionadded:: 3.30
+
 
 """
 # --
@@ -4280,10 +4424,10 @@ QgsTextRenderer.Label.is_monkey_patched = True
 QgsTextRenderer.Label.__doc__ = "Labeling-specific layout mode"
 QgsTextRenderer.RectangleCapHeightBased = Qgis.TextLayoutMode.RectangleCapHeightBased
 QgsTextRenderer.RectangleCapHeightBased.is_monkey_patched = True
-QgsTextRenderer.RectangleCapHeightBased.__doc__ = "Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text (since QGIS 3.30)"
+QgsTextRenderer.RectangleCapHeightBased.__doc__ = "Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text \n.. versionadded:: 3.30"
 QgsTextRenderer.RectangleAscentBased = Qgis.TextLayoutMode.RectangleAscentBased
 QgsTextRenderer.RectangleAscentBased.is_monkey_patched = True
-QgsTextRenderer.RectangleAscentBased.__doc__ = "Similar to Rectangle mode, but uses ascents only when calculating font and line heights. (since QGIS 3.30)"
+QgsTextRenderer.RectangleAscentBased.__doc__ = "Similar to Rectangle mode, but uses ascents only when calculating font and line heights. \n.. versionadded:: 3.30"
 Qgis.TextLayoutMode.__doc__ = """Text layout modes.
 
 .. note::
@@ -4295,8 +4439,14 @@ Qgis.TextLayoutMode.__doc__ = """Text layout modes.
 * ``Rect``: Text within rectangle layout mode
 * ``Point``: Text at point of origin layout mode
 * ``Label``: Labeling-specific layout mode
-* ``RectangleCapHeightBased``: Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text (since QGIS 3.30)
-* ``RectangleAscentBased``: Similar to Rectangle mode, but uses ascents only when calculating font and line heights. (since QGIS 3.30)
+* ``RectangleCapHeightBased``: Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text
+
+  .. versionadded:: 3.30
+
+* ``RectangleAscentBased``: Similar to Rectangle mode, but uses ascents only when calculating font and line heights.
+
+  .. versionadded:: 3.30
+
 
 """
 # --
@@ -4589,46 +4739,46 @@ QgsSimpleMarkerSymbolLayerBase.LeftHalfTriangle.is_monkey_patched = True
 QgsSimpleMarkerSymbolLayerBase.LeftHalfTriangle.__doc__ = "Left half of triangle"
 QgsSimpleMarkerSymbolLayerBase.Octagon = Qgis.MarkerShape.Octagon
 QgsSimpleMarkerSymbolLayerBase.Octagon.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.Octagon.__doc__ = "Octagon (since QGIS 3.18)"
+QgsSimpleMarkerSymbolLayerBase.Octagon.__doc__ = "Octagon \n.. versionadded:: 3.18"
 QgsSimpleMarkerSymbolLayerBase.SquareWithCorners = Qgis.MarkerShape.SquareWithCorners
 QgsSimpleMarkerSymbolLayerBase.SquareWithCorners.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.SquareWithCorners.__doc__ = "A square with diagonal corners (since QGIS 3.18)"
+QgsSimpleMarkerSymbolLayerBase.SquareWithCorners.__doc__ = "A square with diagonal corners \n.. versionadded:: 3.18"
 QgsSimpleMarkerSymbolLayerBase.AsteriskFill = Qgis.MarkerShape.AsteriskFill
 QgsSimpleMarkerSymbolLayerBase.AsteriskFill.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.AsteriskFill.__doc__ = "A filled asterisk shape (since QGIS 3.18)"
+QgsSimpleMarkerSymbolLayerBase.AsteriskFill.__doc__ = "A filled asterisk shape \n.. versionadded:: 3.18"
 QgsSimpleMarkerSymbolLayerBase.HalfArc = Qgis.MarkerShape.HalfArc
 QgsSimpleMarkerSymbolLayerBase.HalfArc.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.HalfArc.__doc__ = "A line-only half arc (since QGIS 3.20)"
+QgsSimpleMarkerSymbolLayerBase.HalfArc.__doc__ = "A line-only half arc \n.. versionadded:: 3.20"
 QgsSimpleMarkerSymbolLayerBase.ThirdArc = Qgis.MarkerShape.ThirdArc
 QgsSimpleMarkerSymbolLayerBase.ThirdArc.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.ThirdArc.__doc__ = "A line-only one third arc (since QGIS 3.20)"
+QgsSimpleMarkerSymbolLayerBase.ThirdArc.__doc__ = "A line-only one third arc \n.. versionadded:: 3.20"
 QgsSimpleMarkerSymbolLayerBase.QuarterArc = Qgis.MarkerShape.QuarterArc
 QgsSimpleMarkerSymbolLayerBase.QuarterArc.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.QuarterArc.__doc__ = "A line-only one quarter arc (since QGIS 3.20)"
+QgsSimpleMarkerSymbolLayerBase.QuarterArc.__doc__ = "A line-only one quarter arc \n.. versionadded:: 3.20"
 QgsSimpleMarkerSymbolLayerBase.ParallelogramRight = Qgis.MarkerShape.ParallelogramRight
 QgsSimpleMarkerSymbolLayerBase.ParallelogramRight.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.ParallelogramRight.__doc__ = "Parallelogram that slants right (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.ParallelogramRight.__doc__ = "Parallelogram that slants right \n.. versionadded:: 3.28"
 QgsSimpleMarkerSymbolLayerBase.ParallelogramLeft = Qgis.MarkerShape.ParallelogramLeft
 QgsSimpleMarkerSymbolLayerBase.ParallelogramLeft.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.ParallelogramLeft.__doc__ = "Parallelogram that slants left (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.ParallelogramLeft.__doc__ = "Parallelogram that slants left \n.. versionadded:: 3.28"
 QgsSimpleMarkerSymbolLayerBase.Trapezoid = Qgis.MarkerShape.Trapezoid
 QgsSimpleMarkerSymbolLayerBase.Trapezoid.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.Trapezoid.__doc__ = "Trapezoid (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Trapezoid.__doc__ = "Trapezoid \n.. versionadded:: 3.28"
 QgsSimpleMarkerSymbolLayerBase.Shield = Qgis.MarkerShape.Shield
 QgsSimpleMarkerSymbolLayerBase.Shield.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.Shield.__doc__ = "A shape consisting of a triangle attached to a rectangle (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Shield.__doc__ = "A shape consisting of a triangle attached to a rectangle \n.. versionadded:: 3.28"
 QgsSimpleMarkerSymbolLayerBase.DiamondStar = Qgis.MarkerShape.DiamondStar
 QgsSimpleMarkerSymbolLayerBase.DiamondStar.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.DiamondStar.__doc__ = "A 4-sided star (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.DiamondStar.__doc__ = "A 4-sided star \n.. versionadded:: 3.28"
 QgsSimpleMarkerSymbolLayerBase.Heart = Qgis.MarkerShape.Heart
 QgsSimpleMarkerSymbolLayerBase.Heart.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.Heart.__doc__ = "Heart (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Heart.__doc__ = "Heart \n.. versionadded:: 3.28"
 QgsSimpleMarkerSymbolLayerBase.Decagon = Qgis.MarkerShape.Decagon
 QgsSimpleMarkerSymbolLayerBase.Decagon.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.Decagon.__doc__ = "Decagon (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Decagon.__doc__ = "Decagon \n.. versionadded:: 3.28"
 QgsSimpleMarkerSymbolLayerBase.RoundedSquare = Qgis.MarkerShape.RoundedSquare
 QgsSimpleMarkerSymbolLayerBase.RoundedSquare.is_monkey_patched = True
-QgsSimpleMarkerSymbolLayerBase.RoundedSquare.__doc__ = "A square with rounded corners (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.RoundedSquare.__doc__ = "A square with rounded corners \n.. versionadded:: 3.28"
 Qgis.MarkerShape.__doc__ = """Marker shapes.
 
 .. note::
@@ -4660,20 +4810,62 @@ Qgis.MarkerShape.__doc__ = """Marker shapes.
 * ``DiagonalHalfSquare``: Diagonal half square (bottom left half)
 * ``RightHalfTriangle``: Right half of triangle
 * ``LeftHalfTriangle``: Left half of triangle
-* ``Octagon``: Octagon (since QGIS 3.18)
-* ``SquareWithCorners``: A square with diagonal corners (since QGIS 3.18)
-* ``AsteriskFill``: A filled asterisk shape (since QGIS 3.18)
-* ``HalfArc``: A line-only half arc (since QGIS 3.20)
-* ``ThirdArc``: A line-only one third arc (since QGIS 3.20)
-* ``QuarterArc``: A line-only one quarter arc (since QGIS 3.20)
-* ``ParallelogramRight``: Parallelogram that slants right (since QGIS 3.28)
-* ``ParallelogramLeft``: Parallelogram that slants left (since QGIS 3.28)
-* ``Trapezoid``: Trapezoid (since QGIS 3.28)
-* ``Shield``: A shape consisting of a triangle attached to a rectangle (since QGIS 3.28)
-* ``DiamondStar``: A 4-sided star (since QGIS 3.28)
-* ``Heart``: Heart (since QGIS 3.28)
-* ``Decagon``: Decagon (since QGIS 3.28)
-* ``RoundedSquare``: A square with rounded corners (since QGIS 3.28)
+* ``Octagon``: Octagon
+
+  .. versionadded:: 3.18
+
+* ``SquareWithCorners``: A square with diagonal corners
+
+  .. versionadded:: 3.18
+
+* ``AsteriskFill``: A filled asterisk shape
+
+  .. versionadded:: 3.18
+
+* ``HalfArc``: A line-only half arc
+
+  .. versionadded:: 3.20
+
+* ``ThirdArc``: A line-only one third arc
+
+  .. versionadded:: 3.20
+
+* ``QuarterArc``: A line-only one quarter arc
+
+  .. versionadded:: 3.20
+
+* ``ParallelogramRight``: Parallelogram that slants right
+
+  .. versionadded:: 3.28
+
+* ``ParallelogramLeft``: Parallelogram that slants left
+
+  .. versionadded:: 3.28
+
+* ``Trapezoid``: Trapezoid
+
+  .. versionadded:: 3.28
+
+* ``Shield``: A shape consisting of a triangle attached to a rectangle
+
+  .. versionadded:: 3.28
+
+* ``DiamondStar``: A 4-sided star
+
+  .. versionadded:: 3.28
+
+* ``Heart``: Heart
+
+  .. versionadded:: 3.28
+
+* ``Decagon``: Decagon
+
+  .. versionadded:: 3.28
+
+* ``RoundedSquare``: A square with rounded corners
+
+  .. versionadded:: 3.28
+
 
 """
 # --
@@ -4703,7 +4895,7 @@ QgsTemplatedLineSymbolLayerBase.SegmentCenter.is_monkey_patched = True
 QgsTemplatedLineSymbolLayerBase.SegmentCenter.__doc__ = "Place symbols at the center of every line segment"
 QgsTemplatedLineSymbolLayerBase.InnerVertices = Qgis.MarkerLinePlacement.InnerVertices
 QgsTemplatedLineSymbolLayerBase.InnerVertices.is_monkey_patched = True
-QgsTemplatedLineSymbolLayerBase.InnerVertices.__doc__ = "Inner vertices (i.e. all vertices except the first and last vertex) (since QGIS 3.24)"
+QgsTemplatedLineSymbolLayerBase.InnerVertices.__doc__ = "Inner vertices (i.e. all vertices except the first and last vertex) \n.. versionadded:: 3.24"
 Qgis.MarkerLinePlacement.__doc__ = """Defines how/where the symbols should be placed on a line.
 
 .. note::
@@ -4719,7 +4911,10 @@ Qgis.MarkerLinePlacement.__doc__ = """Defines how/where the symbols should be pl
 * ``CentralPoint``: Place symbols at the mid point of the line
 * ``CurvePoint``: Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
 * ``SegmentCenter``: Place symbols at the center of every line segment
-* ``InnerVertices``: Inner vertices (i.e. all vertices except the first and last vertex) (since QGIS 3.24)
+* ``InnerVertices``: Inner vertices (i.e. all vertices except the first and last vertex)
+
+  .. versionadded:: 3.24
+
 
 """
 # --
@@ -5007,7 +5202,7 @@ QgsStringUtils.ForceFirstLetterToCapital.is_monkey_patched = True
 QgsStringUtils.ForceFirstLetterToCapital.__doc__ = "Convert just the first letter of each word to uppercase, leave the rest untouched"
 QgsStringUtils.SmallCaps = Qgis.Capitalization.SmallCaps
 QgsStringUtils.SmallCaps.is_monkey_patched = True
-QgsStringUtils.SmallCaps.__doc__ = "Mixed case small caps (since QGIS 3.24)"
+QgsStringUtils.SmallCaps.__doc__ = "Mixed case small caps \n.. versionadded:: 3.24"
 QgsStringUtils.TitleCase = Qgis.Capitalization.TitleCase
 QgsStringUtils.TitleCase.is_monkey_patched = True
 QgsStringUtils.TitleCase.__doc__ = "Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased."
@@ -5016,7 +5211,7 @@ QgsStringUtils.UpperCamelCase.is_monkey_patched = True
 QgsStringUtils.UpperCamelCase.__doc__ = "Convert the string to upper camel case. Note that this method does not unaccent characters."
 QgsStringUtils.AllSmallCaps = Qgis.Capitalization.AllSmallCaps
 QgsStringUtils.AllSmallCaps.is_monkey_patched = True
-QgsStringUtils.AllSmallCaps.__doc__ = "Force all characters to small caps (since QGIS 3.24)"
+QgsStringUtils.AllSmallCaps.__doc__ = "Force all characters to small caps \n.. versionadded:: 3.24"
 Qgis.Capitalization.__doc__ = """String capitalization options.
 
 .. note::
@@ -5029,10 +5224,16 @@ Qgis.Capitalization.__doc__ = """String capitalization options.
 * ``AllUppercase``: Convert all characters to uppercase
 * ``AllLowercase``: Convert all characters to lowercase
 * ``ForceFirstLetterToCapital``: Convert just the first letter of each word to uppercase, leave the rest untouched
-* ``SmallCaps``: Mixed case small caps (since QGIS 3.24)
+* ``SmallCaps``: Mixed case small caps
+
+  .. versionadded:: 3.24
+
 * ``TitleCase``: Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased.
 * ``UpperCamelCase``: Convert the string to upper camel case. Note that this method does not unaccent characters.
-* ``AllSmallCaps``: Force all characters to small caps (since QGIS 3.24)
+* ``AllSmallCaps``: Force all characters to small caps
+
+  .. versionadded:: 3.24
+
 
 """
 # --
@@ -5247,7 +5448,7 @@ QgsProcessingProvider.FlagDeemphasiseSearchResults.__doc__ = "Algorithms should 
 QgsProcessingProvider.FlagCompatibleWithVirtualRaster = Qgis.ProcessingProviderFlag.CompatibleWithVirtualRaster
 QgsProcessingProvider.Flag.FlagCompatibleWithVirtualRaster = Qgis.ProcessingProviderFlag.CompatibleWithVirtualRaster
 QgsProcessingProvider.FlagCompatibleWithVirtualRaster.is_monkey_patched = True
-QgsProcessingProvider.FlagCompatibleWithVirtualRaster.__doc__ = "The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36"
+QgsProcessingProvider.FlagCompatibleWithVirtualRaster.__doc__ = "The processing provider's algorithms can work with QGIS virtualraster data provider \n.. versionadded:: 3.36"
 Qgis.ProcessingProviderFlag.__doc__ = """Flags indicating how and when an processing provider operates and should be exposed to users.
 
 .. note::
@@ -5257,7 +5458,10 @@ Qgis.ProcessingProviderFlag.__doc__ = """Flags indicating how and when an proces
 .. versionadded:: 3.36
 
 * ``FlagDeemphasiseSearchResults``: Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
-* ``FlagCompatibleWithVirtualRaster``: The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36
+* ``FlagCompatibleWithVirtualRaster``: The processing provider's algorithms can work with QGIS virtualraster data provider
+
+  .. versionadded:: 3.36
+
 
 """
 # --
@@ -5408,7 +5612,7 @@ QgsProcessingContext.Verbose.is_monkey_patched = True
 QgsProcessingContext.Verbose.__doc__ = "Verbose logging"
 QgsProcessingContext.ModelDebug = Qgis.ProcessingLogLevel.ModelDebug
 QgsProcessingContext.ModelDebug.is_monkey_patched = True
-QgsProcessingContext.ModelDebug.__doc__ = "Model debug level logging. Includes verbose logging and other outputs useful for debugging models (since QGIS 3.34)."
+QgsProcessingContext.ModelDebug.__doc__ = "Model debug level logging. Includes verbose logging and other outputs useful for debugging models \n.. versionadded:: 3.34"
 Qgis.ProcessingLogLevel.__doc__ = """Logging level for algorithms to use when pushing feedback messages.
 
 .. note::
@@ -5419,7 +5623,10 @@ Qgis.ProcessingLogLevel.__doc__ = """Logging level for algorithms to use when pu
 
 * ``DefaultLevel``: Default logging level
 * ``Verbose``: Verbose logging
-* ``ModelDebug``: Model debug level logging. Includes verbose logging and other outputs useful for debugging models (since QGIS 3.34).
+* ``ModelDebug``: Model debug level logging. Includes verbose logging and other outputs useful for debugging models
+
+  .. versionadded:: 3.34
+
 
 """
 # --
@@ -5732,7 +5939,7 @@ Qgis.CrsDefinitionFormat.baseClass = Qgis
 Qgis.FieldDomainSplitPolicy.DefaultValue.__doc__ = "Use default field value"
 Qgis.FieldDomainSplitPolicy.Duplicate.__doc__ = "Duplicate original value"
 Qgis.FieldDomainSplitPolicy.GeometryRatio.__doc__ = "New values are computed by the ratio of their area/length compared to the area/length of the original feature"
-Qgis.FieldDomainSplitPolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)"
+Qgis.FieldDomainSplitPolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \n.. versionadded:: 3.30"
 Qgis.FieldDomainSplitPolicy.__doc__ = """Split policy for field domains.
 
 When a feature is split into multiple parts, defines how the value of attributes
@@ -5743,7 +5950,10 @@ following the domain are computed.
 * ``DefaultValue``: Use default field value
 * ``Duplicate``: Duplicate original value
 * ``GeometryRatio``: New values are computed by the ratio of their area/length compared to the area/length of the original feature
-* ``UnsetField``: Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)
+* ``UnsetField``: Clears the field value so that the data provider backend will populate using any backend triggers or similar logic
+
+  .. versionadded:: 3.30
+
 
 """
 # --
@@ -5769,7 +5979,7 @@ Qgis.FieldDomainMergePolicy.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.FieldDuplicatePolicy.DefaultValue.__doc__ = "Use default field value"
 Qgis.FieldDuplicatePolicy.Duplicate.__doc__ = "Duplicate original value"
-Qgis.FieldDuplicatePolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)"
+Qgis.FieldDuplicatePolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \n.. versionadded:: 3.30"
 Qgis.FieldDuplicatePolicy.__doc__ = """Duplicate policy for fields.
 
 When a feature is duplicated, defines how the value of attributes are computed.
@@ -5778,7 +5988,10 @@ When a feature is duplicated, defines how the value of attributes are computed.
 
 * ``DefaultValue``: Use default field value
 * ``Duplicate``: Duplicate original value
-* ``UnsetField``: Clears the field value so that the data provider backend will populate using any backend triggers or similar logic (since QGIS 3.30)
+* ``UnsetField``: Clears the field value so that the data provider backend will populate using any backend triggers or similar logic
+
+  .. versionadded:: 3.30
+
 
 """
 # --
@@ -6059,14 +6272,17 @@ Qgis.VerticalAxisInversion.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
-Qgis.ProfileSurfaceSymbology.FillAbove.__doc__ = "The elevation surface will be rendered using a fill symbol above the surface level (since QGIS 3.32)"
+Qgis.ProfileSurfaceSymbology.FillAbove.__doc__ = "The elevation surface will be rendered using a fill symbol above the surface level \n.. versionadded:: 3.32"
 Qgis.ProfileSurfaceSymbology.__doc__ = """Surface symbology type for elevation profile plots.
 
 .. versionadded:: 3.26
 
 * ``Line``: The elevation surface will be rendered using a line symbol
 * ``FillBelow``: The elevation surface will be rendered using a fill symbol below the surface level
-* ``FillAbove``: The elevation surface will be rendered using a fill symbol above the surface level (since QGIS 3.32)
+* ``FillAbove``: The elevation surface will be rendered using a fill symbol above the surface level
+
+  .. versionadded:: 3.32
+
 
 """
 # --
@@ -6226,16 +6442,16 @@ QgsProject.FlagDontStoreOriginalStyles.__doc__ = "Skip the initial XML style sto
 QgsProject.FlagDontLoad3DViews = Qgis.ProjectReadFlag.DontLoad3DViews
 QgsProject.ReadFlag.FlagDontLoad3DViews = Qgis.ProjectReadFlag.DontLoad3DViews
 QgsProject.FlagDontLoad3DViews.is_monkey_patched = True
-QgsProject.FlagDontLoad3DViews.__doc__ = "Skip loading 3D views (since QGIS 3.26)"
+QgsProject.FlagDontLoad3DViews.__doc__ = "Skip loading 3D views \n.. versionadded:: 3.26"
 QgsProject.DontLoadProjectStyles = Qgis.ProjectReadFlag.DontLoadProjectStyles
 QgsProject.DontLoadProjectStyles.is_monkey_patched = True
 QgsProject.DontLoadProjectStyles.__doc__ = "Skip loading project style databases (deprecated -- use ProjectCapability.ProjectStyles flag instead)"
 QgsProject.ForceReadOnlyLayers = Qgis.ProjectReadFlag.ForceReadOnlyLayers
 QgsProject.ForceReadOnlyLayers.is_monkey_patched = True
-QgsProject.ForceReadOnlyLayers.__doc__ = "Open layers in a read-only mode. (since QGIS 3.28)"
+QgsProject.ForceReadOnlyLayers.__doc__ = "Open layers in a read-only mode. \n.. versionadded:: 3.28"
 QgsProject.DontUpgradeAnnotations = Qgis.ProjectReadFlag.DontUpgradeAnnotations
 QgsProject.DontUpgradeAnnotations.is_monkey_patched = True
-QgsProject.DontUpgradeAnnotations.__doc__ = "Don't upgrade old annotation items to QgsAnnotationItem (since QGIS 3.40)"
+QgsProject.DontUpgradeAnnotations.__doc__ = "Don't upgrade old annotation items to QgsAnnotationItem \n.. versionadded:: 3.40"
 Qgis.ProjectReadFlag.__doc__ = """Flags which control project read behavior.
 
 .. note::
@@ -6248,10 +6464,19 @@ Qgis.ProjectReadFlag.__doc__ = """Flags which control project read behavior.
 * ``FlagDontLoadLayouts``: Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
 * ``FlagTrustLayerMetadata``: Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
 * ``FlagDontStoreOriginalStyles``: Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
-* ``FlagDontLoad3DViews``: Skip loading 3D views (since QGIS 3.26)
+* ``FlagDontLoad3DViews``: Skip loading 3D views
+
+  .. versionadded:: 3.26
+
 * ``DontLoadProjectStyles``: Skip loading project style databases (deprecated -- use ProjectCapability.ProjectStyles flag instead)
-* ``ForceReadOnlyLayers``: Open layers in a read-only mode. (since QGIS 3.28)
-* ``DontUpgradeAnnotations``: Don't upgrade old annotation items to QgsAnnotationItem (since QGIS 3.40)
+* ``ForceReadOnlyLayers``: Open layers in a read-only mode.
+
+  .. versionadded:: 3.28
+
+* ``DontUpgradeAnnotations``: Don't upgrade old annotation items to QgsAnnotationItem
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -7024,10 +7249,10 @@ QgsRasterDataProvider.WriteLayerMetadata.is_monkey_patched = True
 QgsRasterDataProvider.WriteLayerMetadata.__doc__ = "Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider.writeLayerMetadata()"
 QgsRasterDataProvider.ProviderHintBenefitsFromResampling = Qgis.RasterProviderCapability.ProviderHintBenefitsFromResampling
 QgsRasterDataProvider.ProviderHintBenefitsFromResampling.is_monkey_patched = True
-QgsRasterDataProvider.ProviderHintBenefitsFromResampling.__doc__ = "Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)"
+QgsRasterDataProvider.ProviderHintBenefitsFromResampling.__doc__ = "Provider benefits from resampling and should apply user default resampling settings \n.. versionadded:: 3.10"
 QgsRasterDataProvider.ProviderHintCanPerformProviderResampling = Qgis.RasterProviderCapability.ProviderHintCanPerformProviderResampling
 QgsRasterDataProvider.ProviderHintCanPerformProviderResampling.is_monkey_patched = True
-QgsRasterDataProvider.ProviderHintCanPerformProviderResampling.__doc__ = "Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)"
+QgsRasterDataProvider.ProviderHintCanPerformProviderResampling.__doc__ = "Provider can perform resampling (to be opposed to post rendering resampling) \n.. versionadded:: 3.16"
 QgsRasterDataProvider.ReloadData = Qgis.RasterProviderCapability.ReloadData
 QgsRasterDataProvider.ReloadData.is_monkey_patched = True
 QgsRasterDataProvider.ReloadData.__doc__ = "Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider.reloadProviderData()"
@@ -7036,7 +7261,7 @@ QgsRasterDataProvider.DpiDependentData.is_monkey_patched = True
 QgsRasterDataProvider.DpiDependentData.__doc__ = ""
 QgsRasterDataProvider.NativeRasterAttributeTable = Qgis.RasterProviderCapability.NativeRasterAttributeTable
 QgsRasterDataProvider.NativeRasterAttributeTable.is_monkey_patched = True
-QgsRasterDataProvider.NativeRasterAttributeTable.__doc__ = "Indicates that the provider supports native raster attribute table (since QGIS 3.30)"
+QgsRasterDataProvider.NativeRasterAttributeTable.__doc__ = "Indicates that the provider supports native raster attribute table \n.. versionadded:: 3.30"
 QgsRasterDataProvider.BuildPyramids = Qgis.RasterProviderCapability.BuildPyramids
 QgsRasterDataProvider.BuildPyramids.is_monkey_patched = True
 QgsRasterDataProvider.BuildPyramids.__doc__ = "Supports building of pyramids (overviews) (since QGIS 3.38 -- this is a replacement for RasterInterfaceCapability.BuildPyramids)"
@@ -7051,11 +7276,20 @@ Qgis.RasterProviderCapability.__doc__ = """Raster data provider capabilities.
 * ``NoProviderCapabilities``: Provider has no capabilities
 * ``ReadLayerMetadata``: Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider.layerMetadata()
 * ``WriteLayerMetadata``: Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider.writeLayerMetadata()
-* ``ProviderHintBenefitsFromResampling``: Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)
-* ``ProviderHintCanPerformProviderResampling``: Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
+* ``ProviderHintBenefitsFromResampling``: Provider benefits from resampling and should apply user default resampling settings
+
+  .. versionadded:: 3.10
+
+* ``ProviderHintCanPerformProviderResampling``: Provider can perform resampling (to be opposed to post rendering resampling)
+
+  .. versionadded:: 3.16
+
 * ``ReloadData``: Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider.reloadProviderData()
 * ``DpiDependentData``: 
-* ``NativeRasterAttributeTable``: Indicates that the provider supports native raster attribute table (since QGIS 3.30)
+* ``NativeRasterAttributeTable``: Indicates that the provider supports native raster attribute table
+
+  .. versionadded:: 3.30
+
 * ``BuildPyramids``: Supports building of pyramids (overviews) (since QGIS 3.38 -- this is a replacement for RasterInterfaceCapability.BuildPyramids)
 
 """
@@ -7351,7 +7585,7 @@ QgsUnitTypes.DistanceMillimeters.is_monkey_patched = True
 QgsUnitTypes.DistanceMillimeters.__doc__ = "Millimeters"
 QgsUnitTypes.Inches = Qgis.DistanceUnit.Inches
 QgsUnitTypes.Inches.is_monkey_patched = True
-QgsUnitTypes.Inches.__doc__ = "Inches (since QGIS 3.32)"
+QgsUnitTypes.Inches.__doc__ = "Inches \n.. versionadded:: 3.32"
 QgsUnitTypes.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnit.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnknownUnit.is_monkey_patched = True
@@ -7373,7 +7607,10 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 * ``DistanceDegrees``: Degrees, for planar geographic CRS distance measurements
 * ``DistanceCentimeters``: Centimeters
 * ``DistanceMillimeters``: Millimeters
-* ``Inches``: Inches (since QGIS 3.32)
+* ``Inches``: Inches
+
+  .. versionadded:: 3.32
+
 * ``DistanceUnknownUnit``: Unknown distance unit
 
 """
@@ -7454,7 +7691,7 @@ QgsUnitTypes.AreaSquareMillimeters.is_monkey_patched = True
 QgsUnitTypes.AreaSquareMillimeters.__doc__ = "Square millimeters"
 QgsUnitTypes.SquareInches = Qgis.AreaUnit.SquareInches
 QgsUnitTypes.SquareInches.is_monkey_patched = True
-QgsUnitTypes.SquareInches.__doc__ = "Square inches (since QGIS 3.32)"
+QgsUnitTypes.SquareInches.__doc__ = "Square inches \n.. versionadded:: 3.32"
 QgsUnitTypes.AreaUnknownUnit = Qgis.AreaUnit.Unknown
 QgsUnitTypes.AreaUnit.AreaUnknownUnit = Qgis.AreaUnit.Unknown
 QgsUnitTypes.AreaUnknownUnit.is_monkey_patched = True
@@ -7478,7 +7715,10 @@ Qgis.AreaUnit.__doc__ = """Units of area
 * ``AreaSquareDegrees``: Square degrees, for planar geographic CRS area measurements
 * ``AreaSquareCentimeters``: Square centimeters
 * ``AreaSquareMillimeters``: Square millimeters
-* ``SquareInches``: Square inches (since QGIS 3.32)
+* ``SquareInches``: Square inches
+
+  .. versionadded:: 3.32
+
 * ``AreaUnknownUnit``: Unknown areal unit
 
 """
@@ -7657,7 +7897,7 @@ QgsUnitTypes.TemporalCenturies.__doc__ = "Centuries"
 QgsUnitTypes.TemporalIrregularStep = Qgis.TemporalUnit.IrregularStep
 QgsUnitTypes.TemporalUnit.TemporalIrregularStep = Qgis.TemporalUnit.IrregularStep
 QgsUnitTypes.TemporalIrregularStep.is_monkey_patched = True
-QgsUnitTypes.TemporalIrregularStep.__doc__ = "Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)"
+QgsUnitTypes.TemporalIrregularStep.__doc__ = "Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps \n.. versionadded:: 3.20"
 QgsUnitTypes.TemporalUnknownUnit = Qgis.TemporalUnit.Unknown
 QgsUnitTypes.TemporalUnit.TemporalUnknownUnit = Qgis.TemporalUnit.Unknown
 QgsUnitTypes.TemporalUnknownUnit.is_monkey_patched = True
@@ -7680,7 +7920,10 @@ Qgis.TemporalUnit.__doc__ = """Temporal units.
 * ``TemporalYears``: Years
 * ``TemporalDecades``: Decades
 * ``TemporalCenturies``: Centuries
-* ``TemporalIrregularStep``: Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)
+* ``TemporalIrregularStep``: Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps
+
+  .. versionadded:: 3.20
+
 * ``TemporalUnknownUnit``: Unknown time unit
 
 """
@@ -8066,15 +8309,15 @@ QgsAttributeEditorElement.AeTypeHtmlElement.__doc__ = "A HTML element"
 QgsAttributeEditorElement.AeTypeAction = Qgis.AttributeEditorType.Action
 QgsAttributeEditorElement.AttributeEditorType.AeTypeAction = Qgis.AttributeEditorType.Action
 QgsAttributeEditorElement.AeTypeAction.is_monkey_patched = True
-QgsAttributeEditorElement.AeTypeAction.__doc__ = "A layer action element (since QGIS 3.22)"
+QgsAttributeEditorElement.AeTypeAction.__doc__ = "A layer action element \n.. versionadded:: 3.22"
 QgsAttributeEditorElement.AeTypeTextElement = Qgis.AttributeEditorType.TextElement
 QgsAttributeEditorElement.AttributeEditorType.AeTypeTextElement = Qgis.AttributeEditorType.TextElement
 QgsAttributeEditorElement.AeTypeTextElement.is_monkey_patched = True
-QgsAttributeEditorElement.AeTypeTextElement.__doc__ = "A text element (since QGIS 3.30)"
+QgsAttributeEditorElement.AeTypeTextElement.__doc__ = "A text element \n.. versionadded:: 3.30"
 QgsAttributeEditorElement.AeTypeSpacerElement = Qgis.AttributeEditorType.SpacerElement
 QgsAttributeEditorElement.AttributeEditorType.AeTypeSpacerElement = Qgis.AttributeEditorType.SpacerElement
 QgsAttributeEditorElement.AeTypeSpacerElement.is_monkey_patched = True
-QgsAttributeEditorElement.AeTypeSpacerElement.__doc__ = "A spacer element (since QGIS 3.30)"
+QgsAttributeEditorElement.AeTypeSpacerElement.__doc__ = "A spacer element \n.. versionadded:: 3.30"
 QgsAttributeEditorElement.AeTypeInvalid = Qgis.AttributeEditorType.Invalid
 QgsAttributeEditorElement.AttributeEditorType.AeTypeInvalid = Qgis.AttributeEditorType.Invalid
 QgsAttributeEditorElement.AeTypeInvalid.is_monkey_patched = True
@@ -8092,9 +8335,18 @@ Qgis.AttributeEditorType.__doc__ = """Attribute editor types.
 * ``AeTypeRelation``: A relation
 * ``AeTypeQmlElement``: A QML element
 * ``AeTypeHtmlElement``: A HTML element
-* ``AeTypeAction``: A layer action element (since QGIS 3.22)
-* ``AeTypeTextElement``: A text element (since QGIS 3.30)
-* ``AeTypeSpacerElement``: A spacer element (since QGIS 3.30)
+* ``AeTypeAction``: A layer action element
+
+  .. versionadded:: 3.22
+
+* ``AeTypeTextElement``: A text element
+
+  .. versionadded:: 3.30
+
+* ``AeTypeSpacerElement``: A spacer element
+
+  .. versionadded:: 3.30
+
 * ``AeTypeInvalid``: Invalid
 
 """
@@ -8210,14 +8462,17 @@ Qgis.AttributeFormPythonInitCodeSource.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ExpressionType.Qgis.__doc__ = "Native QGIS expression"
 Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
-Qgis.ExpressionType.RasterCalculator.__doc__ = "Raster calculator expression (since QGIS 3.34)"
+Qgis.ExpressionType.RasterCalculator.__doc__ = "Raster calculator expression \n.. versionadded:: 3.34"
 Qgis.ExpressionType.__doc__ = """Expression types
 
 .. versionadded:: 3.32
 
 * ``Qgis``: Native QGIS expression
 * ``PointCloud``: Point cloud expression
-* ``RasterCalculator``: Raster calculator expression (since QGIS 3.34)
+* ``RasterCalculator``: Raster calculator expression
+
+  .. versionadded:: 3.34
+
 
 """
 # --
@@ -8661,10 +8916,10 @@ QgsStatisticalSummary.InterQuartileRange.is_monkey_patched = True
 QgsStatisticalSummary.InterQuartileRange.__doc__ = "Inter quartile range (IQR)"
 QgsStatisticalSummary.First = Qgis.Statistic.First
 QgsStatisticalSummary.First.is_monkey_patched = True
-QgsStatisticalSummary.First.__doc__ = "First value (since QGIS 3.6)"
+QgsStatisticalSummary.First.__doc__ = "First value \n.. versionadded:: 3.6"
 QgsStatisticalSummary.Last = Qgis.Statistic.Last
 QgsStatisticalSummary.Last.is_monkey_patched = True
-QgsStatisticalSummary.Last.__doc__ = "Last value (since QGIS 3.6)"
+QgsStatisticalSummary.Last.__doc__ = "Last value \n.. versionadded:: 3.6"
 QgsStatisticalSummary.All = Qgis.Statistic.All
 QgsStatisticalSummary.All.is_monkey_patched = True
 QgsStatisticalSummary.All.__doc__ = "All statistics"
@@ -8688,8 +8943,14 @@ Qgis.Statistic.__doc__ = """Available generic statistics.
 * ``FirstQuartile``: First quartile
 * ``ThirdQuartile``: Third quartile
 * ``InterQuartileRange``: Inter quartile range (IQR)
-* ``First``: First value (since QGIS 3.6)
-* ``Last``: Last value (since QGIS 3.6)
+* ``First``: First value
+
+  .. versionadded:: 3.6
+
+* ``Last``: Last value
+
+  .. versionadded:: 3.6
+
 * ``All``: All statistics
 
 """
@@ -8858,7 +9119,7 @@ Qgis.SensorThingsEntity.Sensor.__doc__ = "A Sensor is an instrument that observe
 Qgis.SensorThingsEntity.ObservedProperty.__doc__ = "An ObservedProperty specifies the phenomenon of an Observation"
 Qgis.SensorThingsEntity.Observation.__doc__ = "An Observation is the act of measuring or otherwise determining the value of a property"
 Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ = "In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed"
-Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". (Since QGIS 3.38)"
+Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". \n.. versionadded:: 3.38"
 Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 
 .. versionadded:: 3.36
@@ -8872,7 +9133,10 @@ Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 * ``ObservedProperty``: An ObservedProperty specifies the phenomenon of an Observation
 * ``Observation``: An Observation is the act of measuring or otherwise determining the value of a property
 * ``FeatureOfInterest``: In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed
-* ``MultiDatastream``: A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". (Since QGIS 3.38)
+* ``MultiDatastream``: A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\".
+
+  .. versionadded:: 3.38
+
 
 """
 # --

@@ -299,19 +299,19 @@ QgsPalLayerSettings.LabelAllParts.is_monkey_patched = True
 QgsPalLayerSettings.LabelAllParts.__doc__ = "Whether all parts of multi-part features should be labeled"
 QgsPalLayerSettings.PolygonLabelOutside = QgsPalLayerSettings.Property.PolygonLabelOutside
 QgsPalLayerSettings.PolygonLabelOutside.is_monkey_patched = True
-QgsPalLayerSettings.PolygonLabelOutside.__doc__ = "Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)"
+QgsPalLayerSettings.PolygonLabelOutside.__doc__ = "Whether labels outside a polygon feature are permitted, or should be forced \n.. versionadded:: 3.14"
 QgsPalLayerSettings.LineAnchorPercent = QgsPalLayerSettings.Property.LineAnchorPercent
 QgsPalLayerSettings.LineAnchorPercent.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorPercent.__doc__ = "Portion along line at which labels should be anchored (since QGIS 3.16)"
+QgsPalLayerSettings.LineAnchorPercent.__doc__ = "Portion along line at which labels should be anchored \n.. versionadded:: 3.16"
 QgsPalLayerSettings.LineAnchorClipping = QgsPalLayerSettings.Property.LineAnchorClipping
 QgsPalLayerSettings.LineAnchorClipping.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorClipping.__doc__ = "Clipping mode for line anchor calculation (since QGIS 3.20)"
+QgsPalLayerSettings.LineAnchorClipping.__doc__ = "Clipping mode for line anchor calculation \n.. versionadded:: 3.20"
 QgsPalLayerSettings.LineAnchorType = QgsPalLayerSettings.Property.LineAnchorType
 QgsPalLayerSettings.LineAnchorType.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorType.__doc__ = "Line anchor type (since QGIS 3.26)"
+QgsPalLayerSettings.LineAnchorType.__doc__ = "Line anchor type \n.. versionadded:: 3.26"
 QgsPalLayerSettings.LineAnchorTextPoint = QgsPalLayerSettings.Property.LineAnchorTextPoint
 QgsPalLayerSettings.LineAnchorTextPoint.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorTextPoint.__doc__ = "Line anchor text point (since QGIS 3.26)"
+QgsPalLayerSettings.LineAnchorTextPoint.__doc__ = "Line anchor text point \n.. versionadded:: 3.26"
 QgsPalLayerSettings.ScaleVisibility = QgsPalLayerSettings.Property.ScaleVisibility
 QgsPalLayerSettings.ScaleVisibility.is_monkey_patched = True
 QgsPalLayerSettings.ScaleVisibility.__doc__ = ""
@@ -350,10 +350,10 @@ QgsPalLayerSettings.CalloutDraw.is_monkey_patched = True
 QgsPalLayerSettings.CalloutDraw.__doc__ = "Show callout"
 QgsPalLayerSettings.AllowDegradedPlacement = QgsPalLayerSettings.Property.AllowDegradedPlacement
 QgsPalLayerSettings.AllowDegradedPlacement.is_monkey_patched = True
-QgsPalLayerSettings.AllowDegradedPlacement.__doc__ = "Allow degraded label placements (since QGIS 3.26)"
+QgsPalLayerSettings.AllowDegradedPlacement.__doc__ = "Allow degraded label placements \n.. versionadded:: 3.26"
 QgsPalLayerSettings.OverlapHandling = QgsPalLayerSettings.Property.OverlapHandling
 QgsPalLayerSettings.OverlapHandling.is_monkey_patched = True
-QgsPalLayerSettings.OverlapHandling.__doc__ = "Overlap handling technique (since QGIS 3.26)"
+QgsPalLayerSettings.OverlapHandling.__doc__ = "Overlap handling technique \n.. versionadded:: 3.26"
 QgsPalLayerSettings.Show = QgsPalLayerSettings.Property.Show
 QgsPalLayerSettings.Show.is_monkey_patched = True
 QgsPalLayerSettings.Show.__doc__ = ""
@@ -461,11 +461,26 @@ QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
 * ``LinePlacementOptions``: Line placement flags
 * ``OverrunDistance``: Distance which labels can extend past either end of linear features
 * ``LabelAllParts``: Whether all parts of multi-part features should be labeled
-* ``PolygonLabelOutside``: Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
-* ``LineAnchorPercent``: Portion along line at which labels should be anchored (since QGIS 3.16)
-* ``LineAnchorClipping``: Clipping mode for line anchor calculation (since QGIS 3.20)
-* ``LineAnchorType``: Line anchor type (since QGIS 3.26)
-* ``LineAnchorTextPoint``: Line anchor text point (since QGIS 3.26)
+* ``PolygonLabelOutside``: Whether labels outside a polygon feature are permitted, or should be forced
+
+  .. versionadded:: 3.14
+
+* ``LineAnchorPercent``: Portion along line at which labels should be anchored
+
+  .. versionadded:: 3.16
+
+* ``LineAnchorClipping``: Clipping mode for line anchor calculation
+
+  .. versionadded:: 3.20
+
+* ``LineAnchorType``: Line anchor type
+
+  .. versionadded:: 3.26
+
+* ``LineAnchorTextPoint``: Line anchor text point
+
+  .. versionadded:: 3.26
+
 * ``ScaleVisibility``: 
 * ``MinScale``: Min scale (deprecated, for old project compatibility only)
 * ``MinimumScale``: Minimum map scale (ie most \"zoomed out\")
@@ -478,8 +493,14 @@ QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
 * ``ObstacleFactor``: 
 * ``ZIndex``: 
 * ``CalloutDraw``: Show callout
-* ``AllowDegradedPlacement``: Allow degraded label placements (since QGIS 3.26)
-* ``OverlapHandling``: Overlap handling technique (since QGIS 3.26)
+* ``AllowDegradedPlacement``: Allow degraded label placements
+
+  .. versionadded:: 3.26
+
+* ``OverlapHandling``: Overlap handling technique
+
+  .. versionadded:: 3.26
+
 * ``Show``: 
 * ``AlwaysShow``: 
 
