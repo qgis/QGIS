@@ -1957,6 +1957,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             value_comment_indented += '\n'
 
                     if monkeypatch and enum_mk_base:
+                        if compat_name != enum_member:
+                            value_comment_indented += f'\n\n  Available as ``{enum_mk_base}.{compat_name}`` in older QGIS releases.\n'
                         if CONTEXT.actual_class:
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
@@ -1968,7 +1970,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"* ``{compat_name}``: {value_comment_indented}")
+                                f"* ``{enum_member}``: {value_comment_indented}")
                         else:
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name} = {enum_qualname}.{enum_member}\n")
@@ -1977,8 +1979,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"* ``{compat_name}``: {value_comment_indented}")
+                                f"* ``{enum_member}``: {value_comment_indented}")
                     else:
+                        if compat_name != enum_member:
+                            value_comment_indented += f'\n\n  Available as ``{CONTEXT.actual_class}.{compat_name}`` in older QGIS releases.\n'
+
                         if monkeypatch:
                             CONTEXT.output_python.append(
                                 f"{CONTEXT.actual_class}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
@@ -1989,12 +1994,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             CONTEXT.output_python.append(
                                 f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"* ``{compat_name}``: {value_comment_indented}")
+                                f"* ``{enum_member}``: {value_comment_indented}")
                         else:
                             CONTEXT.output_python.append(
                                 f"{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
-                                f"* ``{compat_name}``: {value_comment_indented}")
+                                f"* ``{enum_member}``: {value_comment_indented}")
 
                 if not is_scope_based and CONTEXT.is_qt6 and enum_member:
                     basename = '.'.join(CONTEXT.class_and_struct)

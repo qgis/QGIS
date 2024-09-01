@@ -25,10 +25,22 @@ QgsMapLayerModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``LayerIdRole``: Stores the map layer ID
-* ``LayerRole``: Stores pointer to the map layer itself
-* ``EmptyRole``: True if index corresponds to the empty (not set) value
-* ``AdditionalRole``: True if index corresponds to an additional (non map layer) item
+* ``LayerId``: Stores the map layer ID
+
+  Available as ``QgsMapLayerModel.LayerIdRole`` in older QGIS releases.
+
+* ``Layer``: Stores pointer to the map layer itself
+
+  Available as ``QgsMapLayerModel.LayerRole`` in older QGIS releases.
+
+* ``Empty``: True if index corresponds to the empty (not set) value
+
+  Available as ``QgsMapLayerModel.EmptyRole`` in older QGIS releases.
+
+* ``Additional``: True if index corresponds to an additional (non map layer) item
+
+  Available as ``QgsMapLayerModel.AdditionalRole`` in older QGIS releases.
+
 
 """
 # --

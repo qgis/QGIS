@@ -10,8 +10,14 @@ QgsAbstract3DSymbol.PropertyExtrusionHeight.is_monkey_patched = True
 QgsAbstract3DSymbol.PropertyExtrusionHeight.__doc__ = "Extrusion height (zero means no extrusion)"
 QgsAbstract3DSymbol.Property.__doc__ = """Data definable properties.
 
-* ``PropertyHeight``: Height (altitude)
-* ``PropertyExtrusionHeight``: Extrusion height (zero means no extrusion)
+* ``Height``: Height (altitude)
+
+  Available as ``QgsAbstract3DSymbol.PropertyHeight`` in older QGIS releases.
+
+* ``ExtrusionHeight``: Extrusion height (zero means no extrusion)
+
+  Available as ``QgsAbstract3DSymbol.PropertyExtrusionHeight`` in older QGIS releases.
+
 
 """
 # --

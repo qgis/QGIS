@@ -13,7 +13,10 @@ QgsCategorizedSymbolRendererWidget.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``ValueRole``: Category value
+* ``Value``: Category value
+
+  Available as ``QgsCategorizedSymbolRendererWidget.ValueRole`` in older QGIS releases.
+
 
 """
 # --

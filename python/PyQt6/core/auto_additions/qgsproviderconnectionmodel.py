@@ -25,10 +25,22 @@ QgsProviderConnectionModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``RoleConnectionName``: Connection name
-* ``RoleUri``: Connection URI string
-* ``RoleConfiguration``: Connection configuration variant map
-* ``RoleEmpty``: Entry is an empty entry
+* ``ConnectionName``: Connection name
+
+  Available as ``QgsProviderConnectionModel.RoleConnectionName`` in older QGIS releases.
+
+* ``Uri``: Connection URI string
+
+  Available as ``QgsProviderConnectionModel.RoleUri`` in older QGIS releases.
+
+* ``Configuration``: Connection configuration variant map
+
+  Available as ``QgsProviderConnectionModel.RoleConfiguration`` in older QGIS releases.
+
+* ``Empty``: Entry is an empty entry
+
+  Available as ``QgsProviderConnectionModel.RoleEmpty`` in older QGIS releases.
+
 
 """
 # --

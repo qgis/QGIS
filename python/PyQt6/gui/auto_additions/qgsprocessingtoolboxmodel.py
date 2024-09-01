@@ -21,10 +21,22 @@ QgsProcessingToolboxModelNode.Favorite.is_monkey_patched = True
 QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
 QgsProcessingToolboxModelNode.NodeType.__doc__ = """Enumeration of possible model node types
 
-* ``NodeProvider``: Provider node
-* ``NodeGroup``: Group node
-* ``NodeAlgorithm``: Algorithm node
-* ``NodeRecent``: Recent algorithms node
+* ``Provider``: Provider node
+
+  Available as ``QgsProcessingToolboxModelNode.NodeProvider`` in older QGIS releases.
+
+* ``Group``: Group node
+
+  Available as ``QgsProcessingToolboxModelNode.NodeGroup`` in older QGIS releases.
+
+* ``Algorithm``: Algorithm node
+
+  Available as ``QgsProcessingToolboxModelNode.NodeAlgorithm`` in older QGIS releases.
+
+* ``Recent``: Recent algorithms node
+
+  Available as ``QgsProcessingToolboxModelNode.NodeRecent`` in older QGIS releases.
+
 * ``Favorite``: Favorites algorithms node, since QGIS 3.40
 
 """
@@ -68,13 +80,34 @@ QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``RoleNodeType``: Corresponds to the node's type
-* ``RoleAlgorithmFlags``: Returns the node's algorithm flags, for algorithm nodes
-* ``RoleAlgorithmId``: Algorithm ID, for algorithm nodes
-* ``RoleAlgorithmName``: Untranslated algorithm name, for algorithm nodes
-* ``RoleAlgorithmShortDescription``: Short algorithm description, for algorithm nodes
-* ``RoleAlgorithmTags``: List of algorithm tags, for algorithm nodes
-* ``RoleProviderFlags``: Returns the node's provider flags
+* ``NodeType``: Corresponds to the node's type
+
+  Available as ``QgsProcessingToolboxModel.RoleNodeType`` in older QGIS releases.
+
+* ``AlgorithmFlags``: Returns the node's algorithm flags, for algorithm nodes
+
+  Available as ``QgsProcessingToolboxModel.RoleAlgorithmFlags`` in older QGIS releases.
+
+* ``AlgorithmId``: Algorithm ID, for algorithm nodes
+
+  Available as ``QgsProcessingToolboxModel.RoleAlgorithmId`` in older QGIS releases.
+
+* ``AlgorithmName``: Untranslated algorithm name, for algorithm nodes
+
+  Available as ``QgsProcessingToolboxModel.RoleAlgorithmName`` in older QGIS releases.
+
+* ``AlgorithmShortDescription``: Short algorithm description, for algorithm nodes
+
+  Available as ``QgsProcessingToolboxModel.RoleAlgorithmShortDescription`` in older QGIS releases.
+
+* ``AlgorithmTags``: List of algorithm tags, for algorithm nodes
+
+  Available as ``QgsProcessingToolboxModel.RoleAlgorithmTags`` in older QGIS releases.
+
+* ``ProviderFlags``: Returns the node's provider flags
+
+  Available as ``QgsProcessingToolboxModel.RoleProviderFlags`` in older QGIS releases.
+
 
 """
 # --
@@ -98,10 +131,22 @@ QgsProcessingToolboxProxyModel.FilterShowKnownIssues.is_monkey_patched = True
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues.__doc__ = "Show algorithms with known issues (hidden by default)"
 QgsProcessingToolboxProxyModel.Filter.__doc__ = """Available filter flags for filtering the model
 
-* ``FilterToolbox``: Filters out any algorithms and content which should not be shown in the toolbox
-* ``FilterModeler``: Filters out any algorithms and content which should not be shown in the modeler
-* ``FilterInPlace``: Only show algorithms which support in-place edits
-* ``FilterShowKnownIssues``: Show algorithms with known issues (hidden by default)
+* ``Toolbox``: Filters out any algorithms and content which should not be shown in the toolbox
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterToolbox`` in older QGIS releases.
+
+* ``Modeler``: Filters out any algorithms and content which should not be shown in the modeler
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterModeler`` in older QGIS releases.
+
+* ``InPlace``: Only show algorithms which support in-place edits
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterInPlace`` in older QGIS releases.
+
+* ``ShowKnownIssues``: Show algorithms with known issues (hidden by default)
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterShowKnownIssues`` in older QGIS releases.
+
 
 """
 # --

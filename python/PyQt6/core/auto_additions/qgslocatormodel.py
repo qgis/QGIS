@@ -37,13 +37,34 @@ QgsLocatorModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``ResultDataRole``: QgsLocatorResult data
-* ``ResultTypeRole``: Result type
-* ``ResultFilterPriorityRole``: Result priority, used by QgsLocatorProxyModel for sorting roles.
-* ``ResultScoreRole``: Result match score, used by QgsLocatorProxyModel for sorting roles.
-* ``ResultFilterNameRole``: Associated filter name which created the result
-* ``ResultFilterGroupSortingRole``: Group results within the same filter results
-* ``ResultActionsRole``: The actions to be shown for the given result in a context menu
+* ``ResultData``: QgsLocatorResult data
+
+  Available as ``QgsLocatorModel.ResultDataRole`` in older QGIS releases.
+
+* ``ResultType``: Result type
+
+  Available as ``QgsLocatorModel.ResultTypeRole`` in older QGIS releases.
+
+* ``ResultFilterPriority``: Result priority, used by QgsLocatorProxyModel for sorting roles.
+
+  Available as ``QgsLocatorModel.ResultFilterPriorityRole`` in older QGIS releases.
+
+* ``ResultScore``: Result match score, used by QgsLocatorProxyModel for sorting roles.
+
+  Available as ``QgsLocatorModel.ResultScoreRole`` in older QGIS releases.
+
+* ``ResultFilterName``: Associated filter name which created the result
+
+  Available as ``QgsLocatorModel.ResultFilterNameRole`` in older QGIS releases.
+
+* ``ResultFilterGroupSorting``: Group results within the same filter results
+
+  Available as ``QgsLocatorModel.ResultFilterGroupSortingRole`` in older QGIS releases.
+
+* ``ResultActions``: The actions to be shown for the given result in a context menu
+
+  Available as ``QgsLocatorModel.ResultActionsRole`` in older QGIS releases.
+
 
 """
 # --

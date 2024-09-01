@@ -29,14 +29,29 @@ QgsBrowserModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``PathRole``: Item path used to access path in the tree, see QgsDataItem.mPath
-* ``CommentRole``: Item comment
-* ``SortRole``: Custom sort role, see QgsDataItem.sortKey()
-* ``ProviderKeyRole``: Data item provider key that created the item, see QgsDataItem.providerKey()
+* ``Path``: Item path used to access path in the tree, see QgsDataItem.mPath
+
+  Available as ``QgsBrowserModel.PathRole`` in older QGIS releases.
+
+* ``Comment``: Item comment
+
+  Available as ``QgsBrowserModel.CommentRole`` in older QGIS releases.
+
+* ``Sort``: Custom sort role, see QgsDataItem.sortKey()
+
+  Available as ``QgsBrowserModel.SortRole`` in older QGIS releases.
+
+* ``ProviderKey``: Data item provider key that created the item, see QgsDataItem.providerKey()
 
   .. versionadded:: 3.12
 
-* ``LayerMetadataRole``: 
+
+  Available as ``QgsBrowserModel.ProviderKeyRole`` in older QGIS releases.
+
+* ``LayerMetadata``: 
+
+  Available as ``QgsBrowserModel.LayerMetadataRole`` in older QGIS releases.
+
 
 """
 # --

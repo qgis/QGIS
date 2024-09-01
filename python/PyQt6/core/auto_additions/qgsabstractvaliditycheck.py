@@ -12,8 +12,14 @@ QgsAbstractValidityCheck.TypeUserCheck.is_monkey_patched = True
 QgsAbstractValidityCheck.TypeUserCheck.__doc__ = "Starting point for custom user types"
 QgsAbstractValidityCheck.Type.__doc__ = """Check types
 
-* ``TypeLayoutCheck``: Print layout validity check, triggered on exporting a print layout
-* ``TypeUserCheck``: Starting point for custom user types
+* ``LayoutCheck``: Print layout validity check, triggered on exporting a print layout
+
+  Available as ``QgsAbstractValidityCheck.TypeLayoutCheck`` in older QGIS releases.
+
+* ``UserCheck``: Starting point for custom user types
+
+  Available as ``QgsAbstractValidityCheck.TypeUserCheck`` in older QGIS releases.
+
 
 """
 # --

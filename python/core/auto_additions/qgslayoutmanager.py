@@ -13,7 +13,10 @@ QgsLayoutManagerModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``LayoutRole``: Layout object
+* ``Layout``: Layout object
+
+  Available as ``QgsLayoutManagerModel.LayoutRole`` in older QGIS releases.
+
 
 """
 # --

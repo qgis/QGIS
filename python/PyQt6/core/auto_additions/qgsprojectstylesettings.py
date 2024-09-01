@@ -17,8 +17,14 @@ QgsProjectStyleDatabaseModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``StyleRole``: Style object
-* ``PathRole``: Style path
+* ``Style``: Style object
+
+  Available as ``QgsProjectStyleDatabaseModel.StyleRole`` in older QGIS releases.
+
+* ``Path``: Style path
+
+  Available as ``QgsProjectStyleDatabaseModel.PathRole`` in older QGIS releases.
+
 
 """
 # --

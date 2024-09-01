@@ -29,14 +29,29 @@ QgsFeaturePickerModelBase.CustomRole.__doc__ = """Extra roles that can be used t
 
 .. versionadded:: 3.36
 
-* ``IdentifierValueRole``: Used to retrieve the identifier value (primary key) of a feature.
+* ``IdentifierValue``: Used to retrieve the identifier value (primary key) of a feature.
 
   .. deprecated:: 3.40. Use IdentifierValuesRole instead.
 
-* ``IdentifierValuesRole``: Used to retrieve the identifierValues (primary keys) of a feature.
-* ``ValueRole``: Used to retrieve the displayExpression of a feature.
-* ``FeatureRole``: Used to retrieve the feature, it might be incomplete if the request doesn't fetch all attributes or geometry.
-* ``FeatureIdRole``: Used to retrieve the id of a feature.
+
+  Available as ``QgsFeaturePickerModelBase.IdentifierValueRole`` in older QGIS releases.
+
+* ``IdentifierValues``: Used to retrieve the identifierValues (primary keys) of a feature.
+
+  Available as ``QgsFeaturePickerModelBase.IdentifierValuesRole`` in older QGIS releases.
+
+* ``Value``: Used to retrieve the displayExpression of a feature.
+
+  Available as ``QgsFeaturePickerModelBase.ValueRole`` in older QGIS releases.
+
+* ``Feature``: Used to retrieve the feature, it might be incomplete if the request doesn't fetch all attributes or geometry.
+
+  Available as ``QgsFeaturePickerModelBase.FeatureRole`` in older QGIS releases.
+
+* ``FeatureId``: Used to retrieve the id of a feature.
+
+  Available as ``QgsFeaturePickerModelBase.FeatureIdRole`` in older QGIS releases.
+
 
 """
 # --

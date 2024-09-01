@@ -282,105 +282,315 @@ QgsSymbolLayer.PropertyLineClipping.is_monkey_patched = True
 QgsSymbolLayer.PropertyLineClipping.__doc__ = "Line clipping mode \n.. versionadded:: 3.24"
 QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
-* ``PropertySize``: Symbol size
-* ``PropertyAngle``: Symbol angle
-* ``PropertyName``: Name, eg shape name for simple markers
-* ``PropertyFillColor``: Fill color
-* ``PropertyStrokeColor``: Stroke color
-* ``PropertyStrokeWidth``: Stroke width
-* ``PropertyStrokeStyle``: Stroke style (eg solid, dashed)
-* ``PropertyOffset``: Symbol offset
-* ``PropertyCharacter``: Character, eg for font marker symbol layers
-* ``PropertyWidth``: Symbol width
-* ``PropertyHeight``: Symbol height
-* ``PropertyPreserveAspectRatio``: Preserve aspect ratio between width and height
-* ``PropertyFillStyle``: Fill style (eg solid, dots)
-* ``PropertyJoinStyle``: Line join style
-* ``PropertySecondaryColor``: Secondary color (eg for gradient fills)
-* ``PropertyLineAngle``: Line angle, or angle of hash lines for hash line symbols
-* ``PropertyLineDistance``: Distance between lines, or length of lines for hash line symbols
-* ``PropertyGradientType``: Gradient fill type
-* ``PropertyCoordinateMode``: Gradient coordinate mode
-* ``PropertyGradientSpread``: Gradient spread mode
-* ``PropertyGradientReference1X``: Gradient reference point 1 x
-* ``PropertyGradientReference1Y``: Gradient reference point 1 y
-* ``PropertyGradientReference2X``: Gradient reference point 2 x
-* ``PropertyGradientReference2Y``: Gradient reference point 2 y
-* ``PropertyGradientReference1IsCentroid``: Gradient reference point 1 is centroid
-* ``PropertyGradientReference2IsCentroid``: Gradient reference point 2 is centroid
-* ``PropertyBlurRadius``: Shapeburst blur radius
-* ``PropertyShapeburstUseWholeShape``: Shapeburst use whole shape
-* ``PropertyShapeburstMaxDistance``: Shapeburst fill from edge distance
-* ``PropertyShapeburstIgnoreRings``: Shapeburst ignore rings
-* ``PropertyFile``: Filename, eg for svg files
-* ``PropertyDistanceX``: Horizontal distance between points
-* ``PropertyDistanceY``: Vertical distance between points
-* ``PropertyDisplacementX``: Horizontal displacement
-* ``PropertyDisplacementY``: Vertical displacement
-* ``PropertyOpacity``: Opacity
-* ``PropertyCustomDash``: Custom dash pattern
-* ``PropertyCapStyle``: Line cap style
-* ``PropertyPlacement``: Line marker placement
-* ``PropertyInterval``: Line marker interval
-* ``PropertyOffsetAlongLine``: Offset along line
-* ``PropertyAverageAngleLength``: Length to average symbol angles over
-* ``PropertyHorizontalAnchor``: Horizontal anchor point
-* ``PropertyVerticalAnchor``: Vertical anchor point
-* ``PropertyLayerEnabled``: Whether symbol layer is enabled
-* ``PropertyArrowWidth``: Arrow tail width
-* ``PropertyArrowStartWidth``: Arrow tail start width
-* ``PropertyArrowHeadLength``: Arrow head length
-* ``PropertyArrowHeadThickness``: Arrow head thickness
-* ``PropertyArrowHeadType``: Arrow head type
-* ``PropertyArrowType``: Arrow type
-* ``PropertyOffsetX``: Horizontal offset
-* ``PropertyOffsetY``: Vertical offset
-* ``PropertyPointCount``: Point count
-* ``PropertyRandomSeed``: Random number seed
-* ``PropertyClipPoints``: Whether markers should be clipped to polygon boundaries
-* ``PropertyDensityArea``: Density area
-* ``PropertyFontFamily``: Font family
-* ``PropertyFontStyle``: Font style
-* ``PropertyDashPatternOffset``: Dash pattern offset,
-* ``PropertyTrimStart``: Trim distance from start of line
+* ``Size``: Symbol size
+
+  Available as ``QgsSymbolLayer.PropertySize`` in older QGIS releases.
+
+* ``Angle``: Symbol angle
+
+  Available as ``QgsSymbolLayer.PropertyAngle`` in older QGIS releases.
+
+* ``Name``: Name, eg shape name for simple markers
+
+  Available as ``QgsSymbolLayer.PropertyName`` in older QGIS releases.
+
+* ``FillColor``: Fill color
+
+  Available as ``QgsSymbolLayer.PropertyFillColor`` in older QGIS releases.
+
+* ``StrokeColor``: Stroke color
+
+  Available as ``QgsSymbolLayer.PropertyStrokeColor`` in older QGIS releases.
+
+* ``StrokeWidth``: Stroke width
+
+  Available as ``QgsSymbolLayer.PropertyStrokeWidth`` in older QGIS releases.
+
+* ``StrokeStyle``: Stroke style (eg solid, dashed)
+
+  Available as ``QgsSymbolLayer.PropertyStrokeStyle`` in older QGIS releases.
+
+* ``Offset``: Symbol offset
+
+  Available as ``QgsSymbolLayer.PropertyOffset`` in older QGIS releases.
+
+* ``Character``: Character, eg for font marker symbol layers
+
+  Available as ``QgsSymbolLayer.PropertyCharacter`` in older QGIS releases.
+
+* ``Width``: Symbol width
+
+  Available as ``QgsSymbolLayer.PropertyWidth`` in older QGIS releases.
+
+* ``Height``: Symbol height
+
+  Available as ``QgsSymbolLayer.PropertyHeight`` in older QGIS releases.
+
+* ``PreserveAspectRatio``: Preserve aspect ratio between width and height
+
+  Available as ``QgsSymbolLayer.PropertyPreserveAspectRatio`` in older QGIS releases.
+
+* ``FillStyle``: Fill style (eg solid, dots)
+
+  Available as ``QgsSymbolLayer.PropertyFillStyle`` in older QGIS releases.
+
+* ``JoinStyle``: Line join style
+
+  Available as ``QgsSymbolLayer.PropertyJoinStyle`` in older QGIS releases.
+
+* ``SecondaryColor``: Secondary color (eg for gradient fills)
+
+  Available as ``QgsSymbolLayer.PropertySecondaryColor`` in older QGIS releases.
+
+* ``LineAngle``: Line angle, or angle of hash lines for hash line symbols
+
+  Available as ``QgsSymbolLayer.PropertyLineAngle`` in older QGIS releases.
+
+* ``LineDistance``: Distance between lines, or length of lines for hash line symbols
+
+  Available as ``QgsSymbolLayer.PropertyLineDistance`` in older QGIS releases.
+
+* ``GradientType``: Gradient fill type
+
+  Available as ``QgsSymbolLayer.PropertyGradientType`` in older QGIS releases.
+
+* ``CoordinateMode``: Gradient coordinate mode
+
+  Available as ``QgsSymbolLayer.PropertyCoordinateMode`` in older QGIS releases.
+
+* ``GradientSpread``: Gradient spread mode
+
+  Available as ``QgsSymbolLayer.PropertyGradientSpread`` in older QGIS releases.
+
+* ``GradientReference1X``: Gradient reference point 1 x
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference1X`` in older QGIS releases.
+
+* ``GradientReference1Y``: Gradient reference point 1 y
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference1Y`` in older QGIS releases.
+
+* ``GradientReference2X``: Gradient reference point 2 x
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference2X`` in older QGIS releases.
+
+* ``GradientReference2Y``: Gradient reference point 2 y
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference2Y`` in older QGIS releases.
+
+* ``GradientReference1IsCentroid``: Gradient reference point 1 is centroid
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference1IsCentroid`` in older QGIS releases.
+
+* ``GradientReference2IsCentroid``: Gradient reference point 2 is centroid
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference2IsCentroid`` in older QGIS releases.
+
+* ``BlurRadius``: Shapeburst blur radius
+
+  Available as ``QgsSymbolLayer.PropertyBlurRadius`` in older QGIS releases.
+
+* ``ShapeburstUseWholeShape``: Shapeburst use whole shape
+
+  Available as ``QgsSymbolLayer.PropertyShapeburstUseWholeShape`` in older QGIS releases.
+
+* ``ShapeburstMaxDistance``: Shapeburst fill from edge distance
+
+  Available as ``QgsSymbolLayer.PropertyShapeburstMaxDistance`` in older QGIS releases.
+
+* ``ShapeburstIgnoreRings``: Shapeburst ignore rings
+
+  Available as ``QgsSymbolLayer.PropertyShapeburstIgnoreRings`` in older QGIS releases.
+
+* ``File``: Filename, eg for svg files
+
+  Available as ``QgsSymbolLayer.PropertyFile`` in older QGIS releases.
+
+* ``DistanceX``: Horizontal distance between points
+
+  Available as ``QgsSymbolLayer.PropertyDistanceX`` in older QGIS releases.
+
+* ``DistanceY``: Vertical distance between points
+
+  Available as ``QgsSymbolLayer.PropertyDistanceY`` in older QGIS releases.
+
+* ``DisplacementX``: Horizontal displacement
+
+  Available as ``QgsSymbolLayer.PropertyDisplacementX`` in older QGIS releases.
+
+* ``DisplacementY``: Vertical displacement
+
+  Available as ``QgsSymbolLayer.PropertyDisplacementY`` in older QGIS releases.
+
+* ``Opacity``: Opacity
+
+  Available as ``QgsSymbolLayer.PropertyOpacity`` in older QGIS releases.
+
+* ``CustomDash``: Custom dash pattern
+
+  Available as ``QgsSymbolLayer.PropertyCustomDash`` in older QGIS releases.
+
+* ``CapStyle``: Line cap style
+
+  Available as ``QgsSymbolLayer.PropertyCapStyle`` in older QGIS releases.
+
+* ``Placement``: Line marker placement
+
+  Available as ``QgsSymbolLayer.PropertyPlacement`` in older QGIS releases.
+
+* ``Interval``: Line marker interval
+
+  Available as ``QgsSymbolLayer.PropertyInterval`` in older QGIS releases.
+
+* ``OffsetAlongLine``: Offset along line
+
+  Available as ``QgsSymbolLayer.PropertyOffsetAlongLine`` in older QGIS releases.
+
+* ``AverageAngleLength``: Length to average symbol angles over
+
+  Available as ``QgsSymbolLayer.PropertyAverageAngleLength`` in older QGIS releases.
+
+* ``HorizontalAnchor``: Horizontal anchor point
+
+  Available as ``QgsSymbolLayer.PropertyHorizontalAnchor`` in older QGIS releases.
+
+* ``VerticalAnchor``: Vertical anchor point
+
+  Available as ``QgsSymbolLayer.PropertyVerticalAnchor`` in older QGIS releases.
+
+* ``LayerEnabled``: Whether symbol layer is enabled
+
+  Available as ``QgsSymbolLayer.PropertyLayerEnabled`` in older QGIS releases.
+
+* ``ArrowWidth``: Arrow tail width
+
+  Available as ``QgsSymbolLayer.PropertyArrowWidth`` in older QGIS releases.
+
+* ``ArrowStartWidth``: Arrow tail start width
+
+  Available as ``QgsSymbolLayer.PropertyArrowStartWidth`` in older QGIS releases.
+
+* ``ArrowHeadLength``: Arrow head length
+
+  Available as ``QgsSymbolLayer.PropertyArrowHeadLength`` in older QGIS releases.
+
+* ``ArrowHeadThickness``: Arrow head thickness
+
+  Available as ``QgsSymbolLayer.PropertyArrowHeadThickness`` in older QGIS releases.
+
+* ``ArrowHeadType``: Arrow head type
+
+  Available as ``QgsSymbolLayer.PropertyArrowHeadType`` in older QGIS releases.
+
+* ``ArrowType``: Arrow type
+
+  Available as ``QgsSymbolLayer.PropertyArrowType`` in older QGIS releases.
+
+* ``OffsetX``: Horizontal offset
+
+  Available as ``QgsSymbolLayer.PropertyOffsetX`` in older QGIS releases.
+
+* ``OffsetY``: Vertical offset
+
+  Available as ``QgsSymbolLayer.PropertyOffsetY`` in older QGIS releases.
+
+* ``PointCount``: Point count
+
+  Available as ``QgsSymbolLayer.PropertyPointCount`` in older QGIS releases.
+
+* ``RandomSeed``: Random number seed
+
+  Available as ``QgsSymbolLayer.PropertyRandomSeed`` in older QGIS releases.
+
+* ``ClipPoints``: Whether markers should be clipped to polygon boundaries
+
+  Available as ``QgsSymbolLayer.PropertyClipPoints`` in older QGIS releases.
+
+* ``DensityArea``: Density area
+
+  Available as ``QgsSymbolLayer.PropertyDensityArea`` in older QGIS releases.
+
+* ``FontFamily``: Font family
+
+  Available as ``QgsSymbolLayer.PropertyFontFamily`` in older QGIS releases.
+
+* ``FontStyle``: Font style
+
+  Available as ``QgsSymbolLayer.PropertyFontStyle`` in older QGIS releases.
+
+* ``DashPatternOffset``: Dash pattern offset,
+
+  Available as ``QgsSymbolLayer.PropertyDashPatternOffset`` in older QGIS releases.
+
+* ``TrimStart``: Trim distance from start of line
 
   .. versionadded:: 3.20
 
-* ``PropertyTrimEnd``: Trim distance from end of line
+
+  Available as ``QgsSymbolLayer.PropertyTrimStart`` in older QGIS releases.
+
+* ``TrimEnd``: Trim distance from end of line
 
   .. versionadded:: 3.20
 
-* ``PropertyLineStartWidthValue``: Start line width for interpolated line renderer
+
+  Available as ``QgsSymbolLayer.PropertyTrimEnd`` in older QGIS releases.
+
+* ``LineStartWidthValue``: Start line width for interpolated line renderer
 
   .. versionadded:: 3.22
 
-* ``PropertyLineEndWidthValue``: End line width for interpolated line renderer
+
+  Available as ``QgsSymbolLayer.PropertyLineStartWidthValue`` in older QGIS releases.
+
+* ``LineEndWidthValue``: End line width for interpolated line renderer
 
   .. versionadded:: 3.22
 
-* ``PropertyLineStartColorValue``: Start line color for interpolated line renderer
+
+  Available as ``QgsSymbolLayer.PropertyLineEndWidthValue`` in older QGIS releases.
+
+* ``LineStartColorValue``: Start line color for interpolated line renderer
 
   .. versionadded:: 3.22
 
-* ``PropertyLineEndColorValue``: End line color for interpolated line renderer
+
+  Available as ``QgsSymbolLayer.PropertyLineStartColorValue`` in older QGIS releases.
+
+* ``LineEndColorValue``: End line color for interpolated line renderer
 
   .. versionadded:: 3.22
 
-* ``PropertyMarkerClipping``: Marker clipping mode
+
+  Available as ``QgsSymbolLayer.PropertyLineEndColorValue`` in older QGIS releases.
+
+* ``MarkerClipping``: Marker clipping mode
 
   .. versionadded:: 3.24
 
-* ``PropertyRandomOffsetX``: Random offset X
+
+  Available as ``QgsSymbolLayer.PropertyMarkerClipping`` in older QGIS releases.
+
+* ``RandomOffsetX``: Random offset X
 
   .. versionadded:: 3.24
 
-* ``PropertyRandomOffsetY``: Random offset Y
+
+  Available as ``QgsSymbolLayer.PropertyRandomOffsetX`` in older QGIS releases.
+
+* ``RandomOffsetY``: Random offset Y
 
   .. versionadded:: 3.24
 
-* ``PropertyLineClipping``: Line clipping mode
+
+  Available as ``QgsSymbolLayer.PropertyRandomOffsetY`` in older QGIS releases.
+
+* ``LineClipping``: Line clipping mode
 
   .. versionadded:: 3.24
+
+
+  Available as ``QgsSymbolLayer.PropertyLineClipping`` in older QGIS releases.
 
 
 """

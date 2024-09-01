@@ -8,7 +8,10 @@ QgsSymbol.Property.__doc__ = """Data definable properties.
 
 .. versionadded:: 3.18
 
-* ``PropertyOpacity``: Opacity
+* ``Opacity``: Opacity
+
+  Available as ``QgsSymbol.PropertyOpacity`` in older QGIS releases.
+
 
 """
 # --
