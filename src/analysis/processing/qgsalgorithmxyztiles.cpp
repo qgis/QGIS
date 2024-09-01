@@ -281,20 +281,22 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   mOutputDir = outputDir;
   mTms = tms;
 
+  mTotalTiles = 0;
   for ( int z = mMinZoom; z <= mMaxZoom; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     mMetaTiles += getMetatiles( mWgs84Extent, z, mMetaTileSize );
+    feedback->pushWarning( QObject::tr( "%1 tiles will be created for zoom level %2" ).arg( mMetaTiles.size() - mTotalTiles ).arg( z ) );
+    mTotalTiles = mMetaTiles.size();
   }
+  feedback->pushWarning( QObject::tr( "A total of %1 tiles will be created" ).arg( mTotalTiles ) );
 
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
-
-  mTotalTiles = mMetaTiles.size();
 
   QEventLoop loop;
   // cppcheck-suppress danglingLifetime
@@ -470,15 +472,17 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
                       .arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
   mMbtilesWriter->setMetadataValue( "bounds",  boundsStr );
 
+  mTotalTiles = 0;
   for ( int z = mMinZoom; z <= mMaxZoom; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     mMetaTiles += getMetatiles( mWgs84Extent, z, mMetaTileSize );
+    feedback->pushWarning( QObject::tr( "%1 tiles will be created for zoom level %2" ).arg( mMetaTiles.size() - mTotalTiles ).arg( z ) );
+    mTotalTiles = mMetaTiles.size();
   }
-
-  mTotalTiles = mMetaTiles.size();
+  feedback->pushWarning( QObject::tr( "A total of %1 tiles will be created" ).arg( mTotalTiles ) );
 
   QEventLoop loop;
   // cppcheck-suppress danglingLifetime
