@@ -1479,8 +1479,8 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
 
   QgsLegendSettings settings;
 
-  _setStandardTestFont( settings );
-  QImage res = _renderLegend( legendModel.get(), settings );
+  setStandardTestFont( settings );
+  QImage res = renderLegend( legendModel.get(), settings );
 
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_no_vector" ), 30, QSize( 8, 12 ) ) );
 
@@ -1500,7 +1500,7 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   root->addLayer( layer2 );
   legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
 
-  res = _renderLegend( legendModel.get(), settings );
+  res = renderLegend( legendModel.get(), settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_red_vector" ), 30, QSize( 8, 13 ) ) );
 
   //color ramp vector
@@ -1518,7 +1518,7 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   root->addLayer( layer3 );
   legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
 
-  res = _renderLegend( legendModel.get(), settings );
+  res = renderLegend( legendModel.get(), settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_color_ramp_vector" ), 30, QSize( 8, 19 ) ) );
 
   QgsProject::instance()->removeMapLayer( layer3 );
