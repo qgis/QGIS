@@ -420,7 +420,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mOptionsMenu->addSeparator();
 
-  mRenameProfileAction = new QAction( tr( "Rename profile" ), this );
+  mRenameProfileAction = new QAction( tr( "Rename Profile…" ), this );
   connect( mRenameProfileAction, &QAction::triggered, this, &QgsElevationProfileWidget::renameProfileTriggered );
   mOptionsMenu->addAction( mRenameProfileAction );
 
@@ -972,7 +972,7 @@ void QgsElevationProfileWidget::axisScaleLockToggled( bool active )
 void QgsElevationProfileWidget::renameProfileTriggered()
 {
   QgsNewNameDialog dlg( tr( "elevation profile" ), canvasName(), {}, {}, Qt::CaseSensitive, this );
-  dlg.setWindowTitle( tr( "Rename elevation profile" ) );
+  dlg.setWindowTitle( tr( "Rename Elevation Profile" ) );
   dlg.setHintString( tr( "Enter a new elevation profile title" ) );
   dlg.setAllowEmptyName( false );
   if ( dlg.exec() == QDialog::Accepted )
