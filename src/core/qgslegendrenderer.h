@@ -102,7 +102,7 @@ class CORE_EXPORT QgsLegendRenderer
      * Draws the legend with given \a painter. The legend will occupy the area reported in legendSize().
      * The \a painter should be scaled beforehand so that units correspond to millimeters.
      *
-     * \deprecated Use the variant which accepts a QgsRenderContext instead.
+     * \deprecated QGIS 3.40. Use the variant which accepts a QgsRenderContext instead.
      */
     Q_DECL_DEPRECATED void drawLegend( QPainter *painter ) SIP_DEPRECATED;
 

@@ -1055,7 +1055,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setWidth()
      * \see setWidthMapUnitScale()
      *
-     * \deprecated use setSizeUnit() instead.
+     * \deprecated QGIS 3.40. Use setSizeUnit() instead.
      */
     Q_DECL_DEPRECATED void setWidthUnit( Qgis::RenderUnit unit ) SIP_DEPRECATED { mSizeUnit = unit; }
 
@@ -1077,7 +1077,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see width()
      * \see widthMapUnitScale()
      *
-     * \deprecated use sizeUnit() instead.
+     * \deprecated QGIS 3.40. Use sizeUnit() instead.
      */
     Q_DECL_DEPRECATED Qgis::RenderUnit widthUnit() const SIP_DEPRECATED { return mSizeUnit; }
 
@@ -1100,7 +1100,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setWidth()
      * \see setWidthUnit()
      *
-     * \deprecated use setSizeMapUnitScale() instead.
+     * \deprecated QGIS 3.40. Use setSizeMapUnitScale() instead.
      */
     Q_DECL_DEPRECATED void setWidthMapUnitScale( const QgsMapUnitScale &scale ) SIP_DEPRECATED { mSizeMapUnitScale = scale; }
 
@@ -1123,7 +1123,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see width()
      * \see widthUnit()
      *
-     * \deprecated use sizeMapUnitScale() instead.
+     * \deprecated QGIS 3.40. Use sizeMapUnitScale() instead.
      */
     Q_DECL_DEPRECATED const QgsMapUnitScale &widthMapUnitScale() const SIP_DEPRECATED { return mSizeMapUnitScale; }
 

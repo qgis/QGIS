@@ -406,7 +406,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     /**
      * Returns if the group box to fill parameters is visible
      * \since QGIS 3.18
-     * \deprecated Use allowParameters()
+     * \deprecated QGIS 3.40. Use allowParameters().
      */
     Q_DECL_DEPRECATED bool allowParamerters() const SIP_DEPRECATED {return mAllowParameters;} // spellok
 

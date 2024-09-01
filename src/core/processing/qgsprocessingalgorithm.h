@@ -170,7 +170,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
-     * \deprecated Unused, will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED virtual QString helpString() const SIP_HOLDGIL SIP_DEPRECATED;
 
@@ -934,7 +934,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Evaluates the parameter with matching \a name to a list of fields.
      *
-     * \deprecated use parameterAsStrings() instead.
+     * \deprecated QGIS 3.40. Use parameterAsStrings() instead.
      */
     Q_DECL_DEPRECATED QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_DEPRECATED;
 

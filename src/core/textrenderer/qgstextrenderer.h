@@ -194,7 +194,7 @@ class CORE_EXPORT QgsTextRenderer
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      *
-     * \deprecated Private API only, will be removed in 4.0
+     * \deprecated QGIS 3.40. Private API only, will be removed in 4.0.
      */
     Q_DECL_DEPRECATED static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsTextRenderer
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      *
-     * \deprecated Private API only, will be removed in 4.0
+     * \deprecated QGIS 3.40. Private API only, will be removed in 4.0.
      */
     Q_DECL_DEPRECATED static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,

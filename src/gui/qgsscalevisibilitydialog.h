@@ -71,7 +71,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     /**
      * Set whether scale based visibility is enabled.
      * \see hasScaleVisibility()
-     * \deprecated Use setScaleVisibility()
+     * \deprecated QGIS 3.40. Use setScaleVisibility().
      */
     Q_DECL_DEPRECATED void setScaleVisiblity( bool hasScaleVisibility ) SIP_DEPRECATED { setScaleVisibility( hasScaleVisibility ); } // spellok
 

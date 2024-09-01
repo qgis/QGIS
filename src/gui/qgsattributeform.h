@@ -50,7 +50,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
   public:
 
-    //! Form modes \deprecated Use QgsAttributeEditorContext::Mode instead.
+    //! Form modes \deprecated QGIS 3.40. Use QgsAttributeEditorContext::Mode instead.
     enum Mode
     {
       SingleEditMode, //!< Single edit mode, for editing a single feature

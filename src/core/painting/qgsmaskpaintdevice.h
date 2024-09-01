@@ -80,7 +80,7 @@ class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice
     /**
      * Returns the mask painter path painted on this paint device
      *
-     * \deprecated Use QgsGeometryPaintDevice instead
+     * \deprecated QGIS 3.40. Use QgsGeometryPaintDevice instead.
      */
     Q_DECL_DEPRECATED QPainterPath maskPainterPath() const SIP_DEPRECATED;
 

@@ -293,7 +293,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns custom rendering flags. Layers might honour these to alter their rendering.
      * \returns custom flags strings, separated by ';'
      * \see setCustomRenderFlags()
-     * \deprecated use \see customRenderingFlags().
+     * \deprecated QGIS 3.40. Use \see customRenderingFlags().
      */
     Q_DECL_DEPRECATED QString customRenderFlags() const { return mCustomRenderFlags; }
 
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \see customRenderFlags()
-     * \deprecated use \see setCustomRenderingFlag() instead.
+     * \deprecated QGIS 3.40. Use \see setCustomRenderingFlag() instead.
      */
     Q_DECL_DEPRECATED void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 

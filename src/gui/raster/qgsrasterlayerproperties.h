@@ -90,7 +90,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     /**
      * Saves the default style when appropriate button is pressed
      *
-     * \deprecated use saveStyleAsDefault() instead
+     * \deprecated QGIS 3.40. Use saveStyleAsDefault() instead.
      */
     Q_DECL_DEPRECATED void saveDefaultStyle() SIP_DEPRECATED;
 

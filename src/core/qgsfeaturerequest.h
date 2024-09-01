@@ -882,7 +882,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
-     * \deprecated Use timeout() instead.
+     * \deprecated QGIS 3.40. Use timeout() instead.
      */
     Q_DECL_DEPRECATED int connectionTimeout() const SIP_DEPRECATED;
 
@@ -892,7 +892,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
-     * \deprecated Use setTimeout() instead.
+     * \deprecated QGIS 3.40. Use setTimeout() instead.
      */
     Q_DECL_DEPRECATED QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) SIP_DEPRECATED;
 

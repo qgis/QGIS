@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
     QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     /**
-     * \deprecated Will be made in QGIS 4
+     * \deprecated QGIS 3.40. Will be made in QGIS 4.
      */
     QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
 

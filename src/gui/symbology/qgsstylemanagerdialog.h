@@ -319,14 +319,14 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     /**
      * Populates the list view with symbols of the current type with the given names.
      *
-     * \deprecated No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void populateSymbols( const QStringList &symbolNames, bool checkable = false ) SIP_DEPRECATED;
 
     /**
      * Populates the list view with color ramps of the current type with the given names.
      *
-     * \deprecated No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) SIP_DEPRECATED;
 

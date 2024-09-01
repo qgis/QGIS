@@ -47,7 +47,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      *
      * The base class implementation does nothing.
      *
-     * \deprecated use the version which specifies a drop location instead.
+     * \deprecated QGIS 3.40. Use the version which specifies a drop location instead.
      */
     Q_DECL_DEPRECATED virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) SIP_DEPRECATED;
 

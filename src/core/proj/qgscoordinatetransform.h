@@ -128,7 +128,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * to \a destination coordinate reference system, with the specified
      * datum transforms (see QgsDatumTransform).
      *
-     * \deprecated will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination,
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setSourceDatumTransformId()
      * \see destinationDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED int sourceDatumTransformId() const SIP_DEPRECATED;
 
@@ -544,7 +544,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see sourceDatumTransformId()
      * \see setDestinationDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED void setSourceDatumTransformId( int datumId ) SIP_DEPRECATED;
 
@@ -559,7 +559,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setDestinationDatumTransformId()
      * \see sourceDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED int destinationDatumTransformId() const SIP_DEPRECATED;
 
@@ -574,7 +574,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see destinationDatumTransformId()
      * \see setSourceDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED void setDestinationDatumTransformId( int datumId ) SIP_DEPRECATED;
 

@@ -170,7 +170,7 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      * \see setSelectionForegroundColor()
      * \see selectionBackgroundColor()
      *
-     * \deprecated use selectionTextFormat() instead.
+     * \deprecated QGIS 3.40. Use selectionTextFormat() instead.
      */
     Q_DECL_DEPRECATED QColor selectionForegroundColor() SIP_DEPRECATED;
 
@@ -367,7 +367,7 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      * \see selectionForegroundColor()
      * \see setSelectionBackgroundColor()
      *
-     * \deprecated Use setSelectionTextFormat() instead.
+     * \deprecated QGIS 3.40. Use setSelectionTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setSelectionForegroundColor( const QColor &color ) SIP_DEPRECATED;
 

@@ -902,7 +902,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see load()
      * \see errorString()
      *
-     * \deprecated This function has no effect.
+     * \deprecated QGIS 3.40. This function has no effect.
      */
     Q_DECL_DEPRECATED bool save( const QString &filename = QString() ) SIP_DEPRECATED;
 

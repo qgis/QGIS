@@ -172,7 +172,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 
     /**
      * Returns the Content-Type value corresponding to \a extension.
-     * \deprecated Use contentTypeFromExtension()
+     * \deprecated QGIS 3.40. Use contentTypeFromExtension().
      */
     Q_DECL_DEPRECATED static QgsServerOgcApi::ContentType contenTypeFromExtension( const std::string &extension ) SIP_DEPRECATED { return contentTypeFromExtension( extension ); } // spellok
 
