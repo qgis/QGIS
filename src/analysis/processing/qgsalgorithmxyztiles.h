@@ -104,6 +104,8 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    void checkLayersUsagePolicy( QgsProcessingFeedback *feedback );
+
     void startJobs();
     virtual void processMetaTile( QgsMapRendererSequentialJob *job ) = 0;
 
@@ -129,7 +131,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     long long mTotalTiles = 0;
     long long mProcessedTiles = 0;
     QgsCoordinateTransformContext mTransformContext;
-    QEventLoop *mEventLoop = nullptr;
+    QPointer<QEventLoop> mEventLoop;
     QList< MetaTile > mMetaTiles;
     QMap< QgsMapRendererSequentialJob *, MetaTile > mRendererJobs;
 };
