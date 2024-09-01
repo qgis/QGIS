@@ -98,8 +98,9 @@ Returns the buttons which are shown
 %Docstring
 Duplicates a feature
 
-.. deprecated::
-   QGIS 3.18. Use :py:func:`~QgsRelationEditorWidget.duplicateSelectedFeatures` instead.
+.. deprecated:: 3.18
+
+   Use :py:func:`~QgsRelationEditorWidget.duplicateSelectedFeatures` instead.
 %End
 
     void duplicateSelectedFeatures();

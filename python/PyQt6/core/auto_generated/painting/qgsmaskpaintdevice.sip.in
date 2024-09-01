@@ -17,8 +17,9 @@ class QgsMaskPaintDevice: QPaintDevice
 Mask painter device that can be used to register everything painted into a QPainterPath
 used later as clip path
 
-.. deprecated::
-   QGIS 3.38. Use :py:class:`QgsGeometryPaintDevice` instead.
+.. deprecated:: 3.38
+
+   Use :py:class:`QgsGeometryPaintDevice` instead.
 %End
 
 %TypeHeaderCode
@@ -33,8 +34,9 @@ Constructor
 If ``usePathStroker`` is ``True``, path will be considered with a stroke regarding QPainter
 pen configuration
 
-.. deprecated::
-   QGIS 3.38. Use :py:class:`QgsGeometryPaintDevice` instead.
+.. deprecated:: 3.38
+
+   Use :py:class:`QgsGeometryPaintDevice` instead.
 %End
 
     virtual QPaintEngine *paintEngine() const;
@@ -47,8 +49,9 @@ pen configuration
 %Docstring
 Returns the mask painter path painted on this paint device
 
-.. deprecated::
-   Use :py:class:`QgsGeometryPaintDevice` instead
+.. deprecated:: 3.40
+
+   Use :py:class:`QgsGeometryPaintDevice` instead.
 %End
 
 };

@@ -150,8 +150,9 @@ Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotati
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.setFrameOffsetFromReferencePointMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.setFrameOffsetFromReferencePointMm` instead.
 %End
 
  QPointF frameOffsetFromReferencePoint() const /Deprecated/;
@@ -160,8 +161,9 @@ Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnot
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.frameOffsetFromReferencePointMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.frameOffsetFromReferencePointMm` instead.
 %End
 
     void setFrameOffsetFromReferencePointMm( QPointF offset );
@@ -189,8 +191,9 @@ the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSize`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.setFrameSizeMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.setFrameSizeMm` instead.
 %End
 
  QSizeF frameSize() const /Deprecated/;
@@ -200,8 +203,9 @@ the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSize`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.frameSizeMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.frameSizeMm` instead.
 %End
 
     void setFrameSizeMm( QSizeF size );

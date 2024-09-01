@@ -71,7 +71,8 @@ required for transformations for that source or destination.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Has no effect on builds based on Proj 6.0 or later, use :py:func:`~QgsCoordinateTransformContext.coordinateOperations` instead.
 %End
 
@@ -110,7 +111,8 @@ Returns ``True`` if the new transform pair was added successfully.
 
 .. seealso:: :py:func:`removeSourceDestinationDatumTransform`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Has no effect on builds based on Proj 6.0 or later, use :py:func:`~QgsCoordinateTransformContext.addCoordinateOperation` instead.
 %End
 
@@ -159,8 +161,9 @@ Removes the source to destination datum transform pair for the specified ``sourc
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
-.. deprecated::
-   Use :py:func:`~QgsCoordinateTransformContext.removeCoordinateOperation` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsCoordinateTransformContext.removeCoordinateOperation` instead.
 %End
 
     void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
@@ -193,7 +196,8 @@ destination.
 
    source and destination are reversible.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Has no effect on builds based on Proj 6.0 or later. Use :py:func:`~QgsCoordinateTransformContext.calculateCoordinateOperation` instead.
 %End
 

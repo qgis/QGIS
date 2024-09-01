@@ -45,16 +45,18 @@ front of the profile tag set using start.
 
 :param name: The name of the group.
 
-.. deprecated::
-   use :py:func:`~QgsRuntimeProfiler.start` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRuntimeProfiler.start` instead.
 %End
 
  void endGroup() /Deprecated/;
 %Docstring
 End the current active group.
 
-.. deprecated::
-   use :py:func:`~QgsRuntimeProfiler.end` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRuntimeProfiler.end` instead.
 %End
 
     QStringList childGroups( const QString &parent = QString(), const QString &group = "startup" ) const;

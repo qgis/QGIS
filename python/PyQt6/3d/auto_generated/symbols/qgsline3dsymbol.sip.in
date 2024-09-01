@@ -80,16 +80,18 @@ Sets width of the line symbol (in map units)
 %Docstring
 Returns height (altitude) of the symbol (in map units)
 
-.. deprecated::
-   QGIS 3.36. Use :py:func:`~QgsLine3DSymbol.offset` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`~QgsLine3DSymbol.offset` instead.
 %End
 
  void setHeight( float height ) /Deprecated/;
 %Docstring
 Sets height (altitude) of the symbol (in map units)
 
-.. deprecated::
-   QGIS 3.36. Use :py:func:`~QgsLine3DSymbol.setOffset` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`~QgsLine3DSymbol.setOffset` instead.
 %End
 
     float offset() const;

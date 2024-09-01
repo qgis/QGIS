@@ -55,8 +55,9 @@ Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and
 %Docstring
 Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     virtual ~QgsFieldDomain();
@@ -124,8 +125,9 @@ Sets the associated field ``type``.
 
 .. seealso:: :py:func:`fieldType`
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     Qgis::FieldDomainSplitPolicy splitPolicy() const;
@@ -245,8 +247,9 @@ Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description
 The ``values`` list details the coded field values as :py:class:`QgsCodedValue` objects. Each code should
 appear only once, but it is the responsibility of the user to check this.
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
 
@@ -320,8 +323,9 @@ Constructor for QgsRangeFieldDomain, with the specified ``name``, ``description`
 
 Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimum or maximum value is desired.
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
 
@@ -462,8 +466,9 @@ Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description``
 
 The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
 

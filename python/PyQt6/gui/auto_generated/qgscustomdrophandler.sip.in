@@ -85,8 +85,9 @@ Accordingly, only implementations must be lightweight and return ASAP.
 (For instance by copying the relevant parts of ``data`` and then handling
 the data after a short timeout).
 
-.. deprecated::
-   QGIS 3.10. Use :py:func:`~QgsCustomDropHandler.handleMimeDataV2` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsCustomDropHandler.handleMimeDataV2` instead.
 %End
 
     virtual bool handleMimeDataV2( const QMimeData *data );

@@ -835,18 +835,20 @@ def process_doxygen_line(line: str) -> str:
         return f"\n.. versionadded:: {since_match.group(1)}\n"
 
     # Handle deprecated
-    deprecated_match = re.search(
-        r'\\deprecated(?:\s+since\s+QGIS\s+(?P<DEPR_VERSION>[0-9.]+)(,\s*)?)?(?P<DEPR_MESSAGE>.*)?',
+    if deprecated_match := re.search(
+        r'\\deprecated QGIS (?P<DEPR_VERSION>[0-9.]+)\s*(?P<DEPR_MESSAGE>.*)?',
         line,
-        re.IGNORECASE)
-    if deprecated_match:
+            re.IGNORECASE):
         CONTEXT.prev_indent = CONTEXT.indent
         CONTEXT.indent = ''
-        depr_line = "\n.. deprecated::"
-        if deprecated_match.group('DEPR_VERSION'):
-            depr_line += f" QGIS {deprecated_match.group('DEPR_VERSION')}"
-        if deprecated_match.group('DEPR_MESSAGE'):
-            depr_line += f"\n  {deprecated_match.group('DEPR_MESSAGE')}\n"
+        version = deprecated_match.group('DEPR_VERSION')
+        if version.endswith('.'):
+            version = version[:-1]
+        depr_line = f"\n.. deprecated:: {version}"
+        message = deprecated_match.group('DEPR_MESSAGE')
+        if message:
+            depr_line += "\n"
+            depr_line += "\n".join(f"\n   {_m}" for _m in message.split('\n'))
         return create_class_links(depr_line)
 
     # Handle see also
@@ -1919,7 +1921,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 value_comment = re.sub(r'\\since .*?([\d.]+)',
                                        r'\\n.. versionadded:: \1\\n',
                                        value_comment, flags=re.I)
-                value_comment = re.sub(r'\\deprecated (.*)',
+                value_comment = re.sub(r'\\deprecated (?:QGIS )?(.*)',
                                        r'\\n.. deprecated:: \1\\n',
                                        value_comment, flags=re.I)
                 value_comment = re.sub(r'^\\n+', '', value_comment)

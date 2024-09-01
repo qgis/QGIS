@@ -145,8 +145,7 @@ Sets the background color for the text preview widget.
 %Docstring
 Update the enabled state of the data defined alignment buttons.
 
-.. deprecated::
-   QGIS 3.24
+.. deprecated:: 3.24
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;

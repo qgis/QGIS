@@ -39,8 +39,9 @@ Resamples a source image to a destination image.
 The size of the passed destination image should be respected during the resampling
 process.
 
-.. deprecated:: QGIS 3.10.1
-  use the more efficient :py:class:`QgsRasterResamplerV2` interface instead.
+.. deprecated:: 3.10.1
+
+   Use the more efficient :py:class:`QgsRasterResamplerV2` interface instead.
 %End
 
     virtual QString type() const = 0;

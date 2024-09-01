@@ -160,8 +160,7 @@ Returns source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
 
 Use :py:func:`QgsDataItemGuiProvider.createParamWidget()` instead
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     virtual QList<QAction *> actions( QWidget *parent );
@@ -193,8 +192,7 @@ Subclasses should override this and :py:func:`~QgsDataItem.handleDrop` to accept
 
 .. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
 
@@ -207,8 +205,7 @@ accept dropped layers.
 
 .. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     virtual bool handleDoubleClick();
@@ -234,8 +231,9 @@ Items that return valid URI will be returned in mime data when dragging a select
 
 .. seealso:: :py:func:`hasDragEnabled`
 
-.. deprecated::
-   QGIS 3.18. Use :py:func:`~QgsDataItem.mimeUris` instead.
+.. deprecated:: 3.18
+
+   Use :py:func:`~QgsDataItem.mimeUris` instead.
 %End
 
     virtual QgsMimeDataUtils::UriList mimeUris() const;
@@ -254,8 +252,9 @@ Items that return valid URI will be returned in mime data when dragging a select
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
 
-.. deprecated::
-   QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+.. deprecated:: 3.6
+
+   This method is no longer used by QGIS and will be removed in QGIS 4.0.
 %End
 
  virtual bool rename( const QString &name ) /Deprecated/;
@@ -270,8 +269,7 @@ Use :py:class:`QgsDataItemGuiProvider`:
 
 .. versionadded:: 3.4
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
 
@@ -292,8 +290,9 @@ Sets the capabilities for the data item.
  void setCapabilities( int capabilities ) /Deprecated/;
 %Docstring
 
-.. deprecated::
-   use setCapabilitiesV2 instead.
+.. deprecated:: 3.40
+
+   Use setCapabilitiesV2 instead.
 %End
 
 

@@ -240,7 +240,8 @@ acceptable.
 
 :return: a bool indicating if the diff matched one of the anomaly files
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the test mask system instead.
 %End
 

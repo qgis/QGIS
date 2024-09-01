@@ -60,8 +60,9 @@ Set whether scale based visibility is enabled.
 
 .. seealso:: :py:func:`hasScaleVisibility`
 
-.. deprecated::
-   Use :py:func:`~QgsScaleVisibilityDialog.setScaleVisibility`
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleVisibilityDialog.setScaleVisibility`.
 %End
 
     void setScaleVisibility( bool hasScaleVisibility );

@@ -159,7 +159,8 @@ exec
 %Docstring
 Applies style from the settings to the highlight
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsHighlight.applyDefaultStyle()` instead.
 %End
 

@@ -79,23 +79,26 @@ Returns the current layer or a None.
  void loadFieldNames();
 %Docstring
 
-.. deprecated:: QGIS 3.14
-   this is now done automatically
+.. deprecated:: 3.14
+
+   This is now done automatically.
 %End
 
  void loadFieldNames( const QgsFields &fields );
 %Docstring
 
-.. deprecated:: QGIS 3.14
-   use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadFieldNames` instead
+.. deprecated:: 3.14
+
+   Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadFieldNames` instead.
 %End
 
  void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) /Deprecated/;
 %Docstring
 Loads field names and values from the specified map.
 
-.. deprecated:: QGIS 3.14
-   this will not do anything, use :py:func:`~QgsExpressionBuilderWidget.setLayer` instead
+.. deprecated:: 3.14
+
+   This will not do anything, use :py:func:`~QgsExpressionBuilderWidget.setLayer` instead.
 %End
 
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -202,8 +205,9 @@ objects (i.e. for objects which aren't vector layer features).
 Adds the current expression to the given ``collection``.
 By default it is saved to the collection "generic".
 
-.. deprecated:: QGIS 3.14
-   use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.saveRecent` instead
+.. deprecated:: 3.14
+
+   Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.saveRecent` instead.
 %End
 
  void loadRecent( const QString &collection = QStringLiteral( "generic" ) )/Deprecated/;
@@ -211,8 +215,9 @@ By default it is saved to the collection "generic".
 Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
 
-.. deprecated:: QGIS 3.14
-   use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadRecent` instead
+.. deprecated:: 3.14
+
+   Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadRecent` instead.
 %End
 
     QgsExpressionTreeView *expressionTree() const;
@@ -226,9 +231,9 @@ Returns the expression tree
 %Docstring
 Loads the user expressions.
 
-.. deprecated:: QGIS 3.14
-   use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadUserExpressions` instead
+.. deprecated:: 3.14
 
+   Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadUserExpressions` instead.
 .. versionadded:: 3.12
 %End
 
@@ -236,9 +241,9 @@ Loads the user expressions.
 %Docstring
 Stores the user ``expression`` with given ``label`` and ``helpText``.
 
-.. deprecated:: QGIS 3.14
-   use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.saveToUserExpressions` instead
+.. deprecated:: 3.14
 
+   Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.saveToUserExpressions` instead.
 .. versionadded:: 3.12
 %End
 
@@ -246,9 +251,9 @@ Stores the user ``expression`` with given ``label`` and ``helpText``.
 %Docstring
 Removes the expression ``label`` from the user stored expressions.
 
-.. deprecated:: QGIS 3.14
-   use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.removeFromUserExpressions` instead
+.. deprecated:: 3.14
 
+   Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.removeFromUserExpressions` instead.
 .. versionadded:: 3.12
 %End
 
@@ -282,7 +287,7 @@ Updates the list of function files found at the given path
 Returns a pointer to the dialog's function item model.
 This method is exposed for testing purposes only - it should not be used to modify the model.
 
-.. deprecated:: QGIS 3.14
+.. deprecated:: 3.14
 %End
 
     QgsProject *project();
@@ -395,8 +400,9 @@ Returns the list of expression items matching a ``label``.
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.14
-   use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->findExpressions instead
+.. deprecated:: 3.14
+
+   Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->findExpressions instead.
 %End
 
 

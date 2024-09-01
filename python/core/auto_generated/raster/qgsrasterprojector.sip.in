@@ -53,8 +53,9 @@ PROJ transformations for optimised bulk reprojection of points.
 %Docstring
 Sets the source and destination CRS
 
-.. deprecated:: QGIS 3.8
-  use transformContext version instead
+.. deprecated:: 3.8
+
+   Use transformContext version instead.
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,

@@ -189,8 +189,9 @@ class QgsRendererRangeLabelFormat /Deprecated/
 {
 %Docstring(signature="appended")
 
-.. deprecated:: QGIS 3.10
-  use :py:class:`QgsClassificationMethod` instead
+.. deprecated:: 3.10
+
+   Use :py:class:`QgsClassificationMethod` instead.
 %End
 
 %TypeHeaderCode

@@ -177,7 +177,8 @@ Returns the font color used for legend items.
 
 .. seealso:: :py:func:`setFontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
@@ -187,7 +188,8 @@ Sets the font color used for legend items.
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
@@ -199,7 +201,8 @@ Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
@@ -212,7 +215,8 @@ Overrides :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
@@ -406,8 +410,9 @@ Returns the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`setLineSpacing`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLegendSettings.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
  void setLineSpacing( double s );
@@ -416,35 +421,40 @@ Sets the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`lineSpacing`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLegendSettings.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
  double mmPerMapUnit() const /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use scale factor from render contexts instead.
 %End
 
  void setMmPerMapUnit( double mmPerMapUnit ) /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Set scale factor on render contexts instead.
 %End
 
  bool useAdvancedEffects() const /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use flags from render contexts instead.
 %End
 
  void setUseAdvancedEffects( bool use ) /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Set flag on render contexts instead.
 %End
 
@@ -455,8 +465,9 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setMapScale`
 
-.. deprecated::
-   take this property from the render context instead
+.. deprecated:: 3.40
+
+   Take this property from the render context instead.
 %End
 
  void setMapScale( double scale ) /Deprecated/;
@@ -466,8 +477,9 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 .. seealso:: :py:func:`mapScale`
 
-.. deprecated::
-   set this property on the render context instead
+.. deprecated:: 3.40
+
+   Set this property on the render context instead.
 %End
 
  double mapUnitsPerPixel() const /Deprecated/;
@@ -476,8 +488,9 @@ Returns the factor of map units per pixel for symbols with size given in map uni
 
 .. seealso:: :py:func:`setMapUnitsPerPixel`
 
-.. deprecated::
-   take these properties on render contexts instead
+.. deprecated:: 3.40
+
+   Take these properties on render contexts instead.
 %End
 
  void setMapUnitsPerPixel( double mapUnitsPerPixel ) /Deprecated/;
@@ -486,21 +499,24 @@ Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the m
 
 .. seealso:: :py:func:`mapUnitsPerPixel`
 
-.. deprecated::
-   set these properties on render contexts instead
+.. deprecated:: 3.40
+
+   Set these properties on render contexts instead.
 %End
 
  int dpi() const /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Take dpi from render contexts instead.
 %End
 
  void setDpi( int dpi ) /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Set dpi on render contexts instead.
 %End
 

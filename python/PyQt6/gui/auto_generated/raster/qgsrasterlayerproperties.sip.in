@@ -48,8 +48,9 @@ Constructor
 %Docstring
 Saves the default style when appropriate button is pressed
 
-.. deprecated::
-   use :py:func:`~QgsRasterLayerProperties.saveStyleAsDefault` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterLayerProperties.saveStyleAsDefault` instead.
 %End
 
   protected slots:

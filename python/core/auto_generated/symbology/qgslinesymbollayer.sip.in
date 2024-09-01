@@ -684,8 +684,9 @@ Returns the placement of the symbols.
 
 .. seealso:: :py:func:`setPlacement`
 
-.. deprecated::
-   use :py:func:`~QgsTemplatedLineSymbolLayerBase.placements` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsTemplatedLineSymbolLayerBase.placements` instead.
 %End
 
  void setPlacement( Qgis::MarkerLinePlacement placement ) /Deprecated/;
@@ -694,8 +695,9 @@ Sets the ``placement`` of the symbols.
 
 .. seealso:: :py:func:`placement`
 
-.. deprecated::
-   use :py:func:`~QgsTemplatedLineSymbolLayerBase.setPlacements` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsTemplatedLineSymbolLayerBase.setPlacements` instead.
 %End
 
     Qgis::MarkerLinePlacements placements() const;
@@ -1045,7 +1047,8 @@ Shall the marker be rotated.
 
 :return: ``True`` if the marker should be rotated.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsMarkerLineSymbolLayer.rotateSymbols` instead.
 %End
 
@@ -1053,7 +1056,8 @@ Shall the marker be rotated.
 %Docstring
 Shall the marker be rotated.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsMarkerLineSymbolLayer.setRotateSymbols` instead.
 %End
 

@@ -197,9 +197,9 @@ Returns a list of available resolution methods.
 Returns a list of descriptions for available resolutions for errors.
 The index will be passed as ``method`` to :py:func:`fixError`.
 
-.. deprecated::
-   QGIS 3.12. Use :py:func:`~QgsGeometryCheck.availableResolutionMethods` instead.
+.. deprecated:: 3.12
 
+   Use :py:func:`~QgsGeometryCheck.availableResolutionMethods` instead.
 .. versionadded:: 3.4
 %End
 

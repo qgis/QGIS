@@ -104,8 +104,9 @@ Returns the label's current font.
 
 .. seealso:: :py:func:`setFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutItemLabel.textFormat` instead (since QGIS 3.24)
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemLabel.textFormat` instead (since QGIS 3.24).
 %End
 
  void setFont( const QFont &font ) /Deprecated/;
@@ -114,8 +115,9 @@ Sets the label's current ``font``.
 
 .. seealso:: :py:func:`font`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutItemLabel.setTextFormat` instead (since QGIS 3.24)
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemLabel.setTextFormat` instead (since QGIS 3.24).
 %End
 
     Qt::AlignmentFlag vAlign() const;
@@ -214,8 +216,9 @@ Sets the label font ``color``.
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
-   Use :py:func:`~QgsLayoutItemLabel.setTextFormat` instead (since QGIS 3.24)
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemLabel.setTextFormat` instead (since QGIS 3.24).
 %End
 
  QColor fontColor() const /Deprecated/;
@@ -224,8 +227,9 @@ Returns the label font color.
 
 .. seealso:: :py:func:`setFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutItemLabel.textFormat` instead (since QGIS 3.24)
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemLabel.textFormat` instead (since QGIS 3.24).
 %End
 
     virtual QRectF boundingRect() const;

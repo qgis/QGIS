@@ -33,8 +33,9 @@ be further processed (e.g. by other QgsLayoutCustomDropHandler).
 
 The base class implementation does nothing.
 
-.. deprecated::
-   use the version which specifies a drop location instead.
+.. deprecated:: 3.40
+
+   Use the version which specifies a drop location instead.
 %End
 
     virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF dropPoint, const QString &file );

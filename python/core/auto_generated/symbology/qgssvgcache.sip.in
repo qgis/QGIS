@@ -216,8 +216,9 @@ in the same thread to ensure provided the image.
 %Docstring
 Emit a signal to be caught by qgisapp and display a msg on status bar.
 
-.. deprecated::
-   Deprecated since QGIS 3.6 -- no longer emitted.
+.. deprecated:: 3.6
+
+   No longer emitted.
 %End
 
     void remoteSvgFetched( const QString &url );

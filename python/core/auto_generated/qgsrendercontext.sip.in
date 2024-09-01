@@ -123,8 +123,9 @@ Sets the list of disabled symbol layers.
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.30
-   and replaced with setDisabledSymbolLayersV2
+.. deprecated:: 3.30
+
+   And replaced with setDisabledSymbolLayersV2.
 %End
 
     void setDisabledSymbolLayersV2( const QSet<QString> &symbolLayers );
@@ -154,8 +155,9 @@ Returns the list of disabled symbol layers.
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.30
-   and replaced with disabledSymbolLayersV2
+.. deprecated:: 3.30
+
+   And replaced with disabledSymbolLayersV2.
 %End
 
     QSet<QString> disabledSymbolLayersV2() const;
@@ -877,8 +879,9 @@ Gets custom rendering flags. Layers might honour these to alter their rendering.
 
 .. seealso:: :py:func:`setCustomRenderingFlag`
 
-.. deprecated::
-   QGIS 3.40 Use :py:func:`~QgsRenderContext.customProperties` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRenderContext.customProperties` instead.
 %End
 
     QVariantMap customProperties() const;
@@ -901,8 +904,9 @@ Sets a custom rendering flag. Layers might honour these to alter their rendering
 
 .. seealso:: :py:func:`customRenderingFlags`
 
-.. deprecated::
-   QGIS 3.40 Use :py:func:`~QgsRenderContext.setCustomProperty` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRenderContext.setCustomProperty` instead.
 %End
 
     void setCustomProperty( const QString &property, const QVariant &value );
@@ -924,8 +928,9 @@ Clears the specified custom rendering flag.
 
 .. seealso:: :py:func:`setCustomRenderingFlag`
 
-.. deprecated::
-   QGIS 3.40 Use :py:func:`~QgsRenderContext.clearCustomProperty` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRenderContext.clearCustomProperty` instead.
 %End
 
     void clearCustomProperty( const QString &property );
@@ -1025,8 +1030,9 @@ Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
 
 .. seealso:: :py:func:`addSymbolLayerClipGeometry`
 
-.. deprecated::
-   QGIS 3.38, use :py:func:`~QgsRenderContext.addSymbolLayerClipGeometry` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsRenderContext.addSymbolLayerClipGeometry` instead.
 %End
 
  QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const /Deprecated/;
@@ -1035,8 +1041,9 @@ Returns clip paths to be applied to the ``symbolLayer`` before rendering
 
 .. seealso:: :py:func:`symbolLayerClipGeometries`
 
-.. deprecated::
-   QGIS 3.38, use :py:func:`~QgsRenderContext.symbolLayerClipGeometries` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsRenderContext.symbolLayerClipGeometries` instead.
 %End
 
     void addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry );

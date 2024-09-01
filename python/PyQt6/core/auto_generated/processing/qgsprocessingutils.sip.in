@@ -402,8 +402,9 @@ using the specified ``context``.
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
 
-.. deprecated::
-   Use version with :py:class:`QgsProcessingContext` argument instead
+.. deprecated:: 3.40
+
+   Use version with :py:class:`QgsProcessingContext` argument instead.
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );

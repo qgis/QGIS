@@ -222,8 +222,9 @@ If the string was correctly decoded, ``ok`` will be set to ``True``.
 %Docstring
 Extracts the scale factor from an item ``style``.
 
-.. deprecated::
-   Use the variant with a QPainter argument instead
+.. deprecated:: 3.40
+
+   Use the variant with a QPainter argument instead.
 %End
 
     static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style, QPainter *painter );

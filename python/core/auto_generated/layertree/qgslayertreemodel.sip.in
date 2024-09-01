@@ -240,8 +240,9 @@ Force only display of legend nodes which are valid for given map settings.
 Setting ``None`` or invalid map settings will disable the functionality.
 Ownership of map settings pointer does not change, a copy is made.
 
-.. deprecated::
-   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
+.. deprecated:: 3.32
+
+   Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
  void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated/;
@@ -253,8 +254,9 @@ Filter display of legend nodes for given map settings
 :param polygon: If not empty, this polygon will be used instead of the map extent to filter legend nodes
 :param useExpressions: Whether to use legend node filter expressions
 
-.. deprecated::
-   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
+.. deprecated:: 3.32
+
+   Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
     const QgsMapSettings *legendFilterMapSettings() const;

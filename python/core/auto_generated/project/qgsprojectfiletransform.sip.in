@@ -67,7 +67,7 @@ to new ones.
 
 .. versionadded:: 3.30
 
-.. deprecated:: QGIS 3.30
+.. deprecated:: 3.30
 %End
 
 };

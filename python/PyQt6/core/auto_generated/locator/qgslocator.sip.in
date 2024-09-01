@@ -88,8 +88,9 @@ with valid prefixes.
 
 .. seealso:: :py:func:`filters`
 
-.. deprecated::
-   QGIS 3.2. Use :py:func:`~QgsLocator.filters` instead.
+.. deprecated:: 3.2
+
+   Use :py:func:`~QgsLocator.filters` instead.
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );

@@ -133,8 +133,9 @@ Returns the file extension for a ``ct`` (Content-Type).
 %Docstring
 Returns the Content-Type value corresponding to ``extension``.
 
-.. deprecated::
-   Use :py:func:`~QgsServerOgcApi.contentTypeFromExtension`
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsServerOgcApi.contentTypeFromExtension`.
 %End
 
     static QgsServerOgcApi::ContentType contentTypeFromExtension( const std::string &extension );

@@ -38,24 +38,27 @@ Constructor
 %Docstring
 Saves the default style when appropriate button is pressed
 
-.. deprecated::
-   use :py:func:`~QgsMeshLayerProperties.saveStyleAsDefault` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMeshLayerProperties.saveStyleAsDefault` instead.
 %End
 
  void loadStyle() /Deprecated/;
 %Docstring
 Loads a saved style when appropriate button is pressed
 
-.. deprecated::
-   use :py:func:`~QgsMeshLayerProperties.loadStyleFromFile` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMeshLayerProperties.loadStyleFromFile` instead.
 %End
 
  void saveStyleAs() /Deprecated/;
 %Docstring
 Saves a style when appriate button is pressed
 
-.. deprecated::
-   use :py:func:`~QgsMeshLayerProperties.saveStyleToFile` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMeshLayerProperties.saveStyleToFile` instead.
 %End
 
   protected slots:

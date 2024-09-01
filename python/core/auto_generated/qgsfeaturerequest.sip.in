@@ -873,7 +873,8 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsFeatureRequest.timeout` instead.
 %End
 
@@ -886,7 +887,8 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsFeatureRequest.setTimeout` instead.
 %End
 

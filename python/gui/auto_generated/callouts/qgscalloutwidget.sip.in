@@ -64,8 +64,9 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 %Docstring
 Returns the vector layer associated with the widget.
 
-.. deprecated::
-   QGIS 3.40, use :py:func:`~QgsCalloutWidget.layer` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsCalloutWidget.layer` instead.
 %End
 
     const QgsMapLayer *layer() const;

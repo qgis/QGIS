@@ -62,8 +62,9 @@ If ``user`` is blank then the user associated with the current logon details wil
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
     static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString() );
@@ -103,8 +104,9 @@ If ``user`` is blank then the user associated with the current logon details wil
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
     static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),  QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() );
@@ -142,8 +144,9 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
     static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
@@ -187,8 +190,9 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
 };

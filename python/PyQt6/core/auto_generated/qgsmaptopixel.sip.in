@@ -135,8 +135,9 @@ Transforms device coordinates to map (world) coordinates.
 %Docstring
 Transforms device coordinates to map (world) coordinates.
 
-.. deprecated::
-   QGIS 3.4. Use toMapCoordinates instead.
+.. deprecated:: 3.4
+
+   Use toMapCoordinates instead.
 %End
 
     void setMapUnitsPerPixel( double mapUnitsPerPixel );

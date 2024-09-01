@@ -64,8 +64,9 @@ custom labeling.
 %Docstring
 Returns the unique name for this style.
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarRenderer.id` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarRenderer.id` instead.
 %End
 
     virtual QString id() const = 0;
@@ -113,7 +114,8 @@ Draws the scalebar using the specified ``settings`` and ``scaleContext`` to a de
 %Docstring
 Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the version with a :py:class:`QgsRenderContext` instead.
 %End
 
@@ -153,7 +155,8 @@ Returns the text used for the first label in the scalebar.
 %Docstring
 Returns the x-offset (in millimeters) used for the first label in the scalebar.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the version with :py:class:`QgsRenderContext` instead.
 %End
 
@@ -168,8 +171,9 @@ Returns the x-offset (in render context painter units) used for the first label 
 %Docstring
 Returns a list of positions for each segment within the scalebar.
 
-.. deprecated::
-   use the version with a :py:class:`QgsRenderContext` instead
+.. deprecated:: 3.40
+
+   Use the version with a :py:class:`QgsRenderContext` instead.
 %End
 
     QList<double> segmentPositions( QgsRenderContext &context, const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
