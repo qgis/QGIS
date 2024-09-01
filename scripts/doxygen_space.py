@@ -79,10 +79,12 @@ def process_file(file_path):
             prefix, version = match.groups()
             line = f'{prefix}\\since QGIS {version}'
 
-        if match := re.match(r'^(.*)\\deprecated (?:since )?(?:QGIS )?(\d+\.\d+(?:\.\d+)?)[,\s.\-]*(.*?)$', line):
+        if match := re.match(r'^(.*)\\deprecated[,.:]? (?:[dD]eprecated )?(?:since )?(?:QGIS )?(\d+\.\d+(?:\.\d+)?)[,\s.\-]*(.*?)$', line):
             # Standard since annotation
             prefix, version, suffix = match.groups()
             if suffix:
+                if suffix.startswith('(') and suffix.endswith(')'):
+                    suffix = suffix[1:-1]
                 suffix = suffix[0].upper() + suffix[1:]
                 if not suffix.endswith('.'):
                     suffix += "."

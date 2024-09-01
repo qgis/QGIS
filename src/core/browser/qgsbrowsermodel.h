@@ -149,7 +149,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
 
     /**
-     * \deprecated Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+     * \deprecated QGIS 3.4. This method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
      */
     Q_DECL_DEPRECATED void connectItem( QgsDataItem *item ) SIP_DEPRECATED;
 
