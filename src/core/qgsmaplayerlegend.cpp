@@ -561,7 +561,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
     const QgsColorRampShader shader = settings.colorRampShader();
     switch ( shader.colorRampType() )
     {
-      case QgsColorRampShader::Interpolated:
+      case Qgis::ShaderInterpolationMethod::Linear:
         if ( !shader.legendSettings() || shader.legendSettings()->useContinuousLegend() )
         {
           // for interpolated shaders we use a ramp legend node
@@ -578,8 +578,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
           break;
         }
         [[fallthrough]];
-      case QgsColorRampShader::Discrete:
-      case QgsColorRampShader::Exact:
+      case Qgis::ShaderInterpolationMethod::Discrete:
+      case Qgis::ShaderInterpolationMethod::Exact:
       {
         // for all others we use itemised lists
         QgsLegendColorList items;
