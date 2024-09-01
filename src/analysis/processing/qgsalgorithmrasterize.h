@@ -55,6 +55,8 @@ class QgsRasterizeAlgorithm : public QgsProcessingAlgorithm
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    void checkLayersUsagePolicy( QgsProcessingFeedback *feedback );
+
   private:
 
     QMap<QString, QString> mMapThemeStyleOverrides;
