@@ -45,8 +45,9 @@ Constructor for QgsRelationWidgetWrapper
 Defines if a title label should be shown for this widget.
 Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
 
-.. deprecated::
-   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
  void setShowLabel( bool showLabel ) /Deprecated/;
@@ -54,40 +55,45 @@ Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been ca
 Defines if a title label should be shown for this widget.
 Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
 
-.. deprecated::
-   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
  bool showLinkButton() const /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
-.. deprecated::
-   QGIS 3.16. Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
+.. deprecated:: 3.16
+
+   Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
 %End
 
  void setShowLinkButton( bool showLinkButton ) /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
-.. deprecated::
-   QGIS 3.16. Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
+.. deprecated:: 3.16
+
+   Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
 %End
 
  bool showUnlinkButton() const /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
-.. deprecated::
-   QGIS 3.16. Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
+.. deprecated:: 3.16
+
+   Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
 %End
 
  void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
-.. deprecated::
-   QGIS 3.16. Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
+.. deprecated:: 3.16
+
+   Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
 %End
 
  void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
@@ -96,8 +102,9 @@ Determines if the "Save child layer edits" button should be shown
 
 .. versionadded:: 3.14
 
-.. deprecated::
-   QGIS 3.16. Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
+.. deprecated:: 3.16
+
+   Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
 %End
 
  bool showSaveChildEditsButton() const /Deprecated/;
@@ -106,8 +113,9 @@ Determines if the "Save child layer edits" button should be shown
 
 .. versionadded:: 3.14
 
-.. deprecated::
-   QGIS 3.16. Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
+.. deprecated:: 3.16
+
+   Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
 %End
 
  void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) /Deprecated/;
@@ -116,8 +124,9 @@ Defines the buttons which are shown
 
 .. versionadded:: 3.16
 
-.. deprecated::
-   QGIS 3.18. Use :py:func:`~QgsRelationWidgetWrapper.setWidgetConfig` instead.
+.. deprecated:: 3.18
+
+   Use :py:func:`~QgsRelationWidgetWrapper.setWidgetConfig` instead.
 %End
 
  QgsAttributeEditorRelation::Buttons visibleButtons() const /Deprecated/;
@@ -126,8 +135,9 @@ Returns the buttons which are shown
 
 .. versionadded:: 3.16
 
-.. deprecated::
-   QGIS 3.18. Use :py:func:`~QgsRelationWidgetWrapper.widgetConfig` instead.
+.. deprecated:: 3.18
+
+   Use :py:func:`~QgsRelationWidgetWrapper.widgetConfig` instead.
 %End
 
 
@@ -185,8 +195,9 @@ Determines the label of this element
 
 .. versionadded:: 3.16
 
-.. deprecated::
-   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
  void setLabel( const QString &label = QString() ) /Deprecated/;
@@ -196,8 +207,9 @@ If it's empty it takes the relation id as label
 
 .. versionadded:: 3.16
 
-.. deprecated::
-   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     QgsRelation relation() const;

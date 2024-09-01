@@ -49,8 +49,9 @@ Returns the font used for rendering this legend component.
 
 .. seealso:: :py:func:`setFont`
 
-.. deprecated::
-   use :py:func:`~QgsLegendStyle.textFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLegendStyle.textFormat` instead.
 %End
 
  void setFont( const QFont &font ) /Deprecated/;
@@ -59,8 +60,9 @@ Sets the ``font`` used for rendering this legend component.
 
 .. seealso:: :py:func:`font`
 
-.. deprecated::
-   use :py:func:`~QgsLegendStyle.setTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLegendStyle.setTextFormat` instead.
 %End
 
     QgsTextFormat &textFormat();

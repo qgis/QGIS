@@ -10,12 +10,14 @@ QgsDatumTransform.projStringToDatumTransformId = staticmethod(QgsDatumTransform.
 QgsDatumTransform.datumTransformInfo = staticmethod(QgsDatumTransform.datumTransformInfo)
 QgsDatumTransform.TransformPair.__doc__ = """Contains datum transform information.
 
-.. deprecated::
-   Not used for builds based on Proj >= 6.0"""
+.. deprecated:: 3.40
+
+   Not used for builds based on Proj >= 6.0."""
 QgsDatumTransform.TransformInfo.__doc__ = """Contains datum transform information.
 
-.. deprecated::
-   Not used on builds based on Proj >= 6.0"""
+.. deprecated:: 3.40
+
+   Not used on builds based on Proj >= 6.0."""
 QgsDatumTransform.GridDetails.__doc__ = """Contains information about a projection transformation grid file.
 
 .. versionadded:: 3.8"""

@@ -94,8 +94,9 @@ Creates a color ramp shader
 %Docstring
 Returns the band used by the renderer
 
-.. deprecated::
-   QGIS 3.38. Use :py:func:`~QgsSingleBandPseudoColorRenderer.inputBand` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandPseudoColorRenderer.inputBand` instead.
 %End
 
  void setBand( int bandNo ) /Deprecated/;
@@ -104,8 +105,9 @@ Sets the band used by the renderer.
 
 .. seealso:: :py:func:`band`
 
-.. deprecated::
-   QGIS 3.38. Use :py:func:`~QgsSingleBandPseudoColorRenderer.setInputBand` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandPseudoColorRenderer.setInputBand` instead.
 %End
 
     virtual int inputBand() const;

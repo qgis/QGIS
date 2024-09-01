@@ -49,8 +49,9 @@ Filters according to layer type and/or geometry type.
 
 .. versionadded:: 3.34
 
-.. deprecated::
-   QGIS 3.34. Use the flag signature instead.
+.. deprecated:: 3.34
+
+   Use the flag signature instead.
 %End
 
     const Qgis::LayerFilters &filters() const;
@@ -87,8 +88,9 @@ An empty list indicates that no filter by allowlist should be performed.
 
 .. seealso:: :py:func:`setExceptedLayerList`
 
-.. deprecated::
-   use :py:func:`~QgsMapLayerProxyModel.setLayerAllowList`
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMapLayerProxyModel.setLayerAllowList`.
 %End
 
     void setLayerAllowlist( const QList<QgsMapLayer *> &layers );
@@ -115,8 +117,9 @@ An empty list indicates that no filtering by allowlist should be performed.
 
 .. seealso:: :py:func:`exceptedLayerList`
 
-.. deprecated::
-   use :py:func:`~QgsMapLayerProxyModel.layerAllowlist` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMapLayerProxyModel.layerAllowlist` instead.
 %End
 
     QList<QgsMapLayer *> layerAllowlist();

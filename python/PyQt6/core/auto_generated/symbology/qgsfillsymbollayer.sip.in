@@ -1148,8 +1148,9 @@ Sets the ``unit`` for the image's width.
 
 .. seealso:: :py:func:`setWidthMapUnitScale`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.setSizeUnit` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.setSizeUnit` instead.
 %End
 
     void setSizeUnit( Qgis::RenderUnit unit );
@@ -1175,8 +1176,9 @@ Returns the units for the image's width.
 
 .. seealso:: :py:func:`widthMapUnitScale`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.sizeUnit` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.sizeUnit` instead.
 %End
 
     Qgis::RenderUnit sizeUnit() const;
@@ -1204,8 +1206,9 @@ Sets the map unit ``scale`` for the image's width.
 
 .. seealso:: :py:func:`setWidthUnit`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.setSizeMapUnitScale` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.setSizeMapUnitScale` instead.
 %End
 
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
@@ -1233,8 +1236,9 @@ Returns the map unit scale for the image's width.
 
 .. seealso:: :py:func:`widthUnit`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.sizeMapUnitScale` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.sizeMapUnitScale` instead.
 %End
 
     const QgsMapUnitScale &sizeMapUnitScale() const;

@@ -515,8 +515,9 @@ Register name of layer for feature
 :param fid: id of feature
 :param layer: dxf layer of feature
 
-.. deprecated::
-   Will be made private in QGIS 4
+.. deprecated:: 3.40
+
+   Will be made private in QGIS 4.
 %End
 
   private:

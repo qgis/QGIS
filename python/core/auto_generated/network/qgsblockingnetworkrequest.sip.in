@@ -220,7 +220,8 @@ Emitted when when data arrives during a request.
 %Docstring
 Emitted once a request has finished downloading.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the :py:func:`~QgsBlockingNetworkRequest.finished` signal instead.
 %End
 

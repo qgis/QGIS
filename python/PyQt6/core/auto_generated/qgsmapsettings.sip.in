@@ -290,8 +290,9 @@ Returns custom rendering flags. Layers might honour these to alter their renderi
 
 .. seealso:: :py:func:`setCustomRenderFlags`
 
-.. deprecated::
-   use \see :py:func:`~QgsMapSettings.customRenderingFlags`.
+.. deprecated:: 3.40
+
+   Use \see :py:func:`~QgsMapSettings.customRenderingFlags`.
 %End
 
  void setCustomRenderFlags( const QString &customRenderFlags );
@@ -302,8 +303,9 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 
 .. seealso:: :py:func:`customRenderFlags`
 
-.. deprecated::
-   use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
+.. deprecated:: 3.40
+
+   Use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
 %End
 
     QVariantMap customRenderingFlags() const;

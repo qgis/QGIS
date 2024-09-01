@@ -872,7 +872,8 @@ The current :py:func:`~QgsStyle.fileName` will be used if no explicit ``filename
 
 .. seealso:: :py:func:`errorString`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    This function has no effect.
 %End
 

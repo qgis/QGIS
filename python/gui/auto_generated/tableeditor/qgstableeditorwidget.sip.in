@@ -87,8 +87,9 @@ invalid color will be returned.
 
 .. seealso:: :py:func:`selectionBackgroundColor`
 
-.. deprecated::
-   use :py:func:`~QgsTableEditorWidget.selectionTextFormat` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsTableEditorWidget.selectionTextFormat` instead.
 %End
 
     QColor selectionBackgroundColor();
@@ -289,7 +290,8 @@ Sets the foreground color for the currently selected cells.
 
 .. seealso:: :py:func:`setSelectionBackgroundColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsTableEditorWidget.setSelectionTextFormat` instead.
 %End
 

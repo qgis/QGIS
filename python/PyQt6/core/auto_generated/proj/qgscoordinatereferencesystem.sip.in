@@ -222,8 +222,9 @@ A CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
 :param id: The ID valid for the chosen CRS ID type
 :param type: One of the types described in CrsType
 
-.. deprecated::
-   QGIS 3.10. We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+.. deprecated:: 3.10
+
+   We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
 %End
 
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -268,8 +269,9 @@ Creates a CRS from a proj style formatted string.
 
 .. seealso:: :py:func:`createFromProj`
 
-.. deprecated::
-   QGIS 3.10. Use :py:func:`~QgsCoordinateReferenceSystem.fromProj` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsCoordinateReferenceSystem.fromProj` instead.
 %End
 
     static QgsCoordinateReferenceSystem fromProj( const QString &proj );
@@ -334,8 +336,9 @@ Sets this CRS by lookup of the given ID in the CRS database.
 
 :return: ``True`` on success else ``False``
 
-.. deprecated::
-   QGIS 3.10. We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+.. deprecated:: 3.10
+
+   We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
 %End
 
 
@@ -365,8 +368,9 @@ Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 
 :return: ``True`` on success else ``False``
 
-.. deprecated::
-   QGIS 3.10. Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
+.. deprecated:: 3.10
+
+   Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
 %End
 
     bool createFromWkt( const QString &wkt );
@@ -445,8 +449,9 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. seealso:: :py:func:`fromProj`
 
-.. deprecated::
-   QGIS 3.10. Use :py:func:`~QgsCoordinateReferenceSystem.createFromProj` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsCoordinateReferenceSystem.createFromProj` instead.
 %End
 
     bool createFromProj( const QString &projString );
@@ -544,8 +549,9 @@ This is required for proper shapefile CRS import when using gdal>= 1.9.
    unless it has been set by the user through the commandline or an environment variable.
    For more details refer to OGRSpatialReference.morphFromESRI() .
 
-.. deprecated::
-   QGIS 3.10. Not used on builds based on Proj version 6 or later.
+.. deprecated:: 3.10
+
+   Not used on builds based on Proj version 6 or later.
 %End
 
     bool isValid() const;
@@ -582,8 +588,9 @@ pieces of information about CRS.
 
 :return: long the SrsId of the matched CRS, zero if no match was found
 
-.. deprecated::
-   QGIS 3.10. Not used in Proj >= 6 based builds.
+.. deprecated:: 3.10
+
+   Not used in Proj >= 6 based builds.
 %End
 
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
@@ -729,8 +736,9 @@ overridden with these.
 
 .. seealso:: :py:func:`toWkt`
 
-.. deprecated::
-   QGIS 3.10. Use :py:func:`~QgsCoordinateReferenceSystem.toProj` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsCoordinateReferenceSystem.toProj` instead.
 %End
 
     QString toProj() const;
@@ -1136,40 +1144,45 @@ Returns a list of recently used projections
 
 :return: list of srsid for recently used projections
 
-.. deprecated::
-   QGIS 3.10. Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
  static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Returns a list of recently used CRS.
 
-.. deprecated::
-   QGIS 3.36. Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
  static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Pushes a recently used CRS to the top of the recent CRS list.
 
-.. deprecated::
-   QGIS 3.36. Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.pushRecent` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.pushRecent` instead.
 %End
 
  static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Removes a CRS from the list of recently used CRS.
 
-.. deprecated::
-   QGIS 3.36. Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.removeRecent` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.removeRecent` instead.
 %End
 
  static void clearRecentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Cleans the list of recently used CRS.
 
-.. deprecated::
-   QGIS 3.36. Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.clearRecent` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.clearRecent` instead.
 %End
 
 

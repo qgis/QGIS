@@ -128,8 +128,9 @@ Set a list of currently visible features
 
 :param filteredFeatures: A list of feature ids
 
-.. deprecated::
-   since filterFeatures is handled in the attribute filter model itself
+.. deprecated:: 3.40
+
+   Since filterFeatures is handled in the attribute filter model itself.
 %End
 
     void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );

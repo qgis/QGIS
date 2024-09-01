@@ -60,8 +60,7 @@ Creates calculator with bounding box (rectangular) mask
 :param endTime: time filter defining the ending dataset
 :param layer: mesh layer with dataset groups references in formulaString
 
-.. deprecated::
-   QGIS 3.12
+.. deprecated:: 3.12
 %End
 
  QgsMeshCalculator( const QString &formulaString,
@@ -80,8 +79,7 @@ Creates calculator with geometry mask
 :param endTime: time filter defining the ending dataset
 :param layer: mesh layer with dataset groups references in formulaString
 
-.. deprecated::
-   QGIS 3.12
+.. deprecated:: 3.12
 %End
 
     QgsMeshCalculator( const QString &formulaString,
@@ -193,8 +191,9 @@ Returns whether formula is valid for particular mesh layer
 
 :return: QgsMeshCalculator.Success in case of success
 
-.. deprecated::
-   QGIS 3.12 - use expressionIsValid
+.. deprecated:: 3.12
+
+   Use expressionIsValid.
 %End
 
     static Result expressionIsValid( const QString &formulaString,

@@ -82,8 +82,9 @@ that of the spatial index construction.
 %Docstring
 Adds a ``feature`` to the index.
 
-.. deprecated::
-   Use :py:func:`~QgsSpatialIndex.addFeature` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsSpatialIndex.addFeature` instead.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
@@ -112,8 +113,9 @@ Add a feature ``id`` to the index with a specified bounding box.
 
 :return: ``True`` if feature was successfully added to index.
 
-.. deprecated::
-   Use :py:func:`~QgsSpatialIndex.addFeature` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsSpatialIndex.addFeature` instead.
 %End
 
     bool addFeature( QgsFeatureId id, const QgsRectangle &bounds );

@@ -58,8 +58,7 @@ Constructs driver metadata with selected capabilities
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
 
-.. deprecated::
-   QGIS 3.22
+.. deprecated:: 3.22
 %End
 
     QgsMeshDriverMetadata( const QString &name,
@@ -257,8 +256,9 @@ This returns the library file name
 
 This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
 
-.. deprecated::
-   QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+.. deprecated:: 3.10
+
+   Providers may not need to be loaded from a library (empty string returned).
 %End
 
 

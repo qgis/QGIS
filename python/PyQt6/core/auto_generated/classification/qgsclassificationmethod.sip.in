@@ -248,8 +248,9 @@ This will calculate the classes for a given layer to define the classes.
 :param expression: The name of the field on which the classes are calculated
 :param nclasses: The number of classes to be returned
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsClassificationMethod.classesV2` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsClassificationMethod.classesV2` instead.
 %End
 
     QList<QgsClassificationRange> classesV2( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString &error /Out/ );

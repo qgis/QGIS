@@ -126,8 +126,9 @@ Applies an edit ``operation`` to the layer.
 
 Returns ``True`` if the operation was successfully applied.
 
-.. deprecated::
-   QGIS 3.40. Use :py:func:`~QgsAnnotationLayer.applyEditV2` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotationLayer.applyEditV2` instead.
 %End
 
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );

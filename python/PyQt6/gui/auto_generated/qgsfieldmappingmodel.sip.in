@@ -72,8 +72,9 @@ Sets the destination fields editable state to ``editable``
 %Docstring
 Returns a static map of supported data types
 
-.. deprecated::
-   QGIS 3.24. Use :py:func:`~QgsFieldMappingModel.supportedDataTypes` instead.
+.. deprecated:: 3.24
+
+   Use :py:func:`~QgsFieldMappingModel.supportedDataTypes` instead.
 %End
 
     static const QList<QgsVectorDataProvider::NativeType> supportedDataTypes();

@@ -156,8 +156,9 @@ by the given Coordinate Reference Systems.
 %Docstring
 Marks the current selected projection for push to front of recent projections list.
 
-.. deprecated::
-   Has no effect since QGIS 3.20
+.. deprecated:: 3.40
+
+   Has no effect since QGIS 3.20.
 %End
 
     void clearRecentCrs();
@@ -178,8 +179,9 @@ Emitted when a projection is selected in the widget.
 %Docstring
 Notifies others that the widget is now fully initialized, including deferred selection of projection.
 
-.. deprecated::
-   no longer emitted
+.. deprecated:: 3.40
+
+   No longer emitted.
 %End
 
     void projectionDoubleClicked();

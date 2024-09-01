@@ -28,8 +28,9 @@ The QgsRasterDrawer constructor.
 :param iterator: the raster iterator to fetch data from
 :param dpiTarget: the target dpi (dots per inch) to be taken into consideration when rendering
 
-.. deprecated::
-   QGIS 3.28. Use the constructor without the ``dpiTarget`` argument instead, as DPI is now handled by the :py:func:`~QgsRasterDrawer.draw` method which accepts a :py:class:`QgsRenderContext`.
+.. deprecated:: 3.28
+
+   Use the constructor without the ``dpiTarget`` argument instead, as DPI is now handled by the :py:func:`~QgsRasterDrawer.draw` method which accepts a :py:class:`QgsRenderContext`.
 %End
 
     QgsRasterDrawer( QgsRasterIterator *iterator );

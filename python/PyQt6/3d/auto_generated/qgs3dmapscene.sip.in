@@ -122,9 +122,9 @@ Returns a map of 3D map scenes (by name) open in the QGIS application.
 
    Only available from the QGIS desktop application.
 
-.. deprecated::
-   QGIS 3.36. Use QgisAppInterface.mapCanvases3D() instead.
+.. deprecated:: 3.36
 
+   Use QgisAppInterface.mapCanvases3D() instead.
 .. versionadded:: 3.30
 %End
 

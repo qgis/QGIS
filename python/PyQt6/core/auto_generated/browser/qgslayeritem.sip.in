@@ -96,8 +96,7 @@ Returns the icon name of the given ``layerType``
 Delete this layer item
 Use :py:class:`QgsDataItemGuiProvider`.deleteLayer instead
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
   protected:

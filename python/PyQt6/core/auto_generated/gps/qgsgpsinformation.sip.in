@@ -117,8 +117,9 @@ Returns whether the connection information is valid
 %Docstring
 Returns the fix status
 
-.. deprecated::
-  , use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
+.. deprecated:: 3.40
+
+   use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
 %End
 
     QString qualityDescription() const;

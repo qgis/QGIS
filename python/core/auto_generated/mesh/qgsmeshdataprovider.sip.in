@@ -326,8 +326,7 @@ On success, the mesh's dataset group count is changed
 
 .. versionadded:: 3.6
 
-.. deprecated::
-   QGIS 3.12.3
+.. deprecated:: 3.12.3
 %End
 
     virtual bool persistDatasetGroup( const QString &outputFilePath,

@@ -187,8 +187,9 @@ Draws a single component of rendered text using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 
-.. deprecated::
-   Private API only, will be removed in 4.0
+.. deprecated:: 3.40
+
+   Private API only, will be removed in 4.0.
 %End
 
  static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
@@ -211,8 +212,9 @@ Draws a single component of rendered text using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 
-.. deprecated::
-   Private API only, will be removed in 4.0
+.. deprecated:: 3.40
+
+   Private API only, will be removed in 4.0.
 %End
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format, double scaleFactor = 1.0 );

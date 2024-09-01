@@ -195,7 +195,8 @@ If ``layer`` is -1, all item layers will be rendered.
 
 .. seealso:: :py:func:`currentExportLayer`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
@@ -209,7 +210,8 @@ If ``layer`` is -1, all item layers should be rendered.
 
 .. seealso:: :py:func:`setCurrentExportLayer`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 

@@ -61,8 +61,9 @@ Determines if this container is rendered as collapsible group box or tab in a ta
 
 :param isGroupBox: If ``True``, this will be a group box
 
-.. deprecated::
-   use :py:func:`~QgsAttributeEditorContainer.setType` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAttributeEditorContainer.setType` instead.
 %End
 
  virtual bool isGroupBox() const /Deprecated/;
@@ -71,7 +72,8 @@ Returns if this container is going to be a group box
 
 :return: ``True`` if it will be a group box, ``False`` if it will be a tab
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsAttributeEditorContainer.type` instead.
 %End
 

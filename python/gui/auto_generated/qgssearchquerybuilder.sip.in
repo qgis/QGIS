@@ -15,8 +15,9 @@ class QgsSearchQueryBuilder : QDialog
 %Docstring(signature="appended")
 Query Builder for search strings
 
-.. deprecated::
-   Will be removed in QGIS 4
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.
 %End
 
 %TypeHeaderCode

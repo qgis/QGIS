@@ -125,8 +125,9 @@ Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system, with the specified
 datum transforms (see :py:class:`QgsDatumTransform`).
 
-.. deprecated::
-   will be removed in QGIS 4.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
 %End
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
@@ -540,8 +541,9 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 
 .. seealso:: :py:func:`destinationDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
  void setSourceDatumTransformId( int datumId ) /Deprecated/;
@@ -558,8 +560,9 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
  int destinationDatumTransformId() const /Deprecated/;
@@ -576,8 +579,9 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 
 .. seealso:: :py:func:`sourceDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
  void setDestinationDatumTransformId( int datumId ) /Deprecated/;
@@ -594,8 +598,9 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
 

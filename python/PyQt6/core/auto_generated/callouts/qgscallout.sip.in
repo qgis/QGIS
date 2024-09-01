@@ -446,8 +446,9 @@ how a callout is being rendered.
 %Docstring
 Returns the anchor point geometry for a label with the given bounding box and ``anchor`` point mode.
 
-.. deprecated::
-   QGIS 3.20. Use :py:func:`~QgsCallout.calloutLabelPoint` instead.
+.. deprecated:: 3.20
+
+   Use :py:func:`~QgsCallout.calloutLabelPoint` instead.
 %End
 
     QgsGeometry calloutLabelPoint( const QRectF &bodyBoundingBox, double angle, LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCalloutContext &calloutContext, bool &pinned ) const;

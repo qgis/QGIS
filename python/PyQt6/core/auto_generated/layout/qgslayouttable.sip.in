@@ -195,8 +195,9 @@ Sets the ``font`` used to draw header text in the table.
 
 .. seealso:: :py:func:`setContentFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead.
 %End
 
  QFont headerFont() const /Deprecated/;
@@ -207,8 +208,9 @@ Returns the font used to draw header text in the table.
 
 .. seealso:: :py:func:`contentFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.headerTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.headerTextFormat` instead.
 %End
 
  void setHeaderFontColor( const QColor &color ) /Deprecated/;
@@ -221,8 +223,9 @@ Sets the ``color`` used to draw header text in the table.
 
 .. seealso:: :py:func:`setContentFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead.
 %End
 
  QColor headerFontColor() const /Deprecated/;
@@ -235,8 +238,9 @@ Returns the color used to draw header text in the table.
 
 .. seealso:: :py:func:`contentFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.headerTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.headerTextFormat` instead.
 %End
 
     void setHeaderTextFormat( const QgsTextFormat &format );
@@ -299,8 +303,9 @@ Sets the ``font`` used to draw text in table body cells.
 
 .. seealso:: :py:func:`setHeaderFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setContentTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setContentTextFormat` instead.
 %End
 
  QFont contentFont() const /Deprecated/;
@@ -311,8 +316,9 @@ Returns the font used to draw text in table body cells.
 
 .. seealso:: :py:func:`headerFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.contextTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.contextTextFormat` instead.
 %End
 
  void setContentFontColor( const QColor &color ) /Deprecated/;
@@ -325,8 +331,9 @@ Sets the ``color`` used to draw text in table body cells.
 
 .. seealso:: :py:func:`setHeaderFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setContentTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setContentTextFormat` instead.
 %End
 
  QColor contentFontColor() const /Deprecated/;
@@ -339,8 +346,9 @@ Returns the color used to draw text in table body cells.
 
 .. seealso:: :py:func:`headerFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.contextTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.contextTextFormat` instead.
 %End
 
     void setContentTextFormat( const QgsTextFormat &format );

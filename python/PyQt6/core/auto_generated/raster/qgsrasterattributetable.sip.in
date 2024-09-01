@@ -77,8 +77,9 @@ Creates a new Field with ``name``, ``type`` and ``usage``.
 %Docstring
 Creates a new Field with ``name``, ``type`` and ``usage``.
 
-.. deprecated::
-   QGIS 3.38. Use the method with a QMetaType.Type argument instead.
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
         bool isColor( ) const;
@@ -267,8 +268,9 @@ Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``po
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 
-.. deprecated::
-   QGIS 3.38. Use the method with a QMetaType.Type argument instead.
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     bool insertColor( int position, QString *errorMessage /Out/ = 0 );

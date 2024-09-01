@@ -4,7 +4,7 @@ QgsFeaturePickerModelBase.Role = QgsFeaturePickerModelBase.CustomRole
 QgsFeaturePickerModelBase.IdentifierValueRole = QgsFeaturePickerModelBase.CustomRole.IdentifierValue
 QgsFeaturePickerModelBase.Role.IdentifierValueRole = QgsFeaturePickerModelBase.CustomRole.IdentifierValue
 QgsFeaturePickerModelBase.IdentifierValueRole.is_monkey_patched = True
-QgsFeaturePickerModelBase.IdentifierValueRole.__doc__ = "Used to retrieve the identifier value (primary key) of a feature. \n.. deprecated:: Use IdentifierValuesRole instead"
+QgsFeaturePickerModelBase.IdentifierValueRole.__doc__ = "Used to retrieve the identifier value (primary key) of a feature. \n.. deprecated:: 3.40. Use IdentifierValuesRole instead."
 QgsFeaturePickerModelBase.IdentifierValuesRole = QgsFeaturePickerModelBase.CustomRole.IdentifierValues
 QgsFeaturePickerModelBase.Role.IdentifierValuesRole = QgsFeaturePickerModelBase.CustomRole.IdentifierValues
 QgsFeaturePickerModelBase.IdentifierValuesRole.is_monkey_patched = True
@@ -31,7 +31,7 @@ QgsFeaturePickerModelBase.CustomRole.__doc__ = """Extra roles that can be used t
 
 * ``IdentifierValueRole``: Used to retrieve the identifier value (primary key) of a feature.
 
-  .. deprecated:: Use IdentifierValuesRole instead
+  .. deprecated:: 3.40. Use IdentifierValuesRole instead.
 
 * ``IdentifierValuesRole``: Used to retrieve the identifierValues (primary keys) of a feature.
 * ``ValueRole``: Used to retrieve the displayExpression of a feature.

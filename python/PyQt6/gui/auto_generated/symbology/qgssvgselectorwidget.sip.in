@@ -139,8 +139,9 @@ Returns if the group box to fill parameters is visible
 
 .. versionadded:: 3.18
 
-.. deprecated::
-   Use :py:func:`~QgsSvgSelectorWidget.allowParameters`
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsSvgSelectorWidget.allowParameters`.
 %End
 
     bool allowParameters() const;

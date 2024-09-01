@@ -398,8 +398,9 @@ already contains a Z value.
    This method does not copy the z value of the coordinate from the
    points whose z value is closest to the original x/y point, but only the first one found.
 
-.. deprecated::
-   QGIS 3.20. Use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead.
+.. deprecated:: 3.20
+
+   Use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead.
 %End
 
     static bool transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point );
@@ -492,7 +493,8 @@ looping twice over the set of points.
 %Docstring
 Returns the squared 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -516,7 +518,8 @@ Returns the squared 3D distance between two points.
 %Docstring
 Returns the 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -541,7 +544,8 @@ Returns the 3D distance between two points.
 %Docstring
 Returns the squared distance between a point and a line.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -553,7 +557,8 @@ A positive return value indicates the point is to the right of the line.
 If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
 on the line, or exactly in line with the segment) and the result is undefined.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -588,7 +593,8 @@ Example
 
 .. versionadded:: 3.20
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -599,7 +605,8 @@ Example
 %Docstring
 Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -611,7 +618,8 @@ Returns ``True`` if the circle defined by three angles is ordered clockwise.
 The angles are defined counter-clockwise from the origin, i.e. using
 Euclidean angles as opposed to geographic "North up" angles.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -619,7 +627,8 @@ Euclidean angles as opposed to geographic "North up" angles.
 %Docstring
 Returns ``True`` if, in a circle, angle is between angle1 and angle2
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -628,7 +637,8 @@ Returns ``True`` if, in a circle, angle is between angle1 and angle2
 Returns ``True`` if an angle is between angle1 and angle3 on a circle described by
 angle1, angle2 and angle3.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -636,7 +646,8 @@ angle1, angle2 and angle3.
 %Docstring
 Length of a circular string segment defined by pt1, pt2, pt3
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -644,7 +655,8 @@ Length of a circular string segment defined by pt1, pt2, pt3
 %Docstring
 Calculates angle of a circular string part defined by pt1, pt2, pt3
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -652,7 +664,8 @@ Calculates angle of a circular string part defined by pt1, pt2, pt3
 %Docstring
 Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -664,7 +677,8 @@ Ensures that an angle is in the range 0 <= angle < 2 pi.
 
 :return: equivalent angle within the range [0, 2 pi)
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -679,7 +693,8 @@ Calculates the direction of line joining two points in radians, clockwise from t
 
 :return: angle in radians. Returned value is undefined if start and end point are the same.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -697,7 +712,8 @@ by points a, b and b, c.
 
 :return: angle between lines in radians. Returned value is undefined if two or more points are equal.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -713,7 +729,8 @@ clockwise from the north direction.
 
 :return: angle in radians. Returned value is undefined if start and end point are the same.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -722,7 +739,8 @@ clockwise from the north direction.
 Calculates the average angle (in radians) between the two linear segments from
 (``x1``, ``y1``) to (``x2``, ``y2``) and (``x2``, ``y2``) to (``x3``, ``y3``).
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -735,7 +753,8 @@ Averages two angles, correctly handling negative angles and ensuring the result 
 
 :return: average angle (in radians)
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -765,7 +784,8 @@ The returned value may be:
 
 .. versionadded:: 3.20
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -796,7 +816,8 @@ The result is a line (segment) centered in point p and perpendicular to segment 
 
 .. versionadded:: 3.24
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -811,7 +832,8 @@ An algorithm to calculate the shortest distance between two skew lines.
 
 :return: the shortest distance
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -831,7 +853,8 @@ A method to project one skew line onto another.
 
 :return: ``True`` if such point exists, ``False`` - otherwise.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -878,7 +901,8 @@ Example
        QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
        # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -889,7 +913,8 @@ Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``
 
 .. versionadded:: 3.10
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -904,7 +929,8 @@ of the line length at which the point lies.
 
 .. versionadded:: 3.32
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -928,7 +954,8 @@ Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY
 
 .. versionadded:: 3.10
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -939,7 +966,8 @@ points can be considered collinear with a specified tolerance ``epsilon``.
 
 .. versionadded:: 3.32
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -966,7 +994,8 @@ The bisector segment of AB-CD is (point, projection of point by ``angle``)
 
 .. versionadded:: 3.18
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 
@@ -989,7 +1018,8 @@ The bisector segment of ABC is (A-point)
 
 .. versionadded:: 3.18
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:class:`QgsGeometryUtilsBase` methods instead.
 %End
 

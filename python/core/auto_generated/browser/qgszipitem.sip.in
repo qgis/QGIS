@@ -50,8 +50,9 @@ Constructor
  static QString vsiPrefix( const QString &uri ) /Deprecated/;
 %Docstring
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
     static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &path, const QString &name ) /Factory/;
