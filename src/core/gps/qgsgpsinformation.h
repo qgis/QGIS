@@ -148,7 +148,7 @@ class CORE_EXPORT QgsGpsInformation
     /**
      * Contains the fix type, where 1 = no fix, 2 = 2d fix, 3 = 3d fix
      *
-     * \deprecated QGIS 3.40. use constellationFixStatus() or bestFixStatus() instead.
+     * \deprecated QGIS 3.40. Use constellationFixStatus() or bestFixStatus() instead.
      */
     int fixType = 0;
 
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsGpsInformation
 
     /**
      * Returns the fix status
-     * \deprecated QGIS 3.40. use constellationFixStatus() or bestFixStatus() instead.
+     * \deprecated QGIS 3.40. Use constellationFixStatus() or bestFixStatus() instead.
      */
     Q_DECL_DEPRECATED Qgis::GpsFixStatus fixStatus() const SIP_DEPRECATED;
 
