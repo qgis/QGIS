@@ -83,8 +83,11 @@ def process_file(file_path):
             # Standard since annotation
             prefix, version, suffix = match.groups()
             if suffix:
-                if suffix.startswith('(') and suffix.endswith(')'):
-                    suffix = suffix[1:-1]
+                if suffix.startswith('('):
+                    if suffix.endswith(')'):
+                        suffix = suffix[1:-1]
+                    elif suffix.endswith(').'):
+                        suffix = suffix[1:-2]
                 suffix = suffix[0].upper() + suffix[1:]
                 if not suffix.endswith('.'):
                     suffix += "."

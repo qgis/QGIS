@@ -149,7 +149,7 @@ class CORE_EXPORT QgsProviderRegistry
     /**
      * Returns the provider capabilities
      * \param providerKey identifier of the provider
-     * \deprecated QGIS 3.10. (use instead capabilities() method of individual data item provider).
+     * \deprecated QGIS 3.10. Use instead capabilities() method of individual data item provider.
      */
     Q_DECL_DEPRECATED Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
 
