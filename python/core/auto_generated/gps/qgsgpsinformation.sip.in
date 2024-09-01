@@ -119,7 +119,7 @@ Returns the fix status
 
 .. deprecated:: 3.40
 
-   use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
+   Use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
 %End
 
     QString qualityDescription() const;
