@@ -264,7 +264,7 @@ class CORE_EXPORT QgsFontManager : public QObject
      * \param matchedFamily will be set to found font family if a match was successful
      * \returns URL to download font, or an empty string if no URL is available
      *
-     * \deprecated Since QGIS 3.38, use detailsForFontDownload() instead
+     * \deprecated QGIS 3.38. Use detailsForFontDownload() instead.
      */
     Q_DECL_DEPRECATED QString urlForFontDownload( const QString &family, QString &matchedFamily SIP_OUT ) const SIP_DEPRECATED;
 
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsFontManager : public QObject
      * \see fontDownloaded()
      * \see fontDownloadErrorOccurred()
      *
-     * \deprecated Since QGIS 3.38 use the version which takes a QgsFontDownloadDetails argument instead
+     * \deprecated QGIS 3.38. Use the version which takes a QgsFontDownloadDetails argument instead.
      */
     Q_DECL_DEPRECATED void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() ) SIP_DEPRECATED;
 

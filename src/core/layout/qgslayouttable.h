@@ -232,7 +232,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the \a font used to draw header text in the table.
      * \see headerFont()
      * \see setContentFont()
-     * \deprecated use setHeaderTextFormat() instead
+     * \deprecated QGIS 3.40. Use setHeaderTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setHeaderFont( const QFont &font ) SIP_DEPRECATED;
 
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Returns the font used to draw header text in the table.
      * \see setHeaderFont()
      * \see contentFont()
-     * \deprecated use headerTextFormat() instead
+     * \deprecated QGIS 3.40. Use headerTextFormat() instead.
      */
     Q_DECL_DEPRECATED QFont headerFont() const SIP_DEPRECATED;
 
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see headerFontColor()
      * \see setHeaderFont()
      * \see setContentFontColor()
-     * \deprecated use setHeaderTextFormat() instead
+     * \deprecated QGIS 3.40. Use setHeaderTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setHeaderFontColor( const QColor &color ) SIP_DEPRECATED;
 
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see setHeaderFontColor()
      * \see headerFont()
      * \see contentFontColor()
-     * \deprecated use headerTextFormat() instead
+     * \deprecated QGIS 3.40. Use headerTextFormat() instead.
      */
     Q_DECL_DEPRECATED QColor headerFontColor() const SIP_DEPRECATED;
 
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the \a font used to draw text in table body cells.
      * \see contentFont()
      * \see setHeaderFont()
-     * \deprecated use setContentTextFormat() instead
+     * \deprecated QGIS 3.40. Use setContentTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setContentFont( const QFont &font ) SIP_DEPRECATED;
 
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Returns the font used to draw text in table body cells.
      * \see setContentFont()
      * \see headerFont()
-     * \deprecated use contextTextFormat() instead
+     * \deprecated QGIS 3.40. Use contextTextFormat() instead.
      */
     Q_DECL_DEPRECATED QFont contentFont() const SIP_DEPRECATED;
 
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see contentFontColor()
      * \see setContentFont()
      * \see setHeaderFontColor()
-     * \deprecated use setContentTextFormat() instead
+     * \deprecated QGIS 3.40. Use setContentTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setContentFontColor( const QColor &color ) SIP_DEPRECATED;
 
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see setContentFontColor()
      * \see contentFont()
      * \see headerFontColor()
-     * \deprecated use contextTextFormat() instead
+     * \deprecated QGIS 3.40. Use contextTextFormat() instead.
      */
     Q_DECL_DEPRECATED QColor contentFontColor() const SIP_DEPRECATED;
 

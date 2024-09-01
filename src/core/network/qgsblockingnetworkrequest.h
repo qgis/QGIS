@@ -235,7 +235,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
     /**
      * Emitted once a request has finished downloading.
-     * \deprecated Use the finished() signal instead.
+     * \deprecated QGIS 3.40. Use the finished() signal instead.
      */
     Q_DECL_DEPRECATED void downloadFinished() SIP_DEPRECATED;
 

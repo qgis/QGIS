@@ -87,7 +87,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return TRUE on success
      * \see QgsApplication::pluginPath
      * \see QgsApplication::qgisAuthDatabaseFilePath
-     * \deprecated Since QGIS 3.36, use setup() or ensureInitialized() instead.
+     * \deprecated QGIS 3.36. Use setup() or ensureInitialized() instead.
      */
     Q_DECL_DEPRECATED bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) SIP_DEPRECATED;
 

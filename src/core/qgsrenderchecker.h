@@ -254,7 +254,7 @@ class CORE_EXPORT QgsRenderChecker
      * acceptable.
      * \returns a bool indicating if the diff matched one of the anomaly files
      *
-     * \deprecated Use the test mask system instead.
+     * \deprecated QGIS 3.40. Use the test mask system instead.
      */
     Q_DECL_DEPRECATED bool isKnownAnomaly( const QString &diffImageFile ) SIP_DEPRECATED;
 

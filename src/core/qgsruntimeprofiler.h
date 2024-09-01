@@ -202,14 +202,14 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      * front of the profile tag set using start.
      * \param name The name of the group.
      *
-     * \deprecated use start() instead
+     * \deprecated QGIS 3.40. Use start() instead.
      */
     Q_DECL_DEPRECATED void beginGroup( const QString &name ) SIP_DEPRECATED;
 
     /**
      * \brief End the current active group.
      *
-     * \deprecated use end() instead
+     * \deprecated QGIS 3.40. Use end() instead.
      */
     Q_DECL_DEPRECATED void endGroup() SIP_DEPRECATED;
 

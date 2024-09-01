@@ -1084,14 +1084,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
      *
-     * \deprecated Test whether the flags() method returns the Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide flag instead.
+     * \deprecated QGIS 3.40. Test whether the flags() method returns the Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide flag instead.
      */
     Q_DECL_DEPRECATED bool evaluateDefaultValues() const SIP_DEPRECATED;
 
     /**
      * Defines if default values should be evaluated on provider side when requested and not when committed.
      *
-     * \deprecated use setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) instead.
+     * \deprecated QGIS 3.40. Use setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) instead.
      */
     Q_DECL_DEPRECATED void setEvaluateDefaultValues( bool evaluateDefaultValues ) SIP_DEPRECATED;
 
@@ -1470,7 +1470,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param trust TRUE to trust the project, FALSE otherwise
      *
-     * \deprecated Use setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics ) instead.
+     * \deprecated QGIS 3.40. Use setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics ) instead.
      */
     Q_DECL_DEPRECATED void setTrustLayerMetadata( bool trust ) SIP_DEPRECATED;
 
@@ -1482,7 +1482,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * unicity is not checked for views and materialized views with Postgres
      * provider.
      *
-     * \deprecated Test whether the flags() method returns the Qgis::ProjectFlag::TrustStoredLayerStatistics flag instead.
+     * \deprecated QGIS 3.40. Test whether the flags() method returns the Qgis::ProjectFlag::TrustStoredLayerStatistics flag instead.
      */
     Q_DECL_DEPRECATED bool trustLayerMetadata() const SIP_DEPRECATED;
 
@@ -1628,7 +1628,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapScales()
      * \see mapScalesChanged()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED void setMapScales( const QVector<double> &scales ) SIP_DEPRECATED;
 
@@ -1641,7 +1641,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setMapScales()
      * \see mapScalesChanged()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED QVector<double> mapScales() const SIP_DEPRECATED;
 
@@ -1651,7 +1651,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see useProjectScales()
      * \see setMapScales()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED void setUseProjectScales( bool enabled ) SIP_DEPRECATED;
 
@@ -1661,7 +1661,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setUseProjectScales()
      * \see mapScales()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED bool useProjectScales() const SIP_DEPRECATED;
 
@@ -1769,7 +1769,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when an old project file is read.
      *
-     * \deprecated use readVersionMismatchOccurred() instead.
+     * \deprecated QGIS 3.40. Use readVersionMismatchOccurred() instead.
      */
     Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString & ) SIP_DEPRECATED;
 
@@ -2112,7 +2112,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapScales()
      * \see setMapScales()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED void mapScalesChanged() SIP_DEPRECATED;
 

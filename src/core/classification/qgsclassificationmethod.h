@@ -236,7 +236,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * \param expression The name of the field on which the classes are calculated
      * \param nclasses The number of classes to be returned
      *
-     * \deprecated Since QGIS 3.38 use classesV2() instead.
+     * \deprecated QGIS 3.38. Use classesV2() instead.
      */
     Q_DECL_DEPRECATED QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses ) SIP_DEPRECATED;
 

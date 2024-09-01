@@ -628,14 +628,14 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     /**
      * Returns the placement of the symbols.
      * \see setPlacement()
-     * \deprecated use placements() instead
+     * \deprecated QGIS 3.40. Use placements() instead.
      */
     Q_DECL_DEPRECATED Qgis::MarkerLinePlacement placement() const SIP_DEPRECATED;
 
     /**
      * Sets the \a placement of the symbols.
      * \see placement()
-     * \deprecated use setPlacements() instead
+     * \deprecated QGIS 3.40. Use setPlacements() instead.
      */
     Q_DECL_DEPRECATED void setPlacement( Qgis::MarkerLinePlacement placement ) SIP_DEPRECATED;
 
@@ -969,13 +969,13 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * Shall the marker be rotated.
      *
      * \returns TRUE if the marker should be rotated.
-     * \deprecated Use rotateSymbols() instead.
+     * \deprecated QGIS 3.40. Use rotateSymbols() instead.
      */
     Q_DECL_DEPRECATED bool rotateMarker() const SIP_DEPRECATED { return rotateSymbols(); }
 
     /**
      * Shall the marker be rotated.
-     * \deprecated Use setRotateSymbols() instead.
+     * \deprecated QGIS 3.40. Use setRotateSymbols() instead.
      */
     Q_DECL_DEPRECATED void setRotateMarker( bool rotate ) SIP_DEPRECATED { setRotateSymbols( rotate ); }
 

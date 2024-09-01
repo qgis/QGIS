@@ -567,7 +567,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      *  Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
      *
-     *  \deprecated Use actionZoomToLayers() instead.
+     *  \deprecated QGIS 3.40. Use actionZoomToLayers() instead.
      */
     Q_DECL_DEPRECATED virtual QAction *actionZoomToLayer() = 0 SIP_DEPRECATED;
 
@@ -1379,7 +1379,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param url URL to open
      * \param useQgisDocDirectory If TRUE, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
-     * \deprecated Use QDesktopServices instead
+     * \deprecated QGIS 3.40. Use QDesktopServices instead.
      */
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED

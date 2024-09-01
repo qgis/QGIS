@@ -45,7 +45,7 @@ class CORE_EXPORT QgsDatumTransform
 
     /**
      * Contains datum transform information.
-     * \deprecated Not used for builds based on Proj >= 6.0
+     * \deprecated QGIS 3.40. Not used for builds based on Proj >= 6.0.
      */
     struct TransformPair
     {
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsDatumTransform
 
     /**
      * Contains datum transform information.
-     * \deprecated Not used on builds based on Proj >= 6.0
+     * \deprecated QGIS 3.40. Not used on builds based on Proj >= 6.0.
      */
     struct TransformInfo
     {
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsDatumTransform
      * \see datumTransformToProj()
      * \see datumTransformInfo()
      *
-     * \deprecated Not used for builds based on Proj >= 6.0
+     * \deprecated QGIS 3.40. Not used for builds based on Proj >= 6.0.
      */
     Q_DECL_DEPRECATED static QList< QgsDatumTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) SIP_DEPRECATED;
 
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsDatumTransform
      * \see datumTransformInfo()
      * \see projStringToDatumTransformId()
      *
-     * \deprecated Not used for builds based on Proj >= 6.0
+     * \deprecated QGIS 3.40. Not used for builds based on Proj >= 6.0.
      */
     Q_DECL_DEPRECATED static QString datumTransformToProj( int datumTransformId ) SIP_DEPRECATED;
 
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsDatumTransform
      * Returns -1 if matching datum ID was not found.
      * \see datumTransformToProj()
      *
-     * \deprecated Not used for builds based on Proj >= 6.0
+     * \deprecated QGIS 3.40. Not used for builds based on Proj >= 6.0.
      */
     Q_DECL_DEPRECATED static int projStringToDatumTransformId( const QString &string ) SIP_DEPRECATED;
 
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsDatumTransform
      * \see datumTransformations()
      * \see datumTransformToProj()
      *
-     * \deprecated Not used for builds based on Proj >= 6.0
+     * \deprecated QGIS 3.40. Not used for builds based on Proj >= 6.0.
     */
     Q_DECL_DEPRECATED static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId ) SIP_DEPRECATED;
 

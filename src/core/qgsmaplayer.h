@@ -1586,7 +1586,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns TRUE if auto refresh is enabled for the layer.
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
-     * \deprecated use autoRefreshMode() instead.
+     * \deprecated QGIS 3.40. Use autoRefreshMode() instead.
      */
     Q_DECL_DEPRECATED bool hasAutoRefreshEnabled() const SIP_DEPRECATED;
 
@@ -1622,7 +1622,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets whether auto refresh is enabled for the layer.
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
-     * \deprecated Use setAutoRefreshMode() instead.
+     * \deprecated QGIS 3.40. Use setAutoRefreshMode() instead.
      */
     Q_DECL_DEPRECATED void setAutoRefreshEnabled( bool enabled ) SIP_DEPRECATED;
 

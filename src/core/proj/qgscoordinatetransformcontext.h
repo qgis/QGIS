@@ -87,7 +87,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \see addSourceDestinationDatumTransform()
      *
-     * \deprecated Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
+     * \deprecated QGIS 3.40. Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
      */
     Q_DECL_DEPRECATED QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const SIP_DEPRECATED;
 
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * \see sourceDestinationDatumTransforms()
      * \see removeSourceDestinationDatumTransform()
      *
-     * \deprecated Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
+     * \deprecated QGIS 3.40. Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
      */
     Q_DECL_DEPRECATED bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) SIP_DEPRECATED;
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * \a destinationCrs.
      * \see addSourceDestinationDatumTransform()
      *
-     * \deprecated Use removeCoordinateOperation() instead
+     * \deprecated QGIS 3.40. Use removeCoordinateOperation() instead.
      */
     Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED ;
 
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * destination.
      *
      * \note source and destination are reversible.
-     * \deprecated Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
+     * \deprecated QGIS 3.40. Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead.
      */
     Q_DECL_DEPRECATED QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const SIP_DEPRECATED;
 

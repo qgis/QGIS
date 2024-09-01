@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \see layerAllowlist()
      * \see setExceptedLayerList()
      *
-     * \deprecated use setLayerAllowList()
+     * \deprecated QGIS 3.40. Use setLayerAllowList().
      */
     Q_DECL_DEPRECATED void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) SIP_DEPRECATED;
 
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \see setLayerAllowlist()
      * \see exceptedLayerList()
      *
-     * \deprecated use layerAllowlist() instead
+     * \deprecated QGIS 3.40. Use layerAllowlist() instead.
      */
     Q_DECL_DEPRECATED QList<QgsMapLayer *> layerWhitelist() SIP_DEPRECATED {return mLayerAllowlist;}
 

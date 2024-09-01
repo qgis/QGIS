@@ -200,7 +200,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     /**
      * Set the data provider.
-     * \deprecated Use the version with ProviderOptions instead.
+     * \deprecated QGIS 3.40. Use the version with ProviderOptions instead.
      */
     Q_DECL_DEPRECATED void setDataProvider( const QString &provider ) SIP_DEPRECATED;
 
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     /**
      * Returns a list with classification items (Text and color).
      *
-     * \deprecated use QgsRasterRenderer::createLegendNodes() instead.
+     * \deprecated QGIS 3.40. Use QgsRasterRenderer::createLegendNodes() instead.
      */
     Q_DECL_DEPRECATED QgsLegendColorList legendSymbologyItems() const SIP_DEPRECATED;
 

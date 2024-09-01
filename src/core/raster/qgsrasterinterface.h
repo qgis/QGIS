@@ -223,7 +223,7 @@ class CORE_EXPORT QgsRasterInterface
     /**
      * Returns the raster interface capabilities in friendly format.
      *
-     * \deprecated will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsRasterInterface
      * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
      * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * \param feedback optional feedback object
-     * \deprecated Use Qgis::RasterBandStatistic instead of int for \a stats argument
+     * \deprecated QGIS 3.40. Use Qgis::RasterBandStatistic instead of int for \a stats argument.
      */
     Q_DECL_DEPRECATED QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) SIP_DEPRECATED;
 
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsRasterInterface
      * \brief Returns TRUE if histogram is available (cached, already calculated).
      * The parameters are the same as in bandStatistics()
      * \returns TRUE if statistics are available (ready to use)
-     * \deprecated Use Qgis::RasterBandStatistic instead of int for \a stats argument
+     * \deprecated QGIS 3.40. Use Qgis::RasterBandStatistic instead of int for \a stats argument.
      */
     Q_DECL_DEPRECATED bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) SIP_DEPRECATED;
 
@@ -584,7 +584,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Fill in statistics defaults if not specified
-     * \deprecated Use Qgis::RasterBandStatistic instead of int for \a stats argument
+     * \deprecated QGIS 3.40. Use Qgis::RasterBandStatistic instead of int for \a stats argument.
      */
     Q_DECL_DEPRECATED void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const SIP_DEPRECATED;
 

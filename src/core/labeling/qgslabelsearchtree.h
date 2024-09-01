@@ -55,7 +55,7 @@ class CORE_EXPORT QgsLabelSearchTree
 
     /**
      * Removes and deletes all the entries.
-     * \deprecated has no effect since QGIS 3.12
+     * \deprecated QGIS 3.40. Has no effect since QGIS 3.12.
      */
     Q_DECL_DEPRECATED void clear() SIP_DEPRECATED;
 

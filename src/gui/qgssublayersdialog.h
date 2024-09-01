@@ -26,7 +26,7 @@
 /**
  * \ingroup gui
  * \class QgsSublayersDialog
- * \deprecated Will be removed in QGIS 4.0
+ * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
 {
@@ -35,7 +35,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * Prompt behavior of the QgsSublayersDialog
-     * \deprecated Use Qgis::SublayerPromptMode instead
+     * \deprecated QGIS 3.40. Use Qgis::SublayerPromptMode instead.
      */
     enum PromptMode
     {
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * \param fl window flags
      * \param dataSourceUri data source URI
      *
-     * \deprecated Will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED QgsSublayersDialog( ProviderType providerType,
                                           const QString &name,
