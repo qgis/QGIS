@@ -56,12 +56,12 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     /**
-     * \deprecated since QGIS 3.38 use inputBand() instead
+     * \deprecated QGIS 3.38. Use inputBand() instead.
      */
     Q_DECL_DEPRECATED int grayBand() const SIP_DEPRECATED { return mGrayBand; }
 
     /**
-     * \deprecated since QGIS 3.38 use setInputBand() instead
+     * \deprecated QGIS 3.38. Use setInputBand() instead.
      */
     Q_DECL_DEPRECATED void setGrayBand( int band ) SIP_DEPRECATED;
 

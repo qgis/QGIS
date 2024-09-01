@@ -427,7 +427,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Returns list of indexes to names for QgsPalLabeling fix
      *
-     * \deprecated since QGIS 3.32 this method is unused and will always return an empty hash
+     * \deprecated QGIS 3.32. This method is unused and will always return an empty hash.
      */
     Q_DECL_DEPRECATED QgsAttrPalIndexNameHash palAttributeIndexNames() const SIP_DEPRECATED;
 
@@ -542,7 +542,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Convert \a value to \a type
      *
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QVariant convertValue( QVariant::Type type, const QString &value ) SIP_DEPRECATED;
 
@@ -552,7 +552,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * \deprecated QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
+     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0 - use reloadData instead.
      */
     Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 

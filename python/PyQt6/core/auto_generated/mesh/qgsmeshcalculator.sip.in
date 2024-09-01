@@ -194,7 +194,7 @@ Returns whether formula is valid for particular mesh layer
 :return: QgsMeshCalculator.Success in case of success
 
 .. deprecated::
-   QGIS 3.12 - use expressionIsValid
+   QGIS 3.12. Use expressionIsValid.
 %End
 
     static Result expressionIsValid( const QString &formulaString,

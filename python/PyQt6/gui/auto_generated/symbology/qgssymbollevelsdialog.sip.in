@@ -59,8 +59,8 @@ Sets whether the level ordering is always forced on and hide the checkbox (used 
 %Docstring
 Apply button.
 
-.. deprecated:: QGIS 3.20.
-   Use :py:func:`~QgsSymbolLevelsWidget.symbolLevels` and manually apply the changes to the renderer as appropriate.
+.. deprecated::
+   QGIS 3.20. Use :py:func:`~QgsSymbolLevelsWidget.symbolLevels` and manually apply the changes to the renderer as appropriate.
 %End
 
 };

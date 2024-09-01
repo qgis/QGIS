@@ -270,8 +270,8 @@ Serialize on project save
 %Docstring
 Deserialize drag and drop designer elements.
 
-.. deprecated:: QGIS 3.18
-   use :py:class:`QgsAttributeEditorElement`.create instead
+.. deprecated::
+   QGIS 3.18. Use :py:class:`QgsAttributeEditorElement`.create instead.
 %End
 
     explicit QgsEditFormConfig();

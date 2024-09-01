@@ -153,7 +153,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     /**
      * Duplicates a feature
-     * \deprecated since QGIS 3.18, use duplicateSelectedFeatures() instead
+     * \deprecated QGIS 3.18. Use duplicateSelectedFeatures() instead.
      */
     Q_DECL_DEPRECATED void duplicateFeature() SIP_DEPRECATED;
 

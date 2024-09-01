@@ -104,16 +104,16 @@ Returns the attribute editor context.
 %Docstring
 Defines if a title label should be shown for this widget.
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated::
+   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
  void setShowLabel( bool showLabel ) /Deprecated/;
 %Docstring
 Defines if a title label should be shown for this widget.
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated::
+   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     QVariant nmRelationId() const;
@@ -131,8 +131,8 @@ If it's empty, then it's considered as a 1:M relationship.
 %Docstring
 Determines the label of this element
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated::
+   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     void setLabel( const QString &label = QString() );
@@ -267,8 +267,8 @@ Refresh the UI when the widget becomes visible
 %Docstring
 Updates the title contents to reflect the current state of the widget
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated::
+   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     void deleteFeatures( const QgsFeatureIds &fids );
@@ -294,8 +294,8 @@ Check :py:class:`QgsRealationEditorWidget` as an example.
 %Docstring
 Sets the title of the widget, if it is wrapped within a :py:class:`QgsCollapsibleGroupBox`
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated::
+   QGIS 3.20. Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );

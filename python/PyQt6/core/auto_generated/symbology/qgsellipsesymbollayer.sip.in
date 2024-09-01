@@ -94,7 +94,8 @@ Sets the rendered ellipse marker shape using a symbol ``name``.
 
 .. seealso:: :py:func:`shape`
 
-.. deprecated:: QGIS 3.20
+.. deprecated::
+   QGIS 3.20
 %End
 
  QString symbolName() const /Deprecated/;
@@ -105,7 +106,8 @@ Returns the shape name for the rendered ellipse marker symbol.
 
 .. seealso:: :py:func:`setShape`
 
-.. deprecated:: QGIS 3.20
+.. deprecated::
+   QGIS 3.20
 %End
 
     QgsEllipseSymbolLayer::Shape shape() const;

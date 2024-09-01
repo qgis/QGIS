@@ -510,7 +510,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
 /**
  * \ingroup core
  * \brief Convenient class for API compatibility
- * \deprecated since QGIS 3.22
+ * \deprecated QGIS 3.22
  * \since QGIS 3.10
  */
 // XXX How to make a proper SIP type alias ?

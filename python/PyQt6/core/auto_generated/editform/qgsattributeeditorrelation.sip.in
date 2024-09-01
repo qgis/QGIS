@@ -40,13 +40,15 @@ This element will load a relation editor onto the form.
  QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: QGIS 3.16
+.. deprecated::
+   QGIS 3.16
 %End
 
  QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: QGIS 3.16
+.. deprecated::
+   QGIS 3.16
 %End
 
     QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent );

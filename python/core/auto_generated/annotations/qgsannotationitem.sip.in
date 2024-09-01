@@ -128,7 +128,7 @@ Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommon
 Applies an edit ``operation`` to the item.
 
 .. deprecated::
-   QGIS 3.40, use :py:func:`~QgsAnnotationItem.applyEditV2` instead.
+   QGIS 3.40. Use :py:func:`~QgsAnnotationItem.applyEditV2` instead.
 %End
 
     virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
@@ -143,7 +143,7 @@ Applies an edit ``operation`` to the item.
 Retrieves the results of a transient (in progress) edit ``operation`` on the item.
 
 .. deprecated::
-   QGIS 3.40, use :py:func:`~QgsAnnotationItem.transientEditResultsV2` instead.
+   QGIS 3.40. Use :py:func:`~QgsAnnotationItem.transientEditResultsV2` instead.
 %End
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
@@ -192,7 +192,7 @@ Sets if the item will be rendered or not in the layer.
 Returns the nodes for the item, used for editing the item.
 
 .. deprecated::
-   QGIS 3.40, use :py:func:`~QgsAnnotationItem.nodesV2` instead.
+   QGIS 3.40. Use :py:func:`~QgsAnnotationItem.nodesV2` instead.
 %End
 
     virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;

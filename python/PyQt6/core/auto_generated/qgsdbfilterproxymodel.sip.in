@@ -16,7 +16,8 @@ class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated/
 A class that implements a custom filter and can be used
 as a proxy for :py:class:`QgsDbTableModel`
 
-.. deprecated:: QGIS 3.24
+.. deprecated::
+   QGIS 3.24
 %End
 
 %TypeHeaderCode

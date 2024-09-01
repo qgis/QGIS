@@ -293,7 +293,7 @@ class CORE_EXPORT QgsEditFormConfig
 
     /**
      * Deserialize drag and drop designer elements.
-     * \deprecated since QGIS 3.18 use QgsAttributeEditorElement::create instead
+     * \deprecated QGIS 3.18. Use QgsAttributeEditorElement::create instead.
      */
     Q_DECL_DEPRECATED QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_DEPRECATED;
 

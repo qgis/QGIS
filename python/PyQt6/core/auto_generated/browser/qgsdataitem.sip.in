@@ -234,8 +234,8 @@ Items that return valid URI will be returned in mime data when dragging a select
 
 .. seealso:: :py:func:`hasDragEnabled`
 
-.. deprecated:: QGIS 3.18
-  use :py:func:`~QgsDataItem.mimeUris` instead
+.. deprecated::
+   QGIS 3.18. Use :py:func:`~QgsDataItem.mimeUris` instead.
 %End
 
     virtual QgsMimeDataUtils::UriList mimeUris() const;
@@ -254,8 +254,8 @@ Items that return valid URI will be returned in mime data when dragging a select
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
 
-.. deprecated:: QGIS 3.6.
-   This method is no longer used by QGIS and will be removed in QGIS 4.0.
+.. deprecated::
+   QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
 %End
 
  virtual bool rename( const QString &name ) /Deprecated/;

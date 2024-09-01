@@ -923,7 +923,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPointsXY ) SIP_DEPRECATED;
 
@@ -941,7 +941,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPoints ) SIP_DEPRECATED;
 
@@ -959,7 +959,7 @@ class CORE_EXPORT QgsGeometry
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_DEPRECATED;
 
@@ -1034,7 +1034,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature = true ) SIP_SKIP;
 

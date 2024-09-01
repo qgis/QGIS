@@ -316,7 +316,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
      *
-     * \deprecated since QGIS 3.10.3 - made private as reloadVisible()
+     * \deprecated QGIS 3.10.3. Made private as reloadVisible().
      */
     Q_DECL_DEPRECATED void extentsChanged();
 

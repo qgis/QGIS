@@ -314,7 +314,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * replacements that are aware of the fact that projects may be saved in other project storages.
      *
      * \see fileName()
-     * \deprecated since QGIS 3.2 use absoluteFilePath(), baseName() or lastModifiedTime() instead
+     * \deprecated QGIS 3.2. Use absoluteFilePath(), baseName() or lastModifiedTime() instead.
      */
     Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
 
@@ -1001,19 +1001,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QStringList &layerIds );
 
     /**
      * Gets the list of layers which currently should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      */
     Q_DECL_DEPRECATED QStringList nonIdentifiableLayers() const;
 
@@ -1022,7 +1022,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * all tables that originate from the same database are synchronized and executed in a server side
      * transaction.
      *
-     * \deprecated QGIS 3.26 use transactionMode instead
+     * \deprecated QGIS 3.26. Use transactionMode instead.
      */
     Q_DECL_DEPRECATED bool autoTransaction() const SIP_DEPRECATED;
 
@@ -1033,7 +1033,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \warning Make sure that this is only called when all layers are not in edit mode.
      *
-     * \deprecated QGIS 3.26 use setTransactionMode instead
+     * \deprecated QGIS 3.26. Use setTransactionMode instead.
      */
     Q_DECL_DEPRECATED void setAutoTransaction( bool autoTransaction ) SIP_DEPRECATED;
 
@@ -1564,7 +1564,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated since QGIS 3.4 use QgsMapLayer::flags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::flags() instead.
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED QSet<QgsMapLayer *> requiredLayers() const;
@@ -1574,7 +1574,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
@@ -1805,7 +1805,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when the list of layer which are excluded from map identification changes
-     * \deprecated since QGIS 3.4
+     * \deprecated QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 

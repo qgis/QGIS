@@ -676,7 +676,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's settings registry, used for managing application settings.
      * \since QGIS 3.20
-     * \deprecated since QGIS 3.30 use QgsSettings::treeRoot() instead
+     * \deprecated QGIS 3.30. Use QgsSettings::treeRoot() instead.
      */
     Q_DECL_DEPRECATED static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE SIP_DEPRECATED;
 

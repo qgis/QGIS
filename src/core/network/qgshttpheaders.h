@@ -67,7 +67,7 @@ class CORE_EXPORT QgsHttpHeaders
      * \brief Constructor from QgsSettings \a settings object and root \a key
      * \param settings
      * \param key
-     * \deprecated since QGIS 3.30 use a variant map settings and the default constructor instead
+     * \deprecated QGIS 3.30. Use a variant map settings and the default constructor instead.
      */
     Q_DECL_DEPRECATED QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) SIP_DEPRECATED;
 
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsHttpHeaders
      * \param settings
      * \param key sub group path
      * \return TRUE if the update succeed
-     * \deprecated since QGIS 3.30 directly use a variant setting instead
+     * \deprecated QGIS 3.30. Directly use a variant setting instead.
      */
     Q_DECL_DEPRECATED bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const SIP_DEPRECATED;
 

@@ -98,7 +98,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
         /**
          * Creates a new Field with \a name, \a type and \a usage.
-         * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+         * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
          */
       Q_DECL_DEPRECATED Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ) SIP_DEPRECATED: Field( name, usage, QgsVariantUtils::variantTypeToMetaType( type ) ) {}
 
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * Creates a new field from \a name, \a usage and \a type and inserts it at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr ) SIP_DEPRECATED;
 

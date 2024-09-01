@@ -72,8 +72,8 @@ Adds a ring to polygon/multipolygon features
 
 :return: OperationResult result code: success or reason of failure
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
@@ -129,8 +129,8 @@ Adds a new part polygon to a multipart feature
          - :py:class:`QgsGeometry`.InvalidBaseGeometry
          - :py:class:`QgsGeometry`.InvalidInput
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
@@ -192,8 +192,8 @@ Splits parts cut by the given line
          - :py:class:`QgsGeometry`.GeometryEngineError
          - :py:class:`QgsGeometry`.SplitCannotSplitPoint
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -222,8 +222,8 @@ Splits features cut by the given line
 
 :return: :py:class:`QgsGeometry`.OperationResult
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );

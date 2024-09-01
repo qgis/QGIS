@@ -62,7 +62,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      * - QVariant::Date
      * - QVariant::Time
      *
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QString defaultFormat( QVariant::Type type ) SIP_DEPRECATED;
 
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      * - QVariant::Time
      *
      * \since QGIS 3.30
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QString defaultDisplayFormat( QVariant::Type type ) SIP_DEPRECATED;
 

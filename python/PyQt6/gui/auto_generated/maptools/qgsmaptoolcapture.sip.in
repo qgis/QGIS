@@ -174,8 +174,8 @@ WkbType of the current layer).
 %Docstring
 Enable the digitizing with curve
 
-.. deprecated:: QGIS 3.26
-   use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead
+.. deprecated::
+   QGIS 3.26. Use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead.
 %End
 
  void setStreamDigitizingEnabled( bool enable ) /Deprecated/;
@@ -184,8 +184,8 @@ Toggles the stream digitizing mode.
 
 .. versionadded:: 3.20
 
-.. deprecated:: QGIS 3.26
-   use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead
+.. deprecated::
+   QGIS 3.26. Use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead.
 %End
 
   protected:
@@ -281,8 +281,8 @@ List of digitized points
 
 :return: List of points
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant returns :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant returns :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
 
@@ -301,8 +301,8 @@ Set the points on which to work
 
 :param pointList: A list of points
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     void setPoints( const QgsPointSequence &pointList );

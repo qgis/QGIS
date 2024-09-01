@@ -1177,7 +1177,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Deprecated: use calculateBoundingBox3D instead
      * \see calculateBoundingBox()
      * \since QGIS 3.26
-     * \deprecated since QGIS 3.34
+     * \deprecated QGIS 3.34
      */
     Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
 

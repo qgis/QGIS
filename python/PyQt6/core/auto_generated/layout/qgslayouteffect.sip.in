@@ -17,8 +17,8 @@ class QgsLayoutEffect : QGraphicsEffect
 A QGraphicsEffect subclass used for rendering layout items
 onto a scene with custom composition modes.
 
-.. deprecated:: QGIS 3.34
-   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
+.. deprecated::
+   QGIS 3.34. This class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
 %End
 
 %TypeHeaderCode
@@ -35,8 +35,8 @@ the item.
 
 .. seealso:: :py:func:`compositionMode`
 
-.. deprecated:: QGIS 3.34
-   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
+.. deprecated::
+   QGIS 3.34. This class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
 %End
 
  QPainter::CompositionMode compositionMode() const /Deprecated/;
@@ -46,8 +46,8 @@ the item.
 
 .. seealso:: :py:func:`setCompositionMode`
 
-.. deprecated:: QGIS 3.34
-   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
+.. deprecated::
+   QGIS 3.34. This class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
 %End
 
   protected:

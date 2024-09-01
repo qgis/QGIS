@@ -218,7 +218,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void showHelp();
 
     /**
-     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void itemChanged( QStandardItem *item ) SIP_DEPRECATED;
 
@@ -258,7 +258,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void editSmartgroupAction();
 
     /**
-     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void regrouped( QStandardItem * ) SIP_DEPRECATED;
 
@@ -304,7 +304,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     /**
      * Populate combo box with known style items (symbols, color ramps).
      *
-     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void populateTypes() SIP_DEPRECATED;
 
@@ -312,7 +312,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void populateGroups();
 
     /**
-     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void setSymbolsChecked( const QStringList & ) SIP_DEPRECATED;
 
@@ -340,12 +340,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool editColorRamp();
 
     /**
-     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED bool removeSymbol() SIP_DEPRECATED;
 
     /**
-     * \deprecated since QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED bool removeColorRamp() SIP_DEPRECATED;
 

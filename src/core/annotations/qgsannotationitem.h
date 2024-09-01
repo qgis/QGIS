@@ -153,7 +153,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Applies an edit \a operation to the item.
      *
-     * \deprecated QGIS 3.40, use applyEditV2() instead.
+     * \deprecated QGIS 3.40. Use applyEditV2() instead.
      */
     Q_DECL_DEPRECATED virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) SIP_DEPRECATED;
 
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Retrieves the results of a transient (in progress) edit \a operation on the item.
      *
-     * \deprecated QGIS 3.40, use transientEditResultsV2() instead.
+     * \deprecated QGIS 3.40. Use transientEditResultsV2() instead.
      */
     Q_DECL_DEPRECATED virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) SIP_FACTORY;
 
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Returns the nodes for the item, used for editing the item.
      *
-     * \deprecated QGIS 3.40, use nodesV2() instead.
+     * \deprecated QGIS 3.40. Use nodesV2() instead.
      */
     Q_DECL_DEPRECATED virtual QList< QgsAnnotationItemNode > nodes() const SIP_DEPRECATED;
 

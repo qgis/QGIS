@@ -71,14 +71,14 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
     /**
      * Returns height (altitude) of the symbol (in map units)
      *
-     * \deprecated since QGIS 3.36. Use offset() instead.
+     * \deprecated QGIS 3.36. Use offset() instead.
      */
     Q_DECL_DEPRECATED float height() const SIP_DEPRECATED { return mOffset; }
 
     /**
      * Sets height (altitude) of the symbol (in map units)
      *
-     * \deprecated since QGIS 3.36. Use setOffset() instead.
+     * \deprecated QGIS 3.36. Use setOffset() instead.
      */
     Q_DECL_DEPRECATED void setHeight( float height ) SIP_DEPRECATED { mOffset = height; }
 

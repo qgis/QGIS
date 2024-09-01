@@ -194,7 +194,7 @@ back to the original one.
 :param value: The new value of the attribute.
 
 .. deprecated::
-   since 3.0
+   QGIS 3.0
 %End
 
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );

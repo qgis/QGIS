@@ -47,8 +47,8 @@ Filters according to layer type and/or geometry type.
 
 .. versionadded:: 3.34
 
-.. deprecated:: QGIS 3.34
-   use the flag signature instead
+.. deprecated::
+   QGIS 3.34. Use the flag signature instead.
 %End
 
     Qgis::LayerFilters filters() const;

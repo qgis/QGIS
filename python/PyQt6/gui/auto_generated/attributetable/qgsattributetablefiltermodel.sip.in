@@ -283,8 +283,8 @@ selection state of the feature in case selected features are to be shown on top.
 Is called upon every change of the visible extents on the map canvas.
 When a change is signalled, the filter is updated and invalidated if needed.
 
-.. deprecated:: QGIS 3.10.3
-   - made private as :py:func:`~QgsAttributeTableFilterModel.reloadVisible`
+.. deprecated::
+   QGIS 3.10.3. Made private as :py:func:`~QgsAttributeTableFilterModel.reloadVisible`.
 %End
 
     void filterFeatures();

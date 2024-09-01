@@ -83,8 +83,8 @@ to re-synchronize with the variables.
 %Docstring
 Emitted when the symbol levels settings have been changed.
 
-.. deprecated:: QGIS 3.20
-   -- no longer emitted.
+.. deprecated::
+   QGIS 3.20. No longer emitted.
 %End
 
   protected:

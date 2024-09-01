@@ -79,6 +79,17 @@ def process_file(file_path):
             prefix, version = match.groups()
             line = f'{prefix}\\since QGIS {version}'
 
+        if match := re.match(r'^(.*)\\deprecated (?:since )?(?:QGIS )?(\d+\.\d+(?:\.\d+)?)[,\s.\-]*(.*?)$', line):
+            # Standard since annotation
+            prefix, version, suffix = match.groups()
+            if suffix:
+                suffix = suffix[0].upper() + suffix[1:]
+                if not suffix.endswith('.'):
+                    suffix += "."
+                line = f'{prefix}\\deprecated QGIS {version}. {suffix}'
+            else:
+                line = f'{prefix}\\deprecated QGIS {version}'
+
         if match := re.match(r'^(\s*)//!\s*(.*?)$', line):
             indentation, comment = match.groups()
             # found a //! comment

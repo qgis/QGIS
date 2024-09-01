@@ -476,7 +476,7 @@ class CORE_EXPORT QgsFields
      * Since QGIS 3.30, the optional \a typeString argument can be used to specify field type strings for handling user field types.
      *
      * \since QGIS 3.16
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString = QString() ) SIP_DEPRECATED;
 

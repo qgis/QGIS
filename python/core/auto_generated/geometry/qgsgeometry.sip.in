@@ -861,8 +861,8 @@ Adds a new part to a the geometry.
 
 :return: OperationResult a result code: success or reason of failure
 
-.. deprecated:: QGIS 3.38
-   - will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+.. deprecated::
+   QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( const QVector<QgsPointXY> &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsXYV2/;
@@ -886,8 +886,8 @@ Adds a new part to a the geometry.
 
 :return: OperationResult a result code: success or reason of failure
 
-.. deprecated:: QGIS 3.38
-   - will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+.. deprecated::
+   QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsV2/;
@@ -911,8 +911,8 @@ Adds a new part to this geometry.
 
 :return: OperationResult a result code: success or reason of failure
 
-.. deprecated:: QGIS 3.38
-   - will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+.. deprecated::
+   QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( QgsAbstractGeometry *part /Transfer/, Qgis::WkbType wkbType = Qgis::WkbType::Unknown );

@@ -287,7 +287,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * to rendering results onto a painter.
      * \param painter destination painter
      *
-     * \deprecated QGIS 3.40, use QgsPainting::drawPicture() or QgsPainting::applyScaleFixForQPictureDpi() instead.
+     * \deprecated QGIS 3.40. Use QgsPainting::drawPicture() or QgsPainting::applyScaleFixForQPictureDpi() instead.
      */
     Q_DECL_DEPRECATED void fixQPictureDpi( QPainter *painter ) const SIP_DEPRECATED;
 

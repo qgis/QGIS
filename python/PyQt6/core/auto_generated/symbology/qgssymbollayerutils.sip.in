@@ -931,8 +931,8 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.30
-   because it was related to old :py:class:`QgsSymbolLayerReference` system
+.. deprecated::
+   QGIS 3.30. Because it was related to old :py:class:`QgsSymbolLayerReference` system.
 %End
 
     static double rendererFrameRate( const QgsFeatureRenderer *renderer );

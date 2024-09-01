@@ -119,8 +119,8 @@ QgsRasterCalculator constructor.
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
 
-.. deprecated:: QGIS 3.8
-  use the version with transformContext instead
+.. deprecated::
+   QGIS 3.8. Use the version with transformContext instead.
 %End
 
  QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
@@ -137,8 +137,8 @@ QgsRasterCalculator constructor.
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
 
-.. deprecated:: QGIS 3.8
-  use the version with transformContext instead
+.. deprecated::
+   QGIS 3.8. Use the version with transformContext instead.
 %End
 
     Result processCalculation( QgsFeedback *feedback = 0 );
