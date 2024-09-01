@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ###########################################################################
-#    doxygen_space.pl
+#    doxygen_space.py
 #    ---------------------
 #    begin                : October 2016
 #    copyright            : (C) 2016 by Nyall Dawson
@@ -17,6 +17,11 @@
 ###########################################################################
 import sys
 import re
+
+
+def exit_with_error(message):
+    sys.exit(
+        f"! Doxygen formatting error: {message}")
 
 
 def process_file(file_path):
@@ -94,11 +99,8 @@ def process_file(file_path):
                 line = f'{prefix}\\deprecated QGIS {version}. {suffix}'
             else:
                 line = f'{prefix}\\deprecated QGIS {version}'
-
-        if match := re.match(r'^(.*)\\deprecated (?!QGIS)(.*?)$', line):
-            # Standard since annotation
-            prefix, suffix = match.groups()
-            line = f'{prefix}\\deprecated QGIS 3.40. {suffix}'
+        elif re.match(r'^(.*)\\deprecated', line):
+            exit_with_error("\\deprecated MUST be followed by the correct version number, eg 'QGIS 3.40'")
 
         if match := re.match(r'^(\s*)//!\s*(.*?)$', line):
             indentation, comment = match.groups()
