@@ -94,7 +94,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
     /**
      * Returns a static map of supported data types
-     * \deprecated QGIS 3.24 use supportedDataTypes() instead
+     * \deprecated QGIS 3.24. Use supportedDataTypes() instead.
      */
     Q_DECL_DEPRECATED static const QMap<QMetaType::Type, QString> dataTypes();
 

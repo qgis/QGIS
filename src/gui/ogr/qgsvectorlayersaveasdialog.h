@@ -61,7 +61,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      *
-     * \deprecated since QGIS 3.14 - will be removed in QGIS 4.0
+     * \deprecated QGIS 3.14. Will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() ) SIP_SKIP;
 

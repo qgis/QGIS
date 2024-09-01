@@ -98,7 +98,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * set
      * \see setComponentValue
      * \see component
-     * \deprecated since QGIS 3.40. Use componentValueF() instead.
+     * \deprecated QGIS 3.40. Use componentValueF() instead.
      */
     Q_DECL_DEPRECATED int componentValue() const SIP_DEPRECATED;
 
@@ -149,7 +149,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \see setComponent
      * \note this method has no effect if the widget is set to the QgsColorWidget::Multiple
      * component
-     * \deprecated since QGIS 3.40. Use setComponentValueF() instead.
+     * \deprecated QGIS 3.40. Use setComponentValueF() instead.
      */
     Q_DECL_DEPRECATED virtual void setComponentValue( int value ) SIP_DEPRECATED;
 
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \returns value of color component in the range between 0 and the value returned by componentRange(),
      * or -1 if widget has an invalid color set
      * \see hue()
-     * \deprecated since QGIS 3.40. Use componentValueF() instead.
+     * \deprecated QGIS 3.40. Use componentValueF() instead.
      */
     Q_DECL_DEPRECATED int componentValue( ColorComponent component ) const SIP_DEPRECATED;
 
@@ -227,7 +227,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
      * as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
      * \returns explicitly set hue for widget in the range 0-359
-     * \deprecated since QGIS 3.40. Use hueF() instead.
+     * \deprecated QGIS 3.40. Use hueF() instead.
      */
     Q_DECL_DEPRECATED int hue() const SIP_DEPRECATED;
 
@@ -245,7 +245,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param component color component to alter
      * \param newValue new value of color component in the range between 0 and the value returned by componentRange(). Values are automatically clipped to a
      * valid range for the color component.
-     * \deprecated since QGIS 3.40. Use alterColorF() instead.
+     * \deprecated QGIS 3.40. Use alterColorF() instead.
      */
     Q_DECL_DEPRECATED static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) SIP_DEPRECATED;
 
@@ -645,7 +645,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     /**
      * Emitted when the widget's color component value changes
      * \param value new value of color component in the range between 0 and the value returned by componentRange()
-     * \deprecated since QGIS 3.40. Use valueChangedF() instead.
+     * \deprecated QGIS 3.40. Use valueChangedF() instead.
      */
     Q_DECL_DEPRECATED void valueChanged( int value ) SIP_DEPRECATED;
 

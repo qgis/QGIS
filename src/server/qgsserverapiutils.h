@@ -226,7 +226,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * Returns a \a crs as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
      * Returns an empty string on failure.
      *
-     * \deprecated since QGIS 3.30 use QgsCoordinateReferenceSystem::toOgcUri() instead
+     * \deprecated QGIS 3.30. Use QgsCoordinateReferenceSystem::toOgcUri() instead.
      */
     Q_DECL_DEPRECATED static QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 

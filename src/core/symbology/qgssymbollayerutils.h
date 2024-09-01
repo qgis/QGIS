@@ -869,7 +869,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.30 because it was related to old QgsSymbolLayerReference system
+     * \deprecated QGIS 3.30. Because it was related to old QgsSymbolLayerReference system.
      */
     Q_DECL_DEPRECATED static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 

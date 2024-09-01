@@ -99,8 +99,8 @@ Emitted when the widget's value changes
 
 :param value: new widget value
 
-.. deprecated:: QGIS 3.10
-   use valuesChanged instead
+.. deprecated::
+   QGIS 3.10. Use valuesChanged instead.
 %End
 
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );

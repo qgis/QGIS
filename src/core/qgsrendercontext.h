@@ -172,7 +172,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see disabledSymbolLayers()
      * \see isSymbolLayerEnabled()
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.30 and replaced with setDisabledSymbolLayersV2
+     * \deprecated QGIS 3.30. And replaced with setDisabledSymbolLayersV2.
      */
     Q_DECL_DEPRECATED void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers ) SIP_DEPRECATED;
 
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setDisabledSymbolLayers()
      * \see isSymbolLayerEnabled()
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.30 and replaced with disabledSymbolLayersV2
+     * \deprecated QGIS 3.30. And replaced with disabledSymbolLayersV2.
      */
     Q_DECL_DEPRECATED QSet<const QgsSymbolLayer *> disabledSymbolLayers() const SIP_DEPRECATED;
 
@@ -874,7 +874,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets custom rendering flags. Layers might honour these to alter their rendering.
      * \returns a map of custom flags
      * \see setCustomRenderingFlag()
-     * \deprecated QGIS 3.40 Use customProperties() instead.
+     * \deprecated QGIS 3.40. Use customProperties() instead.
      */
     Q_DECL_DEPRECATED QVariantMap customRenderingFlags() const SIP_DEPRECATED { return mCustomProperties; }
 
@@ -893,7 +893,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \param flag the flag name
      * \param value the flag value
      * \see customRenderingFlags()
-     * \deprecated QGIS 3.40 Use setCustomProperty() instead.
+     * \deprecated QGIS 3.40. Use setCustomProperty() instead.
      */
     Q_DECL_DEPRECATED void setCustomRenderingFlag( const QString &flag, const QVariant &value ) SIP_DEPRECATED { mCustomProperties[flag] = value; }
 
@@ -911,7 +911,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Clears the specified custom rendering flag.
      * \param flag the flag name
      * \see setCustomRenderingFlag()
-     * \deprecated QGIS 3.40 Use clearCustomProperty() instead.
+     * \deprecated QGIS 3.40. Use clearCustomProperty() instead.
      */
     Q_DECL_DEPRECATED void clearCustomRenderingFlag( const QString &flag ) SIP_DEPRECATED { mCustomProperties.remove( flag ); }
 
@@ -1008,7 +1008,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Add a clip \a path to be applied to the \a symbolLayer before rendering
      * \see addSymbolLayerClipGeometry()
      *
-     * \deprecated QGIS 3.38, use addSymbolLayerClipGeometry() instead.
+     * \deprecated QGIS 3.38. Use addSymbolLayerClipGeometry() instead.
      */
     Q_DECL_DEPRECATED void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path ) SIP_DEPRECATED;
 
@@ -1016,7 +1016,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns clip paths to be applied to the \a symbolLayer before rendering
      *
      *\see symbolLayerClipGeometries()
-     * \deprecated QGIS 3.38, use symbolLayerClipGeometries() instead.
+     * \deprecated QGIS 3.38. Use symbolLayerClipGeometries() instead.
      */
     Q_DECL_DEPRECATED QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const SIP_DEPRECATED;
 

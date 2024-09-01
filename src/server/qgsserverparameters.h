@@ -48,7 +48,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * Constructor for QgsServerParameterDefinition.
      * \param type The type of the parameter
      * \param defaultValue The default value of the parameter
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED QgsServerParameterDefinition( const QVariant::Type type,
         const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
@@ -225,7 +225,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
      * \param name The name of the parameter
      * \param type The type of the parameter
      * \param defaultValue The default value to use if not defined
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED QgsServerParameter( const QgsServerParameter::Name name,
                                           const QVariant::Type type,

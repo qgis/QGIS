@@ -118,13 +118,13 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Defines if a title label should be shown for this widget.
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED bool showLabel() const SIP_DEPRECATED;
 
     /**
      * Defines if a title label should be shown for this widget.
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED void setShowLabel( bool showLabel ) SIP_DEPRECATED;
 
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Determines the label of this element
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED QString label() const SIP_DEPRECATED;
 
@@ -276,7 +276,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Updates the title contents to reflect the current state of the widget
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED void updateTitle() SIP_DEPRECATED;
 
@@ -302,7 +302,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Sets the title of the widget, if it is wrapped within a QgsCollapsibleGroupBox
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED virtual void setTitle( const QString &title ) SIP_DEPRECATED;
 

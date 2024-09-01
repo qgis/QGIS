@@ -71,16 +71,16 @@ Sets method that determines how altitude is bound to individual vertices
 %Docstring
 Returns height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
-   Use :py:func:`~QgsPolygon3DSymbol.offset` instead.
+.. deprecated::
+   QGIS 3.36. Use :py:func:`~QgsPolygon3DSymbol.offset` instead.
 %End
 
  void setHeight( float height ) /Deprecated/;
 %Docstring
 Sets height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
-   Use :py:func:`~QgsPolygon3DSymbol.setOffset` instead.
+.. deprecated::
+   QGIS 3.36. Use :py:func:`~QgsPolygon3DSymbol.setOffset` instead.
 %End
 
     float offset() const;

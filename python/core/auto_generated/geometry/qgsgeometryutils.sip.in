@@ -398,8 +398,8 @@ already contains a Z value.
    This method does not copy the z value of the coordinate from the
    points whose z value is closest to the original x/y point, but only the first one found.
 
-.. deprecated:: QGIS 3.20
-   use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead
+.. deprecated::
+   QGIS 3.20. Use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead.
 %End
 
     static bool transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point );

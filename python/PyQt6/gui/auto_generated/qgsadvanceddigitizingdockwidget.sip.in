@@ -489,8 +489,8 @@ The last point.
 Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
 
-.. deprecated:: QGIS 3.22.
-   Use :py:func:`~QgsAdvancedDigitizingDockWidget.currentPointV2` instead.
+.. deprecated::
+   QGIS 3.22. Use :py:func:`~QgsAdvancedDigitizingDockWidget.currentPointV2` instead.
 %End
     QgsPoint previousPointV2( bool *exists = 0 ) const;
 %Docstring
@@ -505,8 +505,8 @@ The previous point.
 Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
 
-.. deprecated:: QGIS 3.22.
-   Use :py:func:`~QgsAdvancedDigitizingDockWidget.previousPointV2` instead.
+.. deprecated::
+   QGIS 3.22. Use :py:func:`~QgsAdvancedDigitizingDockWidget.previousPointV2` instead.
 %End
     QgsPoint penultimatePointV2( bool *exists = 0 ) const;
 %Docstring
@@ -521,8 +521,8 @@ The penultimate point.
 Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
 
-.. deprecated:: QGIS 3.22.
-   Use :py:func:`~QgsAdvancedDigitizingDockWidget.penultimatePointV2` instead.
+.. deprecated::
+   QGIS 3.22. Use :py:func:`~QgsAdvancedDigitizingDockWidget.penultimatePointV2` instead.
 %End
     int pointsCount() const;
 %Docstring
@@ -710,8 +710,8 @@ when a constraint is toggled.
 
 :param point: The last known digitizing point. Can be used to emulate a mouse event.
 
-.. deprecated:: QGIS 3.22.
-   No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
+.. deprecated::
+   QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
 %End
 
 

@@ -461,7 +461,7 @@ class CORE_EXPORT QgsCallout
 
     /**
      * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
-     * \deprecated QGIS 3.20 use calloutLabelPoint() instead
+     * \deprecated QGIS 3.20. Use calloutLabelPoint() instead.
      */
     Q_DECL_DEPRECATED QgsGeometry labelAnchorGeometry( const QRectF &bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const SIP_DEPRECATED;
 

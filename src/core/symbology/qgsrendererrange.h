@@ -207,7 +207,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
 /**
  * \ingroup core
  * \class QgsRendererRangeLabelFormat
- * \deprecated since QGIS 3.10, use QgsClassificationMethod instead
+ * \deprecated QGIS 3.10. Use QgsClassificationMethod instead.
  */
 class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
 {

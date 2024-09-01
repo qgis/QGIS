@@ -313,7 +313,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
      *
-     * \deprecated QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+     * \deprecated QGIS 3.10. Providers may not need to be loaded from a library (empty string returned).
      */
     Q_DECL_DEPRECATED QString library() const SIP_DEPRECATED;
 

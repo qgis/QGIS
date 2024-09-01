@@ -82,8 +82,8 @@ Constructor. Constructs a new QgsField object.
                 all the elements don't need to have the same type, leave
                 this to QVariant.Invalid.
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated::
+   QGIS 3.38. Use the method with a QMetaType.Type argument instead.
 %End
 
     QgsField( const QgsField &other ) /HoldGIL/;
@@ -265,8 +265,8 @@ Set variant ``type``.
 %Docstring
 Set variant ``type``.
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated::
+   QGIS 3.38. Use the method with a QMetaType.Type argument instead.
 %End
 
     void setSubType( QMetaType::Type subType ) /HoldGIL/;
@@ -282,8 +282,8 @@ If the field is a collection, set its element's type.
 When all the elements don't need to have the same type, set this to
 QVariant.Invalid.
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated::
+   QGIS 3.38. Use the method with a QMetaType.Type argument instead.
 %End
 
     void setTypeName( const QString &typeName ) /HoldGIL/;

@@ -457,7 +457,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \warning This method does not copy the z value of the coordinate from the
      * points whose z value is closest to the original x/y point, but only the first one found.
      *
-     * \deprecated since QGIS 3.20 use transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point ) instead
+     * \deprecated QGIS 3.20. Use transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point ) instead.
      */
     Q_DECL_DEPRECATED static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point ) SIP_DEPRECATED
     {

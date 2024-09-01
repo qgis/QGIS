@@ -84,8 +84,8 @@ Returns the current value of the widget's color component
 
 .. seealso:: :py:func:`component`
 
-.. deprecated:: QGIS 3.40.
-   Use :py:func:`~QgsColorWidget.componentValueF` instead.
+.. deprecated::
+   QGIS 3.40. Use :py:func:`~QgsColorWidget.componentValueF` instead.
 %End
 
     float componentValueF() const;
@@ -152,8 +152,8 @@ Alters the widget's color by setting the value for the widget's color component
    this method has no effect if the widget is set to the QgsColorWidget.Multiple
    component
 
-.. deprecated:: QGIS 3.40.
-   Use :py:func:`~QgsColorWidget.setComponentValueF` instead.
+.. deprecated::
+   QGIS 3.40. Use :py:func:`~QgsColorWidget.setComponentValueF` instead.
 %End
 
     virtual void setComponentValueF( float value );
@@ -220,8 +220,8 @@ handles hue values when the color has an ambiguous hue (e.g., black or white sha
 
 .. seealso:: :py:func:`hue`
 
-.. deprecated:: QGIS 3.40.
-   Use :py:func:`~QgsColorWidget.componentValueF` instead.
+.. deprecated::
+   QGIS 3.40. Use :py:func:`~QgsColorWidget.componentValueF` instead.
 %End
 
     float componentValueF( ColorComponent component ) const;
@@ -245,8 +245,8 @@ as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the satu
 
 :return: explicitly set hue for widget in the range 0-359
 
-.. deprecated:: QGIS 3.40.
-   Use :py:func:`~QgsColorWidget.hueF` instead.
+.. deprecated::
+   QGIS 3.40. Use :py:func:`~QgsColorWidget.hueF` instead.
 %End
 
     float hueF() const;
@@ -268,8 +268,8 @@ Alters a color by modifying the value of a specific color component
 :param newValue: new value of color component in the range between 0 and the value returned by :py:func:`~QgsColorWidget.componentRange`. Values are automatically clipped to a
                  valid range for the color component.
 
-.. deprecated:: QGIS 3.40.
-   Use :py:func:`~QgsColorWidget.alterColorF` instead.
+.. deprecated::
+   QGIS 3.40. Use :py:func:`~QgsColorWidget.alterColorF` instead.
 %End
 
     static void alterColorF( QColor &color, QgsColorWidget::ColorComponent component, float newValue );
@@ -580,8 +580,8 @@ Emitted when the widget's color component value changes
 
 :param value: new value of color component in the range between 0 and the value returned by :py:func:`~QgsColorRampWidget.componentRange`
 
-.. deprecated:: QGIS 3.40.
-   Use :py:func:`~QgsColorRampWidget.valueChangedF` instead.
+.. deprecated::
+   QGIS 3.40. Use :py:func:`~QgsColorRampWidget.valueChangedF` instead.
 %End
 
     void valueChangedF( float value );

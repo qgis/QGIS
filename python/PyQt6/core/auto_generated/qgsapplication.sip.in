@@ -690,8 +690,8 @@ Returns the application's settings registry, used for managing application setti
 
 .. versionadded:: 3.20
 
-.. deprecated:: QGIS 3.30
-   use :py:func:`QgsSettings.treeRoot()` instead
+.. deprecated::
+   QGIS 3.30. Use :py:func:`QgsSettings.treeRoot()` instead.
 %End
 
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;

@@ -74,8 +74,8 @@ Returns the default flags (equalTo)
 %Docstring
 Called when current value of search widget changes
 
-.. deprecated:: QGIS 3.10
-   made private
+.. deprecated::
+   QGIS 3.10. Made private.
 %End
 
   protected slots:

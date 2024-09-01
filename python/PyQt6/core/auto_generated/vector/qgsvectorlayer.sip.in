@@ -1209,8 +1209,8 @@ Adds a ring to polygon/multipolygon features
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
 
@@ -1290,8 +1290,8 @@ Adds a new part polygon to a multipart feature
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
 
@@ -1321,8 +1321,8 @@ Adds a new part polygon to a multipart feature
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
@@ -1409,8 +1409,8 @@ Splits parts cut by the given line
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1462,8 +1462,8 @@ Splits features cut by the given line
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-.. deprecated:: QGIS 3.12.
-   Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     Qgis::GeometryOperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1570,8 +1570,8 @@ editing.
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
-.. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+.. deprecated::
+   QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     int addTopologicalPoints( const QgsPoint &p );
@@ -1950,32 +1950,32 @@ Sets a duplicate ``policy`` for the field with the specified index.
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
-.. deprecated:: QGIS 3.16
-  use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead
+.. deprecated::
+   QGIS 3.16. Use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead.
 %End
 
  void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
-.. deprecated:: QGIS 3.16
-  use setFieldConfigurationFlag instead
+.. deprecated::
+   QGIS 3.16. Use setFieldConfigurationFlag instead.
 %End
 
  QSet<QString> excludeAttributesWfs() const /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
 
-.. deprecated:: QGIS 3.16
-  use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead
+.. deprecated::
+   QGIS 3.16. Use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead.
 %End
 
  void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
 
-.. deprecated:: QGIS 3.16
-  use setFieldConfigurationFlag instead
+.. deprecated::
+   QGIS 3.16. Use setFieldConfigurationFlag instead.
 %End
 
     virtual bool deleteAttribute( int attr );

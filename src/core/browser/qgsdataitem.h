@@ -251,7 +251,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \see hasDragEnabled()
-     * \deprecated since QGIS 3.18, use mimeUris() instead
+     * \deprecated QGIS 3.18. Use mimeUris() instead.
      */
     Q_DECL_DEPRECATED virtual QgsMimeDataUtils::Uri mimeUri() const SIP_DEPRECATED;
 
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
      *
-     * \deprecated since QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 

@@ -59,7 +59,7 @@ If the provider uses direct provider function pointers instead of a library an e
 be returned.
 
 .. deprecated::
-   QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+   QGIS 3.10. Providers may not need to be loaded from a library (empty string returned).
 %End
 
     QString pluginList( bool asHtml = false ) const;
@@ -102,7 +102,7 @@ Returns the provider capabilities
 :param providerKey: identifier of the provider
 
 .. deprecated::
-   QGIS 3.10 (use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider)
+   QGIS 3.10. (use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider).
 %End
 
 
@@ -210,7 +210,7 @@ Either the ``parent`` widget must be set or the caller becomes
 responsible for deleting the returned widget.
 
 .. deprecated::
-   QGIS 3.10 - use :py:func:`QgsGui.sourceSelectProviderRegistry()`->:py:func:`~QgsProviderRegistry.createDataSourceWidget` instead
+   QGIS 3.10. Use :py:func:`QgsGui.sourceSelectProviderRegistry()`->:py:func:`~QgsProviderRegistry.createDataSourceWidget` instead.
 %End
 
     QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const /Factory/;
@@ -344,7 +344,7 @@ Gets pointer to provider function
          function pointers instead of a library ``None`` will be returned.
 
 .. deprecated::
-   QGIS 3.10 - any provider functionality should be accessed through :py:class:`QgsProviderMetadata`
+   QGIS 3.10. Any provider functionality should be accessed through :py:class:`QgsProviderMetadata`.
 %End
 
  QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated/;
@@ -356,7 +356,7 @@ If the provider uses direct provider function pointers instead of a library ``No
 be returned.
 
 .. deprecated::
-   QGIS 3.10 - providers may not need to be loaded from a library
+   QGIS 3.10. Providers may not need to be loaded from a library.
 %End
 
     QStringList providerList() const;
@@ -747,8 +747,8 @@ Returns a string containing the available protocol drivers
  void registerGuis( QWidget *widget ) /Deprecated/;
 %Docstring
 
-.. deprecated:: QGIS 3.10
-   - does nothing - use :py:func:`QgsGui.providerGuiRegistry()`
+.. deprecated::
+   QGIS 3.10. Does nothing - use :py:func:`QgsGui.providerGuiRegistry()`.
 %End
 
     bool registerProvider( QgsProviderMetadata *providerMetadata /Transfer/ );

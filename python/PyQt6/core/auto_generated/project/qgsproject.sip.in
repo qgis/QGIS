@@ -240,8 +240,8 @@ Returns QFileInfo object for the project's associated file.
 
 .. seealso:: :py:func:`fileName`
 
-.. deprecated:: QGIS 3.2
-   use :py:func:`~QgsProject.absoluteFilePath`, :py:func:`~QgsProject.baseName` or :py:func:`~QgsProject.lastModifiedTime` instead
+.. deprecated::
+   QGIS 3.2. Use :py:func:`~QgsProject.absoluteFilePath`, :py:func:`~QgsProject.baseName` or :py:func:`~QgsProject.lastModifiedTime` instead.
 %End
 
     QgsProjectStorage *projectStorage() const;
@@ -937,24 +937,24 @@ Returns pointer to the project's annotation manager.
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated::
+   QGIS 3.4. Use :py:func:`QgsMapLayer.setFlags()` instead.
 %End
 
  void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated::
+   QGIS 3.4. Use :py:func:`QgsMapLayer.setFlags()` instead.
 %End
 
  QStringList nonIdentifiableLayers() const;
 %Docstring
 Gets the list of layers which currently should not be taken into account on map identification
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated::
+   QGIS 3.4. Use :py:func:`QgsMapLayer.setFlags()` instead.
 %End
 
  bool autoTransaction() const /Deprecated/;
@@ -964,7 +964,7 @@ all tables that originate from the same database are synchronized and executed i
 transaction.
 
 .. deprecated::
-   QGIS 3.26 use transactionMode instead
+   QGIS 3.26. Use transactionMode instead.
 %End
 
  void setAutoTransaction( bool autoTransaction ) /Deprecated/;
@@ -978,7 +978,7 @@ transaction.
    Make sure that this is only called when all layers are not in edit mode.
 
 .. deprecated::
-   QGIS 3.26 use setTransactionMode instead
+   QGIS 3.26. Use setTransactionMode instead.
 %End
 
     Qgis::TransactionMode transactionMode() const;
@@ -1490,8 +1490,8 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.flags()` instead
+.. deprecated::
+   QGIS 3.4. Use :py:func:`QgsMapLayer.flags()` instead.
 
 .. versionadded:: 3.2
 %End
@@ -1503,8 +1503,8 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated::
+   QGIS 3.4. Use :py:func:`QgsMapLayer.setFlags()` instead.
 
 .. versionadded:: 3.2
 %End
@@ -1761,7 +1761,8 @@ Emitted when loading layers has produced some messages
 %Docstring
 Emitted when the list of layer which are excluded from map identification changes
 
-.. deprecated:: QGIS 3.4
+.. deprecated::
+   QGIS 3.4
 %End
 
     void fileNameChanged();

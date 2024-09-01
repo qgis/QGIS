@@ -744,8 +744,8 @@ This operation will disconnect the mesh layer from the data provider and removes
 
 .. versionadded:: 3.22
 
-.. deprecated:: QGIS 3.28
-  use the version with :py:class:`QgsMeshEditingError` instead
+.. deprecated::
+   QGIS 3.28. Use the version with :py:class:`QgsMeshEditingError` instead.
 %End
 
     bool startFrameEditing( const QgsCoordinateTransform &transform, QgsMeshEditingError &error /Out/, bool fixErrors );

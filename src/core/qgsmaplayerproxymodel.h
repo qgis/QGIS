@@ -64,7 +64,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * Filters according to layer type and/or geometry type.
      * \note for API compatibility
      * \since QGIS 3.34
-     * \deprecated since QGIS 3.34 use the flag signature instead
+     * \deprecated QGIS 3.34. Use the flag signature instead.
      */
     Q_DECL_DEPRECATED void setFilters( int filters ) SIP_DEPRECATED { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
 

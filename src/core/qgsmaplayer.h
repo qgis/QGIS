@@ -308,112 +308,112 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the short name of the layer used by QGIS Server to identify the layer.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setShortName() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setShortName() instead.
      */
     Q_DECL_DEPRECATED void setShortName( const QString &shortName ) SIP_DEPRECATED;
 
     /**
      * Returns the short name of the layer used by QGIS Server to identify the layer.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->shortName() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->shortName() instead.
      */
     Q_DECL_DEPRECATED QString shortName() const SIP_DEPRECATED;
 
     /**
      * Sets the title of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setTitle() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setTitle() instead.
      */
     Q_DECL_DEPRECATED void setTitle( const QString &title ) SIP_DEPRECATED;
 
     /**
      * Returns the title of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->title() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->title() instead.
      */
     Q_DECL_DEPRECATED QString title() const SIP_DEPRECATED;
 
     /**
      * Sets the abstract of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setAbstract() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setAbstract() instead.
      */
     Q_DECL_DEPRECATED void setAbstract( const QString &abstract ) SIP_DEPRECATED;
 
     /**
      * Returns the abstract of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->abstract() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->abstract() instead.
      */
     Q_DECL_DEPRECATED QString abstract() const SIP_DEPRECATED;
 
     /**
      * Sets the keyword list of the layerused by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setKeywordList() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setKeywordList() instead.
      */
     Q_DECL_DEPRECATED void setKeywordList( const QString &keywords ) SIP_DEPRECATED;
 
     /**
      * Returns the keyword list of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->keywordList() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->keywordList() instead.
      */
     Q_DECL_DEPRECATED QString keywordList() const SIP_DEPRECATED;
 
     /**
      * Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setDataUrl() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setDataUrl() instead.
      */
     Q_DECL_DEPRECATED void setDataUrl( const QString &dataUrl ) SIP_DEPRECATED;
 
     /**
      * Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->dataUrl() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->dataUrl() instead.
      */
     Q_DECL_DEPRECATED QString dataUrl() const SIP_DEPRECATED;
 
     /**
      * Sets the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setDataUrlFormat() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setDataUrlFormat() instead.
      */
     Q_DECL_DEPRECATED void setDataUrlFormat( const QString &dataUrlFormat ) SIP_DEPRECATED;
 
     /**
      * Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->dataUrlFormat() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->dataUrlFormat() instead.
      */
     Q_DECL_DEPRECATED QString dataUrlFormat() const SIP_DEPRECATED;
 
     /**
      * Sets the attribution of the layerused by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setAttribution() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setAttribution() instead.
      */
     Q_DECL_DEPRECATED void setAttribution( const QString &attrib ) SIP_DEPRECATED;
 
     /**
      * Returns the attribution of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->attribution() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->attribution() instead.
      */
     Q_DECL_DEPRECATED QString attribution() const SIP_DEPRECATED;
 
     /**
      * Sets the attribution URL of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->setAttributionUrl() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->setAttributionUrl() instead.
      */
     Q_DECL_DEPRECATED void setAttributionUrl( const QString &attribUrl ) SIP_DEPRECATED;
 
     /**
      * Returns the attribution URL of the layer used by QGIS Server in GetCapabilities request.
      *
-     * \deprecated since QGIS 3.38 use serverProperties()->attributionUrl() instead.
+     * \deprecated QGIS 3.38. Use serverProperties()->attributionUrl() instead.
      */
     Q_DECL_DEPRECATED QString attributionUrl() const SIP_DEPRECATED;
 
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
      *  Since QGIS 3.22, it edits the first metadata URL link.
      * \see serverProperties()
-     * \deprecated since QGIS 3.22
+     * \deprecated QGIS 3.22
      */
     Q_DECL_DEPRECATED void setMetadataUrl( const QString &metaUrl ) SIP_DEPRECATED;
 
@@ -448,7 +448,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Since QGIS 3.22, it returns the first metadata URL link.
      * \returns the layer metadata URL
      * \see serverProperties()
-     * \deprecated since QGIS 3.22
+     * \deprecated QGIS 3.22
      */
     Q_DECL_DEPRECATED QString metadataUrl() const SIP_DEPRECATED;
 
@@ -458,7 +458,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  MetadataUrlType indicates the standard to which the metadata complies.
      *  Since QGIS 3.22, it edits the first metadata URL type.
      * \see serverProperties()
-     * \deprecated since QGIS 3.22
+     * \deprecated QGIS 3.22
      */
     Q_DECL_DEPRECATED void setMetadataUrlType( const QString &metaUrlType ) SIP_DEPRECATED;
 
@@ -469,7 +469,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Since QGIS 3.22, it returns the first metadata URL type.
      * \returns the layer metadata type
      * \see serverProperties()
-     * \deprecated since QGIS 3.22
+     * \deprecated QGIS 3.22
      */
     Q_DECL_DEPRECATED QString metadataUrlType() const SIP_DEPRECATED;
 
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  MetadataUrlType indicates how the metadata is structured.
      *  Since QGIS 3.22, it edits the first metadata URL format.
      * \see serverProperties()
-     * \deprecated since QGIS 3.22
+     * \deprecated QGIS 3.22
      */
     Q_DECL_DEPRECATED void setMetadataUrlFormat( const QString &metaUrlFormat ) SIP_DEPRECATED;
 
@@ -490,7 +490,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Since QGIS 3.22, it returns the first metadata URL format.
      * \returns the layer metadata format
      * \see serverProperties()
-     * \deprecated since QGIS 3.22
+     * \deprecated QGIS 3.22
      */
     Q_DECL_DEPRECATED QString metadataUrlFormat() const SIP_DEPRECATED;
 
@@ -1276,7 +1276,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns a QString with any status messages
      * \see loadNamedStyle()
      * \see saveNamedStyle()
-     * \deprecated since QGIS 3.26
+     * \deprecated QGIS 3.26
      */
     Q_DECL_DEPRECATED virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT ) SIP_DEPRECATED;
 
@@ -2281,7 +2281,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Checks whether a new set of dependencies will introduce a cycle
      * this method is now deprecated and always return FALSE, because circular dependencies are now correctly managed.
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED bool hasDependencyCycle( const QSet<QgsMapLayerDependency> & ) const {return false;}
 

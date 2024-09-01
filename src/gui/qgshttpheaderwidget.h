@@ -62,7 +62,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      * \see QgsHttpHeaders::setFromSettings( const QgsSettings &settings, const QString &key )
      * \param settings
      * \param key
-     * \deprecated since QGIS 3.30 use setFromHeaders instead
+     * \deprecated QGIS 3.30. Use setFromHeaders instead.
      */
     Q_DECL_DEPRECATED void setFromSettings( const QgsSettings &settings, const QString &key ) SIP_DEPRECATED;
 
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      * \see QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key ) const
      * \param settings
      * \param key
-     * \deprecated since QGIS 3.30 use a variant map for settinds directly
+     * \deprecated QGIS 3.30. Use a variant map for settinds directly.
      */
     Q_DECL_DEPRECATED void updateSettings( QgsSettings &settings, const QString &key ) const SIP_DEPRECATED;
 

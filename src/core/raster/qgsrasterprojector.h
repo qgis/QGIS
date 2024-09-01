@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     /**
      * Sets the source and destination CRS
-     * \deprecated since QGIS 3.8, use transformContext version instead
+     * \deprecated QGIS 3.8. Use transformContext version instead.
      */
     Q_DECL_DEPRECATED void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
                                    int srcDatumTransform = -1, int destDatumTransform = -1 ) SIP_DEPRECATED;

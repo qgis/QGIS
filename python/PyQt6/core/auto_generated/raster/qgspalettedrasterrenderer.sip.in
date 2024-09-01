@@ -126,8 +126,8 @@ Set category label
 %Docstring
 Returns the raster band used for rendering the raster.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsPalettedRasterRenderer.inputBand` instead
+.. deprecated::
+   QGIS 3.38. Use :py:func:`~QgsPalettedRasterRenderer.inputBand` instead.
 %End
 
     virtual int inputBand() const;

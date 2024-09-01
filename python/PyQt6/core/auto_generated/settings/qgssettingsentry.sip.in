@@ -197,8 +197,8 @@ Removes the settings from the underlying QSettings.
 %Docstring
 Returns settings section. The settings section of the parent group is returned if available.
 
-.. deprecated:: QGIS 3.26
-   the key is entirely self-defined
+.. deprecated::
+   QGIS 3.26. The key is entirely self-defined.
 %End
 
     bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
@@ -249,16 +249,16 @@ Returns settings value.
 %Docstring
 Returns settings value with an optional default value override
 
-.. deprecated:: QGIS 3.26
-   use valueAsVariantWithDefaultOverride instead
+.. deprecated::
+   QGIS 3.26. Use valueAsVariantWithDefaultOverride instead.
 %End
 
  QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
 %Docstring
 Returns settings value with an optional default value override
 
-.. deprecated:: QGIS 3.26
-   use valueAsVariantWithDefaultOverride instead
+.. deprecated::
+   QGIS 3.26. Use valueAsVariantWithDefaultOverride instead.
 %End
 
 
