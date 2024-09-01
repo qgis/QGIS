@@ -283,7 +283,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
 
     /**
      * Emit a signal to be caught by qgisapp and display a msg on status bar.
-     * \deprecated Deprecated since QGIS 3.6 -- no longer emitted.
+     * \deprecated QGIS 3.6. No longer emitted.
      */
     Q_DECL_DEPRECATED void statusChanged( const QString  &statusQString ) SIP_DEPRECATED;
 
