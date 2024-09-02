@@ -424,6 +424,9 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 
     QModelIndex parent( const QModelIndex &index ) const override;
 
+    /**
+     * Returns the data item corresponding to the given index.
+     */
     QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;

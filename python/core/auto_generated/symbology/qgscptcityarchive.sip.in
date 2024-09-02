@@ -396,6 +396,9 @@ A custom item model for display of CPT City color palettes.
 
 
     QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;
+%Docstring
+Returns the data item corresponding to the given index.
+%End
 
     virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
