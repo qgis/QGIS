@@ -507,10 +507,54 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void childrenCreated();
 
   signals:
+
+    /**
+     * Emitted before child items are added to this data item.
+     *
+     * This signal *must* be followed by endInsertItems().
+     *
+     * \param parent the parent item having children added, will always be this object
+     * \param first index of first child item to be added
+     * \param last index last child item, after the addition has occurred
+     *
+     * \see endInsertItems()
+     */
     void beginInsertItems( QgsDataItem *parent, int first, int last );
+
+    /**
+     * Emitted after child items have been added to this data item.
+     *
+     * This signal will always be preceded by beginInsertItems().
+     *
+     * \see beginInsertItems()
+     */
     void endInsertItems();
+
+    /**
+     * Emitted before child items are removed from this data item.
+     *
+     * This signal *must* be followed by endRemoveItems().
+     *
+     * \param parent the parent item having children removed, will always be this object
+     * \param first index of first child item to be removed
+     * \param last index of the last child item to be removed
+     *
+     * \see endRemoveItems()
+     */
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
+
+    /**
+     * Emitted after child items have been removed from this data item.
+     *
+     * This signal will always be preceded by beginRemoveItems().
+     *
+     * \see beginRemoveItems()
+     */
     void endRemoveItems();
+
+    /**
+     * Emitted when data changes for an \a item.
+     */
     void dataChanged( QgsDataItem *item );
 
     /**
