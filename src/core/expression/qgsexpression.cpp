@@ -1175,6 +1175,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       case QColor::Spec::Invalid:
         return tr( "<i>Invalid</i>" );
     }
+    QgsDebugError( QStringLiteral( "Unknown color format: %1" ).arg( color.spec() ) );
+    return tr( "<i>Unknown color format: %1</i>" ).arg( color.spec() );
   }
   else if ( value.userType() == QMetaType::Type::Int ||
             value.userType() == QMetaType::Type::UInt ||
