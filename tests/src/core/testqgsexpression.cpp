@@ -1940,13 +1940,13 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );
       QTest::newRow( "color cmyk float" ) << "color_cmykf(1,0.9012,0,0.8034)" << false << QVariant( QColor::fromCmykF( 1., 0.9012, 0, 0.8034 ) );
       QTest::newRow( "color cmyka float" ) << "color_cmykf(1,0.9012,0,0.8034,0.5069)" << false << QVariant( QColor::fromCmykF( 1.f, 0.9012, 0, 0.8034, 0.5069 ) );
-      QTest::newRow( "color cmyk invalid float" ) << "color_cmykf(1.5,0.1,0,0)" << true << QVariant();
+      QTest::newRow( "color cmyk invalid float" ) << "color_cmykf(1.5,0.1,0,0)" << false << QVariant( QColor::fromCmykF( 1.f, 0.1, 0, 0 ) );
       QTest::newRow( "color hsl float" ) << "color_hslf(1,0.9012,0)" << false << QVariant( QColor::fromHslF( 1., 0.9012, 0 ) );
       QTest::newRow( "color hsla float" ) << "color_hslf(0.5,0.9012,0,0.8034)" << false << QVariant( QColor::fromHslF( 0.5f, 0.9012, 0, 0.8034 ) );
-      QTest::newRow( "color hsl invalid float" ) << "color_hslf(1.5,0.1,0,0)" << true << QVariant();
+      QTest::newRow( "color hsl invalid float" ) << "color_hslf(1.5,0.1,0,0)" << false << QVariant( QColor::fromHslF( 1., 0.1, 0, 0 ) );
       QTest::newRow( "color hsv float" ) << "color_hsvf(1,0.9012,0)" << false << QVariant( QColor::fromHsvF( 1., 0.9012, 0 ) );
       QTest::newRow( "color hsva float" ) << "color_hsvf(0.5,0.9012,0,0.8034)" << false << QVariant( QColor::fromHsvF( 0.5f, 0.9012, 0, 0.8034 ) );
-      QTest::newRow( "color hsv invalid float" ) << "color_hsvf(1.5,0.1,0,0)" << true << QVariant();
+      QTest::newRow( "color hsv invalid float" ) << "color_hsvf(1.5,0.1,0,0)" << false << QVariant( QColor::fromHsvF( 1, 0.1, 0, 0 ) );
 
       // Precedence and associativity
       QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );

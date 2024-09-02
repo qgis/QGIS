@@ -5871,10 +5871,10 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnColorRgbF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const float red = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
-  const float green = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) );
-  const float blue = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) );
-  const float alpha = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) );
+  const float red = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) ), 0.f, 1.f );
+  const float green = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) ), 0.f, 1.f );
+  const float blue = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) ), 0.f, 1.f );
+  const float alpha = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) ), 0.f, 1.f );
   QColor color = QColor::fromRgbF( red, green, blue, alpha );
   if ( ! color.isValid() )
   {
@@ -6005,10 +6005,10 @@ static QVariant fncColorHsla( const QVariantList &values, const QgsExpressionCon
 
 static QVariant fcnColorHslF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  float hue = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
-  float saturation = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) );
-  float lightness = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) );
-  float alpha = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) );
+  float hue = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) ), 0.f, 1.f );
+  float saturation = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) ), 0.f, 1.f );
+  float lightness = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) ), 0.f, 1.f );
+  float alpha = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) ), 0.f, 1.f );
 
   QColor color = QColor::fromHslF( hue, saturation, lightness, alpha );
   if ( ! color.isValid() )
@@ -6062,10 +6062,10 @@ static QVariant fncColorHsva( const QVariantList &values, const QgsExpressionCon
 
 static QVariant fcnColorHsvF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  float hue = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
-  float saturation = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) );
-  float value = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) );
-  float alpha = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) );
+  float hue = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) ), 0.f, 1.f );
+  float saturation = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) ), 0.f, 1.f );
+  float value = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) ), 0.f, 1.f );
+  float alpha = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) ), 0.f, 1.f );
   QColor color = QColor::fromHsvF( hue, saturation, value, alpha );
 
   if ( ! color.isValid() )
@@ -6079,11 +6079,11 @@ static QVariant fcnColorHsvF( const QVariantList &values, const QgsExpressionCon
 
 static QVariant fcnColorCmykF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const float cyan = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) );
-  const float magenta = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) );
-  const float yellow = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) );
-  const float black = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) );
-  const float alpha = static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ) );
+  const float cyan = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent ) ), 0.f, 1.f );
+  const float magenta = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent ) ), 0.f, 1.f );
+  const float yellow = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ) ), 0.f, 1.f );
+  const float black = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent ) ), 0.f, 1.f );
+  const float alpha = std::clamp( static_cast<float>( QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ) ), 0.f, 1.f );
 
   QColor color = QColor::fromCmykF( cyan, magenta, yellow, black, alpha );
   if ( ! color.isValid() )
