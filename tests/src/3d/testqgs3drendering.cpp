@@ -1824,7 +1824,7 @@ void TestQgs3DRendering::do3DSceneExport( const QString &testName, int zoomLevel
     exporter.parseTerrain( terrainEntity, "DEM_Tile" );
 
   QString objFileName = QString( "%1-%2" ).arg( testName ).arg( zoomLevelsCount );
-  exporter.save( objFileName, QDir::tempPath(), 4 );
+  exporter.save( objFileName, QDir::tempPath(), 3 );
 
   int sum = 0;
   for ( auto o : qAsConst( exporter.mObjects ) )
