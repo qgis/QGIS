@@ -437,7 +437,7 @@ class QgsGlobFieldDomain : QgsFieldDomain
 %Docstring(signature="appended")
 Definition of a field domain for field content validated by a glob.
 
-Globs are matching expression like "*[a-z][0-1]?"
+Globs are matching expression like ``*[a-z][0-1]?``
 
 .. versionadded:: 3.26
 %End
@@ -454,7 +454,7 @@ Globs are matching expression like "*[a-z][0-1]?"
 %Docstring
 Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 
-The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+The ``glob`` argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
 %End
 
  QgsGlobFieldDomain( const QString &name,
@@ -464,7 +464,7 @@ The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?"
 %Docstring
 Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 
-The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+The ``glob`` argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
 
 .. deprecated:: 3.38
 
@@ -484,7 +484,7 @@ The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?"
 %Docstring
 Returns the glob expression.
 
-Globs are matching expression like "*[a-z][0-1]?"
+Globs are matching expression like ``*[a-z][0-1]?``
 
 .. seealso:: :py:func:`setGlob`
 %End
@@ -493,7 +493,7 @@ Globs are matching expression like "*[a-z][0-1]?"
 %Docstring
 Sets the ``glob`` expression.
 
-Globs are matching expression like "*[a-z][0-1]?"
+Globs are matching expression like ``*[a-z][0-1]?``
 
 .. seealso:: :py:func:`glob`
 %End

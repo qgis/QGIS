@@ -458,7 +458,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
  * \ingroup core
  * \brief Definition of a field domain for field content validated by a glob.
  *
- * Globs are matching expression like "*[a-z][0-1]?"
+ * Globs are matching expression like ``*[a-z][0-1]?``
  *
  * \since QGIS 3.26
  */
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
     /**
      * Constructor for QgsGlobFieldDomain, with the specified \a name, \a description and \a fieldType.
      *
-     * The \a glob argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+     * The \a glob argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
      */
     QgsGlobFieldDomain( const QString &name,
                         const QString &description,
@@ -480,7 +480,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
     /**
      * Constructor for QgsGlobFieldDomain, with the specified \a name, \a description and \a fieldType.
      *
-     * The \a glob argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+     * The \a glob argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED QgsGlobFieldDomain( const QString &name,
@@ -503,7 +503,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
     /**
      * Returns the glob expression.
      *
-     * Globs are matching expression like "*[a-z][0-1]?"
+     * Globs are matching expression like ``*[a-z][0-1]?``
      *
      * \see setGlob()
      */
@@ -512,7 +512,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
     /**
      * Sets the \a glob expression.
      *
-     * Globs are matching expression like "*[a-z][0-1]?"
+     * Globs are matching expression like ``*[a-z][0-1]?``
      *
      * \see glob()
      */
