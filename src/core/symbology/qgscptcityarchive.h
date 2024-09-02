@@ -424,26 +424,17 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 
     QModelIndex parent( const QModelIndex &index ) const override;
 
-    //! Returns a list of mime that can describe model indexes
-    /* virtual QStringList mimeTypes() const; */
-
-    //! Returns an object that contains serialized items of data corresponding to the list of indexes specified
-    /* virtual QMimeData * mimeData( const QModelIndexList &indexes ) const; */
-
-    //! Handles the data supplied by a drag and drop operation that ended with the given action
-    /* virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ); */
-
     QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
 
-    // Reload the whole model
+    //! Reload the whole model
     void reload();
 
-    // Refresh item specified by path
+    //! Refresh the item specified by \a path
     void refresh( const QString &path );
 
-    // Refresh item children
+    //! Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
     //! Returns index of a path
@@ -455,9 +446,6 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     void fetchMore( const QModelIndex &parent ) override;
 
   public slots:
-    //void removeItems( QgsCptCityDataItem * parent, QVector<QgsCptCityDataItem *>items );
-    //void addItems( QgsCptCityDataItem * parent, QVector<QgsCptCityDataItem *>items );
-    //void refreshItems( QgsCptCityDataItem * parent, QVector<QgsCptCityDataItem *>items );
 
     void beginInsertItems( QgsCptCityDataItem *parent, int first, int last );
     void endInsertItems();

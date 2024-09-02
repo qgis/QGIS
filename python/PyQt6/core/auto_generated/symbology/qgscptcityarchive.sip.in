@@ -395,22 +395,25 @@ A custom item model for display of CPT City color palettes.
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
 
-
-
-
     QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;
-%Docstring
-virtual bool dropMimeData( const QMimeData * data, Qt.DropAction action, int row, int column, const QModelIndex & parent ); */
-%End
 
     virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
 
     void reload();
+%Docstring
+Reload the whole model
+%End
 
     void refresh( const QString &path );
+%Docstring
+Refresh the item specified by ``path``
+%End
 
     void refresh( const QModelIndex &index = QModelIndex() );
+%Docstring
+Refresh item children
+%End
 
     QModelIndex findPath( const QString &path );
 %Docstring
