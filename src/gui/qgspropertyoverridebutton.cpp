@@ -439,7 +439,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
         QPixmap icon = QgsColorButton::createMenuIcon( color.first, mDefinition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha );
         QAction *act = mColorsMenu->addAction( color.second );
         act->setIcon( icon );
-        if ( mProperty.propertyType() == Qgis::PropertyType::Expression && hasExp && mExpressionString == QStringLiteral( "project_color('%1')" ).arg( color.second ) )
+        if ( mProperty.propertyType() == Qgis::PropertyType::Expression && hasExp && getColor() == color.second )
         {
           act->setCheckable( true );
           act->setChecked( true );
@@ -643,9 +643,9 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
   }
   else if ( mColorsMenu->actions().contains( action ) )  // a color name clicked
   {
-    if ( mExpressionString != QStringLiteral( "project_color('%1')" ).arg( action->text() ) )
+    if ( getColor() != action->text() )
     {
-      mExpressionString = QStringLiteral( "project_color('%1')" ).arg( action->text() );
+      mExpressionString = QStringLiteral( "project_color_object('%1')" ).arg( action->text() );
     }
     mProperty.setExpressionString( mExpressionString );
     mProperty.setTransformer( nullptr );
@@ -769,12 +769,11 @@ void QgsPropertyOverrideButton::updateGui()
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpression.svg" ) );
 
-    const thread_local QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
-    QRegularExpressionMatch match = rx.match( mExpressionString );
-    if ( match.hasMatch() )
+    const QString colorName = getColor();
+    if ( !colorName.isEmpty() )
     {
       icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColorOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColor.svg" ) );
-      deftip = match.captured( 1 );
+      deftip = colorName;
       deftype = tr( "project color" );
     }
     else
@@ -925,11 +924,10 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
         {
           if ( state && mProperty.isProjectColor() )
           {
-            const thread_local QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
-            QRegularExpressionMatch match = rx.match( mExpressionString );
-            if ( match.hasMatch() )
+            const QString colorName = getColor();
+            if ( !colorName.isEmpty() )
             {
-              cb->linkToProjectColor( match.captured( 1 ) );
+              cb->linkToProjectColor( colorName );
             }
           }
           else
@@ -985,4 +983,11 @@ void QgsPropertyOverrideButton::registerLinkedWidget( QWidget *widget )
 void QgsPropertyOverrideButton::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#data-defined" ) );
+}
+
+QString QgsPropertyOverrideButton::getColor() const
+{
+  const thread_local QRegularExpression rx( QStringLiteral( "^project_color(_object|)\\('(.*)'\\)$" ) );
+  QRegularExpressionMatch match = rx.match( mExpressionString );
+  return match.hasMatch() ? match.captured( 2 ) : QString();
 }

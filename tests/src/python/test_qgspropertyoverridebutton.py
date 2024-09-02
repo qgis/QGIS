@@ -51,17 +51,23 @@ class TestQgsPropertyOverrideButton(QgisTestCase):
 
         button.menuActionTriggered(color_action.menu().actions()[1])
         self.assertTrue(button.toProperty().isActive())
-        self.assertEqual(button.toProperty().asExpression(), 'project_color(\'burnt marigold\')')
+        self.assertEqual(button.toProperty().asExpression(), 'project_color_object(\'burnt marigold\')')
 
         button.menuActionTriggered(color_action.menu().actions()[0])
         self.assertTrue(button.toProperty().isActive())
-        self.assertEqual(button.toProperty().asExpression(), 'project_color(\'color 1\')')
+        self.assertEqual(button.toProperty().asExpression(), 'project_color_object(\'color 1\')')
 
-        button.setToProperty(QgsProperty.fromExpression('project_color(\'burnt marigold\')'))
+        button.setToProperty(QgsProperty.fromExpression('project_color_object(\'burnt marigold\')'))
         button.aboutToShowMenu()
         color_action = [a for a in button.menu().actions() if a.text() == 'Color'][0]
         self.assertTrue(color_action.isChecked())
         self.assertEqual([a.isChecked() for a in color_action.menu().actions()], [False, True])
+
+        button.setToProperty(QgsProperty.fromExpression('project_color(\'color 1\')'))
+        button.aboutToShowMenu()
+        color_action = [a for a in button.menu().actions() if a.text() == 'Color'][0]
+        self.assertTrue(color_action.isChecked())
+        self.assertEqual([a.isChecked() for a in color_action.menu().actions()], [True, False])
 
         # should also see color menu for ColorNoAlpha properties
         definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.StandardPropertyTemplate.ColorNoAlpha)
