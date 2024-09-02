@@ -812,6 +812,7 @@ void TestQgsExpressionContext::projectScope()
   QgsNamedColorList colorList;
   colorList << qMakePair( QColor( 200, 255, 0 ), QStringLiteral( "vomit yellow" ) );
   colorList << qMakePair( QColor( 30, 60, 20 ), QStringLiteral( "murky depths of hades" ) );
+  colorList << qMakePair( QColor::fromCmykF( 1., 0.9, 0.8, 0.7 ), QStringLiteral( "cmyk colors" ) );
   s.setColors( colorList );
   QgsExpressionContext contextColors;
   contextColors << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
@@ -829,9 +830,10 @@ void TestQgsExpressionContext::projectScope()
   //matching color names should be case insensitive
   QgsExpression expProjectColorObjectCaseInsensitive( QStringLiteral( "project_color_object('Murky Depths of hades')" ) );
   QCOMPARE( expProjectColorObjectCaseInsensitive.evaluate( &contextColors ), QVariant( QColor::fromRgb( 30, 60, 20 ) ) );
+  QgsExpression expProjectColorCmyk( QStringLiteral( "project_color_object('cmyk colors')" ) );
+  QCOMPARE( expProjectColorCmyk.evaluate( &contextColors ), QVariant( QColor::fromCmykF( 1., 0.9, 0.8, 0.7 ) ) );
   QgsExpression badProjectColorObject( QStringLiteral( "project_color_object('dusk falls in san juan del sur')" ) );
   QCOMPARE( badProjectColorObject.evaluate( &contextColors ), QVariant() );
-
 }
 
 void TestQgsExpressionContext::layerScope()
