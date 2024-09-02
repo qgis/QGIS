@@ -83,7 +83,7 @@ set(QGIS_3D_SRCS
   framegraph/qgspreviewquad.cpp
   framegraph/qgsrenderpassquad.cpp
   framegraph/qgsframegraph.cpp
-  framegraph/qgsfgutils.cpp
+  framegraph/qgsframegraphutils.cpp
 
   symbols/qgsbillboardgeometry.cpp
   symbols/qgsline3dsymbol.cpp
@@ -186,7 +186,7 @@ set(QGIS_3D_HDRS
   framegraph/qgsambientocclusionrenderentity.h
   framegraph/qgsambientocclusionblurentity.h
   framegraph/qgsframegraph.h
-  framegraph/qgsfgutils.h
+  framegraph/qgsframegraphutils.h
   framegraph/qgspostprocessingentity.h
   framegraph/qgspreviewquad.h
   framegraph/qgsrenderpassquad.h
