@@ -81,15 +81,15 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
     //! Returns the size in map units the diagram will use to render.
     virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) = 0;
     //! Returns the size in map units the diagram will use to render. Interpolate size
-    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) = 0;
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) = 0;
 
     /**
      * Returns the size of the legend item for the diagram corresponding to a specified value.
      * \param value value to return legend item size for
      * \param s diagram settings
-     * \param is interpolation settings
+     * \param interpolationSettings interpolation settings
      */
-    virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const = 0;
+    virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const = 0;
 
   protected:
 
@@ -137,9 +137,9 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
      * Returns the scaled size of a diagram for a value, respecting the specified diagram interpolation settings.
      * \param value value to calculate corresponding circular size for
      * \param s diagram settings
-     * \param is interpolation settings
+     * \param interpolationSettings interpolation settings
      */
-    QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
+    QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const;
 
   private:
     QMap<QString, QgsExpression *> mExpressions;

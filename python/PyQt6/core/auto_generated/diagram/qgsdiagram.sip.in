@@ -63,7 +63,7 @@ Gets a descriptive name for this diagram type.
 %Docstring
 Returns the size in map units the diagram will use to render.
 %End
-    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) = 0;
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) = 0;
 %Docstring
 Returns the size in map units the diagram will use to render. Interpolate size
 %End
