@@ -90,7 +90,7 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
     QNetworkCacheMetaData fileMetaData( const QString &fileName ) const;
 
     /**
-     * Returns a smart cache size based on available megabytes.
+     * Returns a smart cache size, in bytes, based on available free space
      * \since QGIS 3.40
      */
     static qint64 smartCacheSize( const QString &path );

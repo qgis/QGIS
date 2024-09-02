@@ -4878,6 +4878,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                       </item>
                       <item row="4" column="1">
                        <widget class="QgsSpinBox" name="mCacheSize">
+                        <property name="toolTip">
+                         <string>Specify the cache size in megabytes. Clear the value to enable smart cache size, which sets the maximum cache size based on available space.</string>
+                        </property>
                         <property name="suffix">
                          <string> MB</string>
                         </property>

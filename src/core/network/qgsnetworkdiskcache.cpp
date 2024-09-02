@@ -52,6 +52,13 @@ qint64 QgsNetworkDiskCache::maximumCacheSize() const
 void QgsNetworkDiskCache::setMaximumCacheSize( qint64 size )
 {
   const QMutexLocker lock( &sDiskCacheMutex );
+
+  if ( size == 0 )
+  {
+    // Calculate maximum cache size based on available free space
+    size = smartCacheSize( sDiskCache.cacheDirectory() );
+  }
+
   sDiskCache.setMaximumCacheSize( size );
 }
 
@@ -134,7 +141,7 @@ qint64 QgsNetworkDiskCache::smartCacheSize( const QString &cacheDir )
         size += fi.size();
       }
 
-      const QStringList childDirPaths = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden );
+      const QStringList childDirPaths = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::System | QDir::Hidden | QDir::NoSymLinks );
       for ( const QString &childDirPath : childDirPaths )
       {
         size += dirSize( dirPath + QDir::separator() + childDirPath );
@@ -150,23 +157,24 @@ qint64 QgsNetworkDiskCache::smartCacheSize( const QString &cacheDir )
     // NOLINTBEGIN(bugprone-narrowing-conversions)
     // Logic taken from Firefox's smart cache size handling
     qint64 available10MB = bytesFree / 1024 / ( 1024LL * 10 );
+    qint64 cacheSize10MB = 0;
     if ( available10MB > 2500 )
     {
       // Cap the cache size to 1GB
-      cacheSize = 100;
+      cacheSize10MB = 100;
     }
     else
     {
       if ( available10MB > 700 )
       {
         // Add 2.5% of the free space above 7GB
-        cacheSize += ( available10MB - 700 ) * 0.025;
+        cacheSize10MB += ( available10MB - 700 ) * 0.025;
         available10MB = 700;
       }
       if ( available10MB > 50 )
       {
-        // Add 7.5% of free sapce between 500MB to 7GB
-        cacheSize += ( available10MB - 50 ) * 0.075;
+        // Add 7.5% of free space between 500MB to 7GB
+        cacheSize10MB += ( available10MB - 50 ) * 0.075;
         available10MB = 50;
       }
 
@@ -174,13 +182,13 @@ qint64 QgsNetworkDiskCache::smartCacheSize( const QString &cacheDir )
       // On Android, smaller/older devices may have very little storage
 
       // Add 16% of free space up to 500 MB
-      cacheSize += std::max( 2LL, static_cast<qint64>( available10MB * 0.16 ) );
+      cacheSize10MB += std::max( 2LL, static_cast<qint64>( available10MB * 0.16 ) );
 #else
       // Add 30% of free space up to 500 MB
-      cacheSize += std::max( 5LL, static_cast<qint64>( available10MB * 0.30 ) );
+      cacheSize10MB += std::max( 5LL, static_cast<qint64>( available10MB * 0.30 ) );
 #endif
     }
-    cacheSize = cacheSize * 10 * 1024 * 1024;
+    cacheSize = cacheSize10MB * 10 * 1024 * 1024;
     // NOLINTEND(bugprone-narrowing-conversions)
   } );
 

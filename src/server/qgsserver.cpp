@@ -92,11 +92,6 @@ void QgsServer::setupNetworkAccessManager()
   const QString cacheDirectory = sSettings()->cacheDirectory();
   cache->setCacheDirectory( cacheDirectory );
   qint64 cacheSize = sSettings()->cacheSize();
-  if ( cacheSize == 0 )
-  {
-    // Calculatre maximum cache size based on available free space
-    cacheSize = QgsNetworkDiskCache::smartCacheSize( cacheDirectory );
-  }
   cache->setMaximumCacheSize( cacheSize );
   QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );

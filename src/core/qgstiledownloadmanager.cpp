@@ -19,7 +19,6 @@
 
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsnetworkdiskcache.h"
 #include "qgsrangerequestcache.h"
 #include "qgssettings.h"
 
@@ -200,12 +199,7 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   }
   cacheDirectory += QLatin1String( "http-ranges" );
   mRangesCache->setCacheDirectory( cacheDirectory );
-  qint64 cacheSize = settings.value( QStringLiteral( "cache/size2" ), 0 ).toLongLong();
-  if ( cacheSize == 0 )
-  {
-    // Calculatre maximum cache size based on available free space
-    cacheSize = QgsNetworkDiskCache::smartCacheSize( cacheDirectory );
-  }
+  qint64 cacheSize = settings.value( QStringLiteral( "cache/size_bytes" ), 0 ).toLongLong();
   mRangesCache->setCacheSize( cacheSize );
 }
 

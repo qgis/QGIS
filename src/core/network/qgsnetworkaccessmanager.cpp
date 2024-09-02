@@ -753,13 +753,9 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
   newcache->setCacheDirectory( cacheDirectory );
-  qint64 cacheSize = settings.value( QStringLiteral( "cache/size2" ), 0 ).toLongLong();
-  if ( cacheSize == 0 )
-  {
-    // Calculatre maximum cache size based on available free space
-    cacheSize = QgsNetworkDiskCache::smartCacheSize( cacheDirectory );
-  }
+  qint64 cacheSize = settings.value( QStringLiteral( "cache/size_bytes" ), 0 ).toLongLong();
   newcache->setMaximumCacheSize( cacheSize );
+
   QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "maximumCacheSize: %1" ).arg( newcache->maximumCacheSize() ), 4 );
 
