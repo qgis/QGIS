@@ -454,11 +454,55 @@ all providers will be refreshed (which is potentially very expensive!).
     virtual void childrenCreated();
 
   signals:
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
+%Docstring
+Emitted before child items are added to this data item.
+
+This signal *must* be followed by :py:func:`~QgsDataItem.endInsertItems`.
+
+:param parent: the parent item having children added, will always be this object
+:param first: index of first child item to be added
+:param last: index last child item, after the addition has occurred
+
+.. seealso:: :py:func:`endInsertItems`
+%End
+
     void endInsertItems();
+%Docstring
+Emitted after child items have been added to this data item.
+
+This signal will always be preceded by :py:func:`~QgsDataItem.beginInsertItems`.
+
+.. seealso:: :py:func:`beginInsertItems`
+%End
+
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
+%Docstring
+Emitted before child items are removed from this data item.
+
+This signal *must* be followed by :py:func:`~QgsDataItem.endRemoveItems`.
+
+:param parent: the parent item having children removed, will always be this object
+:param first: index of first child item to be removed
+:param last: index of the last child item to be removed
+
+.. seealso:: :py:func:`endRemoveItems`
+%End
+
     void endRemoveItems();
+%Docstring
+Emitted after child items have been removed from this data item.
+
+This signal will always be preceded by :py:func:`~QgsDataItem.beginRemoveItems`.
+
+.. seealso:: :py:func:`beginRemoveItems`
+%End
+
     void dataChanged( QgsDataItem *item );
+%Docstring
+Emitted when data changes for an ``item``.
+%End
 
     void stateChanged( QgsDataItem *item, Qgis::BrowserItemState oldState );
 %Docstring
