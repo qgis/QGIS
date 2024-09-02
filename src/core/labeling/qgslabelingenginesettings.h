@@ -21,6 +21,10 @@
 #include <QColor>
 
 class QgsProject;
+class QgsAbstractLabelingEngineRule;
+class QDomDocument;
+class QDomElement;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -46,6 +50,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
     };
 
     QgsLabelingEngineSettings();
+    ~QgsLabelingEngineSettings();
+
+    QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other );
+    QgsLabelingEngineSettings &operator=( const QgsLabelingEngineSettings &other );
 
     //! Returns the configuration to the defaults
     void clear();
@@ -125,10 +133,56 @@ class CORE_EXPORT QgsLabelingEngineSettings
      */
     Q_DECL_DEPRECATED Search searchMethod() const SIP_DEPRECATED { return Chain; }
 
-    //! Read configuration of the labeling engine from a project
+    // TODO QGIS 4.0 -- remove these, and just use read/writeXml directly:
+
+    /**
+     * Read configuration of the labeling engine from a project
+     *
+     * \note Both this method and readXml() must be called to completely restore the object's state from a project.
+     */
     void readSettingsFromProject( QgsProject *project );
-    //! Write configuration of the labeling engine to a project
+
+    /**
+     * Write configuration of the labeling engine to a project.
+     *
+     * \note Both this method and writeXml() must be called to completely store the object's state in a project.
+     */
     void writeSettingsToProject( QgsProject *project );
+
+    /**
+     * Writes the label engine settings to an XML \a element.
+     *
+     * \note Both this method and writeSettingsToProject() must be called to completely store the object's state in a project.
+     *
+     * \see readXml()
+     * \see writeSettingsToProject()
+     *
+     * \since QGIS 3.40
+     */
+    void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads the label engine settings from an XML \a element.
+     *
+     * \note Both this method and readSettingsFromProject() must be called to completely restore the object's state from a project.
+     *
+     * \note resolveReferences() must be called following this method.
+     *
+     * \see writeXml()
+     * \see readSettingsFromProject()
+     *
+     * \since QGIS 3.40
+     */
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Resolves reference to layers from stored layer ID.
+     *
+     * Should be called following a call readXml().
+     *
+     * \since QGIS 3.40
+     */
+    void resolveReferences( const QgsProject *project );
 
     // TODO QGIS 4.0: In reality the text render format settings don't only apply to labels, but also
     // ANY text rendered using QgsTextRenderer (including some non-label text items in layouts).
@@ -188,6 +242,50 @@ class CORE_EXPORT QgsLabelingEngineSettings
      */
     void setPlacementVersion( Qgis::LabelPlacementEngineVersion version );
 
+    /**
+     * Returns a list of labeling engine rules which must be satifisfied
+     * while placing labels.
+     *
+     * \see addRule()
+     * \see setRules()
+     * \since QGIS 3.40
+     */
+    QList< QgsAbstractLabelingEngineRule * > rules();
+
+    /**
+     * Returns a list of labeling engine rules which must be satifisfied
+     * while placing labels.
+     *
+     * \see addRule()
+     * \see setRules()
+     * \since QGIS 3.40
+     */
+    QList< const QgsAbstractLabelingEngineRule * > rules() const SIP_SKIP;
+
+    /**
+     * Adds a labeling engine \a rule which must be satifisfied
+     * while placing labels.
+     *
+     * Ownership of the rule is transferred to the settings.
+     *
+     * \see rules()
+     * \see setRules()
+     * \since QGIS 3.40
+     */
+    void addRule( QgsAbstractLabelingEngineRule *rule SIP_TRANSFER );
+
+    /**
+     * Sets the labeling engine \a rules which must be satifisfied
+     * while placing labels.
+     *
+     * Ownership of the rules are transferred to the settings.
+     *
+     * \see addRule()
+     * \see rules()
+     * \since QGIS 3.40
+     */
+    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules SIP_TRANSFER );
+
   private:
     //! Flags
     Qgis::LabelingFlags mFlags = Qgis::LabelingFlag::UsePartialCandidates;
@@ -203,6 +301,8 @@ class CORE_EXPORT QgsLabelingEngineSettings
     Qgis::LabelPlacementEngineVersion mPlacementVersion = Qgis::LabelPlacementEngineVersion::Version2;
 
     Qgis::TextRenderFormat mDefaultTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
+
+    std::vector< std::unique_ptr< QgsAbstractLabelingEngineRule > > mEngineRules;
 
 };
 

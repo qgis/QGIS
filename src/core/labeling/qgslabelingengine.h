@@ -357,6 +357,15 @@ class CORE_EXPORT QgsLabelingEngine
     const QgsLabelingEngineSettings &engineSettings() const { return mMapSettings.labelingEngineSettings(); }
 
     /**
+     * Prepares the engine for rendering in the specified \a context.
+     *
+     * \warning This method must be called in advanced on the main rendering thread, not a background thread.
+     *
+     * \since QGIS 3.40
+     */
+    bool prepare( QgsRenderContext &context );
+
+    /**
      * Returns a list of layers with providers in the engine.
      */
     QList< QgsMapLayer * > participatingLayers() const;
@@ -435,6 +444,9 @@ class CORE_EXPORT QgsLabelingEngine
     //! List of providers (the are owned by the labeling engine)
     QList<QgsAbstractLabelProvider *> mProviders;
     QList<QgsAbstractLabelProvider *> mSubProviders;
+
+    //!< List of labeling engine rules (owned by the labeling engine)
+    std::vector< std::unique_ptr< QgsAbstractLabelingEngineRule > > mEngineRules;
 
     //! Resulting labeling layout
     std::unique_ptr< QgsLabelingResults > mResults;

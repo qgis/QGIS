@@ -17,9 +17,48 @@
 
 #include "qgsproject.h"
 #include "qgscolorutils.h"
+#include "qgslabelingenginerule.h"
+#include "qgsapplication.h"
+#include "qgslabelingengineruleregistry.h"
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
 {
+}
+
+QgsLabelingEngineSettings::~QgsLabelingEngineSettings() = default;
+
+QgsLabelingEngineSettings::QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other )
+  : mFlags( other.mFlags )
+  , mSearchMethod( other.mSearchMethod )
+  , mMaxLineCandidatesPerCm( other.mMaxLineCandidatesPerCm )
+  , mMaxPolygonCandidatesPerCmSquared( other.mMaxPolygonCandidatesPerCmSquared )
+  , mUnplacedLabelColor( other.mUnplacedLabelColor )
+  , mPlacementVersion( other.mPlacementVersion )
+  , mDefaultTextRenderFormat( other.mDefaultTextRenderFormat )
+{
+  mEngineRules.reserve( other.mEngineRules.size() );
+  for ( const auto &rule : other.mEngineRules )
+  {
+    mEngineRules.emplace_back( rule->clone() );
+  }
+}
+
+QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( const QgsLabelingEngineSettings &other )
+{
+  mFlags = other.mFlags;
+  mSearchMethod = other.mSearchMethod;
+  mMaxLineCandidatesPerCm = other.mMaxLineCandidatesPerCm;
+  mMaxPolygonCandidatesPerCmSquared = other.mMaxPolygonCandidatesPerCmSquared;
+  mUnplacedLabelColor = other.mUnplacedLabelColor;
+  mPlacementVersion = other.mPlacementVersion;
+  mDefaultTextRenderFormat = other.mDefaultTextRenderFormat;
+  mEngineRules.clear();
+  mEngineRules.reserve( other.mEngineRules.size() );
+  for ( const auto &rule : other.mEngineRules )
+  {
+    mEngineRules.emplace_back( rule->clone() );
+  }
+  return *this;
 }
 
 void QgsLabelingEngineSettings::clear()
@@ -76,6 +115,50 @@ void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), static_cast< int >( mPlacementVersion ) );
 }
 
+void QgsLabelingEngineSettings::writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const
+{
+  if ( !mEngineRules.empty() )
+  {
+    QDomElement rulesElement = doc.createElement( QStringLiteral( "rules" ) );
+    for ( const auto &rule : mEngineRules )
+    {
+      QDomElement ruleElement = doc.createElement( QStringLiteral( "rule" ) );
+      ruleElement.setAttribute( QStringLiteral( "id" ), rule->id() );
+      rule->writeXml( doc, ruleElement, context );
+      rulesElement.appendChild( ruleElement );
+    }
+    element.appendChild( rulesElement );
+  }
+}
+
+void QgsLabelingEngineSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+{
+  mEngineRules.clear();
+  {
+    const QDomElement rulesElement = element.firstChildElement( QStringLiteral( "rules" ) );
+    const QDomNodeList rules = rulesElement.childNodes();
+    for ( int i = 0; i < rules.length(); i++ )
+    {
+      const QDomElement ruleElement = rules.at( i ).toElement();
+      const QString id = ruleElement.attribute( QStringLiteral( "id" ) );
+      std::unique_ptr< QgsAbstractLabelingEngineRule > rule( QgsApplication::labelingEngineRuleRegistry()->create( id ) );
+      if ( rule )
+      {
+        rule->readXml( ruleElement, context );
+        mEngineRules.emplace_back( std::move( rule ) );
+      }
+    }
+  }
+}
+
+void QgsLabelingEngineSettings::resolveReferences( const QgsProject *project )
+{
+  for ( const auto &rule : mEngineRules )
+  {
+    rule->resolveReferences( project );
+  }
+}
+
 QColor QgsLabelingEngineSettings::unplacedLabelColor() const
 {
   return mUnplacedLabelColor;
@@ -94,6 +177,40 @@ Qgis::LabelPlacementEngineVersion QgsLabelingEngineSettings::placementVersion() 
 void QgsLabelingEngineSettings::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion )
 {
   mPlacementVersion = placementVersion;
+}
+
+QList<QgsAbstractLabelingEngineRule *> QgsLabelingEngineSettings::rules()
+{
+  QList<QgsAbstractLabelingEngineRule *> res;
+  for ( const auto &it : mEngineRules )
+  {
+    res << it.get();
+  }
+  return res;
+}
+
+QList<const QgsAbstractLabelingEngineRule *> QgsLabelingEngineSettings::rules() const
+{
+  QList<const QgsAbstractLabelingEngineRule *> res;
+  for ( const auto &it : mEngineRules )
+  {
+    res << it.get();
+  }
+  return res;
+}
+
+void QgsLabelingEngineSettings::addRule( QgsAbstractLabelingEngineRule *rule )
+{
+  mEngineRules.emplace_back( rule );
+}
+
+void QgsLabelingEngineSettings::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )
+{
+  mEngineRules.clear();
+  for ( QgsAbstractLabelingEngineRule *rule : rules )
+  {
+    mEngineRules.emplace_back( rule );
+  }
 }
 
 
