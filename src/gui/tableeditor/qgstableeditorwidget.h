@@ -296,7 +296,21 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     /**
      * Returns TRUE if any header cells are selected.
      */
-    bool isHeaderCellSelected();
+    bool isHeaderCellSelected() const;
+
+    /**
+     * Returns TRUE if a selection has been made which can be merged.
+     *
+     * \since QGIS 3.40
+     */
+    bool canMergeSelection() const;
+
+    /**
+     * Returns TRUE if a selection has been made which can be split.
+     *
+     * \since QGIS 3.40
+     */
+    bool canSplitSelection() const;
 
   public slots:
 
@@ -439,6 +453,22 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     void setTableHeaders( const QVariantList &headers );
 
+    /**
+     * Merges selected table cells.
+     *
+     * \see splitSelectedCells()
+     * \since QGIS 3.40
+     */
+    void mergeSelectedCells();
+
+    /**
+     * Splits (un-merges) selected table cells.
+     *
+     * \see mergeSelectedCells()
+     * \since QGIS 3.40
+     */
+    void splitSelectedCells();
+
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
 
@@ -479,10 +509,13 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     bool collectConsecutiveColumnRange( const QModelIndexList &list, int &minColumn, int &maxColumn ) const;
     QList< int > collectUniqueRows( const QModelIndexList &list ) const;
     QList< int > collectUniqueColumns( const QModelIndexList &list ) const;
+    bool isRectangularSelection( const QModelIndexList &list ) const;
+    bool hasMergedCells( const QModelIndexList &list ) const;
 
     int mBlockSignals = 0;
     QHash< QTableWidgetItem *, QgsNumericFormat * > mNumericFormats;
     QMenu *mHeaderMenu = nullptr;
+    QMenu *mCellMenu = nullptr;
     bool mIncludeHeader = false;
     bool mFirstSet = true;
 

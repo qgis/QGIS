@@ -104,11 +104,11 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setVerticalAlignment( mTableWidget->selectionVerticalAlignment() );
     mFormattingWidget->setCellProperty( mTableWidget->selectionCellProperty() );
 
-    updateActionNamesFromSelection();
+    updateActionsFromSelection();
 
     mFormattingWidget->setEnabled( !mTableWidget->isHeaderCellSelected() );
   } );
-  updateActionNamesFromSelection();
+  updateActionsFromSelection();
 
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
 
@@ -121,6 +121,8 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mActionInsertRowsBelow, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertRowsBelow );
   connect( mActionInsertColumnsBefore, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertColumnsBefore );
   connect( mActionInsertColumnsAfter, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertColumnsAfter );
+  connect( mActionMergeSelected, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::mergeSelectedCells );
+  connect( mActionSplitSelected, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::splitSelectedCells );
   connect( mActionDeleteRows, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::deleteRows );
   connect( mActionDeleteColumns, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::deleteColumns );
   connect( mActionSelectRow, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandRowSelection );
@@ -245,7 +247,7 @@ void QgsTableEditorDialog::registerExpressionContextGenerator( QgsExpressionCont
   mFormattingWidget->registerExpressionContextGenerator( generator );
 }
 
-void QgsTableEditorDialog::updateActionNamesFromSelection()
+void QgsTableEditorDialog::updateActionsFromSelection()
 {
   const int rowCount = mTableWidget->rowsAssociatedWithSelection().size();
   const int columnCount = mTableWidget->columnsAssociatedWithSelection().size();
@@ -301,6 +303,9 @@ void QgsTableEditorDialog::updateActionNamesFromSelection()
     mActionDeleteColumns->setText( tr( "Delete %n Column(s)", nullptr, columnCount ) );
     mActionSelectColumn->setText( tr( "Select %n Column(s)", nullptr, columnCount ) );
   }
+
+  mActionMergeSelected->setEnabled( mTableWidget->canMergeSelection() );
+  mActionSplitSelected->setEnabled( mTableWidget->canSplitSelection() );
 }
 
 #include "qgstableeditordialog.h"

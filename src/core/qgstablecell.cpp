@@ -31,6 +31,8 @@ QgsTableCell::QgsTableCell( const QgsTableCell &other )
   , mFormat( other.mFormat ? other.mFormat->clone() : nullptr )
   , mHAlign( other.mHAlign )
   , mVAlign( other.mVAlign )
+  , mRowSpan( other.mRowSpan )
+  , mColumnSpan( other.mColumnSpan )
 {}
 
 QgsTableCell::~QgsTableCell() = default;
@@ -44,6 +46,8 @@ QgsTableCell &QgsTableCell::operator=( const QgsTableCell &other )
   mFormat.reset( other.mFormat ? other.mFormat->clone() : nullptr );
   mHAlign = other.mHAlign;
   mVAlign = other.mVAlign;
+  mRowSpan = other.mRowSpan;
+  mColumnSpan = other.mColumnSpan;
   return *this;
 }
 
@@ -79,6 +83,10 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
 
   res.insert( QStringLiteral( "halign" ), static_cast< int >( mHAlign ) );
   res.insert( QStringLiteral( "valign" ), static_cast< int >( mVAlign ) );
+  if ( mRowSpan > 1 )
+    res.insert( QStringLiteral( "row_span" ), mRowSpan );
+  if ( mColumnSpan > 1 )
+    res.insert( QStringLiteral( "column_span" ), mColumnSpan );
 
   return res;
 }
@@ -117,6 +125,9 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
 
   mHAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "halign" ), Qt::AlignLeft ).toInt() );
   mVAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "valign" ), Qt::AlignVCenter ).toInt() );
+
+  mRowSpan = properties.value( QStringLiteral( "row_span" ), 1 ).toInt();
+  mColumnSpan = properties.value( QStringLiteral( "column_span" ), 1 ).toInt();
 }
 
 Qt::Alignment QgsTableCell::horizontalAlignment() const
@@ -137,4 +148,10 @@ Qt::Alignment QgsTableCell::verticalAlignment() const
 void QgsTableCell::setVerticalAlignment( Qt::Alignment alignment )
 {
   mVAlign = alignment;
+}
+
+void QgsTableCell::setSpan( int rowSpan, int columnSpan )
+{
+  mRowSpan = rowSpan;
+  mColumnSpan = columnSpan;
 }
