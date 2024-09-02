@@ -1,0 +1,393 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/rules/qgslabelingenginerule_impl.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractLabelingEngineRuleDistanceFromFeature : QgsAbstractLabelingEngineRule
+{
+%Docstring(signature="appended")
+Base class for labeling engine rules which prevents labels being placed too close or to far from features from a different layer.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerule_impl.h"
+%End
+  public:
+
+    QgsAbstractLabelingEngineRuleDistanceFromFeature();
+    ~QgsAbstractLabelingEngineRuleDistanceFromFeature();
+    virtual bool prepare( QgsRenderContext &context );
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual void resolveReferences( const QgsProject *project );
+
+
+    QgsVectorLayer *labeledLayer();
+%Docstring
+Returns the layer providing the labels.
+
+.. seealso:: :py:func:`setLabeledLayer`
+%End
+
+    void setLabeledLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` providing the labels.
+
+.. seealso:: :py:func:`labeledLayer`
+%End
+
+    QgsVectorLayer *targetLayer();
+%Docstring
+Returns the layer providing the features which labels must be distant from (or close to).
+
+.. seealso:: :py:func:`setTargetLayer`
+%End
+
+    void setTargetLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` providing the features which labels must be distant from (or close to).
+
+.. seealso:: :py:func:`targetLayer`
+%End
+
+    double distance() const;
+%Docstring
+Returns the acceptable distance threshold between labels and the features
+from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer`.
+
+.. seealso:: :py:func:`setDistance`
+
+.. seealso:: :py:func:`distanceUnits`
+%End
+
+    void setDistance( double distance );
+%Docstring
+Sets the acceptable ``distance`` threshold between labels and the features
+from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer`.
+
+.. seealso:: :py:func:`distance`
+
+.. seealso:: :py:func:`setDistanceUnits`
+%End
+
+    Qgis::RenderUnit distanceUnit() const;
+%Docstring
+Returns the units for the distance between labels and the features
+from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer`.
+
+.. seealso:: :py:func:`setDistanceUnit`
+
+.. seealso:: :py:func:`distance`
+%End
+
+    void setDistanceUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the distance between labels and the features
+from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer`.
+
+.. seealso:: :py:func:`distanceUnit`
+
+.. seealso:: :py:func:`setDistance`
+%End
+
+    const QgsMapUnitScale &distanceUnitScale() const;
+%Docstring
+Returns the scaling for the distance between labels and the features
+from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer`.
+
+.. seealso:: :py:func:`setDistanceUnitScale`
+
+.. seealso:: :py:func:`distance`
+%End
+
+    void setDistanceUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the ``scale`` for the distance between labels and the features
+from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer`.
+
+.. seealso:: :py:func:`distanceUnitScale`
+
+.. seealso:: :py:func:`setDistance`
+%End
+
+    double cost() const;
+%Docstring
+Returns the penalty cost incurred when the rule is violated.
+
+This is a value between 0 and 10, where 10 indicates that the rule must never be violated,
+and 1-9 = nice to have if possible, where higher numbers will try harder to avoid violating the rule.
+
+.. seealso:: :py:func:`setCost`
+%End
+
+    void setCost( double cost );
+%Docstring
+Sets the penalty ``cost`` incurred when the rule is violated.
+
+This is a value between 0 and 10, where 10 indicates that the rule must never be violated,
+and 1-9 = nice to have if possible, where higher numbers will try harder to avoid violating the rule.
+
+.. seealso:: :py:func:`cost`
+%End
+
+  protected:
+
+    void copyCommonProperties( QgsAbstractLabelingEngineRuleDistanceFromFeature *other ) const;
+%Docstring
+Copies common properties from this object to an ``other``.
+%End
+
+
+  private:
+    QgsAbstractLabelingEngineRuleDistanceFromFeature( const QgsAbstractLabelingEngineRuleDistanceFromFeature &other );
+};
+
+
+class QgsLabelingEngineRuleMinimumDistanceLabelToFeature : QgsAbstractLabelingEngineRuleDistanceFromFeature
+{
+%Docstring(signature="appended")
+A labeling engine rule which prevents labels being placed too close to features from a different layer.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerule_impl.h"
+%End
+  public:
+
+    QgsLabelingEngineRuleMinimumDistanceLabelToFeature();
+    ~QgsLabelingEngineRuleMinimumDistanceLabelToFeature();
+    virtual QgsLabelingEngineRuleMinimumDistanceLabelToFeature *clone() const /Factory/;
+
+    virtual QString id() const;
+
+
+  private:
+    QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
+};
+
+
+class QgsLabelingEngineRuleMaximumDistanceLabelToFeature : QgsAbstractLabelingEngineRuleDistanceFromFeature
+{
+%Docstring(signature="appended")
+A labeling engine rule which prevents labels being placed too far from features from a different layer.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerule_impl.h"
+%End
+  public:
+    QgsLabelingEngineRuleMaximumDistanceLabelToFeature();
+    ~QgsLabelingEngineRuleMaximumDistanceLabelToFeature();
+    virtual QgsLabelingEngineRuleMaximumDistanceLabelToFeature *clone() const /Factory/;
+
+    virtual QString id() const;
+
+
+  private:
+    QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
+};
+
+class QgsLabelingEngineRuleMinimumDistanceLabelToLabel : QgsAbstractLabelingEngineRule
+{
+%Docstring(signature="appended")
+A labeling engine rule which prevents labels being placed too close to labels from a different layer.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerule_impl.h"
+%End
+  public:
+    QgsLabelingEngineRuleMinimumDistanceLabelToLabel();
+    ~QgsLabelingEngineRuleMinimumDistanceLabelToLabel();
+
+    virtual QgsLabelingEngineRuleMinimumDistanceLabelToLabel *clone() const /Factory/;
+
+    virtual QString id() const;
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual void resolveReferences( const QgsProject *project );
+
+    virtual bool prepare( QgsRenderContext &context );
+
+
+    QgsVectorLayer *labeledLayer();
+%Docstring
+Returns the layer providing the labels.
+
+.. seealso:: :py:func:`setLabeledLayer`
+%End
+
+    void setLabeledLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` providing the labels.
+
+.. seealso:: :py:func:`labeledLayer`
+%End
+
+    QgsVectorLayer *targetLayer();
+%Docstring
+Returns the layer providing the labels which labels must be distant from.
+
+.. seealso:: :py:func:`setTargetLayer`
+%End
+
+    void setTargetLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` providing the labels which labels must be distant from.
+
+.. seealso:: :py:func:`targetLayer`
+%End
+
+    double distance() const;
+%Docstring
+Returns the minimum permitted distance between labels from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.labeledLayer` and the labels
+from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer`.
+
+.. seealso:: :py:func:`setDistance`
+
+.. seealso:: :py:func:`distanceUnits`
+%End
+
+    void setDistance( double distance );
+%Docstring
+Sets the minimum permitted ``distance`` between labels from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.labeledLayer` and the labels
+from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer`.
+
+.. seealso:: :py:func:`distance`
+
+.. seealso:: :py:func:`setDistanceUnits`
+%End
+
+    Qgis::RenderUnit distanceUnit() const;
+%Docstring
+Returns the units for the distance between labels from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.labeledLayer` and the labels
+from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer`.
+
+.. seealso:: :py:func:`setDistanceUnit`
+
+.. seealso:: :py:func:`distance`
+%End
+
+    void setDistanceUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the distance between labels from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.labeledLayer` and the labels
+from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer`.
+
+.. seealso:: :py:func:`distanceUnit`
+
+.. seealso:: :py:func:`setDistance`
+%End
+
+    const QgsMapUnitScale &distanceUnitScale() const;
+%Docstring
+Returns the scaling for the distance between labels from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.labeledLayer` and the labels
+from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer`.
+
+.. seealso:: :py:func:`setDistanceUnitScale`
+
+.. seealso:: :py:func:`distance`
+%End
+
+    void setDistanceUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the ``scale`` for the distance between labels from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.labeledLayer` and the labels
+from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer`.
+
+.. seealso:: :py:func:`distanceUnitScale`
+
+.. seealso:: :py:func:`setDistance`
+%End
+
+  private:
+    QgsLabelingEngineRuleMinimumDistanceLabelToLabel( const QgsLabelingEngineRuleMinimumDistanceLabelToLabel & );
+};
+
+
+class QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : QgsAbstractLabelingEngineRule
+{
+%Docstring(signature="appended")
+A labeling engine rule which prevents labels being placed overlapping features from a different layer.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerule_impl.h"
+%End
+  public:
+
+    QgsLabelingEngineRuleAvoidLabelOverlapWithFeature();
+    ~QgsLabelingEngineRuleAvoidLabelOverlapWithFeature();
+    virtual QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *clone() const /Factory/;
+
+    virtual QString id() const;
+
+    virtual bool prepare( QgsRenderContext &context );
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual void resolveReferences( const QgsProject *project );
+
+
+    QgsVectorLayer *labeledLayer();
+%Docstring
+Returns the layer providing the labels.
+
+.. seealso:: :py:func:`setLabeledLayer`
+%End
+
+    void setLabeledLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` providing the labels.
+
+.. seealso:: :py:func:`labeledLayer`
+%End
+
+    QgsVectorLayer *targetLayer();
+%Docstring
+Returns the layer providing the features which labels must not overlap.
+
+.. seealso:: :py:func:`setTargetLayer`
+%End
+
+    void setTargetLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` providing the features which labels must not overlap.
+
+.. seealso:: :py:func:`targetLayer`
+%End
+
+  private:
+    QgsLabelingEngineRuleAvoidLabelOverlapWithFeature( const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/rules/qgslabelingenginerule_impl.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

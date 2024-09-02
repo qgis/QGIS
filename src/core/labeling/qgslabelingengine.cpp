@@ -31,6 +31,7 @@
 #include "qgslabelingresults.h"
 #include "qgsfillsymbol.h"
 #include "qgsruntimeprofiler.h"
+#include "qgslabelingenginerule.h"
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
@@ -98,6 +99,19 @@ void QgsLabelingEngine::setMapSettings( const QgsMapSettings &mapSettings )
   mLayerRenderingOrderIds = mMapSettings.layerIds();
   if ( mResults )
     mResults->setMapSettings( mapSettings );
+}
+
+bool QgsLabelingEngine::prepare( QgsRenderContext &context )
+{
+  const QList<const QgsAbstractLabelingEngineRule *> rules = mMapSettings.labelingEngineSettings().rules();
+  bool res = true;
+  for ( const QgsAbstractLabelingEngineRule *rule : rules )
+  {
+    std::unique_ptr< QgsAbstractLabelingEngineRule > ruleClone( rule->clone() );
+    res = ruleClone->prepare( context ) && res;
+    mEngineRules.emplace_back( std::move( ruleClone ) );
+  }
+  return res;
 }
 
 QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const

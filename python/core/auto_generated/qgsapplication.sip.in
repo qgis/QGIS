@@ -946,6 +946,13 @@ Gets the registry of available scalebar renderers.
 .. versionadded:: 3.14
 %End
 
+    static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() /KeepReference/;
+%Docstring
+Gets the registry of available labeling engine rules.
+
+.. versionadded:: 3.40
+%End
+
     static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;
 %Docstring
 Returns registry of available project storage implementations.

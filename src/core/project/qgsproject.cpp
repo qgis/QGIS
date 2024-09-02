@@ -2496,6 +2496,12 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
   profile.switchTask( tr( "Loading label settings" ) );
   mLabelingEngineSettings->readSettingsFromProject( this );
+  {
+    const QDomElement labelEngineSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "labelEngineSettings" ) );
+    mLabelingEngineSettings->readXml( labelEngineSettingsElement, context );
+  }
+  mLabelingEngineSettings->resolveReferences( this );
+
   emit labelingEngineSettingsChanged();
 
   profile.switchTask( tr( "Loading annotations" ) );
@@ -3365,6 +3371,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( layerOrderNode );
 
   mLabelingEngineSettings->writeSettingsToProject( this );
+  {
+    QDomElement labelEngineSettingsElement = doc->createElement( QStringLiteral( "labelEngineSettings" ) );
+    mLabelingEngineSettings->writeXml( *doc, labelEngineSettingsElement, context );
+    qgisNode.appendChild( labelEngineSettingsElement );
+  }
 
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), mBackgroundColor.red() );
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), mBackgroundColor.green() );

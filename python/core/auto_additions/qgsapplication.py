@@ -122,6 +122,7 @@ try:
     QgsApplication.renderer3DRegistry = staticmethod(QgsApplication.renderer3DRegistry)
     QgsApplication.symbol3DRegistry = staticmethod(QgsApplication.symbol3DRegistry)
     QgsApplication.scaleBarRendererRegistry = staticmethod(QgsApplication.scaleBarRendererRegistry)
+    QgsApplication.labelingEngineRuleRegistry = staticmethod(QgsApplication.labelingEngineRuleRegistry)
     QgsApplication.projectStorageRegistry = staticmethod(QgsApplication.projectStorageRegistry)
     QgsApplication.layerMetadataProviderRegistry = staticmethod(QgsApplication.layerMetadataProviderRegistry)
     QgsApplication.externalStorageRegistry = staticmethod(QgsApplication.externalStorageRegistry)

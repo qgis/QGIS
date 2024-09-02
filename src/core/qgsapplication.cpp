@@ -36,6 +36,7 @@
 #include "qgsnumericformatregistry.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsscalebarrendererregistry.h"
+#include "qgslabelingengineruleregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgssourcecache.h"
@@ -2631,6 +2632,11 @@ QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
   return members()->mScaleBarRendererRegistry;
 }
 
+QgsLabelingEngineRuleRegistry *QgsApplication::labelingEngineRuleRegistry()
+{
+  return members()->mLabelingEngineRuleRegistry;
+}
+
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
   return members()->mProjectStorageRegistry;
@@ -2809,6 +2815,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup labeling engine rule registry" ) );
+    mLabelingEngineRuleRegistry = new QgsLabelingEngineRuleRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup sensor registry" ) );
     mSensorRegistry = new QgsSensorRegistry();
     mSensorRegistry->populate();
@@ -2897,6 +2908,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSourceCache;
   delete mCalloutRegistry;
   delete mRecentStyleHandler;
+  delete mLabelingEngineRuleRegistry;
   delete mSymbolLayerRegistry;
   delete mExternalStorageRegistry;
   delete mProfileSourceRegistry;

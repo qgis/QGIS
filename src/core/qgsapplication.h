@@ -78,6 +78,7 @@ class QgsDatabaseQueryLog;
 class QgsFontManager;
 class QgsSensorRegistry;
 class QgsProfileSourceRegistry;
+class QgsLabelingEngineRuleRegistry;
 
 /**
  * \ingroup core
@@ -931,6 +932,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Gets the registry of available labeling engine rules.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns registry of available project storage implementations.
      * \since QGIS 3.2
      */
@@ -1146,6 +1154,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsBabelFormatRegistry *mGpsBabelFormatRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
       QgsScaleBarRendererRegistry *mScaleBarRendererRegistry = nullptr;
+      QgsLabelingEngineRuleRegistry *mLabelingEngineRuleRegistry = nullptr;
       QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;

@@ -391,6 +391,9 @@
 %Include auto_generated/labeling/qgspallabeling.sip
 %Include auto_generated/labeling/qgsrulebasedlabeling.sip
 %Include auto_generated/labeling/qgsvectorlayerlabeling.sip
+%Include auto_generated/labeling/rules/qgslabelingenginerule.sip
+%Include auto_generated/labeling/rules/qgslabelingenginerule_impl.sip
+%Include auto_generated/labeling/rules/qgslabelingengineruleregistry.sip
 %Include auto_generated/layertree/qgscolorramplegendnode.sip
 %Include auto_generated/layertree/qgscolorramplegendnodesettings.sip
 %Include auto_generated/layertree/qgslayertree.sip
