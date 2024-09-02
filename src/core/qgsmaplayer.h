@@ -48,6 +48,7 @@ class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
 class QgsProject;
+class QgsProviderMetadata;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
@@ -284,6 +285,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
+
+    /**
+     * Returns the layer data provider's metadata, it may be NULLPTR.
+     * \since QGIS 3.40
+     */
+    QgsProviderMetadata *providerMetadata() const;
 
     /**
      * Sets the short name of the layer
