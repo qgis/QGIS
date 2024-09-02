@@ -13,7 +13,10 @@ QgsDatabaseSchemaModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``RoleEmpty``: Entry is an empty entry
+* ``Empty``: Entry is an empty entry
+
+  Available as ``QgsDatabaseSchemaModel.RoleEmpty`` in older QGIS releases.
+
 
 """
 # --

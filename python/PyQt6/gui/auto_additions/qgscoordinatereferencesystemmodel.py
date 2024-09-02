@@ -41,14 +41,38 @@ QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``RoleNodeType``: Corresponds to the node's type
-* ``RoleName``: The coordinate reference system name
-* ``RoleAuthId``: The coordinate reference system authority name and id
-* ``RoleDeprecated``: ``True`` if the CRS is deprecated
-* ``RoleType``: The coordinate reference system type
-* ``RoleGroupId``: The node ID (for group nodes)
-* ``RoleWkt``: The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
-* ``RoleProj``: The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+* ``NodeType``: Corresponds to the node's type
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleNodeType`` in older QGIS releases.
+
+* ``Name``: The coordinate reference system name
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleName`` in older QGIS releases.
+
+* ``AuthId``: The coordinate reference system authority name and id
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleAuthId`` in older QGIS releases.
+
+* ``Deprecated``: ``True`` if the CRS is deprecated
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleDeprecated`` in older QGIS releases.
+
+* ``Type``: The coordinate reference system type
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleType`` in older QGIS releases.
+
+* ``GroupId``: The node ID (for group nodes)
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleGroupId`` in older QGIS releases.
+
+* ``Wkt``: The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleWkt`` in older QGIS releases.
+
+* ``Proj``: The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleProj`` in older QGIS releases.
+
 
 """
 # --

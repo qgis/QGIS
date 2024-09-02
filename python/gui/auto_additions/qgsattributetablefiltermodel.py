@@ -17,7 +17,10 @@ The values of these roles start just after the roles defined by
 
 .. versionadded:: 3.36
 
-* ``TypeRole``: 
+* ``Type``: 
+
+  Available as ``QgsAttributeTableFilterModel.TypeRole`` in older QGIS releases.
+
 
 """
 # --

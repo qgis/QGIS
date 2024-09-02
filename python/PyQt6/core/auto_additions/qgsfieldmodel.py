@@ -50,14 +50,38 @@ QgsFieldModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``FieldNameRole``: Return field name if index corresponds to a field
-* ``FieldIndexRole``: Return field index if index corresponds to a field
-* ``ExpressionRole``: Return field name or expression
-* ``IsExpressionRole``: Return if index corresponds to an expression
-* ``ExpressionValidityRole``: Return if expression is valid or not
-* ``FieldTypeRole``: Return the field type (if a field, return QVariant if expression)
-* ``FieldOriginRole``: Return the field origin (if a field, returns QVariant if expression)
-* ``IsEmptyRole``: Return if the index corresponds to the empty value
+* ``FieldName``: Return field name if index corresponds to a field
+
+  Available as ``QgsFieldModel.FieldNameRole`` in older QGIS releases.
+
+* ``FieldIndex``: Return field index if index corresponds to a field
+
+  Available as ``QgsFieldModel.FieldIndexRole`` in older QGIS releases.
+
+* ``Expression``: Return field name or expression
+
+  Available as ``QgsFieldModel.ExpressionRole`` in older QGIS releases.
+
+* ``IsExpression``: Return if index corresponds to an expression
+
+  Available as ``QgsFieldModel.IsExpressionRole`` in older QGIS releases.
+
+* ``ExpressionValidity``: Return if expression is valid or not
+
+  Available as ``QgsFieldModel.ExpressionValidityRole`` in older QGIS releases.
+
+* ``FieldType``: Return the field type (if a field, return QVariant if expression)
+
+  Available as ``QgsFieldModel.FieldTypeRole`` in older QGIS releases.
+
+* ``FieldOrigin``: Return the field origin (if a field, returns QVariant if expression)
+
+  Available as ``QgsFieldModel.FieldOriginRole`` in older QGIS releases.
+
+* ``IsEmpty``: Return if the index corresponds to the empty value
+
+  Available as ``QgsFieldModel.IsEmptyRole`` in older QGIS releases.
+
 * ``EditorWidgetType``: Editor widget type
 * ``JoinedFieldIsEditable``: ``True`` if a joined field is editable (returns QVariant if not a joined field)
 * ``FieldIsWidgetEditable``: ``True`` if a is editable from the widget

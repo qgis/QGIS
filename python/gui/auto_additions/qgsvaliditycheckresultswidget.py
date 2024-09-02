@@ -13,7 +13,10 @@ QgsValidityCheckResultsModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``DescriptionRole``: Result detailed description
+* ``Description``: Result detailed description
+
+  Available as ``QgsValidityCheckResultsModel.DescriptionRole`` in older QGIS releases.
+
 
 """
 # --

@@ -25,10 +25,22 @@ QgsAttributeTableModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``FeatureIdRole``: Get the feature id of the feature in this row
-* ``FieldIndexRole``: Get the field index of this column
-* ``UserRole``: Start further roles starting from this role
-* ``SortRole``: Role used for sorting start here
+* ``FeatureId``: Get the feature id of the feature in this row
+
+  Available as ``QgsAttributeTableModel.FeatureIdRole`` in older QGIS releases.
+
+* ``FieldIndex``: Get the field index of this column
+
+  Available as ``QgsAttributeTableModel.FieldIndexRole`` in older QGIS releases.
+
+* ``User``: Start further roles starting from this role
+
+  Available as ``QgsAttributeTableModel.UserRole`` in older QGIS releases.
+
+* ``Sort``: Role used for sorting start here
+
+  Available as ``QgsAttributeTableModel.SortRole`` in older QGIS releases.
+
 
 """
 # --

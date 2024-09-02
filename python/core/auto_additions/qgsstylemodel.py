@@ -46,16 +46,34 @@ QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``TypeRole``: Style entity type, see QgsStyle.StyleEntity
-* ``TagRole``: String list of tags
+* ``Type``: Style entity type, see QgsStyle.StyleEntity
+
+  Available as ``QgsStyleModel.TypeRole`` in older QGIS releases.
+
+* ``Tag``: String list of tags
+
+  Available as ``QgsStyleModel.TagRole`` in older QGIS releases.
+
 * ``EntityName``: Entity name
 
   .. versionadded:: 3.26
 
-* ``SymbolTypeRole``: Symbol type (for symbol or legend patch shape entities)
-* ``IsFavoriteRole``: Whether entity is flagged as a favorite
-* ``LayerTypeRole``: Layer type (for label settings entities)
-* ``CompatibleGeometryTypesRole``: Compatible layer geometry types (for 3D symbols)
+* ``SymbolType``: Symbol type (for symbol or legend patch shape entities)
+
+  Available as ``QgsStyleModel.SymbolTypeRole`` in older QGIS releases.
+
+* ``IsFavorite``: Whether entity is flagged as a favorite
+
+  Available as ``QgsStyleModel.IsFavoriteRole`` in older QGIS releases.
+
+* ``LayerType``: Layer type (for label settings entities)
+
+  Available as ``QgsStyleModel.LayerTypeRole`` in older QGIS releases.
+
+* ``CompatibleGeometryTypes``: Compatible layer geometry types (for 3D symbols)
+
+  Available as ``QgsStyleModel.CompatibleGeometryTypesRole`` in older QGIS releases.
+
 * ``StyleName``: Name of associated QgsStyle (QgsStyle.name())
 
   .. versionadded:: 3.26
@@ -64,9 +82,12 @@ QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 
   .. versionadded:: 3.26
 
-* ``IsTitleRole``: True if the index corresponds to a title item
+* ``IsTitle``: True if the index corresponds to a title item
 
   .. versionadded:: 3.26
+
+
+  Available as ``QgsStyleModel.IsTitleRole`` in older QGIS releases.
 
 
 """

@@ -11,8 +11,14 @@ QgsRecentCoordinateReferenceSystemsModel.RoleAuthId.is_monkey_patched = True
 QgsRecentCoordinateReferenceSystemsModel.RoleAuthId.__doc__ = "CRS authority ID"
 QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = """Custom model roles.
 
-* ``RoleCrs``: Coordinate reference system
-* ``RoleAuthId``: CRS authority ID
+* ``Crs``: Coordinate reference system
+
+  Available as ``QgsRecentCoordinateReferenceSystemsModel.RoleCrs`` in older QGIS releases.
+
+* ``AuthId``: CRS authority ID
+
+  Available as ``QgsRecentCoordinateReferenceSystemsModel.RoleAuthId`` in older QGIS releases.
+
 
 """
 # --

@@ -25,10 +25,22 @@ QgsLayerTreeModelLegendNode.CustomRole.__doc__ = """Legend node data roles
 
 .. versionadded:: 3.36
 
-* ``RuleKeyRole``: Rule key of the node (QString)
-* ``ParentRuleKeyRole``: Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
-* ``NodeTypeRole``: Type of node. Added in 3.16
-* ``IsDataDefinedSizeRole``: Set when a node is related to data defined size (title or separated legend items). Added in 3.38
+* ``RuleKey``: Rule key of the node (QString)
+
+  Available as ``QgsLayerTreeModelLegendNode.RuleKeyRole`` in older QGIS releases.
+
+* ``ParentRuleKey``: Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+
+  Available as ``QgsLayerTreeModelLegendNode.ParentRuleKeyRole`` in older QGIS releases.
+
+* ``NodeType``: Type of node. Added in 3.16
+
+  Available as ``QgsLayerTreeModelLegendNode.NodeTypeRole`` in older QGIS releases.
+
+* ``IsDataDefinedSize``: Set when a node is related to data defined size (title or separated legend items). Added in 3.38
+
+  Available as ``QgsLayerTreeModelLegendNode.IsDataDefinedSizeRole`` in older QGIS releases.
+
 
 """
 # --

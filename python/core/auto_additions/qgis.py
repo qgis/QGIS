@@ -41,14 +41,38 @@ Qgis.LayerType.__doc__ = """Types of layers that can be added to a map
 
 .. versionadded:: 3.30.
 
-* ``VectorLayer``: Vector layer
-* ``RasterLayer``: Raster layer
-* ``PluginLayer``: Plugin based layer
-* ``MeshLayer``: Mesh layer. Added in QGIS 3.2
-* ``VectorTileLayer``: Vector tile layer. Added in QGIS 3.14
-* ``AnnotationLayer``: Contains freeform, georeferenced annotations. Added in QGIS 3.16
-* ``PointCloudLayer``: Point cloud layer. Added in QGIS 3.18
-* ``GroupLayer``: Composite group layer. Added in QGIS 3.24
+* ``Vector``: Vector layer
+
+  Available as ``QgsMapLayer.VectorLayer`` in older QGIS releases.
+
+* ``Raster``: Raster layer
+
+  Available as ``QgsMapLayer.RasterLayer`` in older QGIS releases.
+
+* ``Plugin``: Plugin based layer
+
+  Available as ``QgsMapLayer.PluginLayer`` in older QGIS releases.
+
+* ``Mesh``: Mesh layer. Added in QGIS 3.2
+
+  Available as ``QgsMapLayer.MeshLayer`` in older QGIS releases.
+
+* ``VectorTile``: Vector tile layer. Added in QGIS 3.14
+
+  Available as ``QgsMapLayer.VectorTileLayer`` in older QGIS releases.
+
+* ``Annotation``: Contains freeform, georeferenced annotations. Added in QGIS 3.16
+
+  Available as ``QgsMapLayer.AnnotationLayer`` in older QGIS releases.
+
+* ``PointCloud``: Point cloud layer. Added in QGIS 3.18
+
+  Available as ``QgsMapLayer.PointCloudLayer`` in older QGIS releases.
+
+* ``Group``: Composite group layer. Added in QGIS 3.24
+
+  Available as ``QgsMapLayer.GroupLayer`` in older QGIS releases.
+
 * ``TiledScene``: Tiled scene layer. Added in QGIS 3.34
 
 """
@@ -465,11 +489,26 @@ coarse way.
 
 .. versionadded:: 3.30
 
-* ``PointGeometry``: Points
-* ``LineGeometry``: Lines
-* ``PolygonGeometry``: Polygons
-* ``UnknownGeometry``: Unknown types
-* ``NullGeometry``: No geometry
+* ``Point``: Points
+
+  Available as ``QgsWkbTypes.PointGeometry`` in older QGIS releases.
+
+* ``Line``: Lines
+
+  Available as ``QgsWkbTypes.LineGeometry`` in older QGIS releases.
+
+* ``Polygon``: Polygons
+
+  Available as ``QgsWkbTypes.PolygonGeometry`` in older QGIS releases.
+
+* ``Unknown``: Unknown types
+
+  Available as ``QgsWkbTypes.UnknownGeometry`` in older QGIS releases.
+
+* ``Null``: No geometry
+
+  Available as ``QgsWkbTypes.NullGeometry`` in older QGIS releases.
+
 
 """
 # --
@@ -637,12 +676,18 @@ Qgis.DataProviderReadFlag.__doc__ = """Flags which control data provider constru
 
 .. versionadded:: 3.40
 
-* ``FlagTrustDataSource``: Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load
+* ``TrustDataSource``: Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load
 
   .. versionadded:: 3.16
 
+
+  Available as ``QgsDataProvider.FlagTrustDataSource`` in older QGIS releases.
+
 * ``SkipFeatureCount``: Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.
-* ``FlagLoadDefaultStyle``: Reset the layer's style to the default for the datasource
+* ``LoadDefaultStyle``: Reset the layer's style to the default for the datasource
+
+  Available as ``QgsDataProvider.FlagLoadDefaultStyle`` in older QGIS releases.
+
 * ``SkipGetExtent``: Skip the extent from provider
 * ``SkipFullScan``: Skip expensive full scan on files (i.e. on delimited text)
 
@@ -840,9 +885,18 @@ Qgis.SpatialIndexPresence.__doc__ = """Enumeration of spatial index presence sta
 
 .. versionadded:: 3.36
 
-* ``SpatialIndexUnknown``: Spatial index presence cannot be determined, index may or may not exist
-* ``SpatialIndexNotPresent``: No spatial index exists for the source
-* ``SpatialIndexPresent``: A valid spatial index exists for the source
+* ``Unknown``: Spatial index presence cannot be determined, index may or may not exist
+
+  Available as ``QgsFeatureSource.SpatialIndexUnknown`` in older QGIS releases.
+
+* ``NotPresent``: No spatial index exists for the source
+
+  Available as ``QgsFeatureSource.SpatialIndexNotPresent`` in older QGIS releases.
+
+* ``Present``: A valid spatial index exists for the source
+
+  Available as ``QgsFeatureSource.SpatialIndexPresent`` in older QGIS releases.
+
 
 """
 # --
@@ -1041,10 +1095,22 @@ Qgis.PropertyType.__doc__ = """Property types
 
 .. versionadded:: 3.36
 
-* ``InvalidProperty``: Invalid (not set) property
-* ``StaticProperty``: Static property
-* ``FieldBasedProperty``: Field based property
-* ``ExpressionBasedProperty``: Expression based property
+* ``Invalid``: Invalid (not set) property
+
+  Available as ``QgsProperty.InvalidProperty`` in older QGIS releases.
+
+* ``Static``: Static property
+
+  Available as ``QgsProperty.StaticProperty`` in older QGIS releases.
+
+* ``Field``: Field based property
+
+  Available as ``QgsProperty.FieldBasedProperty`` in older QGIS releases.
+
+* ``Expression``: Expression based property
+
+  Available as ``QgsProperty.ExpressionBasedProperty`` in older QGIS releases.
+
 
 """
 # --
@@ -1152,15 +1218,36 @@ Qgis.SnappingType.__doc__ = """SnappingTypeFlag defines on what object the snapp
 
 .. versionadded:: 3.26
 
-* ``NoSnapFlag``: No snapping
-* ``VertexFlag``: On vertices
-* ``SegmentFlag``: On segments
-* ``AreaFlag``: On Area
-* ``CentroidFlag``: On centroid
-* ``MiddleOfSegmentFlag``: On Middle segment
-* ``LineEndpointFlag``: Start or end points of lines, or first vertex in polygon rings only
+* ``NoSnap``: No snapping
+
+  Available as ``QgsSnappingConfig.NoSnapFlag`` in older QGIS releases.
+
+* ``Vertex``: On vertices
+
+  Available as ``QgsSnappingConfig.VertexFlag`` in older QGIS releases.
+
+* ``Segment``: On segments
+
+  Available as ``QgsSnappingConfig.SegmentFlag`` in older QGIS releases.
+
+* ``Area``: On Area
+
+  Available as ``QgsSnappingConfig.AreaFlag`` in older QGIS releases.
+
+* ``Centroid``: On centroid
+
+  Available as ``QgsSnappingConfig.CentroidFlag`` in older QGIS releases.
+
+* ``MiddleOfSegment``: On Middle segment
+
+  Available as ``QgsSnappingConfig.MiddleOfSegmentFlag`` in older QGIS releases.
+
+* ``LineEndpoint``: Start or end points of lines, or first vertex in polygon rings only
 
   .. versionadded:: 3.20
+
+
+  Available as ``QgsSnappingConfig.LineEndpointFlag`` in older QGIS releases.
 
 
 """
@@ -1453,11 +1540,26 @@ Qgis.DataItemProviderCapability.__doc__ = """Capabilities for data item provider
 
 .. versionadded:: 3.36
 
-* ``NoDataCapabilities``: No capabilities
-* ``File``: Can provides items which corresponds to files
-* ``Dir``: Can provides items which corresponds to directories
-* ``Database``: Can provides items which corresponds to databases
-* ``Net``: Network/internet source
+* ``NoCapabilities``: No capabilities
+
+  Available as ``QgsDataProvider.NoDataCapabilities`` in older QGIS releases.
+
+* ``Files``: Can provides items which corresponds to files
+
+  Available as ``QgsDataProvider.File`` in older QGIS releases.
+
+* ``Directories``: Can provides items which corresponds to directories
+
+  Available as ``QgsDataProvider.Dir`` in older QGIS releases.
+
+* ``Databases``: Can provides items which corresponds to databases
+
+  Available as ``QgsDataProvider.Database`` in older QGIS releases.
+
+* ``NetworkSources``: Network/internet source
+
+  Available as ``QgsDataProvider.Net`` in older QGIS releases.
+
 
 """
 # --
@@ -1616,18 +1718,54 @@ Qgis.VectorExportResult.__doc__ = """Vector layer export result codes.
 
 .. versionadded:: 3.20
 
-* ``NoError``: No errors were encountered
-* ``ErrCreateDataSource``: Could not create the destination data source
-* ``ErrCreateLayer``: Could not create destination layer
-* ``ErrAttributeTypeUnsupported``: Source layer has an attribute type which could not be handled by destination
-* ``ErrAttributeCreationFailed``: Destination provider was unable to create an attribute
-* ``ErrProjection``: An error occurred while reprojecting features to destination CRS
-* ``ErrFeatureWriteFailed``: An error occurred while writing a feature to the destination
-* ``ErrInvalidLayer``: Could not access newly created destination layer
-* ``ErrInvalidProvider``: Could not find a matching provider key
-* ``ErrProviderUnsupportedFeature``: Provider does not support creation of empty layers
-* ``ErrConnectionFailed``: Could not connect to destination
-* ``ErrUserCanceled``: User canceled the export
+* ``Success``: No errors were encountered
+
+  Available as ``QgsVectorLayerExporter.NoError`` in older QGIS releases.
+
+* ``ErrorCreatingDataSource``: Could not create the destination data source
+
+  Available as ``QgsVectorLayerExporter.ErrCreateDataSource`` in older QGIS releases.
+
+* ``ErrorCreatingLayer``: Could not create destination layer
+
+  Available as ``QgsVectorLayerExporter.ErrCreateLayer`` in older QGIS releases.
+
+* ``ErrorAttributeTypeUnsupported``: Source layer has an attribute type which could not be handled by destination
+
+  Available as ``QgsVectorLayerExporter.ErrAttributeTypeUnsupported`` in older QGIS releases.
+
+* ``ErrorAttributeCreationFailed``: Destination provider was unable to create an attribute
+
+  Available as ``QgsVectorLayerExporter.ErrAttributeCreationFailed`` in older QGIS releases.
+
+* ``ErrorProjectingFeatures``: An error occurred while reprojecting features to destination CRS
+
+  Available as ``QgsVectorLayerExporter.ErrProjection`` in older QGIS releases.
+
+* ``ErrorFeatureWriteFailed``: An error occurred while writing a feature to the destination
+
+  Available as ``QgsVectorLayerExporter.ErrFeatureWriteFailed`` in older QGIS releases.
+
+* ``ErrorInvalidLayer``: Could not access newly created destination layer
+
+  Available as ``QgsVectorLayerExporter.ErrInvalidLayer`` in older QGIS releases.
+
+* ``ErrorInvalidProvider``: Could not find a matching provider key
+
+  Available as ``QgsVectorLayerExporter.ErrInvalidProvider`` in older QGIS releases.
+
+* ``ErrorProviderUnsupportedFeature``: Provider does not support creation of empty layers
+
+  Available as ``QgsVectorLayerExporter.ErrProviderUnsupportedFeature`` in older QGIS releases.
+
+* ``ErrorConnectionFailed``: Could not connect to destination
+
+  Available as ``QgsVectorLayerExporter.ErrConnectionFailed`` in older QGIS releases.
+
+* ``UserCanceled``: User canceled the export
+
+  Available as ``QgsVectorLayerExporter.ErrUserCanceled`` in older QGIS releases.
+
 
 """
 # --
@@ -1736,8 +1874,14 @@ Qgis.ActionStart.__doc__ = """Enum to determine when an operation would begin
 
 .. versionadded:: 3.22
 
-* ``DownloadLater``: Do not start immediately the action
-* ``DownloadImmediately``: Action will start immediately
+* ``Deferred``: Do not start immediately the action
+
+  Available as ``QgsNetworkContentFetcherRegistry.DownloadLater`` in older QGIS releases.
+
+* ``Immediate``: Action will start immediately
+
+  Available as ``QgsNetworkContentFetcherRegistry.DownloadImmediately`` in older QGIS releases.
+
 
 """
 # --
@@ -1974,15 +2118,42 @@ Qgis.LabelQuadrantPosition.__doc__ = """Label quadrant positions
 
 .. versionadded:: 3.26
 
-* ``QuadrantAboveLeft``: Above left
-* ``QuadrantAbove``: Above center
-* ``QuadrantAboveRight``: Above right
-* ``QuadrantLeft``: Left middle
-* ``QuadrantOver``: Center middle
-* ``QuadrantRight``: Right middle
-* ``QuadrantBelowLeft``: Below left
-* ``QuadrantBelow``: Below center
-* ``QuadrantBelowRight``: BelowRight
+* ``AboveLeft``: Above left
+
+  Available as ``QgsPalLayerSettings.QuadrantAboveLeft`` in older QGIS releases.
+
+* ``Above``: Above center
+
+  Available as ``QgsPalLayerSettings.QuadrantAbove`` in older QGIS releases.
+
+* ``AboveRight``: Above right
+
+  Available as ``QgsPalLayerSettings.QuadrantAboveRight`` in older QGIS releases.
+
+* ``Left``: Left middle
+
+  Available as ``QgsPalLayerSettings.QuadrantLeft`` in older QGIS releases.
+
+* ``Over``: Center middle
+
+  Available as ``QgsPalLayerSettings.QuadrantOver`` in older QGIS releases.
+
+* ``Right``: Right middle
+
+  Available as ``QgsPalLayerSettings.QuadrantRight`` in older QGIS releases.
+
+* ``BelowLeft``: Below left
+
+  Available as ``QgsPalLayerSettings.QuadrantBelowLeft`` in older QGIS releases.
+
+* ``Below``: Below center
+
+  Available as ``QgsPalLayerSettings.QuadrantBelow`` in older QGIS releases.
+
+* ``BelowRight``: BelowRight
+
+  Available as ``QgsPalLayerSettings.QuadrantBelowRight`` in older QGIS releases.
+
 
 """
 # --
@@ -2066,9 +2237,18 @@ Qgis.UpsideDownLabelHandling.__doc__ = """Handling techniques for upside down la
 
 .. versionadded:: 3.26
 
-* ``Upright``: Upside-down labels (90 <= angle < 270) are shown upright
-* ``ShowDefined``: Show upside down when rotation is layer- or data-defined
-* ``ShowAll``: Show upside down for all labels, including dynamic ones
+* ``FlipUpsideDownLabels``: Upside-down labels (90 <= angle < 270) are shown upright
+
+  Available as ``QgsPalLayerSettings.Upright`` in older QGIS releases.
+
+* ``AllowUpsideDownWhenRotationIsDefined``: Show upside down when rotation is layer- or data-defined
+
+  Available as ``QgsPalLayerSettings.ShowDefined`` in older QGIS releases.
+
+* ``AlwaysAllowUpsideDown``: Show upside down for all labels, including dynamic ones
+
+  Available as ``QgsPalLayerSettings.ShowAll`` in older QGIS releases.
+
 
 """
 # --
@@ -2103,11 +2283,26 @@ Qgis.LabelMultiLineAlignment.__doc__ = """Text alignment for multi-line labels.
 
 .. versionadded:: 3.26
 
-* ``MultiLeft``: Left align
-* ``MultiCenter``: Center align
-* ``MultiRight``: Right align
-* ``MultiFollowPlacement``: Alignment follows placement of label, e.g., labels to the left of a feature will be drawn with right alignment
-* ``MultiJustify``: Justified
+* ``Left``: Left align
+
+  Available as ``QgsPalLayerSettings.MultiLeft`` in older QGIS releases.
+
+* ``Center``: Center align
+
+  Available as ``QgsPalLayerSettings.MultiCenter`` in older QGIS releases.
+
+* ``Right``: Right align
+
+  Available as ``QgsPalLayerSettings.MultiRight`` in older QGIS releases.
+
+* ``FollowPlacement``: Alignment follows placement of label, e.g., labels to the left of a feature will be drawn with right alignment
+
+  Available as ``QgsPalLayerSettings.MultiFollowPlacement`` in older QGIS releases.
+
+* ``Justify``: Justified
+
+  Available as ``QgsPalLayerSettings.MultiJustify`` in older QGIS releases.
+
 
 """
 # --
@@ -2146,13 +2341,28 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterT
 
 .. versionadded:: 3.32
 
-* ``FilterVector``: Vector layers
-* ``FilterRaster``: Raster layers
-* ``FilterMesh``: Mesh layers
-* ``FilterMeshDataset``: Mesh datasets
-* ``FilterPointCloud``: Point clouds
+* ``Vector``: Vector layers
+
+  Available as ``QgsProviderMetadata.FilterVector`` in older QGIS releases.
+
+* ``Raster``: Raster layers
+
+  Available as ``QgsProviderMetadata.FilterRaster`` in older QGIS releases.
+
+* ``Mesh``: Mesh layers
+
+  Available as ``QgsProviderMetadata.FilterMesh`` in older QGIS releases.
+
+* ``MeshDataset``: Mesh datasets
+
+  Available as ``QgsProviderMetadata.FilterMeshDataset`` in older QGIS releases.
+
+* ``PointCloud``: Point clouds
 
   .. versionadded:: 3.18
+
+
+  Available as ``QgsProviderMetadata.FilterPointCloud`` in older QGIS releases.
 
 * ``VectorTile``: Vector tile layers
 
@@ -2218,7 +2428,10 @@ Qgis.ShaderInterpolationMethod.__doc__ = """Color ramp shader interpolation meth
 
 .. versionadded:: 3.38
 
-* ``Interpolated``: Interpolates the color between two class breaks linearly
+* ``Linear``: Interpolates the color between two class breaks linearly
+
+  Available as ``QgsColorRampShader.Interpolated`` in older QGIS releases.
+
 * ``Discrete``: Assigns the color of the higher class for every pixel between two class breaks
 * ``Exact``: Assigns the color of the exact matching value in the color ramp item list
 
@@ -2289,14 +2502,38 @@ Qgis.RasterPipeInterfaceRole.__doc__ = """Raster pipe interface roles.
 
 .. versionadded:: 3.22
 
-* ``UnknownRole``: Unknown role
-* ``ProviderRole``: Data provider role
-* ``RendererRole``: Raster renderer role
-* ``BrightnessRole``: Brightness filter role
-* ``ResamplerRole``: Resampler role
-* ``ProjectorRole``: Projector role
-* ``NullerRole``: Raster nuller role
-* ``HueSaturationRole``: Hue/saturation filter role (also applies grayscale/color inversion)
+* ``Unknown``: Unknown role
+
+  Available as ``QgsRasterPipe.UnknownRole`` in older QGIS releases.
+
+* ``Provider``: Data provider role
+
+  Available as ``QgsRasterPipe.ProviderRole`` in older QGIS releases.
+
+* ``Renderer``: Raster renderer role
+
+  Available as ``QgsRasterPipe.RendererRole`` in older QGIS releases.
+
+* ``Brightness``: Brightness filter role
+
+  Available as ``QgsRasterPipe.BrightnessRole`` in older QGIS releases.
+
+* ``Resampler``: Resampler role
+
+  Available as ``QgsRasterPipe.ResamplerRole`` in older QGIS releases.
+
+* ``Projector``: Projector role
+
+  Available as ``QgsRasterPipe.ProjectorRole`` in older QGIS releases.
+
+* ``Nuller``: Raster nuller role
+
+  Available as ``QgsRasterPipe.NullerRole`` in older QGIS releases.
+
+* ``HueSaturation``: Hue/saturation filter role (also applies grayscale/color inversion)
+
+  Available as ``QgsRasterPipe.HueSaturationRole`` in older QGIS releases.
+
 
 """
 # --
@@ -2431,7 +2668,10 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsRasterFileWriter`.Mode
 .. versionadded:: 3.32
 
 * ``Raw``: Raw data
-* ``Image``: Rendered image
+* ``RenderedImage``: Rendered image
+
+  Available as ``QgsRasterFileWriter.Image`` in older QGIS releases.
+
 
 """
 # --
@@ -2468,13 +2708,22 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsRasterFileWriter`.WriterE
 
 .. versionadded:: 3.32
 
-* ``NoError``: Successful export
+* ``Success``: Successful export
+
+  Available as ``QgsRasterFileWriter.NoError`` in older QGIS releases.
+
 * ``SourceProviderError``: Source data provider error
-* ``DestProviderError``: Destination data provider error
+* ``DestinationProviderError``: Destination data provider error
+
+  Available as ``QgsRasterFileWriter.DestProviderError`` in older QGIS releases.
+
 * ``CreateDatasourceError``: Data source creation error
 * ``WriteError``: Write error
 * ``NoDataConflict``: Internal error if a value used for 'no data' was found in input
-* ``WriteCanceled``: Writing was manually canceled
+* ``Canceled``: Writing was manually canceled
+
+  Available as ``QgsRasterFileWriter.WriteCanceled`` in older QGIS releases.
+
 
 """
 # --
@@ -2562,11 +2811,26 @@ Qgis.FieldOrigin.__doc__ = """Field origin.
 
 .. versionadded:: 3.38
 
-* ``OriginUnknown``: The field origin has not been specified
-* ``OriginProvider``: Field originates from the underlying data provider of the vector layer
-* ``OriginJoin``: Field originates from a joined layer
-* ``OriginEdit``: Field has been temporarily added in editing mode
-* ``OriginExpression``: Field is calculated from an expression
+* ``Unknown``: The field origin has not been specified
+
+  Available as ``QgsFields.OriginUnknown`` in older QGIS releases.
+
+* ``Provider``: Field originates from the underlying data provider of the vector layer
+
+  Available as ``QgsFields.OriginProvider`` in older QGIS releases.
+
+* ``Join``: Field originates from a joined layer
+
+  Available as ``QgsFields.OriginJoin`` in older QGIS releases.
+
+* ``Edit``: Field has been temporarily added in editing mode
+
+  Available as ``QgsFields.OriginEdit`` in older QGIS releases.
+
+* ``Expression``: Field is calculated from an expression
+
+  Available as ``QgsFields.OriginExpression`` in older QGIS releases.
+
 
 """
 # --
@@ -3078,7 +3342,10 @@ Qgis.GeometryValidityFlag.__doc__ = """Geometry validity check flags.
 
 .. versionadded:: 3.22
 
-* ``FlagAllowSelfTouchingHoles``: Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
+* ``AllowSelfTouchingHoles``: Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
+
+  Available as ``QgsGeometry.FlagAllowSelfTouchingHoles`` in older QGIS releases.
+
 
 """
 # --
@@ -3100,8 +3367,14 @@ Qgis.GeometryValidationEngine.__doc__ = """Available engines for validating geom
 
 .. versionadded:: 3.22
 
-* ``ValidatorQgisInternal``: Use internal QgsGeometryValidator method
-* ``ValidatorGeos``: Use GEOS validation methods
+* ``QgisInternal``: Use internal QgsGeometryValidator method
+
+  Available as ``QgsGeometry.ValidatorQgisInternal`` in older QGIS releases.
+
+* ``Geos``: Use GEOS validation methods
+
+  Available as ``QgsGeometry.ValidatorGeos`` in older QGIS releases.
+
 
 """
 # --
@@ -3120,8 +3393,14 @@ Qgis.BufferSide.__doc__ = """Side of line to buffer.
 
 .. versionadded:: 3.22
 
-* ``SideLeft``: Buffer to left of line
-* ``SideRight``: Buffer to right of line
+* ``Left``: Buffer to left of line
+
+  Available as ``QgsGeometry.SideLeft`` in older QGIS releases.
+
+* ``Right``: Buffer to right of line
+
+  Available as ``QgsGeometry.SideRight`` in older QGIS releases.
+
 
 """
 # --
@@ -3144,9 +3423,18 @@ Qgis.EndCapStyle.__doc__ = """End cap styles for buffers.
 
 .. versionadded:: 3.22
 
-* ``CapRound``: Round cap
-* ``CapFlat``: Flat cap (in line with start/end of line)
-* ``CapSquare``: Square cap (extends past start/end of line by buffer distance)
+* ``Round``: Round cap
+
+  Available as ``QgsGeometry.CapRound`` in older QGIS releases.
+
+* ``Flat``: Flat cap (in line with start/end of line)
+
+  Available as ``QgsGeometry.CapFlat`` in older QGIS releases.
+
+* ``Square``: Square cap (extends past start/end of line by buffer distance)
+
+  Available as ``QgsGeometry.CapSquare`` in older QGIS releases.
+
 
 """
 # --
@@ -3169,9 +3457,18 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 
 .. versionadded:: 3.22
 
-* ``JoinStyleRound``: Use rounded joins
-* ``JoinStyleMiter``: Use mitered joins
-* ``JoinStyleBevel``: Use beveled joins
+* ``Round``: Use rounded joins
+
+  Available as ``QgsGeometry.JoinStyleRound`` in older QGIS releases.
+
+* ``Miter``: Use mitered joins
+
+  Available as ``QgsGeometry.JoinStyleMiter`` in older QGIS releases.
+
+* ``Bevel``: Use beveled joins
+
+  Available as ``QgsGeometry.JoinStyleBevel`` in older QGIS releases.
+
 
 """
 # --
@@ -3277,10 +3574,22 @@ Qgis.FeatureRequestFilterType.__doc__ = """Types of feature request filters.
 
 .. versionadded:: 3.36
 
-* ``FilterNone``: No filter is applied
-* ``FilterFid``: Filter using feature ID
-* ``FilterExpression``: Filter using expression
-* ``FilterFids``: Filter using feature IDs
+* ``NoFilter``: No filter is applied
+
+  Available as ``QgsFeatureRequest.FilterNone`` in older QGIS releases.
+
+* ``Fid``: Filter using feature ID
+
+  Available as ``QgsFeatureRequest.FilterFid`` in older QGIS releases.
+
+* ``Expression``: Filter using expression
+
+  Available as ``QgsFeatureRequest.FilterExpression`` in older QGIS releases.
+
+* ``Fids``: Filter using feature IDs
+
+  Available as ``QgsFeatureRequest.FilterFids`` in older QGIS releases.
+
 
 """
 # --
@@ -3307,9 +3616,18 @@ Qgis.InvalidGeometryCheck.__doc__ = """Methods for handling of features with inv
 
 .. versionadded:: 3.36
 
-* ``GeometryNoCheck``: No invalid geometry checking
-* ``GeometrySkipInvalid``: Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
-* ``GeometryAbortOnInvalid``: Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+* ``NoCheck``: No invalid geometry checking
+
+  Available as ``QgsFeatureRequest.GeometryNoCheck`` in older QGIS releases.
+
+* ``SkipInvalid``: Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
+
+  Available as ``QgsFeatureRequest.GeometrySkipInvalid`` in older QGIS releases.
+
+* ``AbortOnInvalid``: Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+
+  Available as ``QgsFeatureRequest.GeometryAbortOnInvalid`` in older QGIS releases.
+
 
 """
 # --
@@ -3618,15 +3936,42 @@ Qgis.CrsWktVariant.__doc__ = """Coordinate reference system WKT formatting varia
 
 .. versionadded:: 3.36
 
-* ``WKT1_GDAL``: WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
-* ``WKT1_ESRI``: WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
-* ``WKT2_2015``: Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
-* ``WKT2_2015_SIMPLIFIED``: Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure.METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-* ``WKT2_2019``: Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
-* ``WKT2_2019_SIMPLIFIED``: WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
-* ``WKT_PREFERRED``: Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
-* ``WKT_PREFERRED_SIMPLIFIED``: Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
-* ``WKT_PREFERRED_GDAL``: Preferred format for conversion of CRS to WKT for use with the GDAL library.
+* ``Wkt1Gdal``: WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT1_GDAL`` in older QGIS releases.
+
+* ``Wkt1Esri``: WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT1_ESRI`` in older QGIS releases.
+
+* ``Wkt2_2015``: Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT2_2015`` in older QGIS releases.
+
+* ``Wkt2_2015Simplified``: Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure.METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED`` in older QGIS releases.
+
+* ``Wkt2_2019``: Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT2_2019`` in older QGIS releases.
+
+* ``Wkt2_2019Simplified``: WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
+
+  Available as ``QgsCoordinateReferenceSystem.WKT2_2019_SIMPLIFIED`` in older QGIS releases.
+
+* ``Preferred``: Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT_PREFERRED`` in older QGIS releases.
+
+* ``PreferredSimplified``: Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED`` in older QGIS releases.
+
+* ``PreferredGdal``: Preferred format for conversion of CRS to WKT for use with the GDAL library.
+
+  Available as ``QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL`` in older QGIS releases.
+
 
 """
 # --
@@ -3751,7 +4096,10 @@ Qgis.TemporalNavigationMode.__doc__ = """Temporal navigation modes.
 
 .. versionadded:: 3.36
 
-* ``NavigationOff``: Temporal navigation is disabled
+* ``Disabled``: Temporal navigation is disabled
+
+  Available as ``QgsTemporalNavigationObject.NavigationOff`` in older QGIS releases.
+
 * ``Animated``: Temporal navigation relies on frames within a datetime range
 * ``FixedRange``: Temporal navigation relies on a fixed datetime range
 * ``Movie``: Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range
@@ -3841,12 +4189,30 @@ Qgis.VectorTemporalMode.__doc__ = """Vector layer temporal feature modes
 
 .. versionadded:: 3.22
 
-* ``ModeFixedTemporalRange``: Mode when temporal properties have fixed start and end datetimes.
-* ``ModeFeatureDateTimeInstantFromField``: Mode when features have a datetime instant taken from a single field
-* ``ModeFeatureDateTimeStartAndEndFromFields``: Mode when features have separate fields for start and end times
-* ``ModeFeatureDateTimeStartAndDurationFromFields``: Mode when features have a field for start time and a field for event duration
-* ``ModeFeatureDateTimeStartAndEndFromExpressions``: Mode when features use expressions for start and end times
-* ``ModeRedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
+* ``FixedTemporalRange``: Mode when temporal properties have fixed start and end datetimes.
+
+  Available as ``QgsVectorLayerTemporalProperties.ModeFixedTemporalRange`` in older QGIS releases.
+
+* ``FeatureDateTimeInstantFromField``: Mode when features have a datetime instant taken from a single field
+
+  Available as ``QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField`` in older QGIS releases.
+
+* ``FeatureDateTimeStartAndEndFromFields``: Mode when features have separate fields for start and end times
+
+  Available as ``QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields`` in older QGIS releases.
+
+* ``FeatureDateTimeStartAndDurationFromFields``: Mode when features have a field for start time and a field for event duration
+
+  Available as ``QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndDurationFromFields`` in older QGIS releases.
+
+* ``FeatureDateTimeStartAndEndFromExpressions``: Mode when features use expressions for start and end times
+
+  Available as ``QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions`` in older QGIS releases.
+
+* ``RedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
+
+  Available as ``QgsVectorLayerTemporalProperties.ModeRedrawLayerOnly`` in older QGIS releases.
+
 
 """
 # --
@@ -3882,9 +4248,18 @@ Qgis.VectorDataProviderTemporalMode.__doc__ = """Vector data provider temporal h
 
 .. versionadded:: 3.22
 
-* ``ProviderHasFixedTemporalRange``: Entire dataset from provider has a fixed start and end datetime.
-* ``ProviderStoresFeatureDateTimeInstantInField``: Dataset has feature datetime instants stored in a single field
-* ``ProviderStoresFeatureDateTimeStartAndEndInSeparateFields``: Dataset stores feature start and end datetimes in separate fields
+* ``HasFixedTemporalRange``: Entire dataset from provider has a fixed start and end datetime.
+
+  Available as ``QgsVectorDataProviderTemporalCapabilities.ProviderHasFixedTemporalRange`` in older QGIS releases.
+
+* ``StoresFeatureDateTimeInstantInField``: Dataset has feature datetime instants stored in a single field
+
+  Available as ``QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeInstantInField`` in older QGIS releases.
+
+* ``StoresFeatureDateTimeStartAndEndInSeparateFields``: Dataset stores feature start and end datetimes in separate fields
+
+  Available as ``QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeStartAndEndInSeparateFields`` in older QGIS releases.
+
 
 """
 # --
@@ -3913,11 +4288,20 @@ Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
 
 .. versionadded:: 3.22
 
-* ``ModeFixedTemporalRange``: Mode when temporal properties have fixed start and end datetimes.
-* ``ModeTemporalRangeFromDataProvider``: Mode when raster layer delegates temporal range handling to the dataprovider.
-* ``ModeRedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range.
+* ``FixedTemporalRange``: Mode when temporal properties have fixed start and end datetimes.
+
+  Available as ``QgsRasterLayerTemporalProperties.ModeFixedTemporalRange`` in older QGIS releases.
+
+* ``TemporalRangeFromDataProvider``: Mode when raster layer delegates temporal range handling to the dataprovider.
+
+  Available as ``QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider`` in older QGIS releases.
+
+* ``RedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range.
 
   .. versionadded:: 3.22
+
+
+  Available as ``QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly`` in older QGIS releases.
 
 * ``FixedRangePerBand``: Layer has a fixed temporal range per band
 
@@ -3985,8 +4369,14 @@ Qgis.TransformDirection.__doc__ = """Indicates the direction (forward or inverse
 
 .. versionadded:: 3.22
 
-* ``ForwardTransform``: Forward transform (from source to destination)
-* ``ReverseTransform``: Reverse/inverse transform (from destination to source)
+* ``Forward``: Forward transform (from source to destination)
+
+  Available as ``QgsCoordinateTransform.ForwardTransform`` in older QGIS releases.
+
+* ``Reverse``: Reverse/inverse transform (from destination to source)
+
+  Available as ``QgsCoordinateTransform.ReverseTransform`` in older QGIS releases.
+
 
 """
 # --
@@ -4251,8 +4641,14 @@ Qgis.TextRenderFormat.__doc__ = """Options for rendering text.
 
 .. versionadded:: 3.22
 
-* ``TextFormatAlwaysOutlines``: Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
-* ``TextFormatAlwaysText``: Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+* ``AlwaysOutlines``: Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
+
+  Available as ``QgsRenderContext.TextFormatAlwaysOutlines`` in older QGIS releases.
+
+* ``AlwaysText``: Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+
+  Available as ``QgsRenderContext.TextFormatAlwaysText`` in older QGIS releases.
+
 
 """
 # --
@@ -4326,8 +4722,14 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.P
 
 .. versionadded:: 3.30
 
-* ``PlacementEngineVersion1``: Version 1, matches placement from QGIS <= 3.10.1
-* ``PlacementEngineVersion2``: Version 2 (default for new projects since QGIS 3.12)
+* ``Version1``: Version 1, matches placement from QGIS <= 3.10.1
+
+  Available as ``QgsLabelingEngineSettings.PlacementEngineVersion1`` in older QGIS releases.
+
+* ``Version2``: Version 2 (default for new projects since QGIS 3.12)
+
+  Available as ``QgsLabelingEngineSettings.PlacementEngineVersion2`` in older QGIS releases.
+
 
 """
 # --
@@ -4354,9 +4756,18 @@ Qgis.TextOrientation.__doc__ = """Text orientations.
 
 .. versionadded:: 3.28
 
-* ``HorizontalOrientation``: Horizontally oriented text
-* ``VerticalOrientation``: Vertically oriented text
-* ``RotationBasedOrientation``: Horizontally or vertically oriented text based on rotation (only available for map labeling)
+* ``Horizontal``: Horizontally oriented text
+
+  Available as ``QgsTextFormat.HorizontalOrientation`` in older QGIS releases.
+
+* ``Vertical``: Vertically oriented text
+
+  Available as ``QgsTextFormat.VerticalOrientation`` in older QGIS releases.
+
+* ``RotationBased``: Horizontally or vertically oriented text based on rotation (only available for map labeling)
+
+  Available as ``QgsTextFormat.RotationBasedOrientation`` in older QGIS releases.
+
 
 """
 # --
@@ -4388,9 +4799,15 @@ Qgis.TextLayoutMode.__doc__ = """Text layout modes.
 
 .. versionadded:: 3.28
 
-* ``Rect``: Text within rectangle layout mode
+* ``Rectangle``: Text within rectangle layout mode
+
+  Available as ``QgsTextRenderer.Rect`` in older QGIS releases.
+
 * ``Point``: Text at point of origin layout mode
-* ``Label``: Labeling-specific layout mode
+* ``Labeling``: Labeling-specific layout mode
+
+  Available as ``QgsTextRenderer.Label`` in older QGIS releases.
+
 * ``RectangleCapHeightBased``: Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text
 
   .. versionadded:: 3.30
@@ -4459,10 +4876,22 @@ Qgis.TextHorizontalAlignment.__doc__ = """Text horizontal alignment.
 
 .. versionadded:: 3.28
 
-* ``AlignLeft``: Left align
-* ``AlignCenter``: Center align
-* ``AlignRight``: Right align
-* ``AlignJustify``: Justify align
+* ``Left``: Left align
+
+  Available as ``QgsTextRenderer.AlignLeft`` in older QGIS releases.
+
+* ``Center``: Center align
+
+  Available as ``QgsTextRenderer.AlignCenter`` in older QGIS releases.
+
+* ``Right``: Right align
+
+  Available as ``QgsTextRenderer.AlignRight`` in older QGIS releases.
+
+* ``Justify``: Justify align
+
+  Available as ``QgsTextRenderer.AlignJustify`` in older QGIS releases.
+
 
 """
 # --
@@ -4492,9 +4921,18 @@ bounding box. See also Qgis.TextCharacterVerticalAlignment.
 
 .. versionadded:: 3.28
 
-* ``AlignTop``: Align to top
-* ``AlignVCenter``: Center align
-* ``AlignBottom``: Align to bottom
+* ``Top``: Align to top
+
+  Available as ``QgsTextRenderer.AlignTop`` in older QGIS releases.
+
+* ``VerticalCenter``: Center align
+
+  Available as ``QgsTextRenderer.AlignVCenter`` in older QGIS releases.
+
+* ``Bottom``: Align to bottom
+
+  Available as ``QgsTextRenderer.AlignBottom`` in older QGIS releases.
+
 
 """
 # --
@@ -4611,8 +5049,14 @@ Qgis.VertexType.__doc__ = """Types of vertex.
 
 .. versionadded:: 3.22
 
-* ``SegmentVertex``: The actual start or end point of a segment
-* ``CurveVertex``: An intermediate point on a segment defining the curvature of the segment
+* ``Segment``: The actual start or end point of a segment
+
+  Available as ``QgsVertexId.SegmentVertex`` in older QGIS releases.
+
+* ``Curve``: An intermediate point on a segment defining the curvature of the segment
+
+  Available as ``QgsVertexId.CurveVertex`` in older QGIS releases.
+
 
 """
 # --
@@ -4987,8 +5431,14 @@ Qgis.PointCountMethod.__doc__ = """Methods which define the number of points ran
 
 .. versionadded:: 3.24
 
-* ``AbsoluteCount``: The point count is used as an absolute count of markers
-* ``DensityBasedCount``: The point count is part of a marker density count
+* ``Absolute``: The point count is used as an absolute count of markers
+
+  Available as ``QgsRandomMarkerFillSymbolLayer.AbsoluteCount`` in older QGIS releases.
+
+* ``DensityBased``: The point count is part of a marker density count
+
+  Available as ``QgsRandomMarkerFillSymbolLayer.DensityBasedCount`` in older QGIS releases.
+
 
 """
 # --
@@ -5077,8 +5527,14 @@ Qgis.GraduatedMethod.__doc__ = """Methods for modifying symbols by range in a gr
 
 .. versionadded:: 3.26
 
-* ``GraduatedColor``: Alter color of symbols
-* ``GraduatedSize``: Alter size of symbols
+* ``Color``: Alter color of symbols
+
+  Available as ``QgsGraduatedSymbolRenderer.GraduatedColor`` in older QGIS releases.
+
+* ``Size``: Alter size of symbols
+
+  Available as ``QgsGraduatedSymbolRenderer.GraduatedSize`` in older QGIS releases.
+
 
 """
 # --
@@ -5354,33 +5810,72 @@ Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 .. versionadded:: 3.36
 
-* ``TypeMapLayer``: Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
-* ``TypeVectorAnyGeometry``: Any vector layer with geometry
-* ``TypeVectorPoint``: Vector point layers
-* ``TypeVectorLine``: Vector line layers
-* ``TypeVectorPolygon``: Vector polygon layers
-* ``TypeRaster``: Raster layers
-* ``TypeFile``: Files (i.e. non map layer sources, such as text files)
-* ``TypeVector``: Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
-* ``TypeMesh``: Mesh layers
+* ``MapLayer``: Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
+
+  Available as ``QgsProcessing.TypeMapLayer`` in older QGIS releases.
+
+* ``VectorAnyGeometry``: Any vector layer with geometry
+
+  Available as ``QgsProcessing.TypeVectorAnyGeometry`` in older QGIS releases.
+
+* ``VectorPoint``: Vector point layers
+
+  Available as ``QgsProcessing.TypeVectorPoint`` in older QGIS releases.
+
+* ``VectorLine``: Vector line layers
+
+  Available as ``QgsProcessing.TypeVectorLine`` in older QGIS releases.
+
+* ``VectorPolygon``: Vector polygon layers
+
+  Available as ``QgsProcessing.TypeVectorPolygon`` in older QGIS releases.
+
+* ``Raster``: Raster layers
+
+  Available as ``QgsProcessing.TypeRaster`` in older QGIS releases.
+
+* ``File``: Files (i.e. non map layer sources, such as text files)
+
+  Available as ``QgsProcessing.TypeFile`` in older QGIS releases.
+
+* ``Vector``: Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
+
+  Available as ``QgsProcessing.TypeVector`` in older QGIS releases.
+
+* ``Mesh``: Mesh layers
 
   .. versionadded:: 3.6
 
-* ``TypePlugin``: Plugin layers
+
+  Available as ``QgsProcessing.TypeMesh`` in older QGIS releases.
+
+* ``Plugin``: Plugin layers
 
   .. versionadded:: 3.22
 
-* ``TypePointCloud``: Point cloud layers
+
+  Available as ``QgsProcessing.TypePlugin`` in older QGIS releases.
+
+* ``PointCloud``: Point cloud layers
 
   .. versionadded:: 3.22
 
-* ``TypeAnnotation``: Annotation layers
+
+  Available as ``QgsProcessing.TypePointCloud`` in older QGIS releases.
+
+* ``Annotation``: Annotation layers
 
   .. versionadded:: 3.22
 
-* ``TypeVectorTile``: Vector tile layers
+
+  Available as ``QgsProcessing.TypeAnnotation`` in older QGIS releases.
+
+* ``VectorTile``: Vector tile layers
 
   .. versionadded:: 3.32
+
+
+  Available as ``QgsProcessing.TypeVectorTile`` in older QGIS releases.
 
 
 """
@@ -5404,10 +5899,16 @@ Qgis.ProcessingProviderFlag.__doc__ = """Flags indicating how and when an proces
 
 .. versionadded:: 3.36
 
-* ``FlagDeemphasiseSearchResults``: Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
-* ``FlagCompatibleWithVirtualRaster``: The processing provider's algorithms can work with QGIS virtualraster data provider
+* ``DeemphasiseSearchResults``: Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+
+  Available as ``QgsProcessingProvider.FlagDeemphasiseSearchResults`` in older QGIS releases.
+
+* ``CompatibleWithVirtualRaster``: The processing provider's algorithms can work with QGIS virtualraster data provider
 
   .. versionadded:: 3.36
+
+
+  Available as ``QgsProcessingProvider.FlagCompatibleWithVirtualRaster`` in older QGIS releases.
 
 
 """
@@ -5486,21 +5987,66 @@ Qgis.ProcessingAlgorithmFlag.__doc__ = """Flags indicating how and when an algor
 
 .. versionadded:: 3.36
 
-* ``FlagHideFromToolbox``: Algorithm should be hidden from the toolbox
-* ``FlagHideFromModeler``: Algorithm should be hidden from the modeler
-* ``FlagSupportsBatch``: Algorithm supports batch mode
-* ``FlagCanCancel``: Algorithm can be canceled
-* ``FlagRequiresMatchingCrs``: Algorithm requires that all input layers have matching coordinate reference systems
-* ``FlagNoThreading``: Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
-* ``FlagDisplayNameIsLiteral``: Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
-* ``FlagSupportsInPlaceEdits``: Algorithm supports in-place editing
-* ``FlagKnownIssues``: Algorithm has known issues
-* ``FlagCustomException``: Algorithm raises custom exception notices, don't use the standard ones
-* ``FlagPruneModelBranchesBasedOnAlgorithmResults``: Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
-* ``FlagSkipGenericModelLogging``: When running as part of a model, the generic algorithm setup and results logging should be skipped
-* ``FlagNotAvailableInStandaloneTool``: Algorithm should not be available from the standalone \"qgis_process\" tool. Used to flag algorithms which make no sense outside of the QGIS application, such as \"select by...\" style algorithms.
-* ``FlagRequiresProject``: The algorithm requires that a valid QgsProject is available from the processing context in order to execute
-* ``FlagDeprecated``: Algorithm is deprecated
+* ``HideFromToolbox``: Algorithm should be hidden from the toolbox
+
+  Available as ``QgsProcessingAlgorithm.FlagHideFromToolbox`` in older QGIS releases.
+
+* ``HideFromModeler``: Algorithm should be hidden from the modeler
+
+  Available as ``QgsProcessingAlgorithm.FlagHideFromModeler`` in older QGIS releases.
+
+* ``SupportsBatch``: Algorithm supports batch mode
+
+  Available as ``QgsProcessingAlgorithm.FlagSupportsBatch`` in older QGIS releases.
+
+* ``CanCancel``: Algorithm can be canceled
+
+  Available as ``QgsProcessingAlgorithm.FlagCanCancel`` in older QGIS releases.
+
+* ``RequiresMatchingCrs``: Algorithm requires that all input layers have matching coordinate reference systems
+
+  Available as ``QgsProcessingAlgorithm.FlagRequiresMatchingCrs`` in older QGIS releases.
+
+* ``NoThreading``: Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
+
+  Available as ``QgsProcessingAlgorithm.FlagNoThreading`` in older QGIS releases.
+
+* ``DisplayNameIsLiteral``: Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
+
+  Available as ``QgsProcessingAlgorithm.FlagDisplayNameIsLiteral`` in older QGIS releases.
+
+* ``SupportsInPlaceEdits``: Algorithm supports in-place editing
+
+  Available as ``QgsProcessingAlgorithm.FlagSupportsInPlaceEdits`` in older QGIS releases.
+
+* ``KnownIssues``: Algorithm has known issues
+
+  Available as ``QgsProcessingAlgorithm.FlagKnownIssues`` in older QGIS releases.
+
+* ``CustomException``: Algorithm raises custom exception notices, don't use the standard ones
+
+  Available as ``QgsProcessingAlgorithm.FlagCustomException`` in older QGIS releases.
+
+* ``PruneModelBranchesBasedOnAlgorithmResults``: Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
+
+  Available as ``QgsProcessingAlgorithm.FlagPruneModelBranchesBasedOnAlgorithmResults`` in older QGIS releases.
+
+* ``SkipGenericModelLogging``: When running as part of a model, the generic algorithm setup and results logging should be skipped
+
+  Available as ``QgsProcessingAlgorithm.FlagSkipGenericModelLogging`` in older QGIS releases.
+
+* ``NotAvailableInStandaloneTool``: Algorithm should not be available from the standalone \"qgis_process\" tool. Used to flag algorithms which make no sense outside of the QGIS application, such as \"select by...\" style algorithms.
+
+  Available as ``QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool`` in older QGIS releases.
+
+* ``RequiresProject``: The algorithm requires that a valid QgsProject is available from the processing context in order to execute
+
+  Available as ``QgsProcessingAlgorithm.FlagRequiresProject`` in older QGIS releases.
+
+* ``Deprecated``: Algorithm is deprecated
+
+  Available as ``QgsProcessingAlgorithm.FlagDeprecated`` in older QGIS releases.
+
 
 """
 # --
@@ -5593,8 +6139,14 @@ Qgis.ProcessingFeatureSourceDefinitionFlag.__doc__ = """Flags which control beha
 
 .. versionadded:: 3.36
 
-* ``FlagOverrideDefaultGeometryCheck``: If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
-* ``FlagCreateIndividualOutputPerInputFeature``: If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+* ``OverrideDefaultGeometryCheck``: If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
+
+  Available as ``QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck`` in older QGIS releases.
+
+* ``CreateIndividualOutputPerInputFeature``: If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+
+  Available as ``QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature`` in older QGIS releases.
+
 
 """
 # --
@@ -5616,7 +6168,10 @@ Qgis.ProcessingFeatureSourceFlag.__doc__ = """Flags which control how :py:class:
 
 .. versionadded:: 3.36
 
-* ``FlagSkipGeometryValidityChecks``: Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. \"repair geometry\" type algorithms).
+* ``SkipGeometryValidityChecks``: Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. \"repair geometry\" type algorithms).
+
+  Available as ``QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks`` in older QGIS releases.
+
 
 """
 # --
@@ -5674,10 +6229,22 @@ Qgis.ProcessingParameterFlag.__doc__ = """Flags which dictate the behavior of Pr
 
 .. versionadded:: 3.36
 
-* ``FlagAdvanced``: Parameter is an advanced parameter which should be hidden from users by default
-* ``FlagHidden``: Parameter is hidden and should not be shown to users
-* ``FlagOptional``: Parameter is optional
-* ``FlagIsModelOutput``: Destination parameter is final output. The parameter name will be used.
+* ``Advanced``: Parameter is an advanced parameter which should be hidden from users by default
+
+  Available as ``QgsProcessingParameterDefinition.FlagAdvanced`` in older QGIS releases.
+
+* ``Hidden``: Parameter is hidden and should not be shown to users
+
+  Available as ``QgsProcessingParameterDefinition.FlagHidden`` in older QGIS releases.
+
+* ``Optional``: Parameter is optional
+
+  Available as ``QgsProcessingParameterDefinition.FlagOptional`` in older QGIS releases.
+
+* ``IsModelOutput``: Destination parameter is final output. The parameter name will be used.
+
+  Available as ``QgsProcessingParameterDefinition.FlagIsModelOutput`` in older QGIS releases.
+
 
 """
 # --
@@ -5869,8 +6436,14 @@ Qgis.CrsDefinitionFormat.__doc__ = """CRS definition formats.
 
 .. versionadded:: 3.24
 
-* ``FormatWkt``: WKT format (always recommended over proj string format)
-* ``FormatProj``: Proj string format
+* ``Wkt``: WKT format (always recommended over proj string format)
+
+  Available as ``QgsCoordinateReferenceSystem.FormatWkt`` in older QGIS releases.
+
+* ``Proj``: Proj string format
+
+  Available as ``QgsCoordinateReferenceSystem.FormatProj`` in older QGIS releases.
+
 
 """
 # --
@@ -6397,13 +6970,28 @@ Qgis.ProjectReadFlag.__doc__ = """Flags which control project read behavior.
 
 .. versionadded:: 3.26
 
-* ``FlagDontResolveLayers``: Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
-* ``FlagDontLoadLayouts``: Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
-* ``FlagTrustLayerMetadata``: Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
-* ``FlagDontStoreOriginalStyles``: Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
-* ``FlagDontLoad3DViews``: Skip loading 3D views
+* ``DontResolveLayers``: Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+
+  Available as ``QgsProject.FlagDontResolveLayers`` in older QGIS releases.
+
+* ``DontLoadLayouts``: Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
+
+  Available as ``QgsProject.FlagDontLoadLayouts`` in older QGIS releases.
+
+* ``TrustLayerMetadata``: Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
+
+  Available as ``QgsProject.FlagTrustLayerMetadata`` in older QGIS releases.
+
+* ``DontStoreOriginalStyles``: Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
+
+  Available as ``QgsProject.FlagDontStoreOriginalStyles`` in older QGIS releases.
+
+* ``DontLoad3DViews``: Skip loading 3D views
 
   .. versionadded:: 3.26
+
+
+  Available as ``QgsProject.FlagDontLoad3DViews`` in older QGIS releases.
 
 * ``DontLoadProjectStyles``: Skip loading project style databases (deprecated -- use ProjectCapability.ProjectStyles flag instead)
 * ``ForceReadOnlyLayers``: Open layers in a read-only mode.
@@ -6494,9 +7082,18 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 
 .. versionadded:: 3.28
 
-* ``FeatureService``: FeatureServer
-* ``MapService``: MapServer
-* ``ImageService``: ImageServer
+* ``FeatureServer``: FeatureServer
+
+  Available as ``QgsArcGisPortalUtils.FeatureService`` in older QGIS releases.
+
+* ``MapServer``: MapServer
+
+  Available as ``QgsArcGisPortalUtils.MapService`` in older QGIS releases.
+
+* ``ImageServer``: ImageServer
+
+  Available as ``QgsArcGisPortalUtils.ImageService`` in older QGIS releases.
+
 * ``GlobeServer``: GlobeServer
 * ``GPServer``: GPServer
 * ``GeocodeServer``: GeocodeServer
@@ -6893,7 +7490,10 @@ This is a modified copy of the GDAL GDALColorInterp enum.
 
 .. versionadded:: 3.30
 
-* ``UndefinedColorInterpretation``: Undefined
+* ``Undefined``: Undefined
+
+  Available as ``QgsRaster.UndefinedColorInterpretation`` in older QGIS releases.
+
 * ``GrayIndex``: Grayscale
 * ``PaletteIndex``: Paletted (see associated color table)
 * ``RedBand``: Red band of RGBA image
@@ -6941,8 +7541,14 @@ Qgis.RasterLayerType.__doc__ = """Raster layer types.
 
 * ``GrayOrUndefined``: Gray or undefined
 * ``Palette``: Palette
-* ``Multiband``: Multi band
-* ``ColorLayer``: Single band containing color data
+* ``MultiBand``: Multi band
+
+  Available as ``QgsRasterLayer.Multiband`` in older QGIS releases.
+
+* ``SingleBandColorData``: Single band containing color data
+
+  Available as ``QgsRasterLayer.ColorLayer`` in older QGIS releases.
+
 
 """
 # --
@@ -6992,7 +7598,10 @@ Qgis.RasterDrawingStyle.__doc__ = """Raster drawing styles.
 
 .. versionadded:: 3.30
 
-* ``UndefinedDrawingStyle``: Undefined
+* ``Undefined``: Undefined
+
+  Available as ``QgsRaster.UndefinedDrawingStyle`` in older QGIS releases.
+
 * ``SingleBandGray``: A single band image drawn as a range of gray colors
 * ``SingleBandPseudoColor``: A single band image drawn using a pseudocolor algorithm
 * ``PalettedColor``: A \"Palette\" image drawn using color table
@@ -7002,7 +7611,10 @@ Qgis.RasterDrawingStyle.__doc__ = """Raster drawing styles.
 * ``MultiBandSingleBandGray``: A layer containing 2 or more bands, but a single band drawn as a range of gray colors
 * ``MultiBandSingleBandPseudoColor``: A layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
 * ``MultiBandColor``: A layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
-* ``SingleBandColorDataStyle``: ARGB values rendered directly
+* ``SingleBandColorData``: ARGB values rendered directly
+
+  Available as ``QgsRaster.SingleBandColorDataStyle`` in older QGIS releases.
+
 
 """
 # --
@@ -7029,9 +7641,18 @@ Qgis.RasterPyramidFormat.__doc__ = """Raster pyramid formats.
 
 .. versionadded:: 3.30
 
-* ``PyramidsGTiff``: Geotiff .ovr (external)
-* ``PyramidsInternal``: Internal
-* ``PyramidsErdas``: Erdas Image .aux (external)
+* ``GeoTiff``: Geotiff .ovr (external)
+
+  Available as ``QgsRaster.PyramidsGTiff`` in older QGIS releases.
+
+* ``Internal``: Internal
+
+  Available as ``QgsRaster.PyramidsInternal`` in older QGIS releases.
+
+* ``Erdas``: Erdas Image .aux (external)
+
+  Available as ``QgsRaster.PyramidsErdas`` in older QGIS releases.
+
 
 """
 # --
@@ -7058,9 +7679,18 @@ Qgis.RasterBuildPyramidOption.__doc__ = """Raster pyramid building options.
 
 .. versionadded:: 3.30
 
-* ``PyramidsFlagNo``: Never
-* ``PyramidsFlagYes``: Yes
-* ``PyramidsCopyExisting``: Copy existing
+* ``No``: Never
+
+  Available as ``QgsRaster.PyramidsFlagNo`` in older QGIS releases.
+
+* ``Yes``: Yes
+
+  Available as ``QgsRaster.PyramidsFlagYes`` in older QGIS releases.
+
+* ``CopyExisting``: Copy existing
+
+  Available as ``QgsRaster.PyramidsCopyExisting`` in older QGIS releases.
+
 
 """
 # --
@@ -7095,11 +7725,26 @@ Qgis.RasterIdentifyFormat.__doc__ = """Raster identify formats.
 
 .. versionadded:: 3.30
 
-* ``IdentifyFormatUndefined``: Undefined
-* ``IdentifyFormatValue``: Numerical pixel value
-* ``IdentifyFormatText``: WMS text
-* ``IdentifyFormatHtml``: WMS HTML
-* ``IdentifyFormatFeature``: WMS GML/JSON -> feature
+* ``Undefined``: Undefined
+
+  Available as ``QgsRaster.IdentifyFormatUndefined`` in older QGIS releases.
+
+* ``Value``: Numerical pixel value
+
+  Available as ``QgsRaster.IdentifyFormatValue`` in older QGIS releases.
+
+* ``Text``: WMS text
+
+  Available as ``QgsRaster.IdentifyFormatText`` in older QGIS releases.
+
+* ``Html``: WMS HTML
+
+  Available as ``QgsRaster.IdentifyFormatHtml`` in older QGIS releases.
+
+* ``Feature``: WMS GML/JSON -> feature
+
+  Available as ``QgsRaster.IdentifyFormatFeature`` in older QGIS releases.
+
 
 """
 # --
@@ -7346,30 +7991,102 @@ be used when painting.
 
 .. versionadded:: 3.30
 
-* ``BlendNormal``: Normal
-* ``BlendLighten``: Lighten
-* ``BlendScreen``: Screen
-* ``BlendDodge``: Dodge
-* ``BlendAddition``: Addition
-* ``BlendDarken``: Darken
-* ``BlendMultiply``: Multiple
-* ``BlendBurn``: Burn
-* ``BlendOverlay``: Overlay
-* ``BlendSoftLight``: Soft light
-* ``BlendHardLight``: Hard light
-* ``BlendDifference``: Difference
-* ``BlendSubtract``: Subtract
-* ``BlendSource``: Source
-* ``BlendDestinationOver``: Destination over
-* ``BlendClear``: Clear
-* ``BlendDestination``: Destination
-* ``BlendSourceIn``: Source in
-* ``BlendDestinationIn``: Destination in
-* ``BlendSourceOut``: Source out
-* ``BlendDestinationOut``: Destination out
-* ``BlendSourceAtop``: Source atop
-* ``BlendDestinationAtop``: Destination atop
-* ``BlendXor``: XOR
+* ``Normal``: Normal
+
+  Available as ``QgsPainting.BlendNormal`` in older QGIS releases.
+
+* ``Lighten``: Lighten
+
+  Available as ``QgsPainting.BlendLighten`` in older QGIS releases.
+
+* ``Screen``: Screen
+
+  Available as ``QgsPainting.BlendScreen`` in older QGIS releases.
+
+* ``Dodge``: Dodge
+
+  Available as ``QgsPainting.BlendDodge`` in older QGIS releases.
+
+* ``Addition``: Addition
+
+  Available as ``QgsPainting.BlendAddition`` in older QGIS releases.
+
+* ``Darken``: Darken
+
+  Available as ``QgsPainting.BlendDarken`` in older QGIS releases.
+
+* ``Multiply``: Multiple
+
+  Available as ``QgsPainting.BlendMultiply`` in older QGIS releases.
+
+* ``Burn``: Burn
+
+  Available as ``QgsPainting.BlendBurn`` in older QGIS releases.
+
+* ``Overlay``: Overlay
+
+  Available as ``QgsPainting.BlendOverlay`` in older QGIS releases.
+
+* ``SoftLight``: Soft light
+
+  Available as ``QgsPainting.BlendSoftLight`` in older QGIS releases.
+
+* ``HardLight``: Hard light
+
+  Available as ``QgsPainting.BlendHardLight`` in older QGIS releases.
+
+* ``Difference``: Difference
+
+  Available as ``QgsPainting.BlendDifference`` in older QGIS releases.
+
+* ``Subtract``: Subtract
+
+  Available as ``QgsPainting.BlendSubtract`` in older QGIS releases.
+
+* ``Source``: Source
+
+  Available as ``QgsPainting.BlendSource`` in older QGIS releases.
+
+* ``DestinationOver``: Destination over
+
+  Available as ``QgsPainting.BlendDestinationOver`` in older QGIS releases.
+
+* ``Clear``: Clear
+
+  Available as ``QgsPainting.BlendClear`` in older QGIS releases.
+
+* ``Destination``: Destination
+
+  Available as ``QgsPainting.BlendDestination`` in older QGIS releases.
+
+* ``SourceIn``: Source in
+
+  Available as ``QgsPainting.BlendSourceIn`` in older QGIS releases.
+
+* ``DestinationIn``: Destination in
+
+  Available as ``QgsPainting.BlendDestinationIn`` in older QGIS releases.
+
+* ``SourceOut``: Source out
+
+  Available as ``QgsPainting.BlendSourceOut`` in older QGIS releases.
+
+* ``DestinationOut``: Destination out
+
+  Available as ``QgsPainting.BlendDestinationOut`` in older QGIS releases.
+
+* ``SourceAtop``: Source atop
+
+  Available as ``QgsPainting.BlendSourceAtop`` in older QGIS releases.
+
+* ``DestinationAtop``: Destination atop
+
+  Available as ``QgsPainting.BlendDestinationAtop`` in older QGIS releases.
+
+* ``Xor``: XOR
+
+  Available as ``QgsPainting.BlendXor`` in older QGIS releases.
+
 
 """
 # --
@@ -7400,10 +8117,22 @@ Qgis.SystemOfMeasurement.__doc__ = """Systems of unit measurement.
 
 .. versionadded:: 3.30
 
-* ``UnknownSystem``: Unknown system of measurement
-* ``MetricSystem``: International System of Units (SI)
-* ``ImperialSystem``: British Imperial
-* ``USCSSystem``: United States customary system
+* ``Unknown``: Unknown system of measurement
+
+  Available as ``QgsUnitTypes.UnknownSystem`` in older QGIS releases.
+
+* ``Metric``: International System of Units (SI)
+
+  Available as ``QgsUnitTypes.MetricSystem`` in older QGIS releases.
+
+* ``Imperial``: British Imperial
+
+  Available as ``QgsUnitTypes.ImperialSystem`` in older QGIS releases.
+
+* ``USCS``: United States customary system
+
+  Available as ``QgsUnitTypes.USCSSystem`` in older QGIS releases.
+
 
 """
 # --
@@ -7426,9 +8155,15 @@ For map (project) units, use MapToolUnit.Project.
 
 .. versionadded:: 3.32
 
-* ``LayerUnits``: Layer unit value
+* ``Layer``: Layer unit value
+
+  Available as ``QgsTolerance.LayerUnits`` in older QGIS releases.
+
 * ``Pixels``: Pixels unit of tolerance
-* ``ProjectUnits``: Map (project) units
+* ``Project``: Map (project) units
+
+  Available as ``QgsTolerance.ProjectUnits`` in older QGIS releases.
+
 
 """
 # --
@@ -7463,11 +8198,26 @@ Qgis.UnitType.__doc__ = """Unit types.
 
 .. versionadded:: 3.30
 
-* ``TypeDistance``: Distance unit
-* ``TypeArea``: Area unit
-* ``TypeVolume``: Volume unit
-* ``TypeUnknown``: Unknown unit type
-* ``TypeTemporal``: Temporal unit
+* ``Distance``: Distance unit
+
+  Available as ``QgsUnitTypes.TypeDistance`` in older QGIS releases.
+
+* ``Area``: Area unit
+
+  Available as ``QgsUnitTypes.TypeArea`` in older QGIS releases.
+
+* ``Volume``: Volume unit
+
+  Available as ``QgsUnitTypes.TypeVolume`` in older QGIS releases.
+
+* ``Unknown``: Unknown unit type
+
+  Available as ``QgsUnitTypes.TypeUnknown`` in older QGIS releases.
+
+* ``Temporal``: Temporal unit
+
+  Available as ``QgsUnitTypes.TypeTemporal`` in older QGIS releases.
+
 
 """
 # --
@@ -7525,20 +8275,50 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 
 .. versionadded:: 3.30
 
-* ``DistanceMeters``: Meters
-* ``DistanceKilometers``: Kilometers
-* ``DistanceFeet``: Imperial feet
-* ``DistanceNauticalMiles``: Nautical miles
-* ``DistanceYards``: Imperial yards
-* ``DistanceMiles``: Terrestrial miles
-* ``DistanceDegrees``: Degrees, for planar geographic CRS distance measurements
-* ``DistanceCentimeters``: Centimeters
-* ``DistanceMillimeters``: Millimeters
+* ``Meters``: Meters
+
+  Available as ``QgsUnitTypes.DistanceMeters`` in older QGIS releases.
+
+* ``Kilometers``: Kilometers
+
+  Available as ``QgsUnitTypes.DistanceKilometers`` in older QGIS releases.
+
+* ``Feet``: Imperial feet
+
+  Available as ``QgsUnitTypes.DistanceFeet`` in older QGIS releases.
+
+* ``NauticalMiles``: Nautical miles
+
+  Available as ``QgsUnitTypes.DistanceNauticalMiles`` in older QGIS releases.
+
+* ``Yards``: Imperial yards
+
+  Available as ``QgsUnitTypes.DistanceYards`` in older QGIS releases.
+
+* ``Miles``: Terrestrial miles
+
+  Available as ``QgsUnitTypes.DistanceMiles`` in older QGIS releases.
+
+* ``Degrees``: Degrees, for planar geographic CRS distance measurements
+
+  Available as ``QgsUnitTypes.DistanceDegrees`` in older QGIS releases.
+
+* ``Centimeters``: Centimeters
+
+  Available as ``QgsUnitTypes.DistanceCentimeters`` in older QGIS releases.
+
+* ``Millimeters``: Millimeters
+
+  Available as ``QgsUnitTypes.DistanceMillimeters`` in older QGIS releases.
+
 * ``Inches``: Inches
 
   .. versionadded:: 3.32
 
-* ``DistanceUnknownUnit``: Unknown distance unit
+* ``Unknown``: Unknown distance unit
+
+  Available as ``QgsUnitTypes.DistanceUnknownUnit`` in older QGIS releases.
+
 
 """
 # --
@@ -7565,7 +8345,10 @@ Qgis.DistanceUnitType.__doc__ = """Types of distance units
 
 * ``Standard``: Unit is a standard measurement unit
 * ``Geographic``: Unit is a geographic (e.g., degree based) unit
-* ``UnknownType``: Unknown unit type
+* ``Unknown``: Unknown unit type
+
+  Available as ``QgsUnitTypes.UnknownType`` in older QGIS releases.
+
 
 """
 # --
@@ -7631,22 +8414,58 @@ Qgis.AreaUnit.__doc__ = """Units of area
 
 .. versionadded:: 3.30
 
-* ``AreaSquareMeters``: Square meters
-* ``AreaSquareKilometers``: Square kilometers
-* ``AreaSquareFeet``: Square feet
-* ``AreaSquareYards``: Square yards
-* ``AreaSquareMiles``: Square miles
-* ``AreaHectares``: Hectares
-* ``AreaAcres``: Acres
-* ``AreaSquareNauticalMiles``: Square nautical miles
-* ``AreaSquareDegrees``: Square degrees, for planar geographic CRS area measurements
-* ``AreaSquareCentimeters``: Square centimeters
-* ``AreaSquareMillimeters``: Square millimeters
+* ``SquareMeters``: Square meters
+
+  Available as ``QgsUnitTypes.AreaSquareMeters`` in older QGIS releases.
+
+* ``SquareKilometers``: Square kilometers
+
+  Available as ``QgsUnitTypes.AreaSquareKilometers`` in older QGIS releases.
+
+* ``SquareFeet``: Square feet
+
+  Available as ``QgsUnitTypes.AreaSquareFeet`` in older QGIS releases.
+
+* ``SquareYards``: Square yards
+
+  Available as ``QgsUnitTypes.AreaSquareYards`` in older QGIS releases.
+
+* ``SquareMiles``: Square miles
+
+  Available as ``QgsUnitTypes.AreaSquareMiles`` in older QGIS releases.
+
+* ``Hectares``: Hectares
+
+  Available as ``QgsUnitTypes.AreaHectares`` in older QGIS releases.
+
+* ``Acres``: Acres
+
+  Available as ``QgsUnitTypes.AreaAcres`` in older QGIS releases.
+
+* ``SquareNauticalMiles``: Square nautical miles
+
+  Available as ``QgsUnitTypes.AreaSquareNauticalMiles`` in older QGIS releases.
+
+* ``SquareDegrees``: Square degrees, for planar geographic CRS area measurements
+
+  Available as ``QgsUnitTypes.AreaSquareDegrees`` in older QGIS releases.
+
+* ``SquareCentimeters``: Square centimeters
+
+  Available as ``QgsUnitTypes.AreaSquareCentimeters`` in older QGIS releases.
+
+* ``SquareMillimeters``: Square millimeters
+
+  Available as ``QgsUnitTypes.AreaSquareMillimeters`` in older QGIS releases.
+
 * ``SquareInches``: Square inches
 
   .. versionadded:: 3.32
 
-* ``AreaUnknownUnit``: Unknown areal unit
+* ``Unknown``: Unknown areal unit
+
+  Available as ``QgsUnitTypes.AreaUnknownUnit`` in older QGIS releases.
+
 
 """
 # --
@@ -7705,17 +8524,50 @@ Qgis.VolumeUnit.__doc__ = """Units of volume.
 
 .. versionadded:: 3.30
 
-* ``VolumeCubicMeters``: Cubic meters
-* ``VolumeCubicFeet``: Cubic feet
-* ``VolumeCubicYards``: Cubic yards
-* ``VolumeBarrel``: Barrels
-* ``VolumeCubicDecimeter``: Cubic decimeters
-* ``VolumeLiters``: Litres
-* ``VolumeGallonUS``: US Gallons
-* ``VolumeCubicInch``: Cubic inches
-* ``VolumeCubicCentimeter``: Cubic Centimeters
-* ``VolumeCubicDegrees``: Cubic degrees, for planar geographic CRS volume measurements
-* ``VolumeUnknownUnit``: Unknown volume unit
+* ``CubicMeters``: Cubic meters
+
+  Available as ``QgsUnitTypes.VolumeCubicMeters`` in older QGIS releases.
+
+* ``CubicFeet``: Cubic feet
+
+  Available as ``QgsUnitTypes.VolumeCubicFeet`` in older QGIS releases.
+
+* ``CubicYards``: Cubic yards
+
+  Available as ``QgsUnitTypes.VolumeCubicYards`` in older QGIS releases.
+
+* ``Barrel``: Barrels
+
+  Available as ``QgsUnitTypes.VolumeBarrel`` in older QGIS releases.
+
+* ``CubicDecimeter``: Cubic decimeters
+
+  Available as ``QgsUnitTypes.VolumeCubicDecimeter`` in older QGIS releases.
+
+* ``Liters``: Litres
+
+  Available as ``QgsUnitTypes.VolumeLiters`` in older QGIS releases.
+
+* ``GallonUS``: US Gallons
+
+  Available as ``QgsUnitTypes.VolumeGallonUS`` in older QGIS releases.
+
+* ``CubicInch``: Cubic inches
+
+  Available as ``QgsUnitTypes.VolumeCubicInch`` in older QGIS releases.
+
+* ``CubicCentimeter``: Cubic Centimeters
+
+  Available as ``QgsUnitTypes.VolumeCubicCentimeter`` in older QGIS releases.
+
+* ``CubicDegrees``: Cubic degrees, for planar geographic CRS volume measurements
+
+  Available as ``QgsUnitTypes.VolumeCubicDegrees`` in older QGIS releases.
+
+* ``Unknown``: Unknown volume unit
+
+  Available as ``QgsUnitTypes.VolumeUnknownUnit`` in older QGIS releases.
+
 
 """
 # --
@@ -7766,15 +8618,42 @@ Qgis.AngleUnit.__doc__ = """Units of angles.
 
 .. versionadded:: 3.30
 
-* ``AngleDegrees``: Degrees
-* ``AngleRadians``: Square kilometers
-* ``AngleGon``: Gon/gradian
-* ``AngleMinutesOfArc``: Minutes of arc
-* ``AngleSecondsOfArc``: Seconds of arc
-* ``AngleTurn``: Turn/revolutions
-* ``AngleMilliradiansSI``: Angular milliradians (SI definition, 1/1000 of radian)
-* ``AngleMilNATO``: Angular mil (NATO definition, 6400 mil = 2PI radians)
-* ``AngleUnknownUnit``: Unknown angle unit
+* ``Degrees``: Degrees
+
+  Available as ``QgsUnitTypes.AngleDegrees`` in older QGIS releases.
+
+* ``Radians``: Square kilometers
+
+  Available as ``QgsUnitTypes.AngleRadians`` in older QGIS releases.
+
+* ``Gon``: Gon/gradian
+
+  Available as ``QgsUnitTypes.AngleGon`` in older QGIS releases.
+
+* ``MinutesOfArc``: Minutes of arc
+
+  Available as ``QgsUnitTypes.AngleMinutesOfArc`` in older QGIS releases.
+
+* ``SecondsOfArc``: Seconds of arc
+
+  Available as ``QgsUnitTypes.AngleSecondsOfArc`` in older QGIS releases.
+
+* ``Turn``: Turn/revolutions
+
+  Available as ``QgsUnitTypes.AngleTurn`` in older QGIS releases.
+
+* ``MilliradiansSI``: Angular milliradians (SI definition, 1/1000 of radian)
+
+  Available as ``QgsUnitTypes.AngleMilliradiansSI`` in older QGIS releases.
+
+* ``MilNATO``: Angular mil (NATO definition, 6400 mil = 2PI radians)
+
+  Available as ``QgsUnitTypes.AngleMilNATO`` in older QGIS releases.
+
+* ``Unknown``: Unknown angle unit
+
+  Available as ``QgsUnitTypes.AngleUnknownUnit`` in older QGIS releases.
+
 
 """
 # --
@@ -7837,21 +8716,57 @@ Qgis.TemporalUnit.__doc__ = """Temporal units.
 
 .. versionadded:: 3.30
 
-* ``TemporalMilliseconds``: Milliseconds
-* ``TemporalSeconds``: Seconds
-* ``TemporalMinutes``: Minutes
-* ``TemporalHours``: Hours
-* ``TemporalDays``: Days
-* ``TemporalWeeks``: Weeks
-* ``TemporalMonths``: Months
-* ``TemporalYears``: Years
-* ``TemporalDecades``: Decades
-* ``TemporalCenturies``: Centuries
-* ``TemporalIrregularStep``: Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps
+* ``Milliseconds``: Milliseconds
+
+  Available as ``QgsUnitTypes.TemporalMilliseconds`` in older QGIS releases.
+
+* ``Seconds``: Seconds
+
+  Available as ``QgsUnitTypes.TemporalSeconds`` in older QGIS releases.
+
+* ``Minutes``: Minutes
+
+  Available as ``QgsUnitTypes.TemporalMinutes`` in older QGIS releases.
+
+* ``Hours``: Hours
+
+  Available as ``QgsUnitTypes.TemporalHours`` in older QGIS releases.
+
+* ``Days``: Days
+
+  Available as ``QgsUnitTypes.TemporalDays`` in older QGIS releases.
+
+* ``Weeks``: Weeks
+
+  Available as ``QgsUnitTypes.TemporalWeeks`` in older QGIS releases.
+
+* ``Months``: Months
+
+  Available as ``QgsUnitTypes.TemporalMonths`` in older QGIS releases.
+
+* ``Years``: Years
+
+  Available as ``QgsUnitTypes.TemporalYears`` in older QGIS releases.
+
+* ``Decades``: Decades
+
+  Available as ``QgsUnitTypes.TemporalDecades`` in older QGIS releases.
+
+* ``Centuries``: Centuries
+
+  Available as ``QgsUnitTypes.TemporalCenturies`` in older QGIS releases.
+
+* ``IrregularStep``: Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps
 
   .. versionadded:: 3.20
 
-* ``TemporalUnknownUnit``: Unknown time unit
+
+  Available as ``QgsUnitTypes.TemporalIrregularStep`` in older QGIS releases.
+
+* ``Unknown``: Unknown time unit
+
+  Available as ``QgsUnitTypes.TemporalUnknownUnit`` in older QGIS releases.
+
 
 """
 # --
@@ -7898,14 +8813,38 @@ Qgis.RenderUnit.__doc__ = """Rendering size units
 
 .. versionadded:: 3.30
 
-* ``RenderMillimeters``: Millimeters
-* ``RenderMapUnits``: Map units
-* ``RenderPixels``: Pixels
-* ``RenderPercentage``: Percentage of another measurement (e.g., canvas size, feature size)
-* ``RenderPoints``: Points (e.g., for font sizes)
-* ``RenderInches``: Inches
-* ``RenderUnknownUnit``: Mixed or unknown units
-* ``RenderMetersInMapUnits``: Meters value as Map units
+* ``Millimeters``: Millimeters
+
+  Available as ``QgsUnitTypes.RenderMillimeters`` in older QGIS releases.
+
+* ``MapUnits``: Map units
+
+  Available as ``QgsUnitTypes.RenderMapUnits`` in older QGIS releases.
+
+* ``Pixels``: Pixels
+
+  Available as ``QgsUnitTypes.RenderPixels`` in older QGIS releases.
+
+* ``Percentage``: Percentage of another measurement (e.g., canvas size, feature size)
+
+  Available as ``QgsUnitTypes.RenderPercentage`` in older QGIS releases.
+
+* ``Points``: Points (e.g., for font sizes)
+
+  Available as ``QgsUnitTypes.RenderPoints`` in older QGIS releases.
+
+* ``Inches``: Inches
+
+  Available as ``QgsUnitTypes.RenderInches`` in older QGIS releases.
+
+* ``Unknown``: Mixed or unknown units
+
+  Available as ``QgsUnitTypes.RenderUnknownUnit`` in older QGIS releases.
+
+* ``MetersInMapUnits``: Meters value as Map units
+
+  Available as ``QgsUnitTypes.RenderMetersInMapUnits`` in older QGIS releases.
+
 
 """
 # --
@@ -7952,14 +8891,38 @@ Qgis.LayoutUnit.__doc__ = """Layout measurement units
 
 .. versionadded:: 3.30
 
-* ``LayoutMillimeters``: Millimeters
-* ``LayoutCentimeters``: Centimeters
-* ``LayoutMeters``: Meters
-* ``LayoutInches``: Inches
-* ``LayoutFeet``: Feet
-* ``LayoutPoints``: Typographic points
-* ``LayoutPicas``: Typographic picas
-* ``LayoutPixels``: Pixels
+* ``Millimeters``: Millimeters
+
+  Available as ``QgsUnitTypes.LayoutMillimeters`` in older QGIS releases.
+
+* ``Centimeters``: Centimeters
+
+  Available as ``QgsUnitTypes.LayoutCentimeters`` in older QGIS releases.
+
+* ``Meters``: Meters
+
+  Available as ``QgsUnitTypes.LayoutMeters`` in older QGIS releases.
+
+* ``Inches``: Inches
+
+  Available as ``QgsUnitTypes.LayoutInches`` in older QGIS releases.
+
+* ``Feet``: Feet
+
+  Available as ``QgsUnitTypes.LayoutFeet`` in older QGIS releases.
+
+* ``Points``: Typographic points
+
+  Available as ``QgsUnitTypes.LayoutPoints`` in older QGIS releases.
+
+* ``Picas``: Typographic picas
+
+  Available as ``QgsUnitTypes.LayoutPicas`` in older QGIS releases.
+
+* ``Pixels``: Pixels
+
+  Available as ``QgsUnitTypes.LayoutPixels`` in older QGIS releases.
+
 
 """
 # --
@@ -7982,8 +8945,14 @@ Qgis.LayoutUnitType.__doc__ = """Types of layout units
 
 .. versionadded:: 3.30
 
-* ``LayoutPaperUnits``: Unit is a paper based measurement unit
-* ``LayoutScreenUnits``: Unit is a screen based measurement unit
+* ``PaperUnits``: Unit is a paper based measurement unit
+
+  Available as ``QgsUnitTypes.LayoutPaperUnits`` in older QGIS releases.
+
+* ``ScreenUnits``: Unit is a screen based measurement unit
+
+  Available as ``QgsUnitTypes.LayoutScreenUnits`` in older QGIS releases.
+
 
 """
 # --
@@ -8010,9 +8979,18 @@ Qgis.PictureFormat.__doc__ = """Picture formats.
 
 .. versionadded:: 3.40
 
-* ``FormatSVG``: SVG image
-* ``FormatRaster``: Raster image
-* ``FormatUnknown``: Invalid or unknown image type
+* ``SVG``: SVG image
+
+  Available as ``QgsLayoutItemPicture.FormatSVG`` in older QGIS releases.
+
+* ``Raster``: Raster image
+
+  Available as ``QgsLayoutItemPicture.FormatRaster`` in older QGIS releases.
+
+* ``Unknown``: Invalid or unknown image type
+
+  Available as ``QgsLayoutItemPicture.FormatUnknown`` in older QGIS releases.
+
 
 """
 # --
@@ -8039,9 +9017,18 @@ Qgis.ScaleBarAlignment.__doc__ = """Scalebar alignment.
 
 .. versionadded:: 3.40
 
-* ``AlignLeft``: Left aligned
-* ``AlignMiddle``: Center aligned
-* ``AlignRight``: Right aligned
+* ``Left``: Left aligned
+
+  Available as ``QgsScaleBarSettings.AlignLeft`` in older QGIS releases.
+
+* ``Middle``: Center aligned
+
+  Available as ``QgsScaleBarSettings.AlignMiddle`` in older QGIS releases.
+
+* ``Right``: Right aligned
+
+  Available as ``QgsScaleBarSettings.AlignRight`` in older QGIS releases.
+
 
 """
 # --
@@ -8064,8 +9051,14 @@ Qgis.ScaleBarSegmentSizeMode.__doc__ = """Modes for setting size for scale bar s
 
 .. versionadded:: 3.40
 
-* ``SegmentSizeFixed``: Scale bar segment size is fixed to a map unit
-* ``SegmentSizeFitWidth``: Scale bar segment size is calculated to fit a size range
+* ``Fixed``: Scale bar segment size is fixed to a map unit
+
+  Available as ``QgsScaleBarSettings.SegmentSizeFixed`` in older QGIS releases.
+
+* ``FitWidth``: Scale bar segment size is calculated to fit a size range
+
+  Available as ``QgsScaleBarSettings.SegmentSizeFitWidth`` in older QGIS releases.
+
 
 """
 # --
@@ -8088,8 +9081,14 @@ Qgis.ScaleBarDistanceLabelVerticalPlacement.__doc__ = """Scale bar distance labe
 
 .. versionadded:: 3.40
 
-* ``LabelAboveSegment``: Labels are drawn above the scalebar
-* ``LabelBelowSegment``: Labels are drawn below the scalebar
+* ``AboveSegment``: Labels are drawn above the scalebar
+
+  Available as ``QgsScaleBarSettings.LabelAboveSegment`` in older QGIS releases.
+
+* ``BelowSegment``: Labels are drawn below the scalebar
+
+  Available as ``QgsScaleBarSettings.LabelBelowSegment`` in older QGIS releases.
+
 
 """
 # --
@@ -8112,8 +9111,14 @@ Qgis.ScaleBarDistanceLabelHorizontalPlacement.__doc__ = """Scale bar distance la
 
 .. versionadded:: 3.40
 
-* ``LabelCenteredEdge``: Labels are drawn centered relative to segment's edge
-* ``LabelCenteredSegment``: Labels are drawn centered relative to segment
+* ``CenteredEdge``: Labels are drawn centered relative to segment's edge
+
+  Available as ``QgsScaleBarSettings.LabelCenteredEdge`` in older QGIS releases.
+
+* ``CenteredSegment``: Labels are drawn centered relative to segment
+
+  Available as ``QgsScaleBarSettings.LabelCenteredSegment`` in older QGIS releases.
+
 
 """
 # --
@@ -8255,24 +9260,51 @@ Qgis.AttributeEditorType.__doc__ = """Attribute editor types.
 
 .. versionadded:: 3.32
 
-* ``AeTypeContainer``: A container
-* ``AeTypeField``: A field
-* ``AeTypeRelation``: A relation
-* ``AeTypeQmlElement``: A QML element
-* ``AeTypeHtmlElement``: A HTML element
-* ``AeTypeAction``: A layer action element
+* ``Container``: A container
+
+  Available as ``QgsAttributeEditorElement.AeTypeContainer`` in older QGIS releases.
+
+* ``Field``: A field
+
+  Available as ``QgsAttributeEditorElement.AeTypeField`` in older QGIS releases.
+
+* ``Relation``: A relation
+
+  Available as ``QgsAttributeEditorElement.AeTypeRelation`` in older QGIS releases.
+
+* ``QmlElement``: A QML element
+
+  Available as ``QgsAttributeEditorElement.AeTypeQmlElement`` in older QGIS releases.
+
+* ``HtmlElement``: A HTML element
+
+  Available as ``QgsAttributeEditorElement.AeTypeHtmlElement`` in older QGIS releases.
+
+* ``Action``: A layer action element
 
   .. versionadded:: 3.22
 
-* ``AeTypeTextElement``: A text element
+
+  Available as ``QgsAttributeEditorElement.AeTypeAction`` in older QGIS releases.
+
+* ``TextElement``: A text element
 
   .. versionadded:: 3.30
 
-* ``AeTypeSpacerElement``: A spacer element
+
+  Available as ``QgsAttributeEditorElement.AeTypeTextElement`` in older QGIS releases.
+
+* ``SpacerElement``: A spacer element
 
   .. versionadded:: 3.30
 
-* ``AeTypeInvalid``: Invalid
+
+  Available as ``QgsAttributeEditorElement.AeTypeSpacerElement`` in older QGIS releases.
+
+* ``Invalid``: Invalid
+
+  Available as ``QgsAttributeEditorElement.AeTypeInvalid`` in older QGIS releases.
+
 
 """
 # --
@@ -8314,9 +9346,18 @@ Qgis.AttributeFormLayout.__doc__ = """Available form types for layout of the att
 
 .. versionadded:: 3.32
 
-* ``GeneratedLayout``: Autogenerate a simple tabular layout for the form
-* ``TabLayout``: \"Drag and drop\" layout. Needs to be configured.
-* ``UiFileLayout``: Load a .ui file for the layout. Needs to be configured.
+* ``AutoGenerated``: Autogenerate a simple tabular layout for the form
+
+  Available as ``QgsEditFormConfig.GeneratedLayout`` in older QGIS releases.
+
+* ``DragAndDrop``: \"Drag and drop\" layout. Needs to be configured.
+
+  Available as ``QgsEditFormConfig.TabLayout`` in older QGIS releases.
+
+* ``UiFile``: Load a .ui file for the layout. Needs to be configured.
+
+  Available as ``QgsEditFormConfig.UiFileLayout`` in older QGIS releases.
+
 
 """
 # --
@@ -8343,9 +9384,18 @@ Qgis.AttributeFormSuppression.__doc__ = """Available form types for layout of th
 
 .. versionadded:: 3.32
 
-* ``SuppressDefault``: Use the application-wide setting.
-* ``SuppressOn``: Always suppress feature form.
-* ``SuppressOff``: Never suppress feature form.
+* ``Default``: Use the application-wide setting.
+
+  Available as ``QgsEditFormConfig.SuppressDefault`` in older QGIS releases.
+
+* ``On``: Always suppress feature form.
+
+  Available as ``QgsEditFormConfig.SuppressOn`` in older QGIS releases.
+
+* ``Off``: Never suppress feature form.
+
+  Available as ``QgsEditFormConfig.SuppressOff`` in older QGIS releases.
+
 
 """
 # --
@@ -8376,10 +9426,22 @@ Qgis.AttributeFormPythonInitCodeSource.__doc__ = """The Python init code source 
 
 .. versionadded:: 3.32
 
-* ``CodeSourceNone``: Do not use Python code at all
-* ``CodeSourceFile``: Load the Python code from an external file
-* ``CodeSourceDialog``: Use the Python code provided in the dialog
-* ``CodeSourceEnvironment``: Use the Python code available in the Python environment
+* ``NoSource``: Do not use Python code at all
+
+  Available as ``QgsEditFormConfig.CodeSourceNone`` in older QGIS releases.
+
+* ``File``: Load the Python code from an external file
+
+  Available as ``QgsEditFormConfig.CodeSourceFile`` in older QGIS releases.
+
+* ``Dialog``: Use the Python code provided in the dialog
+
+  Available as ``QgsEditFormConfig.CodeSourceDialog`` in older QGIS releases.
+
+* ``Environment``: Use the Python code available in the Python environment
+
+  Available as ``QgsEditFormConfig.CodeSourceEnvironment`` in older QGIS releases.
+
 
 """
 # --
@@ -8424,8 +9486,14 @@ Qgis.FeatureSymbologyExport.__doc__ = """Options for exporting features consider
 .. versionadded:: 3.32
 
 * ``NoSymbology``: Export only data
-* ``FeatureSymbology``: Keeps the number of features and export symbology per feature
-* ``SymbolLayerSymbology``: Exports one feature per symbol layer (considering symbol levels)
+* ``PerFeature``: Keeps the number of features and export symbology per feature
+
+  Available as ``QgsVectorFileWriter.FeatureSymbology`` in older QGIS releases.
+
+* ``PerSymbolLayer``: Exports one feature per symbol layer (considering symbol levels)
+
+  Available as ``QgsVectorFileWriter.SymbolLayerSymbology`` in older QGIS releases.
+
 
 """
 # --

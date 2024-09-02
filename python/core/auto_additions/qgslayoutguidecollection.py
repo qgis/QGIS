@@ -29,11 +29,26 @@ QgsLayoutGuideCollection.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``OrientationRole``: Guide orientation role
-* ``PositionRole``: Guide position role
-* ``UnitsRole``: Guide position units role
-* ``PageRole``: Guide page role
-* ``LayoutPositionRole``: Guide position in layout coordinates
+* ``Orientation``: Guide orientation role
+
+  Available as ``QgsLayoutGuideCollection.OrientationRole`` in older QGIS releases.
+
+* ``Position``: Guide position role
+
+  Available as ``QgsLayoutGuideCollection.PositionRole`` in older QGIS releases.
+
+* ``Units``: Guide position units role
+
+  Available as ``QgsLayoutGuideCollection.UnitsRole`` in older QGIS releases.
+
+* ``Page``: Guide page role
+
+  Available as ``QgsLayoutGuideCollection.PageRole`` in older QGIS releases.
+
+* ``LayoutPosition``: Guide position in layout coordinates
+
+  Available as ``QgsLayoutGuideCollection.LayoutPositionRole`` in older QGIS releases.
+
 
 """
 # --

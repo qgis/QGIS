@@ -29,11 +29,26 @@ QgsBookmarkManagerModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``RoleExtent``: Bookmark extent as a QgsReferencedRectangle
-* ``RoleName``: Bookmark name
-* ``RoleId``: Bookmark ID
-* ``RoleGroup``: Bookmark group
-* ``RoleRotation``: Bookmark map rotation
+* ``Extent``: Bookmark extent as a QgsReferencedRectangle
+
+  Available as ``QgsBookmarkManagerModel.RoleExtent`` in older QGIS releases.
+
+* ``Name``: Bookmark name
+
+  Available as ``QgsBookmarkManagerModel.RoleName`` in older QGIS releases.
+
+* ``Id``: Bookmark ID
+
+  Available as ``QgsBookmarkManagerModel.RoleId`` in older QGIS releases.
+
+* ``Group``: Bookmark group
+
+  Available as ``QgsBookmarkManagerModel.RoleGroup`` in older QGIS releases.
+
+* ``Rotation``: Bookmark map rotation
+
+  Available as ``QgsBookmarkManagerModel.RoleRotation`` in older QGIS releases.
+
 
 """
 # --

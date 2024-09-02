@@ -41,14 +41,38 @@ QgsDatabaseTableModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``RoleTableName``: Table name
-* ``RoleSchema``: Table schema
-* ``RoleTableFlags``: Table flags role
-* ``RoleComment``: Comment role
-* ``RoleCustomInfo``: Custom info variant map role
-* ``RoleWkbType``: WKB type for primary (first) geometry column in table
-* ``RoleCrs``: CRS for primary (first) geometry column in table
-* ``RoleEmpty``: Entry is an empty entry
+* ``TableName``: Table name
+
+  Available as ``QgsDatabaseTableModel.RoleTableName`` in older QGIS releases.
+
+* ``Schema``: Table schema
+
+  Available as ``QgsDatabaseTableModel.RoleSchema`` in older QGIS releases.
+
+* ``TableFlags``: Table flags role
+
+  Available as ``QgsDatabaseTableModel.RoleTableFlags`` in older QGIS releases.
+
+* ``Comment``: Comment role
+
+  Available as ``QgsDatabaseTableModel.RoleComment`` in older QGIS releases.
+
+* ``CustomInfo``: Custom info variant map role
+
+  Available as ``QgsDatabaseTableModel.RoleCustomInfo`` in older QGIS releases.
+
+* ``WkbType``: WKB type for primary (first) geometry column in table
+
+  Available as ``QgsDatabaseTableModel.RoleWkbType`` in older QGIS releases.
+
+* ``Crs``: CRS for primary (first) geometry column in table
+
+  Available as ``QgsDatabaseTableModel.RoleCrs`` in older QGIS releases.
+
+* ``Empty``: Entry is an empty entry
+
+  Available as ``QgsDatabaseTableModel.RoleEmpty`` in older QGIS releases.
+
 
 """
 # --

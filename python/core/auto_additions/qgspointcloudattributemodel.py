@@ -33,12 +33,30 @@ QgsPointCloudAttributeModel.CustomRole.__doc__ = """Custom model roles.
 
 .. versionadded:: 3.36
 
-* ``AttributeNameRole``: Attribute name
-* ``AttributeIndexRole``: Attribute index if index corresponds to an attribute
-* ``AttributeSizeRole``: Attribute size
-* ``AttributeTypeRole``: Attribute type, see QgsPointCloudAttribute.DataType
-* ``IsEmptyRole``: ``True`` if the index corresponds to the empty value
-* ``IsNumericRole``: ``True`` if the index corresponds to a numeric attributre
+* ``AttributeName``: Attribute name
+
+  Available as ``QgsPointCloudAttributeModel.AttributeNameRole`` in older QGIS releases.
+
+* ``AttributeIndex``: Attribute index if index corresponds to an attribute
+
+  Available as ``QgsPointCloudAttributeModel.AttributeIndexRole`` in older QGIS releases.
+
+* ``AttributeSize``: Attribute size
+
+  Available as ``QgsPointCloudAttributeModel.AttributeSizeRole`` in older QGIS releases.
+
+* ``AttributeType``: Attribute type, see QgsPointCloudAttribute.DataType
+
+  Available as ``QgsPointCloudAttributeModel.AttributeTypeRole`` in older QGIS releases.
+
+* ``IsEmpty``: ``True`` if the index corresponds to the empty value
+
+  Available as ``QgsPointCloudAttributeModel.IsEmptyRole`` in older QGIS releases.
+
+* ``IsNumeric``: ``True`` if the index corresponds to a numeric attributre
+
+  Available as ``QgsPointCloudAttributeModel.IsNumericRole`` in older QGIS releases.
+
 
 """
 # --
