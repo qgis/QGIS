@@ -215,6 +215,13 @@ Returns the layer's data provider, it may be ``None``.
 %End
 
 
+    QgsProviderMetadata *providerMetadata() const;
+%Docstring
+Returns the layer data provider's metadata, it may be ``None``.
+
+.. versionadded:: 3.40
+%End
+
     void setShortName( const QString &shortName );
 %Docstring
 Sets the short name of the layer
