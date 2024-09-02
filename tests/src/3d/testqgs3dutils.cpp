@@ -328,7 +328,7 @@ void TestQgs3DUtils::testExportToObj()
     QTextStream out( &file );
 
     out << "o " << object.name() << "\n";
-    object.saveTo( out, scale, translation );
+    object.saveTo( out, scale, translation, 3 );
 
     out.flush();
     out.seek( 0 );
@@ -368,7 +368,7 @@ void TestQgs3DUtils::testExportToObj()
     file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
     QTextStream out( &file );
     out << "o " << object.name() << "\n";
-    object.saveTo( out, scale, translation );
+    object.saveTo( out, scale, translation, 4 );
 
     out.flush();
     out.seek( 0 );

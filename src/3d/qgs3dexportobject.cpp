@@ -105,10 +105,11 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   }
 }
 
-void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center )
+void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision )
 {
   // Set groups
   // turns out grouping doest work as expected in blender
+  out << qSetRealNumberPrecision( precision );
 
   // smoothen edges
   if ( mSmoothEdges )
@@ -117,7 +118,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
     out << "s off\n";
 
   // Construct vertices
-  // As we can have holes in the face list and we only write vertices from theses faces
+  // As we can have holes in the face list and we only write vertices from these faces
   // then the vertex list in the obj is not the whole from mVertexPosition!
   for ( const unsigned int vertice : qAsConst( mIndexes ) )
   {

@@ -806,7 +806,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
   return obj;
 }
 
-void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )
+void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
 {
   const QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".obj" ) );
   const QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".mtl" ) );
@@ -856,7 +856,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
     out << "o " << obj->name() << "\n";
     if ( material != QString() )
       out << "usemtl " << material << "\n";
-    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ) );
+    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ), precision );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Scene exported to '%1'" ).arg( objFilePath ), 2 );
