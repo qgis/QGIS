@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfgutils.h
+  qgsframegraphutils.h
   --------------------------------------
   Date                 : August 2024
   Copyright            : (C) 2024 by Mike Krus / Benoit De Mezzo
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFG_UTILS_H
-#define QGSFG_UTILS_H
+#ifndef QGSFRAMEGRAPH_UTILS_H
+#define QGSFRAMEGRAPH_UTILS_H
 
 #include <QWindow>
 #include <Qt3DRender/QCamera>
@@ -44,7 +44,7 @@
  * \brief Util class to dump Qt3D framegraph or scenegraph.
  * \since QGIS 3.40
  */
-class QgsFgUtils
+class QgsFramegraphUtils
 {
   public:
 
@@ -81,4 +81,4 @@ class QgsFgUtils
     static QStringList dumpFG( FgDumpContext context, const Qt3DCore::QNode *n, int level = 0 );
 };
 
-#endif // QGSFG_UTILS_H
+#endif // QGSFRAMEGRAPH_UTILS_H

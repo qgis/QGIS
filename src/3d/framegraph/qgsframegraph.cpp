@@ -18,7 +18,9 @@
 #include "qgspostprocessingentity.h"
 #include "qgspreviewquad.h"
 #include "qgs3dutils.h"
-#include "qgsfgutils.h"
+#include "qgsframegraphutils.h"
+#include "qgsabstractrenderview.h"
+
 #include "qgsambientocclusionrenderentity.h"
 #include "qgsambientocclusionblurentity.h"
 
@@ -828,16 +830,16 @@ QString QgsFrameGraph::dumpFrameGraph() const
   while ( top->parent() && dynamic_cast<Qt3DRender::QFrameGraphNode *>( top->parent() ) )
     top = top->parent();
 
-  QgsFgUtils::FgDumpContext context;
+  QgsFramegraphUtils::FgDumpContext context;
   context.lowestId = mMainCamera->id().id();
-  QStringList strList = QgsFgUtils::dumpFrameGraph( dynamic_cast<Qt3DRender::QFrameGraphNode *>( top ), context );
+  QStringList strList = QgsFramegraphUtils::dumpFrameGraph( dynamic_cast<Qt3DRender::QFrameGraphNode *>( top ), context );
 
   return strList.join( "\n" ) + QString( "\n" );
 }
 
 QString QgsFrameGraph::dumpSceneGraph() const
 {
-  QStringList strList = QgsFgUtils::dumpSceneGraph( mRootEntity, QgsFgUtils::FgDumpContext() );
+  QStringList strList = QgsFramegraphUtils::dumpSceneGraph( mRootEntity, QgsFramegraphUtils::FgDumpContext() );
   return strList.join( "\n" ) + QString( "\n" );
 }
 

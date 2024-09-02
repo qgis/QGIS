@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfgutils.h"
+#include "qgsframegraphutils.h"
 
 #include <QMetaEnum>
 #include <Qt3DRender/QGeometryRenderer>
@@ -31,23 +31,23 @@
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/QEffect>
 
-QStringList QgsFgUtils::dumpSceneGraph( const Qt3DCore::QNode *node, FgDumpContext context )
+QStringList QgsFramegraphUtils::dumpSceneGraph( const Qt3DCore::QNode *node, FgDumpContext context )
 {
   return dumpSG( context, node );
 }
 
-QStringList QgsFgUtils::dumpFrameGraph( const Qt3DCore::QNode *node, FgDumpContext context )
+QStringList QgsFramegraphUtils::dumpFrameGraph( const Qt3DCore::QNode *node, FgDumpContext context )
 {
   return dumpFG( context, node );
 }
 
-QString QgsFgUtils::formatIdName( FgDumpContext context, quint64 id, const QString &name )
+QString QgsFramegraphUtils::formatIdName( FgDumpContext context, quint64 id, const QString &name )
 {
   QString fixedName = name.isEmpty() ? QLatin1String( "<no_name>" ) : name;
   return QLatin1String( "{%1/%2}" ).arg( QString::number( id - context.lowestId ) ).arg( fixedName );
 }
 
-QString QgsFgUtils::formatIdName( FgDumpContext context, const Qt3DRender::QAbstractTexture *texture )
+QString QgsFramegraphUtils::formatIdName( FgDumpContext context, const Qt3DRender::QAbstractTexture *texture )
 {
   QString fixedName = texture->objectName().isEmpty() ? QLatin1String( "<no_name>" ) : texture->objectName();
   return QLatin1String( "{%1[%2]/%3" )
@@ -56,7 +56,7 @@ QString QgsFgUtils::formatIdName( FgDumpContext context, const Qt3DRender::QAbst
                , fixedName );
 }
 
-QString QgsFgUtils::formatNode( FgDumpContext context, const Qt3DCore::QNode *node )
+QString QgsFramegraphUtils::formatNode( FgDumpContext context, const Qt3DCore::QNode *node )
 {
   QString res = QLatin1String( "(%1%2)" )
                 .arg( QLatin1String( node->metaObject()->className() ) )
@@ -66,12 +66,12 @@ QString QgsFgUtils::formatNode( FgDumpContext context, const Qt3DCore::QNode *no
   return res;
 }
 
-QString QgsFgUtils::formatList( const QStringList &lst )
+QString QgsFramegraphUtils::formatList( const QStringList &lst )
 {
   return QString( QLatin1String( "[ %1 ]" ) ).arg( lst.join( QLatin1String( ", " ) ) );
 }
 
-QString QgsFgUtils::formatLongList( const QStringList &lst, int level )
+QString QgsFramegraphUtils::formatLongList( const QStringList &lst, int level )
 {
   QString out = formatList( lst );
   if ( out.size() < 200 )
@@ -87,14 +87,14 @@ QString QgsFgUtils::formatLongList( const QStringList &lst, int level )
   return out + end.rightJustified( end.length() + ( 1 + level ) * 2, ' ' );
 }
 
-QString QgsFgUtils::formatField( const QString &name, const QString &value )
+QString QgsFramegraphUtils::formatField( const QString &name, const QString &value )
 {
   if ( value == "<no_value>" )
     return QString( QLatin1String( "(%1)" ) ).arg( name );
   return QString( QLatin1String( "(%1:%2)" ) ).arg( name, value );
 }
 
-QString QgsFgUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity *node, int level )
+QString QgsFramegraphUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity *node, int level )
 {
   auto extractTextureParam = []( FgDumpContext context, const QVector<Qt3DRender::QParameter *> &params, QStringList & fl )
   {
@@ -160,7 +160,7 @@ QString QgsFgUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity
   return res;
 }
 
-QStringList QgsFgUtils::dumpSG( FgDumpContext context, const Qt3DCore::QNode *node, int level )
+QStringList QgsFramegraphUtils::dumpSG( FgDumpContext context, const Qt3DCore::QNode *node, int level )
 {
   QStringList reply;
   const auto *entity = qobject_cast<const Qt3DCore::QEntity *>( node );
@@ -178,7 +178,7 @@ QStringList QgsFgUtils::dumpSG( FgDumpContext context, const Qt3DCore::QNode *no
   return reply;
 }
 
-QString QgsFgUtils::dumpFGNode( FgDumpContext context, const Qt3DRender::QFrameGraphNode *node )
+QString QgsFramegraphUtils::dumpFGNode( FgDumpContext context, const Qt3DRender::QFrameGraphNode *node )
 {
   QString res = formatNode( context, node );
 
@@ -291,7 +291,7 @@ QString QgsFgUtils::dumpFGNode( FgDumpContext context, const Qt3DRender::QFrameG
   return res;
 }
 
-QStringList QgsFgUtils::dumpFG( FgDumpContext context, const Qt3DCore::QNode *node, int level )
+QStringList QgsFramegraphUtils::dumpFG( FgDumpContext context, const Qt3DCore::QNode *node, int level )
 {
   QStringList reply;
 
