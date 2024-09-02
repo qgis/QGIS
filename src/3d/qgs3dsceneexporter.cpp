@@ -355,7 +355,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
   if ( positionAttribute == nullptr )
   {
-    QgsDebugError( QString( "Will not export '%1' has geometry with no position attribute!" ).arg( layerName ) );
+    QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( layerName ) );
     return;
   }
   const QByteArray verticesBytes = getData( positionAttribute->buffer() );
@@ -370,7 +370,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   Qt3DQAttribute *indexAttribute = tileGeometry->indexAttribute();
   if ( indexAttribute == nullptr )
   {
-    QgsDebugError( QString( "Will not export '%1' has geometry with no index attribute!" ).arg( layerName ) );
+    QgsDebugError( QString( "Cannot export '%1' - geometry has no index attribute!" ).arg( layerName ) );
     return;
   }
   const QByteArray indexBytes = getData( indexAttribute->buffer() );
@@ -485,10 +485,10 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
   for ( Qt3DQGeometry *geometry : geometriesList )
   {
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    Qt3DQAttribute *indexAttribute = findAttribute( geometry, "", Qt3DQAttribute::IndexAttribute );
+    Qt3DQAttribute *indexAttribute = findAttribute( geometry, QString(), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
-      QgsDebugError( QString( "Will not export '%1' has geometry with no position or index attribute!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
 
@@ -506,7 +506,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     Qt3DQAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DQAttribute::VertexAttribute );
     if ( instanceDataAttribute == nullptr )
     {
-      QgsDebugError( QString( "Will not export '%1' has geometry with no instanceData attribute!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
     const QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
@@ -641,7 +641,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
   if ( positionAttribute == nullptr )
   {
-    QgsDebugError( QString( "Will not export '%1' has geometry with no position attribute!" ).arg( objectNamePrefix ) );
+    QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );
     return nullptr;
   }
 
@@ -749,10 +749,10 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency ) continue;
     Qt3DQGeometry *geom = renderer->geometry();
     Qt3DQAttribute *positionAttribute = findAttribute( geom, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    Qt3DQAttribute *indexAttribute = findAttribute( geom, "", Qt3DQAttribute::IndexAttribute );
+    Qt3DQAttribute *indexAttribute = findAttribute( geom, QString(), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
-      QgsDebugError( QString( "Will not export '%1' has geometry with no position or index attribute!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
 
@@ -788,7 +788,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
     if ( positionAttribute == nullptr )
     {
-      QgsDebugError( QString( "Will not export '%1' has geometry with no position attribute!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
     const QByteArray positionBytes = getData( positionAttribute->buffer() );
