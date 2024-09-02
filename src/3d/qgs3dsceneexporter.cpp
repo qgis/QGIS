@@ -162,10 +162,11 @@ QByteArray getData( Qt3DQBuffer *buffer )
 
 Qt3DQAttribute *findAttribute( Qt3DQGeometry *geometry, const QString &name, Qt3DQAttribute::AttributeType type )
 {
-  for ( Qt3DQAttribute *attribute : geometry->attributes() )
+  QVector<Qt3DQAttribute *> attributes = geometry->attributes();
+  for ( Qt3DQAttribute *attribute : attributes )
   {
     if ( attribute->attributeType() != type ) continue;
-    if ( attribute->name() == name ) return attribute;
+    if ( name.isEmpty() || attribute->name() == name ) return attribute;
   }
   return nullptr;
 }
@@ -174,7 +175,8 @@ template<typename Component>
 Component *findTypedComponent( Qt3DCore::QEntity *entity )
 {
   if ( entity == nullptr ) return nullptr;
-  for ( Qt3DCore::QComponent *component : entity->components() )
+  QVector<Qt3DCore::QComponent *> components = entity->components();
+  for ( Qt3DCore::QComponent *component : components )
   {
     Component *typedComponent = qobject_cast<Component *>( component );
     if ( typedComponent != nullptr )
@@ -223,7 +225,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
   else
   {
     // TODO: handle pointcloud/mesh/etc. layers
-    QgsDebugMsgLevel( QStringLiteral( "Type '%1' of layer '%2' is not exportable." ).arg( layer->name() ).arg( rendererType ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Type '%1' of layer '%2' is not exportable." ).arg( layer->name(), rendererType ), 2 );
     return false;
   }
 
@@ -351,12 +353,32 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
 
   // Generate vertice data
   Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
+  if ( positionAttribute == nullptr )
+  {
+    QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( layerName ) );
+    return;
+  }
   const QByteArray verticesBytes = getData( positionAttribute->buffer() );
+  if ( verticesBytes.isNull() )
+  {
+    QgsDebugError( QString( "Geometry for '%1' has position attribute with empty data!" ).arg( layerName ) );
+    return;
+  }
   const QVector<float> positionBuffer = getAttributeData<float>( positionAttribute, verticesBytes );
 
   // Generate index data
   Qt3DQAttribute *indexAttribute = tileGeometry->indexAttribute();
+  if ( indexAttribute == nullptr )
+  {
+    QgsDebugError( QString( "Cannot export '%1' - geometry has no index attribute!" ).arg( layerName ) );
+    return;
+  }
   const QByteArray indexBytes = getData( indexAttribute->buffer() );
+  if ( indexBytes.isNull() )
+  {
+    QgsDebugError( QString( "Geometry for '%1' has index attribute with empty data!" ).arg( layerName ) );
+    return;
+  }
   const QVector<uint> indexesBuffer = getIndexData( indexAttribute,  indexBytes );
 
   QString objectNamePrefix = layerName;
@@ -463,25 +485,41 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
   for ( Qt3DQGeometry *geometry : geometriesList )
   {
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    Qt3DQAttribute *indexAttribute = nullptr;
-    for ( Qt3DQAttribute *attribute : geometry->attributes() )
-    {
-      if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
-        indexAttribute = attribute;
-    }
+    Qt3DQAttribute *indexAttribute = findAttribute( geometry, QString(), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
+    {
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
-    const QByteArray vertexBytes = getData( positionAttribute->buffer() );
-    const QByteArray indexBytes = getData( indexAttribute->buffer() );
+    }
+
+    const QByteArray vertexBytes = positionAttribute->buffer()->data();
+    const QByteArray indexBytes = indexAttribute->buffer()->data();
+    if ( vertexBytes.isNull() || indexBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has position or index attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
+
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
     Qt3DQAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DQAttribute::VertexAttribute );
+    if ( instanceDataAttribute == nullptr )
+    {
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     const QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
+    if ( instancePositionBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has instanceData attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
+
     for ( int i = 0; i < instancePosition.size(); i += 3 )
     {
-      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "shape_geometry" ) ) );
+      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "instance_point" ) ) );
       objects.push_back( object );
       object->setupPositionCoordinates( positionData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
       object->setupFaces( indexData );
@@ -497,6 +535,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       }
     }
   }
+
   return objects;
 }
 
@@ -512,7 +551,8 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
     sceneScale = entityTransform->scale();
     sceneTranslation = entityTransform->translation();
   }
-  for ( const QString &entityName : sceneLoader->entityNames() )
+  QStringList entityNames = sceneLoader->entityNames();
+  for ( const QString &entityName : entityNames )
   {
     Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
     Qgs3DExportObject *object = processGeometryRenderer( mesh, objectNamePrefix, sceneScale, sceneTranslation );
@@ -533,6 +573,8 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   if ( ! geometry )
     return nullptr;
 
+  // === Compute triangleIndexStartingIndiceToKeep according to duplicated features
+  //
   // In the case of polygons, we have multiple feature geometries within the same geometry object (QgsTessellatedPolygonGeometry).
   // The QgsTessellatedPolygonGeometry class holds the list of all feature ids included.
   // To avoid exporting the same geometry (it can be included in multiple QgsTessellatedPolygonGeometry) more than once,
@@ -545,22 +587,26 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   {
     QVector<QgsFeatureId> featureIds = tessGeom->featureIds();
 
+    QSet<QgsFeatureId> tempFeatToAdd;
     QVector<uint> triangleIndex = tessGeom->triangleIndexStartingIndices();
+
     for ( int idx = 0; idx < featureIds.size(); idx++ )
     {
       const QgsFeatureId feat = featureIds[idx];
       if ( ! mExportedFeatureIds.contains( feat ) )
       {
-        // add the feature as it was unknown
-        mExportedFeatureIds.insert( feat );
+        // add the feature (as it was unknown) to temp set and not to the mExportedFeatureIds (as featureIds can have the same id multiple times)
+        tempFeatToAdd += feat;
 
         // keep the feature triangle indexes
-        const uint startIdx = triangleIndex[idx];
-        const uint endIdx = idx < triangleIndex.size() - 1 ? triangleIndex[idx + 1] : std::numeric_limits<uint>::max();
+        const uint startIdx = triangleIndex[idx] * 3;
+        const uint endIdx = idx < triangleIndex.size() - 1 ? triangleIndex[idx + 1] * 3 : std::numeric_limits<uint>::max();
 
-        triangleIndexStartingIndiceToKeep.append( std::pair<uint, uint>( startIdx, endIdx ) );
+        if ( startIdx < endIdx ) // keep only valid intervals
+          triangleIndexStartingIndiceToKeep.append( std::pair<uint, uint>( startIdx, endIdx ) );
       }
     }
+    mExportedFeatureIds += tempFeatToAdd;
 
     if ( triangleIndexStartingIndiceToKeep.isEmpty() ) // all featureid are already exported
     {
@@ -568,6 +614,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     }
   }
 
+  // === Compute inherited scale and translation from child entity to parent
   float scale = 1.0f;
   QVector3D translation( 0.0f, 0.0f, 0.0f );
   QObject *parent = geomRenderer->parent();
@@ -583,32 +630,52 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     parent = parent->parent();
   }
 
-  Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
+  Qt3DQAttribute *positionAttribute = nullptr;
   Qt3DQAttribute *indexAttribute = nullptr;
   QByteArray indexBytes, vertexBytes;
   QVector<uint> indexDataTmp;
   QVector<uint> indexData;
   QVector<float> positionData;
-  for ( Qt3DQAttribute *attribute : geometry->attributes() )
+
+  // === Extract position data
+  positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
+  if ( positionAttribute == nullptr )
+  {
+    QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );
+    return nullptr;
+  }
+
+  vertexBytes = getData( positionAttribute->buffer() );
+  if ( vertexBytes.isNull() )
+  {
+    QgsDebugError( QString( "Will not export '%1' as geometry has empty position data!" ).arg( objectNamePrefix ) );
+    return nullptr;
+  }
+
+  positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+
+  // === Search for face index data
+  QVector<Qt3DQAttribute *> attributes = geometry->attributes();
+  for ( Qt3DQAttribute *attribute : attributes )
   {
     if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
+    {
       indexAttribute = attribute;
+      indexBytes = getData( indexAttribute->buffer() );
+      if ( indexBytes.isNull() )
+      {
+        QgsDebugError( QString( "Geometry for '%1' has index attribute with empty data!" ).arg( objectNamePrefix ) );
+      }
+      else
+      {
+        indexDataTmp = getIndexData( indexAttribute, indexBytes );
+        break;
+      }
+    }
   }
 
-  if ( indexAttribute != nullptr )
-  {
-    indexBytes = getData( indexAttribute->buffer() );
-    indexDataTmp = getIndexData( indexAttribute, indexBytes );
-  }
-
-  if ( positionAttribute != nullptr )
-  {
-    vertexBytes = getData( positionAttribute->buffer() );
-    positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-  }
-
-  // For tessellated polygons that don't have index attributes
-  if ( positionAttribute != nullptr && indexAttribute == nullptr )
+  // for tessellated polygons that don't have index attributes, build them from positionData
+  if ( indexAttribute == nullptr )
   {
     for ( uint i = 0; i < static_cast<uint>( positionData.size() / 3 ); ++i )
     {
@@ -616,41 +683,40 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     }
   }
 
-  if ( triangleIndexStartingIndiceToKeep.empty() )
+  // === Filter face index data if needed
+  if ( triangleIndexStartingIndiceToKeep.isEmpty() )
   {
+    // when geometry is NOT a QgsTessellatedPolygonGeometry, no filter, take them all
     indexData.append( indexDataTmp );
   }
   else
   {
+    // when geometry is a QgsTessellatedPolygonGeometry, filter according to triangleIndexStartingIndiceToKeep
     int intervalIdx = 0;
     const int triangleIndexStartingIndiceToKeepSize = triangleIndexStartingIndiceToKeep.size();
     const uint indexDataTmpSize = static_cast<uint>( indexDataTmp.size() );
     for ( uint i = 0; i < indexDataTmpSize; ++i )
     {
+      uint idx = indexDataTmp[static_cast<int>( i )];
       // search for valid triangle index interval
       while ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-              && i > triangleIndexStartingIndiceToKeep[intervalIdx].first * 3
-              && i >= triangleIndexStartingIndiceToKeep[intervalIdx].second * 3 )
+              && idx > triangleIndexStartingIndiceToKeep[intervalIdx].first
+              && idx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
         intervalIdx++;
       }
 
       // keep only the one within the triangle index interval
       if ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-           && i >= triangleIndexStartingIndiceToKeep[intervalIdx].first * 3
-           && i < triangleIndexStartingIndiceToKeep[intervalIdx].second * 3 )
+           && idx >= triangleIndexStartingIndiceToKeep[intervalIdx].first
+           && idx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
-        indexData.push_back( indexDataTmp[static_cast<int>( i )] );
+        indexData.push_back( idx );
       }
     }
   }
 
-  if ( positionAttribute == nullptr )
-  {
-    QgsDebugError( "Geometry renderer with null data was being processed" );
-    return nullptr;
-  }
-
+  // === Create Qgs3DExportObject
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
   object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
@@ -683,23 +749,20 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency ) continue;
     Qt3DQGeometry *geom = renderer->geometry();
     Qt3DQAttribute *positionAttribute = findAttribute( geom, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    Qt3DQAttribute *indexAttribute = nullptr;
-    for ( Qt3DQAttribute *attribute : geom->attributes() )
-    {
-      if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
-      {
-        indexAttribute = attribute;
-        break;
-      }
-    }
+    Qt3DQAttribute *indexAttribute = findAttribute( geom, QString(), Qt3DQAttribute::IndexAttribute );
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
     {
-      QgsDebugError( "Position or index attribute was not found" );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
 
     const QByteArray vertexBytes = getData( positionAttribute->buffer() );
     const QByteArray indexBytes = getData( indexAttribute->buffer() );
+    if ( vertexBytes.isNull() || indexBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has position or index attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
@@ -723,9 +786,17 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     if ( geometry == nullptr )
       continue;
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    const QByteArray positionBytes = getData( positionAttribute->buffer() );
-    if ( positionBytes.size() == 0 )
+    if ( positionAttribute == nullptr )
+    {
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );
       continue;
+    }
+    const QByteArray positionBytes = getData( positionAttribute->buffer() );
+    if ( positionBytes.isNull() )
+    {
+      QgsDebugError( QString( "Geometry for '%1' has position attribute with empty data!" ).arg( objectNamePrefix ) );
+      continue;
+    }
     const QVector<float> positions = getAttributeData<float>( positionAttribute, positionBytes );
     points << positions;
   }
@@ -735,7 +806,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
   return obj;
 }
 
-void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath )
+void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
 {
   const QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".obj" ) );
   const QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".mtl" ) );
@@ -755,7 +826,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
 
   float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
   float minX = maxfloat, minY = maxfloat, minZ = maxfloat, maxX = minFloat, maxY = minFloat, maxZ = minFloat;
-  for ( Qgs3DExportObject *obj : mObjects )
+  for ( Qgs3DExportObject *obj : qAsConst( mObjects ) )
   {
     obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
   }
@@ -777,7 +848,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   out << "mtllib " << mtlLibName << "\n";
 
   QTextStream mtlOut( &mtlFile );
-  for ( Qgs3DExportObject *obj : mObjects )
+  for ( Qgs3DExportObject *obj : qAsConst( mObjects ) )
   {
     if ( obj == nullptr ) continue;
     // Set object name
@@ -785,10 +856,10 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
     out << "o " << obj->name() << "\n";
     if ( material != QString() )
       out << "usemtl " << material << "\n";
-    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ) );
+    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ), precision );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Scene exported to %1" ).arg( objFilePath ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Scene exported to '%1'" ).arg( objFilePath ), 2 );
 }
 
 QString Qgs3DSceneExporter::getObjectName( const QString &name )
