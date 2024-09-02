@@ -615,6 +615,24 @@ Creates a new :py:class:`QgsExpressionContextScope` for the cell at ``row``, ``c
 .. versionadded:: 3.16
 %End
 
+    virtual int rowSpan( int row, int column ) const;
+%Docstring
+Returns the row span for the cell a ``row``, ``column``.
+
+.. seealso:: :py:func:`columnSpan`
+
+.. versionadded:: 3.40
+%End
+
+    virtual int columnSpan( int row, int column ) const;
+%Docstring
+Returns the column span for the cell a ``row``, ``column``.
+
+.. seealso:: :py:func:`rowSpan`
+
+.. versionadded:: 3.40
+%End
+
     QgsLayoutTableContents &contents();
 %Docstring
 Returns the current contents of the table. Excludes header cells.

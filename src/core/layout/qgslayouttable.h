@@ -548,6 +548,22 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const SIP_FACTORY;
 
     /**
+     * Returns the row span for the cell a \a row, \a column.
+     *
+     * \see columnSpan()
+     * \since QGIS 3.40
+     */
+    virtual int rowSpan( int row, int column ) const;
+
+    /**
+     * Returns the column span for the cell a \a row, \a column.
+     *
+     * \see rowSpan()
+     * \since QGIS 3.40
+     */
+    virtual int columnSpan( int row, int column ) const;
+
+    /**
      * Returns the current contents of the table. Excludes header cells.
      */
     QgsLayoutTableContents &contents() { return mTableContents; }

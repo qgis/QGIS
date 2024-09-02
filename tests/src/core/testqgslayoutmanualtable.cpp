@@ -50,6 +50,9 @@ class TestQgsLayoutManualTable : public QgsTest
     void headers();
     void cellTextFormat();
     void cellTextAlignment();
+    void mergedCells();
+    void mergedCellsVertOnly();
+    void mergedCellsHozOnly();
 
   private:
 
@@ -528,6 +531,138 @@ void TestQgsLayoutManualTable::cellTextAlignment()
 
   table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "manualtable_textalign" ), &l );
+}
+
+void TestQgsLayoutManualTable::mergedCells()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+
+  QgsTableCell c1( QStringLiteral( "Jet" ) );
+  c1.setSpan( 3, 2 );
+  c1.setBackgroundColor( QColor( 255, 200, 220 ) );
+
+  QgsTableCell c3( QStringLiteral( "Plane" ) );
+  c3.setHorizontalAlignment( Qt::AlignCenter );
+  c3.setVerticalAlignment( Qt::AlignTop );
+  c3.setSpan( 2, 1 );
+  c3.setBackgroundColor( QColor( 255, 230, 200 ) );
+
+  QgsTableCell c5( QStringLiteral( "B" ) );
+  c5.setHorizontalAlignment( Qt::AlignRight );
+  c5.setVerticalAlignment( Qt::AlignTop );
+  c5.setSpan( 1, 3 );
+  c5.setBackgroundColor( QColor( 200, 250, 200 ) );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A1" ) ) << c1 << QgsTableCell( QStringLiteral( "hidden by span" ) ) << QgsTableCell( QStringLiteral( "Something" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) << QgsTableCell( QStringLiteral( "C" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "C" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) << c3 )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "D" ) ) <<  QgsTableCell( QStringLiteral( "E" ) ) <<  QgsTableCell( QStringLiteral( "F" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) )
+                           << ( QgsTableRow() << c5 <<  QgsTableCell( QStringLiteral( "hidden" ) ) <<  QgsTableCell( QStringLiteral( "hidden" ) ) <<  QgsTableCell( QStringLiteral( "G" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 30 << 50.0 << 40.0 << 25.0 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "manualtable_merged" ), &l );
+}
+
+void TestQgsLayoutManualTable::mergedCellsVertOnly()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( false );
+  table->setVerticalGrid( true );
+
+  QgsTableCell c1( QStringLiteral( "Jet" ) );
+  c1.setSpan( 3, 2 );
+  c1.setBackgroundColor( QColor( 255, 200, 220 ) );
+
+  QgsTableCell c3( QStringLiteral( "Plane" ) );
+  c3.setHorizontalAlignment( Qt::AlignCenter );
+  c3.setVerticalAlignment( Qt::AlignTop );
+  c3.setSpan( 2, 1 );
+  c3.setBackgroundColor( QColor( 255, 230, 200 ) );
+
+  QgsTableCell c5( QStringLiteral( "B" ) );
+  c5.setHorizontalAlignment( Qt::AlignRight );
+  c5.setVerticalAlignment( Qt::AlignTop );
+  c5.setSpan( 1, 3 );
+  c5.setBackgroundColor( QColor( 200, 250, 200 ) );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A1" ) ) << c1 << QgsTableCell( QStringLiteral( "hidden by span" ) ) << QgsTableCell( QStringLiteral( "Something" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) << QgsTableCell( QStringLiteral( "C" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "C" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) << c3 )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "D" ) ) <<  QgsTableCell( QStringLiteral( "E" ) ) <<  QgsTableCell( QStringLiteral( "F" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) )
+                           << ( QgsTableRow() << c5 <<  QgsTableCell( QStringLiteral( "hidden" ) ) <<  QgsTableCell( QStringLiteral( "hidden" ) ) <<  QgsTableCell( QStringLiteral( "G" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 30 << 50.0 << 40.0 << 25.0 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "manualtable_merged_vert_only" ), &l );
+}
+
+void TestQgsLayoutManualTable::mergedCellsHozOnly()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( false );
+
+  QgsTableCell c1( QStringLiteral( "Jet" ) );
+  c1.setSpan( 3, 2 );
+  c1.setBackgroundColor( QColor( 255, 200, 220 ) );
+
+  QgsTableCell c3( QStringLiteral( "Plane" ) );
+  c3.setHorizontalAlignment( Qt::AlignCenter );
+  c3.setVerticalAlignment( Qt::AlignTop );
+  c3.setSpan( 2, 1 );
+  c3.setBackgroundColor( QColor( 255, 230, 200 ) );
+
+  QgsTableCell c5( QStringLiteral( "B" ) );
+  c5.setHorizontalAlignment( Qt::AlignRight );
+  c5.setVerticalAlignment( Qt::AlignTop );
+  c5.setSpan( 1, 3 );
+  c5.setBackgroundColor( QColor( 200, 250, 200 ) );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A1" ) ) << c1 << QgsTableCell( QStringLiteral( "hidden by span" ) ) << QgsTableCell( QStringLiteral( "Something" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) << QgsTableCell( QStringLiteral( "C" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "C" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) << c3 )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "D" ) ) <<  QgsTableCell( QStringLiteral( "E" ) ) <<  QgsTableCell( QStringLiteral( "F" ) ) <<  QgsTableCell( QStringLiteral( "hidden by span" ) ) )
+                           << ( QgsTableRow() << c5 <<  QgsTableCell( QStringLiteral( "hidden" ) ) <<  QgsTableCell( QStringLiteral( "hidden" ) ) <<  QgsTableCell( QStringLiteral( "G" ) ) ) );
+
+  table->setColumnWidths( QList< double >() << 30 << 50.0 << 40.0 << 25.0 );
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "manualtable_merged_hoz_only" ), &l );
 }
 
 QGSTEST_MAIN( TestQgsLayoutManualTable )

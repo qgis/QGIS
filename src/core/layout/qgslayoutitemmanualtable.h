@@ -143,6 +143,8 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
     QgsTextFormat textFormatForCell( int row, int column ) const override;
     Qt::Alignment horizontalAlignmentForCell( int row, int column ) const override;
     Qt::Alignment verticalAlignmentForCell( int row, int column ) const override;
+    int rowSpan( int row, int column ) const override;
+    int columnSpan( int row, int column ) const override;
 
   private:
 
