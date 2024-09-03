@@ -25,7 +25,7 @@ A spatial index for :py:class:`QgsMeshFace` or :py:class:`QgsMeshEdge` objects.
    class implements its own locks and accordingly, a single :py:class:`QgsMeshSpatialIndex` object can safely
    be used across multiple threads
 
-.. seealso:: :py:class:`QgsSpatialIndex`
+.. seealso:: :py:class:`QgsSpatialIndex` which is for vector features
 
 .. versionadded:: 3.6
 %End

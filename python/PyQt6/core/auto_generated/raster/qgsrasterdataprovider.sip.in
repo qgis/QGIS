@@ -293,7 +293,7 @@ if point is outside data source extent.
    The arbitraryness of the returned document is enforced by WMS standards
    up to at least v1.3.0
 
-.. seealso:: :py:func:`sample`
+.. seealso:: :py:func:`sample` which is much more efficient for simple "value at point" queries.
 %End
 
     virtual double sample( const QgsPointXY &point, int band,
@@ -310,7 +310,7 @@ If ``ok`` is specified and the point is outside data source extent, or an invali
 band number was specified, then ``ok`` will be set to ``False``. In this case the function will return
 a NaN value.
 
-.. seealso:: :py:func:`identify`
+.. seealso:: :py:func:`identify` which is much more flexible but considerably less efficient.
 
 .. versionadded:: 3.4
 %End

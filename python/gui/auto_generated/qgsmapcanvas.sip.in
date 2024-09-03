@@ -474,7 +474,7 @@ responding to events while layers are being added/removed etc.
 
 .. seealso:: :py:func:`isFrozen`
 
-.. seealso:: :py:func:`setRenderFlag`
+.. seealso:: :py:func:`setRenderFlag` freeze() should be used to programmatically halt map updates,
                while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 
@@ -482,7 +482,7 @@ responding to events while layers are being added/removed etc.
 %Docstring
 Returns ``True`` if canvas is frozen.
 
-.. seealso:: :py:func:`renderFlag`
+.. seealso:: :py:func:`renderFlag` isFrozen() should be used to determine whether map updates
 have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
 determine whether a user has disabled rendering via GUI.
 
@@ -496,7 +496,7 @@ renders via the GUI.
 
 .. seealso:: :py:func:`setRenderFlag`
 
-.. seealso:: :py:func:`isFrozen`
+.. seealso:: :py:func:`isFrozen` isFrozen() should be used to determine whether map updates
 have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
 determine whether a user has disabled rendering via GUI.
 %End
@@ -927,7 +927,7 @@ Sets whether a user has disabled canvas renders via the GUI.
 
 .. seealso:: :py:func:`renderFlag`
 
-.. seealso:: :py:func:`freeze`
+.. seealso:: :py:func:`freeze` freeze() should be used to programmatically halt map updates,
              while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 

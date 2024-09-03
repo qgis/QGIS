@@ -868,8 +868,12 @@ def process_doxygen_line(line: str) -> str:
                 dbg_info(f"\\see :py:func:`{seealso}`")
                 seeline = f":py:func:`{seealso}`"
 
-            if re.match(r'^\s*\\see', line):
-                return f"\n.. seealso:: {seeline or seealso}\n"
+            if full_line_match := re.match(r'^\s*\\see +(\w+(?:\.\w+)*)(?:\([^()]*\))?[\s,.:-]*(.*?)$', line):
+                suffix = full_line_match.group(2)
+                if suffix:
+                    return f"\n.. seealso:: {seeline or seealso} {suffix.strip()}\n"
+                else:
+                    return f"\n.. seealso:: {seeline or seealso}\n"
             else:
                 if seeline:
                     line = line[:see_match.start()] + seeline + line[

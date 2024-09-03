@@ -724,7 +724,7 @@ Returns a copy of the user-selected features.
 
 .. seealso:: :py:func:`selectedFeatureIds`
 
-.. seealso:: :py:func:`getSelectedFeatures`
+.. seealso:: :py:func:`getSelectedFeatures` which is more memory friendly when handling large selections
 %End
 
     QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;

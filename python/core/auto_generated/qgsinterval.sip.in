@@ -274,7 +274,7 @@ Returns the original interval duration.
 This original interval duration can be updated through calling
 QgsInterval setter methods.
 
-.. seealso:: :py:func:`originalUnit`
+.. seealso:: :py:func:`originalUnit` for the corresponding unit.
 
 If the original interval duration is not available or
 interval was set with a mix of units, calling :py:func:`~QgsInterval.originalUnit`

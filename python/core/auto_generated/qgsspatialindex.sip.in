@@ -28,9 +28,9 @@ A spatial index for :py:class:`QgsFeature` objects.
    class implements its own locks and accordingly, a single :py:class:`QgsSpatialIndex` object can safely
    be used across multiple threads.
 
-.. seealso:: :py:class:`QgsSpatialIndexKDBush`
+.. seealso:: :py:class:`QgsSpatialIndexKDBush` which is an optimised non-mutable index for point geometries only.
 
-.. seealso:: :py:class:`QgsMeshSpatialIndex`
+.. seealso:: :py:class:`QgsMeshSpatialIndex` which is for mesh faces
 %End
 
 %TypeHeaderCode
