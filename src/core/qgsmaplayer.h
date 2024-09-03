@@ -1789,7 +1789,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns provider read flag deduced from layer read flags \a layerReadFlags and a dom node \a layerNode
-     * that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by QgsProject).
+     * that describes a layer (corresponding to ``maplayer`` tag in a DOM document project file read by QgsProject).
      * This static method is used when loading a project.
      *
      * \since QGIS 3.32
