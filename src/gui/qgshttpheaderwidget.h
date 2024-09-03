@@ -59,7 +59,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
 
     /**
      * \brief fill the inner header map from the settings defined at \a key
-     * \see QgsHttpHeaders::setFromSettings( const QgsSettings &settings, const QString &key )
+     * \see QgsHttpHeaders::setFromSettings()
      * \param settings
      * \param key
      * \deprecated QGIS 3.30. Use setFromHeaders instead.
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
 
     /**
      * \brief update the \a settings with the http headers present in the inner map.
-     * \see QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key ) const
+     * \see QgsHttpHeaders::updateSettings()
      * \param settings
      * \param key
      * \deprecated QGIS 3.30. Use a variant map for settinds directly.

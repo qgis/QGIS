@@ -996,7 +996,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     /**
      * Retrieves the second fill color for the grid frame.
      * \see setFrameFillColor2()
-     * \see framePenColor(
+     * \see framePenColor()
      * \see frameFillColor1()
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
