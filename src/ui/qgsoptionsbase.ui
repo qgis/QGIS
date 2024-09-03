@@ -4862,7 +4862,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                       <item row="4" column="0">
                        <widget class="QLabel" name="label_11">
                         <property name="text">
-                         <string>Size [KiB]</string>
+                         <string>Size</string>
                         </property>
                        </widget>
                       </item>
@@ -4877,7 +4877,32 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <widget class="QLineEdit" name="mCacheDirectory"/>
                       </item>
                       <item row="4" column="1">
-                       <widget class="QgsSpinBox" name="mCacheSize"/>
+                       <widget class="QgsSpinBox" name="mCacheSize">
+                        <property name="toolTip">
+                         <string>Specify the cache size in megabytes. Clear the value to enable smart cache size, which sets the maximum cache size based on available space.</string>
+                        </property>
+                        <property name="suffix">
+                         <string> MB</string>
+                        </property>
+                        <property name="minimum">
+                         <number>0</number>
+                        </property>
+                        <property name="maximum">
+                         <number>10000</number>
+                        </property>
+                        <property name="singleStep">
+                         <number>100</number>
+                        </property>
+                        <property name="clearValue">
+                         <number>0</number>
+                        </property>
+                        <property name="showClearButton" stdset="0">
+                         <bool>true</bool>
+                        </property>
+                        <property name="specialValueText">
+                         <string>Smart cache size</string>
+                        </property>
+                       </widget>
                       </item>
                       <item row="0" column="2">
                        <widget class="QToolButton" name="mBrowseCacheDirectory">
