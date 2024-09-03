@@ -1786,7 +1786,7 @@ Returns true if map tips are enabled for this layer
     static Qgis::DataProviderReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
 %Docstring
 Returns provider read flag deduced from layer read flags ``layerReadFlags`` and a dom node ``layerNode``
-that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by :py:class:`QgsProject`).
+that describes a layer (corresponding to ``maplayer`` tag in a DOM document project file read by :py:class:`QgsProject`).
 This static method is used when loading a project.
 
 .. versionadded:: 3.32
