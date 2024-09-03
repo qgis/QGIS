@@ -742,7 +742,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Prepare a \a device for printing a layout as a PDF, to the destination \a filePath.
      */
-    static void preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice *device, const QString &filePath );
+    static void preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device, const QString &filePath );
 
     static void preparePrint( QgsLayout *layout, QPagedPaintDevice *device, bool setFirstPageSize = false );
 
