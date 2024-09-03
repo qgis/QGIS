@@ -1270,7 +1270,7 @@ QMap<QString, QgsLabelingResults *> QgsLayoutExporter::takeLabelingResults()
   return res;
 }
 
-void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice *device, const QString &filePath )
+void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device, const QString &filePath )
 {
   QFileInfo fi( filePath );
   QDir dir;
@@ -1285,8 +1285,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
   const QString title = !layout->project() || layout->project()->metadata().title().isEmpty() ?
                         fi.baseName() : layout->project()->metadata().title();
 
-  QPdfWriter *pdfWriter = static_cast<QPdfWriter *>( device );
-  pdfWriter->setTitle( title );
+  device->setTitle( title );
 
   QPagedPaintDevice::PdfVersion pdfVersion = QPagedPaintDevice::PdfVersion_1_4;
 
@@ -1299,11 +1298,11 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
     switch ( styleSettings->colorModel() )
     {
       case Qgis::ColorModel::Cmyk:
-        pdfWriter->setColorModel( QPdfWriter::ColorModel::CMYK );
+        device->setColorModel( QPdfWriter::ColorModel::CMYK );
         break;
 
       case Qgis::ColorModel::Rgb:
-        pdfWriter->setColorModel( QPdfWriter::ColorModel::RGB );
+        device->setColorModel( QPdfWriter::ColorModel::RGB );
         break;
     }
 
@@ -1312,7 +1311,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
     {
       QPdfOutputIntent outputIntent;
       outputIntent.setOutputProfile( colorSpace );
-      pdfWriter->setOutputIntent( outputIntent );
+      device->setOutputIntent( outputIntent );
 
       // PDF/X-4 standard allows PDF to be printing ready and is only possible if a color space has been set
       pdfVersion = QPagedPaintDevice::PdfVersion_X4;
@@ -1321,8 +1320,8 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
 
 #endif
 
-  pdfWriter->setPdfVersion( pdfVersion );
-  setXmpMetadata( pdfWriter, layout );
+  device->setPdfVersion( pdfVersion );
+  setXmpMetadata( device, layout );
 
   // TODO: add option for this in layout
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
@@ -1331,7 +1330,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
 #if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
   // paint engine hack not required, fixed upstream
 #else
-  QgsPaintEngineHack::fixEngineFlags( device->paintEngine() );
+  QgsPaintEngineHack::fixEngineFlags( static_cast<QPaintDevice *>( device )->paintEngine() );
 #endif
 }
 
