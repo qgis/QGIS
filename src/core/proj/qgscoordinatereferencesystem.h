@@ -533,7 +533,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \note It is not usually necessary to use this function, unless you
      * are trying to force this CRS to be valid.
-     * \see setCustomCrsValidation(), customCrsValidation()
+     * \see setCustomCrsValidation()
+     * \see customCrsValidation()
      */
     void validate();
 

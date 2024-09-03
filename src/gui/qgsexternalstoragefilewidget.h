@@ -104,7 +104,8 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     /**
      * Set \a urlExpression expression, which once evaluated, provide the URL used to store selected
      * documents. This is used only if an external storage has been defined
-     * \see setStorageType(), externalStorage()
+     * \see setStorageType()
+     * \see externalStorage()
      * \since QGIS 3.22
      */
     void setStorageUrlExpression( const QString &urlExpression );

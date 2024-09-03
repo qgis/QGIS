@@ -220,11 +220,15 @@ Calculates the tangent points between this circle and the point ``p``.
 
 If found, the tangent points will be stored in ``pt1`` and ``pt2``.
 
-Note that this method is 2D only and does not consider the z-value of the circle.
+.. note::
+
+   This method is 2D only and does not consider the z-value of the circle.
 
 :return: ``True`` if tangent was found.
 
 .. seealso:: :py:func:`outerTangents`
+
+.. seealso:: :py:func:`innerTangents`
 
 .. versionadded:: 3.2
 %End
@@ -247,9 +251,13 @@ and ``line2P2``.
 
 Returns the number of tangents (either 0 or 2).
 
-Note that this method is 2D only and does not consider the z-value of the circle.
+.. note::
+
+   This method is 2D only and does not consider the z-value of the circle.
 
 .. seealso:: :py:func:`tangentToPoint`
+
+.. seealso:: :py:func:`innerTangents`
 
 .. versionadded:: 3.2
 %End
@@ -272,9 +280,13 @@ and ``line2P2``.
 
 Returns the number of tangents (either 0 or 2).
 
-Note that this method is 2D only and does not consider the z-value of the circle.
+.. note::
+
+   This method is 2D only and does not consider the z-value of the circle.
 
 .. seealso:: :py:func:`tangentToPoint`
+
+.. seealso:: :py:func:`outerTangents`
 
 .. versionadded:: 3.6
 %End

@@ -220,14 +220,16 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     /**
      * Returns the current picture mode (image format), FormatUnknown if given
      * picture format is unknown
-     * \see setMode() originalMode()
+     * \see setMode()
+     * \see originalMode()
      */
     Qgis::PictureFormat mode() const { return mMode; }
 
     /**
      * Returns the original set picture mode (image format).
      * It could differ from mode() if given picture format is unknown
-     * \see setMode() mode()
+     * \see setMode()
+     * \see mode()
      * \since QGIS 3.22
      */
     Qgis::PictureFormat originalMode() const { return mOriginalMode; }

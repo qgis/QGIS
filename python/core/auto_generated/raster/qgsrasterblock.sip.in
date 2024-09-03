@@ -101,6 +101,10 @@ For given data type returns wider type and sets no data value
 :return: ``True`` if the block has no data value
 
 .. seealso:: :py:func:`noDataValue`
+
+.. seealso:: :py:func:`setNoDataValue`
+
+.. seealso:: :py:func:`resetNoDataValue`
 %End
 
     bool hasNoData() const /HoldGIL/;
@@ -117,6 +121,10 @@ Not the difference between this method and :py:func:`~QgsRasterBlock.hasNoDataVa
 Sets cell value that will be considered as "no data".
 
 .. seealso:: :py:func:`noDataValue`
+
+.. seealso:: :py:func:`hasNoDataValue`
+
+.. seealso:: :py:func:`resetNoDataValue`
 %End
 
     void resetNoDataValue() /HoldGIL/;
@@ -125,6 +133,10 @@ Reset no data value: if there was a no data value previously set,
 it will be discarded.
 
 .. seealso:: :py:func:`noDataValue`
+
+.. seealso:: :py:func:`hasNoDataValue`
+
+.. seealso:: :py:func:`setNoDataValue`
 %End
 
     double noDataValue() const /HoldGIL/;
@@ -135,6 +147,10 @@ returned value is undefined.
 :return: No data value
 
 .. seealso:: :py:func:`hasNoDataValue`
+
+.. seealso:: :py:func:`setNoDataValue`
+
+.. seealso:: :py:func:`resetNoDataValue`
 %End
 
     static QByteArray valueBytes( Qgis::DataType dataType, double value );
