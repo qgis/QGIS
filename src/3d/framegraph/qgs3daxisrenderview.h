@@ -90,6 +90,7 @@ class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
     void onViewportSizeUpdate( int size = 0 );
 
   signals:
+    //! Emits new viewport scale factor when it change
     void viewportScaleFactorChanged( double scaleFactor );
 
   private:
