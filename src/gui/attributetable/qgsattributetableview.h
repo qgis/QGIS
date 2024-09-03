@@ -161,7 +161,6 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
   signals:
 
     /**
-     * \brief
      * Emitted in order to provide a hook to add additional* menu entries to the context menu.
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.

@@ -34,7 +34,11 @@ class QgsFeatureListViewDelegate : QItemDelegate
     void setCurrentFeatureEdited( bool state );
 
   signals:
+
     void editButtonClicked( QModelIndex &index );
+%Docstring
+Emitted when the edit button is clicked for the feature with matching ``index``.
+%End
 
   protected:
     virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;

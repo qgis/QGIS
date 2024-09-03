@@ -46,7 +46,7 @@ QgsAttributeTableModel.CustomRole.__doc__ = """Custom model roles.
 # --
 QgsAttributeTableModel.CustomRole.baseClass = QgsAttributeTableModel
 try:
-    QgsAttributeTableModel.__attribute_docs__ = {'modelChanged': 'Model has been changed\n'}
+    QgsAttributeTableModel.__attribute_docs__ = {'modelChanged': 'Emitted when the model has been changed.\n', 'finished': 'Emitted when the model has completely loaded all features.\n'}
 except NameError:
     pass
 try:
