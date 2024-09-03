@@ -1897,7 +1897,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color grayscale average object" ) << "color_grayscale_average(color_rgbf(0.6,0.5,0.1))" << false << QVariant( QColor::fromRgbF( 0.4, 0.4, 0.4 ) );
       QTest::newRow( "color grayscale average cmyk" ) << "color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))" << false << QVariant( QColor::fromCmykF( 0.4, 0.4, 0.4, 0.8 ) );
       QTest::newRow( "color mix rgb" ) << "color_mix_rgb('0,0,0,100','255,255,255',0.5)" << false << QVariant( "127,127,127,177" );
+
+// looks like way color are rounded has changed between Qt 5 and 6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,177" );
+#else
       QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,178" );
+#endif
+
       QTest::newRow( "color mix mixed types" ) << "color_mix('0,0,0,100',color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
       QTest::newRow( "color mix mixed color types" ) << "color_mix(color_cmykf(1.0,1.0,1.0,1.0),color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
       QTest::newRow( "color mix cmyk" ) << "color_mix(color_cmykf(0.9,0.9,0.9,0.9),color_cmykf(0.1,0.1,0.1,0.1),0.5)" << false << QVariant( QColor::fromCmykF( 0.5, 0.5, 0.5, 0.5 ) );
