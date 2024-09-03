@@ -603,10 +603,18 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;
 
-    /* serialization */
-
+    /**
+     * Restore the map settings from a XML \a node.
+     *
+     * \see writeXml()
+     */
     void readXml( QDomNode &node );
 
+    /**
+     * Writes the map settings to an XML \a node.
+     *
+     * \see readXml()
+     */
     void writeXml( QDomNode &node, QDomDocument &doc );
 
     /**
