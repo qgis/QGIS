@@ -53,7 +53,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) signal with the
+     * Will emit the selectionChanged() signal with the
      * clearAndSelect flag set.
      *
      * \param ids   The ids which will be the new selection
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     /**
      * Returns reference to identifiers of selected features
      *
-     * \returns A list of QgsFeatureId's
+     * \returns A list of selected QgsFeatureId
      * \see setSelectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
