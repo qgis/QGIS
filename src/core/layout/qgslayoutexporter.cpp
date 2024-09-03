@@ -2253,12 +2253,12 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
 #endif
 
   // XMP metadata date format differs from PDF dictionary one
-  const QDateTime creationDateTime = layout->project()->metadata().creationDateTime();
-  const QString metaDataDate = creationDateTime.toOffsetFromUtc( creationDateTime.offsetFromUtc() ).toString( Qt::ISODate );
+  const QDateTime creationDateTime = layout->project() ? layout->project()->metadata().creationDateTime() : QDateTime();
+  const QString metaDataDate = creationDateTime.isValid() ? creationDateTime.toOffsetFromUtc( creationDateTime.offsetFromUtc() ).toString( Qt::ISODate ) : QString();
   const QString title = pdfWriter->title();
   const QString creator = getCreator();
   const QString producer = creator;
-  const QString author = layout->project()->metadata().author();
+  const QString author = layout->project() ? layout->project()->metadata().author() : QString();
 
   // heavily inspired from qpdf.cpp QPdfEnginePrivate::writeXmpDocumentMetaData
 
