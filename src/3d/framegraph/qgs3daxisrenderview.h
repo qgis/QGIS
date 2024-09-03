@@ -43,6 +43,7 @@ namespace Qt3DRender
 }
 
 class Qgs3DMapCanvas;
+class QgsCameraController;
 
 class QgsFrameGraph;
 class Qgs3DMapSettings;
@@ -64,14 +65,16 @@ class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
     /**
      * Constructor for Qgs3DAxisRenderView with the specified \a parent object.
      */
-    Qgs3DAxisRenderView( QObject *parent, const QString &viewName, Qgs3DMapCanvas *canvas,
-                         Qt3DRender::QCamera *objectCamera, Qt3DRender::QCamera *labelsCamera, Qgs3DMapSettings *settings );
+    Qgs3DAxisRenderView( QObject *parent, const QString &viewName, Qgs3DMapCanvas *canvas, QgsCameraController *cameraCtrl, Qgs3DMapSettings *settings );
 
     //! Returns the viewport associated to this renderview
     virtual Qt3DRender::QViewport *viewport() const override;
 
     //! Returns the layer to be used by entities to be included in the label renderpass
     Qt3DRender::QLayer *labelsLayer() const;
+
+    Qt3DRender::QCamera *objectCamera() const;
+    Qt3DRender::QCamera *labelsCamera() const;
 
   public slots:
     //! Updates viewport horizontal \a position

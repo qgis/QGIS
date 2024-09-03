@@ -42,14 +42,12 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgsmapsettings.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapcanvas.h"
+#include "qgscameracontroller.h"
 
-Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewName, Qgs3DMapCanvas *canvas,
-    Qt3DRender::QCamera *objectCamera, Qt3DRender::QCamera *labelsCamera,
-    Qgs3DMapSettings *settings )
+Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewName,
+    Qgs3DMapCanvas *canvas, QgsCameraController *cameraCtrl, Qgs3DMapSettings *settings )
   : QgsAbstractRenderView( parent, viewName )
   , mCanvas( canvas )
-  , mObjectCamera( objectCamera )
-  , mLabelsCamera( labelsCamera )
   , mMapSettings( settings )
 {
   mViewport = new Qt3DRender::QViewport( mRendererEnabler );
@@ -70,6 +68,11 @@ Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewNa
   Qt3DRender::QLayerFilter *objectFilter = new Qt3DRender::QLayerFilter( mViewport );
   objectFilter->addLayer( mObjectLayer );
 
+  mObjectCamera = new Qt3DRender::QCamera;
+  mObjectCamera->setObjectName( objectName() + "::ObjectCamera" );
+  mObjectCamera->setProjectionType( cameraCtrl->camera()->projectionType() );
+  mObjectCamera->lens()->setFieldOfView( cameraCtrl->camera()->lens()->fieldOfView() * 0.5f );
+
   Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector( objectFilter );
   cameraSelector->setCamera( mObjectCamera );
 
@@ -88,6 +91,10 @@ Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewNa
 
   Qt3DRender::QLayerFilter *labelsFilter = new Qt3DRender::QLayerFilter( mViewport );
   labelsFilter->addLayer( mLabelsLayer );
+
+  mLabelsCamera = new Qt3DRender::QCamera;
+  mLabelsCamera->setObjectName( objectName() + "::LabelsCamera" );
+  mLabelsCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
 
   Qt3DRender::QCameraSelector *labelsCameraSelector = new Qt3DRender::QCameraSelector( labelsFilter );
   labelsCameraSelector->setCamera( mLabelsCamera );
@@ -118,6 +125,17 @@ Qt3DRender::QLayer *Qgs3DAxisRenderView::labelsLayer() const
 {
   return mLabelsLayer;
 }
+
+Qt3DRender::QCamera *Qgs3DAxisRenderView::objectCamera() const
+{
+  return mObjectCamera;
+}
+
+Qt3DRender::QCamera *Qgs3DAxisRenderView::labelsCamera() const
+{
+  return mLabelsCamera;
+}
+
 
 void Qgs3DAxisRenderView::onViewportSizeUpdate( int )
 {

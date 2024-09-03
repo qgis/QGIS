@@ -57,11 +57,13 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas,
   , mCameraController( cameraCtrl )
   , mCrs( map->crs() )
 {
+  mRenderView = new Qgs3DAxisRenderView( mMapScene->engine()->frameGraph(), QgsFrameGraph::AXIS3D_RENDERVIEW,
+                                         mCanvas, mCameraController, mMapSettings );
+  mMapScene->engine()->frameGraph()->registerRenderView( mRenderView, QgsFrameGraph::AXIS3D_RENDERVIEW );
+
   constructAxisScene( parent3DScene );
   constructLabelsScene( parent3DScene );
 
-  mRenderView = new Qgs3DAxisRenderView( this, QgsFrameGraph::AXIS3D_RENDERVIEW, mCanvas, mAxisCamera, mTwoDLabelCamera, mMapSettings );
-  mMapScene->engine()->frameGraph()->registerRenderView( mRenderView, QgsFrameGraph::AXIS3D_RENDERVIEW );
   mTwoDLabelSceneEntity->addComponent( mRenderView->labelsLayer() );
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::onCameraUpdate );
@@ -104,10 +106,7 @@ Qgs3DAxis::~Qgs3DAxis()
       break;
   }
 
-  if ( mRenderView && mMapScene->engine() && mMapScene->engine()->frameGraph() )
-  {
-    mMapScene->engine()->frameGraph()->unregisterRenderView( QgsFrameGraph::AXIS3D_RENDERVIEW );
-  }
+  // render view unregistration will be done by framegraph destructor!
 }
 
 void Qgs3DAxis::init3DObjectPicking( )
@@ -323,11 +322,7 @@ void Qgs3DAxis::constructAxisScene( Qt3DCore::QEntity *parent3DScene )
   mAxisSceneEntity->setParent( parent3DScene );
   mAxisSceneEntity->setObjectName( "3DAxis_SceneEntity" );
 
-  mAxisCamera = new Qt3DRender::QCamera;
-  mAxisCamera->setParent( mAxisSceneEntity );
-  mAxisCamera->setProjectionType( mCameraController->camera()->projectionType() );
-  mAxisCamera->lens()->setFieldOfView( mCameraController->camera()->lens()->fieldOfView() * 0.5f );
-
+  mAxisCamera = mRenderView->objectCamera();
   mAxisCamera->setUpVector( QVector3D( 0.0f, 0.0f, 1.0f ) );
   mAxisCamera->setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
   // position will be set later
@@ -339,11 +334,7 @@ void Qgs3DAxis::constructLabelsScene( Qt3DCore::QEntity *parent3DScene )
   mTwoDLabelSceneEntity->setParent( parent3DScene );
   mTwoDLabelSceneEntity->setEnabled( true );
 
-  mTwoDLabelCamera = new Qt3DRender::QCamera;
-  mTwoDLabelCamera->setParent( mTwoDLabelSceneEntity );
-  mTwoDLabelCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
-  // the camera lens parameters are defined by onAxisViewportSizeUpdate()
-
+  mTwoDLabelCamera = mRenderView->labelsCamera();
   mTwoDLabelCamera->setUpVector( QVector3D( 0.0f, 0.0f, 1.0f ) );
   mTwoDLabelCamera->setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
   mTwoDLabelCamera->setPosition( QVector3D( 0.0f, 0.0f, 100.0f ) );
