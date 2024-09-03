@@ -545,7 +545,7 @@ during rendering operations, e.g. for resolving relative symbol paths.
 
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
 %Docstring
-Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+Computes an *estimated* conversion factor between layer and map units, where ``layerUnits × layerToMapUnits = mapUnits``
 
 :param layer: The layer
 :param referenceExtent: A reference extent based on which to perform the computation. If not specified, the layer extent is used

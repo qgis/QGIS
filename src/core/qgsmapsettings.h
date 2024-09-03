@@ -512,7 +512,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /**
-     * Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+     * Computes an *estimated* conversion factor between layer and map units, where ``layerUnits × layerToMapUnits = mapUnits``
      * \param layer The layer
      * \param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      */
