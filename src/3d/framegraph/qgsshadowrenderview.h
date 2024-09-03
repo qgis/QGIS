@@ -49,8 +49,9 @@ namespace Qt3DExtras
   class Qt3DWindow;
 }
 
-class Qgs3DMapSettings;
+class QgsShadowSettings;
 class QgsDirectionalLightSettings;
+class QgsLightSource;
 
 #define SIP_NO_FILE
 
@@ -80,9 +81,12 @@ class QgsShadowRenderView : public QgsAbstractRenderView
     Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
 
     //! Sets shadow rendering to use a directional light
-    void setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance,
+    void setupDirectionalLight( const QgsDirectionalLightSettings &light, double maximumShadowRenderingDistance,
                                 const Qt3DRender::QCamera *mainCamera );
 
+    void updateSettings( const QgsShadowSettings &shadowSettings,
+                         const QList<QgsLightSource *> &lightSources,
+                         Qt3DRender::QCamera *mainCamera );
   signals:
 
     void shadowDirectionLightUpdated( const QVector3D &lightPosition, const QVector3D &lightDirection );

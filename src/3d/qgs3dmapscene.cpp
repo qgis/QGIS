@@ -913,32 +913,9 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 {
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
 
-  const QList< QgsLightSource * > lightSources = mMap.lightSources();
-  QList< QgsDirectionalLightSettings * > directionalLightSources;
-  for ( QgsLightSource *source : lightSources )
-  {
-    if ( source->type() == Qgis::LightSourceType::Directional )
-    {
-      directionalLightSources << qgis::down_cast< QgsDirectionalLightSettings * >( source );
-    }
-  }
-
   QgsShadowRenderView *shadowRenderView = dynamic_cast<QgsShadowRenderView *>( frameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) ) ;
   if ( shadowRenderView )
-  {
-    QgsShadowSettings shadowSettings = mMap.shadowSettings();
-    int selectedLight = shadowSettings.selectedDirectionalLight();
-    if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLightSources.count() )
-    {
-      shadowRenderView->setShadowBias( shadowSettings.shadowBias() );
-      shadowRenderView->updateTargetOutputSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
-      QgsDirectionalLightSettings light = *directionalLightSources.at( selectedLight );
-      shadowRenderView->setupDirectionalLight( light, shadowSettings.maximumShadowRenderingDistance(), frameGraph->mainCamera() );
-      shadowRenderView->setEnabled( true );
-    }
-    else
-      shadowRenderView->setEnabled( false );
-  }
+    shadowRenderView->updateSettings( mMap.shadowSettings(), mMap.lightSources(), frameGraph->mainCamera() );
 }
 
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()

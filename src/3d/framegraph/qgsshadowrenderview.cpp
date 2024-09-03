@@ -15,6 +15,8 @@
 
 #include "qgsshadowrenderview.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsshadowsettings.h"
+
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QViewport>
@@ -53,18 +55,19 @@ void QgsShadowRenderView::setEnabled( bool enable )
   mLayerFilter->setEnabled( enable );
 }
 
-void QgsShadowRenderView::setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance,
+void QgsShadowRenderView::setupDirectionalLight( const QgsDirectionalLightSettings &light, double maximumShadowRenderingDistance,
     const Qt3DRender::QCamera *mainCamera )
 {
   float minX, maxX, minY, maxY, minZ, maxZ;
   QVector3D lookingAt = mainCamera->viewCenter();
-  const float d = 2 * ( mainCamera->position() - mainCamera->viewCenter() ).length();
+  const float d = 2.0f * ( mainCamera->position() - mainCamera->viewCenter() ).length();
 
   const QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
   const QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
-  QgsShadowRenderView::calculateViewExtent( mainCamera, maximumShadowRenderingDistance, lookingAt.y(), minX, maxX, minY, maxY, minZ, maxZ );
+  QgsShadowRenderView::calculateViewExtent( mainCamera, static_cast<float>( maximumShadowRenderingDistance ), lookingAt.y(),
+      minX, maxX, minY, maxY, minZ, maxZ );
 
-  lookingAt = QVector3D( 0.5 * ( minX + maxX ), mainCamera->viewCenter().y(), 0.5 * ( minZ + maxZ ) );
+  lookingAt = QVector3D( 0.5f * ( minX + maxX ), mainCamera->viewCenter().y(), 0.5f * ( minZ + maxZ ) );
   const QVector3D lightPosition = lookingAt + vertical;
   mLightCamera->setPosition( lightPosition );
   mLightCamera->setViewCenter( lookingAt );
@@ -73,9 +76,9 @@ void QgsShadowRenderView::setupDirectionalLight( const QgsDirectionalLightSettin
 
   mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
   mLightCamera->lens()->setOrthographicProjection(
-    - 0.7 * ( maxX - minX ), 0.7 * ( maxX - minX ),
-    - 0.7 * ( maxZ - minZ ), 0.7 * ( maxZ - minZ ),
-    1.0f, 2 * ( lookingAt - lightPosition ).length() );
+    - 0.7f * ( maxX - minX ), 0.7f * ( maxX - minX ),
+    - 0.7f * ( maxZ - minZ ), 0.7f * ( maxZ - minZ ),
+    1.0f, 2.0f * ( lookingAt - lightPosition ).length() );
 
   emit shadowExtentChanged( minX, maxX, minY, maxY, minZ, maxZ );
   emit shadowDirectionLightUpdated( lightPosition, lightDirection );
@@ -113,6 +116,34 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderView::buildRenderPass()
   mRenderStateSet->addRenderState( polygonOffset );
 
   return mLightCameraSelector;
+}
+
+void QgsShadowRenderView::updateSettings(
+  const QgsShadowSettings &shadowSettings,
+  const QList<QgsLightSource *> &lightSources,
+  Qt3DRender::QCamera *mainCamera )
+{
+  int selectedLight = shadowSettings.selectedDirectionalLight();
+  QgsDirectionalLightSettings *light = nullptr;
+  for ( int i = 0, dirLight = 0; !light && i < lightSources.size(); i++ )
+  {
+    if ( lightSources[i]->type() == Qgis::LightSourceType::Directional )
+    {
+      if ( dirLight == selectedLight )
+        light = qgis::down_cast< QgsDirectionalLightSettings * >( lightSources[i] );
+      dirLight++;
+    }
+  }
+
+  if ( shadowSettings.renderShadows() && light )
+  {
+    setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
+    updateTargetOutputSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
+    setupDirectionalLight( *light, shadowSettings.maximumShadowRenderingDistance(), mainCamera );
+    setEnabled( true );
+  }
+  else
+    setEnabled( false );
 }
 
 void QgsShadowRenderView::setShadowBias( float bias )
