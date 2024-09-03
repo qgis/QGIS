@@ -2539,7 +2539,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             scan_forward_idx += 1
                             if not scan_forward_line.strip() and scan_forward_idx < len(comment_lines) - 1:
                                 # check if following line is start of list
-                                if re.match(r'^\s*-(?!-)', comment_lines[scan_forward_idx+1]):
+                                if re.match(r'^\s*-(?!-)', comment_lines[scan_forward_idx + 1]):
                                     doc_string += "\n"
                                     comment_line_idx += 1
                                     needs_blank_line_after_return = True
