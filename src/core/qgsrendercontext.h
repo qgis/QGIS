@@ -774,8 +774,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
-     * \note
-      * When the sourceCrs() is geographic, the center of the Extent will be used
+     * \note When the sourceCrs() is geographic, the center of the Extent will be used
      */
     double convertMetersToMapUnits( double meters ) const;
 

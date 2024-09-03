@@ -201,14 +201,12 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     /**
      * Set the lowest Date that can be stored in a Shapefile or Geopackage Date field
      *
-     * - uses QDateTimeEdit::setDateTimeRange (since Qt 4.4)
+     * Uses QDateTimeEdit::setDateTimeRange (since Qt 4.4)
      *
-     * \note
+     * \note QDate and QDateTime does not support minus years for the Qt::ISODate format
+     * -> returns empty (toString) or invalid (fromString) values
      *
-     * - QDate and QDateTime does not support minus years for the Qt::ISODate format
-     *   -> returns empty (toString) or invalid (fromString) values
-    *
-    * \note not available in Python bindings
+     * \note not available in Python bindings
     */
     void setMinimumEditDateTime();
 
