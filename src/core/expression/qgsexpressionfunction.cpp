@@ -5819,11 +5819,13 @@ static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionCo
   return locale.toString( datetime, format );
 }
 
-static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariant variant = values.at( 0 );
-  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
-  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
+    return QVariant();
 
   const float alpha = color.alphaF();
   if ( color.spec() == QColor::Spec::Cmyk )
@@ -5875,9 +5877,15 @@ static QVariant fcnColorMix( const QVariantList &values, const QgsExpressionCont
     return QVariant();
   }
 
-  const bool isQColor = variant1.userType() == QMetaType::Type::QColor;
-  QColor color1 = isQColor ? variant1.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant1.toString() );
-  QColor color2 = isQColor ? variant2.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant2.toString() );
+  bool isQColor;
+  const QColor color1 = QgsExpressionUtils::getColorValue( variant1, parent, isQColor );
+  if ( !color1.isValid() )
+    return QVariant();
+
+  const QColor color2 = QgsExpressionUtils::getColorValue( variant2, parent, isQColor );
+  if ( !color2.isValid() )
+    return QVariant();
+
   if ( ( color1.spec() == QColor::Cmyk ) != ( color2.spec() == QColor::Cmyk ) )
   {
     parent->setEvalErrorString( QObject::tr( "Both color arguments must have compatible color type (CMYK or RGB/HSV/HSL)" ) );
@@ -6195,14 +6203,10 @@ static QVariant fncColorCmyka( const QVariantList &values, const QgsExpressionCo
 static QVariant fncColorPart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariant variant = values.at( 0 );
-  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
-  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
-                                : QObject::tr( "Cannot convert '%1' to color" ).arg( variant.toString() ) );
+  bool isQColor;
+  const QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   QString part = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   if ( part.compare( QLatin1String( "red" ), Qt::CaseInsensitive ) == 0 )
@@ -6285,14 +6289,10 @@ static QVariant fcnCreateRamp( const QVariantList &values, const QgsExpressionCo
 static QVariant fncSetColorPart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariant variant = values.at( 0 );
-  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
-  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
-                                : QObject::tr( "Cannot convert '%1' to color" ).arg( variant.toString() ) );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   QString part = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   int value = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
@@ -6335,14 +6335,10 @@ static QVariant fncSetColorPart( const QVariantList &values, const QgsExpression
 static QVariant fncDarker( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariant variant = values.at( 0 );
-  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
-  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
-                                : QObject::tr( "Cannot convert '%1' to color" ).arg( variant.toString() ) );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   color = color.darker( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) );
 
@@ -6352,14 +6348,10 @@ static QVariant fncDarker( const QVariantList &values, const QgsExpressionContex
 static QVariant fncLighter( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariant variant = values.at( 0 );
-  const bool isQColor = variant.userType() == QMetaType::Type::QColor;
-  QColor color = isQColor ? variant.value<QColor>() : QgsSymbolLayerUtils::decodeColor( variant.toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
-                                : QObject::tr( "Cannot convert '%1' to color" ).arg( variant.toString() ) );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   color = color.lighter( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) );
 

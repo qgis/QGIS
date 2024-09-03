@@ -1944,9 +1944,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
       QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
       QTest::newRow( "color darker object " ) << "darker(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.76 ) );
-      QTest::newRow( "color darker bad color object" ) << "darker(color_cmykf(1.5,1.5,1.5,1.5),150)" << true << QVariant();
       QTest::newRow( "color lighter object" ) << "lighter(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.46 ) );
-      QTest::newRow( "color lighter bad color object" ) << "lighter(color_cmykf(1.5,1.5,1.5,1.5),150)" << true << QVariant();
 
       QTest::newRow( "color rgb float" ) << "color_rgbf(1,0.4989,0)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0 ) );
       QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );

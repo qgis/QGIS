@@ -311,6 +311,8 @@ class CORE_EXPORT QgsExpressionUtils
       }
     }
 
+    static QColor getColorValue( const QVariant &value, QgsExpression *parent, bool &isQColor );
+
     static QgsInterval getInterval( const QVariant &value, QgsExpression *parent, bool report_error = false )
     {
       if ( value.userType() == qMetaTypeId<QgsInterval>() )
