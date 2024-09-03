@@ -760,8 +760,10 @@ Converts a size from map units to the specified units.
     double convertMetersToMapUnits( double meters ) const;
 %Docstring
 Convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.RenderMetersInMapUnits
-\note
-When the :py:func:`~QgsRenderContext.sourceCrs` is geographic, the center of the Extent will be used
+
+.. note::
+
+   When the :py:func:`~QgsRenderContext.sourceCrs` is geographic, the center of the Extent will be used
 %End
 
     Qgis::TextRenderFormat textRenderFormat() const;
