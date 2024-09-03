@@ -151,7 +151,8 @@ void QgsRelationReferenceConfigDlg::relationChanged( int idx )
     mCbxMapIdentification->setEnabled( mReferencedLayer->isSpatial() );
   }
 
-  // Provide a default for AllowNull if it was not set by the config
+  // If AllowNULL is not set in the config, provide a default value based on the
+  // constraints of the referencing fields
   if ( ! mAllowNullWasSetByConfig )
   {
     const QgsAttributeList referencingFields = rel.referencingFields();
