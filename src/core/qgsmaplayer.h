@@ -650,7 +650,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets state from DOM document
-     * \param layerElement The DOM element corresponding to ``maplayer'' tag
+     * \param layerElement The DOM element corresponding to ``maplayer`` tag
      * \param context writing context (e.g. for conversion between relative and absolute paths)
      * \param flags optional argument which can be used to control layer reading behavior.
      * \param preloadedProvider optional preloaded data provider that will be used as data provider for this layer, takes ownership (since QGIS 3.32)
@@ -671,7 +671,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Stores state in DOM node
-     * \param layerElement is a DOM element corresponding to ``maplayer'' tag
+     * \param layerElement is a DOM element corresponding to ``maplayer`` tag
      * \param document is a the DOM document being written
      * \param context reading context (e.g. for conversion between relative and absolute paths)
      * \note
