@@ -63,7 +63,9 @@ void QgsShadowRenderView::setupDirectionalLight( const QgsDirectionalLightSettin
   const float d = 2.0f * ( mainCamera->position() - mainCamera->viewCenter() ).length();
 
   const QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
-  const QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
+  const QVector3D lightDirection = QVector3D( static_cast<float>( light.direction().x() ),
+                                   static_cast<float>( light.direction().y() ),
+                                   static_cast<float>( light.direction().z() ) ).normalized();
   QgsShadowRenderView::calculateViewExtent( mainCamera, static_cast<float>( maximumShadowRenderingDistance ), lookingAt.y(),
       minX, maxX, minY, maxY, minZ, maxZ );
 
