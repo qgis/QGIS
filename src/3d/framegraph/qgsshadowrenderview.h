@@ -67,6 +67,7 @@ class QgsShadowRenderView : public QgsAbstractRenderView
 {
     Q_OBJECT
   public:
+    //! Default constructor
     QgsShadowRenderView( QObject *parent, const QString &viewName );
 
     //! Enable or disable via \a enable the renderview sub tree
@@ -84,6 +85,7 @@ class QgsShadowRenderView : public QgsAbstractRenderView
     void setupDirectionalLight( const QgsDirectionalLightSettings &light, double maximumShadowRenderingDistance,
                                 const Qt3DRender::QCamera *mainCamera );
 
+    //! Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
     void updateSettings( const QgsShadowSettings &shadowSettings,
                          const QList<QgsLightSource *> &lightSources,
                          Qt3DRender::QCamera *mainCamera );
