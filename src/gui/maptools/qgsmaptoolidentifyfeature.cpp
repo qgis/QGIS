@@ -40,7 +40,9 @@ void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   // TODO: display a menu when several features identified
 
   emit featureIdentified( results[0].mFeature );
+  Q_NOWARN_DEPRECATED_PUSH
   emit featureIdentified( results[0].mFeature.id() );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsMapToolIdentifyFeature::keyPressEvent( QKeyEvent *e )
