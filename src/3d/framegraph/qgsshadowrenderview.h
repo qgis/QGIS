@@ -90,10 +90,13 @@ class QgsShadowRenderView : public QgsAbstractRenderView
                          const QList<QgsLightSource *> &lightSources,
                          Qt3DRender::QCamera *mainCamera );
   signals:
-
+    //! Emits updated light data when setupDirectionalLight is called
     void shadowDirectionLightUpdated( const QVector3D &lightPosition, const QVector3D &lightDirection );
+    //! Emits updated extent data when setupDirectionalLight is called
     void shadowExtentChanged( float minX, float maxX, float minY, float maxY, float minZ, float maxZ );
+    //! Emits new bias when shadow settings are updated
     void shadowBiasChanged( float bias );
+    //! Emits if shadows are enabled when shadow settings are updated
     void shadowRenderingEnabled( bool isEnabled );
 
   private:
