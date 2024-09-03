@@ -135,6 +135,10 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     void showEvent( QShowEvent *event ) override;
 
   signals:
+
+    /**
+     * Emitted when the options configured in the widget are changed.
+     */
     void optionsChanged();
 
   private:
