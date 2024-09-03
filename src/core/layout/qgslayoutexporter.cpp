@@ -1282,7 +1282,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
   updatePrinterPageSize( layout, device, firstPageToBeExported( layout ) );
 
   // force a non empty title to avoid invalid (according to specification) PDF/X-4
-  const QString title = layout->project()->metadata().title().isEmpty() ?
+  const QString title = !layout->project() || layout->project()->metadata().title().isEmpty() ?
                         fi.baseName() : layout->project()->metadata().title();
 
   QPdfWriter *pdfWriter = static_cast<QPdfWriter *>( device );
