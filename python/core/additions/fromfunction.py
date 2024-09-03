@@ -30,10 +30,10 @@ def _fromFunction(description: str,
                   flags=QgsTask.Flag.AllFlags,
                   **kwargs) -> QgsTask:
     """
-    Creates a new QgsTask task from a python function.
+Creates a new QgsTask task from a python function.
 
-    Example
-    -------
+Example
+-------
 
 .. code-block:: python
 
