@@ -5827,15 +5827,15 @@ static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsE
   if ( !color.isValid() )
     return QVariant();
 
-  const float alpha = color.alphaF();
+  const float alpha = color.alphaF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
   if ( color.spec() == QColor::Spec::Cmyk )
   {
-    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3;
+    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
     color = QColor::fromCmykF( avg, avg, avg, color.blackF(), alpha );
   }
   else
   {
-    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3;
+    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
     color.setRgbF( avg, avg, avg, alpha );
   }
 
@@ -5894,6 +5894,9 @@ static QVariant fcnColorMix( const QVariantList &values, const QgsExpressionCont
 
   const float ratio = static_cast<float>( std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0., 1. ) );
 
+  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
+
   QColor newColor;
   const float alpha = color1.alphaF() * ( 1 - ratio ) + color2.alphaF() * ratio;
   if ( color1.spec() == QColor::Spec::Cmyk )
@@ -5911,6 +5914,8 @@ static QVariant fcnColorMix( const QVariantList &values, const QgsExpressionCont
     float blue = color1.blueF() * ( 1 - ratio ) + color2.blueF() * ratio;
     newColor = QColor::fromRgbF( red, green, blue, alpha );
   }
+
+  // NOLINTEND(bugprone-narrowing-conversions)
 
   return isQColor ? QVariant( newColor ) : QVariant( QgsSymbolLayerUtils::encodeColor( newColor ) );
 }
