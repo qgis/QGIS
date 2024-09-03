@@ -9,9 +9,12 @@
 
 
 
-
 class QgsServerRequest
 {
+%Docstring(signature="appended")
+:py:class:`QgsServerRequest`
+Class defining request interface passed to services :py:func:`QgsService.executeRequest()` method
+%End
 
 %TypeHeaderCode
 #include "qgsserverrequest.h"
@@ -36,32 +39,19 @@ class QgsServerRequest
 
     enum RequestHeader
     {
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
+
       HOST,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
-      // https://tools.ietf.org/html/rfc7239
       FORWARDED,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
       X_FORWARDED_FOR,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Host
       X_FORWARDED_HOST,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
       X_FORWARDED_PROTO,
-      // The QGIS service URL
       X_QGIS_SERVICE_URL,
-      // The QGIS WMS service URL
       X_QGIS_WMS_SERVICE_URL,
-      // The QGIS WFS service URL
       X_QGIS_WFS_SERVICE_URL,
-      // The QGIS WCS service URL
       X_QGIS_WCS_SERVICE_URL,
-      // The QGIS WMTS service URL
       X_QGIS_WMTS_SERVICE_URL,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
       ACCEPT,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
       USER_AGENT,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
       AUTHORIZATION,
     };
 
@@ -205,8 +195,8 @@ by default this is equal to the url seen by QGIS server
 %Docstring
 Returns the base URL of QGIS server
 
-E.g. if we call QGIS server with 'http://example.com/folder?REQUEST=WMS&...'
-the base URL will be 'http://example.com/folder'
+E.g. if we call QGIS server with ``http://example.com/folder?REQUEST=WMS&...``
+the base URL will be ``http://example.com/folder``
 
 .. versionadded:: 3.20
 %End
