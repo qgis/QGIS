@@ -764,7 +764,7 @@ def process_doxygen_line(line: str) -> str:
     # Handle section and subsection
     section_match = re.match(r'^\\(?P<SUB>sub)?section', line)
     if section_match:
-        sep = "~" if section_match.group('SUB') else "-"
+        sep = "^" if section_match.group('SUB') else "-"
         line = re.sub(r'^\\(sub)?section \w+ ', '', line)
         sep_line = re.sub(r'[\w ()]', sep, line)
         line += f"\n{sep_line}"
