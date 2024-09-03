@@ -73,7 +73,10 @@ class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
     //! Returns the layer to be used by entities to be included in the label renderpass
     Qt3DRender::QLayer *labelsLayer() const;
 
+    //! Returns main object camera (used for axis or cube)
     Qt3DRender::QCamera *objectCamera() const;
+
+    //! Returns camera used for billboarded labels
     Qt3DRender::QCamera *labelsCamera() const;
 
   public slots:
