@@ -134,9 +134,26 @@ this menu can also be customized
     void formatChanged( QgsRasterLayer *layer );
 
   signals:
-    void identifyProgress( int, int );
-    void identifyMessage( const QString & );
-    void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> & );
+
+    void identifyProgress( int processed, int total );
+%Docstring
+Emitted when the identify action progresses.
+
+:param processed: number of objects processed so far
+:param total: total number of objects to process
+%End
+
+    void identifyMessage( const QString &message );
+%Docstring
+Emitted when the identify operation needs to show a user-facing message
+
+:param message: Message to show to the user
+%End
+
+    void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
+%Docstring
+Emitted when the format of raster ``results`` is changed and need to be updated in user-facing displays.
+%End
 
   protected:
 
