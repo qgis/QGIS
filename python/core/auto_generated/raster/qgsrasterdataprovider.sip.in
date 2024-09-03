@@ -366,6 +366,8 @@ Checks whether the provider is in editing mode, i.e. raster write operations wil
 By default providers are not editable. Use :py:func:`~QgsRasterDataProvider.setEditable` method to enable/disable editing.
 
 .. seealso:: :py:func:`setEditable`
+
+.. seealso:: :py:func:`writeBlock`
 %End
 
     virtual bool setEditable( bool enabled );
@@ -382,6 +384,8 @@ to overwrite data of the provider using :py:func:`~QgsRasterDataProvider.writeBl
    value whether the operation was successful.
 
 .. seealso:: :py:func:`isEditable`
+
+.. seealso:: :py:func:`writeBlock`
 %End
 
 
@@ -405,6 +409,8 @@ Writing is supported only by some data providers. Provider has to be in editing 
 in order to allow write operations.
 
 .. seealso:: :py:func:`isEditable`
+
+.. seealso:: :py:func:`setEditable`
 
 :return: ``True`` on success
 %End

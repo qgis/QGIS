@@ -283,7 +283,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      * Set to TRUE if the layer is a potential dataset container and an in-depth scan
      * of its contents was skipped.
      *
-     * \see skippedContainerScan();
+     * \see skippedContainerScan()
      */
     void setSkippedContainerScan( bool skipped ) { mSkippedContainerScan = skipped; }
 
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      * Returns TRUE if the layer is a potential dataset container and an in-depth scan
      * of its contents was skipped.
      *
-     * \see setSkippedContainerScan();
+     * \see setSkippedContainerScan()
      */
     bool skippedContainerScan() const { return mSkippedContainerScan; }
 
