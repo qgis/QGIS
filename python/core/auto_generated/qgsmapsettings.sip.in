@@ -664,13 +664,19 @@ Compute the scale that corresponds to the specified ``extent``
 returns current extent of layer set
 %End
 
-
     void readXml( QDomNode &node );
 %Docstring
-serialization */
+Restore the map settings from a XML ``node``.
+
+.. seealso:: :py:func:`writeXml`
 %End
 
     void writeXml( QDomNode &node, QDomDocument &doc );
+%Docstring
+Writes the map settings to an XML ``node``.
+
+.. seealso:: :py:func:`readXml`
+%End
 
     void setSegmentationTolerance( double tolerance );
 %Docstring
