@@ -56,8 +56,6 @@ Implementation for fetching a feature.
 :param f: Will write to this feature
 
 :return: bool  ``True`` if the operation was OK
-
-.. seealso:: :py:func:`bool`
 %End
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
@@ -118,8 +116,6 @@ Implementation for fetching a feature.
 :param f: Will write to this feature
 
 :return: bool  ``True`` if the operation was OK
-
-.. seealso:: :py:func:`bool`
 %End
 
 };
