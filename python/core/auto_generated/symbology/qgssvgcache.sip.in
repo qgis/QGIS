@@ -22,11 +22,11 @@ This class supports parameter replacement in SVG files according to the SVG para
 
 Supported parameters are:
 
-- ``param``(fill): fill color (with no opacity value)
-- ``param``(fill-opacity): fill color opacity
-- ``param``(outline): outline color (with no opacity value)
-- ``param``(outline-opacity): outline color opacity
-- ``param``(outline-width): width of outline strokes
+- ``param(fill)``: fill color (with no opacity value)
+- ``param(fill-opacity)``: fill color opacity
+- ``param(outline)``: outline color (with no opacity value)
+- ``param(outline-opacity)``: outline color opacity
+- ``param(outline-width)``: width of outline strokes
 
 E.g:
 
