@@ -156,7 +156,13 @@ Emitted when a column in the view has been resized.
 :param width: new width in pixel
 %End
 
-    void finished();
+ void finished() /Deprecated/;
+%Docstring
+
+.. deprecated:: 3.40
+
+   No longer used.
+%End
 
   public slots:
     void repaintRequested( const QModelIndexList &indexes );
