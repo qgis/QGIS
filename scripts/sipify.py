@@ -852,23 +852,29 @@ def process_doxygen_line(line: str) -> str:
         return create_class_links(depr_line)
 
     # Handle see also
-    see_matches = list(re.finditer(r'\\see +(\w+(\.\w+)*)(\([^()]*\))?', line))
+    see_matches = list(re.finditer(r'\\see +([\w:/.#-]+(\.\w+)*)(\([^()]*\))?(\.?)', line))
     if see_matches:
         for see_match in reversed(see_matches):
             seealso = see_match.group(1)
+            seealso_suffix = see_match.group(4)
+
             seeline = ''
             dbg_info(f"see also: `{seealso}`")
-            if re.match(r'^Qgs[A-Z]\w+(\([^()]*\))?$', seealso):
-                dbg_info(f"\\see :py:class:`{seealso}`")
-                seeline = f":py:class:`{seealso}`"
-            elif re.match(r'^(Qgs[A-Z]\w+)\.(\w+)(\([^()]*\))?$', seealso):
-                dbg_info(f"\\see py:func with param: :py:func:`{seealso}`")
-                seeline = f":py:func:`{seealso}`"
-            elif re.match(r'^[a-z]\w+(\([^()]*\))?$', seealso):
-                dbg_info(f"\\see :py:func:`{seealso}`")
-                seeline = f":py:func:`{seealso}`"
+            if re.match(r'^http', seealso):
+                seeline = f"{seealso}"
+            elif seealso_match := re.match(r'^(Qgs[A-Z]\w+(\([^()]*\))?)(\.)?$', seealso):
+                dbg_info(f"\\see :py:class:`{seealso_match.group(1)}`")
+                seeline = f":py:class:`{seealso_match.group(1)}`{seealso_match.group(3) or ''}"
+            elif seealso_match := re.match(r'^((Qgs[A-Z]\w+)\.(\w+)(\([^()]*\))?)(\.)?$', seealso):
+                dbg_info(f"\\see py:func with param: :py:func:`{seealso_match.group(1)}`")
+                seeline = f":py:func:`{seealso_match.group(1)}`{seealso_match.group(5) or ''}"
+            elif seealso_match := re.match(r'^([a-z]\w+(\([^()]*\))?)(\.)?$', seealso):
+                dbg_info(f"\\see :py:func:`{seealso_match.group(1)}`")
+                seeline = f":py:func:`{seealso_match.group(1)}`{seealso_match.group(3) or ''}"
 
             if full_line_match := re.match(r'^\s*\\see +(\w+(?:\.\w+)*)(?:\([^()]*\))?[\s,.:-]*(.*?)$', line):
+                if seeline.startswith('http'):
+                    return f"\n.. seealso:: {seeline}\n"
                 suffix = full_line_match.group(2)
                 if suffix:
                     return f"\n.. seealso:: {seeline or seealso} {suffix.strip()}\n"
@@ -876,7 +882,7 @@ def process_doxygen_line(line: str) -> str:
                     return f"\n.. seealso:: {seeline or seealso}\n"
             else:
                 if seeline:
-                    line = line[:see_match.start()] + seeline + line[
+                    line = line[:see_match.start()] + seeline + seealso_suffix + line[
                         see_match.end():]  # re.sub(r'\\see +(\w+(\.\w+)*(\(\))?)', seeline, line)
                 else:
                     line = line.replace('\\see', 'see')

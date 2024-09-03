@@ -67,7 +67,7 @@ class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
  * QgsProjectionSelectionDialog dialog. In most cases it is more
  * suitable to use the compact QgsProjectionSelectionWidget widget.
  *
- * \see QgsProjectionSelectionDialog.
+ * \see QgsProjectionSelectionDialog
  * \see QgsProjectionSelectionWidget
  */
 
