@@ -38,8 +38,20 @@ change the layer used by the map tool to identify
 
 
   signals:
-    void featureIdentified( const QgsFeature & );
-    void featureIdentified( QgsFeatureId );
+
+    void featureIdentified( const QgsFeature &feature );
+%Docstring
+Emitted when a ``feature`` has been identified
+%End
+
+ void featureIdentified( QgsFeatureId id ) /Deprecated/;
+%Docstring
+Emitted when a feature has been identified by its ``id``.
+
+.. deprecated:: 3.40
+
+   Use the signal with a :py:class:`QgsFeature` argument instead.
+%End
 
   protected:
     virtual void keyPressEvent( QKeyEvent *e );

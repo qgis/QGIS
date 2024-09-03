@@ -44,8 +44,18 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   signals:
-    void featureIdentified( const QgsFeature & );
-    void featureIdentified( QgsFeatureId );
+
+    /**
+     * Emitted when a \a feature has been identified
+     */
+    void featureIdentified( const QgsFeature &feature );
+
+    /**
+     * Emitted when a feature has been identified by its \a id.
+     *
+     * \deprecated QGIS 3.40. Use the signal with a QgsFeature argument instead.
+     */
+    Q_DECL_DEPRECATED void featureIdentified( QgsFeatureId id ) SIP_DEPRECATED;
 
   protected:
     void keyPressEvent( QKeyEvent *e ) override;

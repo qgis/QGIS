@@ -168,9 +168,26 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     void formatChanged( QgsRasterLayer *layer );
 
   signals:
-    void identifyProgress( int, int );
-    void identifyMessage( const QString & );
-    void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> & );
+
+    /**
+     * Emitted when the identify action progresses.
+     *
+     * \param processed number of objects processed so far
+     * \param total total number of objects to process
+     */
+    void identifyProgress( int processed, int total );
+
+    /**
+     * Emitted when the identify operation needs to show a user-facing message
+     *
+     * \param message Message to show to the user
+     */
+    void identifyMessage( const QString &message );
+
+    /**
+     * Emitted when the format of raster \a results is changed and need to be updated in user-facing displays.
+     */
+    void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 
   protected:
 
