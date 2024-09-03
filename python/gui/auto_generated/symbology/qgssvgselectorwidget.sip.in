@@ -99,6 +99,10 @@ not block the GUI.
 
 class QgsSvgSelectorWidget : QWidget
 {
+%Docstring(signature="appended")
+
+A widget allowing selection of an SVG file, and configuration of SVG related parameters.
+%End
 
 %TypeHeaderCode
 #include "qgssvgselectorwidget.h"
@@ -186,7 +190,11 @@ Sets the dynamic parameters
 %End
 
   signals:
+
     void svgSelected( const QString &path );
+%Docstring
+Emitted when an SVG is selected in the widget.
+%End
 
     void svgParametersChanged( const QMap<QString, QgsProperty> &parameters );
 %Docstring

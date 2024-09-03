@@ -50,7 +50,11 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     void destruct();
 
   signals:
-    void removed( int );
+
+    /**
+     * Emitted when the group with the specified \a id is removed.
+     */
+    void removed( int id );
 
   protected:
     int mConditionId;

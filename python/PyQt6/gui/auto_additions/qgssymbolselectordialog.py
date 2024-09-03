@@ -4,6 +4,10 @@ try:
 except NameError:
     pass
 try:
+    QgsSymbolSelectorDialog.__attribute_docs__ = {'symbolModified': 'Emitted when the symbol defined in the dialog is modified.\n'}
+except NameError:
+    pass
+try:
     QgsSymbolSelectorWidget.__group__ = ['symbology']
 except NameError:
     pass

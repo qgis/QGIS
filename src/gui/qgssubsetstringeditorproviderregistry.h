@@ -73,7 +73,7 @@ class GUI_EXPORT QgsSubsetStringEditorProviderRegistry
 
     /**
      * Creates a new dialog to edit the subset string of the provided \a layer.
-     * It will default to returning a QgsQueryBuilder* if no provider was found.
+     * It will default to returning a QgsQueryBuilder if no provider was found.
      * The returned object must be destroyed by the caller.
      */
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags ) SIP_TRANSFERBACK;

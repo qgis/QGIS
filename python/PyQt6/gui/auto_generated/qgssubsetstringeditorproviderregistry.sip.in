@@ -66,7 +66,7 @@ Returns a (possibly empty) list of providers by data ``providerkey``
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags ) /TransferBack/;
 %Docstring
 Creates a new dialog to edit the subset string of the provided ``layer``.
-It will default to returning a :py:class:`QgsQueryBuilder`* if no provider was found.
+It will default to returning a :py:class:`QgsQueryBuilder` if no provider was found.
 The returned object must be destroyed by the caller.
 %End
 

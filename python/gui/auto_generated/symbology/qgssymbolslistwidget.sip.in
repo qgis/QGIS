@@ -68,7 +68,11 @@ Returns the vector layer associated with the widget.
     void updateDataDefinedLineWidth();
 
   signals:
+
     void changed();
+%Docstring
+Emitted when the symbol is modified in the widget.
+%End
 
 };
 

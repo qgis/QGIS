@@ -373,6 +373,8 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
 /**
  * \ingroup gui
  * \class QgsSvgSelectorWidget
+ *
+ * \brief A widget allowing selection of an SVG file, and configuration of SVG related parameters.
  */
 class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSelector
 {
@@ -445,6 +447,10 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
 
   signals:
+
+    /**
+     * Emitted when an SVG is selected in the widget.
+     */
     void svgSelected( const QString &path );
 
     /**

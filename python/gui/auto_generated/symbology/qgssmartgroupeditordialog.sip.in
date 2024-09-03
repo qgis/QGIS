@@ -46,7 +46,11 @@ sets the remove button hidden state to 'hide'
     void destruct();
 
   signals:
-    void removed( int );
+
+    void removed( int id );
+%Docstring
+Emitted when the group with the specified ``id`` is removed.
+%End
 
   protected:
 
