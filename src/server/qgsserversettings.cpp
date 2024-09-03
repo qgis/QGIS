@@ -124,7 +124,7 @@ void QgsServerSettings::initSettings()
   const Setting sCacheSize = { QgsServerSettingsEnv::QGIS_SERVER_CACHE_SIZE,
                                QgsServerSettingsEnv::DEFAULT_VALUE,
                                QStringLiteral( "Specify the cache size (0 = automatic size)" ),
-                               QStringLiteral( "/cache/size_bytes" ),
+                               QStringLiteral( "/cache/size-bytes" ),
                                QMetaType::Type::LongLong,
                                0,
                                QVariant()

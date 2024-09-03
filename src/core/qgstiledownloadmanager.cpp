@@ -21,6 +21,8 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrangerequestcache.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QElapsedTimer>
 #include <QNetworkReply>
@@ -190,7 +192,7 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   mRangesCache.reset( new QgsRangeRequestCache );
 
   const QgsSettings settings;
-  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+  QString cacheDirectory = QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
   if ( !cacheDirectory.endsWith( QDir::separator() ) )
@@ -199,7 +201,7 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   }
   cacheDirectory += QLatin1String( "http-ranges" );
   mRangesCache->setCacheDirectory( cacheDirectory );
-  qint64 cacheSize = settings.value( QStringLiteral( "cache/size_bytes" ), 0 ).toLongLong();
+  qint64 cacheSize = QgsSettingsRegistryCore::settingsNetworkCacheSize->value();
   mRangesCache->setCacheSize( cacheSize );
 }
 

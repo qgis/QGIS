@@ -482,12 +482,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mRemoveUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::removeNoProxyUrl );
 
   // cache settings
-  mCacheDirectory->setText( mSettings->value( QStringLiteral( "cache/directory" ) ).toString() );
+  mCacheDirectory->setText( QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value() );
   mCacheDirectory->setPlaceholderText( QStandardPaths::writableLocation( QStandardPaths::CacheLocation ) );
   mCacheSize->setMinimum( 0 );
   mCacheSize->setMaximum( std::numeric_limits<int>::max() );
   mCacheSize->setSingleStep( 50 );
-  qint64 cacheSize = mSettings->value( QStringLiteral( "cache/size_bytes" ), 0 ).toLongLong();
+  qint64 cacheSize = QgsSettingsRegistryCore::settingsNetworkCacheSize->value();
   mCacheSize->setValue( static_cast<int>( cacheSize / 1024 / 1024 ) );
   mCacheSize->setClearValue( 0 );
   connect( mBrowseCacheDirectory, &QAbstractButton::clicked, this, &QgsOptions::browseCacheDirectory );
@@ -1579,11 +1579,11 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "proxy/proxyType" ), mProxyTypeComboBox->currentText() );
 
   if ( !mCacheDirectory->text().isEmpty() )
-    mSettings->setValue( QStringLiteral( "cache/directory" ), mCacheDirectory->text() );
+    QgsSettingsRegistryCore::settingsNetworkCacheDirectory->setValue( mCacheDirectory->text() );
   else
-    mSettings->remove( QStringLiteral( "cache/directory" ) );
+    QgsSettingsRegistryCore::settingsNetworkCacheDirectory->remove();
 
-  mSettings->setValue( QStringLiteral( "cache/size_bytes" ), QVariant::fromValue( mCacheSize->value() * 1024LL * 1024LL ) );
+  QgsSettingsRegistryCore::settingsNetworkCacheSize->setValue( mCacheSize->value() * 1024LL * 1024LL );
 
   //url with no proxy at all
   QStringList noProxyUrls;
@@ -2260,7 +2260,7 @@ void QgsOptions::clearCache()
   QgsNetworkAccessManager::instance()->cache()->clear();
 
   // Clear WFS XSD cache used by OGR GMLAS driver
-  QString cacheDirectory = mSettings->value( QStringLiteral( "cache/directory" ) ).toString();
+  QString cacheDirectory = QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
   if ( !cacheDirectory.endsWith( QDir::separator() ) )

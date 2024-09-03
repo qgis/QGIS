@@ -24,6 +24,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgslogger.h"
 #include "qgis.h"
 #include "qgsnetworkdiskcache.h"
@@ -749,11 +750,11 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   if ( !newcache )
     newcache = new QgsNetworkDiskCache( this );
 
-  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+  QString cacheDirectory = QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
   newcache->setCacheDirectory( cacheDirectory );
-  qint64 cacheSize = settings.value( QStringLiteral( "cache/size_bytes" ), 0 ).toLongLong();
+  qint64 cacheSize = QgsSettingsRegistryCore::settingsNetworkCacheSize->value();
   newcache->setMaximumCacheSize( cacheSize );
 
   QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );
