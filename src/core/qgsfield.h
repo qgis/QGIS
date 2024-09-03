@@ -342,7 +342,7 @@ class CORE_EXPORT QgsField
     /**
      * Sets an expression to use when calculating the default value for the field.
      * \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
-     * a default constructed QgsDefaultValue() to reset.
+     * a default constructed QgsDefaultValue to reset.
      * \see defaultValueDefinition()
      */
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition ) SIP_HOLDGIL;

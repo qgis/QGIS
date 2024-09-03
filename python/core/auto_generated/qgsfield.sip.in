@@ -330,7 +330,7 @@ Returns the expression used when calculating the default value for the field.
 Sets an expression to use when calculating the default value for the field.
 
 :param defaultValueDefinition: expression to evaluate when calculating default values for field. Pass
-                               a default constructed :py:class:`QgsDefaultValue`() to reset.
+                               a default constructed :py:class:`QgsDefaultValue` to reset.
 
 .. seealso:: :py:func:`defaultValueDefinition`
 %End
