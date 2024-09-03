@@ -109,17 +109,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   // constraints of the referencing fields
   if ( !config( QStringLiteral( "AllowNULL" ) ).isValid() )
   {
-    const QgsAttributeList referencingFields = relation.referencingFields();
-    const bool allowNull { std::find_if( referencingFields.constBegin(), referencingFields.constEnd(), [&]( const auto & fieldIdx )
-    {
-      if ( !relation.referencingLayer()->fields().exists( fieldIdx ) )
-      {
-        return false;
-      }
-      const QgsField field = relation.referencingLayer()->fields().field( fieldIdx );
-      return field.constraints().constraints().testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull );
-    } ) == referencingFields.constEnd()};
-    mWidget->setRelation( relation, allowNull );
+    mWidget->setRelation( relation, relation.referencingFieldsAllowNull() );
   }
   else
   {

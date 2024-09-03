@@ -155,17 +155,7 @@ void QgsRelationReferenceConfigDlg::relationChanged( int idx )
   // constraints of the referencing fields
   if ( ! mAllowNullWasSetByConfig )
   {
-    const QgsAttributeList referencingFields = rel.referencingFields();
-    const bool allowNull { std::find_if( referencingFields.constBegin(), referencingFields.constEnd(), [&]( const auto & fieldIdx )
-    {
-      if ( !rel.referencingLayer()->fields().exists( fieldIdx ) )
-      {
-        return false;
-      }
-      const QgsField field = rel.referencingLayer()->fields().field( fieldIdx );
-      return field.constraints().constraints().testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull );
-    } ) == referencingFields.constEnd()};
-    mCbxAllowNull->setChecked( allowNull );
+    mCbxAllowNull->setChecked( rel.referencingFieldsAllowNull() );
   }
 
   loadFields();
