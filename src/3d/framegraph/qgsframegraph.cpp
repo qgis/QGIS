@@ -233,12 +233,12 @@ void QgsFrameGraph::constructShadowRenderPass()
   shadowMapTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
   shadowMapTexture->setObjectName( "QgsShadowRenderView::DepthTarget" );
 
-  mShadowRenderTargetOutput = new Qt3DRender::QRenderTargetOutput;
-  mShadowRenderTargetOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
-  mShadowRenderTargetOutput->setTexture( shadowMapTexture );
+  Qt3DRender::QRenderTargetOutput *renderTargetOutput = new Qt3DRender::QRenderTargetOutput;
+  renderTargetOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
+  renderTargetOutput->setTexture( shadowMapTexture );
 
   QgsShadowRenderView *shadowRenderView = new QgsShadowRenderView( this, SHADOW_RENDERVIEW );
-  shadowRenderView->setTargetOutputs( { mShadowRenderTargetOutput } );
+  shadowRenderView->setTargetOutputs( { renderTargetOutput } );
   registerRenderView( shadowRenderView, SHADOW_RENDERVIEW );
 }
 

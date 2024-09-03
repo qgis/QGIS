@@ -163,8 +163,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      */
     float ambientOcclusionThreshold() const { return mAmbientOcclusionThreshold; }
 
-    Qt3DRender::QRenderTargetOutput *shadowRenderTargetOutput() const { return mShadowRenderTargetOutput;}
-
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
     //! Adds an preview entity that shows a texture in real time for debugging purposes
@@ -242,8 +240,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
     // QDebugOverlay added in the forward pass
     Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
-
-    Qt3DRender::QRenderTargetOutput *mShadowRenderTargetOutput = nullptr;
 
     // - The depth buffer render pass is made to copy the depth buffer into
     //    an RGB texture that can be captured into a QImage and sent to the CPU for
