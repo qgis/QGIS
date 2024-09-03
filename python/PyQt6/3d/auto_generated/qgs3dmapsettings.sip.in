@@ -448,6 +448,10 @@ Sets the debugging settings of the shadow map
 
 .. seealso:: :py:func:`debugShadowMapEnabled`
 
+.. seealso:: :py:func:`debugShadowMapCorner`
+
+.. seealso:: :py:func:`debugShadowMapSize`
+
 .. versionadded:: 3.18
 %End
     bool debugShadowMapEnabled() const;
@@ -468,6 +472,10 @@ Returns the size of the shadow map preview
 Sets the debugging settings of the depth map
 
 .. seealso:: :py:func:`debugDepthMapEnabled`
+
+.. seealso:: :py:func:`debugDepthMapCorner`
+
+.. seealso:: :py:func:`debugDepthMapSize`
 
 .. versionadded:: 3.18
 %End

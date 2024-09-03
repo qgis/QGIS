@@ -293,6 +293,8 @@ Returns the maximum value used when classifying colors in the color ramp shader
 Sets the minimum and maximum values used when classifying colors in the color ramp shader
 
 .. seealso:: :py:func:`colorRampShaderMin`
+
+.. seealso:: :py:func:`colorRampShaderMax`
 %End
 
     virtual unsigned int byteStride();
@@ -539,6 +541,8 @@ Sets the list of categories of the classification
 Gets the list of categories of the classification that should not be rendered
 
 .. seealso:: :py:func:`categoriesList`
+
+.. seealso:: :py:func:`setCategoriesList`
 %End
 
     virtual unsigned int byteStride();

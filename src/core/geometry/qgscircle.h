@@ -224,12 +224,12 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      *
      * If found, the tangent points will be stored in \a pt1 and \a pt2.
      *
-     * Note that this method is 2D only and does not consider the z-value of the circle.
+     * \note This method is 2D only and does not consider the z-value of the circle.
      *
      * \returns TRUE if tangent was found.
      *
-     *
-     * \see outerTangents() and innerTangents()
+     * \see outerTangents()
+     * \see innerTangents()
      * \since QGIS 3.2
      */
     bool tangentToPoint( const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT ) const;
@@ -249,10 +249,10 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      *
      * Returns the number of tangents (either 0 or 2).
      *
-     * Note that this method is 2D only and does not consider the z-value of the circle.
+     * \note This method is 2D only and does not consider the z-value of the circle.
      *
-     *
-     * \see tangentToPoint() and innerTangents()
+     * \see tangentToPoint()
+     * \see innerTangents()
      * \since QGIS 3.2
      */
     int outerTangents( const QgsCircle &other,
@@ -274,10 +274,10 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      *
      * Returns the number of tangents (either 0 or 2).
      *
-     * Note that this method is 2D only and does not consider the z-value of the circle.
+     * \note This method is 2D only and does not consider the z-value of the circle.
      *
-     *
-     * \see tangentToPoint() and outerTangents()
+     * \see tangentToPoint()
+     * \see outerTangents()
      * \since QGIS 3.6
      */
     int innerTangents( const QgsCircle &other,

@@ -573,6 +573,8 @@ if that involves resorting to a hard coded default of geocs:wgs84.
    are trying to force this CRS to be valid.
 
 .. seealso:: :py:func:`setCustomCrsValidation`
+
+.. seealso:: :py:func:`customCrsValidation`
 %End
 
 

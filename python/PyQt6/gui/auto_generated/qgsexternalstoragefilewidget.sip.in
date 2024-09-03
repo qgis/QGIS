@@ -90,6 +90,8 @@ documents. This is used only if an external storage has been defined
 
 .. seealso:: :py:func:`setStorageType`
 
+.. seealso:: :py:func:`externalStorage`
+
 .. versionadded:: 3.22
 %End
 

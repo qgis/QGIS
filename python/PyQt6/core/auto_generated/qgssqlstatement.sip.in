@@ -72,6 +72,8 @@ formatting or comments. In general it is preferable to use
 Returns a quoted column reference (in double quotes)
 
 .. seealso:: :py:func:`quotedString`
+
+.. seealso:: :py:func:`quotedIdentifierIfNeeded`
 %End
 
     static QString quotedIdentifierIfNeeded( const QString &name );
@@ -80,6 +82,8 @@ Returns a quoted column reference (in double quotes) if needed, or
 otherwise the original string.
 
 .. seealso:: :py:func:`quotedString`
+
+.. seealso:: :py:func:`quotedIdentifier`
 %End
 
     static QString stripQuotedIdentifier( QString text );
@@ -101,6 +105,8 @@ Remove double quotes from an Microsoft style identifier.
 Returns a quoted version of a string (in single quotes)
 
 .. seealso:: :py:func:`quotedIdentifier`
+
+.. seealso:: :py:func:`quotedIdentifierIfNeeded`
 %End
 
     enum UnaryOperator /BaseType=IntEnum/

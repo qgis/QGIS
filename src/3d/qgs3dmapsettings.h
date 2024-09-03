@@ -433,7 +433,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Sets the debugging settings of the shadow map
-     * \see debugShadowMapEnabled() debugShadowMapCorner() debugShadowMapSize()
+     * \see debugShadowMapEnabled()
+     * \see debugShadowMapCorner()
+     * \see debugShadowMapSize()
      * \since QGIS 3.18
      */
     void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
@@ -446,7 +448,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Sets the debugging settings of the depth map
-     * \see debugDepthMapEnabled() debugDepthMapCorner() debugDepthMapSize()
+     * \see debugDepthMapEnabled()
+     * \see debugDepthMapCorner()
+     * \see debugDepthMapSize()
      * \since QGIS 3.18
      */
     void setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size );

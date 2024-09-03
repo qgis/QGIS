@@ -284,7 +284,8 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     /**
      * Sets the minimum and maximum values used when classifying colors in the color ramp shader
-     * \see colorRampShaderMin() colorRampShaderMax()
+     * \see colorRampShaderMin()
+     * \see colorRampShaderMax()
      */
     void setColorRampShaderMinMax( double min, double max );
 
@@ -503,7 +504,8 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
 
     /**
      * Gets the list of categories of the classification that should not be rendered
-     * \see categoriesList() setCategoriesList()
+     * \see categoriesList()
+     * \see setCategoriesList()
      */
     QgsPointCloudCategoryList getFilteredOutCategories() const;
 
