@@ -271,7 +271,7 @@ Will return if this iterator is valid.
 An invalid iterator was probably introduced by a failed attempt to acquire a connection
 or is a default constructed iterator.
 
-.. seealso:: :py:func:`isClosed`
+.. seealso:: :py:func:`isClosed` to check if the iterator successfully completed and returned all the features.
 %End
 
     bool isClosed() const;

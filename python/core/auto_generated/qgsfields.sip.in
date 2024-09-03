@@ -299,7 +299,7 @@ Alias for indexOf
 
 :return: The field index if found or -1 in case it cannot be found.
 
-.. seealso:: :py:func:`lookupField`
+.. seealso:: :py:func:`lookupField` For a more tolerant alternative.
 %End
 
     int indexOf( const QString &fieldName ) const /HoldGIL/;
@@ -313,7 +313,7 @@ name of the field.
 
 :return: The field index if found or -1 in case it cannot be found.
 
-.. seealso:: :py:func:`lookupField`
+.. seealso:: :py:func:`lookupField` For a more tolerant alternative.
 %End
 
      int lookupField( const QString &fieldName ) const /HoldGIL/;
@@ -329,7 +329,7 @@ This method matches in the following order:
 
 :return: The field index if found or -1 in case it cannot be found.
 
-.. seealso:: :py:func:`indexFromName`
+.. seealso:: :py:func:`indexFromName` For a more performant and precise but less tolerant alternative.
 %End
 
     QgsAttributeList allAttributesList() const /HoldGIL/;

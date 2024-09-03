@@ -17,7 +17,7 @@ class QgsServerApi
 %Docstring(signature="appended")
 Server generic API endpoint abstract base class.
 
-.. seealso:: :py:class:`QgsServerOgcApi`
+.. seealso:: :py:class:`QgsServerOgcApi` for an OGC API (aka WFS3) implementation.
 
 An API must have a name and a (possibly empty) version and define a
 (possibly empty) root path (e.g. "/wfs3").

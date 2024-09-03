@@ -76,7 +76,7 @@ Draws text within a rectangle using the specified settings.
 :param flags: text rendering flags (since QGIS 3.24)
 :param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
 
-.. seealso:: :py:func:`drawDocument`
+.. seealso:: :py:func:`drawDocument` which is more efficient if the text document and metrics have already been calculated.
 %End
 
     static void drawDocument( const QRectF &rect,

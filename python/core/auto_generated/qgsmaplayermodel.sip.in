@@ -15,9 +15,9 @@ class QgsMapLayerModel : QAbstractItemModel
 %Docstring(signature="appended")
 The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 
-.. seealso:: :py:class:`QgsMapLayerProxyModel`
+.. seealso:: :py:class:`QgsMapLayerProxyModel` to sort and/filter the layers
 
-.. seealso:: :py:class:`QgsFieldModel`
+.. seealso:: :py:class:`QgsFieldModel` to combine in with a field selector.
 %End
 
 %TypeHeaderCode

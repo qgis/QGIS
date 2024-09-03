@@ -127,8 +127,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * \returns  the request url as seen by QGIS server
      *
-     * \see originalUrl for the unrewritten url as seen by the web
-     *      server, by default the two are equal
+     * \see originalUrl for the unrewritten url as seen by the web server, by default the two are equal
      */
     QUrl url() const;
 

@@ -26,7 +26,7 @@ Compared to :py:class:`QgsSpatialIndex`, this index:
 
 :py:class:`QgsSpatialIndexKDBush` objects are implicitly shared and can be inexpensively copied.
 
-.. seealso:: :py:class:`QgsSpatialIndex`
+.. seealso:: :py:class:`QgsSpatialIndex` which is an general, mutable index for geometry bounding boxes.
 
 .. versionadded:: 3.4
 %End

@@ -102,7 +102,7 @@ In most cases callers should use :py:func:`~QgsPoint3DSymbol.shapeProperty` inst
 correctly handle default values when a property has not been
 explicitly set.
 
-.. seealso:: :py:func:`setShapeProperties`
+.. seealso:: :py:func:`setShapeProperties` for a description of available properties.
 
 .. seealso:: :py:func:`shapeProperty`
 %End
@@ -114,7 +114,7 @@ Returns the value for a specific shape ``property``.
 This method accounts for default property values for the symbol's :py:func:`~QgsPoint3DSymbol.shape`,
 used when the property has not been explicitly set.
 
-.. seealso:: :py:func:`setShapeProperties`
+.. seealso:: :py:func:`setShapeProperties` for a description of available properties.
 
 .. versionadded:: 3.36
 %End
