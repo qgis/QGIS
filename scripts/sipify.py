@@ -800,8 +800,8 @@ def process_doxygen_line(line: str) -> str:
         CONTEXT.indent = ' ' * (line.index(':', 4) + 1)
 
     # Handle params
-    if re.search(r'\\param ', line):
-        line = re.sub(r'\s*\\param\s+(\w+)\b\s*', r':param \1: ', line)
+    if re.search(r'\\param(?:\[(?:out|in|,)+])? ', line):
+        line = re.sub(r'\s*\\param(?:\[(?:out|in|,)+])?\s+(\w+)\b\s*', r':param \1: ', line)
         line = re.sub(r'\s*$', '', line)
         CONTEXT.indent = ' ' * (line.index(':', 2) + 2)
         if line.startswith(':param'):

@@ -1501,11 +1501,11 @@ Splits features cut by the given line
 Splits features cut by the given curve
 
 :param curve: curve that splits the layer features
-\param[out] topologyTestPoints topological points to be tested against other layers
 :param preserveCircular: whether circular strings are preserved after splitting
 :param topologicalEditing: ``True`` if topological editing is enabled
 
-:return: :py:class:`Qgis`.GeometryOperationResult
+:return: - :py:class:`Qgis`.GeometryOperationResult
+         - topologyTestPoints: topological points to be tested against other layers
 
          - Success
          - NothingHappened

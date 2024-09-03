@@ -198,7 +198,7 @@ Toggles the stream digitizing mode.
 Converts a map point to layer coordinates
 
 :param mapPoint: the point in map coordinates
-\param[in,out] layerPoint the point in layer coordinates
+:param layerPoint: the point in layer coordinates
 
 :return:
          0 in case of success
@@ -212,8 +212,8 @@ Converts a map point to layer coordinates
 Converts a point to map coordinates and layer coordinates
 
 :param p: the input point
-\param[in,out] layerPoint the point in layer coordinates
-\param[in,out] mapPoint the point in map coordinates
+:param layerPoint: the point in layer coordinates
+:param mapPoint: the point in map coordinates
 
 :return:
          0 in case of success
