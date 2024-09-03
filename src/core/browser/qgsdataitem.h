@@ -153,7 +153,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-     * \param refresh - set to TRUE to refresh populated item, emitting relevant signals to the model
+     * \param refresh set to TRUE to refresh populated item, emitting relevant signals to the model
      * \see deleteChildItem()
      */
     virtual void addChildItem( QgsDataItem *child SIP_TRANSFER, bool refresh = false );

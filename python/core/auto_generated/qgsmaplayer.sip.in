@@ -994,7 +994,7 @@ Retrieve a named metadata for this layer if one
 exists (either as a .qmd file on disk or as a
 record in the users style table in their personal qgis.db)
 
-:param uri: - the file name or other URI for the
+:param uri: the file name or other URI for the
             metadata file. First an attempt will be made to see if this
             is a file and load that, if that fails the qgis.db metadata
             table will be consulted to see if there is a metadata who's
@@ -1072,7 +1072,7 @@ Retrieve a named style for this layer if one
 exists (either as a .qml file on disk or as a
 record in the users style table in their personal qgis.db)
 
-:param uri: - the file name or other URI for the
+:param uri: the file name or other URI for the
             style file. First an attempt will be made to see if this
             is a file and load that, if that fails the qgis.db styles
             table will be consulted to see if there is a style who's

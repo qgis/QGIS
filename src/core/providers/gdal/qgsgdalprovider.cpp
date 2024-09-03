@@ -2135,7 +2135,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
  * pyramids (.ovr) are to be created. If no parameter is passed in
  * it will default to nearest neighbor resampling.
  *
- * \param tryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
+ * \param tryInternalFlag Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
  * \return null string on success, otherwise a string specifying error
  */
 QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,

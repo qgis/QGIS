@@ -69,6 +69,11 @@ def process_file(file_path):
             prefix, first, remaining = match.groups()
             line = f'{prefix}//!< {first.upper()}{remaining}'
 
+        if match := re.match(r'^(.*)\\param ([\w_]+)\s+[:,.-]\s*(.*?)$', line):
+            # Standardize \param
+            prefix, param, suffix = match.groups()
+            line = f'{prefix}\\param {param} {suffix}'
+
         if '//!<' in line and (match := re.match(r'^(.*)\.\s*[Ss]ince (?:QGIS )?(\d+\.\d+(?:\.\d+)?)[.]?$', line)):
             # Use \since annotation
             prefix, version = match.groups()
