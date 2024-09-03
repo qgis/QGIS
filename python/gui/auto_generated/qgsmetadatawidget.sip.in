@@ -120,14 +120,14 @@ Returns a list of licences available by default in the wizard.
 %Docstring
 Returns a list of link types available by default in the wizard.
 
-.. seealso:: :py:func:`https` //github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
+.. seealso:: https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
 %End
 
     static QStringList parseMimeTypes();
 %Docstring
 Returns a list of MIME types available by default in the wizard.
 
-.. seealso:: :py:func:`https` //fr.wikipedia.org/wiki/Type_MIME
+.. seealso:: https://fr.wikipedia.org/wiki/Type_MIME
 %End
 
     static QMap<QString, QString> parseTypes();
