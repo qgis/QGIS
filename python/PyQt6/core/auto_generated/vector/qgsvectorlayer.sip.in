@@ -1505,15 +1505,16 @@ Splits features cut by the given curve
 :param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: - :py:class:`Qgis`.GeometryOperationResult
-         - topologyTestPoints: topological points to be tested against other layers
 
-         - Success
-         - NothingHappened
-         - LayerNotEditable
-         - InvalidInputGeometryType
-         - InvalidBaseGeometry
-         - GeometryEngineError
-         - SplitCannotSplitPoint
+           - Success
+           - NothingHappened
+           - LayerNotEditable
+           - InvalidInputGeometryType
+           - InvalidBaseGeometry
+           - GeometryEngineError
+           - SplitCannotSplitPoint
+
+         - topologyTestPoints: topological points to be tested against other layers
 
 .. note::
 

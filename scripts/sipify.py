@@ -2533,14 +2533,26 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
                         # scan forward to find end of return description
                         scan_forward_idx = comment_line_idx
+                        needs_blank_line_after_return = False
                         while scan_forward_idx < len(comment_lines):
                             scan_forward_line = comment_lines[scan_forward_idx]
                             scan_forward_idx += 1
+                            if not scan_forward_line.strip() and scan_forward_idx < len(comment_lines) - 1:
+                                # check if following line is start of list
+                                if re.match(r'^\s*-(?!-)', comment_lines[scan_forward_idx+1]):
+                                    doc_string += "\n"
+                                    comment_line_idx += 1
+                                    needs_blank_line_after_return = True
+                                    continue
+
                             if re.match(r'^(:.*|\.\..*|\s*)$', scan_forward_line) or not scan_forward_line.strip():
                                 break
 
                             doc_string += f"{doc_prepend}  {scan_forward_line}\n"
                             comment_line_idx += 1
+
+                        if needs_blank_line_after_return:
+                            doc_string += "\n"
 
                         for out_param in out_params:
                             doc_string += f"{doc_prepend}         - {out_param}\n"
