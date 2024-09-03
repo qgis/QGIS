@@ -1292,8 +1292,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
 
-  const QgsProjectStyleSettings *styleSettings = layout->project() ? layout->project()->styleSettings() : nullptr;
-  if ( styleSettings )
+  if ( const QgsProjectStyleSettings *styleSettings = ( layout->project() ? layout->project()->styleSettings() : nullptr ) )
   {
     // We don't want to let AUTO color model because we could end up writing RGB colors with a CMYK
     // output intent color model and vice versa, so we force color conversion
