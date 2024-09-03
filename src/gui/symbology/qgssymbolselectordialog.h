@@ -286,6 +286,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 /**
  * \ingroup gui
  * \class QgsSymbolSelectorDialog
+ * \brief A dialog that can be used to select and build a symbol.
  */
 class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 {
@@ -380,6 +381,9 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
   signals:
 
+    /**
+     * Emitted when the symbol defined in the dialog is modified.
+     */
     void symbolModified();
 
   private:

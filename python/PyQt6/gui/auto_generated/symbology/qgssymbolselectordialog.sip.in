@@ -148,6 +148,9 @@ Emitted when a symbol is modified in the widget.
 
 class QgsSymbolSelectorDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog that can be used to select and build a symbol.
+%End
 
 %TypeHeaderCode
 #include "qgssymbolselectordialog.h"
@@ -243,6 +246,9 @@ Alters tree and sets proper widget when Layer Type is changed
   signals:
 
     void symbolModified();
+%Docstring
+Emitted when the symbol defined in the dialog is modified.
+%End
 
 };
 

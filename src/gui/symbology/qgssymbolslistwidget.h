@@ -83,6 +83,10 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateDataDefinedLineWidth();
 
   signals:
+
+    /**
+     * Emitted when the symbol is modified in the widget.
+     */
     void changed();
 
   private slots:
