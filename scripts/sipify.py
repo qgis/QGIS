@@ -2480,7 +2480,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 out_params = []
                 waiting_for_return_to_end = False
 
-                for comment_line in comment_lines:
+                comment_line_idx = 0
+                while comment_line_idx < len(comment_lines):
+                    comment_line = comment_lines[comment_line_idx]
+                    comment_line_idx += 1
                     if (
                             'versionadded:' in comment_line or 'deprecated:' in comment_line) and out_params:
                         dbg_info('out style parameters remain to flush!')
@@ -2527,6 +2530,18 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         comment_line = comment_line.replace(':return:',
                                                             ':return: -')
                         doc_string += f"{doc_prepend}{comment_line}\n"
+
+                        # scan forward to find end of return description
+                        scan_forward_idx = comment_line_idx
+                        while scan_forward_idx < len(comment_lines):
+                            scan_forward_line = comment_lines[scan_forward_idx]
+                            scan_forward_idx += 1
+                            if re.match(r'^(:.*|\.\..*|\s*)$', scan_forward_line) or not scan_forward_line.strip():
+                                break
+
+                            doc_string += f"{doc_prepend}  {scan_forward_line}\n"
+                            comment_line_idx += 1
+
                         for out_param in out_params:
                             doc_string += f"{doc_prepend}         - {out_param}\n"
                         out_params = []
