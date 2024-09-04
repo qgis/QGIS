@@ -7,3 +7,7 @@ try:
     QgsNumericFormatSelectorWidget.__group__ = ['numericformats']
 except NameError:
     pass
+try:
+    QgsNumericFormatSelectorDialog.__group__ = ['numericformats']
+except NameError:
+    pass
