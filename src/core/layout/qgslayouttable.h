@@ -794,9 +794,11 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Returns the calculated background color for a row and column combination.
      * \param row row number, where -1 is the header row, and 0 is the first body row
      * \param column column number, where 0 is the first column
+     * \param rowSpan number of rows spanned by cell
+     * \param columnSpan number of columns spanned by cell
      * \returns background color, or invalid QColor if no background should be drawn
      */
-    QColor backgroundColor( int row, int column ) const;
+    QColor backgroundColor( int row, int column, int rowSpan = 1, int columnSpan = 1 ) const;
 
     friend class TestQgsLayoutTable;
     friend class TestQgsLayoutManualTable;
