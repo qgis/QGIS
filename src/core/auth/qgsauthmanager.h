@@ -125,13 +125,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Sets up the application instance of the authentication database connection
      *
-     * \deprecated Since QGIS 3.40, direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead.
+     * \deprecated QGIS 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead.
      */
     Q_DECL_DEPRECATED QSqlDatabase authDatabaseConnection() const SIP_DEPRECATED;
 
     /**
      * Name of the authentication database table that stores configs
-     * \deprecated Since QGIS 3.40, direct access to the DB is not allowed, use methodConfigTableName() instead.
+     * \deprecated QGIS 3.40. Direct access to the DB is not allowed, use methodConfigTableName() instead.
      */
     Q_DECL_DEPRECATED const QString authDatabaseConfigTable() const SIP_DEPRECATED { return AUTH_CONFIG_TABLE; }
 
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Name of the authentication database table that stores server exceptions/configs
-     * \deprecated Since QGIS 3.40, direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead.
+     * \deprecated QGIS 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead.
      */
     Q_DECL_DEPRECATED const QString authDatabaseServersTable() const SIP_DEPRECATED { return AUTH_SERVERS_TABLE; }
 
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * The standard authentication database file in ~/.qgis3/ or defined location
      * \see QgsApplication::qgisAuthDatabaseFilePath
-     * \deprecated Since QGIS 3.40, use authenticationDatabaseUri() instead.
+     * \deprecated QGIS 3.40. Use authenticationDatabaseUri() instead.
      */
     Q_DECL_DEPRECATED const QString authenticationDatabasePath() const;
 
@@ -179,6 +179,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \since QGIS 3.40
      */
     const QString authenticationDatabaseUri() const;
+
+    /**
+     * Returns the authentication database connection URI with the password stripped.
+     * \since QGIS 3.40
+     */
+    const QString authenticationDatabaseUriStripped() const;
 
     /**
      * Main call to initially set or continually check master password is set
@@ -777,7 +783,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param tag Associated tag (title)
      * \param level Message log level
      * \see QgsMessageLog
-     * \deprecated Since QGIS 3.40, use messageLog() instead.
+     * \deprecated QGIS 3.40. Use messageLog() instead.
      */
     Q_DECL_DEPRECATED void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const SIP_DEPRECATED;
 
@@ -797,7 +803,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param tag Associated tag (title)
      * \param level Message log level
      * \see QgsMessageLog
-     * \deprecated Since QGIS 3.40, use passwordHelperMessageLog() instead.
+     * \deprecated QGIS 3.40. Use passwordHelperMessageLog() instead.
      */
     Q_DECL_DEPRECATED void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) SIP_DEPRECATED;
 

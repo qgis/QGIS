@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
      *       a convenience subclass QgsAuthConfigurationStorageSqlite is provided for
      *       SQLite DBs.
      */
-    QgsAuthConfigurationStorageDb( const QMap<QString, QString> &settings );
+    QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings );
 
     /**
      * Creates a new QgsAuthConfigurationStorageDb instance from the specified \a uri.
@@ -80,9 +80,9 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QString type() const override;
     QString description() const override;
     QString id() const override;
+
     QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const override;
     QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const override;
-
     QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload SIP_OUT, bool full = false ) const override;
     bool storeMethodConfig( const QgsAuthMethodConfig &mconfig, const QString &payload ) override;
     bool removeMethodConfig( const QString &id ) override;
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     bool erase() override;
     bool isReady() const override;
     bool initialize() override;
-    QMap<QString, QString> settingsParams() const override;
+    QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const override;
 
     bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem ) override;
     bool removeCertIdentity( const QSslCertificate &cert ) override;
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
 
     bool clearTables( const QStringList &tables );
 
-    static const QMap<QString, QString> uriToSettings( const QString &uri );
+    static const QMap<QString, QVariant> uriToSettings( const QString &uri );
     mutable QMap<QThread *, QMetaObject::Connection> mConnectedThreads;
 
   protected:
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
     QString mHost;
     QString mUser;
     QString mPassword;
-    QString mPort;
+    int mPort;
     // Driver specific options
     QString mConnectOptions;
 

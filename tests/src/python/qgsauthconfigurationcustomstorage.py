@@ -14,7 +14,9 @@ from qgis.core import (
     QgsAuthConfigSslServer,
     QgsAuthCertUtils,
 )
+
 from qgis.PyQt.QtNetwork import QSslCertificate
+from qgis.PyQt.QtCore import QVariant
 
 
 class QgsAuthConfigurationCustomStorage(QgsAuthConfigurationStorage):
@@ -30,9 +32,8 @@ class QgsAuthConfigurationCustomStorage(QgsAuthConfigurationStorage):
         self.is_encrypted = params.get('is_encrypted', 'true') in ['true', 'True', '1', 'TRUE', 'on', 'ON', 'YES', 'yes']
 
     def settingsParams(self):
-        return {
-            'is_encrypted': 'Whether the storage is encrypted or not'
-        }
+        param = QgsAuthConfigurationStorage.SettingParam('is_encrypted', 'Whether the storage is encrypted or not', QVariant.Bool)
+        return [param]
 
     def isEncrypted(self):
         return self.is_encrypted

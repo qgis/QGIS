@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsauthconfig.h"
 #include "qgsauthcertutils.h"
+#include "qgsexception.h"
 
 #include <QString>
 #include <QObject>
@@ -49,10 +50,20 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     };
 
     /**
+     * Storage configuration setting parameter.
+     */
+    struct CORE_EXPORT SettingParameter
+    {
+      QString name;
+      QString description;
+      QVariant::Type type;
+    };
+
+    /**
      * Creates a new authentication configuration storage.
      * \param settings Implementation-specific configuration settings.
      */
-    QgsAuthConfigurationStorage( const QMap<QString, QString> &settings );
+    QgsAuthConfigurationStorage( const QMap<QString, QVariant> &settings );
 
     virtual ~QgsAuthConfigurationStorage() {}
 
@@ -97,7 +108,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
 
     /**
      * Returns TRUE is the storage is ready to be used.
-     * \note This method is called by the authentication manager before using the storage.
+     * \note This method should be called after the initialize() method to check whether the initialization was properly completed.
      */
     virtual bool isReady() const = 0;
 
@@ -109,12 +120,12 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     /**
      * Returns the settings of the storage.
      */
-    QMap<QString, QString> settings() const;
+    QMap<QString, QVariant> settings() const;
 
     /**
-     * Returns a map with the keys and localized descriptions of the settings accepted by the storage.
+     * Returns a list of the settings accepted by the storage.
      */
-    virtual QMap<QString, QString> settingsParams() const = 0;
+    virtual QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const = 0;
 
     /**
      * Returns TRUE if the storage is encrypted.
@@ -141,23 +152,26 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
 
     /**
      * Returns TRUE if the storage is read-only, FALSE otherwise.
+     * \see setReadOnly()
      */
     virtual bool isReadOnly() const;
 
     /**
      * Returns a mapping of authentication configurations available from this storage.
      * \param allowedMethods Optional filter to return only configurations for specific authentication methods.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const = 0;
+    virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Returns a mapping of authentication configurations available from this storage.
      * The encrypted payload is added to the configuration as "encrypted_payload" key.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage
      * \note This convenience method is used by the authentication manager to retrieve the configurations
      * and check if it can decrypt all of them, it is faster than retrieve all the configurations one
      * by one.
      */
-    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const = 0;
+    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Load an authentication configuration from the database.
@@ -165,58 +179,66 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * \param payload (possibly encrypted) payload.
      * \param full If TRUE, the full configuration is loaded and the (possibly encrypted) payload is populated, otherwise only the configuration metadata is loaded.
      * \returns Authentication configuration metadata.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload SIP_OUT, bool full = false ) const = 0;
+    virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload SIP_OUT, bool full = false ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Store an authentication config in the database.
      * \param config Authentication configuration.
      * \param payload payload to store (possibly encrypted).
      * \returns Whether operation succeeded
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool storeMethodConfig( const QgsAuthMethodConfig &config, const QString &payload ) = 0;
+    virtual bool storeMethodConfig( const QgsAuthMethodConfig &config, const QString &payload ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Removes the authentication configuration with the specified \a id.
      * \returns TRUE if the configuration was removed, FALSE otherwise.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool removeMethodConfig( const QString &id ) = 0;
+    virtual bool removeMethodConfig( const QString &id ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      *  Check if an authentication configuration exists in the storage.
      *  \param id Configuration id.
      *  \returns TRUE if the configuration exists, FALSE otherwise.
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool methodConfigExists( const QString &id ) const = 0;
+    virtual bool methodConfigExists( const QString &id ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Store an authentication setting in the storage.
      * \param key Setting key.
      * \param value Setting value.
      * \returns Whether operation succeeded
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool storeAuthSetting( const QString &key, const QString &value ) = 0;
+    virtual bool storeAuthSetting( const QString &key, const QString &value ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Load an authentication setting from the storage.
      * \param key Setting key.
      * \returns Setting value.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual QString loadAuthSetting( const QString &key ) const = 0;
+    virtual QString loadAuthSetting( const QString &key ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Remove an authentication setting from the storage.
      * \param key Setting key.
      * \returns Whether operation succeeded
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool removeAuthSetting( const QString &key ) = 0;
+    virtual bool removeAuthSetting( const QString &key ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Check if an authentication setting exists in the storage.
      * \param key Setting key.
      * \returns TRUE if the setting exists, FALSE otherwise.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool authSettingExists( const QString &key ) const = 0;
+    virtual bool authSettingExists( const QString &key ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
 #ifndef QT_NO_SSL
 
@@ -225,157 +247,245 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * \param cert Certificate.
      * \param keyPem SSL key in PEM format.
      * \returns Whether operation succeeded
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem ) = 0;
+    virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
     * Remove a certificate identity from the storage.
     * \param cert Certificate.
     * \returns Whether operation succeeded
+    * \throws QgsNotSupportedException if the operation is not supported by the storage.
     */
-    virtual bool removeCertIdentity( const QSslCertificate &cert ) = 0;
+    virtual bool removeCertIdentity( const QSslCertificate &cert ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
     * \brief certIdentity get a certificate identity by \a id (sha hash)
     * \param id sha hash of the cert
     * \return the certificate
+    * \throws QgsNotSupportedException if the operation is not supported by the storage.
     */
-    virtual const QSslCertificate loadCertIdentity( const QString &id ) const = 0;
+    virtual const QSslCertificate loadCertIdentity( const QString &id ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Returns a certificate identity bundle by \a id (sha hash).
      * \param id sha shash
      * \return a pair with the certificate and its SSL key as an encrypted string
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const = 0;
+    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * \brief certIdentities get certificate identities
      * \return list of certificates
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QList<QSslCertificate> certIdentities() const = 0;
+    virtual const QList<QSslCertificate> certIdentities() const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * \brief certIdentityIds get list of certificate identity ids from database
      * \return list of certificate ids
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual QStringList certIdentityIds() const = 0;
+    virtual QStringList certIdentityIds() const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Check if a certificate identity exists
-    virtual bool certIdentityExists( const QString &id ) const = 0;
+    /**
+     *  Check if the certificate identity exists
+     *  \param id Certificate identity id
+     *  \returns TRUE if the certificate identity exists, FALSE otherwise
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool certIdentityExists( const QString &id ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Remove a certificate identity
-    virtual bool removeCertIdentity( const QString &id ) = 0;
+    /**
+     * Remove a certificate identity from the storage.
+     * \param id Certificate identity id
+     * \returns Whether operation succeeded
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool removeCertIdentity( const QString &id ) SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Store an SSL certificate custom config
-    virtual bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config ) = 0;
+    /**
+     *  Store an SSL certificate custom config
+     *  \param config SSL certificate custom config
+     *  \returns Whether operation succeeded
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Loads an SSL certificate custom config by \a id (sha hash) and \a hostport (host:port)
      * \param id sha hash
      * \param hostport string host:port
      * \return a SSL certificate custom config
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const = 0;
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Loads an SSL certificate custom config by \a hostport (host:port)
      * \param hostport host:port
      * \return a SSL certificate custom config
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QgsAuthConfigSslServer loadSslCertCustomConfigByHost( const QString &hostport ) const = 0;
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfigByHost( const QString &hostport ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * \brief sslCertCustomConfigs get SSL certificate custom configs
      * \return list of SSL certificate custom config
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const = 0;
+    virtual const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Returns the list of SSL certificate custom config ids.
      * \return list of SSL certificate custom config ids
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual QStringList sslCertCustomConfigIds() const = 0;
+    virtual QStringList sslCertCustomConfigIds() const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Check if SSL certificate custom config exists
-    virtual bool sslCertCustomConfigExists( const QString &id, const QString &hostport ) = 0;
+    /**
+     *  Check if SSL certificate custom config exists
+     *  \param id sha hash
+     *  \param hostport host:port
+     *  \returns TRUE if the SSL certificate custom config exists, FALSE otherwise
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool sslCertCustomConfigExists( const QString &id, const QString &hostport ) SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Remove an SSL certificate custom config
-    virtual bool removeSslCertCustomConfig( const QString &id, const QString &hostport ) = 0;
+    /**
+     *  Remove an SSL certificate custom config
+     *  \param id sha hash
+     *  \param hostport host:port
+     *  \returns Whether operation succeeded
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool removeSslCertCustomConfig( const QString &id, const QString &hostport ) SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Store a certificate authority
-    virtual bool storeCertAuthority( const QSslCertificate &cert ) = 0;
+    /**
+     *  Store a certificate authority
+     *  \param cert Certificate authority
+     *  \returns Whether operation succeeded
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool storeCertAuthority( const QSslCertificate &cert ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Returns the list of certificate authority IDs in the storage.
      * \return list of certificate authority IDs
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual QStringList certAuthorityIds() const = 0;
+    virtual QStringList certAuthorityIds() const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * \brief certAuthority get a certificate authority by \a id (sha hash)
      * \param id sha hash
-     * \return a certificate
+     * \return a (possibly empty) certificate
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QSslCertificate loadCertAuthority( const QString &id ) const = 0;
+    virtual const QSslCertificate loadCertAuthority( const QString &id ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Check if a certificate authority exists
-    virtual bool certAuthorityExists( const QSslCertificate &cert ) const = 0;
+    /**
+     *  Check if a certificate authority exists
+     *  \param cert Certificate authority
+     *  \returns TRUE if the certificate authority exists, FALSE otherwise
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool certAuthorityExists( const QSslCertificate &cert ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Remove a certificate authority
-    virtual bool removeCertAuthority( const QSslCertificate &cert ) = 0;
+    /**
+     *  Remove a certificate authority
+     *  \param cert Certificate authority
+     *  \returns Whether operation succeeded
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool removeCertAuthority( const QSslCertificate &cert ) SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Returns the map of CA certificates hashes in the storages and their trust policy.
-    virtual const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> caCertsPolicy() const = 0;
+    /**
+     *  Returns the map of CA certificates hashes in the storages and their trust policy.
+     *  \returns map of CA certificates hashes and their trust policy
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> caCertsPolicy() const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Returns the list of CA certificates in the storage
-    virtual const  QList<QSslCertificate> caCerts() const = 0;
+    /**
+     *  Returns the list of CA certificates in the storage
+     *  \returns list of CA certificates
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual const  QList<QSslCertificate> caCerts() const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Store certificate trust policy
-    virtual bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy ) = 0;
+    /**
+     *  Store certificate trust policy
+     *  \param cert Certificate
+     *  \param policy Trust policy
+     *  \returns Whether operation succeeded
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy ) SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Load certificate trust policy
-    virtual QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const = 0;
+    /**
+     *  Load certificate trust policy
+     *  \param cert Certificate
+     *  \returns Trust policy
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Remove certificate trust policy
-    virtual bool removeCertTrustPolicy( const QSslCertificate &cert ) = 0;
+    /**
+     *  Remove certificate trust policy
+     *  \param cert Certificate
+     *  \returns Whether operation succeeded
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool removeCertTrustPolicy( const QSslCertificate &cert ) SIP_THROW( QgsNotSupportedException ) = 0;
 
-    //! Check if certificate trust policy exists
-    virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const = 0;
+    /**
+     *  Check if certificate trust policy exists
+     *  \param cert Certificate
+     *  \returns TRUE if the certificate trust policy exists, FALSE otherwise
+     *  \throws QgsNotSupportedException if the operation is not supported by the storage.
+     */
+    virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
 #endif
 
     /**
      * Returns the list of (encrypted) master passwords stored in the database.
      * \returns list of master passwords
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const = 0;
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Store a master password in the database.
      * \param config Master password configuration.
      * \returns TRUE if operation succeeded
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) = 0;
+    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Remove all master passwords from the database.
      * \returns TRUE if operation succeeded
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool clearMasterPasswords() = 0;
+    virtual bool clearMasterPasswords() SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Completely erase the storage removing all configurations/certs/settings etc.
      * \returns TRUE if storage was completely erased, FALSE if any error occurred.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage (e.g. the storage is read-only).
      */
-    virtual bool erase() = 0;
+    virtual bool erase() SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Remove all authentications configurations from the storage.
      * \returns TRUE if authentications configurations were removed, FALSE otherwise.
      * \note This method does not remove certificate and other assets.
+     * \throws QgsNotSupportedException if the operation is not supported by the storage.
      */
-    virtual bool clearMethodConfigs() = 0;
+    virtual bool clearMethodConfigs() SIP_THROW( QgsNotSupportedException ) = 0;
 
 
   signals:
@@ -456,6 +566,12 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     void setError( const QString &error, Qgis::MessageLevel level = Qgis::MessageLevel::Critical );
 
     /**
+     * Utility to check \a capability and throw QgsNotSupportedException if not supported.
+     * \note Not available in SIP bindings.
+     */
+    void checkCapability( Qgis::AuthConfigurationStorageCapability capability ) const SIP_SKIP;
+
+    /**
      * Returns the logger tag for the storage.
      * The default implementation returns the literal "Auth storage" followed by the storage name.
      */
@@ -464,7 +580,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     /**
      * Store the implementation-specific configuration.
      */
-    QMap<QString, QString> mConfiguration;
+    QMap<QString, QVariant> mConfiguration;
 
     /**
      * Store the capabilities of the storage.

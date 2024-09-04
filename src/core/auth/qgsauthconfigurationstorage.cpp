@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include "qgsauthconfigurationstorage.h"
 
-QgsAuthConfigurationStorage::QgsAuthConfigurationStorage( const QMap<QString, QString> &configuration )
+QgsAuthConfigurationStorage::QgsAuthConfigurationStorage( const QMap<QString, QVariant> &configuration )
   : mConfiguration( configuration )
 {
   // Forward all specific signals to the generic one
@@ -103,7 +103,7 @@ bool QgsAuthConfigurationStorage::isEncrypted() const
   return mIsEncrypted;
 }
 
-QMap<QString, QString> QgsAuthConfigurationStorage::settings() const
+QMap<QString, QVariant> QgsAuthConfigurationStorage::settings() const
 {
   return mConfiguration;
 }
@@ -112,4 +112,13 @@ QMap<QString, QString> QgsAuthConfigurationStorage::settings() const
 QString QgsAuthConfigurationStorage::loggerTag() const
 {
   return tr( "Auth storage %1" ).arg( name() );
+}
+
+void QgsAuthConfigurationStorage::checkCapability( Qgis::AuthConfigurationStorageCapability capability ) const
+{
+  const auto caps { capabilities() };
+  if ( !caps.testFlag( capability ) )
+  {
+    throw QgsNotSupportedException( tr( "Capability %1 is not supported by storage %2" ).arg( qgsEnumValueToKey<Qgis::AuthConfigurationStorageCapability>( capability ), name() ) );
+  }
 }

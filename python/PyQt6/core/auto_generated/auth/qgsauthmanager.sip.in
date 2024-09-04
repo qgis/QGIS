@@ -88,13 +88,18 @@ Returns the authentication configuration storage registry.
 %Docstring
 Sets up the application instance of the authentication database connection
 
-\deprecated Since QGIS 3.40, direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
+.. deprecated:: 3.40
+
+   Direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
 %End
 
  const QString authDatabaseConfigTable() const /Deprecated/;
 %Docstring
 Name of the authentication database table that stores configs
-\deprecated Since QGIS 3.40, direct access to the DB is not allowed, use :py:func:`~QgsAuthManager.methodConfigTableName` instead.
+
+.. deprecated:: 3.40
+
+   Direct access to the DB is not allowed, use :py:func:`~QgsAuthManager.methodConfigTableName` instead.
 %End
 
     const QString methodConfigTableName() const;
@@ -108,7 +113,10 @@ or an empty string if none available. The table is prefixed with schema and esca
  const QString authDatabaseServersTable() const /Deprecated/;
 %Docstring
 Name of the authentication database table that stores server exceptions/configs
-\deprecated Since QGIS 3.40, direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
+
+.. deprecated:: 3.40
+
+   Direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
 %End
 
 
@@ -127,7 +135,10 @@ Standard message for when QCA's qca-ossl plugin is missing and system is disable
 The standard authentication database file in ~/.qgis3/ or defined location
 
 .. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
-\deprecated Since QGIS 3.40, use :py:func:`~QgsAuthManager.authenticationDatabaseUri` instead.
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAuthManager.authenticationDatabaseUri` instead.
 %End
 
     static bool isFilesystemBasedDatabase( const QString &uri );
@@ -139,6 +150,13 @@ Returns the ``True`` if the ``uri`` is a filesystem-based database (SQLite).
     const QString authenticationDatabaseUri() const;
 %Docstring
 Returns the authentication database connection URI.
+
+.. versionadded:: 3.40
+%End
+
+    const QString authenticationDatabaseUriStripped() const;
+%Docstring
+Returns the authentication database connection URI with the password stripped.
 
 .. versionadded:: 3.40
 %End
@@ -820,7 +838,10 @@ Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 :param level: Message log level
 
 .. seealso:: :py:class:`QgsMessageLog`
-\deprecated Since QGIS 3.40, use :py:func:`~QgsAuthManager.messageLog` instead.
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAuthManager.messageLog` instead.
 %End
 
     void messageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
@@ -845,7 +866,10 @@ Custom logging signal to inform the user about master password <-> password mana
 :param level: Message log level
 
 .. seealso:: :py:class:`QgsMessageLog`
-\deprecated Since QGIS 3.40, use :py:func:`~QgsAuthManager.passwordHelperMessageLog` instead.
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAuthManager.passwordHelperMessageLog` instead.
 %End
 
     void passwordHelperMessageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info );

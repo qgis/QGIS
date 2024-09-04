@@ -166,6 +166,13 @@ const QString QgsAuthManager::authenticationDatabaseUri() const
   return mAuthDatabaseConnectionUri;
 }
 
+const QString QgsAuthManager::authenticationDatabaseUriStripped() const
+{
+  QRegularExpression re( QStringLiteral( "password=(.*)" ) );
+  QString uri = mAuthDatabaseConnectionUri;
+  return uri.replace( re, QStringLiteral( "password=*****" ) );
+}
+
 
 bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabasePath )
 {
@@ -2759,7 +2766,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
   }
   else
   {
-    emit messageLog( tr( "Could not connect to any default storage." ), authManTag(), Qgis::MessageLevel::Critical );
+    emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
     return false;
   }
 }
@@ -2849,7 +2856,7 @@ bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
 
   if ( storages.empty() )
   {
-    emit messageLog( tr( "Could not connect to any default storage." ), authManTag(), Qgis::MessageLevel::Critical );
+    emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
   }
 
   return false;
@@ -3458,12 +3465,20 @@ bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-    *rows += storage->masterPasswords( ).count();
+    try
+    {
+      *rows += storage->masterPasswords( ).count();
+    }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+    }
   }
 
   if ( storages.empty() )
   {
-    emit messageLog( tr( "Could not connect to any default storage." ), authManTag(), Qgis::MessageLevel::Critical );
+    emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
   }
 
   return rows != 0;
@@ -3499,14 +3514,24 @@ bool QgsAuthManager::masterPasswordCheckAgainstDb( const QString &compare ) cons
   // Only check the default DB
   if ( QgsAuthConfigurationStorage *defaultStorage = firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword ) )
   {
-    const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords( ) };
-    if ( passwords.size() == 0 )
+    try
     {
-      emit messageLog( tr( "Master password: FAILED to access database" ), authManTag(), Qgis::MessageLevel::Critical );
+      const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords( ) };
+      if ( passwords.size() == 0 )
+      {
+        emit messageLog( tr( "Master password: FAILED to access database" ), authManTag(), Qgis::MessageLevel::Critical );
+        return false;
+      }
+      const QgsAuthConfigurationStorage::MasterPasswordConfig storedPassword { passwords.first() };
+      return QgsAuthCrypto::verifyPasswordKeyHash( compare.isNull() ? mMasterPass : compare, storedPassword.salt, storedPassword.hash );
+    }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
       return false;
     }
-    const QgsAuthConfigurationStorage::MasterPasswordConfig storedPassword { passwords.first() };
-    return QgsAuthCrypto::verifyPasswordKeyHash( compare.isNull() ? mMasterPass : compare, storedPassword.salt, storedPassword.hash );
+
   }
   else
   {
@@ -3528,7 +3553,16 @@ bool QgsAuthManager::masterPasswordStoreInDb() const
   // Only store in the default DB
   if ( QgsAuthConfigurationStorage *defaultStorage = firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability::CreateMasterPassword ) )
   {
-    return defaultStorage->storeMasterPassword( { salt, civ, hash } );
+    try
+    {
+      return defaultStorage->storeMasterPassword( { salt, civ, hash } );
+    }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      return false;
+    }
   }
   else
   {
@@ -3546,7 +3580,18 @@ bool QgsAuthManager::masterPasswordClearDb()
 
   if ( QgsAuthConfigurationStorage *defaultStorage = firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword ) )
   {
-    return defaultStorage->clearMasterPasswords();
+
+    try
+    {
+      return defaultStorage->clearMasterPasswords();
+    }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      return false;
+    }
+
   }
   else
   {
@@ -3564,13 +3609,22 @@ const QString QgsAuthManager::masterPasswordCiv() const
 
   if ( QgsAuthConfigurationStorage *defaultStorage = firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword ) )
   {
-    const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords( ) };
-    if ( passwords.size() == 0 )
+    try
     {
-      emit messageLog( tr( "Master password: FAILED to access database" ), authManTag(), Qgis::MessageLevel::Critical );
-      return  QString();
+      const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords( ) };
+      if ( passwords.size() == 0 )
+      {
+        emit messageLog( tr( "Master password: FAILED to access database" ), authManTag(), Qgis::MessageLevel::Critical );
+        return  QString();
+      }
+      return passwords.first().civ;
     }
-    return passwords.first().civ;
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      return QString();
+    }
   }
   else
   {
@@ -3593,18 +3647,26 @@ QStringList QgsAuthManager::configIds() const
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-    const QgsAuthMethodConfigsMap configs = storage->authMethodConfigs();
-    // Check if the config ids are already in the list
-    for ( auto it = configs.cbegin(); it != configs.cend(); ++it )
+    try
     {
-      if ( !configKeys.contains( it.key() ) )
+      const QgsAuthMethodConfigsMap configs = storage->authMethodConfigs();
+      // Check if the config ids are already in the list
+      for ( auto it = configs.cbegin(); it != configs.cend(); ++it )
       {
-        configKeys.append( it.key() );
+        if ( !configKeys.contains( it.key() ) )
+        {
+          configKeys.append( it.key() );
+        }
+        else
+        {
+          emit messageLog( tr( "Config id %1 is already in the list" ).arg( it.key() ), authManTag(), Qgis::MessageLevel::Warning );
+        }
       }
-      else
-      {
-        emit messageLog( tr( "Config id %1 is already in the list" ).arg( it.key() ), authManTag(), Qgis::MessageLevel::Warning );
-      }
+    }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
     }
   }
 
@@ -3631,22 +3693,32 @@ bool QgsAuthManager::verifyPasswordCanDecryptConfigs() const
       continue;
     }
 
-    const QgsAuthMethodConfigsMap configs = storage->authMethodConfigsWithPayload();
-    for ( auto it = configs.cbegin(); it != configs.cend(); ++it )
+    try
     {
-      QString configstring( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), it.value().config( QStringLiteral( "encrypted_payload" ) ) ) );
-      if ( configstring.isEmpty() )
+      const QgsAuthMethodConfigsMap configs = storage->authMethodConfigsWithPayload();
+      for ( auto it = configs.cbegin(); it != configs.cend(); ++it )
       {
-        QgsDebugError( QStringLiteral( "Verify password can decrypt configs FAILED, could not decrypt a config (id: %1) from storage %2" )
-                       .arg( it.key(), storage->name() ) );
-        return false;
+        QString configstring( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), it.value().config( QStringLiteral( "encrypted_payload" ) ) ) );
+        if ( configstring.isEmpty() )
+        {
+          QgsDebugError( QStringLiteral( "Verify password can decrypt configs FAILED, could not decrypt a config (id: %1) from storage %2" )
+                         .arg( it.key(), storage->name() ) );
+          return false;
+        }
       }
     }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      return false;
+    }
+
   }
 
   if ( storages.empty() )
   {
-    emit messageLog( tr( "Could not connect to any default storage." ), authManTag(), Qgis::MessageLevel::Critical );
+    emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -3683,42 +3755,51 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-    if ( storage->methodConfigExists( authcfg ) )
+    try
     {
-      if ( ! storage->isEncrypted() )
+      if ( storage->methodConfigExists( authcfg ) )
       {
+        if ( ! storage->isEncrypted() )
+        {
+          return true;
+        }
+
+        QString payload;
+        const QgsAuthMethodConfig config = storage->loadMethodConfig( authcfg, payload, true );
+        if ( payload.isEmpty() || ! config.isValid( true ) )
+        {
+          QgsDebugError( QStringLiteral( "Reencrypt FAILED, could not find config (id: %1)" ).arg( authcfg ) );
+          return false;
+        }
+
+        QString configstring( QgsAuthCrypto::decrypt( prevpass, prevciv, payload ) );
+        if ( configstring.isEmpty() )
+        {
+          QgsDebugError( QStringLiteral( "Reencrypt FAILED, could not decrypt config (id: %1)" ).arg( authcfg ) );
+          return false;
+        }
+
+        configstring = QgsAuthCrypto::encrypt( mMasterPass, masterPasswordCiv(), configstring );
+
+        if ( !storage->storeMethodConfig( config, configstring ) )
+        {
+          emit messageLog( tr( "Store config: FAILED to store config in default storage: %1" ).arg( storage->lastError() ), authManTag(), Qgis::MessageLevel::Warning );
+          return false;
+        }
         return true;
       }
-
-      QString payload;
-      const QgsAuthMethodConfig config = storage->loadMethodConfig( authcfg, payload, true );
-      if ( payload.isEmpty() || ! config.isValid( true ) )
-      {
-        QgsDebugError( QStringLiteral( "Reencrypt FAILED, could not find config (id: %1)" ).arg( authcfg ) );
-        return false;
-      }
-
-      QString configstring( QgsAuthCrypto::decrypt( prevpass, prevciv, payload ) );
-      if ( configstring.isEmpty() )
-      {
-        QgsDebugError( QStringLiteral( "Reencrypt FAILED, could not decrypt config (id: %1)" ).arg( authcfg ) );
-        return false;
-      }
-
-      configstring = QgsAuthCrypto::encrypt( mMasterPass, masterPasswordCiv(), configstring );
-
-      if ( !storage->storeMethodConfig( config, configstring ) )
-      {
-        emit messageLog( tr( "Store config: FAILED to store config in default storage: %1" ).arg( storage->lastError() ), authManTag(), Qgis::MessageLevel::Warning );
-        return false;
-      }
-      return true;
+    }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      return false;
     }
   }
 
   if ( storages.empty() )
   {
-    emit messageLog( tr( "Could not connect to any default storage." ), authManTag(), Qgis::MessageLevel::Critical );
+    emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
   }
   else
   {
@@ -3850,29 +3931,40 @@ bool QgsAuthManager::reencryptAuthenticationIdentity(
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-    if ( storage->certIdentityExists( identid ) )
+
+    try
     {
-      if ( ! storage->isEncrypted() )
-      {
-        return true;
-      }
 
-      const QPair<QSslCertificate, QString> identityBundle = storage->loadCertIdentityBundle( identid );
-      QString keystring( QgsAuthCrypto::decrypt( prevpass, prevciv, identityBundle.second ) );
-      if ( keystring.isEmpty() )
+      if ( storage->certIdentityExists( identid ) )
       {
-        QgsDebugError( QStringLiteral( "Reencrypt FAILED, could not decrypt identity id: %1" ).arg( identid ) );
-        return false;
-      }
+        if ( ! storage->isEncrypted() )
+        {
+          return true;
+        }
 
-      keystring = QgsAuthCrypto::encrypt( mMasterPass, masterPasswordCiv(), keystring );
-      return storage->storeCertIdentity( identityBundle.first, keystring );
+        const QPair<QSslCertificate, QString> identityBundle = storage->loadCertIdentityBundle( identid );
+        QString keystring( QgsAuthCrypto::decrypt( prevpass, prevciv, identityBundle.second ) );
+        if ( keystring.isEmpty() )
+        {
+          QgsDebugError( QStringLiteral( "Reencrypt FAILED, could not decrypt identity id: %1" ).arg( identid ) );
+          return false;
+        }
+
+        keystring = QgsAuthCrypto::encrypt( mMasterPass, masterPasswordCiv(), keystring );
+        return storage->storeCertIdentity( identityBundle.first, keystring );
+      }
+    }
+    catch ( const QgsNotSupportedException &e )
+    {
+      // It should not happen because we are checking the capability in advance
+      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      return false;
     }
   }
 
   if ( storages.empty() )
   {
-    emit messageLog( tr( "Could not connect to any default storage." ), authManTag(), Qgis::MessageLevel::Critical );
+    emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
   }
   else
   {

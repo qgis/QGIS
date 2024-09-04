@@ -94,9 +94,9 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
   return true;
 }
 
-QMap<QString, QString> QgsAuthConfigurationStorageSqlite::settingsParams() const
+QList<QgsAuthConfigurationStorage::SettingParameter> QgsAuthConfigurationStorageSqlite::settingsParameters() const
 {
-  return {{ QStringLiteral( "database" ), tr( "Path to the SQLite database file" ) }};
+  return {{ QStringLiteral( "database" ), tr( "Path to the SQLite database file" ), QVariant::String }};
 }
 
 QString QgsAuthConfigurationStorageSqlite::description() const

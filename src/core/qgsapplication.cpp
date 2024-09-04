@@ -1662,7 +1662,7 @@ QString QgsApplication::showSettings()
                           defaultThemePath(),
                           svgPaths().join( tr( "\n                               ", "match indentation of application state" ) ),
                           qgisMasterDatabaseFilePath() )
-                    .arg( qgisAuthDatabaseFilePath() );
+                    .arg( QgsAuthManager::instance()->authenticationDatabaseUriStripped() );
   return myState;
 }
 

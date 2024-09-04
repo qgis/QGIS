@@ -40,7 +40,7 @@ class QgsAuthConfigurationStorageSqlite : public QgsAuthConfigurationStorageDb
     QgsAuthConfigurationStorageSqlite( const QString &databasePath );
 
     bool initialize() override;
-    QMap<QString, QString> settingsParams() const override;
+    QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const override;
     QString description() const override;
     QString type( ) const override;
 

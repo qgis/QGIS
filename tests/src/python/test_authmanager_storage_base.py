@@ -20,6 +20,7 @@ from qgis.core import (
     QgsAuthMethodConfig,
     QgsAuthConfigSslServer,
     QgsAuthCertUtils,
+    QgsNotSupportedException,
 )
 from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath
@@ -110,6 +111,11 @@ class TestAuthManagerStorageBase():
         self.assertFalse(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.CreateCertificateTrustPolicy))
 
         self.assertFalse(bool(storage.capabilities() & Qgis.AuthConfigurationStorageCapability.ClearStorage))
+
+        # Checks that calling a RO method raises an QgsNotSupportedException
+        with self.assertRaises(QgsNotSupportedException):
+            config = QgsAuthMethodConfig()
+            storage.storeMethodConfig(config, 'test')
 
     def _assert_readwrite(self, storage):
 

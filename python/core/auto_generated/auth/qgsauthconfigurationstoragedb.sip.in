@@ -22,7 +22,7 @@ QSqlDatabase based implementation of :py:class:`QgsAuthConfigurationStorage`.
 %End
   public:
 
-    QgsAuthConfigurationStorageDb( const QMap<QString, QString> &settings );
+    QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings );
 %Docstring
 Creates a new QgsAuthConfigurationStorageDb instance from the specified ``settings``.
 Settings can contain the following keys:
@@ -76,10 +76,10 @@ Returns the database connection used by this storage.
 
     virtual QString id() const;
 
+
     virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const;
 
     virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const;
-
 
     virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload /Out/, bool full = false ) const;
 
@@ -105,7 +105,7 @@ Returns the database connection used by this storage.
 
     virtual bool initialize();
 
-    virtual QMap<QString, QString> settingsParams() const;
+    virtual QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const;
 
 
     virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem );
