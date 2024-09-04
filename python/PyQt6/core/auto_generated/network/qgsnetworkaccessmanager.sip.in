@@ -626,6 +626,9 @@ See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and p
 %End
 
     void requestTimedOut( QNetworkReply *reply );
+%Docstring
+Emitted when a request times out.
+%End
 
 
     void authBrowserAborted();
