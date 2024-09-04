@@ -510,14 +510,14 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
         double cellHeight = 0;
         double cellWidth = 0;
+        const int rowsSpan = rowSpan( row, col );
+        const int colsSpan = columnSpan( row, col );
         if ( spannedCells.find( std::make_pair( row, col ) ) != spannedCells.end() )
         {
           isSpanned = true;
         }
         else
         {
-          const int rowsSpan = rowSpan( row, col );
-          const int colsSpan = columnSpan( row, col );
           for ( int spannedRow = row; spannedRow < row + rowsSpan; ++spannedRow )
           {
             cellHeight += mMaxRowHeightMap[spannedRow + 1] + 2 * mCellMargin
@@ -541,7 +541,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
           //draw background
           p->save();
           p->setPen( Qt::NoPen );
-          p->setBrush( backgroundColor( row, col ) );
+          p->setBrush( backgroundColor( row, col, rowsSpan, colsSpan ) );
           p->drawRect( fullCell );
           p->restore();
         }
@@ -1458,7 +1458,7 @@ void QgsLayoutTable::drawHorizontalGridLines( QgsLayoutItemRenderContext &contex
   painter->drawLine( QPointF( 0, currentY ), QPointF( mTableSize.width(), currentY ) );
 }
 
-QColor QgsLayoutTable::backgroundColor( int row, int column ) const
+QColor QgsLayoutTable::backgroundColor( int row, int column, int rowSpan, int columnSpan ) const
 {
   QColor color = mBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( OddColumns ) )
@@ -1477,7 +1477,7 @@ QColor QgsLayoutTable::backgroundColor( int row, int column ) const
     if ( style->enabled && column == 0 )
       color = style->cellBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( LastColumn ) )
-    if ( style->enabled && column == mColumns.count() - 1 )
+    if ( style->enabled && ( column + columnSpan == mColumns.count() ) )
       color = style->cellBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( HeaderRow ) )
     if ( style->enabled && row == -1 )
@@ -1486,7 +1486,7 @@ QColor QgsLayoutTable::backgroundColor( int row, int column ) const
     if ( style->enabled && row == 0 )
       color = style->cellBackgroundColor;
   if ( QgsLayoutTableStyle *style = mCellStyles.value( LastRow ) )
-    if ( style->enabled && row == mTableContents.count() - 1 )
+    if ( style->enabled && ( row + rowSpan == mTableContents.count() ) )
       color = style->cellBackgroundColor;
 
   if ( row >= 0 )
