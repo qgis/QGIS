@@ -333,6 +333,12 @@ class CORE_EXPORT QgsRelation
     QgsAttributeList referencingFields() const;
 
     /**
+     * Returns TRUE if none of the referencing fields has a NOT NULL constraint.
+     * \since QGIS 3.28
+     */
+    bool referencingFieldsAllowNull() const;
+
+    /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
      * A relation is considered valid if both referenced and referencig layers are valid.
      *

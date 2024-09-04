@@ -264,6 +264,13 @@ Returns a list of attributes used to form the referencing fields
 :return: A list of attributes
 %End
 
+    bool referencingFieldsAllowNull() const;
+%Docstring
+Returns ``True`` if none of the referencing fields has a NOT NULL constraint.
+
+.. versionadded:: 3.28
+%End
+
     bool isValid() const;
 %Docstring
 Returns the validity of this relation. Don't use the information if it's not valid.

@@ -19,6 +19,7 @@ from qgis.core import (
     QgsProject,
     QgsRelation,
     QgsVectorLayer,
+    QgsFieldConstraints,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -249,6 +250,24 @@ class TestQgsRelation(QgisTestCase):
         rel = QgsRelation()
         # Check that it does not crash
         rel.generateId()
+
+    def test_referencingFieldsAllowNull(self):
+        rel = QgsRelation()
+
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
+        rel.setReferencingLayer(self.referencingLayer.id())
+        rel.setReferencedLayer(self.referencedLayer.id())
+        rel.addFieldPair('foreignkey', 'y')
+
+        self.assertTrue(rel.referencingFieldsAllowNull())
+
+        referencingLayer = rel.referencingLayer()
+
+        # Set Not Null constraint on the field
+        referencingLayer.setFieldConstraint(referencingLayer.fields().indexFromName('foreignkey'), QgsFieldConstraints.ConstraintNotNull)
+
+        self.assertFalse(rel.referencingFieldsAllowNull())
 
 
 if __name__ == '__main__':
