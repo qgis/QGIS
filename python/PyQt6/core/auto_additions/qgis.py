@@ -1055,14 +1055,14 @@ Qgis.SettingsType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SettingsTreeNodeType.Root.__doc__ = "Root Node"
 Qgis.SettingsTreeNodeType.Standard.__doc__ = "Normal Node"
-Qgis.SettingsTreeNodeType.NamedList.__doc__ = ""
+Qgis.SettingsTreeNodeType.NamedList.__doc__ = "Named List Node"
 Qgis.SettingsTreeNodeType.__doc__ = """Type of tree node
 
 .. versionadded:: 3.30
 
 * ``Root``: Root Node
 * ``Standard``: Normal Node
-* ``NamedList``: 
+* ``NamedList``: Named List Node
 
 """
 # --
@@ -1161,14 +1161,14 @@ Qgis.SldExportVendorExtension.__doc__ = """SLD export vendor extensions, allow t
 # --
 Qgis.SldExportVendorExtension.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SettingsOption.SaveFormerValue.__doc__ = ""
-Qgis.SettingsOption.SaveEnumFlagAsInt.__doc__ = ""
+Qgis.SettingsOption.SaveFormerValue.__doc__ = "Save the former value of the settings"
+Qgis.SettingsOption.SaveEnumFlagAsInt.__doc__ = "The enum/flag will be saved as an integer value instead of text"
 Qgis.SettingsOption.__doc__ = """Settings options
 
 .. versionadded:: 3.26
 
-* ``SaveFormerValue``: 
-* ``SaveEnumFlagAsInt``: 
+* ``SaveFormerValue``: Save the former value of the settings
+* ``SaveEnumFlagAsInt``: The enum/flag will be saved as an integer value instead of text
 
 """
 # --
@@ -7903,7 +7903,7 @@ QgsRasterDataProvider.ReloadData.is_monkey_patched = True
 QgsRasterDataProvider.ReloadData.__doc__ = "Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider.reloadProviderData()"
 QgsRasterDataProvider.DpiDependentData = Qgis.RasterProviderCapability.DpiDependentData
 QgsRasterDataProvider.DpiDependentData.is_monkey_patched = True
-QgsRasterDataProvider.DpiDependentData.__doc__ = ""
+QgsRasterDataProvider.DpiDependentData.__doc__ = "Provider's rendering is dependent on requested pixel size of the viewport \n.. versionadded:: 3.20"
 QgsRasterDataProvider.NativeRasterAttributeTable = Qgis.RasterProviderCapability.NativeRasterAttributeTable
 QgsRasterDataProvider.NativeRasterAttributeTable.is_monkey_patched = True
 QgsRasterDataProvider.NativeRasterAttributeTable.__doc__ = "Indicates that the provider supports native raster attribute table \n.. versionadded:: 3.30"
@@ -7930,7 +7930,10 @@ Qgis.RasterProviderCapability.__doc__ = """Raster data provider capabilities.
   .. versionadded:: 3.16
 
 * ``ReloadData``: Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider.reloadProviderData()
-* ``DpiDependentData``: 
+* ``DpiDependentData``: Provider's rendering is dependent on requested pixel size of the viewport
+
+  .. versionadded:: 3.20
+
 * ``NativeRasterAttributeTable``: Indicates that the provider supports native raster attribute table
 
   .. versionadded:: 3.30

@@ -41,9 +41,9 @@ struct _LayerRef
    */
   enum MatchType
   {
-    Name = 1 << 2, //! Match layer name
-    Provider = 1 << 3, //! Match layer provider name
-    Source = 1 << 4, //! Match layer source
+    Name = 1 << 2, //!< Match layer name
+    Provider = 1 << 3, //!< Match layer provider name
+    Source = 1 << 4, //!< Match layer source
     All = Provider | Source //!< Match all
   };
 

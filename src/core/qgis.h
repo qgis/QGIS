@@ -544,7 +544,7 @@ class CORE_EXPORT Qgis
     {
       Root, //!< Root Node
       Standard, //!< Normal Node
-      NamedList, //! Named List Node
+      NamedList, //!< Named List Node
     };
     Q_ENUM( SettingsTreeNodeType )
 
@@ -612,8 +612,8 @@ class CORE_EXPORT Qgis
      */
     enum class SettingsOption : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      SaveFormerValue = 1 << 1, //<! Save the former value of the settings
-      SaveEnumFlagAsInt = 1 << 2, //! The enum/flag will be saved as an integer value instead of text
+      SaveFormerValue = 1 << 1, //!< Save the former value of the settings
+      SaveEnumFlagAsInt = 1 << 2, //!< The enum/flag will be saved as an integer value instead of text
     };
     Q_ENUM( SettingsOption )
     Q_DECLARE_FLAGS( SettingsOptions, SettingsOption )
@@ -4359,7 +4359,7 @@ class CORE_EXPORT Qgis
       ProviderHintBenefitsFromResampling = 1 << 3, //!< Provider benefits from resampling and should apply user default resampling settings \since QGIS 3.10
       ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) \since QGIS 3.16
       ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
-      DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
+      DpiDependentData = 1 << 6, //!< Provider's rendering is dependent on requested pixel size of the viewport \since QGIS 3.20
       NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table \since QGIS 3.30
       BuildPyramids = 1 << 8, //!< Supports building of pyramids (overviews) (since QGIS 3.38 -- this is a replacement for RasterInterfaceCapability::BuildPyramids)
     };

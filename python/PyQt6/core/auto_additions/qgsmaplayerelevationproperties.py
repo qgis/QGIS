@@ -2,7 +2,7 @@
 # monkey patching scoped based enum
 QgsMapLayerElevationProperties.ZOffset = QgsMapLayerElevationProperties.Property.ZOffset
 QgsMapLayerElevationProperties.ZOffset.is_monkey_patched = True
-QgsMapLayerElevationProperties.ZOffset.__doc__ = ""
+QgsMapLayerElevationProperties.ZOffset.__doc__ = "Z offset"
 QgsMapLayerElevationProperties.ExtrusionHeight = QgsMapLayerElevationProperties.Property.ExtrusionHeight
 QgsMapLayerElevationProperties.ExtrusionHeight.is_monkey_patched = True
 QgsMapLayerElevationProperties.ExtrusionHeight.__doc__ = "Extrusion height"
@@ -16,7 +16,7 @@ QgsMapLayerElevationProperties.Property.__doc__ = """Data definable properties.
 
 .. versionadded:: 3.26
 
-* ``ZOffset``: 
+* ``ZOffset``: Z offset
 * ``ExtrusionHeight``: Extrusion height
 * ``RasterPerBandLowerElevation``: Lower elevation for each raster band
 
