@@ -373,6 +373,7 @@ This information is calculated from the geometry columns types.
       SinglePoint,
       SingleLineString,
       SinglePolygon,
+      PolyhedralSurfaces,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;
