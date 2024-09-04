@@ -43,6 +43,11 @@ from qgis.core import (Qgis, QgsApplication, QgsCoordinateReferenceSystem,
 from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
+try:
+    from owslib.util import Authentication
+except ImportError:
+    pass
+
 from MetaSearch import link_types
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
 from MetaSearch.dialogs.newconnectiondialog import NewConnectionDialog
