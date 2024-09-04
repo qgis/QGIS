@@ -80,6 +80,13 @@ Specifically this method:
 .. versionadded:: 3.28
 %End
 
+    static bool isOpenStreetMapLayer( QgsMapLayer *layer );
+%Docstring
+Returns ``True`` if the layer is served by OpenStreetMap server.
+
+.. versionadded:: 3.40
+%End
+
 };
 
 

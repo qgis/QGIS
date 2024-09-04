@@ -5,3 +5,4 @@ QgsMapLayerUtils.layerSourceMatchesPath = staticmethod(QgsMapLayerUtils.layerSou
 QgsMapLayerUtils.updateLayerSourcePath = staticmethod(QgsMapLayerUtils.updateLayerSourcePath)
 QgsMapLayerUtils.sortLayersByType = staticmethod(QgsMapLayerUtils.sortLayersByType)
 QgsMapLayerUtils.launderLayerName = staticmethod(QgsMapLayerUtils.launderLayerName)
+QgsMapLayerUtils.isOpenStreetMapLayer = staticmethod(QgsMapLayerUtils.isOpenStreetMapLayer)

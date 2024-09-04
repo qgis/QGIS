@@ -166,3 +166,20 @@ QString QgsMapLayerUtils::launderLayerName( const QString &name )
 
   return laundered;
 }
+
+bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
+{
+  if ( layer->providerType() == QStringLiteral( "wms" ) )
+  {
+    if ( const QgsProviderMetadata *metadata = layer->providerMetadata() )
+    {
+      QVariantMap details = metadata->decodeUri( layer->source() );
+      QUrl url( details.value( QStringLiteral( "url" ) ).toString() );
+      if ( url.host().endsWith( QStringLiteral( ".openstreetmap.org" ) ) || url.host().endsWith( QStringLiteral( ".osm.org" ) ) )
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}

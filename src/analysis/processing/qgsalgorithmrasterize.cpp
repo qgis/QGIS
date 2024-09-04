@@ -25,6 +25,7 @@
 #include "qgsalgorithmrasterize.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprovidermetadata.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmapthemecollection.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsmaprenderercustompainterjob.h"
@@ -154,63 +155,59 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   int64_t totalTiles = 0;
   for ( auto &layer : std::as_const( mMapLayers ) )
   {
-    if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( ( layer.get() ) ) )
+    if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer.get() ) )
     {
-      if ( const QgsProviderMetadata *metadata = rasterLayer->providerMetadata() )
+      if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( ( layer.get() ) ) )
       {
-        QVariantMap details = metadata->decodeUri( rasterLayer->source() );
-        if ( details.contains( QStringLiteral( "url" ) ) && QUrl( details[QStringLiteral( "url" )].toString() ).host() == QStringLiteral( "tile.openstreetmap.org" ) )
+        const QList< double > resolutions = rasterLayer->dataProvider()->nativeResolutions();
+        if ( resolutions.isEmpty() )
         {
-          const QList< double > resolutions = rasterLayer->dataProvider()->nativeResolutions();
-          if ( resolutions.isEmpty() )
+          continue;
+        }
+
+        if ( totalTiles == 0 )
+        {
+          const QgsCoordinateTransform ct( context.project()->crs(), rasterLayer->crs(), context.transformContext() );
+          QgsRectangle extentLayer;
+          try
           {
+            extentLayer = ct.transform( extent );
+          }
+          catch ( QgsCsException & )
+          {
+            totalTiles = -1;
             continue;
           }
 
-          if ( totalTiles == 0 )
+          const double mapUnitsPerPixelLayer = extentLayer.width() / width;
+          int i;
+          for ( i = 0; i < resolutions.size() && resolutions.at( i ) < mapUnitsPerPixelLayer; i++ )
           {
-            const QgsCoordinateTransform ct( context.project()->crs(), rasterLayer->crs(), context.transformContext() );
-            QgsRectangle extentLayer;
-            try
-            {
-              extentLayer = ct.transform( extent );
-            }
-            catch ( QgsCsException & )
-            {
-              totalTiles = -1;
-              continue;
-            }
-
-            const double mapUnitsPerPixelLayer = extentLayer.width() / width;
-            int i;
-            for ( i = 0; i < resolutions.size() && resolutions.at( i ) < mapUnitsPerPixelLayer; i++ )
-            {
-            }
-
-            if ( i == resolutions.size() ||
-                 ( i > 0 && resolutions.at( i ) - mapUnitsPerPixelLayer > mapUnitsPerPixelLayer - resolutions.at( i - 1 ) ) )
-            {
-              i--;
-            }
-
-            const int nbTilesWidth = std::ceil( extentLayer.width() / resolutions.at( i ) / 256 );
-            const int nbTilesHeight = std::ceil( extentLayer.height() / resolutions.at( i ) / 256 );
-            totalTiles = static_cast<int64_t>( nbTilesWidth ) * nbTilesHeight;
           }
-          feedback->pushInfo( QStringLiteral( "%1" ).arg( totalTiles ) );
 
-          if ( totalTiles > 5000 )
+          if ( i == resolutions.size() ||
+               ( i > 0 && resolutions.at( i ) - mapUnitsPerPixelLayer > mapUnitsPerPixelLayer - resolutions.at( i - 1 ) ) )
           {
-            // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
-            feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
-                                            QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QString(), QString() ) );
+            i--;
+          }
 
-            layer->deleteLater();
-            std::vector<std::unique_ptr<QgsMapLayer>>::iterator position = std::find( mMapLayers.begin(), mMapLayers.end(), layer );
-            if ( position != mMapLayers.end() )
-            {
-              mMapLayers.erase( position );
-            }
+          const int nbTilesWidth = std::ceil( extentLayer.width() / resolutions.at( i ) / 256 );
+          const int nbTilesHeight = std::ceil( extentLayer.height() / resolutions.at( i ) / 256 );
+          totalTiles = static_cast<int64_t>( nbTilesWidth ) * nbTilesHeight;
+        }
+        feedback->pushInfo( QStringLiteral( "%1" ).arg( totalTiles ) );
+
+        if ( totalTiles > 5000 )
+        {
+          // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
+          feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
+                                          QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QString(), QString() ) );
+
+          layer->deleteLater();
+          std::vector<std::unique_ptr<QgsMapLayer>>::iterator position = std::find( mMapLayers.begin(), mMapLayers.end(), layer );
+          if ( position != mMapLayers.end() )
+          {
+            mMapLayers.erase( position );
           }
         }
       }

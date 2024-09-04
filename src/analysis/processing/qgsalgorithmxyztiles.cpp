@@ -22,6 +22,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayerutils.h"
 #include "qgsprovidermetadata.h"
 
 ///@cond PRIVATE
@@ -192,17 +193,13 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
   {
     for ( QgsMapLayer *layer : std::as_const( mLayers ) )
     {
-      if ( const QgsProviderMetadata *metadata = layer->providerMetadata() )
+      if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer ) )
       {
-        QVariantMap details = metadata->decodeUri( layer->source() );
-        if ( details.contains( QStringLiteral( "url" ) ) && QUrl( details[QStringLiteral( "url" )].toString() ).host() == QStringLiteral( "tile.openstreetmap.org" ) )
-        {
-          // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
-          feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
-                                          QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QString(), QString() ) );
-          mLayers.removeAll( layer );
-          delete layer;
-        }
+        // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
+        feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
+                                        QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QString(), QString() ) );
+        mLayers.removeAll( layer );
+        delete layer;
       }
     }
   }
