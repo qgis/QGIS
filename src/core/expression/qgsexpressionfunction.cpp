@@ -5819,15 +5819,27 @@ static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionCo
   return locale.toString( datetime, format );
 }
 
-static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
-  int avg = ( color.red() + color.green() + color.blue() ) / 3;
-  int alpha = color.alpha();
+  const QVariant variant = values.at( 0 );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
+    return QVariant();
 
-  color.setRgb( avg, avg, avg, alpha );
+  const float alpha = color.alphaF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  if ( color.spec() == QColor::Spec::Cmyk )
+  {
+    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    color = QColor::fromCmykF( avg, avg, avg, color.blackF(), alpha );
+  }
+  else
+  {
+    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    color.setRgbF( avg, avg, avg, alpha );
+  }
 
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return isQColor ? QVariant( color ) : QVariant( QgsSymbolLayerUtils::encodeColor( color ) );
 }
 
 static QVariant fcnColorMixRgb( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5852,6 +5864,60 @@ static QVariant fcnColorMixRgb( const QVariantList &values, const QgsExpressionC
   QColor newColor( red, green, blue, alpha );
 
   return QgsSymbolLayerUtils::encodeColor( newColor );
+}
+
+static QVariant fcnColorMix( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QVariant variant1 = values.at( 0 );
+  const QVariant variant2 = values.at( 1 );
+
+  if ( variant1.userType() != variant2.userType() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Both color arguments must have the same type (string or color object)" ) );
+    return QVariant();
+  }
+
+  bool isQColor;
+  const QColor color1 = QgsExpressionUtils::getColorValue( variant1, parent, isQColor );
+  if ( !color1.isValid() )
+    return QVariant();
+
+  const QColor color2 = QgsExpressionUtils::getColorValue( variant2, parent, isQColor );
+  if ( !color2.isValid() )
+    return QVariant();
+
+  if ( ( color1.spec() == QColor::Cmyk ) != ( color2.spec() == QColor::Cmyk ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Both color arguments must have compatible color type (CMYK or RGB/HSV/HSL)" ) );
+    return QVariant();
+  }
+
+  const float ratio = static_cast<float>( std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0., 1. ) );
+
+  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
+
+  QColor newColor;
+  const float alpha = color1.alphaF() * ( 1 - ratio ) + color2.alphaF() * ratio;
+  if ( color1.spec() == QColor::Spec::Cmyk )
+  {
+    float cyan = color1.cyanF() * ( 1 - ratio ) + color2.cyanF() * ratio;
+    float magenta = color1.magentaF() * ( 1 - ratio ) + color2.magentaF() * ratio;
+    float yellow = color1.yellowF() * ( 1 - ratio ) + color2.yellowF() * ratio;
+    float black = color1.blackF() * ( 1 - ratio ) + color2.blackF() * ratio;
+    newColor = QColor::fromCmykF( cyan, magenta, yellow, black, alpha );
+  }
+  else
+  {
+    float red = color1.redF() * ( 1 - ratio ) + color2.redF() * ratio;
+    float green = color1.greenF() * ( 1 - ratio ) + color2.greenF() * ratio;
+    float blue = color1.blueF() * ( 1 - ratio ) + color2.blueF() * ratio;
+    newColor = QColor::fromRgbF( red, green, blue, alpha );
+  }
+
+  // NOLINTEND(bugprone-narrowing-conversions)
+
+  return isQColor ? QVariant( newColor ) : QVariant( QgsSymbolLayerUtils::encodeColor( newColor ) );
 }
 
 static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6141,12 +6207,11 @@ static QVariant fncColorCmyka( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fncColorPart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+  const QVariant variant = values.at( 0 );
+  bool isQColor;
+  const QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   QString part = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   if ( part.compare( QLatin1String( "red" ), Qt::CaseInsensitive ) == 0 )
@@ -6228,12 +6293,11 @@ static QVariant fcnCreateRamp( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fncSetColorPart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+  const QVariant variant = values.at( 0 );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   QString part = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   int value = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
@@ -6270,35 +6334,33 @@ static QVariant fncSetColorPart( const QVariantList &values, const QgsExpression
     parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
     return QVariant();
   }
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return isQColor ? QVariant( color ) : QVariant( QgsSymbolLayerUtils::encodeColor( color ) );
 }
 
 static QVariant fncDarker( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+  const QVariant variant = values.at( 0 );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   color = color.darker( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) );
 
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return isQColor ? QVariant( color ) : QVariant( QgsSymbolLayerUtils::encodeColor( color ) );
 }
 
 static QVariant fncLighter( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QColor color = QgsSymbolLayerUtils::decodeColor( values.at( 0 ).toString() );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( values.at( 0 ).toString() ) );
+  const QVariant variant = values.at( 0 );
+  bool isQColor;
+  QColor color = QgsExpressionUtils::getColorValue( variant, parent, isQColor );
+  if ( !color.isValid() )
     return QVariant();
-  }
 
   color = color.lighter( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) );
 
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return isQColor ? QVariant( color ) : QVariant( QgsSymbolLayerUtils::encodeColor( color ) );
 }
 
 static QVariant fcnGetGeometry( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -8420,6 +8482,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "color2" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "ratio" ) ),
                                             fcnColorMixRgb, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "color_mix" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "color2" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "ratio" ) ),
+                                            fcnColorMix, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "red" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "green" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "blue" ) ),

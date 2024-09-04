@@ -2,14 +2,18 @@
   "name": "color_grayscale_average",
   "type": "function",
   "groups": ["Color"],
-  "description": "Applies a grayscale filter and returns a string representation from a provided color.",
+  "description": "Applies a grayscale filter to a color and returns it. Returned type is the same as color argument, i.e. a color string representation or a color object.",
   "arguments": [{
     "arg": "color",
-    "description": "a color string"
+    "description": "a color string representation or a color object"
   }],
   "examples": [{
     "expression": "color_grayscale_average('255,100,50')",
     "returns": "'135,135,135,255'"
+  },
+  {
+    "expression": "color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))",
+    "returns": "CMYKA: 0.40,0.40,0.40,0.80,1.00"
   }],
   "tags": ["filter", "color", "provided", "applies", "grayscale", "representation"]
 }

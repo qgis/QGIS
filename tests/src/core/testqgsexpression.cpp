@@ -1894,7 +1894,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color cmyk" ) << "color_cmyk(100,50,33,10)" << false << QVariant( "0,115,154" );
       QTest::newRow( "color cmyka" ) << "color_cmyka(50,25,90,60,200)" << false << QVariant( "51,76,10,200" );
       QTest::newRow( "color grayscale average" ) << "color_grayscale_average('255,100,50')" << false << QVariant( "135,135,135,255" );
+      QTest::newRow( "color grayscale average object" ) << "color_grayscale_average(color_rgbf(0.6,0.5,0.1))" << false << QVariant( QColor::fromRgbF( 0.4, 0.4, 0.4 ) );
+      QTest::newRow( "color grayscale average cmyk" ) << "color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))" << false << QVariant( QColor::fromCmykF( 0.4, 0.4, 0.4, 0.8 ) );
       QTest::newRow( "color mix rgb" ) << "color_mix_rgb('0,0,0,100','255,255,255',0.5)" << false << QVariant( "127,127,127,177" );
+
+// looks like way color are rounded has changed between Qt 5 and 6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,177" );
+#else
+      QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,178" );
+#endif
+
+      QTest::newRow( "color mix mixed types" ) << "color_mix('0,0,0,100',color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
+      QTest::newRow( "color mix mixed color types" ) << "color_mix(color_cmykf(1.0,1.0,1.0,1.0),color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
+      QTest::newRow( "color mix cmyk" ) << "color_mix(color_cmykf(0.9,0.9,0.9,0.9),color_cmykf(0.1,0.1,0.1,0.1),0.5)" << false << QVariant( QColor::fromCmykF( 0.5, 0.5, 0.5, 0.5 ) );
 
       QTest::newRow( "color part bad color" ) << "color_part('notacolor','red')" << true << QVariant();
       QTest::newRow( "color part bad part" ) << "color_part(color_rgb(255,127,0),'bad')" << true << QVariant();
@@ -1913,6 +1926,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color part magenta" ) << "to_int(color_part(color_cmyk(0,10,90,76),'magenta'))" << false << QVariant( 10 );
       QTest::newRow( "color part yellow" ) << "to_int(color_part(color_cmyk(21,0,92,70),'yellow'))" << false << QVariant( 92 );
       QTest::newRow( "color part black" ) << "to_int(color_part(color_cmyk(21,0,92,70),'black'))" << false << QVariant( 70 );
+      QTest::newRow( "color part object" ) << "to_int(color_part(color_cmykf(0.1,0.2,0.3,0.9),'black'))" << false << QVariant( 90 );
       QTest::newRow( "set color part bad color" ) << "set_color_part('notacolor','red', 5)" << true << QVariant();
       QTest::newRow( "set color part bad part" ) << "set_color_part(color_rgb(255,127,0),'bad', 5)" << true << QVariant();
       QTest::newRow( "set color part red" ) << "color_part(set_color_part(color_rgba(200,127,150,100),'red',100),'red')" << false << QVariant( 100 );
@@ -1930,11 +1944,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "set color part magenta" ) << "to_int(color_part(set_color_part(color_cmyk(0,10,90,76),'magenta',31),'magenta'))" << false << QVariant( 31 );
       QTest::newRow( "set color part yellow" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'yellow',96),'yellow'))" << false << QVariant( 96 );
       QTest::newRow( "set color part black" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'black',100),'black'))" << false << QVariant( 100 );
+      QTest::newRow( "set color part object" ) << "to_int(color_part(set_color_part(color_cmykf(0.21,0,0.92,0.70),'black',100),'black'))" << false << QVariant( 100 );
 
       QTest::newRow( "color darker" ) << "darker('200,100,30',150)" << false << QVariant( "133,67,20,255" );
       QTest::newRow( "color darker bad color" ) << "darker('notacolor',150)" << true << QVariant();
       QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
       QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
+      QTest::newRow( "color darker object " ) << "darker(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.76 ) );
+      QTest::newRow( "color lighter object" ) << "lighter(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.46 ) );
 
       QTest::newRow( "color rgb float" ) << "color_rgbf(1,0.4989,0)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0 ) );
       QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );
@@ -2314,33 +2331,33 @@ class TestQgsExpression: public QObject
           switch ( resultColor.spec() )
           {
             case QColor::Spec::Cmyk:
-              QVERIFY( qgsDoubleNear( resultColor.cyanF(), expectedColor.cyanF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.magentaF(), expectedColor.magentaF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.yellowF(), expectedColor.yellowF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.blackF(), expectedColor.blackF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.cyanF(), expectedColor.cyanF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.magentaF(), expectedColor.magentaF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.yellowF(), expectedColor.yellowF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.blackF(), expectedColor.blackF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::Hsl:
-              QVERIFY( qgsDoubleNear( resultColor.hslHueF(), expectedColor.hslHueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.hslSaturationF(), expectedColor.hslSaturationF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.lightnessF(), expectedColor.lightnessF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.hslHueF(), expectedColor.hslHueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.hslSaturationF(), expectedColor.hslSaturationF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.lightnessF(), expectedColor.lightnessF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::Hsv:
-              QVERIFY( qgsDoubleNear( resultColor.hsvHueF(), expectedColor.hsvHueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.hsvSaturationF(), expectedColor.hsvSaturationF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.valueF(), expectedColor.valueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.hsvHueF(), expectedColor.hsvHueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.hsvSaturationF(), expectedColor.hsvSaturationF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.valueF(), expectedColor.valueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::ExtendedRgb:
             case QColor::Spec::Rgb:
-              QVERIFY( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.redF(), expectedColor.redF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.greenF(), expectedColor.greenF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.blueF(), expectedColor.blueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::Invalid:
