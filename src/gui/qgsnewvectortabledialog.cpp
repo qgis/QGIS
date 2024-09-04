@@ -169,6 +169,12 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     addGeomItem( Qgis::WkbType::MultiSurface );
   }
 
+  if ( conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::PolyhedralSurfaces ) )
+  {
+    addGeomItem( Qgis::WkbType::PolyhedralSurface );
+    addGeomItem( Qgis::WkbType::TIN );
+  }
+
   mGeomTypeCbo->setCurrentIndex( 0 );
 
   const bool hasZ { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::Z ) };

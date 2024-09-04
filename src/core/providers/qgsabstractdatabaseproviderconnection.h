@@ -533,6 +533,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       SinglePoint = 1 << 5,            //!< Supports single point types (as distinct from multi point types) \since QGIS 3.28
       SingleLineString = 1 << 6,       //!< Supports single linestring types (as distinct from multi line types) \since QGIS 3.28
       SinglePolygon = 1 << 7,          //!< Supports single polygon types (as distinct from multi polygon types) \since QGIS 3.28
+      PolyhedralSurfaces = 1 << 8,     //!< Supports polyhedral surfaces (PolyhedralSurface, TIN) types (as distinct from multi polygon types) \since QGIS 3.40
     };
     // TODO QGIS 4.0 -- remove SinglePart
 
