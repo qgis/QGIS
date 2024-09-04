@@ -810,6 +810,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     Q_DECL_DEPRECATED void requestCreated( QNetworkReply *reply ) SIP_DEPRECATED;
 
+    /**
+     * Emitted when a request times out.
+     */
     void requestTimedOut( QNetworkReply *reply );
 
 #ifndef SIP_RUN
