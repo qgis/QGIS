@@ -70,6 +70,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
     Qgis::WkbType::MultiPolygon,
     Qgis::WkbType::MultiSurface,
     Qgis::WkbType::PolyhedralSurface,
+    Qgis::WkbType::TIN,
   };
 
   for ( const auto type : geomTypes )
