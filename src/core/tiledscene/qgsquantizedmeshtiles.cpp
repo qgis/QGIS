@@ -554,3 +554,31 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
 
   return model;
 }
+
+QgsMesh QgsQuantizedMeshTile::toMesh( QgsRectangle tileBounds )
+{
+  QgsMesh mesh;
+
+  mesh.vertices.reserve( mVertexCoords.size() / 3 );
+  for ( size_t i = 0; i < mVertexCoords.size(); i += 3 )
+  {
+    // Rescale to X,Y in CRS and Z in meters
+    double x = ( mVertexCoords[i] / 32767.0 ) * ( tileBounds.width() ) + tileBounds.xMinimum();
+    double y = ( mVertexCoords[i + 1] / 32767.0 ) * ( tileBounds.height() ) + tileBounds.yMinimum();
+    double z = ( mVertexCoords[i + 2] / 32767.0 ) * ( mHeader.MaximumHeight - mHeader.MinimumHeight ) + mHeader.MinimumHeight;
+    mesh.vertices.push_back( {x, y, z} );
+  }
+
+  mesh.faces.reserve( mTriangleIndices.size() / 3 );
+  for ( size_t i = 0; i < mTriangleIndices.size(); i += 3 )
+  {
+    mesh.faces.push_back(
+    {
+      static_cast<int>( mTriangleIndices[i] ),
+      static_cast<int>( mTriangleIndices[i + 1] ),
+      static_cast<int>( mTriangleIndices[i + 2] ),
+    } );
+  }
+
+  return mesh;
+}

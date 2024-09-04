@@ -18,6 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgsexception.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsrectangle.h"
 #include <qbytearray.h>
 
 #define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
@@ -91,4 +93,5 @@ struct CORE_EXPORT QgsQuantizedMeshTile
   void removeDegenerateTriangles();
   void generateNormals();
   tinygltf::Model toGltf( bool addSkirt = false, double skirtDepth = 0, bool withTextureCoords = false );
+  QgsMesh toMesh( QgsRectangle tileBounds );
 };
