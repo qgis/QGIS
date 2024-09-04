@@ -58,8 +58,11 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
     QgsNumericFormat *format() const SIP_TRANSFERBACK;
 
     /**
-     * Register an expression context generator class that will be used to retrieve
+     * Register an expression context \a generator class that will be used to retrieve
      * an expression context for the widget when required.
+     *
+     * Ownership is not transferred, and the \a generator must exist for the lifetime of this widget.
+     *
      * \since QGIS 3.40
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
