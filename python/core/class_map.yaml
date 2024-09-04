@@ -15218,9 +15218,6 @@ QgsRecentColorScheme: src/core/qgscolorscheme.h#L218
 QgsRecentStyleHandler.pushRecentSymbol: src/core/qgsrecentstylehandler.h#L75
 QgsRecentStyleHandler.recentSymbol: src/core/qgsrecentstylehandler.h#L85
 QgsRecentStyleHandler: src/core/qgsrecentstylehandler.h#L38
-QgsRectangle.QVariant: src/core/geometry/qgsrectangle.h#L612
-QgsRectangle.QgsRectangle: src/core/geometry/qgsrectangle.h#L62
-QgsRectangle.__repr__: src/core/geometry/qgsrectangle.h#L623
 QgsRectangle.area: src/core/geometry/qgsrectangle.h#L250
 QgsRectangle.asPolygon: src/core/geometry/qgsrectangle.h#L546
 QgsRectangle.asWktCoordinates: src/core/geometry/qgsrectangle.h#L521
@@ -15248,8 +15245,8 @@ QgsRectangle.isNull: src/core/geometry/qgsrectangle.h#L516
 QgsRectangle.normalize: src/core/geometry/qgsrectangle.h#L228
 QgsRectangle.perimeter: src/core/geometry/qgsrectangle.h#L256
 QgsRectangle.QgsRectangle: src/core/geometry/qgsrectangle.h#L62
-QgsRectangle.QVariant: src/core/geometry/qgsrectangle.h#L607
-QgsRectangle.__repr__: src/core/geometry/qgsrectangle.h#L618
+QgsRectangle.QVariant: src/core/geometry/qgsrectangle.h#L612
+QgsRectangle.__repr__: src/core/geometry/qgsrectangle.h#L623
 QgsRectangle.scaled: src/core/geometry/qgsrectangle.h#L300
 QgsRectangle.scale: src/core/geometry/qgsrectangle.h#L281
 QgsRectangle.scale: src/core/geometry/qgsrectangle.h#L294
@@ -15262,6 +15259,7 @@ QgsRectangle.setXMinimum: src/core/geometry/qgsrectangle.h#L148
 QgsRectangle.setYMaximum: src/core/geometry/qgsrectangle.h#L163
 QgsRectangle.setYMinimum: src/core/geometry/qgsrectangle.h#L158
 QgsRectangle.snappedToGrid: src/core/geometry/qgsrectangle.h#L620
+QgsRectangle: src/core/geometry/qgsrectangle.h#L41
 QgsRectangle.toBox3d: src/core/geometry/qgsrectangle.h#L606
 QgsRectangle.toRectF: src/core/geometry/qgsrectangle.h#L534
 QgsRectangle.toString: src/core/geometry/qgsrectangle.h#L541
