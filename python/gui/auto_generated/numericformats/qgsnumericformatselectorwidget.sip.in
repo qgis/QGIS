@@ -44,8 +44,10 @@ The caller takes ownership of the returned object.
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
+Register an expression context ``generator`` class that will be used to retrieve
 an expression context for the widget when required.
+
+Ownership is not transferred, and the ``generator`` must exist for the lifetime of this widget.
 
 .. versionadded:: 3.40
 %End

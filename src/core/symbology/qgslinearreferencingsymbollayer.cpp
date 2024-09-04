@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgslinearreferencingsymbollayer.h
+    qgslinearreferencingsymbollayer.cpp
     ---------------------
     begin                : August 2024
     copyright            : (C) 2024 by Nyall Dawson
@@ -286,6 +286,13 @@ void QgsLinearReferencingSymbolLayer::renderPolyline( const QPolygonF &points, Q
     return;
   }
 
+  // TODO (maybe?): if we don't have an original geometry, convert points to linestring and scale distance to painter units?
+  // in reality this line type makes no sense for rendering non-real feature geometries...
+  ( void )points;
+  const QgsAbstractGeometry *geometry = context.renderContext().geometry();
+  if ( !geometry )
+    return;
+
   double skipMultiples = mSkipMultiplesOf;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::SkipMultiples ) )
   {
@@ -313,13 +320,6 @@ void QgsLinearReferencingSymbolLayer::renderPolyline( const QPolygonF &points, Q
   const double labelOffsetPainterUnitsX = context.renderContext().convertToPainterUnits( labelOffsetX, mLabelOffsetUnit, mLabelOffsetMapUnitScale );
   const double labelOffsetPainterUnitsY = context.renderContext().convertToPainterUnits( labelOffsetY, mLabelOffsetUnit, mLabelOffsetMapUnitScale );
   const double averageAngleDistancePainterUnits = context.renderContext().convertToPainterUnits( averageOver, mAverageAngleLengthUnit, mAverageAngleLengthMapUnitScale ) / 2;
-
-  // TODO (maybe?): if we don't have an original geometry, convert points to linestring and scale distance to painter units?
-  // in reality this line type makes no sense for rendering non-real feature geometries...
-  ( void )points;
-  const QgsAbstractGeometry *geometry = context.renderContext().geometry();
-  if ( !geometry )
-    return;
 
   for ( auto partIt = geometry->const_parts_begin(); partIt != geometry->const_parts_end(); ++partIt )
   {
@@ -803,8 +803,6 @@ void QgsLinearReferencingSymbolLayer::renderPolylineVertex( const QgsLineString 
 
     const QPointF pt = pointToPainter( context, thisX, thisY, thisZ );
 
-    double calculatedAngle = 0;
-
     // track forward by averageAngleLengthPainterUnits
     double painterDistRemaining = averageAngleLengthPainterUnits;
     double startAverageSegmentX = thisXPainterUnits;
@@ -882,7 +880,7 @@ void QgsLinearReferencingSymbolLayer::renderPolylineVertex( const QgsLineString 
       startAverageYPainterUnits = endAverageSegmentY;
     }
 
-    calculatedAngle = std::fmod( QgsGeometryUtilsBase::azimuth( startAverageXPainterUnits, startAverageYPainterUnits, endAverageXPainterUnits, endAverageYPainterUnits ) + 360, 360 );
+    double calculatedAngle = std::fmod( QgsGeometryUtilsBase::azimuth( startAverageXPainterUnits, startAverageYPainterUnits, endAverageXPainterUnits, endAverageYPainterUnits ) + 360, 360 );
 
     if ( calculatedAngle > 90 && calculatedAngle < 270 )
       calculatedAngle += 180;
