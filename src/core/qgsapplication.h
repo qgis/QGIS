@@ -336,7 +336,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      *  Returns the path to the user authentication database file: qgis-auth.db.
-     *  \deprecated since QGIS 3.30, use qgisAuthDatabaseUri() instead
+     *  \deprecated QGIS 3.30. Use qgisAuthDatabaseUri() instead.
      */
     Q_DECL_DEPRECATED static QString qgisAuthDatabaseFilePath() SIP_DEPRECATED;
 
