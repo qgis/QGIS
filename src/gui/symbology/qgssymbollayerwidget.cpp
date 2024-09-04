@@ -5697,6 +5697,13 @@ void QgsLinearReferencingSymbolLayerWidget::changeNumberFormat()
   }
   else
   {
-    // TODO!! dialog mode
+    QgsNumericFormatSelectorDialog dialog( this );
+    dialog.setFormat( mLayer->numericFormat() );
+    dialog.registerExpressionContextGenerator( this );
+    if ( dialog.exec() )
+    {
+      mLayer->setNumericFormat( dialog.format() );
+      emit changed();
+    }
   }
 }

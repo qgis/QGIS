@@ -23,8 +23,8 @@
 #include "qgsnumericformatguiregistry.h"
 #include "qgsreadwritecontext.h"
 #include "qgsbasicnumericformat.h"
-#include <mutex>
-
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -165,4 +165,44 @@ void QgsNumericFormatSelectorWidget::updateSampleText()
   mSampleLabel->setText( QStringLiteral( "%1 %2 <b>%3</b>" ).arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) )
                          .arg( QChar( 0x2192 ) )
                          .arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
+}
+
+//
+// QgsNumericFormatSelectorDialog
+//
+
+QgsNumericFormatSelectorDialog::QgsNumericFormatSelectorDialog( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+{
+  setWindowTitle( tr( "Numeric Format" ) );
+
+  mFormatWidget = new QgsNumericFormatSelectorWidget( this );
+  mFormatWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->addWidget( mFormatWidget );
+
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal, this );
+  layout->addWidget( mButtonBox );
+
+  setLayout( layout );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
+  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
+}
+
+void QgsNumericFormatSelectorDialog::setFormat( const QgsNumericFormat *format )
+{
+  mFormatWidget->setFormat( format );
+}
+
+QgsNumericFormat *QgsNumericFormatSelectorDialog::format() const
+{
+  return mFormatWidget->format();
+}
+
+void QgsNumericFormatSelectorDialog::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mFormatWidget->registerExpressionContextGenerator( generator );
 }
