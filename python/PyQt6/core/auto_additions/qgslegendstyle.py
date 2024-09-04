@@ -10,3 +10,6 @@ QgsLegendStyle.Top = QgsLegendStyle.Side.Top
 QgsLegendStyle.Bottom = QgsLegendStyle.Side.Bottom
 QgsLegendStyle.Left = QgsLegendStyle.Side.Left
 QgsLegendStyle.Right = QgsLegendStyle.Side.Right
+QgsLegendStyle.styleName = staticmethod(QgsLegendStyle.styleName)
+QgsLegendStyle.styleFromName = staticmethod(QgsLegendStyle.styleFromName)
+QgsLegendStyle.styleLabel = staticmethod(QgsLegendStyle.styleLabel)

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaptopixel.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -135,8 +135,9 @@ Transforms device coordinates to map (world) coordinates.
 %Docstring
 Transforms device coordinates to map (world) coordinates.
 
-.. deprecated:: QGIS 3.4
-   use toMapCoordinates instead
+.. deprecated:: 3.4
+
+   Use toMapCoordinates instead.
 %End
 
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
@@ -248,5 +249,5 @@ Returns the center y-coordinate for the transform.
  *                                                                      *
  * src/core/qgsmaptopixel.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

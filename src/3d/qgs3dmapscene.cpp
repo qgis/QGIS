@@ -469,7 +469,7 @@ void Qgs3DMapScene::createTerrainDeferred()
     const QgsAABB clippingBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), rootBbox.zMin, rootBbox.zMax, mMap.origin() );
     mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel, clippingBbox );
 
-    mTerrain = new QgsTerrainEntity( mMap );
+    mTerrain = new QgsTerrainEntity( &mMap );
     mTerrain->setParent( this );
     mTerrain->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
@@ -645,7 +645,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
     }
 
-    Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
+    Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );
     if ( newEntity )
     {
       newEntity->setParent( this );

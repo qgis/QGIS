@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgspanelwidget.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -213,7 +213,7 @@ the inheritance tree changed, e.g dialogs.
 
 .. note::
 
-   Generally you should use the QgsPanelWidget class if you can
+   Generally you should use the :py:class:`QgsPanelWidget` class if you can
    and only use this wrapper if you can't update your code.
 %End
 
@@ -245,5 +245,5 @@ Returns the internal widget that is wrapped in this panel.
  *                                                                      *
  * src/gui/qgspanelwidget.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

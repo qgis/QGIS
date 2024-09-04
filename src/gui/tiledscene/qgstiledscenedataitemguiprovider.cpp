@@ -33,6 +33,10 @@ void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsTiledSceneLayerItem * > sceneConnectionItems = QgsDataItem::filteredItems<QgsTiledSceneLayerItem>( selection );
     QAction *actionDelete = new QAction( sceneConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [sceneConnectionItems, context]
@@ -81,6 +85,18 @@ void QgsTiledSceneDataItemGuiProvider::editConnection( QgsDataItem *item )
 
   QgsTiledSceneProviderConnection::addConnection( dlg.connectionName(), newConnection );
 
+  item->parent()->refreshConnections();
+}
+
+void QgsTiledSceneDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  const QgsTiledSceneProviderConnection::Data connection = QgsTiledSceneProviderConnection::connection( connectionName );
+  const QStringList connections = QgsTiledSceneProviderConnection::sTreeConnectionTiledScene->items();
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsTiledSceneProviderConnection::addConnection( newConnectionName, connection );
   item->parent()->refreshConnections();
 }
 

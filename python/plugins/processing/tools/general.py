@@ -34,15 +34,10 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
 
 
-def algorithmHelp(id):
-    """
-    Prints algorithm parameters with their types. Also
-    provides information about parameters and outputs,
-    and their acceptable values.
-
-    :param id: An algorithm's ID
-    :type id: str
-    """
+# changing this signature? make sure you update the signature in
+# python/processing/__init__.py too!
+# Docstring for this function is in python/processing/__init__.py
+def algorithmHelp(id: str) -> None:
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         print(f'{alg.displayName()} ({alg.id()})\n')
@@ -90,21 +85,10 @@ def algorithmHelp(id):
         print(f'Algorithm "{id}" not found.')
 
 
+# changing this signature? make sure you update the signature in
+# python/processing/__init__.py too!
+# Docstring for this function is in python/processing/__init__.py
 def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_child_algorithm=False):
-    """
-    Executes given algorithm and returns its outputs as dictionary object.
-
-    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
-    :param parameters: Algorithm parameters dictionary
-    :param onFinish: optional function to run after the algorithm has completed
-    :param feedback: Processing feedback object
-    :param context: Processing context object
-    :param is_child_algorithm: Set to True if this algorithm is being run as part of a larger algorithm,
-    i.e. it is a sub-part of an algorithm which calls other Processing algorithms.
-
-    :returns algorithm results as a dictionary, or None if execution failed
-    :rtype: Union[dict, None]
-    """
     if onFinish or not is_child_algorithm:
         return Processing.runAlgorithm(algOrName, parameters, onFinish, feedback, context)
     else:
@@ -117,19 +101,10 @@ def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_ch
         return Processing.runAlgorithm(algOrName, parameters, onFinish=post_process, feedback=feedback, context=context)
 
 
+# changing this signature? make sure you update the signature in
+# python/processing/__init__.py too!
+# Docstring for this function is in python/processing/__init__.py
 def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
-    """
-    Executes given algorithm and load its results into the current QGIS project
-    when possible.
-
-    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
-    :param parameters: Algorithm parameters dictionary
-    :param feedback: Processing feedback object
-    :param context: Processing context object
-
-    :returns algorithm results as a dictionary, or None if execution failed
-    :rtype: Union[dict, None]
-    """
     if isinstance(algOrName, QgsProcessingAlgorithm):
         alg = algOrName
     else:
@@ -153,18 +128,10 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
                                    context=context)
 
 
+# changing this signature? make sure you update the signature in
+# python/processing/__init__.py too!
+# Docstring for this function is in python/processing/__init__.py
 def createAlgorithmDialog(algOrName, parameters={}):
-    """
-    Creates and returns an algorithm dialog for the specified algorithm, prepopulated
-    with a given set of parameters. It is the caller's responsibility to execute
-    and delete this dialog.
-
-    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
-    :param parameters: Initial algorithm parameters dictionary
-
-    :returns algorithm results as a dictionary, or None if execution failed
-    :rtype: Union[dict, None]
-    """
     if isinstance(algOrName, QgsProcessingAlgorithm):
         alg = algOrName.create()
     else:
@@ -183,17 +150,10 @@ def createAlgorithmDialog(algOrName, parameters={}):
     return dlg
 
 
+# changing this signature? make sure you update the signature in
+# python/processing/__init__.py too!
+# Docstring for this function is in python/processing/__init__.py
 def execAlgorithmDialog(algOrName, parameters={}):
-    """
-    Executes an algorithm dialog for the specified algorithm, prepopulated
-    with a given set of parameters.
-
-    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
-    :param parameters: Initial algorithm parameters dictionary
-
-    :returns algorithm results as a dictionary, or None if execution failed
-    :rtype: Union[dict, None]
-    """
     dlg = createAlgorithmDialog(algOrName, parameters)
     if dlg is None:
         return {}

@@ -906,21 +906,21 @@ QList<QgsGdalUtils::VsiNetworkFileSystemDetails> QgsGdalUtils::vsiNetworkFileSys
         if ( details.identifier.endsWith( '/' ) )
           details.identifier.chop( 1 );
 
-        if ( details.identifier == QStringLiteral( "vsicurl" ) )
+        if ( details.identifier == QLatin1String( "vsicurl" ) )
           details.name = QObject::tr( "HTTP/HTTPS/FTP" );
-        else if ( details.identifier == QStringLiteral( "vsis3" ) )
+        else if ( details.identifier == QLatin1String( "vsis3" ) )
           details.name = QObject::tr( "AWS S3" );
-        else if ( details.identifier == QStringLiteral( "vsigs" ) )
+        else if ( details.identifier == QLatin1String( "vsigs" ) )
           details.name = QObject::tr( "Google Cloud Storage" );
-        else if ( details.identifier == QStringLiteral( "vsiaz" ) )
+        else if ( details.identifier == QLatin1String( "vsiaz" ) )
           details.name = QObject::tr( "Microsoft Azure Blob" );
-        else if ( details.identifier == QStringLiteral( "vsiadls" ) )
+        else if ( details.identifier == QLatin1String( "vsiadls" ) )
           details.name = QObject::tr( "Microsoft Azure Data Lake Storage" );
-        else if ( details.identifier == QStringLiteral( "vsioss" ) )
+        else if ( details.identifier == QLatin1String( "vsioss" ) )
           details.name = QObject::tr( "Alibaba Cloud OSS" );
-        else if ( details.identifier == QStringLiteral( "vsiswift" ) )
+        else if ( details.identifier == QLatin1String( "vsiswift" ) )
           details.name = QObject::tr( "OpenStack Swift Object Storage" );
-        else if ( details.identifier == QStringLiteral( "vsihdfs" ) )
+        else if ( details.identifier == QLatin1String( "vsihdfs" ) )
           details.name = QObject::tr( "Hadoop File System" );
         else
           continue;

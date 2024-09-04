@@ -22,31 +22,32 @@
 
 /**
  * \ingroup core
- * \brief Wherever an object of this class is available, the derived translate function can be called from.
+ * \brief An interface for objects which can translate project strings.
  *
  * \since QGIS 3.4
  */
-
 class CORE_EXPORT QgsProjectTranslator
 {
   public:
 
+    virtual ~QgsProjectTranslator() = default;
+
     /**
-     * The derived translate() translates with QTranslator and qm file the sourceText.
-     * It \returns the result string and in case there is no QTranslator loaded, the sourceText.
+     * Translates a string using the Qt QTranslator mechanism.
+     *
      * This function can be called from wherever the QgsReadWriteContext is available.
      *
-     * \param context describing layer etc.
-     * \param sourceText is the identifier of this text
-     * \param disambiguation it's the disambiguation
-     * \param n if -1 uses the appropriate form
+     * \param context describes the context of the translation, eg the corresponding map layer
+     * \param sourceText the identifier of the text to translate (usually the original untranslated string)
+     * \param disambiguation optional string providing additional context for the translation
+     * \param n optional "object count", which can alter the translation to account for plural forms
+     *
+     * \returns the translated string. In the case that there is no QTranslator available, the \a sourceText will be returned unchanged.
      *
      * \since QGIS 3.4
      */
-
     virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const = 0;
 
-    virtual ~QgsProjectTranslator() = default;
 };
 
 #endif // QGSPROJECTTRANSLATOR_H

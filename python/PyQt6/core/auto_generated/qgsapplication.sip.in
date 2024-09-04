@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsapplication.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -690,8 +690,9 @@ Returns the application's settings registry, used for managing application setti
 
 .. versionadded:: 3.20
 
-.. deprecated:: QGIS 3.30
-   use :py:func:`QgsSettings.treeRoot()` instead
+.. deprecated:: 3.30
+
+   Use :py:func:`QgsSettings.treeRoot()` instead.
 %End
 
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
@@ -986,17 +987,32 @@ differently across work stations.
 
     static QString nullRepresentation();
 %Docstring
-This string is used to represent the value `NULL` throughout QGIS.
+Returns the string used to represent the value `NULL` throughout QGIS.
 
-In general, when passing values around, prefer to use a null QVariant
-`QVariant( field.type() )` or `QVariant( QVariant.Int )`. This value
-should only be used in the final presentation step when showing values
-in a widget or sending it to a web browser.
+.. note::
+
+   In general, when passing values around, prefer to use an invalid QVariant.
+   The :py:func:`~QgsApplication.nullRepresentation` value should only be used in the final presentation step when showing values
+   in a widget or sending it to a web browser.
+
+.. seealso:: :py:func:`setNullRepresentation`
+
+.. seealso:: :py:func:`nullRepresentationChanged`
 %End
 
     static void setNullRepresentation( const QString &nullRepresentation );
 %Docstring
-\copydoc :py:func:`~QgsApplication.nullRepresentation`
+Sets the string used to represent the value `NULL` throughout QGIS.
+
+.. note::
+
+   In general, when passing values around, prefer to use an invalid QVariant.
+   The :py:func:`~QgsApplication.nullRepresentation` value should only be used in the final presentation step when showing values
+   in a widget or sending it to a web browser.
+
+.. seealso:: :py:func:`nullRepresentation`
+
+.. seealso:: :py:func:`nullRepresentationChanged`
 %End
 
     static QVariantMap customVariables();
@@ -1080,10 +1096,13 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 Emitted whenever a custom global variable changes.
 %End
 
-
     void nullRepresentationChanged();
 %Docstring
-\copydoc :py:func:`~QgsApplication.nullRepresentation`
+Emitted when the string representing the `NULL` value is changed.
+
+.. seealso:: :py:func:`setNullRepresentation`
+
+.. seealso:: :py:func:`nullRepresentation`
 %End
 
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );
@@ -1111,5 +1130,5 @@ Emitted when project locale has been changed.
  *                                                                      *
  * src/core/qgsapplication.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

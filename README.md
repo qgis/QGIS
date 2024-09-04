@@ -208,6 +208,8 @@ If you wish to contribute patches you can:
 
 If you commit a new feature, add `[FEATURE]` to your commit message AND give a clear description of the new feature. The label `Needs documentation` will be added by maintainers and will automatically create an issue on the QGIS-Documentation repo, where you or others should write documentation about it.
 
+ A [complete developer guide](https://docs.qgis.org/latest/en/docs/developers_guide/index.html) is also available to explain the build process, the unit testing system and more!
+
 For large-scale changes, you can open a [QEP (QGIS Enhancement Proposal)](https://github.com/qgis/QGIS-Enhancement-Proposals). QEPs are used in the process of creating and discussing new enhancements or policy for QGIS.
 
 ### Translations

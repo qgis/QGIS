@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingparameters.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -804,7 +804,7 @@ A collection of utilities for working with parameters when running a processing 
 Parameters are stored in a QVariantMap and referenced by a unique string key.
 The QVariants in parameters are not usually accessed
 directly, and instead the high level API provided through :py:class:`QgsProcessingParameters`
-:py:func:`~QgsProcessingParameterDefinition.parameterAsString`, :py:func:`~QgsProcessingParameterDefinition.parameterAsDouble` are used instead.
+:py:func:`~parameterAsString`, :py:func:`~parameterAsDouble` are used instead.
 
 Parameters are evaluated using a provided :py:class:`QgsProcessingContext`, allowing
 the evaluation to understand available map layers and expression contexts
@@ -1142,7 +1142,6 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :return: - path to source layer, or nearly converted compatible layer
          - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
 
-
 .. seealso:: :py:func:`parameterAsCompatibleSourceLayerPath`
 
 .. versionadded:: 3.10
@@ -1467,8 +1466,9 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a range of
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of fields.
 
-.. deprecated::
-   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
 %End
 
  static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) /Deprecated/;
@@ -1477,15 +1477,16 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 
 .. versionadded:: 3.4
 
-.. deprecated::
-   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
 %End
 
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of strings (e.g. field names or point cloud attributes).
 
-.. versionadded:: 3.32.
+.. versionadded:: 3.32
 %End
 
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
@@ -2206,7 +2207,7 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 %Docstring(signature="appended")
 A numeric parameter for processing algorithms.
 
-For numeric parameters with a :py:func:`~QgsProcessingParameterMultipleLayers.dataType` of Double, the number of decimals places
+For numeric parameters with a :py:func:`~dataType` of Double, the number of decimals places
 shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
 
 .. code-block:: python
@@ -3508,7 +3509,6 @@ calls :py:func:`QgsProcessingProvider.isSupportedOutputValue()` to test compatib
 :return: - ``True`` if ``value`` is supported.
          - error: will be set to a descriptive error string
 
-
 .. versionadded:: 3.14
 %End
 
@@ -3664,7 +3664,7 @@ created by the algorithm.
 
 .. note::
 
-   Consider using the more flexible QgsProcessingParameterFeatureSink wherever
+   Consider using the more flexible :py:class:`QgsProcessingParameterFeatureSink` wherever
    possible.
 %End
 
@@ -5049,5 +5049,5 @@ Creates a new parameter using the definition from a script code.
  *                                                                      *
  * src/core/processing/qgsprocessingparameters.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

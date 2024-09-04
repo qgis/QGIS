@@ -26,6 +26,7 @@ class QgsSettingsEntryBool;
 class QgsSettingsEntryColor;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
+class QgsSettingsEntryInteger64;
 class QgsSettingsEntryString;
 class QgsSettingsEntryStringList;
 template<class T> class QgsSettingsEntryEnumFlag;
@@ -164,6 +165,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry whether layer are loading in parallel
     static const QgsSettingsEntryBool *settingsLayerParallelLoading;
+
+    //! Settings entry network cache directory
+    static const QgsSettingsEntryString *settingsNetworkCacheDirectory;
+
+    //! Settings entry network cache directory
+    static const QgsSettingsEntryInteger64 *settingsNetworkCacheSize;
 
   private:
     friend class QgsApplication;

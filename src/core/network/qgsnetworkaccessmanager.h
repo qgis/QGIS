@@ -666,7 +666,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
   signals:
 
     /**
-     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     * \deprecated QGIS 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
      */
     Q_DECL_DEPRECATED void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) SIP_DEPRECATED;
 
@@ -806,7 +806,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #endif
 
     /**
-     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     * \deprecated QGIS 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
      */
     Q_DECL_DEPRECATED void requestCreated( QNetworkReply * ) SIP_DEPRECATED;
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfields.h                                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -299,7 +299,7 @@ Alias for indexOf
 
 :return: The field index if found or -1 in case it cannot be found.
 
-.. seealso:: :py:func:`lookupField`
+.. seealso:: :py:func:`lookupField` For a more tolerant alternative.
 %End
 
     int indexOf( const QString &fieldName ) const /HoldGIL/;
@@ -313,7 +313,7 @@ name of the field.
 
 :return: The field index if found or -1 in case it cannot be found.
 
-.. seealso:: :py:func:`lookupField`
+.. seealso:: :py:func:`lookupField` For a more tolerant alternative.
 %End
 
      int lookupField( const QString &fieldName ) const /HoldGIL/;
@@ -329,7 +329,7 @@ This method matches in the following order:
 
 :return: The field index if found or -1 in case it cannot be found.
 
-.. seealso:: :py:func:`indexFromName`
+.. seealso:: :py:func:`indexFromName` For a more performant and precise but less tolerant alternative.
 %End
 
     QgsAttributeList allAttributesList() const /HoldGIL/;
@@ -386,8 +386,9 @@ Since QGIS 3.30, the optional ``typeString`` argument can be used to specify fie
 
 .. versionadded:: 3.16
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     operator QVariant() const;
@@ -413,5 +414,5 @@ Since QGIS 3.30, the optional ``typeString`` argument can be used to specify fie
  *                                                                      *
  * src/core/qgsfields.h                                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

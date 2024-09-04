@@ -33,7 +33,6 @@
 
 #define SIP_NO_FILE
 
-class Qgs3DMapSettings;
 class QgsVectorLayer;
 class QgsVectorLayer3DTilingSettings;
 class QgsVectorLayerFeatureSource;
@@ -61,12 +60,12 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
   public:
     //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
+    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
-    const Qgs3DMapSettings &mMap;
+    Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
     int mLeafLevel;
@@ -96,7 +95,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
   private:
     const QgsVectorLayerChunkLoaderFactory *mFactory;
     std::unique_ptr<QgsFeature3DHandler> mHandler;
-    Qgs3DRenderContext mContext;
+    Qgs3DRenderContext mRenderContext;
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
@@ -119,7 +118,7 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
-    explicit QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map );
+    explicit QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol );
 
     QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 

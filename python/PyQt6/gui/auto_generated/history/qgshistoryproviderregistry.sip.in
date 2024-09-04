@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/history/qgshistoryproviderregistry.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -113,7 +113,6 @@ Adds an ``entry`` to the history logs.
 :return: - ID of newly added entry.
          - ok: will be set to ``True`` if entry was successfully added
 
-
 .. seealso:: :py:func:`entryAdded`
 %End
 
@@ -198,5 +197,5 @@ specified provider.
  *                                                                      *
  * src/gui/history/qgshistoryproviderregistry.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -18,7 +18,7 @@
 """
 
 
-def mapping_feature(feature):
+def _mapping_feature(feature):
     geom = feature.geometry()
     fields = [field.name() for field in feature.fields()]
     properties = dict(list(zip(fields, feature.attributes())))

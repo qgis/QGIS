@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingparameterdefinitionwidget.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -248,5 +248,5 @@ a Processing context for the widget when required.
  *                                                                      *
  * src/gui/processing/qgsprocessingparameterdefinitionwidget.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -107,7 +107,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     /**
      * Sets whether the default symbol fill color is randomized.
      */
-    void setRandomizeDefaultSymbolColor( bool randomized ) { mRandomizeDefaultSymbolColor = randomized; }
+    void setRandomizeDefaultSymbolColor( bool randomized );
 
     /**
      * Returns the default symbol opacity.
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     /**
      * Sets the default symbol opacity.
      */
-    void setDefaultSymbolOpacity( double opacity ) { mDefaultSymbolOpacity = opacity; }
+    void setDefaultSymbolOpacity( double opacity );
 
     /**
      * Resets the settings to a default state.
@@ -353,6 +353,9 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
 
     void loadStyleAtPath( const QString &path );
     void clearStyles();
+
+    //! propagate dirtyness to project
+    void makeDirty();
 
     friend class TestQgsProjectProperties;
 };

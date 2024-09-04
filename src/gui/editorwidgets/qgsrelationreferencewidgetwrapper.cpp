@@ -105,7 +105,16 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   }
   while ( ctx );
 
-  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+  // If AllowNULL is not set in the config, provide a default value based on the
+  // constraints of the referencing fields
+  if ( !config( QStringLiteral( "AllowNULL" ) ).isValid() )
+  {
+    mWidget->setRelation( relation, relation.referencingFieldsAllowNull() );
+  }
+  else
+  {
+    mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+  }
 
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );
 }

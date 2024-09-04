@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfeaturelistcombobox.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -82,7 +82,7 @@ This can be used to integrate additional spatial or other constraints.
 The identifier value of the currently selected feature. A value from the
 identifierField.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     QVariantList identifierValues() const;
@@ -99,8 +99,9 @@ identifierField.
 The identifier value of the currently selected feature. A value from the
 identifierField.
 
-.. deprecated:: QGIS 3.10
-   use setIdentifierValues
+.. deprecated:: 3.10
+
+   Use setIdentifierValues.
 %End
 
     void setIdentifierValues( const QVariantList &identifierValues );
@@ -154,7 +155,7 @@ If set to 0, no limit is applied when fetching
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     QStringList identifierFields() const;
@@ -170,7 +171,7 @@ Normally the primary key of the layer.
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     void setIdentifierFields( const QStringList &identifierFields );
@@ -258,5 +259,5 @@ Emitted when the feature picker model changes its feature ``found`` state
  *                                                                      *
  * src/gui/qgsfeaturelistcombobox.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

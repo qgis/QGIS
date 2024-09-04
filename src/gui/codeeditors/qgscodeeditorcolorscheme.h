@@ -71,7 +71,7 @@ class GUI_EXPORT QgsCodeEditorColorScheme
       FoldIconForeground, //!< Fold icon foreground color
       FoldIconHalo, //!< Fold icon halo color
       IndentationGuide, //!< Indentation guide line
-      SearchMatchBackground, //!< Background color for search matches (since QGIS 3.38)
+      SearchMatchBackground, //!< Background color for search matches \since QGIS 3.38
     };
 
     /**

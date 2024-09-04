@@ -15,12 +15,14 @@ set(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dmaptool.cpp
   qgs3dmapcanvas.cpp
+  qgs3drendercontext.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
   qgs3dwiredmesh_p.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
+  qgsfgutils.cpp
   qgsframegraph.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
@@ -71,8 +73,10 @@ set(QGIS_3D_SRCS
   materials/qgsmetalroughmaterialsettings.cpp
   materials/qgsnullmaterialsettings.cpp
   materials/qgsphongmaterialsettings.cpp
+  materials/qgsphongtexturedmaterial.cpp
   materials/qgsphongtexturedmaterialsettings.cpp
   materials/qgssimplelinematerialsettings.cpp
+  materials/qgstexturematerial.cpp
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
@@ -118,6 +122,7 @@ set(QGIS_3D_HDRS
   qgs3dmapscene.h
   qgs3dmapsettings.h
   qgs3dmaptool.h
+  qgs3drendercontext.h
   qgs3dsceneexporter.h
   qgs3dtypes.h
   qgs3dutils.h
@@ -128,6 +133,7 @@ set(QGIS_3D_HDRS
   qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsfgutils.h
   qgsframegraph.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
@@ -163,8 +169,10 @@ set(QGIS_3D_HDRS
   materials/qgsmetalroughmaterialsettings.h
   materials/qgsnullmaterialsettings.h
   materials/qgsphongmaterialsettings.h
+  materials/qgsphongtexturedmaterial.h
   materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h
+  materials/qgstexturematerial.h
 
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h

@@ -104,7 +104,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget, public QgsExpression
     /**
      * Emitted when the symbol levels settings have been changed.
      *
-     * \deprecated since QGIS 3.20 -- no longer emitted.
+     * \deprecated QGIS 3.20. No longer emitted.
      */
     Q_DECL_DEPRECATED void symbolLevelsChanged() SIP_DEPRECATED;
 

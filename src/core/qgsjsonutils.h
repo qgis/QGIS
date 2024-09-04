@@ -371,7 +371,7 @@ class CORE_EXPORT QgsJsonUtils
      * \param type optional variant type of the elements, if specified (and not Invalid),
      *        the array items will be converted to the type, and discarded if
      *        the conversion is not possible.
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_INVOKABLE Q_DECL_DEPRECATED static QVariantList parseArray( const QString &json, QVariant::Type type ) SIP_DEPRECATED;
 

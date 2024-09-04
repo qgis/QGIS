@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsexpressionbasednumericformat.h            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+class QgsExpressionBasedNumericFormat : QgsNumericFormat
+{
+%Docstring(signature="appended")
+A numeric formatter which uses a :py:class:`QgsExpression` to calculate the text representation of a value.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionbasednumericformat.h"
+%End
+  public:
+
+    QgsExpressionBasedNumericFormat();
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey();
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
+
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
+
+
+    void setExpression( const QString &expression );
+%Docstring
+Sets the ``expression`` used to calculate the text representation of a value.
+
+The expression can utilize `@value` to retrieve the numeric value to represent.
+
+.. seealso:: :py:func:`expression`
+%End
+
+    QString expression() const;
+%Docstring
+Returns the expression used to calculate the text representation of a value.
+
+.. seealso:: :py:func:`setExpression`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsexpressionbasednumericformat.h            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

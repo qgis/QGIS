@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgscategorizedsymbolrenderer.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -482,16 +482,18 @@ hashtable for faster access to symbols
  QgsSymbol *skipRender() /Deprecated/;
 %Docstring
 
-.. deprecated::
-   No longer used, will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   No longer used, will be removed in QGIS 4.0.
 %End
 
  QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated/;
 %Docstring
 Returns the matching symbol corresponding to an attribute ``value``.
 
-.. deprecated::
-   use variant which takes a second bool argument instead.
+.. deprecated:: 3.40
+
+   Use variant which takes a second bool argument instead.
 %End
 
 
@@ -522,5 +524,5 @@ of disabled categories.
  *                                                                      *
  * src/core/symbology/qgscategorizedsymbolrenderer.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

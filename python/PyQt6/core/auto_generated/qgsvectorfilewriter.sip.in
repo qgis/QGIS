@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsvectorfilewriter.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -270,7 +270,8 @@ Write contents of vector layer to an (OGR supported) vector format
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
@@ -320,7 +321,8 @@ Writes a layer out to a vector file.
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
@@ -406,7 +408,8 @@ Writes a layer out to a vector file.
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
 :param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
@@ -422,6 +425,13 @@ Writes a layer out to a vector file.
                                            Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
                                          ) /Deprecated/;
+%Docstring
+Create a new vector file writer
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsVectorFileWriter.create` instead.
+%End
 
 
 
@@ -470,8 +480,9 @@ Writes a layer out to a vector file.
 :return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
          - errorMessage: will be set to the error message text, if an error occurs while writing the layer
 
-.. deprecated:: QGIS 3.20
-  use writeAsVectorFormatV3 instead
+.. deprecated:: 3.20
+
+   Use writeAsVectorFormatV3 instead.
 %End
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormatV3( QgsVectorLayer *layer,
@@ -737,5 +748,5 @@ QFlags<QgsVectorFileWriter::VectorFormatOption> operator|(QgsVectorFileWriter::V
  *                                                                      *
  * src/core/qgsvectorfilewriter.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

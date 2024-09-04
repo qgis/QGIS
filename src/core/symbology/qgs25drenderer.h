@@ -25,6 +25,7 @@ class QgsFillSymbolLayer;
 /**
  * \ingroup core
  * \class Qgs25DRenderer
+ * \brief A vector renderer which represents 3D features in an isometric view.
  */
 class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
 {

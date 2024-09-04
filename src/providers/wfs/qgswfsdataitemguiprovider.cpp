@@ -55,6 +55,10 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsWfsConnectionItem * > wfsConnectionItems = QgsDataItem::filteredItems<QgsWfsConnectionItem>( selection );
     QAction *actionDelete = new QAction( wfsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [wfsConnectionItems, context]
@@ -90,6 +94,37 @@ void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
     item->parent()->refreshConnections();
   }
 }
+
+void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wfs" )} );
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  const QStringList detailsParameters { QStringLiteral( "wfs" ), connectionName };
+  const QStringList newDetailsParameters { QStringLiteral( "wfs" ), newConnectionName };
+
+  QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsPreferCoordinatesForWfsT11->setValue( QgsOwsConnection::settingsPreferCoordinatesForWfsT11->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsVersion->setValue( QgsOwsConnection::settingsVersion->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsMaxNumFeatures->setValue( QgsOwsConnection::settingsMaxNumFeatures->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsPagesize->setValue( QgsOwsConnection::settingsPagesize->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsPagingEnabled->setValue( QgsOwsConnection::settingsPagingEnabled->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsUsername->setValue( QgsOwsConnection::settingsUsername->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsPassword->setValue( QgsOwsConnection::settingsPassword->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsAuthCfg->setValue( QgsOwsConnection::settingsAuthCfg->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsHeaders->setValue( QgsOwsConnection::settingsHeaders->value( detailsParameters ), newDetailsParameters );
+
+  item->parent()->refreshConnections();
+}
+
 
 void QgsWfsDataItemGuiProvider::refreshConnection( QgsDataItem *item )
 {

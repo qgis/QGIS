@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/core/qgsgeometrysimplifier.h
+QgsAbstractGeometrySimplifier.isGeneralizableByDeviceBoundingBox = staticmethod(QgsAbstractGeometrySimplifier.isGeneralizableByDeviceBoundingBox)

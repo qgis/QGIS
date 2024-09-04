@@ -1139,6 +1139,45 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     listStr += QLatin1Char( ']' );
     return listStr;
   }
+  else if ( value.type() == QVariant::Color )
+  {
+    const QColor color = value.value<QColor>();
+
+    if ( !color.isValid() )
+    {
+      return tr( "<i>Invalid</i>" );
+    }
+
+    switch ( color.spec() )
+    {
+      case QColor::Spec::Cmyk:
+        return QStringLiteral( "CMYKA: %1,%2,%3,%4,%5" )
+               .arg( color.cyanF(), 0, 'f', 2 ).arg( color.magentaF(), 0, 'f', 2 )
+               .arg( color.yellowF(), 0, 'f', 2 ).arg( color.blackF(), 0, 'f', 2 )
+               .arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Hsv:
+        return QStringLiteral( "HSVA: %1,%2,%3,%4" )
+               .arg( color.hsvHueF(), 0, 'f', 2 ).arg( color.hsvSaturationF(), 0, 'f', 2 )
+               .arg( color.valueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Hsl:
+        return QStringLiteral( "HSLA: %1,%2,%3,%4" )
+               .arg( color.hslHueF(), 0, 'f', 2 ).arg( color.hslSaturationF(), 0, 'f', 2 )
+               .arg( color.lightnessF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Rgb:
+      case QColor::Spec::ExtendedRgb:
+        return QStringLiteral( "RGBA: %1,%2,%3,%4" )
+               .arg( color.redF(), 0, 'f', 2 ).arg( color.greenF(), 0, 'f', 2 )
+               .arg( color.blueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Invalid:
+        return tr( "<i>Invalid</i>" );
+    }
+    QgsDebugError( QStringLiteral( "Unknown color format: %1" ).arg( color.spec() ) );
+    return tr( "<i>Unknown color format: %1</i>" ).arg( color.spec() );
+  }
   else if ( value.userType() == QMetaType::Type::Int ||
             value.userType() == QMetaType::Type::UInt ||
             value.userType() == QMetaType::Type::LongLong ||

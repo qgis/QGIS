@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgstextformatwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -145,8 +145,7 @@ Sets the background color for the text preview widget.
 %Docstring
 Update the enabled state of the data defined alignment buttons.
 
-.. deprecated::
-   QGIS 3.24
+.. deprecated:: 3.24
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -305,5 +304,5 @@ Sets the ``context`` in which the widget is shown, e.g., the associated map canv
  *                                                                      *
  * src/gui/qgstextformatwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

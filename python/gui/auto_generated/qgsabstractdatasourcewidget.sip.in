@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsabstractdatasourcewidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -110,8 +110,9 @@ Emitted when a DB layer has been selected for addition
 %Docstring
 Emitted when a raster layer has been selected for addition
 
-.. deprecated::
-   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
     void addRasterLayers( const QStringList &layersList );
@@ -130,32 +131,36 @@ Emitted when a vector layer has been selected for addition.
 If ``providerKey`` is not specified, the default provider key associated with the source
 will be used.
 
-.. deprecated::
-   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
  void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
 %Docstring
 Emitted when a mesh layer has been selected for addition.
 
-.. deprecated::
-   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
  void addVectorTileLayer( const QString &url, const QString &baseName ) /Deprecated/;
 %Docstring
 Emitted when a vector tile layer has been selected for addition.
 
-.. deprecated::
-   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
  void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
 %Docstring
 Emitted when a point cloud layer has been selected for addition.
 
-.. deprecated::
-   use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
     void addLayer( Qgis::LayerType type, const QString &url, const QString &baseName, const QString &providerKey );
@@ -195,8 +200,9 @@ Emitted when a layer needs to be replaced
 %Docstring
 Emitted when a progress dialog is shown by the provider dialog.
 
-.. deprecated:: QGIS 3.4
-   this signal is no longer used. Use :py:class:`QgsProxyProgressTask` instead to show progress reports.
+.. deprecated:: 3.4
+
+   This signal is no longer used. Use :py:class:`QgsProxyProgressTask` instead to show progress reports.
 %End
 
     void progressMessage( QString message );
@@ -252,5 +258,5 @@ Returns the add Button
  *                                                                      *
  * src/gui/qgsabstractdatasourcewidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

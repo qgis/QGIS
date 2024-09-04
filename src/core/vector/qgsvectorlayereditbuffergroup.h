@@ -26,7 +26,9 @@
 class QgsVectorLayer;
 
 /**
- * The edit buffer group manages a group of edit buffers. Commands like commit and rollback are
+ * \brief The edit buffer group manages a group of edit buffers.
+ *
+ * Commands like commit and rollback are
  * managed by the group invokes individual addFeature(), deleteFeature(), ... in the correct order
  * across all contained edit buffers.
  *

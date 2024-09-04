@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasteriterator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -41,7 +41,6 @@ of the raster covering the specified ``subRegion``.
          - subRegionHeight: height in pixels of sub region
          - subRegionLeft: starting column of left side of sub region
          - subRegionTop: starting row of top side of sub region
-
 
 .. versionadded:: 3.26
 %End
@@ -155,5 +154,5 @@ Returns the minimum tile width returned during iteration.
  *                                                                      *
  * src/core/raster/qgsrasteriterator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

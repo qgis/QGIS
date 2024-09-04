@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/effects/qgspainteffect.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -310,8 +310,9 @@ to rendering results onto a painter.
 
 :param painter: destination painter
 
-.. deprecated::
-   QGIS 3.40, use :py:func:`QgsPainting.drawPicture()` or :py:func:`QgsPainting.applyScaleFixForQPictureDpi()` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsPainting.drawPicture()` or :py:func:`QgsPainting.applyScaleFixForQPictureDpi()` instead.
 %End
 
 };
@@ -445,5 +446,5 @@ Sets the effect to be painted
  *                                                                      *
  * src/core/effects/qgspainteffect.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgsbabelformatregistry.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -98,5 +98,5 @@ Reloads the registry's members from the currently stored configuration.
  *                                                                      *
  * src/core/gps/qgsbabelformatregistry.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

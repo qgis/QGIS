@@ -236,6 +236,7 @@
 %Include auto_generated/annotations/qgsannotationpointtextitem.sip
 %Include auto_generated/annotations/qgsannotationpolygonitem.sip
 %Include auto_generated/annotations/qgsannotationrectangletextitem.sip
+%Include auto_generated/annotations/qgsannotationrectitem.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
 %Include auto_generated/annotations/qgsrenderedannotationitemdetails.sip
 %Include auto_generated/annotations/qgssvgannotation.sip
@@ -542,6 +543,7 @@
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
 %Include auto_generated/numericformats/qgscoordinatenumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip
+%Include auto_generated/numericformats/qgsexpressionbasednumericformat.sip
 %Include auto_generated/numericformats/qgsfallbacknumericformat.sip
 %Include auto_generated/numericformats/qgsfractionnumericformat.sip
 %Include auto_generated/numericformats/qgsnumericformat.sip

@@ -294,14 +294,9 @@ class CORE_EXPORT QgsPropertyTransformer
     /**
      * Attempts to parse an expression into a corresponding property transformer.
      * \param expression expression to parse
-     * \param baseExpression will be set to the component of the source expression which
-     * is used to calculate the input to the property transformer. This will be set to an
-     * empty string if a field reference is the transformer input.
-     * \param fieldName will be set to a field name which is used to calculate the input
-     * to the property transformer. This will be set to an
-     * empty string if an expression is the transformer input.
-     * \returns corresponding property transformer, or NULLPTR if expression could not
-     * be parsed to a transformer.
+     * \param baseExpression will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
+     * \param fieldName will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
+     * \returns corresponding property transformer, or NULLPTR if expression could not be parsed to a transformer.
      */
     static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
@@ -489,14 +484,9 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
      * \param expression expression to parse
-     * \param baseExpression will be set to the component of the source expression which
-     * is used to calculate the input to the property transformer. This will be set to an
-     * empty string if a field reference is the transformer input.
-     * \param fieldName will be set to a field name which is used to calculate the input
-     * to the property transformer. This will be set to an
-     * empty string if an expression is the transformer input.
-     * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not
-     * be parsed to a size scale transformer.
+     * \param baseExpression will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
+     * \param fieldName will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
+     * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not be parsed to a size scale transformer.
      */
     static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 

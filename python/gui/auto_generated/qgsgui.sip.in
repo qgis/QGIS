@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsgui.h                                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -277,5 +277,5 @@ QFlags<QgsGui::HigFlag> operator|(QgsGui::HigFlag f1, QFlags<QgsGui::HigFlag> f2
  *                                                                      *
  * src/gui/qgsgui.h                                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

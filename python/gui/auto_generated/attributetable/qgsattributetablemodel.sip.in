@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsattributetablemodel.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -286,10 +286,14 @@ Handles updating the model when the conditional style for a field changes.
 
     void modelChanged();
 %Docstring
-Model has been changed
+Emitted when the model has been changed.
 %End
 
+
     void finished();
+%Docstring
+Emitted when the model has completely loaded all features.
+%End
 
 };
 
@@ -299,5 +303,5 @@ Model has been changed
  *                                                                      *
  * src/gui/attributetable/qgsattributetablemodel.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

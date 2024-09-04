@@ -52,7 +52,6 @@ class Qgs3DMapScene;
 /**
  * \ingroup 3d
  * \brief Object that controls camera movement based on user input
- * \note Not available in Python bindings
  */
 #ifndef SIP_RUN
 class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity

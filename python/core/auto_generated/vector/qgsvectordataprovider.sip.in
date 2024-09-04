@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectordataprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -444,8 +444,9 @@ Returns list of indexes of fields that make up the primary key
 %Docstring
 Returns list of indexes to names for :py:class:`QgsPalLabeling` fix
 
-.. deprecated:: QGIS 3.32
-   this method is unused and will always return an empty hash
+.. deprecated:: 3.32
+
+   This method is unused and will always return an empty hash.
 %End
 
     bool supportedType( const QgsField &field ) const;
@@ -544,8 +545,9 @@ Convert ``value`` to ``type``
 %Docstring
 Convert ``value`` to ``type``
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     virtual QgsTransaction *transaction() const;
@@ -556,8 +558,9 @@ Returns the transaction this data provider is included in, if any.
  virtual void forceReload() /Deprecated/;
 %Docstring
 
-.. deprecated::
-   QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
+.. deprecated:: 3.12
+
+   Will be removed in QGIS 4.0 - use reloadData instead.
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
@@ -691,5 +694,5 @@ Converts the ``geometry`` to the provider geometry type ``providerGeometryType``
  *                                                                      *
  * src/core/vector/qgsvectordataprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

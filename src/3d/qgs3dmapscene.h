@@ -191,7 +191,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * Returns a map of 3D map scenes (by name) open in the QGIS application.
      *
      * \note Only available from the QGIS desktop application.
-     * \deprecated since QGIS 3.36, use QgisAppInterface::mapCanvases3D() instead.
+     * \deprecated QGIS 3.36. Use QgisAppInterface::mapCanvases3D() instead.
      * \since QGIS 3.30
      */
     Q_DECL_DEPRECATED static QMap< QString, Qgs3DMapScene * > openScenes() SIP_DEPRECATED;

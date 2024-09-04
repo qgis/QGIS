@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsdartmeasurement.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -11,6 +11,9 @@
 
 class QgsDartMeasurement
 {
+%Docstring(signature="appended")
+Emits dart measurements for display in CDash reports.
+%End
 
 %TypeHeaderCode
 #include "qgsdartmeasurement.h"
@@ -44,5 +47,5 @@ by the system.
  *                                                                      *
  * src/core/qgsdartmeasurement.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

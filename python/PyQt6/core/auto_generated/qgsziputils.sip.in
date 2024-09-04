@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsziputils.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,9 +33,8 @@ Unzip a zip file in an output directory.
 :param dir: The output directory
 :param checkConsistency: Perform additional stricter consistency checks on the archive, and error if they fail (since QGIS 3.30)
 
-:return: - ``False`` if the zip filename does not exist, the output directory
+:return: - ``False`` if the zip filename does not exist, the output directory does not exist or is not writable.
          - files: The absolute path of unzipped files
-         does not exist or is not writable.
 %End
 
   bool zip( const QString &zip, const QStringList &files );
@@ -66,5 +65,5 @@ Returns the list of files within a ``zip`` file
  *                                                                      *
  * src/core/qgsziputils.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

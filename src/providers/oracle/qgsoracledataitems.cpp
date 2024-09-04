@@ -24,6 +24,8 @@
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgssettings.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -283,6 +285,10 @@ QList<QAction *> QgsOracleConnectionItem::actions( QWidget *parent )
   connect( actionEdit, &QAction::triggered, this, &QgsOracleConnectionItem::editConnection );
   lst.append( actionEdit );
 
+  QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), parent );
+  connect( actionDuplicate, &QAction::triggered, this, &QgsOracleConnectionItem::duplicateConnection );
+  lst.append( actionDuplicate );
+
   QAction *actionDelete = new QAction( tr( "Remove Connection" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsOracleConnectionItem::deleteConnection );
   lst.append( actionDelete );
@@ -299,6 +305,21 @@ void QgsOracleConnectionItem::editConnection()
     mParent->refreshConnections();
   }
 }
+
+void QgsOracleConnectionItem::duplicateConnection()
+{
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
+  const QStringList connections = settings.childGroups();
+  settings.endGroup();
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( mName, connections );
+
+  QgsOracleConn::duplicateConnection( mName, newConnectionName );
+
+  mParent->refreshConnections();
+}
+
 
 void QgsOracleConnectionItem::deleteConnection()
 {

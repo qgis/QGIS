@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsprojectfiletransform.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,7 +40,7 @@ Create an instance from a Dom and a supplied version
 
     void dump();
 %Docstring
-Prints the contents via :py:class:`QgsDebugMsgLevel`()
+Prints the contents to the console.
 %End
 
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
@@ -67,7 +67,7 @@ to new ones.
 
 .. versionadded:: 3.30
 
-.. deprecated:: QGIS 3.30
+.. deprecated:: 3.30
 %End
 
 };
@@ -78,5 +78,5 @@ to new ones.
  *                                                                      *
  * src/core/project/qgsprojectfiletransform.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

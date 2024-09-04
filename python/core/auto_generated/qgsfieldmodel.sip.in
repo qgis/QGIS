@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfieldmodel.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -16,6 +16,7 @@ class QgsFieldModel : QAbstractItemModel
 %Docstring(signature="appended")
 The :py:class:`QgsFieldModel` class is a model to display the list of fields in widgets
 (optionally associated with a vector layer).
+
 If allowed, expressions might be added to the end of the model.
 It can be associated with a :py:class:`QgsMapLayerModel` to dynamically display a layer and its fields.
 %End
@@ -188,5 +189,5 @@ Called when the model must be updated.
  *                                                                      *
  * src/core/qgsfieldmodel.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsattributetablefiltermodel.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -202,7 +202,7 @@ Returns -1 if none is defined.
     virtual int columnCount( const QModelIndex &parent ) const;
 
 
-    void setAttributeTableConfig( const QgsAttributeTableConfig &config);
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 %Docstring
 Set the attribute table configuration to control which fields are shown,
 in which order they are shown as well as if and where an action column
@@ -283,8 +283,9 @@ selection state of the feature in case selected features are to be shown on top.
 Is called upon every change of the visible extents on the map canvas.
 When a change is signalled, the filter is updated and invalidated if needed.
 
-.. deprecated:: QGIS 3.10.3
-   - made private as :py:func:`~QgsAttributeTableFilterModel.reloadVisible`
+.. deprecated:: 3.10.3
+
+   Made private as :py:func:`~QgsAttributeTableFilterModel.reloadVisible`.
 %End
 
     void filterFeatures();
@@ -302,5 +303,5 @@ main table or the filter expression changed.
  *                                                                      *
  * src/gui/attributetable/qgsattributetablefiltermodel.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

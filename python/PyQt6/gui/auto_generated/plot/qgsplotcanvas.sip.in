@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/plot/qgsplotcanvas.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -193,5 +193,5 @@ The default implementation does nothing.
  *                                                                      *
  * src/gui/plot/qgsplotcanvas.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/annotations/qgsannotationitemwidget.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -49,6 +49,42 @@ If ``False`` is returned, then the widget could not be successfully updated
 to show the properties of ``item``.
 %End
 
+    virtual void setLayer( QgsAnnotationLayer *layer );
+%Docstring
+Sets the associated annotation map ``layer``.
+
+.. seealso:: :py:func:`layer`
+
+.. versionadded:: 3.40
+%End
+
+    QgsAnnotationLayer *layer();
+%Docstring
+Returns the associated annotation map layer.
+
+.. seealso:: :py:func:`setLayer`
+
+.. versionadded:: 3.40
+%End
+
+    void setItemId( const QString &id );
+%Docstring
+Sets the associated annotation item ``id``.
+
+.. seealso:: :py:func:`itemId`
+
+.. versionadded:: 3.40
+%End
+
+    QString itemId() const;
+%Docstring
+Returns the associated annotation item id.
+
+.. seealso:: :py:func:`setItemId`
+
+.. versionadded:: 3.40
+%End
+
     virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
@@ -90,6 +126,14 @@ Implementations must return ``True`` if the item was accepted and
 the widget was updated.
 %End
 
+    const QgsRenderedAnnotationItemDetails *renderedItemDetails();
+%Docstring
+Retrieve rendered annotation details for the associated annotation, if available.
+
+.. versionadded:: 3.40
+%End
+
+
 };
 
 /************************************************************************
@@ -97,5 +141,5 @@ the widget was updated.
  *                                                                      *
  * src/gui/annotations/qgsannotationitemwidget.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

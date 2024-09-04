@@ -617,7 +617,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
     /**
      * This method does nothing anymore, the loading is automatic
-     * \deprecated since QGIS 3.16
+     * \deprecated QGIS 3.16
      */
     Q_DECL_DEPRECATED void populateList() SIP_DEPRECATED {}
 

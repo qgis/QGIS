@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutguidecollection.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -263,7 +263,7 @@ Sets the collection's state from a DOM element. collectionElement is the DOM nod
 class QgsLayoutGuideProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-Filters QgsLayoutGuideCollection models to guides of a single orientation (horizontal or vertical).
+Filters :py:class:`QgsLayoutGuideCollection` models to guides of a single orientation (horizontal or vertical).
 %End
 
 %TypeHeaderCode
@@ -295,5 +295,5 @@ Sets the current ``page`` for filtering matching guides. Page numbers begin at 0
  *                                                                      *
  * src/core/layout/qgslayoutguidecollection.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

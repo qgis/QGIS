@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgssinglebandgrayrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -46,15 +46,17 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
  int grayBand() const /Deprecated/;
 %Docstring
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsSingleBandGrayRenderer.inputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandGrayRenderer.inputBand` instead.
 %End
 
  void setGrayBand( int band ) /Deprecated/;
 %Docstring
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsSingleBandGrayRenderer.setInputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandGrayRenderer.setInputBand` instead.
 %End
 
     virtual int inputBand() const;
@@ -115,5 +117,5 @@ Ownership of ``settings`` is transferred.
  *                                                                      *
  * src/core/raster/qgssinglebandgrayrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshforcebypolylines.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -65,11 +65,11 @@ class QgsMeshEditForceByPolylines : QgsMeshEditForceByLine
 {
 %Docstring(signature="appended")
 
-Class derived from QgsMeshEditForceByLine that forces mesh based on polyline.
+Class derived from :py:class:`QgsMeshEditForceByLine` that forces mesh based on polyline.
 
 Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
 
-Caller of this class has to add the lines from :py:class:`QgsGeometry` instances with :py:func:`~QgsMeshEditForceByLine.addLineFromGeometry` or :py:func:`~QgsMeshEditForceByLine.addLinesFromGeometries`
+Caller of this class has to add the lines from :py:class:`QgsGeometry` instances with :py:func:`~addLineFromGeometry` or :py:func:`~addLinesFromGeometries`
 before applying the edition with :py:func:`QgsMeshEditor.advancedEdit()`
 
 .. versionadded:: 3.22
@@ -114,5 +114,5 @@ Adds a list of input forcing lines geometry in rendering coordinates
  *                                                                      *
  * src/core/mesh/qgsmeshforcebypolylines.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

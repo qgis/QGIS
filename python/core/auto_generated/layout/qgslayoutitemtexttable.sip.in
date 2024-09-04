@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemtexttable.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -73,5 +73,5 @@ Sets the contents of the text table.
  *                                                                      *
  * src/core/layout/qgslayoutitemtexttable.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

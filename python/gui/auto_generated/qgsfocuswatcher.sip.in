@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfocuswatcher.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -60,5 +60,5 @@ Emitted when parent object loses focus.
  *                                                                      *
  * src/gui/qgsfocuswatcher.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -156,7 +156,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      *
      * Returns TRUE if the operation was successfully applied.
      *
-     * \deprecated QGIS 3.40 Use applyEditV2() instead.
+     * \deprecated QGIS 3.40. Use applyEditV2() instead.
      */
     Q_DECL_DEPRECATED Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) SIP_DEPRECATED;
 

@@ -24,6 +24,7 @@
 #include "qgshanautils.h"
 #include "qgsnewnamedialog.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -49,6 +50,10 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
+
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate );
 
     const QList< QgsHanaConnectionItem * > hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
     QAction *actionDelete = new QAction( hanaConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
@@ -200,6 +205,24 @@ void QgsHanaDataItemGuiProvider::editConnection( QgsDataItem *item )
     // the parent should be updated
     if ( item->parent() )
       item->parent()->refreshConnections();
+  }
+}
+
+void QgsHanaDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
+  const QStringList connections = settings.childGroups();
+  settings.endGroup();
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsHanaSettings::duplicateConnection( connectionName, newConnectionName );
+
+  if ( item->parent() )
+  {
+    item->parent()->refreshConnections();
   }
 }
 

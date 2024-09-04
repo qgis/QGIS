@@ -37,10 +37,11 @@ class CORE_EXPORT QgsAnnotationItemNode
     /**
      * Constructor for QgsAnnotationItemNode, with the specified \a id, \a point and \a type.
      */
-    QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type )
+    QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type, Qt::CursorShape cursor = Qt::CursorShape::ArrowCursor )
       : mId( id )
       , mPoint( point )
       , mType( type )
+      , mCursor( cursor )
     {}
 
 #ifdef SIP_RUN
@@ -91,6 +92,28 @@ class CORE_EXPORT QgsAnnotationItemNode
      */
     void setType( Qgis::AnnotationItemNodeType type ) { mType = type; }
 
+    /**
+     * Returns the mouse cursor shape to use when hovering the node.
+     *
+     * \see setCursor()
+     * \since QGIS 3.34
+     */
+    Qt::CursorShape cursor() const
+    {
+      return mCursor;
+    }
+
+    /**
+     * Sets the mouse cursor \a shape to use when hovering the node.
+     *
+     * \see cursor()
+     * \since QGIS 3.34
+     */
+    void setCursor( Qt::CursorShape shape )
+    {
+      mCursor = shape;
+    }
+
     // TODO c++20 - replace with = default
     bool operator==( const QgsAnnotationItemNode &other ) const
     {
@@ -107,6 +130,7 @@ class CORE_EXPORT QgsAnnotationItemNode
     QgsVertexId mId;
     QgsPointXY mPoint;
     Qgis::AnnotationItemNodeType mType = Qgis::AnnotationItemNodeType::VertexHandle;
+    Qt::CursorShape mCursor = Qt::CursorShape::ArrowCursor;
 
 };
 

@@ -63,6 +63,24 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
 
     /**
+     * Returns if private layers are shown.
+     *
+     * Defaults to TRUE.
+     *
+     * \since QGIS 3.40
+     */
+    bool showPrivateLayers() const;
+
+    /**
+     * Determines if private layers are shown.
+     *
+     * Defaults to TRUE.
+     *
+     * \since QGIS 3.40
+     */
+    void setShowPrivateLayers( bool showPrivate );
+
+    /**
      * Defines the type layers (vector, raster, etc) shown in the tree
      * If the list is empty, all types are shown.
      */
@@ -75,6 +93,13 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
     virtual QVariant data( const QModelIndex &index, int role ) const override;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+
+    /**
+     * Returns TRUE if the specified \a node will be shown in the model.
+     *
+     * \since QGIS 3.40
+     */
+    bool nodeShown( QgsLayerTreeNode *node ) const;
 
   public slots:
     //! Sets the filter text to search for a layer in the tree
@@ -97,14 +122,14 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
      */
     virtual bool layerShown( QgsMapLayer *layer ) const;
 
-    bool nodeShown( QgsLayerTreeNode *node ) const;
-
     //! This will call the virtual method and takes care of emitting dataChanged signal
     void setLayerCheckedPrivate( QgsMapLayer *layer, bool checked );
 
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QList<QgsMapLayer *> mCheckedLayers;
     QString mFilterText;
+    // for compatibility this defaults to true
+    bool mShowPrivateLayers = true;
     Qgis::LayerFilters mFilters = Qgis::LayerFilter::All;
 };
 

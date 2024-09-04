@@ -53,7 +53,9 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsProjectViewSettings(QgisTestCase):
 
     def testDefaultSymbol(self):
-        p = QgsProjectStyleSettings()
+        project = QgsProject()
+        p = project.styleSettings()
+        self.assertFalse(project.isDirty())
         self.assertFalse(p.defaultSymbol(Qgis.SymbolType.Marker))
         self.assertFalse(p.defaultSymbol(Qgis.SymbolType.Line))
         self.assertFalse(p.defaultSymbol(Qgis.SymbolType.Fill))
@@ -61,43 +63,60 @@ class TestQgsProjectViewSettings(QgisTestCase):
         marker = QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry)
         p.setDefaultSymbol(Qgis.SymbolType.Marker, marker)
         self.assertTrue(p.defaultSymbol(Qgis.SymbolType.Marker))
+        self.assertTrue(project.isDirty())
+        project.setDirty(False)
 
         line = QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.LineGeometry)
         p.setDefaultSymbol(Qgis.SymbolType.Line, line)
+        self.assertTrue(project.isDirty())
         self.assertTrue(p.defaultSymbol(Qgis.SymbolType.Line))
+        project.setDirty(False)
 
         fill = QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PolygonGeometry)
         p.setDefaultSymbol(Qgis.SymbolType.Fill, fill)
+        self.assertTrue(project.isDirty())
         self.assertTrue(p.defaultSymbol(Qgis.SymbolType.Fill))
 
     def testDefaultColorRamp(self):
-        p = QgsProjectStyleSettings()
+        project = QgsProject()
+        p = project.styleSettings()
+        self.assertFalse(project.isDirty())
         self.assertFalse(p.defaultColorRamp())
 
         ramp = QgsGradientColorRamp(QColor(255, 255, 255), QColor(255, 0, 0))
         p.setDefaultColorRamp(ramp)
         self.assertTrue(p.defaultColorRamp())
+        self.assertTrue(project.isDirty())
 
     def testDefaultTextFormat(self):
-        p = QgsProjectStyleSettings()
+        project = QgsProject()
+        p = project.styleSettings()
+        self.assertFalse(project.isDirty())
         self.assertFalse(p.defaultTextFormat().isValid())
 
         textFormat = QgsTextFormat()
         textFormat.setFont(QFont())
         p.setDefaultTextFormat(textFormat)
         self.assertTrue(p.defaultTextFormat().isValid())
+        self.assertTrue(project.isDirty())
 
     def testRandomizeDefaultSymbolColor(self):
-        p = QgsProjectStyleSettings()
+        project = QgsProject()
+        p = project.styleSettings()
+        self.assertFalse(project.isDirty())
         self.assertTrue(p.randomizeDefaultSymbolColor())
         p.setRandomizeDefaultSymbolColor(False)
         self.assertFalse(p.randomizeDefaultSymbolColor())
+        self.assertTrue(project.isDirty())
 
     def testDefaultSymbolOpacity(self):
-        p = QgsProjectStyleSettings()
+        project = QgsProject()
+        p = project.styleSettings()
+        self.assertFalse(project.isDirty())
         self.assertEqual(p.defaultSymbolOpacity(), 1.0)
         p.setDefaultSymbolOpacity(0.25)
         self.assertEqual(p.defaultSymbolOpacity(), 0.25)
+        self.assertTrue(project.isDirty())
 
     def testProjectStyle(self):
         project = QgsProject()
@@ -414,7 +433,7 @@ class TestQgsProjectViewSettings(QgisTestCase):
 
     def testReadWrite(self):
         project = QgsProject()
-        p = QgsProjectStyleSettings(project)
+        p = project.styleSettings()
 
         line = QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.LineGeometry)
         p.setDefaultSymbol(Qgis.SymbolType.Line, line)
@@ -454,6 +473,7 @@ class TestQgsProjectViewSettings(QgisTestCase):
         """
         project = QgsProject()
         settings = project.styleSettings()
+        self.assertFalse(project.isDirty())
 
         self.assertEqual(settings.colorModel(), Qgis.ColorModel.Rgb)
         self.assertFalse(settings.colorSpace().isValid())
@@ -461,6 +481,8 @@ class TestQgsProjectViewSettings(QgisTestCase):
         # set Cmyk color model and color space
 
         settings.setColorModel(Qgis.ColorModel.Cmyk)
+        self.assertTrue(project.isDirty())
+        project.setDirty(False)
         self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
 
         with open(os.path.join(TEST_DATA_DIR, "sRGB2014.icc"), mode='rb') as f:
@@ -469,6 +491,7 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertTrue(colorSpace.isValid())
 
         settings.setColorSpace(colorSpace)
+        self.assertTrue(project.isDirty())
         self.assertTrue(settings.colorSpace().isValid())
         self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.SRgb)
         self.assertEqual(len(project.attachedFiles()), 2)

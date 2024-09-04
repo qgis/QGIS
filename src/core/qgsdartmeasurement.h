@@ -23,6 +23,7 @@
 /**
  * \ingroup core
  * \class QgsDartMeasurement
+ * \brief Emits dart measurements for display in CDash reports.
  */
 class CORE_EXPORT QgsDartMeasurement
 {

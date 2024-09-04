@@ -33,6 +33,8 @@
 #include "qgsexpressionfinder.h"
 #include "qgsimagecache.h"
 #include "qgssvgcache.h"
+#include "qgsrenderedannotationitemdetails.h"
+#include "qgsmapcanvas.h"
 
 ///@cond PRIVATE
 
@@ -324,6 +326,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
   vLayout->addWidget( mTextFormatWidget );
   mTextFormatWidgetContainer->setLayout( vLayout );
 
+  mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
   mSpinTextAngle->setClearValue( 0 );
@@ -336,10 +339,14 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
   mTextFormatWidget->setDockMode( dockMode() );
   connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
   {
+    mTextEdit->setMode(
+      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+    );
+
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mTextEdit, &QPlainTextEdit::textChanged, this, [ = ]
+  connect( mTextEdit, &QgsRichTextEditor::textChanged, this, [ = ]
   {
     if ( !mBlockChangedSignal )
       emit itemChanged();
@@ -373,12 +380,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
 {
   QgsAnnotationPointTextItem *newItem = mItem->clone();
-  newItem->setFormat( mTextFormatWidget->format() );
-  newItem->setText( mTextEdit->toPlainText() );
-  newItem->setAngle( mSpinTextAngle->value() );
-  newItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
-  newItem->setAlignment( mAlignmentComboBox->currentAlignment() );
-  mPropertiesWidget->updateItem( newItem );
+  updateItem( newItem );
   return newItem;
 }
 
@@ -386,11 +388,13 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationPointTextItem *pointTextItem = dynamic_cast< QgsAnnotationPointTextItem * >( item ) )
   {
+    mBlockChangedSignal = true;
     pointTextItem->setFormat( mTextFormatWidget->format() );
-    pointTextItem->setText( mTextEdit->toPlainText() );
+    pointTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
     pointTextItem->setAngle( mSpinTextAngle->value() );
     pointTextItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
     pointTextItem->setAlignment( mAlignmentComboBox->currentAlignment() );
+    mBlockChangedSignal = false;
     mPropertiesWidget->updateItem( pointTextItem );
   }
 }
@@ -412,7 +416,7 @@ void QgsAnnotationPointTextItemWidget::setContext( const QgsSymbolWidgetContext 
 
 void QgsAnnotationPointTextItemWidget::focusDefaultWidget()
 {
-  mTextEdit->selectAll();
+  mTextEdit->textEdit()->selectAll();
   mTextEdit->setFocus();
 }
 
@@ -428,7 +432,8 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
-  mTextEdit->setPlainText( mItem->text() );
+  mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
+  mTextEdit->setText( mItem->text() );
   mSpinTextAngle->setValue( mItem->angle() );
   mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( mItem->rotationMode() ) ) );
   mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
@@ -440,7 +445,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -456,7 +461,7 @@ void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
     expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+      mTextEdit->textEdit()->insertPlainText( "[%" + expression + "%]" );
     }
   }
 }
@@ -477,15 +482,20 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
   vLayout->addWidget( mTextFormatWidget );
   mTextFormatWidgetContainer->setLayout( vLayout );
 
+  mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
   mTextFormatWidget->setDockMode( dockMode() );
   connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
   {
+    mTextEdit->setMode(
+      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+    );
+
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mTextEdit, &QPlainTextEdit::textChanged, this, [ = ]
+  connect( mTextEdit, &QgsRichTextEditor::textChanged, this, [ = ]
   {
     if ( !mBlockChangedSignal )
       emit itemChanged();
@@ -518,14 +528,7 @@ QgsAnnotationLineTextItemWidget::~QgsAnnotationLineTextItemWidget() = default;
 QgsAnnotationItem *QgsAnnotationLineTextItemWidget::createItem()
 {
   QgsAnnotationLineTextItem *newItem = mItem->clone();
-  newItem->setFormat( mTextFormatWidget->format() );
-  newItem->setText( mTextEdit->toPlainText() );
-
-  newItem->setOffsetFromLine( mSpinOffset->value() );
-  newItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
-  newItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
-
-  mPropertiesWidget->updateItem( newItem );
+  updateItem( newItem );
   return newItem;
 }
 
@@ -533,13 +536,15 @@ void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationLineTextItem *lineTextItem = dynamic_cast< QgsAnnotationLineTextItem * >( item ) )
   {
+    mBlockChangedSignal = true;
     lineTextItem->setFormat( mTextFormatWidget->format() );
-    lineTextItem->setText( mTextEdit->toPlainText() );
+    lineTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
 
     lineTextItem->setOffsetFromLine( mSpinOffset->value() );
     lineTextItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
     lineTextItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
 
+    mBlockChangedSignal = false;
     mPropertiesWidget->updateItem( lineTextItem );
   }
 }
@@ -561,7 +566,7 @@ void QgsAnnotationLineTextItemWidget::setContext( const QgsSymbolWidgetContext &
 
 void QgsAnnotationLineTextItemWidget::focusDefaultWidget()
 {
-  mTextEdit->selectAll();
+  mTextEdit->textEdit()->selectAll();
   mTextEdit->setFocus();
 }
 
@@ -575,7 +580,8 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
-  mTextEdit->setPlainText( mItem->text() );
+  mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
+  mTextEdit->setText( mItem->text() );
   mPropertiesWidget->setItem( mItem.get() );
 
   mSpinOffset->setValue( mItem->offsetFromLine() );
@@ -589,7 +595,7 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -605,7 +611,7 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
     expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+      mTextEdit->textEdit()->insertPlainText( "[%" + expression + "%]" );
     }
   }
 }
@@ -620,6 +626,14 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   : QgsAnnotationItemBaseWidget( parent )
 {
   setupUi( this );
+
+  mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::SpatialBounds ) );
+  mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
+  mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
+
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters
+                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+
 
   mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );
@@ -641,14 +655,22 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   vLayout->addWidget( mTextFormatWidget );
   mTextFormatWidgetContainer->setLayout( vLayout );
 
+  mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight | Qt::AlignJustify );
   mVerticalAlignmentComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
 
   mTextFormatWidget->setDockMode( dockMode() );
-  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
-  connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [this]
+  {
+    mTextEdit->setMode(
+      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+    );
+
+    onWidgetChanged();
+  } );
+  connect( mTextEdit, &QgsRichTextEditor::textChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked );
   connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
@@ -662,6 +684,15 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   connect( mSpinLeftMargin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   connect( mSpinBottomMargin, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   connect( mMarginUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+
+  connect( mWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::setWidth );
+  connect( mHeightSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::setHeight );
+
+  connect( mSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationRectangleTextItemWidget::sizeModeChanged );
+  mWidgetFixedSize->hide();
+  sizeModeChanged();
 }
 
 QgsAnnotationItem *QgsAnnotationRectangleTextItemWidget::createItem()
@@ -675,9 +706,15 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationRectangleTextItem *rectTextItem = dynamic_cast< QgsAnnotationRectangleTextItem * >( item ) )
   {
+    mBlockChangedSignal = true;
     rectTextItem->setFormat( mTextFormatWidget->format() );
-    rectTextItem->setText( mTextEdit->toPlainText() );
+    rectTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
     rectTextItem->setAlignment( mAlignmentComboBox->currentAlignment() | mVerticalAlignmentComboBox->currentAlignment() );
+
+    rectTextItem->setPlacementMode( mSizeModeCombo->currentData().value< Qgis::AnnotationPlacementMode >() );
+
+    rectTextItem->setFixedSize( QSizeF( mWidthSpinBox->value(), mHeightSpinBox->value() ) );
+    rectTextItem->setFixedSizeUnit( mSizeUnitWidget->unit() );
 
     rectTextItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
     rectTextItem->setFrameEnabled( mFrameCheckbox->isChecked() );
@@ -689,6 +726,14 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
                                           mSpinRightMargin->value(),
                                           mSpinBottomMargin->value() ) );
     rectTextItem->setMarginsUnit( mMarginUnitWidget->unit() );
+
+    if ( mUpdateItemPosition )
+    {
+      rectTextItem->setBounds( mItem->bounds() );
+      mUpdateItemPosition = false;
+    }
+
+    mBlockChangedSignal = false;
 
     mPropertiesWidget->updateItem( rectTextItem );
   }
@@ -725,7 +770,7 @@ QgsExpressionContext QgsAnnotationRectangleTextItemWidget::createExpressionConte
 
 void QgsAnnotationRectangleTextItemWidget::focusDefaultWidget()
 {
-  mTextEdit->selectAll();
+  mTextEdit->textEdit()->selectAll();
   mTextEdit->setFocus();
 }
 
@@ -741,7 +786,8 @@ bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
-  mTextEdit->setPlainText( mItem->text() );
+  mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
+  mTextEdit->setText( mItem->text() );
   mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
   mVerticalAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignVertical_Mask );
   mPropertiesWidget->setItem( mItem.get() );
@@ -760,6 +806,10 @@ bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mSpinRightMargin->setValue( textItem->margins().right() );
   mSpinBottomMargin->setValue( textItem->margins().bottom() );
 
+  mWidthSpinBox->setValue( textItem->fixedSize().width() );
+  mHeightSpinBox->setValue( textItem->fixedSize().height() );
+  mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( textItem->placementMode() ) ) );
+
   mBlockChangedSignal = false;
 
   return true;
@@ -771,9 +821,55 @@ void QgsAnnotationRectangleTextItemWidget::onWidgetChanged()
     emit itemChanged();
 }
 
+void QgsAnnotationRectangleTextItemWidget::sizeModeChanged()
+{
+  const Qgis::AnnotationPlacementMode mode = mSizeModeCombo->currentData().value< Qgis::AnnotationPlacementMode >();
+  switch ( mode )
+  {
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
+      mWidgetFixedSize->hide();
+      break;
+
+    case Qgis::AnnotationPlacementMode::FixedSize:
+      mWidgetFixedSize->show();
+      break;
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      if ( const QgsRenderedAnnotationItemDetails *details = renderedItemDetails() )
+      {
+        // convert item bounds to relative position
+        const QgsRectangle itemBounds = details->boundingBox();
+        if ( QgsMapCanvas *canvas = context().mapCanvas() )
+        {
+          const double centerX = ( itemBounds.center().x() - canvas->extent().xMinimum() ) / canvas->extent().width();
+          const double centerY = ( canvas->extent().yMaximum() - itemBounds.center().y() ) / canvas->extent().height();
+          mItem->setBounds( QgsRectangle::fromCenterAndSize( QgsPointXY( centerX, centerY ), 0.5, 0.5 ) );
+          mUpdateItemPosition = true;
+        }
+      }
+
+      mWidgetFixedSize->hide();
+      break;
+    }
+  }
+
+  onWidgetChanged();
+}
+
+void QgsAnnotationRectangleTextItemWidget::setWidth()
+{
+  onWidgetChanged();
+}
+
+void QgsAnnotationRectangleTextItemWidget::setHeight()
+{
+  onWidgetChanged();
+}
+
 void QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
   QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), createExpressionContext() );
 
@@ -783,7 +879,7 @@ void QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked()
     expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+      mTextEdit->textEdit()->insertPlainText( "[%" + expression + "%]" );
     }
   }
 }
@@ -800,8 +896,9 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
 
   mSizeStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
-  mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPictureSizeMode::SpatialBounds ) );
-  mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPictureSizeMode::FixedSize ) );
+  mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::SpatialBounds ) );
+  mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
+  mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters
                              << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
@@ -863,13 +960,14 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
     const QString path = mSourceLineEdit->source();
     pictureItem->setPath( newFormat, path );
 
-    pictureItem->setSizeMode( mSizeModeCombo->currentData().value< Qgis::AnnotationPictureSizeMode >() );
-    switch ( pictureItem->sizeMode() )
+    pictureItem->setPlacementMode( mSizeModeCombo->currentData().value< Qgis::AnnotationPlacementMode >() );
+    switch ( pictureItem->placementMode() )
     {
-      case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+      case Qgis::AnnotationPlacementMode::SpatialBounds:
         pictureItem->setLockAspectRatio( mLockAspectRatioCheck->isChecked() );
         break;
-      case Qgis::AnnotationPictureSizeMode::FixedSize:
+      case Qgis::AnnotationPlacementMode::FixedSize:
+      case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
         pictureItem->setLockAspectRatio( mLockAspectRatio->isChecked() );
         break;
     }
@@ -881,6 +979,12 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
     pictureItem->setFrameEnabled( mFrameCheckbox->isChecked() );
     pictureItem->setBackgroundSymbol( mBackgroundSymbolButton->clonedSymbol< QgsFillSymbol >() );
     pictureItem->setFrameSymbol( mFrameSymbolButton->clonedSymbol< QgsFillSymbol >() );
+
+    if ( mUpdateItemPosition )
+    {
+      pictureItem->setBounds( mItem->bounds() );
+      mUpdateItemPosition = false;
+    }
 
     mPropertiesWidget->updateItem( pictureItem );
   }
@@ -953,7 +1057,7 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mWidthSpinBox->setValue( pictureItem->fixedSize().width() );
   mHeightSpinBox->setValue( pictureItem->fixedSize().height() );
-  mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->sizeMode() ) ) );
+  mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->placementMode() ) ) );
   sizeModeChanged();
 
   mBlockChangedSignal = false;
@@ -984,15 +1088,35 @@ void QgsAnnotationPictureItemWidget::modeChanged( bool checked )
 
 void QgsAnnotationPictureItemWidget::sizeModeChanged()
 {
-  const Qgis::AnnotationPictureSizeMode mode = mSizeModeCombo->currentData().value< Qgis::AnnotationPictureSizeMode >();
+  const Qgis::AnnotationPlacementMode mode = mSizeModeCombo->currentData().value< Qgis::AnnotationPlacementMode >();
   switch ( mode )
   {
-    case Qgis::AnnotationPictureSizeMode::SpatialBounds:
+    case Qgis::AnnotationPlacementMode::SpatialBounds:
       mSizeStackedWidget->setCurrentWidget( mPageSpatialBounds );
       break;
-    case Qgis::AnnotationPictureSizeMode::FixedSize:
+
+    case Qgis::AnnotationPlacementMode::FixedSize:
       mSizeStackedWidget->setCurrentWidget( mPageFixedSize );
       break;
+
+    case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+    {
+      if ( const QgsRenderedAnnotationItemDetails *details = renderedItemDetails() )
+      {
+        // convert item bounds to relative position
+        const QgsRectangle itemBounds = details->boundingBox();
+        if ( QgsMapCanvas *canvas = context().mapCanvas() )
+        {
+          const double centerX = ( itemBounds.center().x() - canvas->extent().xMinimum() ) / canvas->extent().width();
+          const double centerY = ( canvas->extent().yMaximum() - itemBounds.center().y() ) / canvas->extent().height();
+          mItem->setBounds( QgsRectangle::fromCenterAndSize( QgsPointXY( centerX, centerY ), 0.5, 0.5 ) );
+          mUpdateItemPosition = true;
+        }
+      }
+
+      mSizeStackedWidget->setCurrentWidget( mPageFixedSize );
+      break;
+    }
   }
 
   onWidgetChanged();

@@ -24,6 +24,7 @@
  * \ingroup core
  *
  * \brief Counts the features in a QgsVectorLayer in task.
+ *
  * You should most likely not use this directly and instead call
  * QgsVectorLayer::countSymbolFeatures() and connect to the signal
  * QgsVectorLayer::symbolFeatureCountMapChanged().

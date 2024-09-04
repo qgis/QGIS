@@ -25,17 +25,6 @@ our @inc;
 
 END { die "header files not empty" if @inc; }
 
-# Also fix doxygen comments
-s#^(\s*)/\*[*!]\s*([^\s*].*)\s*$#$1/** \u$2\n#;
-
-# Convert single line doxygen blocks:
-#  /*!< comment */   to   //!< comment
-#  /** comment */    to   //! comment
-s#\/\*[!\*](?!\*)(<*)\h*(.*?)\h*\*\/\h*$#//!$1 $2#;
-
-# Uppercase initial character in //!< comment
-s#\/\/!<\s*(.)(.*)#//!< \u$1$2#;
-
 # Ensure that pointer members are always initialized to nullptr
 # We don't run this check by default, there's a high likelihood of false positives...
 # s#^(\s*(?!typedef|return|delete)(?:\s*(?:const)\s*)?[a-zA-Z0-9_:]+\s*\*+\s*[a-zA-Z0-9_]+)\s*;\s*$#$1 = nullptr;\n#;

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/symbols/qgspolygon3dsymbol.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -71,7 +71,8 @@ Sets method that determines how altitude is bound to individual vertices
 %Docstring
 Returns height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
+.. deprecated:: 3.36
+
    Use :py:func:`~QgsPolygon3DSymbol.offset` instead.
 %End
 
@@ -79,7 +80,8 @@ Returns height (altitude) of the symbol (in map units)
 %Docstring
 Sets height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
+.. deprecated:: 3.36
+
    Use :py:func:`~QgsPolygon3DSymbol.setOffset` instead.
 %End
 
@@ -215,5 +217,5 @@ Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 fo
  *                                                                      *
  * src/3d/symbols/qgspolygon3dsymbol.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

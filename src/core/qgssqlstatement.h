@@ -83,14 +83,16 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * Returns a quoted column reference (in double quotes)
-     * \see quotedString(), quotedIdentifierIfNeeded()
+     * \see quotedString()
+     * \see quotedIdentifierIfNeeded()
      */
     static QString quotedIdentifier( QString name );
 
     /**
      * Returns a quoted column reference (in double quotes) if needed, or
      * otherwise the original string.
-     * \see quotedString(), quotedIdentifier()
+     * \see quotedString()
+     * \see quotedIdentifier()
      */
     static QString quotedIdentifierIfNeeded( const QString &name );
 
@@ -108,7 +110,8 @@ class CORE_EXPORT QgsSQLStatement
 
     /**
      * Returns a quoted version of a string (in single quotes)
-     * \see quotedIdentifier(), quotedIdentifierIfNeeded()
+     * \see quotedIdentifier()
+     * \see quotedIdentifierIfNeeded()
      */
     static QString quotedString( QString text );
 
@@ -267,13 +270,13 @@ class CORE_EXPORT QgsSQLStatement
          *
          * For any implementation this should look like
          *
-         * C++:
+         * \code{.cpp}
+         *   v.visit( *this );
+         * \endcode
          *
-         *     v.visit( *this );
-         *
-         * Python:
-         *
-         *     v.visit( self)
+         * \code{py}
+         *   v.visit(self)
+         * \endcode
          *
          * \param v A visitor that visits this node.
          */

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeedback.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -134,5 +134,5 @@ argument is an unsigned long integer and starts from 0.
  *                                                                      *
  * src/core/qgsfeedback.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

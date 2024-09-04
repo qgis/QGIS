@@ -10,13 +10,13 @@ pushd ${DIR} > /dev/null || exit
 for pyqt_version in 5 6; do
 
   if [[ $pyqt_version == 6 ]]; then
-    IS_QT6="--qt6"
+    IS_QT6="-qt6"
   fi
 
-  outdiff=$(./scripts/sipify.pl $IS_QT6 tests/code_layout/sipify/sipifyheader.h | diff tests/code_layout/sipify/sipifyheader.expected_pyqt$pyqt_version.sip -)
+  outdiff=$(./scripts/sipify.py $IS_QT6 tests/code_layout/sipify/sipifyheader.h | diff tests/code_layout/sipify/sipifyheader.expected_pyqt$pyqt_version.sip -)
 
   if [[ $outdiff ]]; then
-    echo " *** sipify.pl did not output expected file"
+    echo " *** sipify.py did not output expected file"
     echo "$outdiff"
     popd > /dev/null || exit
     exit 1

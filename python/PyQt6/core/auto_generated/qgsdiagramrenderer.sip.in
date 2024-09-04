@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsdiagramrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -293,7 +293,7 @@ class QgsDiagramSettings
 Stores the settings for rendering a single diagram.
 
 :py:class:`QgsDiagramSettings` stores the settings related to rendering the individual diagrams themselves, while
-QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
+:py:class:`QgsDiagramLayerSettings` stores settings which control how ALL diagrams within a layer are rendered.
 %End
 
 %TypeHeaderCode
@@ -760,6 +760,9 @@ Renders the diagrams for all features with the same settings
 
 class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
 {
+%Docstring(signature="appended")
+Alters the size of rendered diagrams using a linear scaling.
+%End
 
 %TypeHeaderCode
 #include "qgsdiagramrenderer.h"
@@ -853,5 +856,5 @@ Returns configuration of appearance of legend. Will return ``None`` if no config
  *                                                                      *
  * src/core/qgsdiagramrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

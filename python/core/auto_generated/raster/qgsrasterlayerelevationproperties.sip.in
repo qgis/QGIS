@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterlayerelevationproperties.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -117,7 +117,6 @@ Returns the fixed elevation range for the raster.
 
    When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
 
-
 .. seealso:: :py:func:`setFixedRange`
 
 .. versionadded:: 3.38
@@ -134,7 +133,6 @@ Sets the fixed elevation ``range`` for the raster.
 .. note::
 
    When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
-
 
 .. seealso:: :py:func:`fixedRange`
 
@@ -153,7 +151,6 @@ Returns the fixed elevation range for each band.
 
    When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
 
-
 .. seealso:: :py:func:`setFixedRangePerBand`
 
 .. versionadded:: 3.38
@@ -170,7 +167,6 @@ Sets the fixed elevation range for each band.
 .. note::
 
    When a fixed range is set any :py:func:`~QgsRasterLayerElevationProperties.zOffset` and :py:func:`~QgsRasterLayerElevationProperties.zScale` is ignored.
-
 
 .. seealso:: :py:func:`fixedRangePerBand`
 
@@ -294,5 +290,5 @@ Specifically, it checks:
  *                                                                      *
  * src/core/raster/qgsrasterlayerelevationproperties.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

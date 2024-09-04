@@ -199,7 +199,7 @@ class CORE_EXPORT QgsMeshCalculator
      * \param layer mesh layer with dataset groups references in formulaString
      * \returns QgsMeshCalculator::Success in case of success
      *
-     * \deprecated QGIS 3.12 - use expressionIsValid
+     * \deprecated QGIS 3.12. Use expressionIsValid.
      */
     Q_DECL_DEPRECATED static Result expression_valid( const QString &formulaString,
         QgsMeshLayer *layer ) SIP_DEPRECATED;

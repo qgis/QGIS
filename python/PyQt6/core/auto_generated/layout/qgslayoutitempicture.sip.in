@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitempicture.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -245,6 +245,8 @@ Returns the current picture mode (image format), FormatUnknown if given
 picture format is unknown
 
 .. seealso:: :py:func:`setMode`
+
+.. seealso:: :py:func:`originalMode`
 %End
 
     Qgis::PictureFormat originalMode() const;
@@ -253,6 +255,8 @@ Returns the original set picture mode (image format).
 It could differ from :py:func:`~QgsLayoutItemPicture.mode` if given picture format is unknown
 
 .. seealso:: :py:func:`setMode`
+
+.. seealso:: :py:func:`mode`
 
 .. versionadded:: 3.22
 %End
@@ -360,5 +364,5 @@ Emitted on picture rotation change
  *                                                                      *
  * src/core/layout/qgslayoutitempicture.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

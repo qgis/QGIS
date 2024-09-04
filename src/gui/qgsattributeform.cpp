@@ -3286,7 +3286,7 @@ void QgsAttributeForm::updateFieldDependenciesParent( QgsEditorWidgetWrapper *ew
     const QSet< QString > referencedVariablesAndFunctions = expression.referencedVariables() + expression.referencedFunctions();
     for ( const QString &referenced : referencedVariablesAndFunctions )
     {
-      if ( referenced.startsWith( QStringLiteral( "current_parent" ) ) )
+      if ( referenced.startsWith( QLatin1String( "current_parent" ) ) )
       {
         mParentDependencies.insert( eww );
         break;

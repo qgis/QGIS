@@ -52,7 +52,7 @@ class QgsVectorLayer;
  *
  * \ingroup core
  * \since QGIS 3.12
- * \deprecated since QGIS 3.30 Replaced by QUuid to identify symbol layers
+ * \deprecated QGIS 3.30. Replaced by QUuid to identify symbol layers.
  */
 class CORE_EXPORT QgsSymbolLayerId
 {
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsSymbolLayerReference
      * Constructor
      * \param layerId layer id
      * \param symbolLayer symbol layer id
-     * \deprecated since QGIS 3.30
+     * \deprecated QGIS 3.30
      */
     Q_DECL_DEPRECATED QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) SIP_DEPRECATED
   : mLayerId( layerId ), mDeprecatedSymbolLayerId( symbolLayer )
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsSymbolLayerReference
 
     /**
      * The symbol layer's id
-     * \deprecated since QGIS 3.30, use symbolLayerIdV2 instead
+     * \deprecated QGIS 3.30. Use symbolLayerIdV2 instead.
      */
     Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const SIP_DEPRECATED { return mDeprecatedSymbolLayerId; }
 

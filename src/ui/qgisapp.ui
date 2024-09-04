@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1368</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -349,10 +349,8 @@
      <property name="title">
       <string>Add Annotation</string>
      </property>
-     <addaction name="mActionTextAnnotation"/>
      <addaction name="mActionFormAnnotation"/>
      <addaction name="mActionHtmlAnnotation"/>
-     <addaction name="mActionSvgAnnotation"/>
     </widget>
     <widget class="QMenu" name="mMenuEditAttributes">
      <property name="title">
@@ -894,7 +892,7 @@
     <string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::QuitRole</enum>
+    <enum>QAction::MenuRole::QuitRole</enum>
    </property>
   </action>
   <action name="mActionUndo">
@@ -1507,18 +1505,6 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>F5</string>
    </property>
   </action>
-  <action name="mActionTextAnnotation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionTextAnnotation.svg</normaloff>:/images/themes/default/mActionTextAnnotation.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Text Annotation</string>
-   </property>
-  </action>
   <action name="mActionFormAnnotation">
    <property name="checkable">
     <bool>true</bool>
@@ -1892,7 +1878,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>&amp;Options…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
@@ -1913,7 +1899,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>Keyboard Shortcuts…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionLocalHistogramStretch">
@@ -1983,7 +1969,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>About</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
+    <enum>QAction::MenuRole::AboutRole</enum>
    </property>
   </action>
   <action name="mActionSponsors">
@@ -2410,18 +2396,6 @@ Acts on the currently active layer only.</string>
    </property>
    <property name="toolTip">
     <string>Duplicate Layer(s)</string>
-   </property>
-  </action>
-  <action name="mActionSvgAnnotation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSvgAnnotation.svg</normaloff>:/images/themes/default/mActionSvgAnnotation.svg</iconset>
-   </property>
-   <property name="text">
-    <string>SVG Annotation</string>
    </property>
   </action>
   <action name="mActionSaveAllEdits">
@@ -3388,7 +3362,6 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   </action>
  </widget>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsweakrelation.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -473,5 +473,5 @@ Writes a weak relation infoto an XML structure. Used for saving .qgs projects
  *                                                                      *
  * src/core/qgsweakrelation.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

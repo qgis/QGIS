@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverquerystringparameter.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -72,7 +72,7 @@ Validation steps:
 - can convert to proper Type
 - custom validator (if set - not available in Python bindings)
 
-.. seealso:: :py:func:`setCustomValidator`
+.. seealso:: :py:func:`setCustomValidator` (not available in Python bindings)
 
 :return: the parameter value or an invalid QVariant if not found (and not required)
 
@@ -124,5 +124,5 @@ Set the parameter's ``hidden`` status, parameters are not hidden by default.
  *                                                                      *
  * src/server/qgsserverquerystringparameter.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

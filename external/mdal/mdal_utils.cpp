@@ -17,7 +17,9 @@
 #include <stdlib.h>
 
 #ifdef _MSC_VER
+#ifndef UNICODE
 #define UNICODE
+#endif
 #include <locale>
 #include <codecvt>
 #include <stringapiset.h>
@@ -1141,12 +1143,12 @@ std::vector<std::string> MDAL::Library::libraryFilesInDir( const std::string &di
 {
   std::vector<std::string> filesList;
 #ifdef _WIN32
-  WIN32_FIND_DATA data;
+  WIN32_FIND_DATAA data;
   HANDLE hFind;
   std::string pattern = dirPath;
   pattern.push_back( '*' );
 
-  hFind = FindFirstFile( pattern.c_str(), &data );
+  hFind = FindFirstFileA( pattern.c_str(), &data );
 
   if ( hFind == INVALID_HANDLE_VALUE )
     return filesList;
@@ -1157,7 +1159,7 @@ std::vector<std::string> MDAL::Library::libraryFilesInDir( const std::string &di
     if ( !fileName.empty() && fileExtension( fileName ) == ".dll" )
       filesList.push_back( fileName );
   }
-  while ( FindNextFile( hFind, &data ) != 0 );
+  while ( FindNextFileA( hFind, &data ) != 0 );
 
   FindClose( hFind );
 #else
@@ -1168,8 +1170,8 @@ std::vector<std::string> MDAL::Library::libraryFilesInDir( const std::string &di
     std::string fileName( de->d_name );
     if ( !fileName.empty() )
     {
-      std::string extentsion = fileExtension( fileName );
-      if ( extentsion == ".so" || extentsion == ".dylib" )
+      std::string extension = fileExtension( fileName );
+      if ( extension == ".so" || extension == ".dylib" )
         filesList.push_back( fileName );
     }
     de = readdir( dir );
@@ -1188,7 +1190,7 @@ bool MDAL::Library::loadLibrary()
 #ifdef _WIN32
   UINT uOldErrorMode =
     SetErrorMode( SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS );
-  d->mLibrary = LoadLibrary( d->mLibraryFile.c_str() );
+  d->mLibrary = LoadLibraryA( d->mLibraryFile.c_str() );
   SetErrorMode( uOldErrorMode );
 #else
   d->mLibrary = dlopen( d->mLibraryFile.c_str(), RTLD_LAZY );

@@ -43,7 +43,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QUrl>
 #include <QVector3D>
 
-QgsRenderPassQuad::QgsRenderPassQuad( QNode *parent )
+QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   Qt3DQGeometry *geom = new Qt3DQGeometry( this );
@@ -98,8 +98,5 @@ QgsRenderPassQuad::QgsRenderPassQuad( QNode *parent )
 
   addComponent( mMaterial );
 
-  mLayer = new Qt3DRender::QLayer( this );
-  mLayer->setRecursive( true );
-  addComponent( mLayer );
+  addComponent( layer );
 }
-

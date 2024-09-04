@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrasterrendererwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -113,5 +113,5 @@ All widgets will fire this event to notify of an internal change.
  *                                                                      *
  * src/gui/raster/qgsrasterrendererwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

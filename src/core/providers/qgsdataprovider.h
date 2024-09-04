@@ -371,6 +371,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
+    // TODO? Instead of being pure virtual, might be better to generalize this
+    // behavior and presume that none of the sub-classes are going to do
+    // anything strange with regards to their name or description?
+
     /**
      * Returns a provider name
      *
@@ -378,13 +382,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * dialogs so that providers can be shown with their supported types. Thus
      * if more than one provider supports a given format, the user is able to
      * select a specific provider to open that file.
-     *
-     * \note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
      */
     virtual QString name() const = 0;
 
@@ -393,13 +390,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Returns description
      *
      * Returns a terse string describing what the provider is.
-     *
-     * \note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
      */
     virtual QString description() const = 0;
 
@@ -411,8 +401,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * supported by the data provider.  Naturally this will be an empty string
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
-     *
-     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const
     {
@@ -427,8 +415,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * supported by the data provider.  Naturally this will be an empty string
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
-     *
-     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileRasterFilters() const
     {

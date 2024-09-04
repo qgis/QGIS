@@ -330,9 +330,21 @@ set(QGIS_GUI_SRCS
 
   locator/qgslocatorwidget.cpp
 
-  maptools/qgsmaptoolshapeabstract.cpp
+  maptools/qgsmaptool.cpp
+  maptools/qgsmaptooladvanceddigitizing.cpp
+  maptools/qgsmaptoolcapture.cpp
   maptools/qgsmaptoolcapturelayergeometry.cpp
+  maptools/qgsmaptoolcapturerubberband.cpp
+  maptools/qgsmaptooledit.cpp
+  maptools/qgsmaptooldigitizefeature.cpp
+  maptools/qgsmaptoolemitpoint.cpp
+  maptools/qgsmaptoolextent.cpp
+  maptools/qgsmaptoolidentify.cpp
+  maptools/qgsmaptoolidentifyfeature.cpp
+  maptools/qgsmaptoolpan.cpp
+  maptools/qgsmaptoolshapeabstract.cpp
   maptools/qgsmaptoolshaperegistry.cpp
+  maptools/qgsmaptoolzoom.cpp
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
@@ -660,18 +672,6 @@ set(QGIS_GUI_SRCS
   qgsmapoverviewcanvas.cpp
   qgsmaskingwidget.cpp
   qgsmaptip.cpp
-  qgsmaptool.cpp
-  qgsmaptooladvanceddigitizing.cpp
-  qgsmaptoolcapture.cpp
-  qgsmaptoolcapturerubberband.cpp
-  qgsmaptooledit.cpp
-  qgsmaptooldigitizefeature.cpp
-  qgsmaptoolemitpoint.cpp
-  qgsmaptoolextent.cpp
-  qgsmaptoolidentify.cpp
-  qgsmaptoolidentifyfeature.cpp
-  qgsmaptoolpan.cpp
-  qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
   qgsmaterialsettingswidget.cpp
   qgsmediawidget.cpp
@@ -937,18 +937,6 @@ set(QGIS_GUI_HDRS
   qgsmapmouseevent.h
   qgsmapoverviewcanvas.h
   qgsmaptip.h
-  qgsmaptool.h
-  qgsmaptooladvanceddigitizing.h
-  qgsmaptoolcapture.h
-  qgsmaptoolcapturerubberband.h
-  qgsmaptooldigitizefeature.h
-  qgsmaptooledit.h
-  qgsmaptoolemitpoint.h
-  qgsmaptoolextent.h
-  qgsmaptoolidentify.h
-  qgsmaptoolidentifyfeature.h
-  qgsmaptoolpan.h
-  qgsmaptoolzoom.h
   qgsmaskingwidget.h
   qgsmaterialsettingswidget.h
   qgsmediawidget.h
@@ -1311,9 +1299,21 @@ set(QGIS_GUI_HDRS
 
   locator/qgslocatorwidget.h
 
-  maptools/qgsmaptoolshapeabstract.h
+  maptools/qgsmaptool.h
+  maptools/qgsmaptooladvanceddigitizing.h
+  maptools/qgsmaptoolcapture.h
   maptools/qgsmaptoolcapturelayergeometry.h
+  maptools/qgsmaptoolcapturerubberband.h
+  maptools/qgsmaptooldigitizefeature.h
+  maptools/qgsmaptooledit.h
+  maptools/qgsmaptoolemitpoint.h
+  maptools/qgsmaptoolextent.h
+  maptools/qgsmaptoolidentify.h
+  maptools/qgsmaptoolidentifyfeature.h
+  maptools/qgsmaptoolpan.h
+  maptools/qgsmaptoolshapeabstract.h
   maptools/qgsmaptoolshaperegistry.h
+  maptools/qgsmaptoolzoom.h
 
   mesh/qgsmeshlayerproperties.h
   mesh/qgsrenderermeshpropertieswidget.h
@@ -1638,6 +1638,13 @@ else()
     PROPERTIES COMPILE_FLAGS "-w -Wno-deprecated-declarations")
 endif()
 
+if(MSVC)
+  set_source_files_properties(
+    ${CMAKE_BINARY_DIR}/src/gui/qgis_gui_autogen/mocs_compilation.cpp
+    PROPERTIES COMPILE_FLAGS "/bigobj"
+  )
+endif()
+
 #############################################################
 # qgis_gui library
 
@@ -1733,7 +1740,7 @@ GENERATE_EXPORT_HEADER(
 set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_gui.h)
 
 if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
-  if (WIN32 )
+  if (WIN32)
     include_directories(${CMAKE_SOURCE_DIR}/src/native/win)
   elseif (APPLE)
     include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)

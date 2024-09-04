@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgs3dmapsettings.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -16,6 +16,12 @@ class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
 Definition of the world.
+
+.. warning::
+
+   Qgs3DMapSettings are a QObject subclass, and accordingly are not
+   safe for access across different threads. See Qgs3DRenderContext instead
+   for a safe snapshot of settings from Qgs3DMapSettings.
 %End
 
 %TypeHeaderCode
@@ -74,10 +80,15 @@ with scenes spanning hundreds of kilometers and zooming in a lot).
 
 Need to look into more advanced techniques like "relative to center" or "relative to eye"
 to improve the precision.
+
+.. seealso:: :py:func:`origin`
 %End
+
     QgsVector3D origin() const;
 %Docstring
-Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
+Returns coordinates in map CRS at which 3D scene has origin (0,0,0).
+
+.. seealso:: :py:func:`setOrigin`
 %End
 
     QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
@@ -91,11 +102,16 @@ Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets coordinate reference system used in the 3D scene
+Sets coordinate reference system used in the 3D scene.
+
+.. seealso:: :py:func:`crs`
 %End
+
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns coordinate reference system used in the 3D scene
+Returns coordinate reference system used in the 3D scene.
+
+.. seealso:: :py:func:`setCrs`
 %End
 
     QgsCoordinateTransformContext transformContext() const;
@@ -432,6 +448,10 @@ Sets the debugging settings of the shadow map
 
 .. seealso:: :py:func:`debugShadowMapEnabled`
 
+.. seealso:: :py:func:`debugShadowMapCorner`
+
+.. seealso:: :py:func:`debugShadowMapSize`
+
 .. versionadded:: 3.18
 %End
     bool debugShadowMapEnabled() const;
@@ -452,6 +472,10 @@ Returns the size of the shadow map preview
 Sets the debugging settings of the depth map
 
 .. seealso:: :py:func:`debugDepthMapEnabled`
+
+.. seealso:: :py:func:`debugDepthMapCorner`
+
+.. seealso:: :py:func:`debugDepthMapSize`
 
 .. versionadded:: 3.18
 %End
@@ -527,7 +551,6 @@ Sets DPI used for conversion between real world units (e.g. mm) and pixels
 
 .. versionadded:: 3.10
 %End
-
 
     double outputDpi() const;
 %Docstring
@@ -955,5 +978,5 @@ Emitted when the parameter to display 3d view's extent in the 2D canvas has chan
  *                                                                      *
  * src/3d/qgs3dmapsettings.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

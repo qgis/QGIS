@@ -276,7 +276,7 @@ class CORE_EXPORT QgsRasterTransparency
      * \param value the needle to search for in the transparency hay stack
      * \param globalTransparency the overall transparency level for the layer
      *
-     * \deprecated use opacityForValue() instead.
+     * \deprecated QGIS 3.40. Use opacityForValue() instead.
     */
     Q_DECL_DEPRECATED int alphaValue( double value, int globalTransparency = 255 ) const SIP_DEPRECATED;
 
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsRasterTransparency
      * \param blueValue the green portion of the needle to search for in the transparency hay stack
      * \param globalTransparency the overall transparency level for the layer
      *
-     * \deprecated use opacityForRgbValues() instead.
+     * \deprecated QGIS 3.40. Use opacityForRgbValues() instead.
     */
     Q_DECL_DEPRECATED int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const SIP_DEPRECATED;
 

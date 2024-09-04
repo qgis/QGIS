@@ -1,0 +1,5 @@
+# The following has been generated automatically from src/core/qgslayerdefinition.h
+QgsLayerDefinition.loadLayerDefinition = staticmethod(QgsLayerDefinition.loadLayerDefinition)
+QgsLayerDefinition.exportLayerDefinition = staticmethod(QgsLayerDefinition.exportLayerDefinition)
+QgsLayerDefinition.exportLayerDefinitionLayers = staticmethod(QgsLayerDefinition.exportLayerDefinitionLayers)
+QgsLayerDefinition.loadLayerDefinitionLayers = staticmethod(QgsLayerDefinition.loadLayerDefinitionLayers)

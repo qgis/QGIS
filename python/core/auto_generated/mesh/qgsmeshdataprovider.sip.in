@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -169,7 +169,6 @@ Saves the ``mesh`` frame to the source.
 
 :return: ``True`` on success
 
-
 .. versionadded:: 3.22
 %End
 };
@@ -325,11 +324,9 @@ On success, the mesh's dataset group count is changed
 
    Doesn't work if there is ":" in the path (e.g. Windows system)
 
-
 .. versionadded:: 3.6
 
-.. deprecated::
-   QGIS 3.12.3
+.. deprecated:: 3.12.3
 %End
 
     virtual bool persistDatasetGroup( const QString &outputFilePath,
@@ -376,7 +373,6 @@ On success, the mesh's dataset group count is changed
 
 :return: ``True`` on failure, ``False`` on success
 
-
 .. versionadded:: 3.16
 %End
 
@@ -408,7 +404,6 @@ Returns a list of dataset indexes of the dataset in a specific dataset group tha
 :param time2: the second relative time of the time intervale from reference time
 
 :return: the dataset index
-
 
 .. versionadded:: 3.22
 %End
@@ -485,5 +480,5 @@ Emitted when some new dataset groups have been added
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

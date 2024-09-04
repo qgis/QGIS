@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsgeometryutils_base.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -81,7 +81,7 @@ offset from the segment by the specified ``offset`` amount.
 :param offset: perpendicular offset from segment to apply to point. A negative ``offset`` shifts the point to the left of the segment, while a positive ``offset`` will shift it to the right of the segment.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -92,8 +92,6 @@ Example
        # Offset point at center of segment by 2 units to the left
        x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
        # (6.0, 7.0)
-
-
 
 :return: - x: calculated point x-coordinate
          - y: calculated point y-coordinate
@@ -313,7 +311,7 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
          - intersection: is the result intersection, of it can be found.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -517,5 +515,5 @@ Calculates Cartesian azimuth between points (``x1``, ``y1``) and (``x2``, ``y2``
  *                                                                      *
  * src/core/geometry/qgsgeometryutils_base.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

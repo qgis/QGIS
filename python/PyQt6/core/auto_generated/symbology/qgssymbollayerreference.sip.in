@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbollayerreference.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -37,8 +37,9 @@ path to symbol layers of the sub symbol are given by a list of indexes:
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.30
-   Replaced by QUuid to identify symbol layers
+.. deprecated:: 3.30
+
+   Replaced by QUuid to identify symbol layers.
 %End
 
 %TypeHeaderCode
@@ -111,7 +112,7 @@ Constructor
 :param layerId: layer id
 :param symbolLayer: symbol layer id
 
-.. deprecated:: QGIS 3.30
+.. deprecated:: 3.30
 %End
 
     QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId );
@@ -133,8 +134,9 @@ The referenced vector layer / feature renderer
 %Docstring
 The symbol layer's id
 
-.. deprecated:: QGIS 3.30
-  use symbolLayerIdV2 instead
+.. deprecated:: 3.30
+
+   Use symbolLayerIdV2 instead.
 %End
 
     QString symbolLayerIdV2() const;
@@ -190,5 +192,5 @@ into a :py:class:`QgsSymbolLayerReferenceList`
  *                                                                      *
  * src/core/symbology/qgssymbollayerreference.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

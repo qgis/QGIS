@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgis.h                                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -413,6 +413,7 @@ The development version
       DynamicRotation,
       IsSymbolLayerSubSymbol,
       ForceVectorRendering,
+      ExcludeSymbolBuffers,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
@@ -1286,10 +1287,11 @@ The development version
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
 
-    enum class AnnotationPictureSizeMode
+    enum class AnnotationPlacementMode
     {
       SpatialBounds,
       FixedSize,
+      RelativeToMapFrame,
     };
 
     enum class AnnotationItemGuiFlag
@@ -2162,6 +2164,7 @@ The development version
       DontLoad3DViews,
       DontLoadProjectStyles,
       ForceReadOnlyLayers,
+      DontUpgradeAnnotations,
     };
 
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
@@ -3403,5 +3406,5 @@ QString geoNone();
  *                                                                      *
  * src/core/qgis.h                                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

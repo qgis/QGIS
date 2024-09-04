@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgssqlstatement.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -72,6 +72,8 @@ formatting or comments. In general it is preferable to use
 Returns a quoted column reference (in double quotes)
 
 .. seealso:: :py:func:`quotedString`
+
+.. seealso:: :py:func:`quotedIdentifierIfNeeded`
 %End
 
     static QString quotedIdentifierIfNeeded( const QString &name );
@@ -80,6 +82,8 @@ Returns a quoted column reference (in double quotes) if needed, or
 otherwise the original string.
 
 .. seealso:: :py:func:`quotedString`
+
+.. seealso:: :py:func:`quotedIdentifier`
 %End
 
     static QString stripQuotedIdentifier( QString text );
@@ -101,6 +105,8 @@ Remove double quotes from an Microsoft style identifier.
 Returns a quoted version of a string (in single quotes)
 
 .. seealso:: :py:func:`quotedIdentifier`
+
+.. seealso:: :py:func:`quotedIdentifierIfNeeded`
 %End
 
     enum UnaryOperator /BaseType=IntEnum/
@@ -237,13 +243,9 @@ Support the visitor pattern.
 
 For any implementation this should look like
 
-C++:
+.. code-block:: python
 
-v.visit( *this );
-
-Python:
-
-v.visit( self)
+       v.visit(self)
 
 :param v: A visitor that visits this node.
 %End
@@ -1050,5 +1052,5 @@ Constructor for QgsSQLStatementFragment of the specified ``fragment``.
  *                                                                      *
  * src/core/qgssqlstatement.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

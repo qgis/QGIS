@@ -104,8 +104,6 @@ set(QGIS_APP_SRCS
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsplitparts.cpp
-  qgsmaptoolsvgannotation.cpp
-  qgsmaptooltextannotation.cpp
 
   annotations/qgsannotationitempropertieswidget.cpp
   annotations/qgsannotationlayerproperties.cpp
@@ -515,6 +513,10 @@ if (ANDROID)
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 else()
   add_executable(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS})
+
+  if(MSVC AND BUILD_WITH_QT6)
+    qt_disable_unicode_defines(${QGIS_APP_NAME})
+  endif(MSVC AND BUILD_WITH_QT6)
 
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)

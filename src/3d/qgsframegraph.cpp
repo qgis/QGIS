@@ -45,24 +45,14 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QPointSize>
+#include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QBlendEquationArguments>
-
-Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructTexturesPreviewPass()
-{
-  mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
-  mPreviewLayerFilter->addLayer( mPreviewLayer );
-
-  mPreviewRenderStateSet = new Qt3DRender::QRenderStateSet( mPreviewLayerFilter );
-  mPreviewDepthTest = new Qt3DRender::QDepthTest;
-  mPreviewDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-  mPreviewRenderStateSet->addRenderState( mPreviewDepthTest );
-  mPreviewCullFace = new Qt3DRender::QCullFace;
-  mPreviewCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-  mPreviewRenderStateSet->addRenderState( mPreviewCullFace );
-
-  return mPreviewLayerFilter;
-}
+#include <Qt3DExtras/QTextureMaterial>
+#include <Qt3DRender/QAbstractTexture>
+#include "qgsfgutils.h"
+#include <Qt3DRender/QNoDraw>
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {
@@ -273,18 +263,57 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructShadowRenderPass()
   return mLightCameraSelectorShadowPass;
 }
 
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForTexturesPreview()
+{
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter;
+  layerFilter->setObjectName( "Sub pass TexturesPreview" );
+  layerFilter->addLayer( mPreviewLayer );
+
+  Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( layerFilter );
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  renderStateSet->addRenderState( depthTest );
+  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  renderStateSet->addRenderState( cullFace );
+
+  return layerFilter;
+}
+
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
+{
+  Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector;
+  cameraSelector->setObjectName( "Sub pass Postprocessing" );
+  cameraSelector->setCamera( mLightCamera );
+
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
+
+  // could be the first of this branch
+  new Qt3DRender::QClearBuffers( layerFilter );
+
+  Qt3DRender::QLayer *postProcessingLayer = new Qt3DRender::QLayer();
+  mPostprocessingEntity = new QgsPostprocessingEntity( this, postProcessingLayer, mRootEntity );
+  layerFilter->addLayer( postProcessingLayer );
+  mPostprocessingEntity->setObjectName( "PostProcessingPassEntity" );
+
+  return cameraSelector;
+}
+
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForRenderCapture()
+{
+  Qt3DRender::QFrameGraphNode *top = new Qt3DRender::QNoDraw;
+  top->setObjectName( "Sub pass RenderCapture" );
+
+  mRenderCapture = new Qt3DRender::QRenderCapture( top );
+
+  return top;
+}
+
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
 {
-  mPostProcessingCameraSelector = new Qt3DRender::QCameraSelector;
-  mPostProcessingCameraSelector->setObjectName( "Postprocessing pass CameraSelector" );
-  mPostProcessingCameraSelector->setCamera( mLightCamera );
-
-  mPostprocessPassLayerFilter = new Qt3DRender::QLayerFilter( mPostProcessingCameraSelector );
-
-  mPostprocessClearBuffers = new Qt3DRender::QClearBuffers( mPostprocessPassLayerFilter );
-
-  mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mPostprocessClearBuffers );
-  mRenderCaptureTargetSelector->setObjectName( "Postprocessing pass RenderTargetSelector" );
+  mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector;
+  mRenderCaptureTargetSelector->setObjectName( "Postprocessing render pass" );
+  mRenderCaptureTargetSelector->setEnabled( mRenderCaptureEnabled );
 
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( mRenderCaptureTargetSelector );
 
@@ -324,13 +353,12 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
 
   mRenderCaptureTargetSelector->setTarget( renderTarget );
 
-  mRenderCapture = new Qt3DRender::QRenderCapture( mRenderCaptureTargetSelector );
+  // sub passes:
+  constructSubPostPassForProcessing()->setParent( mRenderCaptureTargetSelector );
+  constructSubPostPassForTexturesPreview()->setParent( mRenderCaptureTargetSelector );
+  constructSubPostPassForRenderCapture()->setParent( mRenderCaptureTargetSelector );
 
-  mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
-  mPostprocessPassLayerFilter->addLayer( mPostprocessingEntity->layer() );
-  mPostprocessingEntity->setObjectName( "PostProcessingPassEntity" );
-
-  return mPostProcessingCameraSelector;
+  return mRenderCaptureTargetSelector;
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass()
@@ -374,8 +402,9 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass(
 
   mAmbientOcclusionRenderCaptureTargetSelector->setTarget( colorRenderTarget );
 
-  mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( mForwardDepthTexture, mMainCamera, mRootEntity );
-  mAmbientOcclusionRenderLayerFilter->addLayer( mAmbientOcclusionRenderEntity->layer() );
+  Qt3DRender::QLayer *ambientOcclusionRenderLayer = new Qt3DRender::QLayer();
+  mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( mForwardDepthTexture, ambientOcclusionRenderLayer, mMainCamera, mRootEntity );
+  mAmbientOcclusionRenderLayerFilter->addLayer( ambientOcclusionRenderLayer );
 
   return mAmbientOcclusionRenderCameraSelector;
 }
@@ -421,8 +450,9 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionBlurPass()
 
   mAmbientOcclusionBlurRenderCaptureTargetSelector->setTarget( depthRenderTarget );
 
-  mAmbientOcclusionBlurEntity = new QgsAmbientOcclusionBlurEntity( mAmbientOcclusionRenderTexture, mRootEntity );
-  mAmbientOcclusionBlurLayerFilter->addLayer( mAmbientOcclusionBlurEntity->layer() );
+  Qt3DRender::QLayer *ambientOcclusionBlurLayer = new Qt3DRender::QLayer();
+  mAmbientOcclusionBlurEntity = new QgsAmbientOcclusionBlurEntity( mAmbientOcclusionRenderTexture, ambientOcclusionBlurLayer, mRootEntity );
+  mAmbientOcclusionBlurLayerFilter->addLayer( ambientOcclusionBlurLayer );
 
   return mAmbientOcclusionBlurCameraSelector;
 }
@@ -683,10 +713,6 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );
   mRubberBandsRootEntity->addComponent( mRubberBandsLayer );
 
-  // textures preview pass
-  Qt3DRender::QFrameGraphNode *previewPass = constructTexturesPreviewPass();
-  previewPass->setParent( mMainViewPort );
-
   Qt3DRender::QParameter *depthMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
   Qt3DRender::QParameter *shadowMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
 
@@ -794,6 +820,25 @@ void QgsFrameGraph::setupDirectionalLight( const QgsDirectionalLightSettings &li
 
   mPostprocessingEntity->setupShadowRenderingExtent( minX, maxX, minZ, maxZ );
   mPostprocessingEntity->setupDirectionalLight( lightPosition, lightDirection );
+}
+
+QString QgsFrameGraph::dumpFrameGraph() const
+{
+  QObject *top = mRenderSurfaceSelector;
+  while ( top->parent() && dynamic_cast<Qt3DRender::QFrameGraphNode *>( top->parent() ) )
+    top = top->parent();
+
+  QgsFgUtils::FgDumpContext context;
+  context.lowestId = mMainCamera->id().id();
+  QStringList strList = QgsFgUtils::dumpFrameGraph( dynamic_cast<Qt3DRender::QFrameGraphNode *>( top ), context );
+
+  return qPrintable( strList.join( "\n" ) ) + QString( "\n" );
+}
+
+QString QgsFrameGraph::dumpSceneGraph() const
+{
+  QStringList strList = QgsFgUtils::dumpSceneGraph( mRootEntity, QgsFgUtils::FgDumpContext() );
+  return qPrintable( strList.join( "\n" ) ) + QString( "\n" );
 }
 
 void QgsFrameGraph::setClearColor( const QColor &clearColor )

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssymbollayerwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -468,7 +468,7 @@ Sets the dynamic SVG parameters
 %Docstring
 This method does nothing anymore, the loading is automatic
 
-.. deprecated:: QGIS 3.16
+.. deprecated:: 3.16
 %End
 
     void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors = false );
@@ -1023,5 +1023,5 @@ Will be registered as factory
  *                                                                      *
  * src/gui/symbology/qgssymbollayerwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

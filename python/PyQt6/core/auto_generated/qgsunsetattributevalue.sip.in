@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsunsetattributevalue.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -66,5 +66,5 @@ bool operator!=( const QgsUnsetAttributeValue &value, const QString &other );
  *                                                                      *
  * src/core/qgsunsetattributevalue.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

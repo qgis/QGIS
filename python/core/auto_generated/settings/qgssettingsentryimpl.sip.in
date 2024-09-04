@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/settings/qgssettingsentryimpl.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -771,5 +771,5 @@ This constructor is intended to be used from plugins.
  *                                                                      *
  * src/core/settings/qgssettingsentryimpl.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

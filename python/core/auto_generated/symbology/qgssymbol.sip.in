@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbol.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -532,8 +532,9 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
  QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated/;
 %Docstring
 
-.. deprecated::
-   use bigSymbolPreviewImageV2 instead.
+.. deprecated:: 3.40
+
+   Use bigSymbolPreviewImageV2 instead.
 %End
 
     QString dump() const;
@@ -812,15 +813,17 @@ and returns ``True`` if any of the layers returned ``True``.
 
    the layer will be ``None`` after stopRender
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
  const QgsVectorLayer *layer() const /Deprecated/;
 %Docstring
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
@@ -940,5 +943,5 @@ Render editing vertex marker at specified point
  *                                                                      *
  * src/core/symbology/qgssymbol.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

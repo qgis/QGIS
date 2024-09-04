@@ -42,7 +42,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      *
      * \returns fileName on success, empty string use aborted, QString() if creation failed
      *
-     * \deprecated since QGIS 3.4.5 - use execAndCreateLayer() instead.
+     * \deprecated QGIS 3.4.5. Use execAndCreateLayer() instead.
      */
     Q_DECL_DEPRECATED static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
         const QString &initialPath = QString() ) SIP_DEPRECATED;
@@ -125,6 +125,8 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void showHelp();
     void nameChanged( const QString & );
     void selectionChanged();
+    void moveFieldsUp();
+    void moveFieldsDown();
 
   private:
     QPushButton *mOkButton = nullptr;

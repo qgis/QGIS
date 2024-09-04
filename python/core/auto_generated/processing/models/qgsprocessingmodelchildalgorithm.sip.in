@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/models/qgsprocessingmodelchildalgorithm.h        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -98,7 +98,7 @@ Returns ``True`` if the algorithm was successfully set.
 
     bool reattach() const;
 %Docstring
-Attempts to re-attach the child to the algorithm specified by ``algorithmId``().
+Attempts to re-attach the child to the algorithm specified by :py:func:`~QgsProcessingModelChildAlgorithm.algorithmId`.
 
 This can be run to relink the child to algorithms from providers which were not
 originally available for the model to link to.
@@ -292,5 +292,5 @@ The ``friendlyChildNames`` argument gives a map of child id to a friendly algori
  *                                                                      *
  * src/core/processing/models/qgsprocessingmodelchildalgorithm.h        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

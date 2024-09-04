@@ -1,0 +1,3 @@
+# The following has been generated automatically from src/core/qgsmaptopixelgeometrysimplifier.h
+QgsMapToPixelSimplifier.calculateLengthSquared2D = staticmethod(QgsMapToPixelSimplifier.calculateLengthSquared2D)
+QgsMapToPixelSimplifier.equalSnapToGrid = staticmethod(QgsMapToPixelSimplifier.equalSnapToGrid)

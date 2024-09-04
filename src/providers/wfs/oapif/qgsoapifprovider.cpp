@@ -1211,10 +1211,10 @@ QgsOapifFeatureDownloaderImpl::~QgsOapifFeatureDownloaderImpl()
 {
 }
 
-void QgsOapifFeatureDownloaderImpl::createProgressDialog()
+void QgsOapifFeatureDownloaderImpl::createProgressTask()
 {
-  QgsFeatureDownloaderImpl::createProgressDialog( mNumberMatched );
-  CONNECT_PROGRESS_DIALOG( QgsOapifFeatureDownloaderImpl );
+  QgsFeatureDownloaderImpl::createProgressTask( mNumberMatched );
+  CONNECT_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
 }
 
 void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeatures )
@@ -1387,7 +1387,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     if ( mNumberMatched < 0 && !mTimer && useProgressDialog && itemsRequest.numberMatched() > 0 )
     {
       mNumberMatched = itemsRequest.numberMatched();
-      CREATE_PROGRESS_DIALOG( QgsOapifFeatureDownloaderImpl );
+      CREATE_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
     }
 
     totalDownloadedFeatureCount += itemsRequest.features().size();

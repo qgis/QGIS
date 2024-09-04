@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstransaction.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -169,5 +169,5 @@ Emitted if a sql query is executed and the underlying data is modified
  *                                                                      *
  * src/core/qgstransaction.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

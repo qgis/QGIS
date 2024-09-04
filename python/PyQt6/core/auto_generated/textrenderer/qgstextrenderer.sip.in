@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -76,7 +76,7 @@ Draws text within a rectangle using the specified settings.
 :param flags: text rendering flags (since QGIS 3.24)
 :param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
 
-.. seealso:: :py:func:`drawDocument`
+.. seealso:: :py:func:`drawDocument` which is more efficient if the text document and metrics have already been calculated.
 %End
 
     static void drawDocument( const QRectF &rect,
@@ -110,7 +110,6 @@ been calculated.
 :param rotation: text rotation
 :param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted.
 :param flags: text rendering flags
-
 
 .. versionadded:: 3.30
 %End
@@ -188,8 +187,9 @@ Draws a single component of rendered text using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 
-.. deprecated::
-   Private API only, will be removed in 4.0
+.. deprecated:: 3.40
+
+   Private API only, will be removed in 4.0.
 %End
 
  static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
@@ -212,8 +212,9 @@ Draws a single component of rendered text using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 
-.. deprecated::
-   Private API only, will be removed in 4.0
+.. deprecated:: 3.40
+
+   Private API only, will be removed in 4.0.
 %End
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format, double scaleFactor = 1.0 );
@@ -308,5 +309,5 @@ font metrics and sizes for small font sizes.
  *                                                                      *
  * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

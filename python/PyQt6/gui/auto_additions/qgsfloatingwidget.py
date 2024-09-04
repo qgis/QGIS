@@ -9,3 +9,7 @@ QgsFloatingWidget.BottomLeft = QgsFloatingWidget.AnchorPoint.BottomLeft
 QgsFloatingWidget.BottomMiddle = QgsFloatingWidget.AnchorPoint.BottomMiddle
 QgsFloatingWidget.BottomRight = QgsFloatingWidget.AnchorPoint.BottomRight
 QgsFloatingWidget.AnchorPoint.baseClass = QgsFloatingWidget
+try:
+    QgsFloatingWidget.__attribute_docs__ = {'anchorWidgetChanged': 'Emitted when the anchor widget changes\n', 'anchorPointChanged': 'Emitted when the anchor point changes\n', 'anchorWidgetPointChanged': 'Emitted when the anchor widget point changes\n'}
+except NameError:
+    pass

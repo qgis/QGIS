@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgscoordinatetransformcontext.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,7 +28,6 @@ system.
 .. note::
 
    :py:class:`QgsCoordinateTransformContext` objects are implicitly shared.
-
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
@@ -72,8 +71,8 @@ required for transformations for that source or destination.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
+.. deprecated:: 3.40
 
-.. deprecated::
    Has no effect on builds based on Proj 6.0 or later, use :py:func:`~QgsCoordinateTransformContext.coordinateOperations` instead.
 %End
 
@@ -90,12 +89,10 @@ Returns the stored mapping for source to destination CRS pairs to associated coo
 
 .. seealso:: :py:func:`addCoordinateOperation`
 
-
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
    and the deprecated :py:func:`~QgsCoordinateTransformContext.sourceDestinationDatumTransforms` method must be used instead.
-
 
 .. versionadded:: 3.8
 %End
@@ -114,7 +111,8 @@ Returns ``True`` if the new transform pair was added successfully.
 
 .. seealso:: :py:func:`removeSourceDestinationDatumTransform`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Has no effect on builds based on Proj 6.0 or later, use :py:func:`~QgsCoordinateTransformContext.addCoordinateOperation` instead.
 %End
 
@@ -148,12 +146,10 @@ Returns ``True`` if the new coordinate operation was added successfully.
 
 .. seealso:: :py:func:`removeCoordinateOperation`
 
-
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
    and the deprecated :py:func:`~QgsCoordinateTransformContext.addSourceDestinationDatumTransform` method must be used instead.
-
 
 .. versionadded:: 3.8
 %End
@@ -165,8 +161,9 @@ Removes the source to destination datum transform pair for the specified ``sourc
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 
-.. deprecated::
-   Use :py:func:`~QgsCoordinateTransformContext.removeCoordinateOperation` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsCoordinateTransformContext.removeCoordinateOperation` instead.
 %End
 
     void removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
@@ -199,7 +196,8 @@ destination.
 
    source and destination are reversible.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Has no effect on builds based on Proj 6.0 or later. Use :py:func:`~QgsCoordinateTransformContext.calculateCoordinateOperation` instead.
 %End
 
@@ -221,13 +219,11 @@ be used.
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
    an empty string, and the deprecated :py:func:`~QgsCoordinateTransformContext.calculateDatumTransforms` method should be used instead.
 
-
 .. warning::
 
    Always check the result of :py:func:`~QgsCoordinateTransformContext.mustReverseCoordinateOperation` in order to determine if the
    proj coordinate operation string returned by this method corresponds to the reverse operation, and
    must be manually flipped when calculating coordinate transforms.
-
 
 .. versionadded:: 3.8
 %End
@@ -297,5 +293,5 @@ Write the context's state to application settings.
  *                                                                      *
  * src/core/proj/qgscoordinatetransformcontext.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

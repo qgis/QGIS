@@ -784,7 +784,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     * This operation will disconnect the mesh layer from the data provider and removes all existing dataset group
     *
     * \since QGIS 3.22
-    * \deprecated since QGIS 3.28, use the version with QgsMeshEditingError instead
+    * \deprecated QGIS 3.28. Use the version with QgsMeshEditingError instead.
     */
     Q_DECL_DEPRECATED bool startFrameEditing( const QgsCoordinateTransform &transform );
 

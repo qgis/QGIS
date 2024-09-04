@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/auth/qgsauthsslconfigwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -231,5 +231,5 @@ Access the embedded SSL server configuration widget
  *                                                                      *
  * src/gui/auth/qgsauthsslconfigwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

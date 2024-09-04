@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextformat.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -151,7 +151,7 @@ of rendered text.
 .. seealso:: :py:func:`toQFont`
 %End
 
-    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0) const;
+    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Returns a font with the size scaled to match the format's size settings (including
 units and map unit scale) for a specified render context.
@@ -814,5 +814,5 @@ Returns a CSS string representing the specified text format as closely as possib
  *                                                                      *
  * src/core/textrenderer/qgstextformat.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

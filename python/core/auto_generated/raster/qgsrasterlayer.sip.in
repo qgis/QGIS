@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterlayer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -128,7 +128,8 @@ Returns time stamp for given file name
 %Docstring
 Set the data provider.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the version with ProviderOptions instead.
 %End
 
@@ -289,8 +290,9 @@ This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function th
 %Docstring
 Returns a list with classification items (Text and color).
 
-.. deprecated::
-   use :py:func:`QgsRasterRenderer.createLegendNodes()` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsRasterRenderer.createLegendNodes()` instead.
 %End
 
     virtual bool isSpatial() const;
@@ -473,5 +475,5 @@ Emitted when the layer's subset string has changed.
  *                                                                      *
  * src/core/raster/qgsrasterlayer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

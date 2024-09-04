@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/tableeditor/qgstableeditorwidget.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -87,8 +87,9 @@ invalid color will be returned.
 
 .. seealso:: :py:func:`selectionBackgroundColor`
 
-.. deprecated::
-   use :py:func:`~QgsTableEditorWidget.selectionTextFormat` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsTableEditorWidget.selectionTextFormat` instead.
 %End
 
     QColor selectionBackgroundColor();
@@ -289,7 +290,8 @@ Sets the foreground color for the currently selected cells.
 
 .. seealso:: :py:func:`setSelectionBackgroundColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsTableEditorWidget.setSelectionTextFormat` instead.
 %End
 
@@ -387,5 +389,5 @@ Emitted whenever the active (or selected) cell changes in the widget.
  *                                                                      *
  * src/gui/tableeditor/qgstableeditorwidget.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

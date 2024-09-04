@@ -35,12 +35,17 @@ QString QgsFileDownloaderAlgorithm::name() const
 
 QString QgsFileDownloaderAlgorithm::displayName() const
 {
-  return tr( "Download file" );
+  return tr( "Download file via HTTP(S)" );
+}
+
+QString QgsFileDownloaderAlgorithm::shortDescription() const
+{
+  return tr( "Downloads a URL to the file system with an HTTP(S) GET or POST request" );
 }
 
 QStringList QgsFileDownloaderAlgorithm::tags() const
 {
-  return tr( "file,downloader,internet,url,fetch,get,https" ).split( ',' );
+  return tr( "file,downloader,internet,url,fetch,get,post,request,https" ).split( ',' );
 }
 
 QString QgsFileDownloaderAlgorithm::group() const
@@ -55,7 +60,7 @@ QString QgsFileDownloaderAlgorithm::groupId() const
 
 QString QgsFileDownloaderAlgorithm::shortHelpString() const
 {
-  return tr( "This algorithm downloads a URL on the file system." );
+  return tr( "This algorithm downloads a URL to the file system with an HTTP(S) GET or POST request" );
 }
 
 QgsFileDownloaderAlgorithm *QgsFileDownloaderAlgorithm::createInstance() const
@@ -85,9 +90,8 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
   dataParam->setFlags( dataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dataParam.release() );
-
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ),
-                tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true ) );
+                tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), false ) );
 }
 
 QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

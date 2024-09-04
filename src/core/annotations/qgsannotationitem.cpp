@@ -20,6 +20,8 @@
 #include "qgscalloutsregistry.h"
 #include "qgsapplication.h"
 #include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
 QgsAnnotationItem::QgsAnnotationItem() = default;
 
@@ -97,6 +99,8 @@ void QgsAnnotationItem::copyCommonProperties( const QgsAnnotationItem *other )
   else
     setCallout( nullptr );
   setCalloutAnchor( other->calloutAnchor() );
+  setOffsetFromCallout( other->offsetFromCallout() );
+  setOffsetFromCalloutUnit( other->offsetFromCalloutUnit() );
 }
 
 bool QgsAnnotationItem::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -114,6 +118,11 @@ bool QgsAnnotationItem::writeCommonProperties( QDomElement &element, QDomDocumen
   if ( !mCalloutAnchor.isEmpty() )
   {
     element.setAttribute( QStringLiteral( "calloutAnchor" ), mCalloutAnchor.asWkt() );
+  }
+  if ( mOffsetFromCallout.isValid() )
+  {
+    element.setAttribute( QStringLiteral( "offsetFromCallout" ), QgsSymbolLayerUtils::encodeSize( mOffsetFromCallout ) );
+    element.setAttribute( QStringLiteral( "offsetFromCalloutUnit" ), QgsUnitTypes::encodeUnit( mOffsetFromCalloutUnit ) );
   }
   return true;
 }
@@ -139,6 +148,12 @@ bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const 
 
   const QString calloutAnchorWkt = element.attribute( QStringLiteral( "calloutAnchor" ) );
   setCalloutAnchor( calloutAnchorWkt.isEmpty() ? QgsGeometry() : QgsGeometry::fromWkt( calloutAnchorWkt ) );
+
+  mOffsetFromCallout = element.attribute( QStringLiteral( "offsetFromCallout" ) ).isEmpty() ? QSizeF() : QgsSymbolLayerUtils::decodeSize( element.attribute( QStringLiteral( "offsetFromCallout" ) ) );
+  bool ok = false;
+  mOffsetFromCalloutUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "offsetFromCalloutUnit" ) ), &ok );
+  if ( !ok )
+    mOffsetFromCalloutUnit = Qgis::RenderUnit::Millimeters;
 
   return true;
 }
@@ -166,4 +181,24 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
   mCallout->startRender( context );
   mCallout->render( context, rect, angle, anchor, calloutContext );
   mCallout->stopRender( context );
+}
+
+Qgis::RenderUnit QgsAnnotationItem::offsetFromCalloutUnit() const
+{
+  return mOffsetFromCalloutUnit;
+}
+
+void QgsAnnotationItem::setOffsetFromCalloutUnit( Qgis::RenderUnit unit )
+{
+  mOffsetFromCalloutUnit = unit;
+}
+
+QSizeF QgsAnnotationItem::offsetFromCallout() const
+{
+  return mOffsetFromCallout;
+}
+
+void QgsAnnotationItem::setOffsetFromCallout( const QSizeF &offset )
+{
+  mOffsetFromCallout = offset;
 }

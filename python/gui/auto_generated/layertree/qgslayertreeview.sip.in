@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layertree/qgslayertreeview.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -471,7 +471,7 @@ Allows customization of the menu.
 class QgsLayerTreeViewMenuProvider
 {
 %Docstring(signature="appended")
-Implementation of this interface can be implemented to allow QgsLayerTreeView
+Implementation of this interface can be implemented to allow :py:class:`QgsLayerTreeView`
 instance to provide custom context menus (opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayerTreeView`
@@ -495,5 +495,5 @@ Returns a newly created menu instance (or ``None`` on error)
  *                                                                      *
  * src/gui/layertree/qgslayertreeview.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

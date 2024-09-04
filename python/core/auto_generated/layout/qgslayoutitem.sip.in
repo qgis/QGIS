@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitem.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -454,7 +454,8 @@ their rendering to determine which layer should be drawn.
 
 .. seealso:: :py:func:`exportLayerDetails`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsLayoutItem.nextExportPart` and :py:func:`~QgsLayoutItem.exportLayerBehavior` instead.
 %End
 
@@ -1380,5 +1381,5 @@ QFlags<QgsLayoutItem::Flag> operator|(QgsLayoutItem::Flag f1, QFlags<QgsLayoutIt
  *                                                                      *
  * src/core/layout/qgslayoutitem.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -119,7 +119,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     /**
      * Emitted when a raster layer has been selected for addition
      *
-     * \deprecated use addLayer() instead.
+     * \deprecated QGIS 3.40. Use addLayer() instead.
      */
     Q_DECL_DEPRECATED void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) SIP_DEPRECATED;
 
@@ -136,28 +136,28 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * If \a providerKey is not specified, the default provider key associated with the source
      * will be used.
      *
-     * \deprecated use addLayer() instead.
+     * \deprecated QGIS 3.40. Use addLayer() instead.
      */
     Q_DECL_DEPRECATED void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) SIP_DEPRECATED;
 
     /**
      * Emitted when a mesh layer has been selected for addition.
      *
-     * \deprecated use addLayer() instead.
+     * \deprecated QGIS 3.40. Use addLayer() instead.
      */
     Q_DECL_DEPRECATED void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) SIP_DEPRECATED;
 
     /**
      * Emitted when a vector tile layer has been selected for addition.
      *
-     * \deprecated use addLayer() instead.
+     * \deprecated QGIS 3.40. Use addLayer() instead.
      */
     Q_DECL_DEPRECATED void addVectorTileLayer( const QString &url, const QString &baseName ) SIP_DEPRECATED;
 
     /**
      * Emitted when a point cloud layer has been selected for addition.
      *
-     * \deprecated use addLayer() instead.
+     * \deprecated QGIS 3.40. Use addLayer() instead.
      */
     Q_DECL_DEPRECATED void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) SIP_DEPRECATED;
 
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     /**
      * Emitted when a progress dialog is shown by the provider dialog.
      *
-     * \deprecated Since QGIS 3.4 this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
+     * \deprecated QGIS 3.4. This signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
      */
     Q_DECL_DEPRECATED void progress( int, int ) SIP_DEPRECATED;
 

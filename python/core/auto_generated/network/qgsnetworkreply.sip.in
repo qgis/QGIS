@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/network/qgsnetworkreply.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -148,5 +148,5 @@ Extracts the filename component of the content disposition header from the ``hea
  *                                                                      *
  * src/core/network/qgsnetworkreply.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/auth/qgsauthmanager.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -48,8 +48,9 @@ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authen
 
 .. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
 
-.. deprecated:: QGIS 3.36
-  use :py:func:`~QgsAuthManager.setup` or :py:func:`~QgsAuthManager.ensureInitialized` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`~QgsAuthManager.setup` or :py:func:`~QgsAuthManager.ensureInitialized` instead.
 %End
 
     void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
@@ -121,7 +122,7 @@ Main call to initially set or continually check master password is set
 :param verify: Whether password's hash was saved in authentication database
 %End
 
-    bool setMasterPassword( const QString &pass, bool verify = false );
+    bool setMasterPassword( const QString &password, bool verify = false );
 %Docstring
 Overloaded call to reset master password or set it initially without user interaction
 
@@ -129,7 +130,7 @@ Overloaded call to reset master password or set it initially without user intera
 
    Only use this in trusted reset functions, unit tests or user/app setup scripts!
 
-:param pass: Password to use
+:param password: Password to use
 :param verify: Whether password's hash was saved in authentication database
 %End
 
@@ -163,11 +164,11 @@ Clear supplied master password
    This will not necessarily clear authenticated connections cached in network connection managers
 %End
 
-    bool masterPasswordSame( const QString &pass ) const;
+    bool masterPasswordSame( const QString &password ) const;
 %Docstring
 Check whether supplied password is the same as the one already set
 
-:param pass: Password to verify
+:param password: Password to verify
 %End
 
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath /In,Out/ = 0 );
@@ -842,5 +843,5 @@ Clear an authentication config from its associated authentication method cache
  *                                                                      *
  * src/core/auth/qgsauthmanager.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

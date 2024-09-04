@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsrubberband.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -372,7 +372,6 @@ Ownership of ``symbol`` is transferred to the rubberband.
    Setting a symbol for the rubberband overrides any other appearance setting,
    such as the :py:func:`~QgsRubberBand.strokeColor` or :py:func:`~QgsRubberBand.width`.
 
-
 .. seealso:: :py:func:`setSymbol`
 
 .. versionadded:: 3.20
@@ -416,5 +415,5 @@ Recalculates needed rectangle
  *                                                                      *
  * src/gui/qgsrubberband.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

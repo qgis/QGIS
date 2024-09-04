@@ -1,0 +1,46 @@
+name: Run sipify
+
+on:
+  # disabled for security reasons as any PR would benefit from the token
+  #issue_comment:
+  #  types: [created]
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - release-*
+
+jobs:
+  sipify:
+    if: github.event_name != 'issue_comment' || ( contains(github.event.comment.html_url, '/pull/') && github.event.comment.body == '/sipify' )
+    runs-on: [ubuntu-latest]
+    steps:
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Requirements
+        run: pip install nose2 mock termcolor pyyaml
+
+      - name: Get PR branch
+        uses: alessbell/pull-request-comment-branch@v2.1.0
+        if: ${{ github.event_name == 'issue_comment' }}
+        id: comment-branch
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref || github.ref_name }}
+          repository: ${{ steps.comment-branch.outputs.head_owner || 'qgis' }}/${{ steps.comment-branch.outputs.head_repo || 'QGIS' }}
+          token: ${{ secrets.GH_TOKEN_BOT }}
+
+      - name: run sipify
+        run: ./scripts/sipify_all.sh -m
+
+      - name: commit
+        run: |
+          git config user.name qgis-bot
+          git config user.email bot@qgis.org
+          git add .
+          git commit -m "auto sipify 🍺" || echo "nothing to commit"
+          git push

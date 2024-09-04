@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrasterattributetablemodel.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -92,8 +92,9 @@ Inserts a field at the given position.
 :return: - true on success
          - errorMessage: error message
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     bool removeField( const int position, QString *errorMessage /Out/ = 0 );
@@ -148,5 +149,5 @@ Removes the row at ``position``, optionally reporting any error in ``errorMessag
  *                                                                      *
  * src/gui/raster/qgsrasterattributetablemodel.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

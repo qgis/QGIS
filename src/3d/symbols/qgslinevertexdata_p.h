@@ -33,6 +33,7 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
+#include "qgs3drendercontext.h"
 
 
 namespace Qt3DCore
@@ -51,7 +52,6 @@ namespace Qt3DRender
 #endif
 
 class QgsLineString;
-class Qgs3DMapSettings;
 
 
 /**
@@ -63,9 +63,10 @@ class Qgs3DMapSettings;
  *
  * It is expected that client code:
  *
- * # calls init()
- * # calls addLineString() many times
- * # calls createGeometry()
+ * - calls init()
+ * - calls addLineString() many times
+ * - calls createGeometry()
+ *
  */
 struct QgsLineVertexData
 {
@@ -79,11 +80,11 @@ struct QgsLineVertexData
   Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
   Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
   float baseHeight = 0;
-  const Qgs3DMapSettings *mapSettings = nullptr;
+  Qgs3DRenderContext renderContext;
 
   QgsLineVertexData();
 
-  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DMapSettings *map );
+  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DRenderContext &renderContext );
 
   QByteArray createVertexBuffer();
   QByteArray createIndexBuffer();

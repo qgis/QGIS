@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsexpressioncontext.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -74,6 +74,7 @@ class QgsExpressionContextScope
 {
 %Docstring(signature="appended")
 Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
+
 Examples include a project's scope, which could contain information about the current project such as
 the project file's location. :py:class:`QgsExpressionContextScope` can encapsulate both variables (static values)
 and functions(which are calculated only when an expression is evaluated).
@@ -471,7 +472,9 @@ class QgsExpressionContext
 {
 %Docstring(signature="appended")
 Expression contexts are used to encapsulate the parameters around which a :py:class:`QgsExpression` should
-be evaluated. :py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
+be evaluated.
+
+:py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
 their evaluated result. A :py:class:`QgsExpressionContext` consists of a stack of :py:class:`QgsExpressionContextScope` objects,
 where scopes added later to the stack will override conflicting variables and functions from scopes
 lower in the stack.
@@ -963,5 +966,5 @@ if evaluation should be canceled, if set.
  *                                                                      *
  * src/core/qgsexpressioncontext.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

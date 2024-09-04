@@ -59,6 +59,10 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsMssqlConnectionItem * > mssqlConnectionItems = QgsDataItem::filteredItems<QgsMssqlConnectionItem>( selection );
     QAction *actionDelete = new QAction( mssqlConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [mssqlConnectionItems, context]
@@ -186,6 +190,23 @@ void QgsMssqlDataItemGuiProvider::editConnection( QgsDataItem *item )
     item->refresh();
   }
 }
+
+void QgsMssqlDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
+  const QStringList connections = settings.childGroups();
+  settings.endGroup();
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsMssqlConnection::duplicateConnection( connectionName, newConnectionName );
+
+  item->parent()->refreshConnections();
+  item->refresh();
+}
+
 
 void QgsMssqlDataItemGuiProvider::createSchema( QgsMssqlConnectionItem *connItem )
 {

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbollayerutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,6 +18,9 @@ typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 
 class QgsSymbolLayerUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for working with symbols and symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerutils.h"
@@ -169,7 +172,6 @@ Converts a ``value`` to a point.
 :return: - converted point
          - ok: will be set to ``True`` if value was successfully converted
 
-
 .. seealso:: :py:func:`decodePoint`
 
 .. seealso:: :py:func:`toSize`
@@ -203,7 +205,6 @@ Converts a ``value`` to a size.
 
 :return: - converted size
          - ok: will be set to ``True`` if value was successfully converted
-
 
 .. seealso:: :py:func:`decodeSize`
 
@@ -930,8 +931,9 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.30
-   because it was related to old :py:class:`QgsSymbolLayerReference` system
+.. deprecated:: 3.30
+
+   Because it was related to old :py:class:`QgsSymbolLayerReference` system.
 %End
 
     static double rendererFrameRate( const QgsFeatureRenderer *renderer );
@@ -1032,5 +1034,5 @@ for the symbol layer will be returned.
  *                                                                      *
  * src/core/symbology/qgssymbollayerutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

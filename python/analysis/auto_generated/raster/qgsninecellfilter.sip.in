@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsninecellfilter.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -85,5 +85,5 @@ First index of the input cell is the row, second index is the column
  *                                                                      *
  * src/analysis/raster/qgsninecellfilter.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

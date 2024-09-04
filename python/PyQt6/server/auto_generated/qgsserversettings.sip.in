@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserversettings.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -372,5 +372,5 @@ by setting the environment variable QGIS_SERVER_CAPABILITIES_CACHE_SIZE.
  *                                                                      *
  * src/server/qgsserversettings.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

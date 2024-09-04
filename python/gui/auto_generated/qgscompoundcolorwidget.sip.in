@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscompoundcolorwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -52,6 +52,16 @@ Sets whether opacity modification (transparency) is permitted
 for the color dialog. Defaults to ``True``.
 
 :param allowOpacity: set to ``False`` to disable opacity modification
+%End
+
+    void setColorModelEditable( bool colorModelEditable );
+%Docstring
+Sets whether color model is editable or not
+
+:param colorModelEditable: set to ``False`` to disable color model modification
+                           Defaults to ``True``.
+
+.. versionadded:: 3.40
 %End
 
     void setDiscarded( bool discarded );
@@ -150,5 +160,5 @@ Sets the color to show in an optional "previous color" section
  *                                                                      *
  * src/gui/qgscompoundcolorwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

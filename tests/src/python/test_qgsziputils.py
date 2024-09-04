@@ -10,6 +10,7 @@ __date__ = '06/7/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
+import tempfile
 
 from qgis.PyQt.QtCore import QTemporaryDir, QTemporaryFile
 from qgis.core import QgsZipUtils
@@ -98,7 +99,7 @@ class TestQgsZip(unittest.TestCase):
 
     def test_unzip_dir_not_exist(self):
         zip = os.path.join(self.zipDir, 'testzip.zip')
-        rc, files = QgsZipUtils.unzip(zip, '/tmp/fake')
+        rc, files = QgsZipUtils.unzip(zip, tempfile.gettempdir() + '/fake')
         self.assertFalse(rc)
 
     def test_unzip_dir_empty(self):

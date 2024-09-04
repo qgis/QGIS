@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgssnappingutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -244,5 +244,5 @@ Deletes all existing locators (e.g. when destination CRS has changed and we need
  *                                                                      *
  * src/core/qgssnappingutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -34,6 +34,7 @@ class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 
   private:
     static void editConnection( QgsDataItem *item );
+    static void duplicateConnection( QgsDataItem *item );
     static void newCesium3dTilesConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );

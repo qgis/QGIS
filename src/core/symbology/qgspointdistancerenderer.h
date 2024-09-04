@@ -32,6 +32,7 @@ class QgsSymbolRenderContext;
  * \class QgsPointDistanceRenderer
  * \ingroup core
  * \brief An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
+ *
  * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
  * Subclasses must implement drawGroup() to handle the rendering of individual point clusters
  * in the desired style.

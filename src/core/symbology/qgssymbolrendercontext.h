@@ -73,23 +73,23 @@ class CORE_EXPORT QgsSymbolRenderContext
 
     /**
      * Returns the output unit for the context.
-     * \deprecated No longer used and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer used and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED Qgis::RenderUnit outputUnit() const SIP_DEPRECATED { return mOutputUnit; }
 
     /**
      * Sets the output unit for the context.
-     * \deprecated No longer used and will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer used and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void setOutputUnit( Qgis::RenderUnit u ) SIP_DEPRECATED { mOutputUnit = u; }
 
     /**
-     * \deprecated Will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED QgsMapUnitScale mapUnitScale() const SIP_DEPRECATED { return mMapUnitScale; }
 
     /**
-     * \deprecated Will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void setMapUnitScale( const QgsMapUnitScale &scale ) SIP_DEPRECATED { mMapUnitScale = scale; }
 
@@ -138,6 +138,14 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \see renderHints()
      */
     void setRenderHints( Qgis::SymbolRenderHints hints ) { mRenderHints = hints; }
+
+    /**
+     * Sets a rendering \a hint flag for the symbol.
+     * \see renderHints()
+     *
+     * \since QGIS 3.40
+     */
+    void setRenderHint( Qgis::SymbolRenderHint hint, bool enabled = true ) { mRenderHints.setFlag( hint, enabled ); }
 
     void setFeature( const QgsFeature *f ) { mFeature = f; }
 
@@ -189,12 +197,12 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
 
     /**
-     * \deprecated Use the size conversion methods in QgsRenderContext instead.
+     * \deprecated QGIS 3.40. Use the size conversion methods in QgsRenderContext instead.
      */
     Q_DECL_DEPRECATED double outputLineWidth( double width ) const SIP_DEPRECATED;
 
     /**
-     * \deprecated Use the size conversion methods in QgsRenderContext instead.
+     * \deprecated QGIS 3.40. Use the size conversion methods in QgsRenderContext instead.
      */
     Q_DECL_DEPRECATED double outputPixelSize( double size ) const SIP_DEPRECATED;
 

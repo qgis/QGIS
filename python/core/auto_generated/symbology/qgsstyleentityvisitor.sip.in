@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsstyleentityvisitor.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -112,5 +112,5 @@ The default implementation returns ``True``.
  *                                                                      *
  * src/core/symbology/qgsstyleentityvisitor.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstemporalutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -103,7 +103,6 @@ the number of days in the current month.
 
 :return: The calculated datetime for the frame.
 
-
 .. versionadded:: 3.18
 %End
 
@@ -146,5 +145,5 @@ Calculates a complete list of datetimes from a ISO8601 ``string`` containing a d
  *                                                                      *
  * src/core/qgstemporalutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

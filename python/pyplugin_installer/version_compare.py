@@ -161,7 +161,7 @@ ALLOWED FORMATS ARE: major.minor OR major.minor.bugfix, where each segment must 
 
 def splitVersion(s):
     """ split string into 2 or 3 numerical segments """
-    if not s or type(s) != str:
+    if not s or type(s) is not str:
         return None
     l = str(s).split('.')
     for c in l:

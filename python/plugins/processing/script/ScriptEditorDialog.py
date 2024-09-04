@@ -146,7 +146,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.actionToggleComment.triggered.connect(self.editor.toggleComment)
-        self.editor.textChanged.connect(self._on_text_modified)
+        self.editor.modificationChanged.connect(self._on_text_modified)
 
         self.run_dialog = None
 
@@ -230,27 +230,15 @@ class ScriptEditorDialog(BASE, WIDGET):
 
             if newPath:
                 newPath = QgsFileUtils.ensureFileNameHasExtension(newPath, ['py'])
-                self.code_editor_widget.setFilePath(newPath)
+                self.code_editor_widget.save(newPath)
+        elif self.code_editor_widget.filePath():
+            self.code_editor_widget.save()
 
-        if self.code_editor_widget.filePath():
-            text = self.editor.text()
-            try:
-                with codecs.open(self.code_editor_widget.filePath(),
-                                 "w", encoding="utf-8") as f:
-                    f.write(text)
-            except OSError as e:
-                QMessageBox.warning(self,
-                                    self.tr("I/O error"),
-                                    self.tr("Unable to save edits:\n{}").format(str(e))
-                                    )
-                return
-
-            self.setHasChanged(False)
-
+        self.setHasChanged(False)
         QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
 
-    def _on_text_modified(self):
-        self.setHasChanged(True)
+    def _on_text_modified(self, modified):
+        self.setHasChanged(modified)
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged

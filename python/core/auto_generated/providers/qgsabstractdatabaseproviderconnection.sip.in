@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/qgsabstractdatabaseproviderconnection.h           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -563,7 +563,6 @@ Renames an existing field.
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.28
@@ -1043,5 +1042,5 @@ QFlags<QgsAbstractDatabaseProviderConnection::Capability> operator|(QgsAbstractD
  *                                                                      *
  * src/core/providers/qgsabstractdatabaseproviderconnection.h           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

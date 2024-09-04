@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutrendercontext.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -195,7 +195,8 @@ If ``layer`` is -1, all item layers will be rendered.
 
 .. seealso:: :py:func:`currentExportLayer`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
@@ -209,7 +210,8 @@ If ``layer`` is -1, all item layers should be rendered.
 
 .. seealso:: :py:func:`setCurrentExportLayer`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
@@ -248,7 +250,6 @@ The default is to use no simplification.
    This simplification method is only used during non-preview renders.
 
 .. seealso:: :py:func:`simplifyMethod`
-
 
 .. versionadded:: 3.10
 %End
@@ -388,5 +389,5 @@ Emitted when the list of predefined scales changes.
  *                                                                      *
  * src/core/layout/qgslayoutrendercontext.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

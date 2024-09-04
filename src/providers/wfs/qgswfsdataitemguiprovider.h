@@ -31,6 +31,7 @@ class QgsWfsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
   private:
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
+    static void duplicateConnection( QgsDataItem *item );
     static void refreshConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );

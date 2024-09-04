@@ -87,7 +87,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return TRUE on success
      * \see QgsApplication::pluginPath
      * \see QgsApplication::qgisAuthDatabaseFilePath
-     * \deprecated Since QGIS 3.36, use setup() or ensureInitialized() instead.
+     * \deprecated QGIS 3.36. Use setup() or ensureInitialized() instead.
      */
     Q_DECL_DEPRECATED bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) SIP_DEPRECATED;
 
@@ -146,10 +146,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Overloaded call to reset master password or set it initially without user interaction
      * \note Only use this in trusted reset functions, unit tests or user/app setup scripts!
-     * \param pass Password to use
+     * \param password Password to use
      * \param verify Whether password's hash was saved in authentication database
      */
-    bool setMasterPassword( const QString &pass, bool verify = false );
+    bool setMasterPassword( const QString &password, bool verify = false );
 
     /**
      * Verify the supplied master password against any existing hash in authentication database
@@ -172,9 +172,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Check whether supplied password is the same as the one already set
-     * \param pass Password to verify
+     * \param password Password to verify
      */
-    bool masterPasswordSame( const QString &pass ) const;
+    bool masterPasswordSame( const QString &password ) const;
 
     /**
      * Reset the master password to a new one, then re-encrypt all previous

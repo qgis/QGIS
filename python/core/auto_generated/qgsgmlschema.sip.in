@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsgmlschema.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -84,5 +84,5 @@ Gets error if :py:func:`~QgsGmlSchema.parseXSD` or :py:func:`~QgsGmlSchema.guess
  *                                                                      *
  * src/core/qgsgmlschema.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

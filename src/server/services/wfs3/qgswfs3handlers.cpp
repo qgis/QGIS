@@ -1085,6 +1085,19 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
         }
       }
     };
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+    // get access controls
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    // If the layer has no insert capabilities, remove the post operation
+    if ( accessControl && !accessControl->layerInsertPermission( mapLayer ) )
+    {
+      data[ path.toStdString() ].erase( "post" );
+    }
+
+#endif
+
   } // end for loop
   return data;
 }
@@ -2087,8 +2100,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     case QgsServerRequest::Method::DeleteMethod:
     {
       // First: check permissions
-      const QStringList wfstUpdateLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
-      if ( ! wfstUpdateLayerIds.contains( mapLayer->id() ) ||
+      const QStringList wfstDeleteLayerIds = QgsServerProjectUtils::wfstDeleteLayerIds( *context.project() );
+      if ( ! wfstDeleteLayerIds.contains( mapLayer->id() ) ||
            ! mapLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::DeleteFeatures ) )
       {
         throw QgsServerApiPermissionDeniedException( QStringLiteral( "Features in layer '%1' cannot be deleted" ).arg( mapLayer->name() ) );
@@ -2281,6 +2294,25 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
         }
       }
     };
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+    // get access controls
+    QgsAccessControl *accessControl = context.serverInterface()->accessControls();
+    // If the layer has no delete capabilities, remove the delete operation
+    if ( accessControl && !accessControl->layerDeletePermission( mapLayer ) )
+    {
+      data[ path ].erase( "delete" );
+    }
+    // If the layer has no update capabilities, remove the put and patch operation
+    if ( accessControl && !accessControl->layerUpdatePermission( mapLayer ) )
+    {
+      data[ path ].erase( "put" );
+      data[ path ].erase( "patch" );
+    }
+
+#endif
+
   } // end for loop
   return data;
 }

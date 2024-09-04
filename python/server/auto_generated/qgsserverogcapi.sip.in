@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverogcapi.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,9 +28,6 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
      api = QgsServerOgcApi(serverInterface(), "/api1", "apione", "A firs API", "1.0")
      api.registerHandler(h)
      server.serverInterface().serviceRegistry().registerApi(api)
-
-
-
 
 .. versionadded:: 3.10
 %End
@@ -136,8 +133,9 @@ Returns the file extension for a ``ct`` (Content-Type).
 %Docstring
 Returns the Content-Type value corresponding to ``extension``.
 
-.. deprecated::
-   Use :py:func:`~QgsServerOgcApi.contentTypeFromExtension`
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsServerOgcApi.contentTypeFromExtension`.
 %End
 
     static QgsServerOgcApi::ContentType contentTypeFromExtension( const std::string &extension );
@@ -160,5 +158,5 @@ Returns the mime-type for the ``contentType`` or an empty string if not found
  *                                                                      *
  * src/server/qgsserverogcapi.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

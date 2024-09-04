@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmapcanvasitem.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -96,5 +96,5 @@ transformation from map coordinates to screen coordinates
  *                                                                      *
  * src/gui/qgsmapcanvasitem.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

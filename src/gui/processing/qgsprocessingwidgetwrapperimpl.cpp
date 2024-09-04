@@ -9023,6 +9023,23 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFileDestinationWidgetW
   return new QgsProcessingFileDestinationWidgetWrapper( parameter, type );
 }
 
+QStringList QgsProcessingFileDestinationWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterFile::typeName();
+}
+
+QStringList QgsProcessingFileDestinationWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputVariant::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName();
+}
+
 QString QgsProcessingFileDestinationWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "path to file destination" );
@@ -9046,6 +9063,21 @@ QString QgsProcessingFolderDestinationWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFolderDestinationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingFolderDestinationWidgetWrapper( parameter, type );
+}
+
+QStringList QgsProcessingFolderDestinationWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterFile::typeName();
+}
+
+QStringList QgsProcessingFolderDestinationWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputVariant::typeName();
 }
 
 QString QgsProcessingFolderDestinationWidgetWrapper::modelerExpressionFormatString() const

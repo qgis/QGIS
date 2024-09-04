@@ -1936,6 +1936,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
       QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
 
+      QTest::newRow( "color rgb float" ) << "color_rgbf(1,0.4989,0)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0 ) );
+      QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );
+      QTest::newRow( "color cmyk float" ) << "color_cmykf(1,0.9012,0,0.8034)" << false << QVariant( QColor::fromCmykF( 1., 0.9012, 0, 0.8034 ) );
+      QTest::newRow( "color cmyka float" ) << "color_cmykf(1,0.9012,0,0.8034,0.5069)" << false << QVariant( QColor::fromCmykF( 1.f, 0.9012, 0, 0.8034, 0.5069 ) );
+      QTest::newRow( "color cmyk invalid float" ) << "color_cmykf(1.5,0.1,0,0)" << false << QVariant( QColor::fromCmykF( 1.f, 0.1, 0, 0 ) );
+      QTest::newRow( "color hsl float" ) << "color_hslf(1,0.9012,0)" << false << QVariant( QColor::fromHslF( 1., 0.9012, 0 ) );
+      QTest::newRow( "color hsla float" ) << "color_hslf(0.5,0.9012,0,0.8034)" << false << QVariant( QColor::fromHslF( 0.5f, 0.9012, 0, 0.8034 ) );
+      QTest::newRow( "color hsl invalid float" ) << "color_hslf(1.5,0.1,0,0)" << false << QVariant( QColor::fromHslF( 1., 0.1, 0, 0 ) );
+      QTest::newRow( "color hsv float" ) << "color_hsvf(1,0.9012,0)" << false << QVariant( QColor::fromHsvF( 1., 0.9012, 0 ) );
+      QTest::newRow( "color hsva float" ) << "color_hsvf(0.5,0.9012,0,0.8034)" << false << QVariant( QColor::fromHsvF( 0.5f, 0.9012, 0, 0.8034 ) );
+      QTest::newRow( "color hsv invalid float" ) << "color_hsvf(1.5,0.1,0,0)" << false << QVariant( QColor::fromHsvF( 1, 0.1, 0, 0 ) );
+
       // Precedence and associativity
       QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
@@ -2294,7 +2306,48 @@ class TestQgsExpression: public QObject
         case QMetaType::Type::QByteArray:
           QCOMPARE( result.toByteArray(), expected.toByteArray() );
           break;
+        case QMetaType::Type::QColor:
+        {
+          const QColor resultColor = result.value<QColor>();
+          const QColor expectedColor = expected.value<QColor>();
+          QCOMPARE( resultColor.spec(), expectedColor.spec() );
+          switch ( resultColor.spec() )
+          {
+            case QColor::Spec::Cmyk:
+              QVERIFY( qgsDoubleNear( resultColor.cyanF(), expectedColor.cyanF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.magentaF(), expectedColor.magentaF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.yellowF(), expectedColor.yellowF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.blackF(), expectedColor.blackF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              break;
 
+            case QColor::Spec::Hsl:
+              QVERIFY( qgsDoubleNear( resultColor.hslHueF(), expectedColor.hslHueF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.hslSaturationF(), expectedColor.hslSaturationF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.lightnessF(), expectedColor.lightnessF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              break;
+
+            case QColor::Spec::Hsv:
+              QVERIFY( qgsDoubleNear( resultColor.hsvHueF(), expectedColor.hsvHueF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.hsvSaturationF(), expectedColor.hsvSaturationF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.valueF(), expectedColor.valueF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              break;
+
+            case QColor::Spec::ExtendedRgb:
+            case QColor::Spec::Rgb:
+              QVERIFY( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ) );
+              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              break;
+
+            case QColor::Spec::Invalid:
+              QVERIFY( false );
+          }
+          break;
+        }
         default:
           if ( result.userType() == qMetaTypeId<QgsInterval>() )
           {
@@ -5138,6 +5191,18 @@ class TestQgsExpression: public QObject
       stringList << QStringLiteral( "One" ) << QStringLiteral( "Two" ) << QStringLiteral( "A very long string that is going to be truncated" );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
                 QStringLiteral( "[ 'One', 'Two', 'A very long string that is going to be tr… ]" ) );
+
+      QColor color = QColor::fromRgbF( 1., 0.5f, 0.25f, 0.1f );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "RGBA: 1.00,0.50,0.25,0.10" );
+
+      color = QColor::fromCmykF( 1., 0.5f, 0.25f, 0.1f, 0.2f );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "CMYKA: 1.00,0.50,0.25,0.10,0.20" );
+
+      color = QColor::fromHslF( 0.90, 0.5f, 0.25f, 0.1f );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "HSLA: 0.90,0.50,0.25,0.10" );
+
+      color = QColor::fromHsvF( 0.90, 0.5f, 0.25f, 0.1f );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "HSVA: 0.90,0.50,0.25,0.10" );
     }
 
     void test_formatPreviewStringWithLocale()

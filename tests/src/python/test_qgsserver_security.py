@@ -22,6 +22,7 @@ os.environ['QT_HASH_SEED'] = '1'
 import time
 import urllib.parse
 
+import tempfile
 from shutil import copyfile
 
 from qgis.core import QgsApplication
@@ -38,8 +39,9 @@ class TestQgsServerSecurity(QgsServerTestBase):
         super().setUpClass()
         cls.testdatapath = unitTestDataPath('qgis_server_security') + '/'
         cls.db = os.path.join(cls.testdatapath, 'db.sqlite')
-        cls.db_clone = os.path.join(cls.testdatapath, 'db_clone.sqlite')
+        cls.db_clone = os.path.join(tempfile.gettempdir(), 'db_clone.sqlite')
         cls.project = os.path.join(cls.testdatapath, 'project.qgs')
+        cls.project_clone = os.path.join(tempfile.gettempdir(), 'project.qgs')
         cls.app = QgsApplication([], False)
 
     @classmethod
@@ -55,6 +57,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
     def setUp(self):
         self.server = QgsServer()
         copyfile(self.db, self.db_clone)
+        copyfile(self.project, self.project_clone)
 
     def test_wms_getfeatureinfo_filter_and_based_blind(self):
         """
@@ -356,7 +359,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
     def handle_request_wfs_getfeature_filter(self, filter_xml):
         qs = "?" + "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.parse.quote(self.project),
+            "MAP": urllib.parse.quote(self.project_clone),
             "SERVICE": "WFS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeature",
@@ -369,7 +372,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
     def handle_request_wms_getfeatureinfo(self, filter_sql):
         qs = "?" + "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.parse.quote(self.project),
+            "MAP": urllib.parse.quote(self.project_clone),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -387,7 +390,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
     def handle_request_wms_getmap(self, sld=None, filter=None):
         params = {
-            "MAP": urllib.parse.quote(self.project),
+            "MAP": urllib.parse.quote(self.project_clone),
             "SERVICE": "WMS",
             "VERSION": "1.0.0",
             "REQUEST": "GetMap",

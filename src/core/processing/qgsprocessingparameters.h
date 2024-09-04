@@ -1565,7 +1565,7 @@ class CORE_EXPORT QgsProcessingParameters
     /**
      * Evaluates the parameter with matching \a definition to a list of fields.
      *
-     * \deprecated use parameterAsStrings() instead.
+     * \deprecated QGIS 3.40. Use parameterAsStrings() instead.
      */
     Q_DECL_DEPRECATED static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_DEPRECATED;
 
@@ -1573,14 +1573,14 @@ class CORE_EXPORT QgsProcessingParameters
      * Evaluates the parameter with matching \a definition and \a value to a list of fields.
      *
      * \since QGIS 3.4
-     * \deprecated use parameterAsStrings() instead.
+     * \deprecated QGIS 3.40. Use parameterAsStrings() instead.
      */
     Q_DECL_DEPRECATED static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) SIP_DEPRECATED;
 
     /**
      * Evaluates the parameter with matching \a definition to a list of strings (e.g. field names or point cloud attributes).
      *
-     * \since QGIS 3.32.
+     * \since QGIS 3.32
      */
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 

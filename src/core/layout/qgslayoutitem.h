@@ -225,13 +225,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoStrokeWidth, //!< Stroke width adjustment
       UndoBackgroundColor, //!< Background color adjustment
       UndoOpacity, //!< Opacity adjustment
-      UndoMarginLeft, //!< Left margin (since QGIS 3.30)
-      UndoMarginTop, //!< Top margin (since QGIS 3.30)
-      UndoMarginBottom, //!< Bottom margin (since QGIS 3.30)
-      UndoMarginRight, //!< Right margin (since QGIS 3.30)
+      UndoMarginLeft, //!< Left margin \since QGIS 3.30
+      UndoMarginTop, //!< Top margin \since QGIS 3.30
+      UndoMarginBottom, //!< Bottom margin \since QGIS 3.30
+      UndoMarginRight, //!< Right margin \since QGIS 3.30
       UndoSetId, //!< Change item ID
       UndoRotation, //!< Rotation adjustment
-      UndoExportLayerName, //!< Export layer name (since QGIS 3.40)
+      UndoExportLayerName, //!< Export layer name \since QGIS 3.40
       UndoShapeStyle, //!< Shape symbol style
       UndoShapeCornerRadius, //!< Shape corner radius
       UndoNodeMove, //!< Node move
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see exportLayerBehavior()
      * \see exportLayerDetails()
      *
-     * \deprecated Use nextExportPart() and exportLayerBehavior() instead.
+     * \deprecated QGIS 3.40. Use nextExportPart() and exportLayerBehavior() instead.
      */
     Q_DECL_DEPRECATED virtual int numberExportLayers() const SIP_DEPRECATED;
 

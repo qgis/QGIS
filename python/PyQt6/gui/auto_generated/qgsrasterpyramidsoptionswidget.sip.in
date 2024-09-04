@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsrasterpyramidsoptionswidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -50,8 +50,16 @@ Returns the selected pyramid format.
     void setOverviewList();
     void updateUi();
   signals:
+
     void overviewListChanged();
-    void someValueChanged(); /* emitted when any other setting changes */
+%Docstring
+Emitted when the list of configured overviews is changed.
+%End
+
+    void someValueChanged();
+%Docstring
+Emitted when settings are changed in the widget.
+%End
 
 };
 
@@ -61,5 +69,5 @@ Returns the selected pyramid format.
  *                                                                      *
  * src/gui/qgsrasterpyramidsoptionswidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

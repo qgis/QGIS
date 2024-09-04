@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/annotations/qgsannotationitem.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -127,8 +127,9 @@ Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommon
 %Docstring
 Applies an edit ``operation`` to the item.
 
-.. deprecated::
-   QGIS 3.40, use :py:func:`~QgsAnnotationItem.applyEditV2` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotationItem.applyEditV2` instead.
 %End
 
     virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
@@ -142,8 +143,9 @@ Applies an edit ``operation`` to the item.
 %Docstring
 Retrieves the results of a transient (in progress) edit ``operation`` on the item.
 
-.. deprecated::
-   QGIS 3.40, use :py:func:`~QgsAnnotationItem.transientEditResultsV2` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotationItem.transientEditResultsV2` instead.
 %End
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
@@ -191,8 +193,9 @@ Sets if the item will be rendered or not in the layer.
 %Docstring
 Returns the nodes for the item, used for editing the item.
 
-.. deprecated::
-   QGIS 3.40, use :py:func:`~QgsAnnotationItem.nodesV2` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotationItem.nodesV2` instead.
 %End
 
     virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
@@ -326,16 +329,68 @@ The callout ``anchor`` geometry must be specified in the parent layer's coordina
 .. versionadded:: 3.40
 %End
 
+    QSizeF offsetFromCallout() const;
+%Docstring
+Returns the (optional) offset of the annotation item from the :py:func:`~QgsAnnotationItem.calloutAnchor`.
+
+Some annotation item subclasses support placement relative to the callout anchor. For these
+items, the offset from callout defines how far (in screen/page units) the item should be
+placed from the anchor point.
+
+Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
+
+.. seealso:: :py:func:`setOffsetFromCallout`
+
+.. versionadded:: 3.40
+%End
+
+    void setOffsetFromCallout( const QSizeF &offset );
+%Docstring
+Sets the offset of the annotation item from the :py:func:`~QgsAnnotationItem.calloutAnchor`.
+
+Some annotation item subclasses support placement relative to the callout anchor. For these
+items, the offset from callout defines how far (in screen/page units) the item should be
+placed from the anchor point.
+
+Units are defined by :py:func:`~QgsAnnotationItem.offsetFromCalloutUnit`
+
+.. seealso:: :py:func:`offsetFromCallout`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::RenderUnit offsetFromCalloutUnit() const;
+%Docstring
+Returns the units for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
+
+.. seealso:: :py:func:`offsetFromCallout`
+
+.. seealso:: :py:func:`setOffsetFromCalloutUnit`
+
+.. versionadded:: 3.40
+%End
+
+    void setOffsetFromCalloutUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the :py:func:`~QgsAnnotationItem.offsetFromCallout`.
+
+.. seealso:: :py:func:`setOffsetFromCallout`
+
+.. seealso:: :py:func:`offsetFromCalloutUnit`
+
+.. versionadded:: 3.40
+%End
+
   protected:
 
-    void copyCommonProperties( const QgsAnnotationItem *other );
+    virtual void copyCommonProperties( const QgsAnnotationItem *other );
 %Docstring
 Copies common properties from the base class from an ``other`` item.
 
 .. versionadded:: 3.22
 %End
 
-    bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes common properties from the base class into an XML ``element``.
 
@@ -344,7 +399,7 @@ Writes common properties from the base class into an XML ``element``.
 .. versionadded:: 3.22
 %End
 
-    bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+    virtual bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads common properties from the base class from the given DOM ``element``.
 
@@ -371,5 +426,5 @@ The item must have valid :py:func:`~QgsAnnotationItem.callout` set.
  *                                                                      *
  * src/core/annotations/qgsannotationitem.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

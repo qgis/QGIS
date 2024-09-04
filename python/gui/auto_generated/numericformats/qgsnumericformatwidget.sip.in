@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/numericformats/qgsnumericformatwidget.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -73,11 +73,9 @@ Constructor for QgsBasicNumericFormatWidget, initially showing the specified ``f
 %End
     ~QgsBasicNumericFormatWidget();
 
-    virtual void setFormat( QgsNumericFormat *format );
+    void setFormat( QgsNumericFormat *format ) final;
 
-
-    virtual QgsNumericFormat *format() /Factory/;
-
+    QgsNumericFormat *format() final /Factory/;
 
 };
 
@@ -102,11 +100,9 @@ Constructor for QgsBearingNumericFormatWidget, initially showing the specified `
 %End
     ~QgsBearingNumericFormatWidget();
 
-    virtual void setFormat( QgsNumericFormat *format );
+    void setFormat( QgsNumericFormat *format ) final;
 
-
-    virtual QgsNumericFormat *format() /Factory/;
-
+    QgsNumericFormat *format() final /Factory/;
 
 };
 
@@ -160,11 +156,9 @@ Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing th
 %End
     ~QgsGeographicCoordinateNumericFormatWidget();
 
-    virtual void setFormat( QgsNumericFormat *format );
+    void setFormat( QgsNumericFormat *format ) final;
 
-
-    virtual QgsNumericFormat *format() /Factory/;
-
+    QgsNumericFormat *format() final /Factory/;
 
 };
 
@@ -219,11 +213,9 @@ Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified 
 %End
     ~QgsCurrencyNumericFormatWidget();
 
-    virtual void setFormat( QgsNumericFormat *format );
+    void setFormat( QgsNumericFormat *format ) final;
 
-
-    virtual QgsNumericFormat *format() /Factory/;
-
+    QgsNumericFormat *format() final /Factory/;
 
 };
 
@@ -249,11 +241,9 @@ Constructor for QgsPercentageNumericFormatWidget, initially showing the specifie
 %End
     ~QgsPercentageNumericFormatWidget();
 
-    virtual void setFormat( QgsNumericFormat *format );
+    void setFormat( QgsNumericFormat *format ) final;
 
-
-    virtual QgsNumericFormat *format() /Factory/;
-
+    QgsNumericFormat *format() final /Factory/;
 
 };
 
@@ -280,11 +270,9 @@ Constructor for QgsScientificNumericFormatWidget, initially showing the specifie
 %End
     ~QgsScientificNumericFormatWidget();
 
-    virtual void setFormat( QgsNumericFormat *format );
+    void setFormat( QgsNumericFormat *format ) final;
 
-
-    virtual QgsNumericFormat *format() /Factory/;
-
+    QgsNumericFormat *format() final /Factory/;
 
 };
 
@@ -309,11 +297,38 @@ Constructor for QgsFractionNumericFormatWidget, initially showing the specified 
 %End
     ~QgsFractionNumericFormatWidget();
 
-    virtual void setFormat( QgsNumericFormat *format );
+    void setFormat( QgsNumericFormat *format ) final;
+
+    QgsNumericFormat *format() final /Factory/;
+
+};
 
 
-    virtual QgsNumericFormat *format() /Factory/;
 
+class QgsExpressionBasedNumericFormatWidget : QgsNumericFormatWidget, QgsExpressionContextGenerator
+{
+%Docstring(signature="appended")
+A widget which allow control over the properties of a :py:class:`QgsExpressionBasedNumericFormat`.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsExpressionBasedNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsExpressionBasedNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsExpressionBasedNumericFormatWidget();
+
+    QgsExpressionContext createExpressionContext() const final;
+
+    void setFormat( QgsNumericFormat *format ) final;
+
+    QgsNumericFormat *format() final /Factory/;
 
 };
 /************************************************************************
@@ -321,5 +336,5 @@ Constructor for QgsFractionNumericFormatWidget, initially showing the specified 
  *                                                                      *
  * src/gui/numericformats/qgsnumericformatwidget.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

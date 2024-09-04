@@ -58,6 +58,10 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
     menu->addAction( actionEdit );
 
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
+    menu->addAction( actionDuplicate );
+
     const QList< QgsArcGisRestConnectionItem * > arcgisConnectionItems = QgsDataItem::filteredItems<QgsArcGisRestConnectionItem>( selection );
     QAction *actionDelete = new QAction( arcgisConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [arcgisConnectionItems, context]
@@ -168,6 +172,29 @@ void QgsArcGisRestDataItemGuiProvider::editConnection( QgsDataItem *item )
     if ( item->parent() )
       item->parent()->refreshConnections();
   }
+}
+
+void QgsArcGisRestDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  const QStringList connections = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsArcGisConnectionSettings::settingsUrl->setValue( QgsArcGisConnectionSettings::settingsUrl->value( connectionName ), newConnectionName );
+
+  QgsArcGisConnectionSettings::settingsContentEndpoint->setValue( QgsArcGisConnectionSettings::settingsContentEndpoint->value( connectionName ), newConnectionName );
+  QgsArcGisConnectionSettings::settingsCommunityEndpoint->setValue( QgsArcGisConnectionSettings::settingsCommunityEndpoint->value( connectionName ), newConnectionName );
+
+  QgsArcGisConnectionSettings::settingsUsername->setValue( QgsArcGisConnectionSettings::settingsUsername->value( connectionName ), newConnectionName );
+  QgsArcGisConnectionSettings::settingsPassword->setValue( QgsArcGisConnectionSettings::settingsPassword->value( connectionName ), newConnectionName );
+  QgsArcGisConnectionSettings::settingsAuthcfg->setValue( QgsArcGisConnectionSettings::settingsAuthcfg->value( connectionName ), newConnectionName );
+
+  QgsArcGisConnectionSettings::settingsHeaders->setValue( QgsArcGisConnectionSettings::settingsHeaders->value( connectionName ), newConnectionName );
+  QgsArcGisConnectionSettings::settingsUrlPrefix->setValue( QgsArcGisConnectionSettings::settingsUrlPrefix->value( connectionName ), newConnectionName );
+
+  if ( item->parent() )
+    item->parent()->refreshConnections();
 }
 
 void QgsArcGisRestDataItemGuiProvider::refreshConnection( QgsDataItem *item )

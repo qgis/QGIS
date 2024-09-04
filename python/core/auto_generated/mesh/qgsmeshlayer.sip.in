@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshlayer.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,7 +32,7 @@ Mesh data providers
 -------------------
 
 Memory data providerType (mesh_memory)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The memory data provider is used to construct in memory data, for example scratch
 data. There is no inherent persistent storage of the data. The data source uri is constructed.
@@ -54,23 +54,19 @@ E.g. to create mesh with one quad and one triangle
       scratchLayer = QgsMeshLayer(uri, "My Scratch layer", "mesh_memory")
 
 MDAL data provider (mdal)
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
 is the MDAL connection string. QGIS must be built with MDAL support to allow this provider.
-
 
 .. code-block:: python
 
          uri = "test/land.2dm"
          scratchLayer = QgsMeshLayer(uri, "My Scratch Layer",  "mdal")
 
-
-
 .. note::
 
    The API is considered EXPERIMENTAL and can be changed without a notice
-
 
 .. versionadded:: 3.2
 %End
@@ -320,7 +316,6 @@ Returns the dataset count in the dataset groups
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes can be different from the data provider indexes.
 
-
 .. versionadded:: 3.16
 %End
 
@@ -334,7 +329,6 @@ Returns the dataset metadata
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes can be different from the data provider indexes.
-
 
 .. versionadded:: 3.16
 %End
@@ -356,7 +350,6 @@ Returns invalid value for DataOnVolumes
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes can be different from the data provider indexes.
-
 
 .. versionadded:: 3.16
 %End
@@ -380,7 +373,6 @@ need block for any type of data type
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes can be different from the data provider indexes.
 
-
 .. versionadded:: 3.16
 %End
 
@@ -400,7 +392,6 @@ returns invalid block for DataOnFaces and DataOnVertices.
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes can be different from the data provider indexes.
-
 
 .. versionadded:: 3.16
 %End
@@ -427,7 +418,6 @@ Returns whether the faces are active for particular dataset
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes are different from the data provider indexes.
 
-
 .. versionadded:: 3.16
 %End
 
@@ -453,12 +443,10 @@ For 1D datasets, it uses :py:func:`~QgsMeshLayer.dataset1dValue` with ``searchRa
          outside the mesh layer, nodata values and in case triangular mesh was not
          previously used for rendering
 
-
 .. note::
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes are different from the data provider indexes.
-
 
 .. versionadded:: 3.4
 %End
@@ -482,12 +470,10 @@ Returns the 3d values of stacked 3d mesh defined by the given point
          for point outside the mesh layer or in case triangular mesh was not
          previously used for rendering or for datasets that do not have type DataOnVolumes
 
-
 .. note::
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes are different from the data provider indexes.
-
 
 .. versionadded:: 3.12
 %End
@@ -511,12 +497,10 @@ Returns the value of 1D mesh dataset defined on edge that are in the search area
 :return: interpolated value at the projected point. Returns NaN values for values
          outside the mesh layer and in case triangular mesh was not previously used for rendering
 
-
 .. note::
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes are different from the data provider indexes.
-
 
 .. versionadded:: 3.14
 %End
@@ -535,12 +519,10 @@ If the temporal properties is not active, returns invalid dataset index. This me
 
    the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
 
-
 .. note::
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes are different from the data provider indexes.
-
 
 .. versionadded:: 3.14
 %End
@@ -559,12 +541,10 @@ Dataset index is valid even the temporal properties is inactive. This method is 
 
    the returned dataset index depends on the matching method, see :py:func:`~QgsMeshLayer.setTemporalMatchingMethod`
 
-
 .. note::
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes are different from the data provider indexes.
-
 
 .. versionadded:: 3.16
 %End
@@ -584,7 +564,6 @@ Dataset index is valid even the temporal properties is inactive. This method is 
 
    indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
    In the layer scope, those indexes are different from the data provider indexes.
-
 
 .. versionadded:: 3.22
 %End
@@ -683,7 +662,6 @@ The returned position is in map coordinates.
 
 :return: the position of the snapped point on the closest element, empty :py:class:`QgsPointXY` if no element of type ``elementType``
 
-
 .. versionadded:: 3.14
 %End
 
@@ -766,8 +744,9 @@ This operation will disconnect the mesh layer from the data provider and removes
 
 .. versionadded:: 3.22
 
-.. deprecated:: QGIS 3.28
-  use the version with :py:class:`QgsMeshEditingError` instead
+.. deprecated:: 3.28
+
+   Use the version with :py:class:`QgsMeshEditingError` instead.
 %End
 
     bool startFrameEditing( const QgsCoordinateTransform &transform, QgsMeshEditingError &error /Out/, bool fixErrors );
@@ -976,5 +955,5 @@ Emitted when the mesh layer is reloaded, see :py:func:`~QgsMeshLayer.reload`
  *                                                                      *
  * src/core/mesh/qgsmeshlayer.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

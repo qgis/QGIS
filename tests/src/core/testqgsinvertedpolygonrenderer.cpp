@@ -28,7 +28,9 @@
 #include <qgsproviderregistry.h>
 #include <qgsproject.h>
 #include "qgsrenderer.h"
-
+#include "qgsfillsymbol.h"
+#include "qgsinvertedpolygonrenderer.h"
+#include "qgssinglesymbolrenderer.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -41,7 +43,7 @@ class TestQgsInvertedPolygon : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsInvertedPolygon() : QgsTest( QStringLiteral( "Inverted Polygon Renderer Tests" ) ) {}
+    TestQgsInvertedPolygon() : QgsTest( QStringLiteral( "Inverted Polygon Renderer Tests" ), QStringLiteral( "symbol_invertedpolygon" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -52,6 +54,7 @@ class TestQgsInvertedPolygon : public QgsTest
     void checkSymbolItem();
     void preprocess();
     void projectionTest();
+    void projectionWithSimplificationTest();
     void curvedPolygons();
     void rotationTest();
 
@@ -134,6 +137,34 @@ void TestQgsInvertedPolygon::projectionTest()
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection2", &extent ) );
   mMapSettings.setDestinationCrs( mpPolysLayer->crs() );
+}
+
+void TestQgsInvertedPolygon::projectionWithSimplificationTest()
+{
+  std::unique_ptr< QgsVectorLayer > polyLayer = std::make_unique< QgsVectorLayer >( testDataPath( "polys.shp" ), QStringLiteral( "polys" ) );
+  QVERIFY( polyLayer->isValid() );
+  QgsMapSettings mapSettings;
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << polyLayer.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsFillSymbol *fill = QgsFillSymbol::createSimple( QVariantMap( {{"color", "#fdbf6f"}, {"outline_color", "black"},
+    { "outline_width", "1"}} ) );
+  QgsInvertedPolygonRenderer *renderer = new QgsInvertedPolygonRenderer();
+  QgsSingleSymbolRenderer *singleSymbolRenderer = new QgsSingleSymbolRenderer( fill );
+  renderer->setEmbeddedRenderer( singleSymbolRenderer );
+  polyLayer->setRenderer( renderer );
+
+  mapSettings.setExtent( QgsRectangle( -119.552, 25.255, -109.393, 32.651 ) );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
+  simplifyMethod.setForceLocalOptimization( true );
+  simplifyMethod.setSimplifyAlgorithm( Qgis::VectorSimplificationAlgorithm::SnappedToGridGlobal );
+  simplifyMethod.setThreshold( 0.1f );
+  mapSettings.setSimplifyMethod( simplifyMethod );
+
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "inverted_polys_projection_simplification" ), QStringLiteral( "inverted_polys_projection_simplification" ), mapSettings );
 }
 
 void TestQgsInvertedPolygon::curvedPolygons()

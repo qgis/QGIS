@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/qgsprovidermetadata.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -58,8 +58,7 @@ Constructs driver metadata with selected capabilities
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
 
-.. deprecated::
-   QGIS 3.22
+.. deprecated:: 3.22
 %End
 
     QgsMeshDriverMetadata( const QString &name,
@@ -257,8 +256,9 @@ This returns the library file name
 
 This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
 
-.. deprecated::
-   QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+.. deprecated:: 3.10
+
+   Providers may not need to be loaded from a library (empty string returned).
 %End
 
 
@@ -441,11 +441,9 @@ metadata :py:func:`~QgsProviderMetadata.createDatabase` method can be used to cr
 :return: - ``True`` if the database was successfully created
          - errorMessage: will be set to a descriptive error message if the database could not be successfully created.
 
-
 .. note::
 
    This method is only supported by providers which return the QgsProviderMetadata.ProviderMetadataCapability.CreateDatabase capability.
-
 
 .. versionadded:: 3.28
 %End
@@ -678,10 +676,8 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 :return: - ``True`` if the metadata was successfully saved.
          - errorMessage: descriptive string of error if encountered
 
-
 :raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
-
 
 .. versionadded:: 3.20
 %End
@@ -846,5 +842,5 @@ QFlags<QgsProviderMetadata::ProviderCapability> operator|(QgsProviderMetadata::P
  *                                                                      *
  * src/core/providers/qgsprovidermetadata.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

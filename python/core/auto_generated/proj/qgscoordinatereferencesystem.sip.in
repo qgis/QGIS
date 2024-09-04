@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgscoordinatereferencesystem.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -57,12 +57,10 @@ For example, the following code will create and inspect "British national grid" 
 
 This will produce the following output:
 
-
-.. code-block:: raw
+.. code-block:: text
 
      CRS Description: OSGB 1936 / British National Grid
      CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
-
 
 CRS Definition Formats
 ----------------------
@@ -82,7 +80,6 @@ QGIS adds support for "USER" authority that refers to IDs used internally in QGI
 is best avoided or used with caution as the IDs are not permanent and they refer to different CRS
 on different machines or user profiles.
 
-
 .. seealso:: :py:func:`authid`
 
 .. seealso:: :py:func:`createFromOgcWmsCrs`
@@ -91,12 +88,9 @@ on different machines or user profiles.
   format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
   underlying proj library. For example, the definition of WGS84 looks like this:
 
-
-.. code-block:: raw
+.. code-block:: text
 
        +proj=longlat +datum=WGS84 +no_defs
-
-
 
 .. seealso:: :py:func:`toProj`
 
@@ -105,8 +99,7 @@ on different machines or user profiles.
 - Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
   format to define CRS. For WGS84 the OGC WKT definition is the following:
 
-
-.. code-block:: raw
+.. code-block:: text
 
            GEOGCS["WGS 84",
                   DATUM["WGS_1984",
@@ -115,8 +108,6 @@ on different machines or user profiles.
                   PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
                   UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
                   AUTHORITY["EPSG","4326"]]
-
-
 
 .. seealso:: :py:func:`toWkt`
 
@@ -169,7 +160,6 @@ Caveats
 There are two different flavors of WKT: one is defined by OGC, the other is the standard
 used by ESRI. They look very similar, but they are not the same. QGIS is able to consume
 both flavors.
-
 
 .. seealso:: :py:class:`QgsCoordinateTransform`
 %End
@@ -232,8 +222,9 @@ A CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
 :param id: The ID valid for the chosen CRS ID type
 :param type: One of the types described in CrsType
 
-.. deprecated::
-   QGIS 3.10 We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+.. deprecated:: 3.10
+
+   We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
 %End
 
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -278,8 +269,9 @@ Creates a CRS from a proj style formatted string.
 
 .. seealso:: :py:func:`createFromProj`
 
-.. deprecated::
-   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.fromProj` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsCoordinateReferenceSystem.fromProj` instead.
 %End
 
     static QgsCoordinateReferenceSystem fromProj( const QString &proj );
@@ -333,7 +325,6 @@ or the compound CRS could not be created for the combination.
 :return: - compound CRS if it was possible to create one, or an invalid CRS if not
          - error: will be set to a descriptive error if the compound CRS could not be created
 
-
 .. versionadded:: 3.38
 %End
 
@@ -345,8 +336,9 @@ Sets this CRS by lookup of the given ID in the CRS database.
 
 :return: ``True`` on success else ``False``
 
-.. deprecated::
-   QGIS 3.10 We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+.. deprecated:: 3.10
+
+   We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
 %End
 
 
@@ -376,8 +368,9 @@ Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 
 :return: ``True`` on success else ``False``
 
-.. deprecated::
-   QGIS 3.10 Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
+.. deprecated:: 3.10
+
+   Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
 %End
 
     bool createFromWkt( const QString &wkt );
@@ -456,8 +449,9 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. seealso:: :py:func:`fromProj`
 
-.. deprecated::
-   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.createFromProj` instead
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsCoordinateReferenceSystem.createFromProj` instead.
 %End
 
     bool createFromProj( const QString &projString );
@@ -555,8 +549,9 @@ This is required for proper shapefile CRS import when using gdal>= 1.9.
    unless it has been set by the user through the commandline or an environment variable.
    For more details refer to OGRSpatialReference.morphFromESRI() .
 
-.. deprecated::
-   QGIS 3.10 Not used on builds based on Proj version 6 or later
+.. deprecated:: 3.10
+
+   Not used on builds based on Proj version 6 or later.
 %End
 
     bool isValid() const;
@@ -578,6 +573,8 @@ if that involves resorting to a hard coded default of geocs:wgs84.
    are trying to force this CRS to be valid.
 
 .. seealso:: :py:func:`setCustomCrsValidation`
+
+.. seealso:: :py:func:`customCrsValidation`
 %End
 
 
@@ -593,8 +590,9 @@ pieces of information about CRS.
 
 :return: long the SrsId of the matched CRS, zero if no match was found
 
-.. deprecated::
-   QGIS 3.10 Not used in Proj >= 6 based builds
+.. deprecated:: 3.10
+
+   Not used in Proj >= 6 based builds.
 %End
 
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
@@ -740,8 +738,9 @@ overridden with these.
 
 .. seealso:: :py:func:`toWkt`
 
-.. deprecated::
-   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.toProj` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsCoordinateReferenceSystem.toProj` instead.
 %End
 
     QString toProj() const;
@@ -810,9 +809,7 @@ be returned.
 
    This method requires PROJ 8.0 or later
 
-
 :raises QgsNotSupportedException: on QGIS builds based on PROJ 7 or earlier.
-
 
 .. versionadded:: 3.20
 %End
@@ -826,7 +823,6 @@ Attempts to retrieve the name of the celestial body associated with the CRS (e.g
    This method requires PROJ 8.1 or later
 
 :raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
-
 
 .. versionadded:: 3.20
 %End
@@ -853,9 +849,7 @@ CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
    between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
    however dynamic CRS to dynamic CRS transformations are not currently supported.
 
-
 .. seealso:: :py:func:`coordinateEpoch`
-
 
 .. versionadded:: 3.20
 %End
@@ -882,9 +876,7 @@ CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
 
 :return: Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
 
-
 .. seealso:: :py:func:`setCoordinateEpoch`
-
 
 .. versionadded:: 3.20
 %End
@@ -1154,40 +1146,45 @@ Returns a list of recently used projections
 
 :return: list of srsid for recently used projections
 
-.. deprecated::
-   QGIS 3.10 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
+.. deprecated:: 3.10
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
  static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Returns a list of recently used CRS.
 
-.. deprecated::
-   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
  static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Pushes a recently used CRS to the top of the recent CRS list.
 
-.. deprecated::
-   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.pushRecent` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.pushRecent` instead.
 %End
 
  static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Removes a CRS from the list of recently used CRS.
 
-.. deprecated::
-   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.removeRecent` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.removeRecent` instead.
 %End
 
  static void clearRecentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Cleans the list of recently used CRS.
 
-.. deprecated::
-   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.clearRecent` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.clearRecent` instead.
 %End
 
 
@@ -1207,5 +1204,5 @@ that outdated CRS objects are not created.
  *                                                                      *
  * src/core/proj/qgscoordinatereferencesystem.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

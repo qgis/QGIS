@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingalgorithm.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -135,8 +135,9 @@ Returns a localised help string for the algorithm. Algorithm subclasses should i
 
 .. seealso:: :py:func:`shortHelpString`
 
-.. deprecated::
-   Unused, will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Unused, will be removed in QGIS 4.0.
 %End
 
     virtual QString helpUrl() const /HoldGIL/;
@@ -442,7 +443,6 @@ Note that some combinations of parameter types and values cannot be represented 
 
 :return: - equivalent qgis_process command
          - ok: will be set to ``True`` if the command was successfully generated
-
 
 .. versionadded:: 3.24
 %End
@@ -779,7 +779,6 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :return: - path to source layer, or nearly converted compatible layer
          - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
 
-
 .. seealso:: :py:func:`parameterAsCompatibleSourceLayerPath`
 
 .. versionadded:: 3.10
@@ -938,8 +937,9 @@ Evaluates the parameter with matching ``name`` to a range of values.
 %Docstring
 Evaluates the parameter with matching ``name`` to a list of fields.
 
-.. deprecated::
-   use :py:func:`~QgsProcessingAlgorithm.parameterAsStrings` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProcessingAlgorithm.parameterAsStrings` instead.
 %End
 
     QStringList parameterAsStrings( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -1127,7 +1127,7 @@ should correspond to the sink parameter name.
 class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
 {
 %Docstring(signature="appended")
-An abstract QgsProcessingAlgorithm base class for processing algorithms which operate "feature-by-feature".
+An abstract :py:class:`QgsProcessingAlgorithm` base class for processing algorithms which operate "feature-by-feature".
 
 Feature based algorithms are algorithms which operate on individual features in isolation. These
 are algorithms where one feature is output for each input feature, and the output feature result
@@ -1321,5 +1321,5 @@ Read the source from ``parameters`` and ``context`` and set it
  *                                                                      *
  * src/core/processing/qgsprocessingalgorithm.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

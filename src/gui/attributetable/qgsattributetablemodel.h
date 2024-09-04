@@ -298,12 +298,16 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   signals:
 
     /**
-     * Model has been changed
+     * Emitted when the model has been changed.
      */
     void modelChanged();
 
     //! \note not available in Python bindings
     void progress( int i, bool &cancel ) SIP_SKIP;
+
+    /**
+     * Emitted when the model has completely loaded all features.
+     */
     void finished();
 
   private slots:

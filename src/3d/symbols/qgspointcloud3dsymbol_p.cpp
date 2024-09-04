@@ -20,12 +20,14 @@
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrequest.h"
-#include "qgs3dmapsettings.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgsfeedback.h"
+#include "qgsaabb.h"
 
+#include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QParameter>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
@@ -568,7 +570,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterRect( context.layerExtent() );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -607,7 +609,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
   }
 }
@@ -691,7 +693,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterRect( context.layerExtent() );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -727,7 +729,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
 
     if ( attrIsX )
@@ -796,7 +798,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterRect( context.layerExtent() );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -846,7 +848,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
 
@@ -959,7 +961,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  request.setFilterRect( context.extent() );
+  request.setFilterRect( context.layerExtent() );
   std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
@@ -1010,7 +1012,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     float iParam = 0.0f;
     if ( attrIsX )
       iParam = x;

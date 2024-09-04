@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayer.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -209,7 +209,6 @@ the layer is owned by a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`).
 
    This method should not be called on layers which already belong to a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`.
 
-
 .. seealso:: :py:func:`id`
 
 .. seealso:: :py:func:`idChanged`
@@ -241,128 +240,144 @@ Returns the layer's data provider, it may be ``None``.
 %Docstring
 Sets the short name of the layer used by QGIS Server to identify the layer.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setShortName` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setShortName` instead.
 %End
 
  QString shortName() const /Deprecated/;
 %Docstring
 Returns the short name of the layer used by QGIS Server to identify the layer.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.shortName` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.shortName` instead.
 %End
 
  void setTitle( const QString &title ) /Deprecated/;
 %Docstring
 Sets the title of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setTitle` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setTitle` instead.
 %End
 
  QString title() const /Deprecated/;
 %Docstring
 Returns the title of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.title` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.title` instead.
 %End
 
  void setAbstract( const QString &abstract ) /Deprecated/;
 %Docstring
 Sets the abstract of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAbstract` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAbstract` instead.
 %End
 
  QString abstract() const /Deprecated/;
 %Docstring
 Returns the abstract of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.abstract` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.abstract` instead.
 %End
 
  void setKeywordList( const QString &keywords ) /Deprecated/;
 %Docstring
 Sets the keyword list of the layerused by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setKeywordList` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setKeywordList` instead.
 %End
 
  QString keywordList() const /Deprecated/;
 %Docstring
 Returns the keyword list of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.keywordList` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.keywordList` instead.
 %End
 
  void setDataUrl( const QString &dataUrl ) /Deprecated/;
 %Docstring
 Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrl` instead.
 %End
 
  QString dataUrl() const /Deprecated/;
 %Docstring
 Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrl` instead.
 %End
 
  void setDataUrlFormat( const QString &dataUrlFormat ) /Deprecated/;
 %Docstring
 Sets the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrlFormat` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrlFormat` instead.
 %End
 
  QString dataUrlFormat() const /Deprecated/;
 %Docstring
 Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrlFormat` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrlFormat` instead.
 %End
 
  void setAttribution( const QString &attrib ) /Deprecated/;
 %Docstring
 Sets the attribution of the layerused by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttribution` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttribution` instead.
 %End
 
  QString attribution() const /Deprecated/;
 %Docstring
 Returns the attribution of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attribution` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attribution` instead.
 %End
 
  void setAttributionUrl( const QString &attribUrl ) /Deprecated/;
 %Docstring
 Sets the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttributionUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttributionUrl` instead.
 %End
 
  QString attributionUrl() const /Deprecated/;
 %Docstring
 Returns the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attributionUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attributionUrl` instead.
 %End
 
 
@@ -381,7 +396,7 @@ Since QGIS 3.22, it edits the first metadata URL link.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
  QString metadataUrl() const /Deprecated/;
@@ -395,7 +410,7 @@ Since QGIS 3.22, it returns the first metadata URL link.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
  void setMetadataUrlType( const QString &metaUrlType ) /Deprecated/;
@@ -407,7 +422,7 @@ Since QGIS 3.22, it edits the first metadata URL type.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
  QString metadataUrlType() const /Deprecated/;
@@ -421,7 +436,7 @@ Since QGIS 3.22, it returns the first metadata URL type.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
  void setMetadataUrlFormat( const QString &metaUrlFormat ) /Deprecated/;
@@ -433,7 +448,7 @@ Since QGIS 3.22, it edits the first metadata URL format.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
  QString metadataUrlFormat() const /Deprecated/;
@@ -447,7 +462,7 @@ Since QGIS 3.22, it returns the first metadata URL format.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
     void setBlendMode( QPainter::CompositionMode blendMode );
@@ -644,14 +659,15 @@ or layer with temporary data (as temporary mesh layer dataset)
 %Docstring
 Sets state from DOM document
 
-:param layerElement: The DOM element corresponding to ``maplayer'' tag
+:param layerElement: The DOM element corresponding to ``maplayer`` tag
 :param context: writing context (e.g. for conversion between relative and absolute paths)
 :param flags: optional argument which can be used to control layer reading behavior.
 :param preloadedProvider: optional preloaded data provider that will be used as data provider for this layer, takes ownership (since QGIS 3.32)
-\note
 
-The DOM node corresponds to a DOM document project file XML element read
-by :py:class:`QgsProject`.
+.. note::
+
+   The DOM node corresponds to a DOM document project file XML element read
+   by :py:class:`QgsProject`.
 
 This, in turn, calls :py:func:`~QgsMapLayer.readXml` (and then :py:func:`~QgsMapLayer.readSymbology`), which is overridable
 by sub-classes so that they can read their own specific state from the given DOM node.
@@ -665,13 +681,14 @@ Invoked by :py:func:`QgsProject.read()`.
 %Docstring
 Stores state in DOM node
 
-:param layerElement: is a DOM element corresponding to ``maplayer'' tag
+:param layerElement: is a DOM element corresponding to ``maplayer`` tag
 :param document: is a the DOM document being written
 :param context: reading context (e.g. for conversion between relative and absolute paths)
-\note
 
-The DOM node corresponds to a DOM document project file XML element to be
-written by :py:class:`QgsProject`.
+.. note::
+
+   The DOM node corresponds to a DOM document project file XML element to be
+   written by :py:class:`QgsProject`.
 
 This, in turn, calls :py:func:`~QgsMapLayer.writeXml` (and then writeSymbology), which is over-rideable
 by sub-classes so that they can write their own specific state to the given DOM node.
@@ -848,7 +865,6 @@ The returned CRS will be invalid if the layer has no vertical CRS.
 
 .. seealso:: :py:func:`setVerticalCrs`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -872,7 +888,6 @@ on the returned value to determine the type of CRS returned by this method.
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`crs3DChanged`
-
 
 .. versionadded:: 3.38
 %End
@@ -905,15 +920,12 @@ The :py:func:`~QgsMapLayer.verticalCrsChanged` signal will be raised if the vert
 
 :param crs: the vertical CRS
 
-
 :return: - ``True`` if vertical CRS was successfully set
          - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
-
 
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`setCrs`
-
 
 .. versionadded:: 3.38
 %End
@@ -984,7 +996,7 @@ Retrieve a named metadata for this layer if one
 exists (either as a .qmd file on disk or as a
 record in the users style table in their personal qgis.db)
 
-:param uri: - the file name or other URI for the
+:param uri: the file name or other URI for the
             metadata file. First an attempt will be made to see if this
             is a file and load that, if that fails the qgis.db metadata
             table will be consulted to see if there is a metadata who's
@@ -1062,7 +1074,7 @@ Retrieve a named style for this layer if one
 exists (either as a .qml file on disk or as a
 record in the users style table in their personal qgis.db)
 
-:param uri: - the file name or other URI for the
+:param uri: the file name or other URI for the
             style file. First an attempt will be made to see if this
             is a file and load that, if that fails the qgis.db styles
             table will be consulted to see if there is a style who's
@@ -1166,7 +1178,7 @@ record in the users style table in their personal qgis.db)
 
 .. seealso:: :py:func:`saveNamedStyle`
 
-.. deprecated:: QGIS 3.26
+.. deprecated:: 3.26
 %End
 
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/, StyleCategories categories = AllStyleCategories );
@@ -1544,8 +1556,9 @@ Returns ``True`` if auto refresh is enabled for the layer.
 
 .. seealso:: :py:func:`setAutoRefreshEnabled`
 
-.. deprecated::
-   use :py:func:`~QgsMapLayer.autoRefreshMode` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMapLayer.autoRefreshMode` instead.
 %End
 
     Qgis::AutoRefreshMode autoRefreshMode() const;
@@ -1591,7 +1604,8 @@ Sets whether auto refresh is enabled for the layer.
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsMapLayer.setAutoRefreshMode` instead.
 %End
 
@@ -1774,7 +1788,7 @@ Returns true if map tips are enabled for this layer
     static Qgis::DataProviderReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
 %Docstring
 Returns provider read flag deduced from layer read flags ``layerReadFlags`` and a dom node ``layerNode``
-that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by :py:class:`QgsProject`).
+that describes a layer (corresponding to ``maplayer`` tag in a DOM document project file read by :py:class:`QgsProject`).
 This static method is used when loading a project.
 
 .. versionadded:: 3.32
@@ -2304,7 +2318,7 @@ happens.
 Checks whether a new set of dependencies will introduce a cycle
 this method is now deprecated and always return ``False``, because circular dependencies are now correctly managed.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
 
@@ -2333,5 +2347,5 @@ QFlags<QgsMapLayer::ReadFlag> operator|(QgsMapLayer::ReadFlag f1, QFlags<QgsMapL
  *                                                                      *
  * src/core/qgsmaplayer.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

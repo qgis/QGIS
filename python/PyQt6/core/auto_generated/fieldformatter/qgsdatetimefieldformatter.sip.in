@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -55,8 +55,9 @@ The type is expected to be one of
 - QVariant.Date
 - QVariant.Time
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     static QString defaultDisplayFormat( QMetaType::Type type );
@@ -82,8 +83,9 @@ The type is expected to be one of
 
 .. versionadded:: 3.30
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
 };
@@ -93,5 +95,5 @@ The type is expected to be one of
  *                                                                      *
  * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

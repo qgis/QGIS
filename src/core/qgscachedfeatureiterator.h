@@ -67,8 +67,6 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      *
      * \param f      Will write to this feature
      * \returns bool  TRUE if the operation was OK
-     *
-     * \see bool getFeature( QgsFeature& f )
      */
     bool fetchFeature( QgsFeature &f ) override;
 
@@ -135,8 +133,6 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      *
      * \param f      Will write to this feature
      * \returns bool  TRUE if the operation was OK
-     *
-     * \see bool getFeature( QgsFeature& f )
      */
     bool fetchFeature( QgsFeature &f ) override;
 

@@ -40,14 +40,11 @@ class QgsRenderPassQuad : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructor
-    QgsRenderPassQuad( QNode *parent = nullptr );
+    QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent = nullptr );
 
-    //! Returns the layer object used to select this entity for rendering in a specific rendering pass
-    Qt3DRender::QLayer *layer() { return mLayer; }
   protected:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QShaderProgram *mShader = nullptr;
-    Qt3DRender::QLayer *mLayer = nullptr;
 };
 
 #endif // QGSRENDERPASSQUAD_H

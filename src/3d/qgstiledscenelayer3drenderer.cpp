@@ -58,7 +58,7 @@ QgsAbstract3DRenderer *QgsTiledSceneLayer3DRenderer::clone() const
   return r;
 }
 
-Qt3DCore::QEntity *QgsTiledSceneLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
+Qt3DCore::QEntity *QgsTiledSceneLayer3DRenderer::createEntity( Qgs3DMapSettings *map ) const
 {
   QgsTiledSceneLayer *tsl = layer();
   if ( !tsl || !tsl->dataProvider() )

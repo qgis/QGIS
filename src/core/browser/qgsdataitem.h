@@ -153,7 +153,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
      * \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-     * \param refresh - set to TRUE to refresh populated item, emitting relevant signals to the model
+     * \param refresh set to TRUE to refresh populated item, emitting relevant signals to the model
      * \see deleteChildItem()
      */
     virtual void addChildItem( QgsDataItem *child SIP_TRANSFER, bool refresh = false );
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Returns mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \see hasDragEnabled()
-     * \deprecated since QGIS 3.18, use mimeUris() instead
+     * \deprecated QGIS 3.18. Use mimeUris() instead.
      */
     Q_DECL_DEPRECATED virtual QgsMimeDataUtils::Uri mimeUri() const SIP_DEPRECATED;
 
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
      *
-     * \deprecated since QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
@@ -304,7 +304,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) SIP_PYNAME( setCapabilitiesV2 ) { mCapabilities = capabilities; }
 
     /**
-     * \deprecated use setCapabilitiesV2 instead.
+     * \deprecated QGIS 3.40. Use setCapabilitiesV2 instead.
      */
     Q_DECL_DEPRECATED void setCapabilities( int capabilities ) SIP_DEPRECATED;
 
@@ -507,10 +507,54 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void childrenCreated();
 
   signals:
+
+    /**
+     * Emitted before child items are added to this data item.
+     *
+     * This signal *must* be followed by endInsertItems().
+     *
+     * \param parent the parent item having children added, will always be this object
+     * \param first index of first child item to be added
+     * \param last index last child item, after the addition has occurred
+     *
+     * \see endInsertItems()
+     */
     void beginInsertItems( QgsDataItem *parent, int first, int last );
+
+    /**
+     * Emitted after child items have been added to this data item.
+     *
+     * This signal will always be preceded by beginInsertItems().
+     *
+     * \see beginInsertItems()
+     */
     void endInsertItems();
+
+    /**
+     * Emitted before child items are removed from this data item.
+     *
+     * This signal *must* be followed by endRemoveItems().
+     *
+     * \param parent the parent item having children removed, will always be this object
+     * \param first index of first child item to be removed
+     * \param last index of the last child item to be removed
+     *
+     * \see endRemoveItems()
+     */
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
+
+    /**
+     * Emitted after child items have been removed from this data item.
+     *
+     * This signal will always be preceded by beginRemoveItems().
+     *
+     * \see beginRemoveItems()
+     */
     void endRemoveItems();
+
+    /**
+     * Emitted when data changes for an \a item.
+     */
     void dataChanged( QgsDataItem *item );
 
     /**

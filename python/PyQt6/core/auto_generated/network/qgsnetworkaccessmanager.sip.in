@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/network/qgsnetworkaccessmanager.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -474,7 +474,8 @@ Preprocesses request
  void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
 %End
 
@@ -619,7 +620,8 @@ See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and p
  void requestCreated( QNetworkReply * ) /Deprecated/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
 %End
 
@@ -652,5 +654,5 @@ Emitted when the cookies changed.
  *                                                                      *
  * src/core/network/qgsnetworkaccessmanager.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

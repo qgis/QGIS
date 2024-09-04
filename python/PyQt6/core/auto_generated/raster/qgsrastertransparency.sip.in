@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrastertransparency.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -152,8 +152,9 @@ by the stored transparency value.
 :param value: the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
 
-.. deprecated::
-   use :py:func:`~QgsRasterTransparency.opacityForValue` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterTransparency.opacityForValue` instead.
 %End
 
     double opacityForValue( double value ) const;
@@ -178,8 +179,9 @@ by the stored transparency value.
 :param blueValue: the green portion of the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
 
-.. deprecated::
-   use :py:func:`~QgsRasterTransparency.opacityForRgbValues` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterTransparency.opacityForRgbValues` instead.
 %End
 
     double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
@@ -215,5 +217,5 @@ Reads the transparency information from an XML document.
  *                                                                      *
  * src/core/raster/qgsrastertransparency.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

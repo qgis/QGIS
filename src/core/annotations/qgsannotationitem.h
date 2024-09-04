@@ -153,7 +153,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Applies an edit \a operation to the item.
      *
-     * \deprecated QGIS 3.40, use applyEditV2() instead.
+     * \deprecated QGIS 3.40. Use applyEditV2() instead.
      */
     Q_DECL_DEPRECATED virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) SIP_DEPRECATED;
 
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Retrieves the results of a transient (in progress) edit \a operation on the item.
      *
-     * \deprecated QGIS 3.40, use transientEditResultsV2() instead.
+     * \deprecated QGIS 3.40. Use transientEditResultsV2() instead.
      */
     Q_DECL_DEPRECATED virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) SIP_FACTORY;
 
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Returns the nodes for the item, used for editing the item.
      *
-     * \deprecated QGIS 3.40, use nodesV2() instead.
+     * \deprecated QGIS 3.40. Use nodesV2() instead.
      */
     Q_DECL_DEPRECATED virtual QList< QgsAnnotationItemNode > nodes() const SIP_DEPRECATED;
 
@@ -334,6 +334,54 @@ class CORE_EXPORT QgsAnnotationItem
      */
     void setCalloutAnchor( const QgsGeometry &anchor );
 
+    /**
+     * Returns the (optional) offset of the annotation item from the calloutAnchor().
+     *
+     * Some annotation item subclasses support placement relative to the callout anchor. For these
+     * items, the offset from callout defines how far (in screen/page units) the item should be
+     * placed from the anchor point.
+     *
+     * Units are defined by offsetFromCalloutUnit()
+     *
+     * \see setOffsetFromCallout()
+     * \since QGIS 3.40
+     */
+    QSizeF offsetFromCallout() const;
+
+    /**
+     * Sets the offset of the annotation item from the calloutAnchor().
+     *
+     * Some annotation item subclasses support placement relative to the callout anchor. For these
+     * items, the offset from callout defines how far (in screen/page units) the item should be
+     * placed from the anchor point.
+     *
+     * Units are defined by offsetFromCalloutUnit()
+     *
+     * \see offsetFromCallout()
+     * \since QGIS 3.40
+     */
+    void setOffsetFromCallout( const QSizeF &offset );
+
+    /**
+     * Returns the units for the offsetFromCallout().
+     *
+     * \see offsetFromCallout()
+     * \see setOffsetFromCalloutUnit()
+     *
+     * \since QGIS 3.40
+     */
+    Qgis::RenderUnit offsetFromCalloutUnit() const;
+
+    /**
+     * Sets the \a unit for the offsetFromCallout().
+     *
+     * \see setOffsetFromCallout()
+     * \see offsetFromCalloutUnit()
+     *
+     * \since QGIS 3.40
+     */
+    void setOffsetFromCalloutUnit( Qgis::RenderUnit unit );
+
   protected:
 
     /**
@@ -341,7 +389,7 @@ class CORE_EXPORT QgsAnnotationItem
      *
      * \since QGIS 3.22
      */
-    void copyCommonProperties( const QgsAnnotationItem *other );
+    virtual void copyCommonProperties( const QgsAnnotationItem *other );
 
     /**
      * Writes common properties from the base class into an XML \a element.
@@ -349,7 +397,7 @@ class CORE_EXPORT QgsAnnotationItem
      * \see writeXml()
      * \since QGIS 3.22
      */
-    bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Reads common properties from the base class from the given DOM \a element.
@@ -357,7 +405,7 @@ class CORE_EXPORT QgsAnnotationItem
      * \see readXml()
      * \since QGIS 3.22
      */
-    bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+    virtual bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Renders the item's callout.
@@ -377,6 +425,8 @@ class CORE_EXPORT QgsAnnotationItem
 
     std::unique_ptr< QgsCallout > mCallout;
     QgsGeometry mCalloutAnchor;
+    QSizeF mOffsetFromCallout;
+    Qgis::RenderUnit mOffsetFromCalloutUnit = Qgis::RenderUnit::Millimeters;
 
 #ifdef SIP_RUN
     QgsAnnotationItem( const QgsAnnotationItem &other );

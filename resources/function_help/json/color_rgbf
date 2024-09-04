@@ -1,0 +1,26 @@
+{
+  "name": "color_rgbf",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a color object based on its red, green, blue and alpha components.",
+  "arguments": [{
+    "arg": "red",
+    "description": "red component as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "green",
+    "description": "green component as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "blue",
+    "description": "blue component as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "alpha",
+    "optional": true,
+    "default": "1.0",
+    "description": "alpha component as a float value from 0.0 to 1.0"
+  }],
+  "examples": [{
+    "expression": "color_rgbf(1.0,0.5,0)",
+    "returns": "RGBA: 1.00,0.50,0.00,1.00"
+  }],
+  "tags": ["green", "blue", "red", "alpha", "color", "components"]
+}

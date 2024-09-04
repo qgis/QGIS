@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vectortile/qgsvectortilerenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -95,9 +95,9 @@ Abstract base class for all vector tile renderer implementations.
 
 For rendering it is expected that client code calls:
 
-# :py:func:`~QgsVectorTileRendererData.startRender` to prepare renderer
-# :py:func:`~QgsVectorTileRendererData.renderTile` for each tile
-# :py:func:`~QgsVectorTileRendererData.stopRender` to clean up renderer and free resources
+- :py:func:`~startRender` to prepare renderer
+- :py:func:`~renderTile` for each tile
+- :py:func:`~stopRender` to clean up renderer and free resources
 
 .. versionadded:: 3.14
 %End
@@ -196,5 +196,5 @@ Resolves references to other objects - second phase of loading - after :py:func:
  *                                                                      *
  * src/core/vectortile/qgsvectortilerenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

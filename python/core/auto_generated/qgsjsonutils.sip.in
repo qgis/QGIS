@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsjsonutils.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -357,8 +357,9 @@ Parse a simple array (depth=1)
              the array items will be converted to the type, and discarded if
              the conversion is not possible.
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
 
@@ -384,5 +385,5 @@ Returns a null geometry if the geometry could not be parsed.
  *                                                                      *
  * src/core/qgsjsonutils.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

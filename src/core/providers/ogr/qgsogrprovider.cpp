@@ -1739,7 +1739,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
             OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, stringToBool( strVal, &ok ) );
             if ( !ok )
             {
-              pushError( tr( "wrong value for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( strVal ) );
+              pushError( tr( "wrong value for attribute %1 of feature %2: %3" )
+                         .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                         .arg( f.id() )
+                         .arg( strVal ) );
               errorEmitted = true;
             }
           }
@@ -1954,7 +1957,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
       {
         if ( !errorEmitted )
         {
-          pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( attrVal.typeName() ) );
+          pushError( tr( "wrong data type for attribute %1 of feature %2: Got %3, expected %4" )
+                     .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                     .arg( f.id() )
+                     .arg( attrVal.typeName(), QVariant::typeToName( mAttributeFields.at( qgisAttributeId ).type() ) ) );
         }
         returnValue = false;
       }
@@ -4210,7 +4216,7 @@ void QgsOgrProvider::open( OpenMode mode )
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( dataSourceUri( true ) );
-  if ( ( !vsiPrefix.isEmpty() && vsiPrefix != QStringLiteral( "/vsimem/" ) ) || mFilePath.startsWith( QLatin1String( "/vsicurl/" ) ) )
+  if ( ( !vsiPrefix.isEmpty() && vsiPrefix != QLatin1String( "/vsimem/" ) ) || mFilePath.startsWith( QLatin1String( "/vsicurl/" ) ) )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.

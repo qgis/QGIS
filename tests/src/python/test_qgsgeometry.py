@@ -2643,14 +2643,14 @@ class TestQgsGeometry(QgisTestCase):
                     message += ' failed'
                 message_with_wkt = message + f'\nOriginal geom: {geoms[t].asWkt()}'
                 if type(parts[t]) is list:
-                    if type(parts[t][0]) == QgsPointXY:
+                    if type(parts[t][0]) is QgsPointXY:
                         self.assertEqual(geoms[t].addPointsXYV2(parts[t], geom_type), expected_result, message_with_wkt)
-                    elif type(parts[t][0]) == QgsPoint:
+                    elif type(parts[t][0]) is QgsPoint:
                         self.assertEqual(geoms[t].addPointsV2(parts[t]), expected_result, message_with_wkt)
                     else:
                         self.fail(message_with_wkt + '\n could not detect what Python method to use for add part')
                 else:
-                    if type(parts[t]) == QgsGeometry:
+                    if type(parts[t]) is QgsGeometry:
                         self.assertEqual(geoms[t].addPartGeometry(parts[t]), expected_result, message)
                     else:
                         self.assertEqual(geoms[t].addPartV2(parts[t], geom_type), expected_result, message_with_wkt)
@@ -2848,14 +2848,14 @@ class TestQgsGeometry(QgisTestCase):
                     message += ' failed'
                 message_with_wkt = message + f'\nOriginal geom: {geoms[t].asWkt()}'
                 if type(parts[t]) is list:
-                    if type(parts[t][0]) == QgsPointXY:
+                    if type(parts[t][0]) is QgsPointXY:
                         self.assertEqual(geoms[t].addPointsXY(parts[t], geom_type), expected_result, message_with_wkt)
-                    elif type(parts[t][0]) == QgsPoint:
+                    elif type(parts[t][0]) is QgsPoint:
                         self.assertEqual(geoms[t].addPoints(parts[t]), expected_result, message_with_wkt)
                     else:
                         self.fail(message_with_wkt + '\n could not detect what Python method to use for add part')
                 else:
-                    if type(parts[t]) == QgsGeometry:
+                    if type(parts[t]) is QgsGeometry:
                         self.assertEqual(geoms[t].addPartGeometry(parts[t]), expected_result, message)
                     else:
                         self.assertEqual(geoms[t].addPart(parts[t], geom_type), expected_result, message_with_wkt)
@@ -6198,40 +6198,46 @@ class TestQgsGeometry(QgisTestCase):
                             f"clipped: mismatch Expected:\n{exp}\nGot:\n{result}\n")
 
     def testCreateWedgeBuffer(self):
-        tests = [[QgsPoint(1, 11), 0, 45, 2, 0,
+        tests = [[QgsPoint(1, 11), 0, 45, -22.5, 22.5, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (0.23463313526982044 12.84775906502257392, 1 13, 1.76536686473017967 12.84775906502257392),(1.76536686473017967 12.84775906502257392, 1 11),(1 11, 0.23463313526982044 12.84775906502257392)))'],
-                 [QgsPoint(1, 11), 90, 45, 2, 0,
+                 [QgsPoint(1, 11), 90, 45, 67.5, 112.5, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (2.84775906502257348 11.76536686473017923, 3 11, 2.84775906502257348 10.23463313526982077),(2.84775906502257348 10.23463313526982077, 1 11),(1 11, 2.84775906502257348 11.76536686473017923)))'],
-                 [QgsPoint(1, 11), 180, 90, 2, 0,
+                 [QgsPoint(1, 11), 180, 90, 135, 225, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (2.41421356237309492 9.58578643762690419, 1.00000000000000022 9, -0.41421356237309492 9.58578643762690419),(-0.41421356237309492 9.58578643762690419, 1 11),(1 11, 2.41421356237309492 9.58578643762690419)))'],
-                 [QgsPoint(1, 11), 0, 200, 2, 0,
+                 [QgsPoint(1, 11), 0, 200, -100, 100, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (-0.96961550602441604 10.65270364466613984, 0.99999999999999956 13, 2.96961550602441626 10.65270364466613984),(2.96961550602441626 10.65270364466613984, 1 11),(1 11, -0.96961550602441604 10.65270364466613984)))'],
-                 [QgsPoint(1, 11), 0, 45, 2, 1,
+                 [QgsPoint(1, 11), 0, 45, -22.5, 22.5, 2, 1,
                   'CurvePolygon (CompoundCurve (CircularString (0.23463313526982044 12.84775906502257392, 1 13, 1.76536686473017967 12.84775906502257392),(1.76536686473017967 12.84775906502257392, 1.38268343236508984 11.92387953251128607),CircularString (1.38268343236508984 11.92387953251128607, 0.99999999999999978 12, 0.61731656763491016 11.92387953251128607),(0.61731656763491016 11.92387953251128607, 0.23463313526982044 12.84775906502257392)))'],
-                 [QgsPoint(1, 11), 0, 200, 2, 1,
+                 [QgsPoint(1, 11), 0, 200, -100, 100, 2, 1,
                   'CurvePolygon (CompoundCurve (CircularString (-0.96961550602441604 10.65270364466613984, 0.99999999999999956 13, 2.96961550602441626 10.65270364466613984),(2.96961550602441626 10.65270364466613984, 1.98480775301220813 10.82635182233306992),CircularString (1.98480775301220813 10.82635182233306992, 0.99999999999999978 12, 0.01519224698779198 10.82635182233306992),(0.01519224698779198 10.82635182233306992, -0.96961550602441604 10.65270364466613984)))'],
-                 [QgsPoint(1, 11, 3), 0, 45, 2, 0,
+                 [QgsPoint(1, 11, 3), 0, 45, -22.5, 22.5, 2, 0,
                   'CurvePolygonZ (CompoundCurveZ (CircularStringZ (0.23463313526982044 12.84775906502257392 3, 1 13 3, 1.76536686473017967 12.84775906502257392 3),(1.76536686473017967 12.84775906502257392 3, 1 11 3),(1 11 3, 0.23463313526982044 12.84775906502257392 3)))'],
-                 [QgsPoint(1, 11, m=3), 0, 45, 2, 0,
+                 [QgsPoint(1, 11, m=3), 0, 45, -22.5, 22.5, 2, 0,
                   'CurvePolygonM (CompoundCurveM (CircularStringM (0.23463313526982044 12.84775906502257392 3, 1 13 3, 1.76536686473017967 12.84775906502257392 3),(1.76536686473017967 12.84775906502257392 3, 1 11 3),(1 11 3, 0.23463313526982044 12.84775906502257392 3)))'],
-                 [QgsPoint(1, 11), 0, 360, 2, 0,
+                 [QgsPoint(1, 11), 0, 360, -180, 180, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)))'],
-                 [QgsPoint(1, 11), 0, -1000, 2, 0,
+                 [QgsPoint(1, 11), 0, -1000, 0, 360, 2, 0,
                   'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)))'],
-                 [QgsPoint(1, 11), 0, 360, 2, 1,
-                  'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)),CompoundCurve (CircularString (1 12, 2 11, 1 10, 0 11, 1 12)))']
+                 [QgsPoint(1, 11), 0, 360, -180, 180, 2, 1,
+                  'CurvePolygon (CompoundCurve (CircularString (1 13, 3 11, 1 9, -1 11, 1 13)),CompoundCurve (CircularString (1 12, 2 11, 1 10, 0 11, 1 12)))'],
                  ]
         for t in tests:
-            input = t[0]
+            point = t[0]
             azimuth = t[1]
             width = t[2]
-            outer = t[3]
-            inner = t[4]
-            o = QgsGeometry.createWedgeBuffer(input, azimuth, width, outer, inner)
-            exp = t[5]
-            result = o.asWkt()
-            self.assertTrue(compareWkt(result, exp, 0.01),
-                            f"wedge buffer: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+            startAngle = t[3]
+            endAngle = t[4]
+            outer = t[5]
+            inner = t[6]
+            o1 = QgsGeometry.createWedgeBuffer(point, azimuth, width, outer, inner)
+            o2 = QgsGeometry.createWedgeBufferFromAngles(point, startAngle, endAngle, outer, inner)
+            exp = t[7]
+            result1 = o1.asWkt()
+            result2 = o2.asWkt()
+            self.assertTrue(compareWkt(result1, exp, 0.01),
+                            f"wedge buffer from azimuth: mismatch Expected:\n{exp}\nGot:\n{result1}\n")
+            self.assertTrue(compareWkt(result2, exp, 0.01),
+                            f"wedge buffer from angles: mismatch Expected:\n{exp}\nGot:\n{result2}\n")
 
     def testTaperedBuffer(self):
         tests = [['LineString (6 2, 9 2, 9 3, 11 5)', 1, 2, 3,

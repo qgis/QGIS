@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutview.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -585,9 +585,9 @@ class QgsLayoutViewMenuProvider
 {
 %Docstring(signature="appended")
 
-Interface for a QgsLayoutView context menu.
+Interface for a :py:class:`QgsLayoutView` context menu.
 
-Implementations of this interface can be made to allow QgsLayoutView
+Implementations of this interface can be made to allow :py:class:`QgsLayoutView`
 instances to provide custom context menus (opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayoutView`
@@ -612,5 +612,5 @@ Returns a newly created menu instance (or ``None`` on error)
  *                                                                      *
  * src/gui/layout/qgslayoutview.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

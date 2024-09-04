@@ -59,8 +59,8 @@ static bool hasAnyActiveChildren( QgsChunkNode *node, QList<QgsChunkNode *> &act
 }
 
 
-QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
-  : Qgs3DMapSceneEntity( parent )
+QgsChunkedEntity::QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
+  : Qgs3DMapSceneEntity( mapSettings, parent )
   , mTau( tau )
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )

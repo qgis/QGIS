@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsifeatureselectionmanager.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,7 +40,7 @@ Deselect features by feature ``ids``.
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 %Docstring
 Change selection to the new set of features. Dismisses the current selection.
-Will emit the selectionChanged( const :py:class:`QgsFeatureIds`&, const :py:class:`QgsFeatureIds`&, bool ) signal with the
+Will emit the :py:func:`~QgsIFeatureSelectionManager.selectionChanged` signal with the
 clearAndSelect flag set.
 
 :param ids: The ids which will be the new selection
@@ -52,7 +52,7 @@ clearAndSelect flag set.
 %Docstring
 Returns reference to identifiers of selected features
 
-:return: A list of :py:class:`QgsFeatureId`'s
+:return: A list of selected :py:class:`QgsFeatureId`
 
 .. seealso:: :py:func:`setSelectedFeatures`
 %End
@@ -74,5 +74,5 @@ Emitted when selection was changed.
  *                                                                      *
  * src/gui/attributetable/qgsifeatureselectionmanager.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

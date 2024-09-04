@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspropertycollection.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -455,7 +455,7 @@ Convenience method, creates a :py:class:`QgsStaticProperty` and stores it within
 class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 {
 %Docstring(signature="appended")
-An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
+An ordered stack of :py:class:`QgsPropertyCollection` containers, where collections added later to the stack will take
 priority over earlier collections.
 %End
 
@@ -598,5 +598,5 @@ Returns the set of any fields referenced by the active properties from the stack
  *                                                                      *
  * src/core/qgspropertycollection.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

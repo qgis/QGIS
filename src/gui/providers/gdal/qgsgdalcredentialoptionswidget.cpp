@@ -110,7 +110,7 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
           return option.first;
 
         case Column::Value:
-          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QStringLiteral( "YES" ) ? tr( "Yes" ) : option.second == QStringLiteral( "NO" ) ? tr( "No" ) : option.second )
+          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QLatin1String( "YES" ) ? tr( "Yes" ) : option.second == QLatin1String( "NO" ) ? tr( "No" ) : option.second )
                  :  option.second;
 
         default:

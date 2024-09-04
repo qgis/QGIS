@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgslayeritem.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -96,8 +96,7 @@ Returns the icon name of the given ``layerType``
 Delete this layer item
 Use :py:class:`QgsDataItemGuiProvider`.deleteLayer instead
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
   protected:
@@ -161,5 +160,5 @@ Set layer's ``metadata``.
  *                                                                      *
  * src/core/browser/qgslayeritem.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

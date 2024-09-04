@@ -742,7 +742,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Prepare a \a device for printing a layout as a PDF, to the destination \a filePath.
      */
-    static void preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice *device, const QString &filePath );
+    static void preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device, const QString &filePath );
 
     static void preparePrint( QgsLayout *layout, QPagedPaintDevice *device, bool setFirstPageSize = false );
 
@@ -776,6 +776,12 @@ class CORE_EXPORT QgsLayoutExporter
                                       const std::function<QgsLayoutExporter::ExportResult( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetails )> &exportFunc,
                                       const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc
                                     );
+
+    // Returns PDF creator (used also as producer)
+    static QString getCreator();
+
+    // Set PDF XMP metadata on pdfWriter for given layout
+    static void setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout );
 
     static QgsVectorSimplifyMethod createExportSimplifyMethod();
     static QgsMaskRenderSettings createExportMaskSettings();

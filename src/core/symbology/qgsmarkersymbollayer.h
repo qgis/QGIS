@@ -566,7 +566,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Returns the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
-     * \see setFixedAspectRatio() QgsSvgCache
+     * \see setFixedAspectRatio()
+     * \see QgsSvgCache
      */
     double fixedAspectRatio() const { return mFixedAspectRatio; }
 
@@ -574,7 +575,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Set the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
      * \param ratio Fixed Aspect Ratio
-     * \see fixedAspectRatio() QgsSvgCache
+     * \see fixedAspectRatio()
+     * \see QgsSvgCache
      */
     void setFixedAspectRatio( double ratio ) { mFixedAspectRatio = ratio; }
 
@@ -773,7 +775,8 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Returns the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
-     * \see setFixedAspectRatio() QgsSvgCache
+     * \see setFixedAspectRatio()
+     * \see QgsSvgCache
      */
     double fixedAspectRatio() const { return mFixedAspectRatio; }
 
@@ -781,7 +784,8 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Set the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
      * \param ratio Fixed Aspect Ratio
-     * \see fixedAspectRatio() QgsSvgCache
+     * \see fixedAspectRatio()
+     * \see QgsSvgCache
      */
     void setFixedAspectRatio( double ratio ) { mFixedAspectRatio = ratio; }
 

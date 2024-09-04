@@ -68,8 +68,6 @@ class QgsAppMapTools
       Annotation, // Unused
       FormAnnotation,
       HtmlAnnotation,
-      SvgAnnotation,
-      TextAnnotation,
       PinLabels,
       ShowHideLabels,
       MoveLabel,

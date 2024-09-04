@@ -76,7 +76,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
     /**
      * Returns the vector layer associated with the widget.
      *
-     * \deprecated QGIS 3.40, use layer() instead.
+     * \deprecated QGIS 3.40. Use layer() instead.
      */
     Q_DECL_DEPRECATED const QgsVectorLayer *vectorLayer() const SIP_DEPRECATED { return qobject_cast< QgsVectorLayer * >( mLayer ); }
 
@@ -252,6 +252,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
     void offsetFromAnchorUnitWidgetChanged();
     void offsetFromAnchorChanged();
     void fillSymbolChanged();
+    void markerSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
     void mCalloutBlendComboBox_currentIndexChanged( int index );
 

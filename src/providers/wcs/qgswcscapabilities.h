@@ -288,7 +288,7 @@ class QgsWcsCapabilities : public QObject
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
-     * \param preferredVersion - optional version, e.g. 1.0.0, 1.1.0
+     * \param preferredVersion optional version, e.g. 1.0.0, 1.1.0
      *
      * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info

@@ -150,7 +150,7 @@ true > "$SIPIFYDIFF"
 for root_dir in python python/PyQt6; do
 
   if [[ $root_dir == "python/PyQt6" ]]; then
-    IS_QT6="--qt6"
+    IS_QT6="-qt6"
   fi
 
   for f in $MODIFIED; do
@@ -167,7 +167,7 @@ for root_dir in python python/PyQt6; do
           touch $root_dir/"$sip_file"
         fi
         cp $root_dir/"$sip_file" "$m"
-        "${TOPLEVEL}"/scripts/sipify.pl $IS_QT6 -s $m -p $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
+        "${TOPLEVEL}"/scripts/sipify.py $IS_QT6 -sip_output $m -python_output $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
         # only replace sip files if they have changed
         if ! diff -u $root_dir/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
           echo "$root_dir/$sip_file is not up to date"

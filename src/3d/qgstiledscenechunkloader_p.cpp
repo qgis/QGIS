@@ -93,7 +93,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.tileTransform.translate( tileContent.rtcCenter );
-    entityTransform.sceneOriginTargetCrs = mFactory.mMap.origin();
+    entityTransform.sceneOriginTargetCrs = mFactory.mRenderContext.origin();
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = zValueScale;
     entityTransform.zValueOffset = zValueOffset;
@@ -136,13 +136,13 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 
 ///
 
-QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double zValueScale, double zValueOffset )
-  : mMap( map )
+QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, double zValueScale, double zValueOffset )
+  : mRenderContext( context )
   , mIndex( index )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
 {
-  mBoundsTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mMap.crs(), mMap.transformContext() );
+  mBoundsTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4978" ), mRenderContext.crs(), mRenderContext.transformContext() );
 }
 
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -163,8 +163,8 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
   if ( hasLargeBounds( t ) )
   {
     // use the full extent of the scene
-    QgsVector3D v0 = mMap.mapToWorldCoordinates( QgsVector3D( mMap.extent().xMinimum(), mMap.extent().yMinimum(), -100 ) );
-    QgsVector3D v1 = mMap.mapToWorldCoordinates( QgsVector3D( mMap.extent().xMaximum(), mMap.extent().yMaximum(), +100 ) );
+    QgsVector3D v0 = mRenderContext.mapToWorldCoordinates( QgsVector3D( mRenderContext.extent().xMinimum(), mRenderContext.extent().yMinimum(), -100 ) );
+    QgsVector3D v1 = mRenderContext.mapToWorldCoordinates( QgsVector3D( mRenderContext.extent().xMaximum(), mRenderContext.extent().yMaximum(), +100 ) );
     QgsAABB aabb( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
     float err = std::min( 1e6, t.geometricError() );
     node = new QgsChunkNode( nodeId, aabb, err, parent );
@@ -174,7 +174,7 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
     QgsBox3D box = t.boundingVolume().bounds( mBoundsTransform );
     box.setZMinimum( box.zMinimum() * mZValueScale + mZValueOffset );
     box.setZMaximum( box.zMaximum() * mZValueScale + mZValueOffset );
-    const QgsAABB aabb = aabbConvert( box, mMap.origin() );
+    const QgsAABB aabb = aabbConvert( box, mRenderContext.origin() );
     node = new QgsChunkNode( nodeId, aabb, t.geometricError(), parent );
   }
 
@@ -212,7 +212,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
       // TODO: make OBB of our scene in ECEF rather than just using center of the scene?
       const QgsOrientedBox3D obb = t.boundingVolume().box();
 
-      const QgsPointXY c = mMap.extent().center();
+      const QgsPointXY c = mRenderContext.extent().center();
       const QgsVector3D cEcef = mBoundsTransform.transform( QgsVector3D( c.x(), c.y(), 0 ), Qgis::TransformDirection::Reverse );
       const QgsVector3D ecef2 = cEcef - obb.center();
 
@@ -318,8 +318,8 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 
 ///
 
-QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( const Qgs3DMapSettings &map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
-  : QgsChunkedEntity( maximumScreenError, new QgsTiledSceneChunkLoaderFactory( map, index, zValueScale, zValueOffset ), true )
+QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
+  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, zValueScale, zValueOffset ), true )
   , mIndex( index )
 {
   setShowBoundingBoxes( showBoundingBoxes );

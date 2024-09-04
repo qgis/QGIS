@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturerequest.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,7 +39,6 @@ The options may be chained, e.g.:
        QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest.ExactIntersect)
 
 Examples:
-
 
 .. code-block:: python
 
@@ -645,7 +644,6 @@ the SubsetOfAttributes flag should be removed from the request.
 
 .. seealso:: :py:func:`setSubsetOfAttributes`
 
-
 .. versionadded:: 3.4
 %End
 
@@ -797,7 +795,6 @@ any destination CRS transform present in the feature request.
 
 .. seealso:: :py:func:`coordinateTransform`
 
-
 .. versionadded:: 3.40
 %End
 
@@ -876,7 +873,8 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsFeatureRequest.timeout` instead.
 %End
 
@@ -889,7 +887,8 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsFeatureRequest.setTimeout` instead.
 %End
 
@@ -1024,5 +1023,5 @@ Gets an iterator for features matching the specified request
  *                                                                      *
  * src/core/qgsfeaturerequest.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowVisible,      //!< Show only visible features (depends on the map canvas)
       ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
       ShowEdited,       //!< Show only features which have unsaved changes
-      ShowInvalid,      //!< Show only features not respecting constraints (since QGIS 3.30)
+      ShowInvalid,      //!< Show only features not respecting constraints \since QGIS 3.30
     };
     Q_ENUM( FilterMode )
 
@@ -316,7 +316,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
      *
-     * \deprecated since QGIS 3.10.3 - made private as reloadVisible()
+     * \deprecated QGIS 3.10.3. Made private as reloadVisible().
      */
     Q_DECL_DEPRECATED void extentsChanged();
 

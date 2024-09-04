@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsdatetimeedit.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -188,13 +188,12 @@ The :py:class:`QgsTimeEdit` class is a QTimeEdit widget with the capability of s
 
    You should use the signal timeValueChanged of this subclass
    rather than QDateTimeEdit.timeChanged. (If you consequently connect parent's
-   timeChanged signal and call :py:func:`~QgsDateTimeEdit.time` afterwards there is no guarantee that
+   timeChanged signal and call :py:func:`~time` afterwards there is no guarantee that
    NULL values will be correctly handled).
 
 .. seealso:: :py:class:`QgsDateTimeEdit`
 
 .. seealso:: :py:class:`QgsDateEdit`
-
 
 .. versionadded:: 3.14
 %End
@@ -243,13 +242,12 @@ The :py:class:`QgsDateEdit` class is a QDateEdit widget with the capability of s
 
    You should use the signal dateValueChanged of this subclass
    rather than QDateTimeEdit.dateChanged. (If you consequently connect parent's
-   dateChanged signal and call :py:func:`~QgsTimeEdit.date` afterwards there is no guarantee that
+   dateChanged signal and call :py:func:`~date` afterwards there is no guarantee that
    NULL values will be correctly handled).
 
 .. seealso:: :py:class:`QgsDateTimeEdit`
 
 .. seealso:: :py:class:`QgsTimeEdit`
-
 
 .. versionadded:: 3.14
 %End
@@ -294,5 +292,5 @@ Signal emitted whenever the date changes.
  *                                                                      *
  * src/gui/editorwidgets/qgsdatetimeedit.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

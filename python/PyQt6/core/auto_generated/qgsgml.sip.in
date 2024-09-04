@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsgml.h                                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,10 +17,9 @@ class QgsGml : QObject
 %Docstring(signature="appended")
 This class reads data from a WFS server or alternatively from a GML file.
 
-It
-uses the expat XML parser and an event based model to keep performance high.
+It uses the expat XML parser and an event based model to keep performance high.
 The parsing starts when the first data arrives, it does not wait until the
-request is finished
+request is finished.
 %End
 
 %TypeHeaderCode
@@ -39,7 +38,7 @@ request is finished
                      const QString &password = QString(),
                      const QString &authcfg = QString() ) /PyName=getFeaturesUri/;
 %Docstring
-Does the Http GET request to the wfs server
+Does the HTTP GET request to the WFS server
 
 :param uri: GML URL
 :param wkbType: wkbType to retrieve
@@ -57,7 +56,9 @@ Does the Http GET request to the wfs server
 
     int getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent = 0 );
 %Docstring
-Read from GML data. Constructor uri param is ignored
+Read from GML data.
+
+The constructor uri param is ignored.
 %End
 
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const;
@@ -72,15 +73,31 @@ Gets feature ids map
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
-Returns features spatial reference system
+Returns the spatial reference system for features.
 %End
 
   signals:
+
     void dataReadProgress( int progress );
+%Docstring
+Emitted when data reading progresses.
+
+:param progress: specifies the number of bytes processed so far
+%End
+
     void totalStepsUpdate( int totalSteps );
+%Docstring
+Emitted when the total number of bytes to read changes.
+
+:param totalSteps: specifies the total number of bytes which must be processed
+%End
+
     void dataProgressAndSteps( int progress, int totalSteps );
 %Docstring
-Also emit signal with progress and totalSteps together (this is better for the status message)
+Emitted when data reading progresses or the total number of bytes to read changes.
+
+:param progress: specifies the number of bytes processed so far
+:param totalSteps: specifies the total number of bytes which must be processed
 %End
 
 };
@@ -90,5 +107,5 @@ Also emit signal with progress and totalSteps together (this is better for the s
  *                                                                      *
  * src/core/qgsgml.h                                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

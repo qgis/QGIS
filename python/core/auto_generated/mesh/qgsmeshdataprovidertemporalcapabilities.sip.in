@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovidertemporalcapabilities.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -117,5 +117,5 @@ The value is -1 if the dataset group is not present or if it contains only one d
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovidertemporalcapabilities.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
