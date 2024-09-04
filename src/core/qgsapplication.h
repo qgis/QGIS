@@ -158,8 +158,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     enum StyleSheetType
     {
-      Qt, //! StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
-      WebBrowser, //! StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
+      Qt, //!< StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
+      WebBrowser, //!< StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
     };
 
     static const char *QGIS_ORGANIZATION_NAME;
