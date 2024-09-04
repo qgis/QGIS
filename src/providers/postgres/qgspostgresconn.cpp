@@ -2557,6 +2557,14 @@ void QgsPostgresConn::postgisWkbType( Qgis::WkbType wkbType, QString &geometryTy
       geometryType = QStringLiteral( "MULTISURFACE" );
       break;
 
+    case Qgis::WkbType::PolyhedralSurface:
+      geometryType = QStringLiteral( "POLYHEDRALSURFACE" );
+      break;
+
+    case Qgis::WkbType::TIN:
+      geometryType = QStringLiteral( "TIN" );
+      break;
+
     case Qgis::WkbType::Unknown:
       geometryType = QStringLiteral( "GEOMETRY" );
       break;
@@ -2612,7 +2620,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, Qgis::WkbType wkbTy
     case Qgis::GeometryType::Line:
       return QStringLiteral( "upper(geometrytype(%1)) IN ('LINESTRING','LINESTRINGZ','LINESTRINGM','LINESTRINGZM','CIRCULARSTRING','CIRCULARSTRINGZ','CIRCULARSTRINGM','CIRCULARSTRINGZM','COMPOUNDCURVE','COMPOUNDCURVEZ','COMPOUNDCURVEM','COMPOUNDCURVEZM','MULTILINESTRING','MULTILINESTRINGZ','MULTILINESTRINGM','MULTILINESTRINGZM','MULTICURVE','MULTICURVEZ','MULTICURVEM','MULTICURVEZM')" ).arg( geomCol );
     case Qgis::GeometryType::Polygon:
-      return QStringLiteral( "upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','POLYHEDRALSURFACE','TIN')" ).arg( geomCol );
+      return QStringLiteral( "upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','POLYHEDRALSURFACE','POLYHEDRALSURFACEZ','POLYHEDRALSURFACEM','POLYHEDRALSURFACEZM','TIN','TINZ','TINM','TINZM')" ).arg( geomCol );
     case Qgis::GeometryType::Null:
       return QStringLiteral( "geometrytype(%1) IS NULL" ).arg( geomCol );
     default: //unknown geometry
@@ -2632,27 +2640,7 @@ int QgsPostgresConn::postgisWkbTypeDim( Qgis::WkbType wkbType )
 
 Qgis::WkbType QgsPostgresConn::wkbTypeFromPostgis( const QString &type )
 {
-  // Polyhedral surfaces and TIN are stored in PostGIS as geometry collections
-  // of Polygons and Triangles.
-  // So, since QGIS does not natively support PS and TIN, but we would like to open them if possible,
-  // we consider them as multipolygons. WKB will be converted by the feature iterator
-  if ( ( type == QLatin1String( "POLYHEDRALSURFACE" ) ) || ( type == QLatin1String( "TIN" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygon;
-  }
-  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZ" ) ) || ( type == QLatin1String( "TINZ" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygonZ;
-  }
-  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEM" ) ) || ( type == QLatin1String( "TINM" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygonM;
-  }
-  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZM" ) ) || ( type == QLatin1String( "TINZM" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygonZM;
-  }
-  else if ( type == QLatin1String( "TRIANGLE" ) )
+  if ( type == QLatin1String( "TRIANGLE" ) )
   {
     return Qgis::WkbType::Polygon;
   }
@@ -2673,15 +2661,6 @@ Qgis::WkbType QgsPostgresConn::wkbTypeFromPostgis( const QString &type )
 
 Qgis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
 {
-  // PolyhedralSurface => MultiPolygon
-  if ( wkbType % 1000 == 15 )
-    return ( Qgis::WkbType )( wkbType / 1000 * 1000 + static_cast< quint32>( Qgis::WkbType::MultiPolygon ) );
-  // TIN => MultiPolygon
-  if ( wkbType % 1000 == 16 )
-    return ( Qgis::WkbType )( wkbType / 1000 * 1000 + static_cast< quint32>( Qgis::WkbType::MultiPolygon ) );
-  // Triangle => Polygon
-  if ( wkbType % 1000 == 17 )
-    return ( Qgis::WkbType )( wkbType / 1000 * 1000 + static_cast< quint32>( Qgis::WkbType::Polygon ) );
   return ( Qgis::WkbType ) wkbType;
 }
 
