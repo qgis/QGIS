@@ -268,9 +268,7 @@ Returns the path to the user qgis.db file.
  static QString qgisAuthDatabaseFilePath() /Deprecated/;
 %Docstring
 Returns the path to the user authentication database file: qgis-auth.db.
-
-.. deprecated:: QGIS 3.30
-  use :py:func:`~QgsApplication.qgisAuthDatabaseUri` instead
+\deprecated since QGIS 3.30, use :py:func:`~QgsApplication.qgisAuthDatabaseUri` instead
 %End
 
     static QString qgisAuthDatabaseUri();

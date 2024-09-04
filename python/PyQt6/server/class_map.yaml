@@ -257,8 +257,6 @@ QgsServerQueryStringParameter.setHidden: src/server/qgsserverquerystringparamete
 QgsServerQueryStringParameter: src/server/qgsserverquerystringparameter.h#L47
 QgsServerQueryStringParameter.typeName: src/server/qgsserverquerystringparameter.h#L131
 QgsServerQueryStringParameter.value: src/server/qgsserverquerystringparameter.h#L103
-<<<<<<< HEAD
-QgsServerQueryStringParameter: src/server/qgsserverquerystringparameter.h#L47
 QgsServerRequest.baseUrl: src/server/qgsserverrequest.h#L214
 QgsServerRequest.data: src/server/qgsserverrequest.h#L190
 QgsServerRequest.header: src/server/qgsserverrequest.h#L156
@@ -278,31 +276,8 @@ QgsServerRequest.setMethod: src/server/qgsserverrequest.h#L219
 QgsServerRequest.setOriginalUrl: src/server/qgsserverrequest.h#L235
 QgsServerRequest.setParameter: src/server/qgsserverrequest.h#L139
 QgsServerRequest.setUrl: src/server/qgsserverrequest.h#L195
-QgsServerRequest.url: src/server/qgsserverrequest.h#L118
 QgsServerRequest: src/server/qgsserverrequest.h#L36
-=======
-QgsServerRequest.baseUrl: src/server/qgsserverrequest.h#L229
-QgsServerRequest.data: src/server/qgsserverrequest.h#L205
-QgsServerRequest.header: src/server/qgsserverrequest.h#L171
-QgsServerRequest.header: src/server/qgsserverrequest.h#L178
-QgsServerRequest.method: src/server/qgsserverrequest.h#L138
-QgsServerRequest.methodToString: src/server/qgsserverrequest.h#L124
-QgsServerRequest.originalUrl: src/server/qgsserverrequest.h#L219
-QgsServerRequest.parameter: src/server/qgsserverrequest.h#L159
-QgsServerRequest.parameters: src/server/qgsserverrequest.h#L144
-QgsServerRequest.queryParameter: src/server/qgsserverrequest.h#L240
-QgsServerRequest.removeHeader: src/server/qgsserverrequest.h#L198
-QgsServerRequest.removeParameter: src/server/qgsserverrequest.h#L164
-QgsServerRequest.serverParameters: src/server/qgsserverrequest.h#L149
-QgsServerRequest.setBaseUrl: src/server/qgsserverrequest.h#L257
-QgsServerRequest.setHeader: src/server/qgsserverrequest.h#L185
-QgsServerRequest.setMethod: src/server/qgsserverrequest.h#L234
-QgsServerRequest.setOriginalUrl: src/server/qgsserverrequest.h#L250
-QgsServerRequest.setParameter: src/server/qgsserverrequest.h#L154
-QgsServerRequest.setUrl: src/server/qgsserverrequest.h#L210
-QgsServerRequest: src/server/qgsserverrequest.h#L37
-QgsServerRequest.url: src/server/qgsserverrequest.h#L133
->>>>>>> 71a312b7156 (sipify)
+QgsServerRequest.url: src/server/qgsserverrequest.h#L118
 QgsServerResponse.clear: src/server/qgsserverresponse.h#L176
 QgsServerResponse.data: src/server/qgsserverresponse.h#L187
 QgsServerResponse.feedback: src/server/qgsserverresponse.h#L200

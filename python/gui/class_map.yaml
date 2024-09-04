@@ -389,26 +389,14 @@ QgsAbstractProcessingParameterWidgetWrapper.widgetValueHasChanged: src/gui/proce
 QgsAbstractProcessingParameterWidgetWrapper.widgetValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L475
 QgsAbstractProcessingParameterWidgetWrapper.wrappedLabel: src/gui/processing/qgsprocessingwidgetwrapper.h#L352
 QgsAbstractProcessingParameterWidgetWrapper.wrappedWidget: src/gui/processing/qgsprocessingwidgetwrapper.h#L346
-<<<<<<< HEAD
-QgsAbstractProcessingParameterWidgetWrapper: src/gui/processing/qgsprocessingwidgetwrapper.h#L278
-QgsAbstractRelationEditorConfigWidget.QgsAbstractRelationEditorConfigWidget: src/gui/qgsabstractrelationeditorwidget.h#L365
 QgsAbstractRelationEditorConfigWidget.config: src/gui/qgsabstractrelationeditorwidget.h#L372
 QgsAbstractRelationEditorConfigWidget.layer: src/gui/qgsabstractrelationeditorwidget.h#L386
 QgsAbstractRelationEditorConfigWidget.nmRelation: src/gui/qgsabstractrelationeditorwidget.h#L407
+QgsAbstractRelationEditorConfigWidget.QgsAbstractRelationEditorConfigWidget: src/gui/qgsabstractrelationeditorwidget.h#L365
 QgsAbstractRelationEditorConfigWidget.relation: src/gui/qgsabstractrelationeditorwidget.h#L393
 QgsAbstractRelationEditorConfigWidget.setConfig: src/gui/qgsabstractrelationeditorwidget.h#L379
 QgsAbstractRelationEditorConfigWidget.setNmRelation: src/gui/qgsabstractrelationeditorwidget.h#L400
 QgsAbstractRelationEditorConfigWidget: src/gui/qgsabstractrelationeditorwidget.h#L344
-=======
-QgsAbstractRelationEditorConfigWidget.config: src/gui/qgsabstractrelationeditorwidget.h#L371
-QgsAbstractRelationEditorConfigWidget.layer: src/gui/qgsabstractrelationeditorwidget.h#L385
-QgsAbstractRelationEditorConfigWidget.nmRelation: src/gui/qgsabstractrelationeditorwidget.h#L406
-QgsAbstractRelationEditorConfigWidget.QgsAbstractRelationEditorConfigWidget: src/gui/qgsabstractrelationeditorwidget.h#L364
-QgsAbstractRelationEditorConfigWidget.relation: src/gui/qgsabstractrelationeditorwidget.h#L392
-QgsAbstractRelationEditorConfigWidget.setConfig: src/gui/qgsabstractrelationeditorwidget.h#L378
-QgsAbstractRelationEditorConfigWidget.setNmRelation: src/gui/qgsabstractrelationeditorwidget.h#L399
-QgsAbstractRelationEditorConfigWidget: src/gui/qgsabstractrelationeditorwidget.h#L343
->>>>>>> 71a312b7156 (sipify)
 QgsAbstractRelationEditorWidget.addFeature: src/gui/qgsabstractrelationeditorwidget.h#L228
 QgsAbstractRelationEditorWidget.afterSetRelationFeature: src/gui/qgsabstractrelationeditorwidget.h#L319
 QgsAbstractRelationEditorWidget.afterSetRelations: src/gui/qgsabstractrelationeditorwidget.h#L331
@@ -420,23 +408,19 @@ QgsAbstractRelationEditorWidget.deleteFeatures: src/gui/qgsabstractrelationedito
 QgsAbstractRelationEditorWidget.duplicateFeature: src/gui/qgsabstractrelationeditorwidget.h#L254
 QgsAbstractRelationEditorWidget.duplicateFeatures: src/gui/qgsabstractrelationeditorwidget.h#L259
 QgsAbstractRelationEditorWidget.editorContext: src/gui/qgsabstractrelationeditorwidget.h#L117
-QgsAbstractRelationEditorWidgetFactory.configWidget: src/gui/qgsabstractrelationeditorwidget.h#L466
-QgsAbstractRelationEditorWidgetFactory.create: src/gui/qgsabstractrelationeditorwidget.h#L455
-QgsAbstractRelationEditorWidgetFactory.name: src/gui/qgsabstractrelationeditorwidget.h#L443
-QgsAbstractRelationEditorWidgetFactory: src/gui/qgsabstractrelationeditorwidget.h#L424
-QgsAbstractRelationEditorWidgetFactory.type: src/gui/qgsabstractrelationeditorwidget.h#L438
+QgsAbstractRelationEditorWidgetFactory.configWidget: src/gui/qgsabstractrelationeditorwidget.h#L467
+QgsAbstractRelationEditorWidgetFactory.create: src/gui/qgsabstractrelationeditorwidget.h#L456
+QgsAbstractRelationEditorWidgetFactory.name: src/gui/qgsabstractrelationeditorwidget.h#L444
+QgsAbstractRelationEditorWidgetFactory: src/gui/qgsabstractrelationeditorwidget.h#L425
+QgsAbstractRelationEditorWidgetFactory.type: src/gui/qgsabstractrelationeditorwidget.h#L439
 QgsAbstractRelationEditorWidget.feature: src/gui/qgsabstractrelationeditorwidget.h#L159
 QgsAbstractRelationEditorWidget.forceSuppressFormPopup: src/gui/qgsabstractrelationeditorwidget.h#L170
 QgsAbstractRelationEditorWidget.label: src/gui/qgsabstractrelationeditorwidget.h#L146
 QgsAbstractRelationEditorWidget.linkFeature: src/gui/qgsabstractrelationeditorwidget.h#L239
 QgsAbstractRelationEditorWidget.multiEditModeActive: src/gui/qgsabstractrelationeditorwidget.h#L192
 QgsAbstractRelationEditorWidget.nmRelationId: src/gui/qgsabstractrelationeditorwidget.h#L134
-<<<<<<< HEAD
-QgsAbstractRelationEditorWidget.onLinkFeatureDlgAccepted: src/gui/qgsabstractrelationeditorwidget.h#L244
-=======
 QgsAbstractRelationEditorWidget.nmRelation: src/gui/qgsabstractrelationeditorwidget.h#L93
-QgsAbstractRelationEditorWidget.onLinkFeatureDlgAccepted: src/gui/qgsabstractrelationeditorwidget.h#L243
->>>>>>> 71a312b7156 (sipify)
+QgsAbstractRelationEditorWidget.onLinkFeatureDlgAccepted: src/gui/qgsabstractrelationeditorwidget.h#L244
 QgsAbstractRelationEditorWidget.parentFormValueChanged: src/gui/qgsabstractrelationeditorwidget.h#L210
 QgsAbstractRelationEditorWidget.relatedFeaturesChanged: src/gui/qgsabstractrelationeditorwidget.h#L203
 QgsAbstractRelationEditorWidget.relation: src/gui/qgsabstractrelationeditorwidget.h#L87
@@ -456,23 +440,10 @@ QgsAbstractRelationEditorWidget.showEvent: src/gui/qgsabstractrelationeditorwidg
 QgsAbstractRelationEditorWidget.showLabel: src/gui/qgsabstractrelationeditorwidget.h#L123
 QgsAbstractRelationEditorWidget: src/gui/qgsabstractrelationeditorwidget.h#L45
 QgsAbstractRelationEditorWidget.toggleEditing: src/gui/qgsabstractrelationeditorwidget.h#L217
-<<<<<<< HEAD
 QgsAbstractRelationEditorWidget.unlinkFeature: src/gui/qgsabstractrelationeditorwidget.h#L249
 QgsAbstractRelationEditorWidget.unlinkFeatures: src/gui/qgsabstractrelationeditorwidget.h#L291
 QgsAbstractRelationEditorWidget.updateTitle: src/gui/qgsabstractrelationeditorwidget.h#L281
 QgsAbstractRelationEditorWidget.updateUi: src/gui/qgsabstractrelationeditorwidget.h#L301
-QgsAbstractRelationEditorWidget: src/gui/qgsabstractrelationeditorwidget.h#L45
-QgsAbstractRelationEditorWidgetFactory.configWidget: src/gui/qgsabstractrelationeditorwidget.h#L467
-QgsAbstractRelationEditorWidgetFactory.create: src/gui/qgsabstractrelationeditorwidget.h#L456
-QgsAbstractRelationEditorWidgetFactory.name: src/gui/qgsabstractrelationeditorwidget.h#L444
-QgsAbstractRelationEditorWidgetFactory.type: src/gui/qgsabstractrelationeditorwidget.h#L439
-QgsAbstractRelationEditorWidgetFactory: src/gui/qgsabstractrelationeditorwidget.h#L425
-=======
-QgsAbstractRelationEditorWidget.unlinkFeature: src/gui/qgsabstractrelationeditorwidget.h#L248
-QgsAbstractRelationEditorWidget.unlinkFeatures: src/gui/qgsabstractrelationeditorwidget.h#L290
-QgsAbstractRelationEditorWidget.updateTitle: src/gui/qgsabstractrelationeditorwidget.h#L280
-QgsAbstractRelationEditorWidget.updateUi: src/gui/qgsabstractrelationeditorwidget.h#L300
->>>>>>> 71a312b7156 (sipify)
 QgsAbstractSensorWidget.changed: src/gui/sensor/qgssensorwidget.h#L78
 QgsAbstractSensorWidget.createSensor: src/gui/sensor/qgssensorwidget.h#L52
 QgsAbstractSensorWidget.setSensor: src/gui/sensor/qgssensorwidget.h#L71
@@ -480,13 +451,9 @@ QgsAbstractSensorWidget: src/gui/sensor/qgssensorwidget.h#L36
 QgsAbstractSensorWidget.updateSensor: src/gui/sensor/qgssensorwidget.h#L61
 QgsActionMenu.expressionContextScope: src/gui/actions/qgsactionmenu.h#L112
 QgsActionMenu.isEmpty: src/gui/actions/qgsactionmenu.h#L126
-<<<<<<< HEAD
-QgsActionMenu.reinit: src/gui/actions/qgsactionmenu.h#L133
-=======
 QgsActionMenu.QgsActionMenu: src/gui/actions/qgsactionmenu.h#L66
 QgsActionMenu.QgsActionMenu: src/gui/actions/qgsactionmenu.h#L76
-QgsActionMenu.reinit: src/gui/actions/qgsactionmenu.h#L129
->>>>>>> 71a312b7156 (sipify)
+QgsActionMenu.reinit: src/gui/actions/qgsactionmenu.h#L133
 QgsActionMenu.setActionContextGenerator: src/gui/actions/qgsactionmenu.h#L85
 QgsActionMenu.setExpressionContextScope: src/gui/actions/qgsactionmenu.h#L106
 QgsActionMenu.setFeature: src/gui/actions/qgsactionmenu.h#L93
@@ -956,11 +923,7 @@ QgsAttributeTableModel.setShowValidityState: src/gui/attributetable/qgsattribute
 QgsAttributeTableModel.showValidityState: src/gui/attributetable/qgsattributetablemodel.h#L275
 QgsAttributeTableModel.sortCacheExpression: src/gui/attributetable/qgsattributetablemodel.h#L224
 QgsAttributeTableModel: src/gui/attributetable/qgsattributetablemodel.h#L49
-<<<<<<< HEAD
-QgsAttributeTableView._q_selectRow: src/gui/attributetable/qgsattributetableview.h#L189
-=======
 QgsAttributeTableModel.swapRows: src/gui/attributetable/qgsattributetablemodel.h#L174
->>>>>>> 71a312b7156 (sipify)
 QgsAttributeTableView.closeCurrentEditor: src/gui/attributetable/qgsattributetableview.h#L111
 QgsAttributeTableView.closeEvent: src/gui/attributetable/qgsattributetableview.h#L159
 QgsAttributeTableView.columnResized: src/gui/attributetable/qgsattributetableview.h#L177
@@ -971,26 +934,17 @@ QgsAttributeTableView.keyPressEvent: src/gui/attributetable/qgsattributetablevie
 QgsAttributeTableView.mouseMoveEvent: src/gui/attributetable/qgsattributetableview.h#L136
 QgsAttributeTableView.mousePressEvent: src/gui/attributetable/qgsattributetableview.h#L120
 QgsAttributeTableView.mouseReleaseEvent: src/gui/attributetable/qgsattributetableview.h#L128
-<<<<<<< HEAD
+QgsAttributeTableView._q_selectRow: src/gui/attributetable/qgsattributetableview.h#L189
 QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L185
 QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L186
-=======
-QgsAttributeTableView._q_selectRow: src/gui/attributetable/qgsattributetableview.h#L187
-QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L183
-QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L184
->>>>>>> 71a312b7156 (sipify)
 QgsAttributeTableView.scrollToFeature: src/gui/attributetable/qgsattributetableview.h#L104
 QgsAttributeTableView.selectAll: src/gui/attributetable/qgsattributetableview.h#L187
 QgsAttributeTableView.selectRow: src/gui/attributetable/qgsattributetableview.h#L188
 QgsAttributeTableView.setAttributeTableConfig: src/gui/attributetable/qgsattributetableview.h#L88
 QgsAttributeTableView.setFeatureSelectionManager: src/gui/attributetable/qgsattributetableview.h#L70
 QgsAttributeTableView.setModel: src/gui/attributetable/qgsattributetableview.h#L61
-<<<<<<< HEAD
-QgsAttributeTableView.willShowContextMenu: src/gui/attributetable/qgsattributetableview.h#L170
-=======
->>>>>>> 71a312b7156 (sipify)
 QgsAttributeTableView: src/gui/attributetable/qgsattributetableview.h#L48
-QgsAttributeTableView.willShowContextMenu: src/gui/attributetable/qgsattributetableview.h#L171
+QgsAttributeTableView.willShowContextMenu: src/gui/attributetable/qgsattributetableview.h#L170
 QgsAttributeTypeLoadDialog.accept: src/gui/qgsattributetypeloaddialog.h#L46
 QgsAttributeTypeLoadDialog.insertNull: src/gui/qgsattributetypeloaddialog.h#L66
 QgsAttributeTypeLoadDialog.setVectorLayer: src/gui/qgsattributetypeloaddialog.h#L52
@@ -1573,14 +1527,8 @@ QgsColorPreviewWidget.setColor2: src/gui/qgscolorwidgets.h#L878
 QgsColorPreviewWidget.sizeHint: src/gui/qgscolorwidgets.h#L858
 QgsColorPreviewWidget: src/gui/qgscolorwidgets.h#L845
 QgsColorRampButton.acceptLiveUpdates: src/gui/qgscolorrampbutton.h#L82
-<<<<<<< HEAD
 QgsColorRampButton.changeEvent: src/gui/qgscolorrampbutton.h#L278
-QgsColorRampButton.colorRamp: src/gui/qgscolorrampbutton.h#L61
 QgsColorRampButton.colorRampChanged: src/gui/qgscolorrampbutton.h#L269
-=======
-QgsColorRampButton.changeEvent: src/gui/qgscolorrampbutton.h#L272
-QgsColorRampButton.colorRampChanged: src/gui/qgscolorrampbutton.h#L263
->>>>>>> 71a312b7156 (sipify)
 QgsColorRampButton.colorRampDialogTitle: src/gui/qgscolorrampbutton.h#L75
 QgsColorRampButton.colorRampName: src/gui/qgscolorrampbutton.h#L209
 QgsColorRampButton.colorRamp: src/gui/qgscolorrampbutton.h#L61
@@ -1592,16 +1540,11 @@ QgsColorRampButton.isRandomColorRamp: src/gui/qgscolorrampbutton.h#L143
 QgsColorRampButton.mousePressEvent: src/gui/qgscolorrampbutton.h#L285
 QgsColorRampButton.resizeEvent: src/gui/qgscolorrampbutton.h#L280
 QgsColorRampButton.setAcceptLiveUpdates: src/gui/qgscolorrampbutton.h#L90
-<<<<<<< HEAD
 QgsColorRampButton.setButtonBackground: src/gui/qgscolorrampbutton.h#L247
-QgsColorRampButton.setColorRamp: src/gui/qgscolorrampbutton.h#L221
-=======
-QgsColorRampButton.setButtonBackground: src/gui/qgscolorrampbutton.h#L241
->>>>>>> 71a312b7156 (sipify)
 QgsColorRampButton.setColorRampDialogTitle: src/gui/qgscolorrampbutton.h#L68
 QgsColorRampButton.setColorRampFromName: src/gui/qgscolorrampbutton.h#L240
 QgsColorRampButton.setColorRampName: src/gui/qgscolorrampbutton.h#L203
-QgsColorRampButton.setColorRamp: src/gui/qgscolorrampbutton.h#L219
+QgsColorRampButton.setColorRamp: src/gui/qgscolorrampbutton.h#L221
 QgsColorRampButton.setContext: src/gui/qgscolorrampbutton.h#L174
 QgsColorRampButton.setDefaultColorRamp: src/gui/qgscolorrampbutton.h#L114
 QgsColorRampButton.setRandomColorRamp: src/gui/qgscolorrampbutton.h#L230
@@ -1751,24 +1694,6 @@ QgsColorWidgetAction.colorWidget: src/gui/qgscolorwidgets.h#L316
 QgsColorWidgetAction.dismissOnColorSelection: src/gui/qgscolorwidgets.h#L333
 QgsColorWidgetAction.setDismissOnColorSelection: src/gui/qgscolorwidgets.h#L326
 QgsColorWidgetAction: src/gui/qgscolorwidgets.h#L299
-<<<<<<< HEAD
-QgsCompoundColorWidget.color: src/gui/qgscompoundcolorwidget.h#L62
-QgsCompoundColorWidget.createNewUserPalette: src/gui/qgscompoundcolorwidget.h#L108
-QgsCompoundColorWidget.currentColorChanged: src/gui/qgscompoundcolorwidget.h#L128
-QgsCompoundColorWidget.hideEvent: src/gui/qgscompoundcolorwidget.h#L146
-QgsCompoundColorWidget.importUserPaletteFromFile: src/gui/qgscompoundcolorwidget.h#L96
-QgsCompoundColorWidget.keyPressEvent: src/gui/qgscompoundcolorwidget.h#L154
-QgsCompoundColorWidget.mouseMoveEvent: src/gui/qgscompoundcolorwidget.h#L150
-QgsCompoundColorWidget.mousePressEvent: src/gui/qgscompoundcolorwidget.h#L148
-QgsCompoundColorWidget.mouseReleaseEvent: src/gui/qgscompoundcolorwidget.h#L152
-QgsCompoundColorWidget.removeUserPalette: src/gui/qgscompoundcolorwidget.h#L120
-QgsCompoundColorWidget.setAllowOpacity: src/gui/qgscompoundcolorwidget.h#L69
-QgsCompoundColorWidget.setColor: src/gui/qgscompoundcolorwidget.h#L136
-QgsCompoundColorWidget.setColorModelEditable: src/gui/qgscompoundcolorwidget.h#L77
-QgsCompoundColorWidget.setDiscarded: src/gui/qgscompoundcolorwidget.h#L84
-QgsCompoundColorWidget.setPreviousColor: src/gui/qgscompoundcolorwidget.h#L142
-QgsCompoundColorWidget: src/gui/qgscompoundcolorwidget.h#L34
-=======
 QgsColorWidget.alterColorF: src/gui/qgscolorwidgets.h#L260
 QgsColorWidget.alterColor: src/gui/qgscolorwidgets.h#L250
 QgsColorWidget.colorChanged: src/gui/qgscolorwidgets.h#L174
@@ -1797,22 +1722,22 @@ QgsColorWidget.setComponent: src/gui/qgscolorwidgets.h#L142
 QgsColorWidget.setComponentValueF: src/gui/qgscolorwidgets.h#L166
 QgsColorWidget.setComponentValue: src/gui/qgscolorwidgets.h#L154
 QgsColorWidget: src/gui/qgscolorwidgets.h#L38
-QgsCompoundColorWidget.color: src/gui/qgscompoundcolorwidget.h#L61
-QgsCompoundColorWidget.createNewUserPalette: src/gui/qgscompoundcolorwidget.h#L99
-QgsCompoundColorWidget.currentColorChanged: src/gui/qgscompoundcolorwidget.h#L119
-QgsCompoundColorWidget.hideEvent: src/gui/qgscompoundcolorwidget.h#L137
-QgsCompoundColorWidget.importUserPaletteFromFile: src/gui/qgscompoundcolorwidget.h#L87
-QgsCompoundColorWidget.keyPressEvent: src/gui/qgscompoundcolorwidget.h#L145
-QgsCompoundColorWidget.mouseMoveEvent: src/gui/qgscompoundcolorwidget.h#L141
-QgsCompoundColorWidget.mousePressEvent: src/gui/qgscompoundcolorwidget.h#L139
-QgsCompoundColorWidget.mouseReleaseEvent: src/gui/qgscompoundcolorwidget.h#L143
-QgsCompoundColorWidget.removeUserPalette: src/gui/qgscompoundcolorwidget.h#L111
-QgsCompoundColorWidget.setAllowOpacity: src/gui/qgscompoundcolorwidget.h#L68
-QgsCompoundColorWidget.setColor: src/gui/qgscompoundcolorwidget.h#L127
-QgsCompoundColorWidget.setDiscarded: src/gui/qgscompoundcolorwidget.h#L75
-QgsCompoundColorWidget.setPreviousColor: src/gui/qgscompoundcolorwidget.h#L133
-QgsCompoundColorWidget: src/gui/qgscompoundcolorwidget.h#L33
->>>>>>> 6bbfb406993 (sipify)
+QgsCompoundColorWidget.color: src/gui/qgscompoundcolorwidget.h#L62
+QgsCompoundColorWidget.createNewUserPalette: src/gui/qgscompoundcolorwidget.h#L108
+QgsCompoundColorWidget.currentColorChanged: src/gui/qgscompoundcolorwidget.h#L128
+QgsCompoundColorWidget.hideEvent: src/gui/qgscompoundcolorwidget.h#L146
+QgsCompoundColorWidget.importUserPaletteFromFile: src/gui/qgscompoundcolorwidget.h#L96
+QgsCompoundColorWidget.keyPressEvent: src/gui/qgscompoundcolorwidget.h#L154
+QgsCompoundColorWidget.mouseMoveEvent: src/gui/qgscompoundcolorwidget.h#L150
+QgsCompoundColorWidget.mousePressEvent: src/gui/qgscompoundcolorwidget.h#L148
+QgsCompoundColorWidget.mouseReleaseEvent: src/gui/qgscompoundcolorwidget.h#L152
+QgsCompoundColorWidget.removeUserPalette: src/gui/qgscompoundcolorwidget.h#L120
+QgsCompoundColorWidget.setAllowOpacity: src/gui/qgscompoundcolorwidget.h#L69
+QgsCompoundColorWidget.setColorModelEditable: src/gui/qgscompoundcolorwidget.h#L77
+QgsCompoundColorWidget.setColor: src/gui/qgscompoundcolorwidget.h#L136
+QgsCompoundColorWidget.setDiscarded: src/gui/qgscompoundcolorwidget.h#L84
+QgsCompoundColorWidget.setPreviousColor: src/gui/qgscompoundcolorwidget.h#L142
+QgsCompoundColorWidget: src/gui/qgscompoundcolorwidget.h#L34
 QgsConfigureShortcutsDialog.keyPressEvent: src/gui/qgsconfigureshortcutsdialog.h#L50
 QgsConfigureShortcutsDialog.keyReleaseEvent: src/gui/qgsconfigureshortcutsdialog.h#L51
 QgsConfigureShortcutsDialog: src/gui/qgsconfigureshortcutsdialog.h#L35
@@ -2027,45 +1952,11 @@ QgsDataSourceSelectWidget.showFilterWidget: src/gui/qgsdatasourceselectdialog.h#
 QgsDataSourceSelectWidget: src/gui/qgsdatasourceselectdialog.h#L46
 QgsDataSourceSelectWidget.uri: src/gui/qgsdatasourceselectdialog.h#L94
 QgsDataSourceSelectWidget.validationChanged: src/gui/qgsdatasourceselectdialog.h#L117
-<<<<<<< HEAD
-QgsDataSourceSelectWidget: src/gui/qgsdatasourceselectdialog.h#L46
-QgsDatabaseSchemaComboBox.QgsDatabaseSchemaComboBox: src/gui/qgsdatabaseschemacombobox.h#L63
-QgsDatabaseSchemaComboBox.QgsDatabaseSchemaComboBox: src/gui/qgsdatabaseschemacombobox.h#L70
-QgsDatabaseSchemaComboBox.allowEmptySchema: src/gui/qgsdatabaseschemacombobox.h#L82
-QgsDatabaseSchemaComboBox.comboBox: src/gui/qgsdatabaseschemacombobox.h#L92
-QgsDatabaseSchemaComboBox.currentSchema: src/gui/qgsdatabaseschemacombobox.h#L87
-QgsDatabaseSchemaComboBox.refreshSchemas: src/gui/qgsdatabaseschemacombobox.h#L111
-QgsDatabaseSchemaComboBox.schemaChanged: src/gui/qgsdatabaseschemacombobox.h#L115
-QgsDatabaseSchemaComboBox.setAllowEmptySchema: src/gui/qgsdatabaseschemacombobox.h#L76
-QgsDatabaseSchemaComboBox.setConnectionName: src/gui/qgsdatabaseschemacombobox.h#L106
-QgsDatabaseSchemaComboBox.setSchema: src/gui/qgsdatabaseschemacombobox.h#L99
-QgsDatabaseSchemaComboBox: src/gui/qgsdatabaseschemacombobox.h#L51
-QgsDatabaseTableComboBox.QgsDatabaseTableComboBox: src/gui/qgsdatabasetablecombobox.h#L65
-QgsDatabaseTableComboBox.QgsDatabaseTableComboBox: src/gui/qgsdatabasetablecombobox.h#L74
-QgsDatabaseTableComboBox.allowEmptyTable: src/gui/qgsdatabasetablecombobox.h#L86
-QgsDatabaseTableComboBox.comboBox: src/gui/qgsdatabasetablecombobox.h#L101
-QgsDatabaseTableComboBox.currentSchema: src/gui/qgsdatabasetablecombobox.h#L96
-QgsDatabaseTableComboBox.currentTable: src/gui/qgsdatabasetablecombobox.h#L91
-QgsDatabaseTableComboBox.refreshTables: src/gui/qgsdatabasetablecombobox.h#L127
-QgsDatabaseTableComboBox.setAllowEmptyTable: src/gui/qgsdatabasetablecombobox.h#L80
-QgsDatabaseTableComboBox.setConnectionName: src/gui/qgsdatabasetablecombobox.h#L117
-QgsDatabaseTableComboBox.setSchema: src/gui/qgsdatabasetablecombobox.h#L122
-QgsDatabaseTableComboBox.setTable: src/gui/qgsdatabasetablecombobox.h#L110
-QgsDatabaseTableComboBox.tableChanged: src/gui/qgsdatabasetablecombobox.h#L131
-QgsDatabaseTableComboBox: src/gui/qgsdatabasetablecombobox.h#L51
-QgsDateEdit.QgsDateEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L289
 QgsDateEdit.dateValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L302
 QgsDateEdit.emitValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L305
+QgsDateEdit.QgsDateEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L289
 QgsDateEdit.setDate: src/gui/editorwidgets/qgsdatetimeedit.h#L295
 QgsDateEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L277
-QgsDateTimeEdit.QgsDateTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L49
-=======
-QgsDateEdit.dateValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L304
-QgsDateEdit.emitValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L307
-QgsDateEdit.QgsDateEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L291
-QgsDateEdit.setDate: src/gui/editorwidgets/qgsdatetimeedit.h#L297
-QgsDateEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L279
->>>>>>> 71a312b7156 (sipify)
 QgsDateTimeEdit.allowNull: src/gui/editorwidgets/qgsdatetimeedit.h#L61
 QgsDateTimeEdit.clear: src/gui/editorwidgets/qgsdatetimeedit.h#L92
 QgsDateTimeEdit.date: src/gui/editorwidgets/qgsdatetimeedit.h#L86
@@ -2669,15 +2560,13 @@ QgsExternalResourceWidget: src/gui/qgsexternalresourcewidget.h#L53
 QgsExternalResourceWidget.storageAuthConfigId: src/gui/qgsexternalresourcewidget.h#L192
 QgsExternalResourceWidget.storageType: src/gui/qgsexternalresourcewidget.h#L179
 QgsExternalResourceWidget.valueChanged: src/gui/qgsexternalresourcewidget.h#L208
-<<<<<<< HEAD
-QgsExternalResourceWidget: src/gui/qgsexternalresourcewidget.h#L53
-QgsExternalStorageFileWidget.QgsExternalStorageFileWidget: src/gui/qgsexternalstoragefilewidget.h#L62
 QgsExternalStorageFileWidget.addFileWidgetScope: src/gui/qgsexternalstoragefilewidget.h#L175
 QgsExternalStorageFileWidget.createFileWidgetScope: src/gui/qgsexternalstoragefilewidget.h#L162
 QgsExternalStorageFileWidget.dragEnterEvent: src/gui/qgsexternalstoragefilewidget.h#L177
 QgsExternalStorageFileWidget.dropEvent: src/gui/qgsexternalstoragefilewidget.h#L179
 QgsExternalStorageFileWidget.externalStorage: src/gui/qgsexternalstoragefilewidget.h#L89
 QgsExternalStorageFileWidget.messageBar: src/gui/qgsexternalstoragefilewidget.h#L155
+QgsExternalStorageFileWidget.QgsExternalStorageFileWidget: src/gui/qgsexternalstoragefilewidget.h#L62
 QgsExternalStorageFileWidget.setExpressionContext: src/gui/qgsexternalstoragefilewidget.h#L136
 QgsExternalStorageFileWidget.setMessageBar: src/gui/qgsexternalstoragefilewidget.h#L149
 QgsExternalStorageFileWidget.setReadOnly: src/gui/qgsexternalstoragefilewidget.h#L164
@@ -2685,33 +2574,11 @@ QgsExternalStorageFileWidget.setSelectedFileNames: src/gui/qgsexternalstoragefil
 QgsExternalStorageFileWidget.setStorageAuthConfigId: src/gui/qgsexternalstoragefilewidget.h#L96
 QgsExternalStorageFileWidget.setStorageType: src/gui/qgsexternalstoragefilewidget.h#L72
 QgsExternalStorageFileWidget.setStorageUrlExpression: src/gui/qgsexternalstoragefilewidget.h#L111
+QgsExternalStorageFileWidget: src/gui/qgsexternalstoragefilewidget.h#L40
 QgsExternalStorageFileWidget.storageType: src/gui/qgsexternalstoragefilewidget.h#L80
 QgsExternalStorageFileWidget.storageUrlExpression: src/gui/qgsexternalstoragefilewidget.h#L129
 QgsExternalStorageFileWidget.storageUrlExpressionString: src/gui/qgsexternalstoragefilewidget.h#L120
 QgsExternalStorageFileWidget.updateLayout: src/gui/qgsexternalstoragefilewidget.h#L168
-QgsExternalStorageFileWidget: src/gui/qgsexternalstoragefilewidget.h#L40
-QgsFeatureListComboBox.allowNull: src/gui/qgsfeaturelistcombobox.h#L148
-=======
-QgsExternalStorageFileWidget.addFileWidgetScope: src/gui/qgsexternalstoragefilewidget.h#L174
-QgsExternalStorageFileWidget.createFileWidgetScope: src/gui/qgsexternalstoragefilewidget.h#L161
-QgsExternalStorageFileWidget.dragEnterEvent: src/gui/qgsexternalstoragefilewidget.h#L176
-QgsExternalStorageFileWidget.dropEvent: src/gui/qgsexternalstoragefilewidget.h#L178
-QgsExternalStorageFileWidget.externalStorage: src/gui/qgsexternalstoragefilewidget.h#L89
-QgsExternalStorageFileWidget.messageBar: src/gui/qgsexternalstoragefilewidget.h#L154
-QgsExternalStorageFileWidget.QgsExternalStorageFileWidget: src/gui/qgsexternalstoragefilewidget.h#L62
-QgsExternalStorageFileWidget.setExpressionContext: src/gui/qgsexternalstoragefilewidget.h#L135
-QgsExternalStorageFileWidget.setMessageBar: src/gui/qgsexternalstoragefilewidget.h#L148
-QgsExternalStorageFileWidget.setReadOnly: src/gui/qgsexternalstoragefilewidget.h#L163
-QgsExternalStorageFileWidget.setSelectedFileNames: src/gui/qgsexternalstoragefilewidget.h#L169
-QgsExternalStorageFileWidget.setStorageAuthConfigId: src/gui/qgsexternalstoragefilewidget.h#L96
-QgsExternalStorageFileWidget.setStorageType: src/gui/qgsexternalstoragefilewidget.h#L72
-QgsExternalStorageFileWidget.setStorageUrlExpression: src/gui/qgsexternalstoragefilewidget.h#L110
-QgsExternalStorageFileWidget: src/gui/qgsexternalstoragefilewidget.h#L40
-QgsExternalStorageFileWidget.storageType: src/gui/qgsexternalstoragefilewidget.h#L80
-QgsExternalStorageFileWidget.storageUrlExpression: src/gui/qgsexternalstoragefilewidget.h#L128
-QgsExternalStorageFileWidget.storageUrlExpressionString: src/gui/qgsexternalstoragefilewidget.h#L119
-QgsExternalStorageFileWidget.updateLayout: src/gui/qgsexternalstoragefilewidget.h#L167
->>>>>>> 71a312b7156 (sipify)
 QgsFeatureListComboBox.allowNullChanged: src/gui/qgsfeaturelistcombobox.h#L246
 QgsFeatureListComboBox.allowNull: src/gui/qgsfeaturelistcombobox.h#L148
 QgsFeatureListComboBox.currentFeatureChanged: src/gui/qgsfeaturelistcombobox.h#L252
@@ -2783,14 +2650,14 @@ QgsFeatureListView.contextMenuEvent: src/gui/attributetable/qgsfeaturelistview.h
 QgsFeatureListView.currentEditSelectionChanged: src/gui/attributetable/qgsfeaturelistview.h#L146
 QgsFeatureListView.currentEditSelectionProgressChanged: src/gui/attributetable/qgsfeaturelistview.h#L154
 QgsFeatureListView.currentEditSelection: src/gui/attributetable/qgsfeaturelistview.h#L118
-QgsFeatureListViewDelegate.editButtonClicked: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L55
-QgsFeatureListViewDelegate.paint: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L59
+QgsFeatureListViewDelegate.editButtonClicked: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L59
+QgsFeatureListViewDelegate.paint: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L63
 QgsFeatureListViewDelegate.positionToElement: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L48
 QgsFeatureListViewDelegate.QgsFeatureListViewDelegate: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L44
 QgsFeatureListViewDelegate.setCurrentFeatureEdited: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L52
 QgsFeatureListViewDelegate.setEditSelectionModel: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L46
 QgsFeatureListViewDelegate.setFeatureSelectionModel: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L50
-QgsFeatureListViewDelegate.sizeHint: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L58
+QgsFeatureListViewDelegate.sizeHint: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L62
 QgsFeatureListViewDelegate: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L31
 QgsFeatureListView.displayExpressionChanged: src/gui/attributetable/qgsfeaturelistview.h#L160
 QgsFeatureListView.displayExpression: src/gui/attributetable/qgsfeaturelistview.h#L104
@@ -2816,19 +2683,7 @@ QgsFeatureListView.setEditSelection: src/gui/attributetable/qgsfeaturelistview.h
 QgsFeatureListView.setFeatureSelectionManager: src/gui/attributetable/qgsfeaturelistview.h#L131
 QgsFeatureListView.setModel: src/gui/attributetable/qgsfeaturelistview.h#L75
 QgsFeatureListView: src/gui/attributetable/qgsfeaturelistview.h#L46
-<<<<<<< HEAD
-QgsFeatureListViewDelegate.QgsFeatureListViewDelegate: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L44
-QgsFeatureListViewDelegate.editButtonClicked: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L59
-QgsFeatureListViewDelegate.paint: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L63
-QgsFeatureListViewDelegate.positionToElement: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L48
-QgsFeatureListViewDelegate.setCurrentFeatureEdited: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L52
-QgsFeatureListViewDelegate.setEditSelectionModel: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L46
-QgsFeatureListViewDelegate.setFeatureSelectionModel: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L50
-QgsFeatureListViewDelegate.sizeHint: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L62
-QgsFeatureListViewDelegate: src/gui/attributetable/qgsfeaturelistviewdelegate.h#L31
-=======
 QgsFeatureListView.willShowContextMenu: src/gui/attributetable/qgsfeaturelistview.h#L170
->>>>>>> 71a312b7156 (sipify)
 QgsFeatureModel.fidToIndex: src/gui/attributetable/qgsfeaturemodel.h#L31
 QgsFeatureModel: src/gui/attributetable/qgsfeaturemodel.h#L26
 QgsFeaturePickerWidget.allowNullChanged: src/gui/qgsfeaturepickerwidget.h#L194
@@ -2861,14 +2716,9 @@ QgsFeaturePickerWidget.setShowBrowserButtons: src/gui/qgsfeaturepickerwidget.h#L
 QgsFeaturePickerWidget.showBrowserButtonsChanged: src/gui/qgsfeaturepickerwidget.h#L207
 QgsFeaturePickerWidget.showBrowserButtons: src/gui/qgsfeaturepickerwidget.h#L146
 QgsFeaturePickerWidget: src/gui/qgsfeaturepickerwidget.h#L43
-<<<<<<< HEAD
-QgsFeatureSelectionDlg.QgsFeatureSelectionDlg: src/gui/qgsfeatureselectiondlg.h#L54
 QgsFeatureSelectionDlg.keyPressEvent: src/gui/qgsfeatureselectiondlg.h#L76
-QgsFeatureSelectionDlg.setFilterExpression: src/gui/qgsfeatureselectiondlg.h#L72
-=======
-QgsFeatureSelectionDlg.keyPressEvent: src/gui/qgsfeatureselectiondlg.h#L71
 QgsFeatureSelectionDlg.QgsFeatureSelectionDlg: src/gui/qgsfeatureselectiondlg.h#L54
->>>>>>> 71a312b7156 (sipify)
+QgsFeatureSelectionDlg.setFilterExpression: src/gui/qgsfeatureselectiondlg.h#L72
 QgsFeatureSelectionDlg.setSelectedFeatures: src/gui/qgsfeatureselectiondlg.h#L67
 QgsFeatureSelectionDlg.showEvent: src/gui/qgsfeatureselectiondlg.h#L79
 QgsFeatureSelectionDlg: src/gui/qgsfeatureselectiondlg.h#L37
@@ -3716,9 +3566,9 @@ QgsLayerPropertiesDialog.saveStyleAs: src/gui/qgslayerpropertiesdialog.h#L103
 QgsLayerPropertiesDialog.saveStyleToFile: src/gui/qgslayerpropertiesdialog.h#L147
 QgsLayerPropertiesDialog.setMetadataWidget: src/gui/qgslayerpropertiesdialog.h#L77
 QgsLayerPropertiesDialog: src/gui/qgslayerpropertiesdialog.h#L39
-<<<<<<< HEAD
-QgsLayerPropertiesWidget.changeLayer: src/gui/symbology/qgslayerpropertieswidget.h#L92
+QgsLayerPropertiesDialog.storeCurrentStyleForUndo: src/gui/qgslayerpropertiesdialog.h#L177
 QgsLayerPropertiesWidget.changed: src/gui/symbology/qgslayerpropertieswidget.h#L87
+QgsLayerPropertiesWidget.changeLayer: src/gui/symbology/qgslayerpropertieswidget.h#L92
 QgsLayerPropertiesWidget.context: src/gui/symbology/qgslayerpropertieswidget.h#L69
 QgsLayerPropertiesWidget.createExpressionContext: src/gui/symbology/qgslayerpropertieswidget.h#L98
 QgsLayerPropertiesWidget.emitSignalChanged: src/gui/symbology/qgslayerpropertieswidget.h#L80
@@ -3727,23 +3577,8 @@ QgsLayerPropertiesWidget.populateLayerTypes: src/gui/symbology/qgslayerpropertie
 QgsLayerPropertiesWidget.registerDataDefinedButton: src/gui/symbology/qgslayerpropertieswidget.h#L105
 QgsLayerPropertiesWidget.setContext: src/gui/symbology/qgslayerpropertieswidget.h#L63
 QgsLayerPropertiesWidget.setDockMode: src/gui/symbology/qgslayerpropertieswidget.h#L76
-QgsLayerPropertiesWidget.updateSymbolLayerWidget: src/gui/symbology/qgslayerpropertieswidget.h#L96
 QgsLayerPropertiesWidget: src/gui/symbology/qgslayerpropertieswidget.h#L43
-=======
-QgsLayerPropertiesDialog.storeCurrentStyleForUndo: src/gui/qgslayerpropertiesdialog.h#L177
-QgsLayerPropertiesWidget.changed: src/gui/symbology/qgslayerpropertieswidget.h#L79
-QgsLayerPropertiesWidget.changeLayer: src/gui/symbology/qgslayerpropertieswidget.h#L80
-QgsLayerPropertiesWidget.context: src/gui/symbology/qgslayerpropertieswidget.h#L65
-QgsLayerPropertiesWidget.createExpressionContext: src/gui/symbology/qgslayerpropertieswidget.h#L86
-QgsLayerPropertiesWidget.emitSignalChanged: src/gui/symbology/qgslayerpropertieswidget.h#L76
-QgsLayerPropertiesWidget.layerTypeChanged: src/gui/symbology/qgslayerpropertieswidget.h#L75
-QgsLayerPropertiesWidget.populateLayerTypes: src/gui/symbology/qgslayerpropertieswidget.h#L83
-QgsLayerPropertiesWidget.registerDataDefinedButton: src/gui/symbology/qgslayerpropertieswidget.h#L93
-QgsLayerPropertiesWidget.setContext: src/gui/symbology/qgslayerpropertieswidget.h#L59
-QgsLayerPropertiesWidget.setDockMode: src/gui/symbology/qgslayerpropertieswidget.h#L72
-QgsLayerPropertiesWidget: src/gui/symbology/qgslayerpropertieswidget.h#L39
-QgsLayerPropertiesWidget.updateSymbolLayerWidget: src/gui/symbology/qgslayerpropertieswidget.h#L84
->>>>>>> 71a312b7156 (sipify)
+QgsLayerPropertiesWidget.updateSymbolLayerWidget: src/gui/symbology/qgslayerpropertieswidget.h#L96
 QgsLayerTreeEmbeddedConfigWidget.applyToLayer: src/gui/layertree/qgslayertreeembeddedconfigwidget.h#L45
 QgsLayerTreeEmbeddedConfigWidget.setLayer: src/gui/layertree/qgslayertreeembeddedconfigwidget.h#L42
 QgsLayerTreeEmbeddedConfigWidget: src/gui/layertree/qgslayertreeembeddedconfigwidget.h#L30
@@ -4760,9 +4595,9 @@ QgsMapToolIdentify.canvasReleaseEvent: src/gui/maptools/qgsmaptoolidentify.h#L11
 QgsMapToolIdentify.changedRasterResults: src/gui/maptools/qgsmaptoolidentify.h#L190
 QgsMapToolIdentify.deactivate: src/gui/maptools/qgsmaptoolidentify.h#L114
 QgsMapToolIdentifyFeature.canvasReleaseEvent: src/gui/maptools/qgsmaptoolidentifyfeature.h#L44
-QgsMapToolIdentifyFeature.featureIdentified: src/gui/maptools/qgsmaptoolidentifyfeature.h#L47
-QgsMapToolIdentifyFeature.featureIdentified: src/gui/maptools/qgsmaptoolidentifyfeature.h#L48
-QgsMapToolIdentifyFeature.keyPressEvent: src/gui/maptools/qgsmaptoolidentifyfeature.h#L51
+QgsMapToolIdentifyFeature.featureIdentified: src/gui/maptools/qgsmaptoolidentifyfeature.h#L51
+QgsMapToolIdentifyFeature.featureIdentified: src/gui/maptools/qgsmaptoolidentifyfeature.h#L58
+QgsMapToolIdentifyFeature.keyPressEvent: src/gui/maptools/qgsmaptoolidentifyfeature.h#L61
 QgsMapToolIdentifyFeature.setLayer: src/gui/maptools/qgsmaptoolidentifyfeature.h#L42
 QgsMapToolIdentifyFeature: src/gui/maptools/qgsmaptoolidentifyfeature.h#L28
 QgsMapToolIdentify.flags: src/gui/maptools/qgsmaptoolidentify.h#L109
@@ -4777,21 +4612,12 @@ QgsMapToolIdentify.identifyVectorLayer: src/gui/maptools/qgsmaptoolidentify.h#L2
 QgsMapToolIdentify.restoreCanvasPropertiesOverrides: src/gui/maptools/qgsmaptoolidentify.h#L263
 QgsMapToolIdentify.setCanvasPropertiesOverrides: src/gui/maptools/qgsmaptoolidentify.h#L256
 QgsMapToolIdentify: src/gui/maptools/qgsmaptoolidentify.h#L53
-<<<<<<< HEAD
-QgsMapToolIdentifyFeature.canvasReleaseEvent: src/gui/maptools/qgsmaptoolidentifyfeature.h#L44
-QgsMapToolIdentifyFeature.featureIdentified: src/gui/maptools/qgsmaptoolidentifyfeature.h#L51
-QgsMapToolIdentifyFeature.featureIdentified: src/gui/maptools/qgsmaptoolidentifyfeature.h#L58
-QgsMapToolIdentifyFeature.keyPressEvent: src/gui/maptools/qgsmaptoolidentifyfeature.h#L61
-QgsMapToolIdentifyFeature.setLayer: src/gui/maptools/qgsmaptoolidentifyfeature.h#L42
-QgsMapToolIdentifyFeature: src/gui/maptools/qgsmaptoolidentifyfeature.h#L28
-=======
 QgsMapTool.isActive: src/gui/maptools/qgsmaptool.h#L171
 QgsMapTool.keyPressEvent: src/gui/maptools/qgsmaptool.h#L141
 QgsMapTool.keyReleaseEvent: src/gui/maptools/qgsmaptool.h#L144
 QgsMapTool.layer: src/gui/maptools/qgsmaptool.h#L330
 QgsMapTool.messageDiscarded: src/gui/maptools/qgsmaptool.h#L274
 QgsMapTool.messageEmitted: src/gui/maptools/qgsmaptool.h#L271
->>>>>>> 6bbfb406993 (sipify)
 QgsMapToolPan.activate: src/gui/maptools/qgsmaptoolpan.h#L39
 QgsMapToolPan.canvasDoubleClickEvent: src/gui/maptools/qgsmaptoolpan.h#L46
 QgsMapToolPan.canvasMoveEvent: src/gui/maptools/qgsmaptoolpan.h#L44
@@ -5304,43 +5130,6 @@ QgsNumericFormatWidget.format: src/gui/numericformats/qgsnumericformatwidget.h#L
 QgsNumericFormatWidget.registerExpressionContextGenerator: src/gui/numericformats/qgsnumericformatwidget.h#L68
 QgsNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L51
 QgsNumericFormatWidget: src/gui/numericformats/qgsnumericformatwidget.h#L34
-QgsOWSSourceSelect.addDefaultServers: src/gui/qgsowssourceselect.h#L132
-QgsOWSSourceSelect.clearCrs: src/gui/qgsowssourceselect.h#L114
-QgsOWSSourceSelect.clearFormats: src/gui/qgsowssourceselect.h#L108
-QgsOWSSourceSelect.clearTimes: src/gui/qgsowssourceselect.h#L120
-QgsOWSSourceSelect.connName: src/gui/qgsowssourceselect.h#L123
-QgsOWSSourceSelect.connectionInfo: src/gui/qgsowssourceselect.h#L126
-QgsOWSSourceSelect.createItem: src/gui/qgsowssourceselect.h#L146
-QgsOWSSourceSelect.descriptionForAuthId: src/gui/qgsowssourceselect.h#L154
-QgsOWSSourceSelect.enableLayersForCrs: src/gui/qgsowssourceselect.h#L161
-QgsOWSSourceSelect.populateConnectionList: src/gui/qgsowssourceselect.h#L102
-QgsOWSSourceSelect.populateCrs: src/gui/qgsowssourceselect.h#L111
-QgsOWSSourceSelect.populateFormats: src/gui/qgsowssourceselect.h#L105
-QgsOWSSourceSelect.populateLayerList: src/gui/qgsowssourceselect.h#L140
-QgsOWSSourceSelect.populateTimes: src/gui/qgsowssourceselect.h#L117
-QgsOWSSourceSelect.prepareExtent: src/gui/qgsowssourceselect.h#L182
-QgsOWSSourceSelect.refresh: src/gui/qgsowssourceselect.h#L68
-QgsOWSSourceSelect.reset: src/gui/qgsowssourceselect.h#L70
-QgsOWSSourceSelect.selectedCacheLoadControl: src/gui/qgsowssourceselect.h#L173
-QgsOWSSourceSelect.selectedCrs: src/gui/qgsowssourceselect.h#L167
-QgsOWSSourceSelect.selectedFormat: src/gui/qgsowssourceselect.h#L164
-QgsOWSSourceSelect.selectedLayersCrses: src/gui/qgsowssourceselect.h#L94
-QgsOWSSourceSelect.selectedLayersFormats: src/gui/qgsowssourceselect.h#L91
-QgsOWSSourceSelect.selectedLayersTimes: src/gui/qgsowssourceselect.h#L97
-QgsOWSSourceSelect.selectedTime: src/gui/qgsowssourceselect.h#L170
-QgsOWSSourceSelect.setConnectionListPosition: src/gui/qgsowssourceselect.h#L129
-QgsOWSSourceSelect.setMapCanvas: src/gui/qgsowssourceselect.h#L72
-QgsOWSSourceSelect.showError: src/gui/qgsowssourceselect.h#L77
-QgsOWSSourceSelect.showStatusMessage: src/gui/qgsowssourceselect.h#L80
-QgsOWSSourceSelect: src/gui/qgsowssourceselect.h#L52
-QgsOpacityWidget.QgsOpacityWidget: src/gui/qgsopacitywidget.h#L41
-QgsOpacityWidget.opacity: src/gui/qgsopacitywidget.h#L49
-=======
-QgsNumericFormatWidget.changed: src/gui/numericformats/qgsnumericformatwidget.h#L65
-QgsNumericFormatWidget.format: src/gui/numericformats/qgsnumericformatwidget.h#L58
-QgsNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L49
-QgsNumericFormatWidget: src/gui/numericformats/qgsnumericformatwidget.h#L32
->>>>>>> 71a312b7156 (sipify)
 QgsOpacityWidget.opacityChanged: src/gui/qgsopacitywidget.h#L69
 QgsOpacityWidget.opacity: src/gui/qgsopacitywidget.h#L49
 QgsOpacityWidget.QgsOpacityWidget: src/gui/qgsopacitywidget.h#L41
@@ -6297,13 +6086,8 @@ QgsRasterFormatSaveOptionsWidget.mOptionsLineEdit_editingFinished: src/gui/qgsra
 QgsRasterFormatSaveOptionsWidget.mProfileDeleteButton_clicked: src/gui/qgsrasterformatsaveoptionswidget.h#L123
 QgsRasterFormatSaveOptionsWidget.mProfileNewButton_clicked: src/gui/qgsrasterformatsaveoptionswidget.h#L122
 QgsRasterFormatSaveOptionsWidget.mProfileResetButton_clicked: src/gui/qgsrasterformatsaveoptionswidget.h#L124
-<<<<<<< HEAD
-QgsRasterFormatSaveOptionsWidget.options: src/gui/qgsrasterformatsaveoptionswidget.h#L77
 QgsRasterFormatSaveOptionsWidget.optionsChanged: src/gui/qgsrasterformatsaveoptionswidget.h#L142
-=======
-QgsRasterFormatSaveOptionsWidget.optionsChanged: src/gui/qgsrasterformatsaveoptionswidget.h#L138
 QgsRasterFormatSaveOptionsWidget.options: src/gui/qgsrasterformatsaveoptionswidget.h#L77
->>>>>>> 71a312b7156 (sipify)
 QgsRasterFormatSaveOptionsWidget.optionsTableChanged: src/gui/qgsrasterformatsaveoptionswidget.h#L128
 QgsRasterFormatSaveOptionsWidget.optionsTableEnableDeleteButton: src/gui/qgsrasterformatsaveoptionswidget.h#L129
 QgsRasterFormatSaveOptionsWidget.profiles: src/gui/qgsrasterformatsaveoptionswidget.h#L163
@@ -6317,13 +6101,8 @@ QgsRasterFormatSaveOptionsWidget.setProvider: src/gui/qgsrasterformatsaveoptions
 QgsRasterFormatSaveOptionsWidget.setPyramidsFormat: src/gui/qgsrasterformatsaveoptionswidget.h#L98
 QgsRasterFormatSaveOptionsWidget.setRasterFileName: src/gui/qgsrasterformatsaveoptionswidget.h#L71
 QgsRasterFormatSaveOptionsWidget.setRasterLayer: src/gui/qgsrasterformatsaveoptionswidget.h#L66
-<<<<<<< HEAD
-QgsRasterFormatSaveOptionsWidget.setType: src/gui/qgsrasterformatsaveoptionswidget.h#L89
 QgsRasterFormatSaveOptionsWidget.settingsKey: src/gui/qgsrasterformatsaveoptionswidget.h#L156
-=======
-QgsRasterFormatSaveOptionsWidget.settingsKey: src/gui/qgsrasterformatsaveoptionswidget.h#L152
 QgsRasterFormatSaveOptionsWidget.setType: src/gui/qgsrasterformatsaveoptionswidget.h#L89
->>>>>>> 71a312b7156 (sipify)
 QgsRasterFormatSaveOptionsWidget.showEvent: src/gui/qgsrasterformatsaveoptionswidget.h#L135
 QgsRasterFormatSaveOptionsWidget: src/gui/qgsrasterformatsaveoptionswidget.h#L31
 QgsRasterFormatSaveOptionsWidget.swapOptionsUI: src/gui/qgsrasterformatsaveoptionswidget.h#L131
@@ -6413,12 +6192,7 @@ QgsRasterPyramidsOptionsWidget.resamplingMethod: src/gui/qgsrasterpyramidsoption
 QgsRasterPyramidsOptionsWidget.setOverviewList: src/gui/qgsrasterpyramidsoptionswidget.h#L62
 QgsRasterPyramidsOptionsWidget.setRasterFileName: src/gui/qgsrasterpyramidsoptionswidget.h#L51
 QgsRasterPyramidsOptionsWidget.setRasterLayer: src/gui/qgsrasterpyramidsoptionswidget.h#L50
-<<<<<<< HEAD
 QgsRasterPyramidsOptionsWidget.someValueChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L75
-QgsRasterPyramidsOptionsWidget.updateUi: src/gui/qgsrasterpyramidsoptionswidget.h#L63
-=======
-QgsRasterPyramidsOptionsWidget.someValueChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L67
->>>>>>> 71a312b7156 (sipify)
 QgsRasterPyramidsOptionsWidget: src/gui/qgsrasterpyramidsoptionswidget.h#L31
 QgsRasterPyramidsOptionsWidget.updateUi: src/gui/qgsrasterpyramidsoptionswidget.h#L63
 QgsRasterRendererWidget.contrastEnhancementAlgorithm: src/gui/raster/qgsrasterrendererwidget.h#L104
@@ -6479,19 +6253,12 @@ QgsRelationAggregateSearchWidgetWrapper.expression: src/gui/editorwidgets/qgsrel
 QgsRelationAggregateSearchWidgetWrapper.QgsRelationAggregateSearchWidgetWrapper: src/gui/editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h#L43
 QgsRelationAggregateSearchWidgetWrapper.setExpression: src/gui/editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h#L50
 QgsRelationAggregateSearchWidgetWrapper: src/gui/editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h#L34
-<<<<<<< HEAD
-QgsRelationEditorConfigWidget.QgsRelationEditorConfigWidget: src/gui/qgsrelationeditorwidget.h#L292
+QgsRelationAggregateSearchWidgetWrapper.valid: src/gui/editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h#L47
 QgsRelationEditorConfigWidget.config: src/gui/qgsrelationeditorwidget.h#L299
 QgsRelationEditorConfigWidget.mEditExpression_clicked: src/gui/qgsrelationeditorwidget.h#L311
+QgsRelationEditorConfigWidget.QgsRelationEditorConfigWidget: src/gui/qgsrelationeditorwidget.h#L292
 QgsRelationEditorConfigWidget.setConfig: src/gui/qgsrelationeditorwidget.h#L306
 QgsRelationEditorConfigWidget: src/gui/qgsrelationeditorwidget.h#L280
-=======
-QgsRelationAggregateSearchWidgetWrapper.valid: src/gui/editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h#L47
-QgsRelationEditorConfigWidget.config: src/gui/qgsrelationeditorwidget.h#L297
-QgsRelationEditorConfigWidget.QgsRelationEditorConfigWidget: src/gui/qgsrelationeditorwidget.h#L290
-QgsRelationEditorConfigWidget.setConfig: src/gui/qgsrelationeditorwidget.h#L304
-QgsRelationEditorConfigWidget: src/gui/qgsrelationeditorwidget.h#L278
->>>>>>> 71a312b7156 (sipify)
 QgsRelationEditorWidget.afterSetRelationFeature: src/gui/qgsrelationeditorwidget.h#L197
 QgsRelationEditorWidget.afterSetRelations: src/gui/qgsrelationeditorwidget.h#L199
 QgsRelationEditorWidget.beforeSetRelationFeature: src/gui/qgsrelationeditorwidget.h#L196
@@ -6572,31 +6339,17 @@ QgsRelationReferenceWidget.setRelation: src/gui/editorwidgets/qgsrelationreferen
 QgsRelationReferenceWidget.showEvent: src/gui/editorwidgets/qgsrelationreferencewidget.h#L275
 QgsRelationReferenceWidget.showIndeterminateState: src/gui/editorwidgets/qgsrelationreferencewidget.h#L176
 QgsRelationReferenceWidget: src/gui/editorwidgets/qgsrelationreferencewidget.h#L57
-<<<<<<< HEAD
-QgsRelationReferenceWidgetWrapper.QgsRelationReferenceWidgetWrapper: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L47
-QgsRelationReferenceWidgetWrapper.additionalFieldValues: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L59
 QgsRelationReferenceWidgetWrapper.additionalFields: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L60
+QgsRelationReferenceWidgetWrapper.additionalFieldValues: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L59
 QgsRelationReferenceWidgetWrapper.createWidget: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L54
 QgsRelationReferenceWidgetWrapper.initWidget: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L55
+QgsRelationReferenceWidgetWrapper.QgsRelationReferenceWidgetWrapper: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L47
 QgsRelationReferenceWidgetWrapper.setEnabled: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L63
 QgsRelationReferenceWidgetWrapper.showIndeterminateState: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L58
+QgsRelationReferenceWidgetWrapper: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L41
 QgsRelationReferenceWidgetWrapper.updateConstraintWidgetStatus: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L69
 QgsRelationReferenceWidgetWrapper.valid: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L57
 QgsRelationReferenceWidgetWrapper.value: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L56
-QgsRelationReferenceWidgetWrapper: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L41
-=======
-QgsRelationReferenceWidgetWrapper.additionalFields: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L62
-QgsRelationReferenceWidgetWrapper.additionalFieldValues: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L61
-QgsRelationReferenceWidgetWrapper.createWidget: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L56
-QgsRelationReferenceWidgetWrapper.initWidget: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L57
-QgsRelationReferenceWidgetWrapper.QgsRelationReferenceWidgetWrapper: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L49
-QgsRelationReferenceWidgetWrapper.setEnabled: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L65
-QgsRelationReferenceWidgetWrapper.showIndeterminateState: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L60
-QgsRelationReferenceWidgetWrapper: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L43
-QgsRelationReferenceWidgetWrapper.updateConstraintWidgetStatus: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L71
-QgsRelationReferenceWidgetWrapper.valid: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L59
-QgsRelationReferenceWidgetWrapper.value: src/gui/editorwidgets/qgsrelationreferencewidgetwrapper.h#L58
->>>>>>> 71a312b7156 (sipify)
 QgsRelationWidgetRegistry.addRelationWidget: src/gui/qgsrelationwidgetregistry.h#L45
 QgsRelationWidgetRegistry.createConfigWidget: src/gui/qgsrelationwidgetregistry.h#L78
 QgsRelationWidgetRegistry.create: src/gui/qgsrelationwidgetregistry.h#L69
@@ -7349,15 +7102,13 @@ QgsSvgSelectorDialog.svgSelector: src/gui/symbology/qgssvgselectorwidget.h#L497
 QgsSvgSelectorDialog: src/gui/symbology/qgssvgselectorwidget.h#L483
 =======
 QgsSvgMarkerSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L604
-QgsSvgSelectorDialog: src/gui/symbology/qgssvgselectorwidget.h#L477
-QgsSvgSelectorDialog.svgSelector: src/gui/symbology/qgssvgselectorwidget.h#L491
->>>>>>> 71a312b7156 (sipify)
+QgsSvgSelectorDialog: src/gui/symbology/qgssvgselectorwidget.h#L483
+QgsSvgSelectorDialog.svgSelector: src/gui/symbology/qgssvgselectorwidget.h#L497
 QgsSvgSelectorFilterModel: src/gui/symbology/qgssvgselectorwidget.h#L279
 QgsSvgSelectorGroupsModel: src/gui/symbology/qgssvgselectorwidget.h#L356
 QgsSvgSelectorListModel.data: src/gui/symbology/qgssvgselectorwidget.h#L327
 QgsSvgSelectorListModel.rowCount: src/gui/symbology/qgssvgselectorwidget.h#L326
 QgsSvgSelectorListModel: src/gui/symbology/qgssvgselectorwidget.h#L304
-<<<<<<< HEAD
 QgsSvgSelectorWidget.allowParamerters: src/gui/symbology/qgssvgselectorwidget.h#L413
 QgsSvgSelectorWidget.allowParameters: src/gui/symbology/qgssvgselectorwidget.h#L419
 QgsSvgSelectorWidget.browserVisible: src/gui/symbology/qgssvgselectorwidget.h#L431
@@ -7370,26 +7121,9 @@ QgsSvgSelectorWidget.setBrowserVisible: src/gui/symbology/qgssvgselectorwidget.h
 QgsSvgSelectorWidget.setSvgParameters: src/gui/symbology/qgssvgselectorwidget.h#L447
 QgsSvgSelectorWidget.setSvgPath: src/gui/symbology/qgssvgselectorwidget.h#L441
 QgsSvgSelectorWidget.sourceLineEdit: src/gui/symbology/qgssvgselectorwidget.h#L400
+QgsSvgSelectorWidget: src/gui/symbology/qgssvgselectorwidget.h#L379
 QgsSvgSelectorWidget.svgParametersChanged: src/gui/symbology/qgssvgselectorwidget.h#L460
 QgsSvgSelectorWidget.svgSelected: src/gui/symbology/qgssvgselectorwidget.h#L454
-QgsSvgSelectorWidget: src/gui/symbology/qgssvgselectorwidget.h#L379
-=======
-QgsSvgSelectorWidget.allowParamerters: src/gui/symbology/qgssvgselectorwidget.h#L411
-QgsSvgSelectorWidget.allowParameters: src/gui/symbology/qgssvgselectorwidget.h#L417
-QgsSvgSelectorWidget.browserVisible: src/gui/symbology/qgssvgselectorwidget.h#L429
-QgsSvgSelectorWidget.currentSvgPath: src/gui/symbology/qgssvgselectorwidget.h#L392
-QgsSvgSelectorWidget.initParametersModel: src/gui/symbology/qgssvgselectorwidget.h#L390
-QgsSvgSelectorWidget.populateList: src/gui/symbology/qgssvgselectorwidget.h#L457
-QgsSvgSelectorWidget.propertyOverrideToolButton: src/gui/symbology/qgssvgselectorwidget.h#L435
-QgsSvgSelectorWidget.setAllowParameters: src/gui/symbology/qgssvgselectorwidget.h#L404
-QgsSvgSelectorWidget.setBrowserVisible: src/gui/symbology/qgssvgselectorwidget.h#L423
-QgsSvgSelectorWidget.setSvgParameters: src/gui/symbology/qgssvgselectorwidget.h#L445
-QgsSvgSelectorWidget.setSvgPath: src/gui/symbology/qgssvgselectorwidget.h#L439
-QgsSvgSelectorWidget.sourceLineEdit: src/gui/symbology/qgssvgselectorwidget.h#L398
-QgsSvgSelectorWidget: src/gui/symbology/qgssvgselectorwidget.h#L377
-QgsSvgSelectorWidget.svgParametersChanged: src/gui/symbology/qgssvgselectorwidget.h#L454
-QgsSvgSelectorWidget.svgSelected: src/gui/symbology/qgssvgselectorwidget.h#L448
->>>>>>> 71a312b7156 (sipify)
 QgsSvgSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L254
 QgsSymbolAnimationSettingsDialog.animationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L88
 QgsSymbolAnimationSettingsDialog.setAnimationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L81
@@ -7463,8 +7197,6 @@ QgsSymbolLevelsWidget.setForceOrderingEnabled: src/gui/symbology/qgssymbollevels
 QgsSymbolLevelsWidget: src/gui/symbology/qgssymbollevelsdialog.h#L36
 QgsSymbolLevelsWidget.symbolLevels: src/gui/symbology/qgssymbollevelsdialog.h#L61
 QgsSymbolLevelsWidget.usingLevels: src/gui/symbology/qgssymbollevelsdialog.h#L54
-<<<<<<< HEAD
-QgsSymbolLevelsWidget: src/gui/symbology/qgssymbollevelsdialog.h#L36
 QgsSymbolSelectorDialog.addLayer: src/gui/symbology/qgssymbolselectordialog.h#L348
 QgsSymbolSelectorDialog.advancedMenu: src/gui/symbology/qgssymbolselectordialog.h#L309
 QgsSymbolSelectorDialog.buttonBox: src/gui/symbology/qgssymbolselectordialog.h#L341
@@ -7478,33 +7210,12 @@ QgsSymbolSelectorDialog.moveLayerDown: src/gui/symbology/qgssymbolselectordialog
 QgsSymbolSelectorDialog.moveLayerUp: src/gui/symbology/qgssymbolselectordialog.h#L346
 QgsSymbolSelectorDialog.removeLayer: src/gui/symbology/qgssymbolselectordialog.h#L349
 QgsSymbolSelectorDialog.setContext: src/gui/symbology/qgssymbolselectordialog.h#L316
-QgsSymbolSelectorDialog.symbol: src/gui/symbology/qgssymbolselectordialog.h#L328
+QgsSymbolSelectorDialog: src/gui/symbology/qgssymbolselectordialog.h#L291
 QgsSymbolSelectorDialog.symbolChanged: src/gui/symbology/qgssymbolselectordialog.h#L364
 QgsSymbolSelectorDialog.symbolModified: src/gui/symbology/qgssymbolselectordialog.h#L387
+QgsSymbolSelectorDialog.symbol: src/gui/symbology/qgssymbolselectordialog.h#L328
 QgsSymbolSelectorDialog.updateLayerPreview: src/gui/symbology/qgssymbolselectordialog.h#L360
 QgsSymbolSelectorDialog.updatePreview: src/gui/symbology/qgssymbolselectordialog.h#L361
-QgsSymbolSelectorDialog: src/gui/symbology/qgssymbolselectordialog.h#L291
-=======
-QgsSymbolSelectorDialog.addLayer: src/gui/symbology/qgssymbolselectordialog.h#L346
-QgsSymbolSelectorDialog.advancedMenu: src/gui/symbology/qgssymbolselectordialog.h#L307
-QgsSymbolSelectorDialog.buttonBox: src/gui/symbology/qgssymbolselectordialog.h#L339
-QgsSymbolSelectorDialog.changeLayer: src/gui/symbology/qgssymbolselectordialog.h#L368
-QgsSymbolSelectorDialog.context: src/gui/symbology/qgssymbolselectordialog.h#L320
-QgsSymbolSelectorDialog.duplicateLayer: src/gui/symbology/qgssymbolselectordialog.h#L354
-QgsSymbolSelectorDialog.keyPressEvent: src/gui/symbology/qgssymbolselectordialog.h#L373
-QgsSymbolSelectorDialog.layerChanged: src/gui/symbology/qgssymbolselectordialog.h#L356
-QgsSymbolSelectorDialog.lockLayer: src/gui/symbology/qgssymbolselectordialog.h#L349
-QgsSymbolSelectorDialog.moveLayerDown: src/gui/symbology/qgssymbolselectordialog.h#L343
-QgsSymbolSelectorDialog.moveLayerUp: src/gui/symbology/qgssymbolselectordialog.h#L344
-QgsSymbolSelectorDialog.removeLayer: src/gui/symbology/qgssymbolselectordialog.h#L347
-QgsSymbolSelectorDialog.setContext: src/gui/symbology/qgssymbolselectordialog.h#L314
-QgsSymbolSelectorDialog: src/gui/symbology/qgssymbolselectordialog.h#L289
-QgsSymbolSelectorDialog.symbolChanged: src/gui/symbology/qgssymbolselectordialog.h#L362
-QgsSymbolSelectorDialog.symbolModified: src/gui/symbology/qgssymbolselectordialog.h#L381
-QgsSymbolSelectorDialog.symbol: src/gui/symbology/qgssymbolselectordialog.h#L326
-QgsSymbolSelectorDialog.updateLayerPreview: src/gui/symbology/qgssymbolselectordialog.h#L358
-QgsSymbolSelectorDialog.updatePreview: src/gui/symbology/qgssymbolselectordialog.h#L359
->>>>>>> 71a312b7156 (sipify)
 QgsSymbolSelectorWidget.addLayer: src/gui/symbology/qgssymbolselectordialog.h#L165
 QgsSymbolSelectorWidget.advancedMenu: src/gui/symbology/qgssymbolselectordialog.h#L119
 QgsSymbolSelectorWidget.changeLayer: src/gui/symbology/qgssymbolselectordialog.h#L206
@@ -7518,29 +7229,11 @@ QgsSymbolSelectorWidget.removeLayer: src/gui/symbology/qgssymbolselectordialog.h
 QgsSymbolSelectorWidget.setContext: src/gui/symbology/qgssymbolselectordialog.h#L126
 QgsSymbolSelectorWidget: src/gui/symbology/qgssymbolselectordialog.h#L88
 QgsSymbolSelectorWidget.symbolChanged: src/gui/symbology/qgssymbolselectordialog.h#L199
-<<<<<<< HEAD
 QgsSymbolSelectorWidget.symbolModified: src/gui/symbology/qgssymbolselectordialog.h#L213
-QgsSymbolSelectorWidget.updateLayerPreview: src/gui/symbology/qgssymbolselectordialog.h#L191
-QgsSymbolSelectorWidget.updatePreview: src/gui/symbology/qgssymbolselectordialog.h#L196
-QgsSymbolSelectorWidget: src/gui/symbology/qgssymbolselectordialog.h#L88
-QgsSymbolWidgetContext.expressionContext: src/gui/symbology/qgssymbolwidgetcontext.h#L87
-QgsSymbolWidgetContext.mapCanvas: src/gui/symbology/qgssymbolwidgetcontext.h#L54
-QgsSymbolWidgetContext.messageBar: src/gui/symbology/qgssymbolwidgetcontext.h#L69
-QgsSymbolWidgetContext.setAdditionalExpressionContextScopes: src/gui/symbology/qgssymbolwidgetcontext.h#L94
-QgsSymbolWidgetContext.setExpressionContext: src/gui/symbology/qgssymbolwidgetcontext.h#L79
-QgsSymbolWidgetContext.setMapCanvas: src/gui/symbology/qgssymbolwidgetcontext.h#L48
-QgsSymbolWidgetContext.setMessageBar: src/gui/symbology/qgssymbolwidgetcontext.h#L62
-QgsSymbolWidgetContext.setSymbolType: src/gui/symbology/qgssymbolwidgetcontext.h#L124
-QgsSymbolWidgetContext.symbolType: src/gui/symbology/qgssymbolwidgetcontext.h#L115
-QgsSymbolWidgetContext: src/gui/symbology/qgssymbolwidgetcontext.h#L34
-QgsSymbolsListWidget.changed: src/gui/symbology/qgssymbolslistwidget.h#L90
-=======
-QgsSymbolSelectorWidget.symbolModified: src/gui/symbology/qgssymbolselectordialog.h#L212
 QgsSymbolSelectorWidget.symbol: src/gui/symbology/qgssymbolselectordialog.h#L138
 QgsSymbolSelectorWidget.updateLayerPreview: src/gui/symbology/qgssymbolselectordialog.h#L191
 QgsSymbolSelectorWidget.updatePreview: src/gui/symbology/qgssymbolselectordialog.h#L196
-QgsSymbolsListWidget.changed: src/gui/symbology/qgssymbolslistwidget.h#L86
->>>>>>> 71a312b7156 (sipify)
+QgsSymbolsListWidget.changed: src/gui/symbology/qgssymbolslistwidget.h#L90
 QgsSymbolsListWidget.clipFeaturesToggled: src/gui/symbology/qgssymbolslistwidget.h#L79
 QgsSymbolsListWidget.context: src/gui/symbology/qgssymbolslistwidget.h#L65
 QgsSymbolsListWidget.layer: src/gui/symbology/qgssymbolslistwidget.h#L70
@@ -7704,19 +7397,11 @@ QgsTiledSceneRendererWidget.layer: src/gui/tiledscene/qgstiledscenerendererwidge
 QgsTiledSceneRendererWidget.renderer: src/gui/tiledscene/qgstiledscenerendererwidget.h#L52
 QgsTiledSceneRendererWidget.setContext: src/gui/tiledscene/qgstiledscenerendererwidget.h#L58
 QgsTiledSceneRendererWidget: src/gui/tiledscene/qgstiledscenerendererwidget.h#L36
-<<<<<<< HEAD
-QgsTimeEdit.QgsTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L243
 QgsTimeEdit.emitValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L259
+QgsTimeEdit.QgsTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L243
 QgsTimeEdit.setTime: src/gui/editorwidgets/qgsdatetimeedit.h#L249
-QgsTimeEdit.timeValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L256
 QgsTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L231
-=======
-QgsTimeEdit.emitValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L261
-QgsTimeEdit.QgsTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L245
-QgsTimeEdit.setTime: src/gui/editorwidgets/qgsdatetimeedit.h#L251
-QgsTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L233
-QgsTimeEdit.timeValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L258
->>>>>>> 71a312b7156 (sipify)
+QgsTimeEdit.timeValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L256
 QgsToolTipComboBox.event: src/gui/qgstooltipcombobox.h#L45
 QgsToolTipComboBox: src/gui/qgstooltipcombobox.h#L36
 QgsTransformWidget.create: src/gui/effects/qgspainteffectwidget.h#L219
@@ -7735,12 +7420,6 @@ QgsTreeWidgetItem.setAlwaysOnTopPriority: src/gui/qgstreewidgetitem.h#L123
 QgsTreeWidgetItem.setSortData: src/gui/qgstreewidgetitem.h#L106
 QgsTreeWidgetItem.sortData: src/gui/qgstreewidgetitem.h#L114
 QgsTreeWidgetItem: src/gui/qgstreewidgetitem.h#L35
-<<<<<<< HEAD
-QgsTreeWidgetItemObject.QgsTreeWidgetItemObject: src/gui/qgstreewidgetitem.h#L170
-QgsTreeWidgetItemObject.QgsTreeWidgetItemObject: src/gui/qgstreewidgetitem.h#L173
-QgsTreeWidgetItemObject.itemEdited: src/gui/qgstreewidgetitem.h#L180
-QgsTreeWidgetItemObject.setData: src/gui/qgstreewidgetitem.h#L176
-QgsTreeWidgetItemObject: src/gui/qgstreewidgetitem.h#L160
 QgsUnitSelectionWidget.changed: src/gui/qgsunitselectionwidget.h#L246
 QgsUnitSelectionWidget.getMapUnitScale: src/gui/qgsunitselectionwidget.h#L213
 QgsUnitSelectionWidget.getUnit: src/gui/qgsunitselectionwidget.h#L191
@@ -7752,23 +7431,8 @@ QgsUnitSelectionWidget.setUnit: src/gui/qgsunitselectionwidget.h#L210
 QgsUnitSelectionWidget.setUnits: src/gui/qgsunitselectionwidget.h#L182
 QgsUnitSelectionWidget.setUnits: src/gui/qgsunitselectionwidget.h#L188
 QgsUnitSelectionWidget.showMapScaleButton: src/gui/qgsunitselectionwidget.h#L231
-QgsUnitSelectionWidget.unit: src/gui/qgsunitselectionwidget.h#L197
 QgsUnitSelectionWidget: src/gui/qgsunitselectionwidget.h#L165
-=======
-QgsUnitSelectionWidget.changed: src/gui/qgsunitselectionwidget.h#L240
-QgsUnitSelectionWidget.getMapUnitScale: src/gui/qgsunitselectionwidget.h#L211
-QgsUnitSelectionWidget.getUnit: src/gui/qgsunitselectionwidget.h#L189
-QgsUnitSelectionWidget.setMapCanvas: src/gui/qgsunitselectionwidget.h#L221
-QgsUnitSelectionWidget.setMapUnitScale: src/gui/qgsunitselectionwidget.h#L214
-QgsUnitSelectionWidget.setShowMapScaleButton: src/gui/qgsunitselectionwidget.h#L237
-QgsUnitSelectionWidget.setUnit: src/gui/qgsunitselectionwidget.h#L202
-QgsUnitSelectionWidget.setUnit: src/gui/qgsunitselectionwidget.h#L208
-QgsUnitSelectionWidget.setUnits: src/gui/qgsunitselectionwidget.h#L180
-QgsUnitSelectionWidget.setUnits: src/gui/qgsunitselectionwidget.h#L186
-QgsUnitSelectionWidget.showMapScaleButton: src/gui/qgsunitselectionwidget.h#L229
-QgsUnitSelectionWidget: src/gui/qgsunitselectionwidget.h#L163
-QgsUnitSelectionWidget.unit: src/gui/qgsunitselectionwidget.h#L195
->>>>>>> 71a312b7156 (sipify)
+QgsUnitSelectionWidget.unit: src/gui/qgsunitselectionwidget.h#L197
 QgsUserInputWidget.addUserInputWidget: src/gui/qgsuserinputwidget.h#L51
 QgsUserInputWidget.paintEvent: src/gui/qgsuserinputwidget.h#L55
 QgsUserInputWidget: src/gui/qgsuserinputwidget.h#L39
