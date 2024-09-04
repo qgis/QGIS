@@ -433,9 +433,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         test_table(self.dbconn, 'p3d',
                    'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')
-        test_table(self.dbconn, 'triangle2d', 'Polygon ((0 0, 1 0, 1 1, 0 0))')
+        test_table(self.dbconn, 'triangle2d', 'Triangle ((0 0, 1 0, 1 1, 0 0))')
         test_table(self.dbconn, 'triangle3d',
-                   'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 0 0))')
+                   'TriangleZ ((0 0 0, 1 0 0, 1 1 0, 0 0 0))')
         test_table(self.dbconn, 'tin2d',
                    'TIN (((0 0, 1 0, 1 1, 0 0)),((0 0, 0 1, 1 1, 0 0)))')
         test_table(self.dbconn, 'tin3d',

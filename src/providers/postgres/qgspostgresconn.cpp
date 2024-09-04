@@ -2557,6 +2557,10 @@ void QgsPostgresConn::postgisWkbType( Qgis::WkbType wkbType, QString &geometryTy
       geometryType = QStringLiteral( "MULTISURFACE" );
       break;
 
+    case Qgis::WkbType::Triangle:
+      geometryType = QStringLiteral( "TRIANGLE" );
+      break;
+
     case Qgis::WkbType::PolyhedralSurface:
       geometryType = QStringLiteral( "POLYHEDRALSURFACE" );
       break;
@@ -2620,7 +2624,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, Qgis::WkbType wkbTy
     case Qgis::GeometryType::Line:
       return QStringLiteral( "upper(geometrytype(%1)) IN ('LINESTRING','LINESTRINGZ','LINESTRINGM','LINESTRINGZM','CIRCULARSTRING','CIRCULARSTRINGZ','CIRCULARSTRINGM','CIRCULARSTRINGZM','COMPOUNDCURVE','COMPOUNDCURVEZ','COMPOUNDCURVEM','COMPOUNDCURVEZM','MULTILINESTRING','MULTILINESTRINGZ','MULTILINESTRINGM','MULTILINESTRINGZM','MULTICURVE','MULTICURVEZ','MULTICURVEM','MULTICURVEZM')" ).arg( geomCol );
     case Qgis::GeometryType::Polygon:
-      return QStringLiteral( "upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','POLYHEDRALSURFACE','POLYHEDRALSURFACEZ','POLYHEDRALSURFACEM','POLYHEDRALSURFACEZM','TIN','TINZ','TINM','TINZM')" ).arg( geomCol );
+      return QStringLiteral( "upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','TRIANGLE','TRIANGLEZ','TRIANGLEM','TRIANGLEZM','POLYHEDRALSURFACE','POLYHEDRALSURFACEZ','POLYHEDRALSURFACEM','POLYHEDRALSURFACEZM','TIN','TINZ','TINM','TINZM')" ).arg( geomCol );
     case Qgis::GeometryType::Null:
       return QStringLiteral( "geometrytype(%1) IS NULL" ).arg( geomCol );
     default: //unknown geometry
@@ -2640,22 +2644,6 @@ int QgsPostgresConn::postgisWkbTypeDim( Qgis::WkbType wkbType )
 
 Qgis::WkbType QgsPostgresConn::wkbTypeFromPostgis( const QString &type )
 {
-  if ( type == QLatin1String( "TRIANGLE" ) )
-  {
-    return Qgis::WkbType::Polygon;
-  }
-  else if ( type == QLatin1String( "TRIANGLEZ" ) )
-  {
-    return Qgis::WkbType::PolygonZ;
-  }
-  else if ( type == QLatin1String( "TRIANGLEM" ) )
-  {
-    return Qgis::WkbType::PolygonM;
-  }
-  else if ( type == QLatin1String( "TRIANGLEZM" ) )
-  {
-    return Qgis::WkbType::PolygonZM;
-  }
   return QgsWkbTypes::parseType( type );
 }
 
