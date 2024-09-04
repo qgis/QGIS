@@ -37,6 +37,7 @@ class TestQgsQuantizedMeshUtils : public QObject
     void tileToGltf();
     void tileToGltfNoDegenerateTris();
     void tileToGltfWithSkirt();
+    void tileToGltfWithTexCoords();
 };
 
 void TestQgsQuantizedMeshUtils::initTestCase()
@@ -50,7 +51,7 @@ void TestQgsQuantizedMeshUtils::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-static void runTest( QString testName, bool skirt, double skirtDepth, bool removeDegenerateTriangles )
+static void runTest( QString testName, bool skirt, double skirtDepth, bool texCoords, bool removeDegenerateTriangles )
 {
   QString sampleFilePath = getenv( "QUANTIZED_MESH_SAMPLE_IN" );
   const char *outFilePath = getenv( "QUANTIZED_MESH_SAMPLE_OUT" );
@@ -79,7 +80,7 @@ static void runTest( QString testName, bool skirt, double skirtDepth, bool remov
     tile.mHeader.MaximumHeight = 1;
   }
 
-  auto model = tile.toGltf( skirt, skirtDepth );
+  auto model = tile.toGltf( skirt, skirtDepth, texCoords );
   tinygltf::TinyGLTF gltfLoader;
 
   if ( outFilePath != nullptr )
@@ -101,17 +102,22 @@ static void runTest( QString testName, bool skirt, double skirtDepth, bool remov
 
 void TestQgsQuantizedMeshUtils::tileToGltf()
 {
-  runTest( "base", false, 0, false );
+  runTest( "base", false, 0, false, false );
 }
 
 void TestQgsQuantizedMeshUtils::tileToGltfNoDegenerateTris()
 {
-  runTest( "no-deg-tris", false, 0, true );
+  runTest( "no-deg-tris", false, 0, false, true );
 }
 
 void TestQgsQuantizedMeshUtils::tileToGltfWithSkirt()
 {
-  runTest( "skirt", true, 100, false );
+  runTest( "skirt", true, 100, false, false );
+}
+
+void TestQgsQuantizedMeshUtils::tileToGltfWithTexCoords()
+{
+  runTest( "texcoords", false, 0, true, false );
 }
 
 

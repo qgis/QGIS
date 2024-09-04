@@ -203,7 +203,7 @@ void QgsQuantizedMeshTile::removeDegenerateTriangles()
   mTriangleIndices = newTriangleIndices;
 }
 
-tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth )
+tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, bool withTextureCoords )
 {
   tinygltf::Model model;
 
@@ -395,7 +395,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth )
     model.buffers.push_back( normalBuffer );
 
     tinygltf::BufferView normalBufferView;
-    normalBufferView.buffer = 2;
+    normalBufferView.buffer = model.buffers.size() - 1;
     normalBufferView.byteLength = normalBuffer.data.size();
     normalBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
     model.bufferViews.push_back( normalBufferView );
@@ -413,7 +413,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth )
     }
 
     tinygltf::Accessor normalAccessor;
-    normalAccessor.bufferView = 2;
+    normalAccessor.bufferView = model.bufferViews.size() - 1;
     normalAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
     normalAccessor.count = normalBuffer.data.size() / sizeof( float ) / 3;
     normalAccessor.type = TINYGLTF_TYPE_VEC3;
@@ -421,7 +421,53 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth )
     normalAccessor.maxValues = normalMaximums;
     model.accessors.push_back( normalAccessor );
 
-    primitive.attributes["NORMAL"] = 2;
+    primitive.attributes["NORMAL"] = model.accessors.size() - 1;
+  }
+
+  if ( withTextureCoords )
+  {
+    // Create texture coordinates matching X, Y
+
+    tinygltf::Buffer textureCoordBuffer;
+    textureCoordBuffer.data.resize( mVertexCoords.size() / 3 * 2 * sizeof( float ) );
+    std::vector<double> texCoordMinimums = {1.0, 1.0};
+    std::vector<double> texCoordMaximums = {0.0, 0.0};
+    auto textureCoordFloats = reinterpret_cast<float *>( textureCoordBuffer.data.data() );
+
+    for ( size_t i = 0; i < mVertexCoords.size() / 3; i++ )
+    {
+      double u = mVertexCoords[i * 3] / 32767.0;
+      // V coord needs to be flipped for terrain for some reason
+      double v = 1.0 - ( mVertexCoords[i * 3 + 1] / 32767.0 );
+      if ( texCoordMinimums[0] > u ) texCoordMinimums[0] = u;
+      if ( texCoordMinimums[1] > v ) texCoordMinimums[1] = v;
+      if ( texCoordMaximums[0] < u ) texCoordMaximums[0] = u;
+      if ( texCoordMaximums[1] < v ) texCoordMaximums[1] = v;
+      textureCoordFloats[i * 2] = u;
+      textureCoordFloats[i * 2 + 1] = v;
+    }
+
+    model.buffers.push_back( textureCoordBuffer );
+
+    tinygltf::BufferView textureCoordBufferView;
+    textureCoordBufferView.buffer = model.buffers.size() - 1;
+    //textureCoordBufferView.buffer = vertexBufferView.buffer; // Reuse vertex coords
+    textureCoordBufferView.byteLength = textureCoordBuffer.data.size();
+    //textureCoordBufferView.byteLength = vertexBuffer.data.size();
+    //textureCoordBufferView.byteStride = sizeof(float) * 3;
+    textureCoordBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
+    model.bufferViews.push_back( textureCoordBufferView );
+
+    tinygltf::Accessor textureCoordAccessor;
+    textureCoordAccessor.bufferView = model.bufferViews.size() - 1;
+    textureCoordAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+    textureCoordAccessor.count = vertexAccessor.count;
+    textureCoordAccessor.type = TINYGLTF_TYPE_VEC2;
+    textureCoordAccessor.minValues = { texCoordMinimums[0], texCoordMinimums[1] };
+    textureCoordAccessor.maxValues = { texCoordMaximums[0], texCoordMaximums[1] };
+    model.accessors.push_back( textureCoordAccessor );
+
+    primitive.attributes["TEXCOORD_0"] = model.accessors.size() - 1;
   }
 
   mesh.primitives.push_back( primitive );
