@@ -416,7 +416,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 #endif
 #ifdef WITH_QWTPOLAR
         // QBrush symbolBrush( Qt::black );
-        QSize markerSize( 9, 9 );
+        QSize markerSize( 10, 10 );
         QBrush textBgBrush( bg );
         QBrush symbolBrush;
         QColor myColor( Qt::black );
