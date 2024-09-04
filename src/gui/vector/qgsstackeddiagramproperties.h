@@ -63,24 +63,19 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QWidget, private Ui::QgsSt
 
     /**
      * Adds a diagram tab to the current QgsStackedDiagramProperties.
-     *
-     * \since QGIS 3.40
      */
     void addSubDiagram();
 
     /**
      * Removes a diagram tab from the current QgsStackedDiagramProperties.
-     * Diagram tabs are removed only if the tab count is greeater than 2.
+     * Diagram tabs are removed only if the tab count is greater than 2.
      * Tab texts are adjusted after tab removal, to keep sequential order.
-     *
-     * \since QGIS 3.40
      */
     void removeSubDiagram();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-
 };
 
 #endif // QGSSTACKEDDIAGRAMPROPERTIES_H

@@ -101,7 +101,7 @@ void QgsStackedDiagramProperties::syncToLayer()
 
   if ( dr && dr->diagram() )
   {
-    if ( dr->diagram()->diagramName() == DIAGRAM_NAME_STACKED )
+    if ( dr->rendererName() == QStringLiteral( "Stacked" ) )
     {
       mDiagramTypeComboBox->blockSignals( true );
       mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( QgsDiagramLayerSettings::Stacked ) );
@@ -114,23 +114,27 @@ void QgsStackedDiagramProperties::syncToLayer()
       mStackedDiagramSpacingSpinBox->setValue( settingList.at( 0 ).stackedDiagramSpacing() );
       mStackedDiagramSpacingUnitComboBox->setUnit( settingList.at( 0 ).stackedDiagramSpacingUnit() );
 
-      // Create as many tabs as necessary
-      const QgsStackedDiagram *stackedDiagram = dynamic_cast< const QgsStackedDiagram *>( dr->diagram() );
-      const int subDiagramCount = stackedDiagram->subDiagramCount();
-      while ( mSubDiagramsTabWidget->count() < subDiagramCount )
+      // Create/remove as many tabs as necessary
+      const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
+      const int rendererCount = stackedDiagramRenderer->rendererCount();
+      while ( mSubDiagramsTabWidget->count() < rendererCount )
       {
         addSubDiagram();
       }
+      while ( mSubDiagramsTabWidget->count() > rendererCount )
+      {
+        mSubDiagramsTabWidget->setCurrentIndex( mSubDiagramsTabWidget->count() - 1 );
+        removeSubDiagram();
+      }
 
-      // Call subdiagrams' syncToLayer with the corresponding subdiagram index
+      // Call subdiagrams' syncToLayer with the corresponding rendering object
       for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
       {
         QgsDiagramProperties *diagramProperties = static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( i ) );
-        diagramProperties->mSubDiagramIndex = i;
-        diagramProperties->syncToLayer();
+        diagramProperties->syncToLayer( stackedDiagramRenderer->renderer( i ) );
       }
     }
-    else
+    else // Single diagram
     {
       mDiagramTypeComboBox->blockSignals( true );
       mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( QgsDiagramLayerSettings::Single ) );
@@ -143,10 +147,10 @@ void QgsStackedDiagramProperties::syncToLayer()
       static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->syncToLayer();
     }
   }
-  else
+  else // No Diagram
   {
     mDiagramTypeComboBox->blockSignals( true );
-    mDiagramTypeComboBox->setCurrentIndex( 0 ); // No Diagram
+    mDiagramTypeComboBox->setCurrentIndex( 0 );
     mDiagramTypeComboBox->blockSignals( false );
     //force a refresh of widget status to match diagram type
     mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
@@ -187,16 +191,15 @@ void QgsStackedDiagramProperties::apply()
   }
   else // Stacked diagram
   {
-    // TODO: Validate that we have at least 2 diagrams
-
-    // Create DiagramSetings for the StackedDiagram
-    std::unique_ptr< QgsDiagramSettings> ds = std::make_unique<QgsDiagramSettings>();
+    // Create diagram settings for the StackedDiagram
+    std::unique_ptr< QgsDiagramSettings> ds = std::make_unique< QgsDiagramSettings >();
     ds->stackedDiagramMode = static_cast<QgsDiagramSettings::StackedDiagramMode>( mStackedDiagramModeComboBox->currentData().toInt() );
     ds->setStackedDiagramSpacingUnit( mStackedDiagramSpacingUnitComboBox->unit() );
     ds->setStackedDiagramSpacing( mStackedDiagramSpacingSpinBox->value() );
 
-    // Add subdiagrams with their DiagramSettings to StackedDiagram
-    std::unique_ptr< QgsStackedDiagram > stackedDiagram = std::make_unique< QgsStackedDiagram >();
+    // Create diagram renderer for the StackedDiagram
+    QgsStackedDiagramRenderer *dr = new QgsStackedDiagramRenderer();
+    dr->setDiagram( new QgsStackedDiagram() );
 
     // Get DiagramSettings from each subdiagram
     for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
@@ -206,6 +209,8 @@ void QgsStackedDiagramProperties::apply()
       ds->categoryAttributes += ds1->categoryAttributes;
       ds->categoryLabels += ds1->categoryLabels;
       ds->categoryColors += ds1->categoryColors;
+
+      std::unique_ptr< QgsDiagramRenderer > dr1 = diagramProperties->createRendererBaseInfo( *ds1 );
 
       std::unique_ptr< QgsDiagram > diagram;
 
@@ -225,18 +230,16 @@ void QgsStackedDiagramProperties::apply()
       {
         diagram = std::make_unique< QgsHistogramDiagram >();
       }
-      stackedDiagram->addSubDiagram( diagram.release(), ds1.release() );
+
+      dr1->setDiagram( diagram.release() );
+      dr->addRenderer( dr1.release() );
     }
 
-    // Get first diagram to configure some stacked diagram settings from it
-    QgsDiagramProperties *firstDiagramProperties = static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) );
-
-    // Create DiagramRenderer using info from first diagram and setting Stacked Diagram and the stacked diagram's DiagramSettings
-    std::unique_ptr< QgsDiagramRenderer > renderer = firstDiagramProperties->createRendererBaseInfo( *ds );
-    renderer->setDiagram( stackedDiagram.release() );
-    mLayer->setDiagramRenderer( renderer.release() );
+    dr->setDiagramSettings( *ds );
+    mLayer->setDiagramRenderer( dr );
 
     // Create DiagramLayerSettings from first diagram
+    QgsDiagramProperties *firstDiagramProperties = static_cast< QgsDiagramProperties * >( mSubDiagramsTabWidget->widget( 0 ) );
     QgsDiagramLayerSettings dls = firstDiagramProperties->createDiagramLayerSettings();
     mLayer->setDiagramLayerSettings( dls );
 

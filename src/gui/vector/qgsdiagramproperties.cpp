@@ -270,10 +270,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   connect( mButtonSizeLegendSettings, &QPushButton::clicked, this, &QgsDiagramProperties::showSizeLegendDialog );
 }
 
-void QgsDiagramProperties::syncToLayer()
+void QgsDiagramProperties::syncToLayer( const QgsDiagramRenderer *dr )
 {
   mDiagramAttributesTreeWidget->clear();
-  const QgsDiagramRenderer *dr = mLayer->diagramRenderer();
+  if ( !dr )
+  {
+    dr = mLayer->diagramRenderer();
+  }
+
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
     mFixedSizeRadio->setChecked( true );
@@ -323,8 +327,6 @@ void QgsDiagramProperties::syncToLayer()
   }
   else // already a diagram renderer present
   {
-    const QgsStackedDiagram *stackedDiagram = nullptr;
-
     //single category renderer or interpolated one?
     if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
     {
@@ -338,48 +340,27 @@ void QgsDiagramProperties::syncToLayer()
     mLinearScaleFrame->setEnabled( mAttributeBasedScalingRadio->isChecked() );
     mCheckBoxAttributeLegend->setChecked( dr->attributeLegend() );
 
-    bool diagramSettingsSet = false;
-    QgsDiagramSettings diagramSettings;
-
-    if ( dr->diagram() && mSubDiagramIndex >= 0 )
+    // Assume single category or linearly interpolated diagram renderer for now.
+    const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
+    if ( !settingList.isEmpty() )
     {
-      // The current diagram is a subdiagram of a stacked diagram.
-      // Get the diagram settings using the subdiagram index.
-      stackedDiagram = dynamic_cast< QgsStackedDiagram * >( dr->diagram() );
-      diagramSettings = *stackedDiagram->subDiagramSettings( mSubDiagramIndex );
-      diagramSettingsSet = true;
-    }
-    else // Single diagram case
-    {
-      // Assume single category or linearly interpolated diagram renderer for now.
-      const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
-
-      if ( !settingList.isEmpty() )
-      {
-        diagramSettings = settingList.at( 0 );
-        diagramSettingsSet = true;
-      }
-    }
-
-    if ( diagramSettingsSet )
-    {
-      mDiagramFrame->setEnabled( diagramSettings.enabled );
-      mDiagramFontButton->setCurrentFont( diagramSettings.font );
-      const QSizeF size = diagramSettings.size;
-      mBackgroundColorButton->setColor( diagramSettings.backgroundColor );
-      mOpacityWidget->setOpacity( diagramSettings.opacity );
-      mDiagramPenColorButton->setColor( diagramSettings.penColor );
-      mPenWidthSpinBox->setValue( diagramSettings.penWidth );
+      mDiagramFrame->setEnabled( settingList.at( 0 ).enabled );
+      mDiagramFontButton->setCurrentFont( settingList.at( 0 ).font );
+      const QSizeF size = settingList.at( 0 ).size;
+      mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
+      mOpacityWidget->setOpacity( settingList.at( 0 ).opacity );
+      mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
+      mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
-      mScaleRangeWidget->setScaleRange( ( diagramSettings.minimumScale > 0 ? diagramSettings.minimumScale : mLayer->minimumScale() ),
-                                        ( diagramSettings.maximumScale > 0 ? diagramSettings.maximumScale : mLayer->maximumScale() ) );
-      mScaleVisibilityGroupBox->setChecked( diagramSettings.scaleBasedVisibility );
-      mDiagramUnitComboBox->setUnit( diagramSettings.sizeType );
-      mDiagramUnitComboBox->setMapUnitScale( diagramSettings.sizeScale );
-      mDiagramLineUnitComboBox->setUnit( diagramSettings.lineSizeUnit );
-      mDiagramLineUnitComboBox->setMapUnitScale( diagramSettings.lineSizeScale );
+      mScaleRangeWidget->setScaleRange( ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : mLayer->minimumScale() ),
+                                        ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : mLayer->maximumScale() ) );
+      mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
+      mDiagramUnitComboBox->setUnit( settingList.at( 0 ).sizeType );
+      mDiagramUnitComboBox->setMapUnitScale( settingList.at( 0 ).sizeScale );
+      mDiagramLineUnitComboBox->setUnit( settingList.at( 0 ).lineSizeUnit );
+      mDiagramLineUnitComboBox->setMapUnitScale( settingList.at( 0 ).lineSizeScale );
 
-      if ( diagramSettings.labelPlacementMethod == QgsDiagramSettings::Height )
+      if ( settingList.at( 0 ).labelPlacementMethod == QgsDiagramSettings::Height )
       {
         mLabelPlacementComboBox->setCurrentIndex( 0 );
       }
@@ -388,13 +369,13 @@ void QgsDiagramProperties::syncToLayer()
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
 
-      if ( diagramSettings.paintEffect() )
-        mPaintEffect.reset( diagramSettings.paintEffect()->clone() );
+      if ( settingList.at( 0 ).paintEffect() )
+        mPaintEffect.reset( settingList.at( 0 ).paintEffect()->clone() );
 
-      mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( diagramSettings.rotationOffset ) );
-      mAngleDirectionComboBox->setCurrentIndex( mAngleDirectionComboBox->findData( diagramSettings.direction() ) );
+      mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).rotationOffset ) );
+      mAngleDirectionComboBox->setCurrentIndex( mAngleDirectionComboBox->findData( settingList.at( 0 ).direction() ) );
 
-      switch ( diagramSettings.diagramOrientation )
+      switch ( settingList.at( 0 ).diagramOrientation )
       {
         case QgsDiagramSettings::Left:
           mOrientationLeftButton->setChecked( true );
@@ -413,22 +394,22 @@ void QgsDiagramProperties::syncToLayer()
           break;
       }
 
-      mBarWidthSpinBox->setValue( diagramSettings.barWidth );
-      mBarSpacingSpinBox->setValue( diagramSettings.spacing() );
-      mBarSpacingUnitComboBox->setUnit( diagramSettings.spacingUnit() );
-      mBarSpacingUnitComboBox->setMapUnitScale( diagramSettings.spacingMapUnitScale() );
+      mBarWidthSpinBox->setValue( settingList.at( 0 ).barWidth );
+      mBarSpacingSpinBox->setValue( settingList.at( 0 ).spacing() );
+      mBarSpacingUnitComboBox->setUnit( settingList.at( 0 ).spacingUnit() );
+      mBarSpacingUnitComboBox->setMapUnitScale( settingList.at( 0 ).spacingMapUnitScale() );
 
-      mShowAxisGroupBox->setChecked( diagramSettings.showAxis() );
-      if ( diagramSettings.axisLineSymbol() )
-        mAxisLineStyleButton->setSymbol( diagramSettings.axisLineSymbol()->clone() );
+      mShowAxisGroupBox->setChecked( settingList.at( 0 ).showAxis() );
+      if ( settingList.at( 0 ).axisLineSymbol() )
+        mAxisLineStyleButton->setSymbol( settingList.at( 0 ).axisLineSymbol()->clone() );
 
-      mIncreaseSmallDiagramsCheck->setChecked( diagramSettings.minimumSize != 0 );
+      mIncreaseSmallDiagramsCheck->setChecked( settingList.at( 0 ).minimumSize != 0 );
       mIncreaseMinimumSizeSpinBox->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
       mIncreaseMinimumSizeLabel->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
 
-      mIncreaseMinimumSizeSpinBox->setValue( diagramSettings.minimumSize );
+      mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).minimumSize );
 
-      if ( diagramSettings.scaleByArea )
+      if ( settingList.at( 0 ).scaleByArea )
       {
         mScaleDependencyComboBox->setCurrentIndex( 0 );
       }
@@ -437,9 +418,9 @@ void QgsDiagramProperties::syncToLayer()
         mScaleDependencyComboBox->setCurrentIndex( 1 );
       }
 
-      const QList< QColor > categoryColors = diagramSettings.categoryColors;
-      const QList< QString > categoryAttributes = diagramSettings.categoryAttributes;
-      const QList< QString > categoryLabels = diagramSettings.categoryLabels;
+      const QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
+      const QList< QString > categoryAttributes = settingList.at( 0 ).categoryAttributes;
+      const QList< QString > categoryLabels = settingList.at( 0 ).categoryLabels;
       QList< QString >::const_iterator catIt = categoryAttributes.constBegin();
       QList< QColor >::const_iterator coIt = categoryColors.constBegin();
       QList< QString >::const_iterator labIt = categoryLabels.constBegin();
@@ -524,17 +505,10 @@ void QgsDiagramProperties::syncToLayer()
 
     if ( dr->diagram() )
     {
-      if ( stackedDiagram )
-      {
-        mDiagramType = stackedDiagram->subDiagramType( mSubDiagramIndex );
-      }
-      else
-      {
-        mDiagramType = dr->diagram()->diagramName();
-      }
+      mDiagramType = dr->diagram()->diagramName();
 
       mDiagramTypeComboBox->blockSignals( true );
-      mDiagramTypeComboBox->setCurrentIndex( ( diagramSettingsSet && diagramSettings.enabled ) ? mDiagramTypeComboBox->findData( mDiagramType ) : 0 );
+      mDiagramTypeComboBox->setCurrentIndex( settingList.at( 0 ).enabled ? mDiagramTypeComboBox->findData( mDiagramType ) : 0 );
       mDiagramTypeComboBox->blockSignals( false );
       //force a refresh of widget status to match diagram type
       mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );

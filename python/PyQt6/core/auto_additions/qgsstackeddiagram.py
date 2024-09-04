@@ -3,7 +3,3 @@ try:
     QgsStackedDiagram.__group__ = ['diagram']
 except NameError:
     pass
-try:
-    QgsStackedDiagram.DiagramData.__group__ = ['diagram']
-except NameError:
-    pass

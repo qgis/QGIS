@@ -503,67 +503,26 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
     return;
   }
 
-  if ( mDiagram->diagramName() == QStringLiteral( "Stacked" ) )
+  if ( properties.hasActiveProperties() )
   {
-    // Iterate subdiagrams and render them individually
-    QgsStackedDiagram *stackedDiagram = qgis::down_cast< QgsStackedDiagram *>( mDiagram.get() );
-    QList< QgsDiagram * > subDiagrams = stackedDiagram->subDiagrams( s );
-    QPointF newPos = pos; // Each subdiagram will have its own newPos
-
-    for ( const auto &subDiagram : std::as_const( subDiagrams ) )
-    {
-      QgsDiagramSettings subSettings;
-      if ( !diagramSettings( feature, c, subSettings, subDiagram ) )
-      {
-        continue;
-      }
-
-      if ( properties.hasActiveProperties() )
-      {
-        c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( subSettings.backgroundColor ) );
-        subSettings.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::BackgroundColor, c.expressionContext(), subSettings.backgroundColor );
-        c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( subSettings.penColor ) );
-        subSettings.penColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::StrokeColor, c.expressionContext(), subSettings.penColor );
-        c.expressionContext().setOriginalValueVariable( subSettings.penWidth );
-        subSettings.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StrokeWidth, c.expressionContext(), subSettings.penWidth );
-        c.expressionContext().setOriginalValueVariable( subSettings.rotationOffset );
-        subSettings.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StartAngle, c.expressionContext(), subSettings.rotationOffset );
-      }
-
-      QgsPaintEffect *effect = subSettings.paintEffect();
-      std::unique_ptr< QgsEffectPainter > effectPainter;
-      if ( effect && effect->enabled() )
-      {
-        effectPainter = std::make_unique< QgsEffectPainter >( c, effect );
-      }
-
-      subDiagram->renderDiagram( feature, c, subSettings, newPos );
-      stackedDiagram->subDiagramPosition( newPos, c, s, subSettings );
-    }
+    c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.backgroundColor ) );
+    s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::BackgroundColor, c.expressionContext(), s.backgroundColor );
+    c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.penColor ) );
+    s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::StrokeColor, c.expressionContext(), s.penColor );
+    c.expressionContext().setOriginalValueVariable( s.penWidth );
+    s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StrokeWidth, c.expressionContext(), s.penWidth );
+    c.expressionContext().setOriginalValueVariable( s.rotationOffset );
+    s.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StartAngle, c.expressionContext(), s.rotationOffset );
   }
-  else
+
+  QgsPaintEffect *effect = s.paintEffect();
+  std::unique_ptr< QgsEffectPainter > effectPainter;
+  if ( effect && effect->enabled() )
   {
-    if ( properties.hasActiveProperties() )
-    {
-      c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.backgroundColor ) );
-      s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::BackgroundColor, c.expressionContext(), s.backgroundColor );
-      c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.penColor ) );
-      s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::StrokeColor, c.expressionContext(), s.penColor );
-      c.expressionContext().setOriginalValueVariable( s.penWidth );
-      s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StrokeWidth, c.expressionContext(), s.penWidth );
-      c.expressionContext().setOriginalValueVariable( s.rotationOffset );
-      s.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StartAngle, c.expressionContext(), s.rotationOffset );
-    }
-
-    QgsPaintEffect *effect = s.paintEffect();
-    std::unique_ptr< QgsEffectPainter > effectPainter;
-    if ( effect && effect->enabled() )
-    {
-      effectPainter = std::make_unique< QgsEffectPainter >( c, effect );
-    }
-
-    mDiagram->renderDiagram( feature, c, s, pos );
+    effectPainter = std::make_unique< QgsEffectPainter >( c, effect );
   }
+
+  mDiagram->renderDiagram( feature, c, s, pos );
 }
 
 QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const
@@ -652,7 +611,7 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   }
   else if ( diagramType == QLatin1String( "Stacked" ) )
   {
-    _readXmlSubdiagrams( elem, context );
+    mDiagram.reset( new QgsStackedDiagram() );
   }
   else
   {
@@ -660,67 +619,6 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
     mDiagram.reset( new QgsHistogramDiagram() );
   }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
-}
-
-void QgsDiagramRenderer::_readXmlSubdiagrams( const QDomElement &elem, const QgsReadWriteContext &context )
-{
-  Q_UNUSED( context )
-  const QDomElement subdiagramsElem = elem.firstChildElement( QStringLiteral( "Subdiagrams" ) );
-
-  if ( !subdiagramsElem.isNull() )
-  {
-    const QDomNodeList subdiagrams = elem.elementsByTagName( QStringLiteral( "Subdiagram" ) );
-
-    if ( subdiagrams.length() > 0 )
-    {
-      std::unique_ptr< QgsStackedDiagram > stackedDiagram = std::make_unique< QgsStackedDiagram >();
-
-      for ( int i = 0; i < subdiagrams.size(); i++ )
-      {
-        const QDomElement subdiagramElem = subdiagrams.at( i ).toElement();
-        const QString diagramType = subdiagramElem.attribute( QStringLiteral( "diagramType" ) );
-        const QDomElement categoryElem = subdiagramElem.firstChildElement( QStringLiteral( "DiagramCategory" ) );
-
-        if ( !categoryElem.isNull() )
-        {
-          std::unique_ptr< QgsDiagram > diagram;
-          std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings >();
-          ds->readXml( categoryElem, context );
-
-          if ( diagramType == QLatin1String( "Pie" ) )
-          {
-            diagram = std::make_unique< QgsPieDiagram >();
-          }
-          else if ( diagramType == QLatin1String( "Text" ) )
-          {
-            diagram = std::make_unique< QgsTextDiagram >();
-          }
-          else if ( diagramType == QLatin1String( "Histogram" ) )
-          {
-            diagram = std::make_unique< QgsHistogramDiagram >();
-          }
-          else if ( diagramType == QLatin1String( "StackedBar" ) )
-          {
-            diagram = std::make_unique< QgsStackedBarDiagram >();
-          }
-
-          if ( diagram )
-          {
-            stackedDiagram->addSubDiagram( diagram.release(), ds.release() );
-          }
-        }
-      }
-
-      if ( stackedDiagram->subDiagramCount() > 1 )
-      {
-        mDiagram.reset( stackedDiagram.release() );
-        return;
-      }
-    }
-  }
-
-  // Fallback
-  mDiagram.reset( new QgsStackedDiagram() );
 }
 
 void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -735,60 +633,21 @@ void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
 }
 
-void QgsDiagramRenderer::_writeXmlSubDiagrams( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
-{
-  QDomElement subDiagramsElem = doc.createElement( QStringLiteral( "Subdiagrams" ) );
-
-  // Iterate subdiagrams and write their settings to a DOM object
-  const QgsStackedDiagram *stackedDiagram = qgis::down_cast< const QgsStackedDiagram *>( mDiagram.get() );
-
-  for ( int i = 0; i < stackedDiagram->subDiagramCount(); i++ )
-  {
-    QDomElement subDiagramElem = doc.createElement( QStringLiteral( "Subdiagram" ) );
-    subDiagramElem.setAttribute( QStringLiteral( "diagramType" ), stackedDiagram->subDiagramType( i ) );
-    const QgsDiagramSettings *subSettings = stackedDiagram->subDiagramSettings( i );
-    subSettings->writeXml( subDiagramElem, doc, context );
-    subDiagramsElem.appendChild( subDiagramElem );
-  }
-  rendererElem.appendChild( subDiagramsElem );
-}
-
 QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() const
 {
   return new QgsSingleCategoryDiagramRenderer( *this );
 }
 
-bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature &, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram ) const
+bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature &, const QgsRenderContext &c, QgsDiagramSettings &s ) const
 {
   Q_UNUSED( c )
-  if ( subDiagram )
-  {
-    // Stacked diagram case, ask the stacked
-    // diagram object for its subdiagram settings
-    QgsStackedDiagram *stackedDiagram = qgis::down_cast< QgsStackedDiagram * >( mDiagram.get() );
-    s = *stackedDiagram->subDiagramSettings( subDiagram );
-  }
-  else
-  {
-    s = mSettings;
-  }
+  s = mSettings;
   return true;
 }
 
-QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagram *subDiagram ) const
+QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const
 {
-  if ( subDiagram )
-  {
-    // Stacked diagram case, ask the stacked
-    // diagram object for its diagram settings
-    QgsStackedDiagram *stackedDiagram = qgis::down_cast< QgsStackedDiagram * >( mDiagram.get() );
-    QgsDiagramSettings subDiagramSettings = *stackedDiagram->subDiagramSettings( subDiagram );
-    return subDiagram->diagramSize( feature.attributes(), c, subDiagramSettings );
-  }
-  else
-  {
-    return mDiagram->diagramSize( feature.attributes(), c, mSettings );
-  }
+  return mDiagram->diagramSize( feature.attributes(), c, mSettings );
 }
 
 QList<QgsDiagramSettings> QgsSingleCategoryDiagramRenderer::diagramSettings() const
@@ -815,12 +674,6 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
   QDomElement rendererElem = doc.createElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
   mSettings.writeXml( rendererElem, doc, context );
   _writeXml( rendererElem, doc, context );
-
-  if ( mDiagram->diagramName() == QStringLiteral( "Stacked" ) )
-  {
-    _writeXmlSubDiagrams( rendererElem, doc, context );
-  }
-
   layerElem.appendChild( rendererElem );
 }
 
@@ -867,19 +720,10 @@ QList<QgsDiagramSettings> QgsLinearlyInterpolatedDiagramRenderer::diagramSetting
   return settingsList;
 }
 
-bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s, QgsDiagram *subDiagram ) const
+bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const
 {
-  if ( subDiagram )
-  {
-    QgsStackedDiagram *stackedDiagram = qgis::down_cast< QgsStackedDiagram * >( mDiagram.get() );
-    s = *stackedDiagram->subDiagramSettings( subDiagram );
-    s.size = diagramSize( feature, c, subDiagram );
-  }
-  else
-  {
-    s = mSettings;
-    s.size = diagramSize( feature, c );
-  }
+  s = mSettings;
+  s.size = diagramSize( feature, c );
   return true;
 }
 
@@ -907,20 +751,9 @@ QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const Qg
   return referenced;
 }
 
-QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagram *subDiagram ) const
+QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const
 {
-  if ( subDiagram )
-  {
-    // Stacked diagram case, ask the stacked
-    // diagram object for its diagram settings
-    QgsStackedDiagram *stackedDiagram = qgis::down_cast< QgsStackedDiagram * >( mDiagram.get() );
-    QgsDiagramSettings subDiagramSettings = *stackedDiagram->subDiagramSettings( subDiagram );
-    return subDiagram->diagramSize( feature, c, subDiagramSettings, mInterpolationSettings );
-  }
-  else
-  {
-    return mDiagram->diagramSize( feature, c, mSettings, mInterpolationSettings );
-  }
+  return mDiagram->diagramSize( feature, c, mSettings, mInterpolationSettings );
 }
 
 void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -1001,13 +834,256 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
   }
 
   _writeXml( rendererElem, doc, context );
+  layerElem.appendChild( rendererElem );
+}
 
-  if ( mDiagram->diagramName() == QStringLiteral( "Stacked" ) )
+QgsStackedDiagramRenderer *QgsStackedDiagramRenderer::clone() const
+{
+  return new QgsStackedDiagramRenderer( *this );
+}
+
+QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const
+{
+  QSizeF stackedSize( 0, 0 );
+
+  // Iterate renderers. For each renderer, get the diagram
+  // size for the feature and add it to the total size
+  // accounting for stacked diagram defined spacing
+  for ( int i = 0; i < mDiagramRenderers.count(); i++ )
   {
-    _writeXmlSubDiagrams( rendererElem, doc, context );
+    QSizeF size = mDiagramRenderers.at( i )->sizeMapUnits( feature, c );
+
+    if ( size.isValid() )
+    {
+      switch ( mSettings.stackedDiagramMode )
+      {
+        case QgsDiagramSettings::Horizontal:
+          stackedSize.setWidth( stackedSize.width() + size.width() );
+          stackedSize.setHeight( std::max( stackedSize.height(), size.height() ) );
+          break;
+
+        case QgsDiagramSettings::Vertical:
+          stackedSize.setWidth( std::max( stackedSize.width(), size.width() ) );
+          stackedSize.setHeight( stackedSize.height() + size.height() );
+          break;
+      }
+    }
   }
 
+  const double spacing = c.convertToMapUnits( mSettings.stackedDiagramSpacing(), mSettings.stackedDiagramSpacingUnit(), mSettings.stackedDiagramSpacingMapUnitScale() );
+
+  switch ( mSettings.stackedDiagramMode )
+  {
+    case QgsDiagramSettings::Horizontal:
+      stackedSize.scale( stackedSize.width() + spacing * ( mDiagramRenderers.count() - 1 ), stackedSize.height(), Qt::IgnoreAspectRatio );
+      break;
+
+    case QgsDiagramSettings::Vertical:
+      stackedSize.scale( stackedSize.width(), stackedSize.height() + spacing * ( mDiagramRenderers.count() - 1 ), Qt::IgnoreAspectRatio );
+      break;
+  }
+  return stackedSize;
+}
+
+void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties ) const
+{
+  if ( !mDiagram )
+  {
+    return;
+  }
+
+  QPointF newPos = pos; // Each subdiagram will have its own newPos
+  QList< QgsDiagramRenderer * > stackedRenderers = renderers();
+  for ( const auto &stackedRenderer : std::as_const( stackedRenderers ) )
+  {
+    if ( stackedRenderer->rendererName() == QStringLiteral( "Stacked" ) )
+    {
+      stackedRenderer->renderDiagram( feature, c, newPos, properties );
+      continue;
+    }
+
+    QgsDiagramSettings s;
+    if ( !stackedRenderer->diagramSettings( feature, c, s ) )
+    {
+      return;
+    }
+
+    if ( properties.hasActiveProperties() )
+    {
+      c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.backgroundColor ) );
+      s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::BackgroundColor, c.expressionContext(), s.backgroundColor );
+      c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.penColor ) );
+      s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::StrokeColor, c.expressionContext(), s.penColor );
+      c.expressionContext().setOriginalValueVariable( s.penWidth );
+      s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StrokeWidth, c.expressionContext(), s.penWidth );
+      c.expressionContext().setOriginalValueVariable( s.rotationOffset );
+      s.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StartAngle, c.expressionContext(), s.rotationOffset );
+    }
+
+    QgsPaintEffect *effect = s.paintEffect();
+    std::unique_ptr< QgsEffectPainter > effectPainter;
+    if ( effect && effect->enabled() )
+    {
+      effectPainter = std::make_unique< QgsEffectPainter >( c, effect );
+    }
+
+    stackedRenderer->diagram()->renderDiagram( feature, c, s, newPos );
+    QgsStackedDiagram *stackedDiagram = dynamic_cast< QgsStackedDiagram *>( mDiagram.get() );
+    stackedDiagram->subDiagramPosition( newPos, c, mSettings, s );
+  }
+}
+
+bool QgsStackedDiagramRenderer::diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const
+{
+  Q_UNUSED( feature )
+  Q_UNUSED( c )
+  Q_UNUSED( s )
+  return false;
+}
+
+QSizeF QgsStackedDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const
+{
+  Q_UNUSED( feature )
+  Q_UNUSED( c )
+  return QSizeF( 0, 0 );
+}
+
+QList<QgsDiagramSettings> QgsStackedDiagramRenderer::diagramSettings() const
+{
+  QList<QgsDiagramSettings> settingsList;
+  settingsList.push_back( mSettings );
+  return settingsList;
+}
+
+QList<QString> QgsStackedDiagramRenderer::diagramAttributes() const
+{
+  return mSettings.categoryAttributes;
+}
+
+QList< QgsLayerTreeModelLegendNode * > QgsStackedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
+{
+  QList< QgsLayerTreeModelLegendNode * > nodes;
+  for ( int i = 0; i < rendererCount(); i++ )
+  {
+    nodes << mDiagramRenderers.at( i )->legendItems( nodeLayer );
+  }
+
+  return nodes;
+}
+
+QList< QgsDiagramRenderer * > QgsStackedDiagramRenderer::renderers() const
+{
+  QList< QgsDiagramRenderer * > renderers;
+
+  if ( mSettings.stackedDiagramMode == QgsDiagramSettings::Horizontal )
+  {
+    for ( const auto &item : std::as_const( mDiagramRenderers ) )
+    {
+      renderers.append( item );
+    }
+  }
+  else
+  {
+    // We draw vertical diagrams backwards, so
+    // we return the subrenderers in reverse order
+    QList< QgsDiagramRenderer * >::const_reverse_iterator iter = mDiagramRenderers.rbegin();
+    for ( ; iter != mDiagramRenderers.rend(); ++iter )
+    {
+      renderers.append( *iter );
+    }
+  }
+  return renderers;
+}
+
+void QgsStackedDiagramRenderer::addRenderer( QgsDiagramRenderer *renderer )
+{
+  if ( renderer )
+  {
+    mDiagramRenderers.append( renderer );
+  }
+}
+
+const QgsDiagramRenderer *QgsStackedDiagramRenderer::renderer( const int index ) const
+{
+  if ( index >= 0 && index < mDiagramRenderers.count() )
+  {
+    return mDiagramRenderers.at( index );
+  }
+
+  return nullptr;
+}
+
+int QgsStackedDiagramRenderer::rendererCount() const
+{
+  return mDiagramRenderers.count();
+}
+
+void QgsStackedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  const QDomElement categoryElem = elem.firstChildElement( QStringLiteral( "DiagramCategory" ) );
+  if ( categoryElem.isNull() )
+  {
+    return;
+  }
+
+  mSettings.readXml( categoryElem, context );
+  _readXml( elem, context );
+  _readXmlSubRenderers( elem, context );
+}
+
+void QgsStackedDiagramRenderer::_readXmlSubRenderers( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  const QDomElement subRenderersElem = elem.firstChildElement( QStringLiteral( "DiagramRenderers" ) );
+
+  if ( !subRenderersElem.isNull() )
+  {
+    const QDomNodeList childRendererList = subRenderersElem.childNodes();
+
+    for ( int i = 0; i < childRendererList.size(); i++ )
+    {
+      const QDomElement subRendererElem = childRendererList.at( i ).toElement();
+
+      if ( subRendererElem.nodeName() == QStringLiteral( "SingleCategoryDiagramRenderer" ) )
+      {
+        std::unique_ptr< QgsSingleCategoryDiagramRenderer > singleCatDiagramRenderer = std::make_unique< QgsSingleCategoryDiagramRenderer >();
+        singleCatDiagramRenderer->readXml( subRendererElem, context );
+        addRenderer( singleCatDiagramRenderer.release() );
+      }
+      else if ( subRendererElem.nodeName() == QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) )
+      {
+        std::unique_ptr< QgsLinearlyInterpolatedDiagramRenderer > linearDiagramRenderer = std::make_unique< QgsLinearlyInterpolatedDiagramRenderer >();
+        linearDiagramRenderer->readXml( subRendererElem, context );
+        addRenderer( linearDiagramRenderer.release() );
+      }
+      else if ( subRendererElem.nodeName() == QStringLiteral( "StackedDiagramRenderer" ) )
+      {
+        std::unique_ptr< QgsStackedDiagramRenderer > stackedDiagramRenderer = std::make_unique< QgsStackedDiagramRenderer >();
+        stackedDiagramRenderer->readXml( subRendererElem, context );
+        addRenderer( stackedDiagramRenderer.release() );
+      }
+    }
+  }
+}
+
+void QgsStackedDiagramRenderer::writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QDomElement rendererElem = doc.createElement( QStringLiteral( "StackedDiagramRenderer" ) );
+  mSettings.writeXml( rendererElem, doc, context );
+  _writeXml( rendererElem, doc, context );
+  _writeXmlSubRenderers( rendererElem, doc, context );
   layerElem.appendChild( rendererElem );
+}
+
+void QgsStackedDiagramRenderer::_writeXmlSubRenderers( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QDomElement renderersElem = doc.createElement( QStringLiteral( "DiagramRenderers" ) );
+
+  // Iterate sub renderers and write their settings to a DOM object
+  for ( int i = 0; i < mDiagramRenderers.count(); i++ )
+  {
+    mDiagramRenderers.at( i )->writeXml( renderersElem, doc, context );
+  }
+  rendererElem.appendChild( renderersElem );
 }
 
 QList< QgsLayerTreeModelLegendNode * > QgsDiagramSettings::legendItems( QgsLayerTreeLayer *nodeLayer ) const

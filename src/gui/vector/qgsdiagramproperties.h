@@ -49,7 +49,7 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
      *
      * \since QGIS 3.16
      */
-    void syncToLayer();
+    void syncToLayer( const QgsDiagramRenderer *dr = nullptr );
 
     ~QgsDiagramProperties() override;
 
@@ -82,13 +82,6 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void createAuxiliaryField();
 
   private:
-
-    /**
-     * Subdiagram position in a stacked diagram.
-     * If the diagram is not part of a stacked diagram its value is -1.
-     * Used to access corresponding diagram settings.
-     */
-    int mSubDiagramIndex = -1;
 
     QgsVectorLayer *mLayer = nullptr;
     //! Point placement button group

@@ -11,7 +11,6 @@
 
 
 
-
 class QgsStackedDiagram : QgsDiagram /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -25,54 +24,10 @@ A diagram composed of several subdiagrams, located side by side.
 %End
   public:
 
-    struct DiagramData
-    {
-      QgsDiagram *diagram;
-      QgsDiagramSettings *settings;
-    };
-
     QgsStackedDiagram();
 
     virtual QgsStackedDiagram *clone() const /Factory/;
 
-
-    void addSubDiagram( QgsDiagram *diagram, QgsDiagramSettings *s );
-%Docstring
-Adds a subdiagram to the stacked diagram object along with its corresponding settings.
-
-:param diagram: subdiagram to be added to the stacked diagram
-:param s: subdiagram settings
-          Subdiagrams added first will appear more to the left (if stacked diagram is horizontal),
-          or more to the top (if stacked diagram is vertical).
-%End
-
-    int subDiagramCount() const;
-%Docstring
-Returns the number of subdiagrams that this stacked diagram is composed of.
-%End
-
-    QString subDiagramType( int index ) const;
-%Docstring
-Returns the type of the subdiagram located at a given ``index``.
-%End
-
-    QList< QgsDiagram * > subDiagrams( const QgsDiagramSettings &s ) const;
-%Docstring
-Returns an ordered list with the subdiagrams of the stacked diagram object.
-If the stacked diagram orientation is vertical, the list is returned backwards.
-
-:param s: stacked diagram settings
-%End
-
-    QgsDiagramSettings *subDiagramSettings( const QgsDiagram *diagram ) const;
-%Docstring
-Returns the settings associated to the ``diagram``.
-%End
-
-    QgsDiagramSettings *subDiagramSettings( int index ) const;
-%Docstring
-Returns the diagram settings for the diagram located at a given ``index``.
-%End
 
     void subDiagramPosition( QPointF &newPos, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramSettings &subSettings );
 %Docstring
@@ -94,7 +49,6 @@ Calculates the position for the next subdiagram, updating the ``newPos`` object.
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
 
     virtual QString diagramName() const;
-
 
 };
 

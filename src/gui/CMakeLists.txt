@@ -1658,7 +1658,6 @@ endif()
 
 add_library(qgis_gui ${LIBRARY_TYPE}
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
-  vector/qgsstackeddiagramproperties.h vector/qgsstackeddiagramproperties.cpp
 )
 
 # require c++17

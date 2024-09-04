@@ -19,14 +19,11 @@
 #define DIAGRAM_NAME_STACKED "Stacked"
 
 #include "qgsdiagram.h"
-#include <QPen>
-#include <QBrush>
 
 class QgsFeature;
 class QPointF;
-class QgsDiagramSettings;
+//class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
 class QgsRenderContext;
 
 
@@ -41,47 +38,9 @@ class CORE_EXPORT QgsStackedDiagram : public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
 
-    struct DiagramData
-    {
-      QgsDiagram *diagram = nullptr;
-      QgsDiagramSettings *settings = nullptr;
-    };
-
     QgsStackedDiagram();
 
     QgsStackedDiagram *clone() const override SIP_FACTORY;
-
-    /**
-     * Adds a subdiagram to the stacked diagram object along with its corresponding settings.
-     * \param diagram subdiagram to be added to the stacked diagram
-     * \param s       subdiagram settings
-     * Subdiagrams added first will appear more to the left (if stacked diagram is horizontal),
-     * or more to the top (if stacked diagram is vertical).
-     */
-    void addSubDiagram( QgsDiagram *diagram, QgsDiagramSettings *s );
-
-    /**
-     * Returns the number of subdiagrams that this stacked diagram is composed of.
-     */
-    int subDiagramCount() const;
-
-    /**
-     * Returns the type of the subdiagram located at a given \a index.
-     */
-    QString subDiagramType( int index ) const;
-
-    /**
-     * Returns an ordered list with the subdiagrams of the stacked diagram object.
-     * If the stacked diagram orientation is vertical, the list is returned backwards.
-     * \param s stacked diagram settings
-     */
-    QList< QgsDiagram * > subDiagrams( const QgsDiagramSettings &s ) const;
-
-    //! Returns the settings associated to the \a diagram.
-    QgsDiagramSettings *subDiagramSettings( const QgsDiagram *diagram ) const;
-
-    //! Returns the diagram settings for the diagram located at a given \a index.
-    QgsDiagramSettings *subDiagramSettings( int index ) const;
 
     /**
      * Calculates the position for the next subdiagram, updating the \a newPos object.
@@ -98,12 +57,6 @@ class CORE_EXPORT QgsStackedDiagram : public QgsDiagram SIP_NODEFAULTCTORS
     QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
     double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
     QString diagramName() const override;
-
-  private:
-    QBrush mCategoryBrush;
-    QPen   mPen;
-    double mScaleFactor;
-    QList< DiagramData > mSubDiagrams;
 };
 
 #endif // QGSSTACKEDDIAGRAM_H
