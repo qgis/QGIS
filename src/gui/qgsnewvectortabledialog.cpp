@@ -171,6 +171,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
 
   if ( conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::PolyhedralSurfaces ) )
   {
+    addGeomItem( Qgis::WkbType::Triangle ); // Not exactly surfaces, but only PostGIS (and memory) supports these types
     addGeomItem( Qgis::WkbType::PolyhedralSurface );
     addGeomItem( Qgis::WkbType::TIN );
   }

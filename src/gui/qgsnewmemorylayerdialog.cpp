@@ -69,6 +69,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
     Qgis::WkbType::MultiCurve,
     Qgis::WkbType::MultiPolygon,
     Qgis::WkbType::MultiSurface,
+    Qgis::WkbType::Triangle,
     Qgis::WkbType::PolyhedralSurface,
     Qgis::WkbType::TIN,
   };
