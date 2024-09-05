@@ -148,10 +148,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
 
   protected:
 
-    /**
-     * Copies common properties from this object to an \a other.
-     */
-    void copyCommonProperties( QgsAbstractLabelingEngineRuleDistanceFromFeature *other ) const;
+    void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const override;
 
     //! TRUE if labels must be distant from features, FALSE if they must be close
     bool mMustBeDistant = true;
