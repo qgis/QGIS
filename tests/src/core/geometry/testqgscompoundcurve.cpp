@@ -619,6 +619,13 @@ void TestQgsCompoundCurve::assignment()
 
   QVERIFY( cc1 != cc2 );
 
+  QgsLineString ls2;
+  ls2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 3, 4, 5, 6 )
+                 << QgsPoint( Qgis::WkbType::PointM, 1 / 2.0, 5 / 7.0, 1, 3 )
+                 << QgsPoint( Qgis::WkbType::PointM, 2, 3, 5, 7 ) );
+  cc2.addCurve( ls2.clone() );
+  QVERIFY( cc1 != cc2 );
+
   cc2 = cc1;
   QCOMPARE( cc1, cc2 );
 }
