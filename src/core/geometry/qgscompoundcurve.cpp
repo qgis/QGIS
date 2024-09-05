@@ -119,11 +119,11 @@ QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( c
   }
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsCompoundCurve &QgsCompoundCurve::operator=( const QgsCompoundCurve &curve )
 {
   if ( &curve != this )
   {
-    clearCache();
     QgsCurve::operator=( curve );
     for ( const QgsCurve *c : curve.mCurves )
     {
