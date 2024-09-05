@@ -12,10 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsapplication.h"
 #include "qgsgdalutils.h"
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmaplayerutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterdataprovider.h"
@@ -961,6 +963,21 @@ void QgsRasterLayerSaveAsDialog::accept()
   if ( !validate() )
   {
     return;
+  }
+
+  if ( QgsMapLayerUtils::isOpenStreetMapLayer( mRasterLayer ) )
+  {
+    const int nbTilesWidth = std::ceil( nColumns() / 256 );
+    const int nbTilesHeight = std::ceil( nRows() / 256 );
+    int64_t totalTiles = static_cast<int64_t>( nbTilesWidth ) * nbTilesHeight;
+
+    if ( totalTiles > 5000 )
+    {
+      QMessageBox::warning( this, tr( "Save Raster Layer" ),
+                            tr( "The number of OpenStreetMap tiles needed to produce the raster layer is too large and will leads to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2." ).arg( QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
+                            QMessageBox::Ok );
+      return;
+    }
   }
 
   if ( outputFormat() == QLatin1String( "GPKG" ) && outputLayerExists() &&
