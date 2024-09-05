@@ -904,6 +904,7 @@ bool QgsWmsRenderContext::checkLayerReadPermissions( QgsMapLayer *layer )
     return false;
   }
 #endif
+  Q_UNUSED( layer )
   return true;
 }
 
