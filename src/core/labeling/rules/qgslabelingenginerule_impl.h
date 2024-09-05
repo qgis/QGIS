@@ -199,6 +199,14 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public Qg
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature *clone() const override SIP_FACTORY;
     QString id() const override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
 #ifdef SIP_RUN
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
@@ -219,6 +227,14 @@ class CORE_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeature : public Qg
     ~QgsLabelingEngineRuleMaximumDistanceLabelToFeature() override;
     QgsLabelingEngineRuleMaximumDistanceLabelToFeature *clone() const override SIP_FACTORY;
     QString id() const override;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
 #ifdef SIP_RUN
@@ -247,6 +263,14 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
     bool prepare( QgsRenderContext &context ) override;
     QgsRectangle modifyCandidateConflictSearchBoundingBox( const QgsRectangle &candidateBounds ) const override SIP_SKIP;
     bool candidatesAreConflicting( const pal::LabelPosition *lp1, const pal::LabelPosition *lp2 ) const override SIP_SKIP;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the layer providing the labels.
@@ -365,6 +389,14 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     void resolveReferences( const QgsProject *project ) override;
     bool candidateIsIllegal( const pal::LabelPosition *candidate, QgsLabelingEngineContext &context ) const override SIP_SKIP;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the layer providing the labels.
