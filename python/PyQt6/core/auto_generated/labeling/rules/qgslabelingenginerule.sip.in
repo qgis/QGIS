@@ -142,6 +142,26 @@ The caller takes ownership of the returned object.
 Returns a string uniquely identifying the rule subclass.
 %End
 
+    QString name() const;
+%Docstring
+Returns the name for this instance of the rule.
+
+The name is a user-configurable value which helps them identify and describe the
+rule within their projects.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the ``name`` for this instance of the rule.
+
+The name is a user-configurable value which helps them identify and describe the
+rule within their projects.
+
+.. seealso:: :py:func:`name`
+%End
+
     virtual bool prepare( QgsRenderContext &context ) = 0;
 %Docstring
 Prepares the rule.
@@ -176,6 +196,13 @@ Should be called following a call :py:func:`~QgsAbstractLabelingEngineRule.readX
 
 
 
+
+  protected:
+
+    virtual void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const;
+%Docstring
+Copies common properties from this object to an ``other``.
+%End
 
 };
 

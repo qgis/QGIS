@@ -174,6 +174,26 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
     virtual QString id() const = 0;
 
     /**
+     * Returns the name for this instance of the rule.
+     *
+     * The name is a user-configurable value which helps them identify and describe the
+     * rule within their projects.
+     *
+     * \see setName()
+     */
+    QString name() const { return mName; }
+
+    /**
+     * Sets the \a name for this instance of the rule.
+     *
+     * The name is a user-configurable value which helps them identify and describe the
+     * rule within their projects.
+     *
+     * \see name()
+     */
+    void setName( const QString &name ) { mName = name; }
+
+    /**
      * Prepares the rule.
      *
      * This must be called on the main render thread, prior to commencing the render operation. Thread sensitive
@@ -232,6 +252,17 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
      * The default implementation does nothing.
      */
     virtual void alterCandidateCost( pal::LabelPosition *candidate, QgsLabelingEngineContext &context ) const SIP_SKIP;
+
+  protected:
+
+    /**
+     * Copies common properties from this object to an \a other.
+     */
+    virtual void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const;
+
+  private:
+
+    QString mName;
 
 };
 

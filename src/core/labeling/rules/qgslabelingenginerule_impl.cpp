@@ -153,14 +153,18 @@ void QgsAbstractLabelingEngineRuleDistanceFromFeature::setTargetLayer( QgsVector
   mTargetLayer = layer;
 }
 
-void QgsAbstractLabelingEngineRuleDistanceFromFeature::copyCommonProperties( QgsAbstractLabelingEngineRuleDistanceFromFeature *other ) const
+void QgsAbstractLabelingEngineRuleDistanceFromFeature::copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const
 {
-  other->mLabeledLayer = mLabeledLayer;
-  other->mTargetLayer = mTargetLayer;
-  other->mDistance = mDistance;
-  other->mDistanceUnit = mDistanceUnit;
-  other->mDistanceUnitScale = mDistanceUnitScale;
-  other->mCost = mCost;
+  QgsAbstractLabelingEngineRule::copyCommonProperties( other );
+  if ( QgsAbstractLabelingEngineRuleDistanceFromFeature *otherRule = dynamic_cast< QgsAbstractLabelingEngineRuleDistanceFromFeature * >( other ) )
+  {
+    otherRule->mLabeledLayer = mLabeledLayer;
+    otherRule->mTargetLayer = mTargetLayer;
+    otherRule->mDistance = mDistance;
+    otherRule->mDistanceUnit = mDistanceUnit;
+    otherRule->mDistanceUnitScale = mDistanceUnitScale;
+    otherRule->mCost = mCost;
+  }
 }
 
 void QgsAbstractLabelingEngineRuleDistanceFromFeature::initialize( QgsLabelingEngineContext &context )
@@ -273,6 +277,7 @@ QgsLabelingEngineRuleMinimumDistanceLabelToLabel::~QgsLabelingEngineRuleMinimumD
 QgsLabelingEngineRuleMinimumDistanceLabelToLabel *QgsLabelingEngineRuleMinimumDistanceLabelToLabel::clone() const
 {
   std::unique_ptr< QgsLabelingEngineRuleMinimumDistanceLabelToLabel> res = std::make_unique< QgsLabelingEngineRuleMinimumDistanceLabelToLabel >();
+  copyCommonProperties( res.get() );
   res->mLabeledLayer = mLabeledLayer;
   res->mTargetLayer = mTargetLayer;
   res->mDistance = mDistance;
@@ -411,6 +416,7 @@ QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::~QgsLabelingEngineRuleAvoidLa
 QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::clone() const
 {
   std::unique_ptr< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature> res = std::make_unique< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature >();
+  copyCommonProperties( res.get() );
   res->mLabeledLayer = mLabeledLayer;
   res->mTargetLayer = mTargetLayer;
   return res.release();

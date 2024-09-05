@@ -76,3 +76,8 @@ void QgsAbstractLabelingEngineRule::alterCandidateCost( pal::LabelPosition *, Qg
 {
 
 }
+
+void QgsAbstractLabelingEngineRule::copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const
+{
+  other->mName = mName;
+}

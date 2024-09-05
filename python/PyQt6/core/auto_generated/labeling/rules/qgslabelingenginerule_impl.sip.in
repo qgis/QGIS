@@ -143,10 +143,8 @@ and 1-9 = nice to have if possible, where higher numbers will try harder to avoi
 
   protected:
 
-    void copyCommonProperties( QgsAbstractLabelingEngineRuleDistanceFromFeature *other ) const;
-%Docstring
-Copies common properties from this object to an ``other``.
-%End
+    virtual void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const;
+
 
 
   private:
