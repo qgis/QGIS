@@ -433,7 +433,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     for ( std::size_t featureIndex = 0; featureIndex < prob->mFeatureCount; featureIndex++ )
     {
       if ( feedback )
-        feedback->setProgress( featureIndex * step );
+        feedback->setProgress( static_cast< double >( featureIndex ) * step );
 
       std::unique_ptr< Feats > feat = std::move( features.front() );
       features.pop_front();

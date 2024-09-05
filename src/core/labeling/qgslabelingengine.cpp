@@ -294,7 +294,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   mPal->setPlacementVersion( settings.placementVersion() );
 
   QList< QgsAbstractLabelingEngineRule * > rules;
-  rules.reserve( mEngineRules.size() );
+  rules.reserve( static_cast< int >( mEngineRules.size() ) );
   for ( auto &it : mEngineRules )
   {
     rules.append( it.get() );
