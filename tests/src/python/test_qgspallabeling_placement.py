@@ -25,6 +25,10 @@ from qgis.core import (
     QgsProperty,
     QgsSingleSymbolRenderer,
     QgsVectorLayerSimpleLabeling,
+    QgsLabelingEngineRuleMinimumDistanceLabelToFeature,
+    QgsLabelingEngineRuleMaximumDistanceLabelToFeature,
+    QgsLabelingEngineRuleAvoidLabelOverlapWithFeature,
+    QgsLabelingEngineRuleMinimumDistanceLabelToLabel
 )
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -1286,6 +1290,269 @@ class TestPointPlacement(TestPlacementBase):
         self.lyr.placement = QgsPalLayerSettings.Placement.Curved
         self.lyr.placementFlags = QgsPalLayerSettings.LinePlacementFlags.OnLine
         self.lyr.fieldName = "'invisible​space'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_min_distance_label_to_feature(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'multi_polygon')
+        feature_layer.setLabelsEnabled(False)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMinimumDistanceLabelToFeature()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(5)
+        rule.setDistanceUnit(Qgis.RenderUnit.Millimeters)
+        rule.setCost(10)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_min_distance_label_to_feature_too_close(self):
+        """
+        Label can't be placed, there's no candidates available which satisfy
+        the rule
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'multi_polygon')
+        feature_layer.setLabelsEnabled(False)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMinimumDistanceLabelToFeature()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(15)
+        rule.setDistanceUnit(Qgis.RenderUnit.Millimeters)
+        rule.setCost(10)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_min_distance_label_to_feature_too_close_low_cost(self):
+        """
+        Label can't be placed without incurring the cost, but still CAN
+        be placed
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'multi_polygon')
+        feature_layer.setLabelsEnabled(False)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMinimumDistanceLabelToFeature()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(15)
+        rule.setDistanceUnit(Qgis.RenderUnit.Millimeters)
+        rule.setCost(5)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_max_distance_label_to_feature(self):
+        # worse placement position below point should be used, because
+        # above point placements are too far from the polygon and violate
+        # the rule
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'polygon_with_hole')
+        feature_layer.setLabelsEnabled(False)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMaximumDistanceLabelToFeature()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(10)
+        rule.setDistanceUnit(Qgis.RenderUnit.Millimeters)
+        rule.setCost(10)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_max_distance_label_to_feature_too_far(self):
+        # label can't be placed, because all candidates are too far from
+        # the polygon layer
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'polygon_with_hole')
+        feature_layer.setLabelsEnabled(False)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMaximumDistanceLabelToFeature()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(2)
+        rule.setDistanceUnit(Qgis.RenderUnit.Millimeters)
+        rule.setCost(10)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_max_distance_label_to_feature_too_far_low_cost(self):
+        """
+        All candidates violate the rule, but it's low cost and won't prevent
+        label placement
+        """
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'polygon_with_hole')
+        feature_layer.setLabelsEnabled(False)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMaximumDistanceLabelToFeature()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(2)
+        rule.setDistanceUnit(Qgis.RenderUnit.Millimeters)
+        rule.setCost(2)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_avoid_overlap_with_feature(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'multi_polygon')
+        feature_layer.setLabelsEnabled(False)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleAvoidLabelOverlapWithFeature()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_min_distance_label_to_label(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle2')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'point')
+        feature_layer.setLabelsEnabled(True)
+        feature_label_labeling = QgsPalLayerSettings(self.lyr)
+        feature_label_labeling.fieldName = "'label'"
+        feature_label_labeling.isExpression = True
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(
+            feature_label_labeling))
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMinimumDistanceLabelToLabel()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(10)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_label_rule_min_distance_label_to_label_small(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_obstacle2')
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer(
+            'point')
+        feature_layer.setLabelsEnabled(True)
+        feature_label_labeling = QgsPalLayerSettings(self.lyr)
+        feature_label_labeling.fieldName = "'label'"
+        feature_label_labeling.isExpression = True
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(
+            feature_label_labeling))
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        rule = QgsLabelingEngineRuleMinimumDistanceLabelToLabel()
+        rule.setLabeledLayer(self.layer)
+        rule.setTargetLayer(feature_layer)
+        rule.setDistance(.1)
+
+        engine_settings = self._TestMapSettings.labelingEngineSettings()
+        engine_settings.setRules([rule])
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        self.lyr.fieldName = "'label'"
         self.lyr.isExpression = True
         self.checkTest()
         self.removeMapLayer(self.layer)
