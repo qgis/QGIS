@@ -52,11 +52,11 @@ QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
   }
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsGeometryCollection &QgsGeometryCollection::operator=( const QgsGeometryCollection &c )
 {
   if ( &c != this )
   {
-    clearCache();
     QgsAbstractGeometry::operator=( c );
     int nGeoms = c.mGeometries.size();
     mGeometries.resize( nGeoms );
