@@ -62,10 +62,6 @@
        <property name="text">
         <string/>
        </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../../../.designer/backup/.designer/xpm/delete_attribute.png</normaloff>../../../../.designer/backup/.designer/xpm/delete_attribute.png</iconset>
-       </property>
        <property name="shortcut">
         <string>Ctrl+X</string>
        </property>
@@ -84,10 +80,6 @@
        </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../../../.designer/backup/.designer/xpm/new_attribute.png</normaloff>../../../../.designer/backup/.designer/xpm/new_attribute.png</iconset>
        </property>
        <property name="shortcut">
         <string>Ctrl+N</string>
