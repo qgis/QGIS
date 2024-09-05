@@ -77,7 +77,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
      * from the targetLayer().
      *
      * \see setDistance()
-     * \see distanceUnits()
+     * \see distanceUnit()
      */
     double distance() const { return mDistance; }
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
      * from the targetLayer().
      *
      * \see distance()
-     * \see setDistanceUnits()
+     * \see setDistanceUnit()
      */
     void setDistance( double distance ) { mDistance = distance; }
 
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
      * from the targetLayer().
      *
      * \see setDistance()
-     * \see distanceUnits()
+     * \see distanceUnit()
      */
     double distance() const { return mDistance; }
 
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
      * from the targetLayer().
      *
      * \see distance()
-     * \see setDistanceUnits()
+     * \see setDistanceUnit()
      */
     void setDistance( double distance ) { mDistance = distance; }
 
