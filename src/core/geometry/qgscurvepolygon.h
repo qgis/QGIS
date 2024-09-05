@@ -132,10 +132,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QString asKml( int precision = 17 ) const override;
     void normalize() final SIP_HOLDGIL;
 
+    /**
+     * Gets a polygon representation of this surface.
+     * Ownership is transferred to the caller.
+     */
+    virtual QgsPolygon *surfaceToPolygon() const SIP_FACTORY;
+
     //surface interface
     double area() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
-    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsCurvePolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
