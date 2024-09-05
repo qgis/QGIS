@@ -293,6 +293,14 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   mPal->setShowPartialLabels( settings.testFlag( Qgis::LabelingFlag::UsePartialCandidates ) );
   mPal->setPlacementVersion( settings.placementVersion() );
 
+  QList< QgsAbstractLabelingEngineRule * > rules;
+  rules.reserve( mEngineRules.size() );
+  for ( auto &it : mEngineRules )
+  {
+    rules.append( it.get() );
+  }
+  mPal->setRules( rules );
+
   // for each provider: get labels and register them in PAL
   const double step = !mProviders.empty() ? 100.0 / mProviders.size() : 1;
   int index = 0;
