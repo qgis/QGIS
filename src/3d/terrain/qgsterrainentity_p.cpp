@@ -144,6 +144,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
     }
     case QgsTerrainGenerator::Mesh:
     case QgsTerrainGenerator::Online:
+    case QgsTerrainGenerator::QuantizedMesh:
       // not supported
       break;
   }

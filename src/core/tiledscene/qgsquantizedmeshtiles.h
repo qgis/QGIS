@@ -89,5 +89,6 @@ struct CORE_EXPORT QgsQuantizedMeshTile
   // much as 50%) percentage of degenerate triangles. They don't harm our
   // rendering, but removing them could improve performance
   void removeDegenerateTriangles();
+  void generateNormals();
   tinygltf::Model toGltf( bool addSkirt = false, double skirtDepth = 0, bool withTextureCoords = false );
 };

@@ -26,7 +26,6 @@
 #include "qgstiledscenetile.h"
 
 #include <QtConcurrentRun>
-#include <qstringliteral.h>
 
 
 ///@cond PRIVATE
@@ -45,7 +44,7 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t, const QgsCoordinateTrans
     return true;
 
   Q_ASSERT( boundsTransform.destinationCrs().mapUnits() == Qgis::DistanceUnit::Meters );
-  auto bounds = t.boundingVolume().bounds( boundsTransform );
+  QgsBox3D bounds = t.boundingVolume().bounds( boundsTransform );
   return bounds.width() > 1e5 || bounds.height() > 1e5 || bounds.depth() > 1e5;
 }
 
@@ -97,7 +96,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     entityTransform.zValueOffset = zValueOffset;
     entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
 
-    const auto &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
+    const QString &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
     QStringList errors;
     if ( format == QStringLiteral( "quantizedmesh" ) )
     {
@@ -105,7 +104,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
       {
         QgsQuantizedMeshTile qmTile( content );
         qmTile.removeDegenerateTriangles();
-        auto model = qmTile.toGltf( true, 100 );
+        tinygltf::Model model = qmTile.toGltf( true, 100 );
         mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
       }
       catch ( QgsQuantizedMeshParsingException &ex )
@@ -356,7 +355,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
       nodeUsed++;
 #endif
       const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
-      for ( const auto &rend : rendLst )
+      for ( Qt3DRender::QGeometryRenderer *rend : rendLst )
       {
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
