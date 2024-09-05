@@ -19,6 +19,7 @@
 
 #include "qgsdistancearea.h"
 #include "qgis.h"
+#include "qgscurvepolygon.h"
 #include "qgspointxy.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatereferencesystem.h"
@@ -187,18 +188,22 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
       if ( !surface )
         return 0.0;
 
-      QgsPolygon *polygon = surface->surfaceToPolygon();
-
       double area = 0;
-      const QgsCurve *outerRing = polygon->exteriorRing();
-      area += measurePolygon( outerRing );
-
-      for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( surface );
+      if ( curvePolygon )
       {
-        const QgsCurve *innerRing = polygon->interiorRing( i );
-        area -= measurePolygon( innerRing );
+        QgsPolygon *polygon = curvePolygon->surfaceToPolygon();
+
+        const QgsCurve *outerRing = polygon->exteriorRing();
+        area += measurePolygon( outerRing );
+
+        for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+        {
+          const QgsCurve *innerRing = polygon->interiorRing( i );
+          area -= measurePolygon( innerRing );
+        }
+        delete polygon;
       }
-      delete polygon;
       return area;
     }
   }
@@ -264,18 +269,22 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
       continue;
     }
 
-    QgsPolygon *poly = ( *surfaceIt )->surfaceToPolygon();
-    const QgsCurve *outerRing = poly->exteriorRing();
-    if ( outerRing )
+    QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( *surfaceIt );
+    if ( curvePolygon )
     {
-      length += measure( outerRing );
+      QgsPolygon *poly = curvePolygon->surfaceToPolygon();
+      const QgsCurve *outerRing = poly->exteriorRing();
+      if ( outerRing )
+      {
+        length += measure( outerRing );
+      }
+      const int nInnerRings = poly->numInteriorRings();
+      for ( int i = 0; i < nInnerRings; ++i )
+      {
+        length += measure( poly->interiorRing( i ) );
+      }
+      delete poly;
     }
-    const int nInnerRings = poly->numInteriorRings();
-    for ( int i = 0; i < nInnerRings; ++i )
-    {
-      length += measure( poly->interiorRing( i ) );
-    }
-    delete poly;
   }
   return length;
 }

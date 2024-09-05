@@ -60,11 +60,15 @@ Curve polygon geometry type
 
     void normalize() final /HoldGIL/;
 
+    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
+%Docstring
+Gets a polygon representation of this surface.
+Ownership is transferred to the caller.
+%End
+
     virtual double area() const /HoldGIL/;
 
     virtual double perimeter() const /HoldGIL/;
-
-    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
