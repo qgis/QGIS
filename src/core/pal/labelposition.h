@@ -126,8 +126,23 @@ namespace pal
        * Returns bounding box - amin: xmin,ymin - amax: xmax,ymax
        *
        * \note This method considers the label's outer bounds (see QgsLabelFeature::outerBounds())
+       * \see boundingBox()
        */
       void getBoundingBox( double amin[2], double amax[2] ) const;
+
+      /**
+       * Returns bounding box.
+       *
+       * \note This method considers the label's outer bounds (see QgsLabelFeature::outerBounds())
+       */
+      QgsRectangle boundingBox() const;
+
+      /**
+       * Returns the bounding box to use for candidate conflicts.
+       *
+       * \note This method considers the label's outer bounds (see QgsLabelFeature::outerBounds())
+       */
+      QgsRectangle boundingBoxForCandidateConflicts( Pal *pal ) const;
 
       /**
        * Returns TRUE if the outer bounding box of this pointset intersects the outer bounding box
@@ -319,6 +334,13 @@ namespace pal
        * Inserts the label position into the specified \a index.
        */
       void insertIntoIndex( PalRtree<LabelPosition> &index );
+
+      /**
+       * Returns a GEOS representation of all label parts as a multipolygon.
+       *
+       * \since QGIS 3.40
+       */
+      const GEOSGeometry *multiPartGeom() const;
 
       /**
        * Returns a prepared GEOS representation of all label parts as a multipolygon.

@@ -34,6 +34,7 @@
 #include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsgeometryutils_base.h"
+#include "qgslabelingenginerule.h"
 #include "qgsmessagelog.h"
 #include <cmath>
 #include <cfloat>
@@ -448,6 +449,27 @@ void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
   }
 }
 
+QgsRectangle LabelPosition::boundingBox() const
+{
+  double amin[2];
+  double amax[2];
+  getBoundingBox( amin, amax );
+  return QgsRectangle( amin[0], amin[1], amax[0], amax[1] );
+}
+
+QgsRectangle LabelPosition::boundingBoxForCandidateConflicts( Pal *pal ) const
+{
+  QgsRectangle bounds = boundingBox();
+  QgsRectangle bufferedBounds = bounds;
+  const QList< QgsAbstractLabelingEngineRule * > rules = pal->rules();
+  for ( QgsAbstractLabelingEngineRule *rule : rules )
+  {
+    const QgsRectangle modifiedBounds = rule->modifyCandidateConflictSearchBoundingBox( bounds );
+    bufferedBounds.combineExtentWith( modifiedBounds );
+  }
+  return bufferedBounds;
+}
+
 bool LabelPosition::outerBoundingBoxIntersects( const LabelPosition *other ) const
 {
   if ( other->mOuterBoundsGeos )
@@ -488,20 +510,21 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
 
 void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index )
 {
-  double amin[2];
-  double amax[2];
-  getBoundingBox( amin, amax );
-  index.remove( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+  index.remove( this, boundingBox() );
 }
 
 void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
 {
-  double amin[2];
-  double amax[2];
-  getBoundingBox( amin, amax );
-  index.insert( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+  index.insert( this, boundingBox() );
 }
 
+const GEOSGeometry *LabelPosition::multiPartGeom() const
+{
+  if ( !mMultipartGeos )
+    createMultiPartGeosGeom();
+
+  return mMultipartGeos;
+}
 
 void LabelPosition::createMultiPartGeosGeom() const
 {
