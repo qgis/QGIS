@@ -68,7 +68,7 @@ from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer
 
 .. seealso:: :py:func:`setDistance`
 
-.. seealso:: :py:func:`distanceUnits`
+.. seealso:: :py:func:`distanceUnit`
 %End
 
     void setDistance( double distance );
@@ -78,7 +78,7 @@ from the :py:func:`~QgsAbstractLabelingEngineRuleDistanceFromFeature.targetLayer
 
 .. seealso:: :py:func:`distance`
 
-.. seealso:: :py:func:`setDistanceUnits`
+.. seealso:: :py:func:`setDistanceUnit`
 %End
 
     Qgis::RenderUnit distanceUnit() const;
@@ -265,7 +265,7 @@ from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer
 
 .. seealso:: :py:func:`setDistance`
 
-.. seealso:: :py:func:`distanceUnits`
+.. seealso:: :py:func:`distanceUnit`
 %End
 
     void setDistance( double distance );
@@ -275,7 +275,7 @@ from the :py:func:`~QgsLabelingEngineRuleMinimumDistanceLabelToLabel.targetLayer
 
 .. seealso:: :py:func:`distance`
 
-.. seealso:: :py:func:`setDistanceUnits`
+.. seealso:: :py:func:`setDistanceUnit`
 %End
 
     Qgis::RenderUnit distanceUnit() const;
