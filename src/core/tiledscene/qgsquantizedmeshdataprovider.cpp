@@ -312,6 +312,10 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
       QgsBox3D( tileExtent, mMetadata.dummyZRange.lower(), mMetadata.dummyZRange.upper() ) ) );
   sceneTile.setGeometricError( mMetadata.geometricErrorAtZoom( xyzTile.zoomLevel() ) );
 
+  if ( id == ROOT_TILE_ID )
+    // The root tile is fictitious and has no content, don't bother pointing to any.
+    return sceneTile;
+
   if ( mMetadata.mTileScheme == QLatin1String( "tms" ) )
     xyzTile = tileToTms( xyzTile );
 

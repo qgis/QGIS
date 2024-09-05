@@ -110,13 +110,18 @@ Qt3DRender::QTexture2D *QgsTerrainTileLoader::createTexture( QgsTerrainTileEntit
   return texture;
 }
 
+void QgsTerrainTileLoader::onTextureLoaded()
+{
+  emit finished();
+}
+
 void QgsTerrainTileLoader::onImageReady( int jobId, const QImage &image )
 {
   if ( mTextureJobId == jobId )
   {
     mTextureImage = image;
     mTextureJobId = -1;
-    emit finished();  // TODO: this should be left for derived class!
+    onTextureLoaded();
   }
 }
 

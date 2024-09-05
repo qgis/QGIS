@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <qdebug.h>
+#include <qglobal.h>
 #include <qstringliteral.h>
 #include <qvector3d.h>
 
@@ -201,6 +202,45 @@ void QgsQuantizedMeshTile::removeDegenerateTriangles()
     }
   }
   mTriangleIndices = newTriangleIndices;
+}
+
+void QgsQuantizedMeshTile::generateNormals()
+{
+  auto vertexAsVector = [ this ]( size_t idx )
+  {
+    Q_ASSERT( idx * 3 + 2 < mVertexCoords.size() );
+    return QVector3D( mVertexCoords[idx * 3], mVertexCoords[idx * 3 + 1], mVertexCoords[idx * 3 + 2] );
+  };
+
+  Q_ASSERT( mNormalCoords.size() == 0 );
+  mNormalCoords.resize( mVertexCoords.size(), 0.0 );
+
+  // Sum up contributing normals from all triangles
+  for ( size_t i = 0; i < mTriangleIndices.size(); i += 3 )
+  {
+    std::array<size_t, 3> vtxIdxs {mTriangleIndices[i], mTriangleIndices[i + 1], mTriangleIndices[i + 2]};
+    auto a = vertexAsVector( vtxIdxs[0] );
+    auto b = vertexAsVector( vtxIdxs[1] );
+    auto c = vertexAsVector( vtxIdxs[2] );
+    auto n = QVector3D::crossProduct( b - a, c - a );
+    n.normalize();
+    for ( auto vtx : vtxIdxs )
+    {
+      mNormalCoords[vtx * 3] += n.x();
+      mNormalCoords[vtx * 3 + 1] += n.y();
+      mNormalCoords[vtx * 3 + 2] += n.z();
+    }
+  }
+
+  // Normalize (average over triangles)
+  for ( size_t i = 0; i < mNormalCoords.size(); i += 3 )
+  {
+    QVector3D n( mNormalCoords[i], mNormalCoords[i + 1], mNormalCoords[i + 2] );
+    n.normalize();
+    mNormalCoords[i] = n.x();
+    mNormalCoords[i + 1] = n.y();
+    mNormalCoords[i + 2] = n.z();
+  }
 }
 
 tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, bool withTextureCoords )
