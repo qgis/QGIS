@@ -172,6 +172,12 @@ A labeling engine rule which prevents labels being placed too close to features 
     virtual QString id() const;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
   private:
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
 };
@@ -195,6 +201,12 @@ A labeling engine rule which prevents labels being placed too far from features 
 
     virtual QString id() const;
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
   private:
     QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
@@ -227,6 +239,12 @@ A labeling engine rule which prevents labels being placed too close to labels fr
 
     virtual bool prepare( QgsRenderContext &context );
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
     QgsVectorLayer *labeledLayer();
 %Docstring
@@ -348,6 +366,12 @@ A labeling engine rule which prevents labels being placed overlapping features f
 
     virtual void resolveReferences( const QgsProject *project );
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
     QgsVectorLayer *labeledLayer();
 %Docstring

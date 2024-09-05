@@ -94,6 +94,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         rule.setDistanceUnitScale(QgsMapUnitScale(15, 25))
         rule.setCost(6.6)
         rule.setName('my rule')
+        self.assertEqual(rule.__repr__(), '<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: my rule>')
 
         self.assertEqual(rule.labeledLayer(), vl)
         self.assertEqual(rule.targetLayer(), vl2)
@@ -142,6 +143,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         rule.setDistanceUnit(Qgis.RenderUnit.Inches)
         rule.setDistanceUnitScale(QgsMapUnitScale(15, 25))
         rule.setName('my rule')
+        self.assertEqual(rule.__repr__(), '<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: my rule>')
 
         self.assertEqual(rule.labeledLayer(), vl)
         self.assertEqual(rule.targetLayer(), vl2)
@@ -188,6 +190,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         rule.setDistanceUnitScale(QgsMapUnitScale(15, 25))
         rule.setCost(6.6)
         rule.setName('my rule')
+        self.assertEqual(rule.__repr__(), '<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: my rule>')
 
         self.assertEqual(rule.labeledLayer(), vl)
         self.assertEqual(rule.targetLayer(), vl2)
@@ -233,6 +236,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         rule.setLabeledLayer(vl)
         rule.setTargetLayer(vl2)
         rule.setName('my rule')
+        self.assertEqual(rule.__repr__(), '<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: my rule>')
 
         self.assertEqual(rule.labeledLayer(), vl)
         self.assertEqual(rule.targetLayer(), vl2)
