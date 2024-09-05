@@ -27,9 +27,6 @@
        <property name="toolTip">
         <string>Field calculator</string>
        </property>
-       <property name="whatsThis">
-        <string>Click to toggle table editing</string>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -42,9 +39,6 @@
       <widget class="QToolButton" name="mToggleEditingButton">
        <property name="toolTip">
         <string>Toggle editing mode</string>
-       </property>
-       <property name="whatsThis">
-        <string>Click to toggle table editing</string>
        </property>
        <property name="text">
         <string/>
@@ -104,9 +98,6 @@
        <property name="toolTip">
         <string>Save Layer Edits</string>
        </property>
-       <property name="whatsThis">
-        <string>Click to toggle table editing</string>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -124,6 +115,7 @@
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mDeleteAttributeButton</tabstop>
   <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mSaveLayerEditsButton</tabstop>
   <tabstop>mCalculateFieldButton</tabstop>
  </tabstops>
  <resources/>
