@@ -2361,6 +2361,10 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::GeometryCollectionZ:
       case Qgis::WkbType::GeometryCollectionM:
       case Qgis::WkbType::GeometryCollectionZM:
+      case Qgis::WkbType::PolyhedralSurface:
+      case Qgis::WkbType::PolyhedralSurfaceZ:
+      case Qgis::WkbType::PolyhedralSurfaceM:
+      case Qgis::WkbType::PolyhedralSurfaceZM:
       case Qgis::WkbType::Triangle:
       case Qgis::WkbType::TriangleZ:
       case Qgis::WkbType::TriangleM:
