@@ -78,7 +78,7 @@ class GUI_EXPORT QgsLabelingEngineRuleWidget : public QgsPanelWidget
 #ifndef SIP_RUN
 
 /**
- * \class QgsNumericFormatSelectorDialog
+ * \class QgsLabelingEngineRuleDialog
  * \ingroup gui
  * \brief A simple dialog for customizing a labeling engine rule.
  *
