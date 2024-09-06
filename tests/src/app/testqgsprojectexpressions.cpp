@@ -82,9 +82,17 @@ void TestQgsProjectExpressions::projectExpressions()
   // Load expressions from project
   // Project registers 2 functions: mychoice (overwriting it) and myprojectfunction
   const QByteArray projectPath = QByteArray( TEST_DATA_DIR ) + "/projects/test_project_functions.qgz";
+
+  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
+  QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Never );
   QgsProject::instance()->read( projectPath );
   QCOMPARE( QgsExpression::functionIndex( QStringLiteral( "myprojectfunction" ) ), -1 );
-  QgsExpression::loadFunctionsFromProject();
+
+  // Set the global setting to accept expression functions
+  QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::SessionOnly );
+  QgsProject::instance()->loadFunctionsFromProject();
+  QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), pythonEmbeddedMode );
+
   QVERIFY( QgsExpression::functionIndex( QStringLiteral( "myprojectfunction" ) ) != -1 );
   QVERIFY( QgsExpression::functionIndex( QStringLiteral( "mychoice" ) ) != -1 ); // Overwritten function
   const int count_project_loaded = QgsExpression::functionCount();
@@ -95,7 +103,7 @@ void TestQgsProjectExpressions::projectExpressions()
   QCOMPARE( exp.evaluate().toInt(), 2 );  // Different result because now it's from project
 
   // Unload expressions from project, reload user ones
-  QgsExpression::cleanFunctionsFromProject();
+  QgsProject::instance()->cleanFunctionsFromProject();
   const int count_project_unloaded = QgsExpression::functionCount();
   QCOMPARE( count_before_project, count_project_unloaded ); // myprojectfunction is gone
 

@@ -64,7 +64,6 @@
 #include "qgsunittypes.h"
 #include "qgsspatialindex.h"
 #include "qgscolorrampimpl.h"
-#include "qgspythonrunner.h"
 
 #include <QMimeDatabase>
 #include <QProcessEnvironment>
@@ -9500,22 +9499,6 @@ const QStringList &QgsExpression::BuiltinFunctions()
     Functions();  // this method builds the gmBuiltinFunctions as well
   }
   return *sBuiltinFunctions();
-}
-
-bool QgsExpression::loadFunctionsFromProject()
-{
-  const QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
-  if ( !projectFunctions.isEmpty() )
-  {
-    QgsPythonRunner::run( projectFunctions );
-    return true;
-  }
-  return false;
-}
-
-void QgsExpression::cleanFunctionsFromProject()
-{
-  QgsPythonRunner::run( "qgis.utils.clean_project_expression_functions()" );
 }
 
 QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()

@@ -2889,17 +2889,17 @@ void QgisApp::readSettings()
   readRecentProjects();
 
   // this is a new session, reset enable macros value  when they are set for session
-  Qgis::PythonMacroMode macroMode = settings.enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
-  switch ( macroMode )
+  Qgis::PythonEmbeddedMode pythonEmbeddedMode = settings.enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
+  switch ( pythonEmbeddedMode )
   {
-    case Qgis::PythonMacroMode::NotForThisSession:
-    case Qgis::PythonMacroMode::SessionOnly:
-      settings.setEnumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+    case Qgis::PythonEmbeddedMode::NotForThisSession:
+    case Qgis::PythonEmbeddedMode::SessionOnly:
+      settings.setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
       break;
 
-    case Qgis::PythonMacroMode::Always:
-    case Qgis::PythonMacroMode::Never:
-    case Qgis::PythonMacroMode::Ask:
+    case Qgis::PythonEmbeddedMode::Always:
+    case Qgis::PythonEmbeddedMode::Never:
+    case Qgis::PythonEmbeddedMode::Ask:
       break;
   }
 }
@@ -6575,14 +6575,14 @@ bool QgisApp::addProject( const QString &projectFile )
       if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
       {
         auto lambda = []() {QgisApp::instance()->enableProjectMacros();};
-        QgsGui::pythonMacroAllowed( lambda, mInfoBar );
+        QgsGui::pythonEmbeddedInProjectAllowed( lambda, mInfoBar, Qgis::PythonEmbeddedType::Macro );
       }
 
       // does the project have expression functions?
       const QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
       if ( !projectFunctions.isEmpty() )
       {
-        QgsGui::pythonExpressionFromProjectAllowed( mInfoBar );
+        QgsGui::pythonEmbeddedInProjectAllowed( nullptr, mInfoBar, Qgis::PythonEmbeddedType::ExpressionFunction );
       }
     }
 #endif
@@ -13864,15 +13864,6 @@ void QgisApp::closeProject()
     QgsPythonRunner::run( QStringLiteral( "qgis.utils.unloadProjectMacros();" ) );
   }
   mPythonMacrosEnabled = false;
-
-#ifdef WITH_BINDINGS
-  // unload the project expression functions and reload user expressions
-  const QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
-  if ( !projectFunctions.isEmpty() )
-  {
-    QgsExpression::cleanFunctionsFromProject();
-  }
-#endif
 
   mLegendExpressionFilterButton->setExpressionText( QString() );
   mLegendExpressionFilterButton->setChecked( false );
