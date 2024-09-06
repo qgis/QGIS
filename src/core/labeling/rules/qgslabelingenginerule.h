@@ -174,6 +174,11 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
     virtual QString id() const = 0;
 
     /**
+     * Returns a user-friendly, translated string representing the rule type.
+     */
+    virtual QString displayType() const = 0;
+
+    /**
      * Returns the name for this instance of the rule.
      *
      * The name is a user-configurable value which helps them identify and describe the

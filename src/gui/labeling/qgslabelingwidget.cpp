@@ -26,6 +26,8 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgslabelobstaclesettingswidget.h"
+#include "qgslabelingengineruleswidget.h"
+#include "qgsmapcanvas.h"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -41,6 +43,7 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingRuleBased.svg" ) ), tr( "Rule-based Labeling" ), ModeRuleBased );
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingObstacle.svg" ) ), tr( "Blocking" ), ModeBlocking );
 
+  connect( mLabelRulesButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showLabelingEngineRules );
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showEngineConfigDialog );
 
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingWidget::labelModeChanged );
@@ -280,6 +283,48 @@ void QgsLabelingWidget::labelModeChanged( int index )
       break;
   }
   emit widgetChanged();
+}
+
+void QgsLabelingWidget::showLabelingEngineRules()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  const QgsLabelingEngineSettings &settings = QgsProject::instance()->labelingEngineSettings();
+  QList< QgsAbstractLabelingEngineRule * > rules;
+  for ( const QgsAbstractLabelingEngineRule *rule : settings.rules() )
+  {
+    // blame sip, it requires the widget setter to take non-const pointers?!
+    rules << const_cast<QgsAbstractLabelingEngineRule * >( rule );
+  }
+  if ( panel && panel->dockMode() )
+  {
+    QgsLabelingEngineRulesWidget *widget = new QgsLabelingEngineRulesWidget();
+    widget->setRules( rules );
+    connect( widget, &QgsLabelingEngineRulesWidget::changed, widget, [widget, this]
+    {
+      QgsLabelingEngineSettings settings = QgsProject::instance()->labelingEngineSettings();
+      settings.setRules( widget->rules() );
+      QgsProject::instance()->setLabelingEngineSettings( settings );
+      QgsProject::instance()->setDirty();
+      if ( mCanvas )
+        mCanvas->refreshAllLayers();
+    } );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsLabelingEngineRulesDialog dialog( this );
+    dialog.setRules( rules );
+    if ( dialog.exec() )
+    {
+      QgsLabelingEngineSettings settings = QgsProject::instance()->labelingEngineSettings();
+      settings.setRules( dialog.rules() );
+      QgsProject::instance()->setLabelingEngineSettings( settings );
+      QgsProject::instance()->setDirty();
+      if ( mCanvas )
+        mCanvas->refreshAllLayers();
+    }
+    activateWindow();
+  }
 }
 
 void QgsLabelingWidget::showEngineConfigDialog()

@@ -57,6 +57,11 @@ class CORE_EXPORT QgsLabelingEngineRuleRegistry
     QStringList ruleIds() const;
 
     /**
+     * Returns a user-friendly, translated string representing the rule type with matching \a id.
+     */
+    QString displayType( const QString &id ) const;
+
+    /**
      * Creates a new rule from the type with matching \a id.
      *
      * Returns NULLPTR if no matching rule was found in the registry.

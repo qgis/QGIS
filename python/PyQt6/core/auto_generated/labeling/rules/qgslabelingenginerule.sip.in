@@ -142,6 +142,11 @@ The caller takes ownership of the returned object.
 Returns a string uniquely identifying the rule subclass.
 %End
 
+    virtual QString displayType() const = 0;
+%Docstring
+Returns a user-friendly, translated string representing the rule type.
+%End
+
     QString name() const;
 %Docstring
 Returns the name for this instance of the rule.

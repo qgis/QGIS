@@ -41,6 +41,15 @@ QStringList QgsLabelingEngineRuleRegistry::ruleIds() const
   return res;
 }
 
+QString QgsLabelingEngineRuleRegistry::displayType( const QString &id ) const
+{
+  auto it = mRules.find( id );
+  if ( it == mRules.end() )
+    return QString();
+
+  return it->second->displayType();
+}
+
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleRegistry::create( const QString &id ) const
 {
   auto it = mRules.find( id );
