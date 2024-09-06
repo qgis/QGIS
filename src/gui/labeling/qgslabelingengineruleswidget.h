@@ -157,7 +157,7 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
 
 
 /**
- * \class QgsNumericFormatSelectorDialog
+ * \class QgsLabelingEngineRulesDialog
  * \ingroup gui
  * \brief A dialog which allows configuration of a list of labeling engine rules.
  *
