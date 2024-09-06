@@ -548,8 +548,6 @@ QgsException.__doc__ = "Defines a QGIS exception class."
 
 try:
    import numpy as _numpy
-   import shapely as _shapely
-
    def _qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> _typing.Optional[_numpy.dtype]:
       qgis_to_numpy_dtype_dict = {
        Qgis.DataType.UnknownDataType: None,
@@ -597,7 +595,6 @@ try:
 
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
 
-
    def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
        if self.isMultipart():
            if self.type() == QgsWkbTypes.PointGeometry:
@@ -626,6 +623,26 @@ try:
 
    QgsGeometry.as_numpy = _qgsgeometry_as_numpy
 
+except ModuleNotFoundError:
+   def _raster_block_as_numpy(self, use_masking:bool = True):
+       raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
+
+   QgsRasterBlock.as_numpy = _raster_block_as_numpy
+
+   def _raster_layer_as_numpy(self, use_masking:bool = True, bands: _typing.Optional[_typing.List[int]] = None):
+       raise QgsNotSupportedException('QgsRasterLayer.as_numpy is not available, numpy is not installed on the system')
+
+   QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+
+   def _geometry_as_numpy(self):
+      raise QgsNotSupportedException('QgsGeometry.as_numpy is not available, numpy is not installed on the system')
+
+   QgsGeometry.as_numpy = _geometry_as_numpy
+
+try:
+   import shapely as _shapely
+
+
    def _geometry_as_shapely(self) -> _shapely.Geometry:
        numpy_coords = _qgsgeometry_as_numpy(self)
 
@@ -650,23 +667,7 @@ try:
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
-
 except ModuleNotFoundError:
-   def _raster_block_as_numpy(self, use_masking:bool = True):
-       raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
-
-   QgsRasterBlock.as_numpy = _raster_block_as_numpy
-
-   def _raster_layer_as_numpy(self, use_masking:bool = True, bands: _typing.Optional[_typing.List[int]] = None):
-       raise QgsNotSupportedException('QgsRasterLayer.as_numpy is not available, numpy is not installed on the system')
-
-   QgsRasterLayer.as_numpy = _raster_layer_as_numpy
-
-   def _geometry_as_numpy(self):
-      raise QgsNotSupportedException('QgsGeometry.as_numpy is not available, numpy is not installed on the system')
-
-   QgsGeometry.as_numpy = _geometry_as_numpy
-
    def _geometry_as_shapely(self):
        raise QgsNotSupportedException('QgsGeometry.as_shapely is not available, shapely is not installed on the system')
 
