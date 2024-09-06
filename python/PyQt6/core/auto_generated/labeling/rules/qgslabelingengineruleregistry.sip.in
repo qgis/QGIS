@@ -42,6 +42,11 @@ default rules.
 Returns a list of the rule IDs for rules present in the registry.
 %End
 
+    QString displayType( const QString &id ) const;
+%Docstring
+Returns a user-friendly, translated string representing the rule type with matching ``id``.
+%End
+
     QgsAbstractLabelingEngineRule *create( const QString &id ) const /TransferBack/;
 %Docstring
 Creates a new rule from the type with matching ``id``.

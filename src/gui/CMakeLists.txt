@@ -257,6 +257,8 @@ set(QGIS_GUI_SRCS
   inputcontroller/qgsinputcontrollermanager.cpp
 
   labeling/qgslabelengineconfigdialog.cpp
+  labeling/qgslabelingengineruleswidget.cpp
+  labeling/qgslabelingenginerulewidget.cpp
   labeling/qgslabelinggui.cpp
   labeling/qgslabelingwidget.cpp
   labeling/qgslabellineanchorwidget.cpp
@@ -1225,6 +1227,8 @@ set(QGIS_GUI_HDRS
   inputcontroller/qgsinputcontrollermanager.h
 
   labeling/qgslabelengineconfigdialog.h
+  labeling/qgslabelingenginerulewidget.h
+  labeling/qgslabelingengineruleswidget.h
   labeling/qgslabelinggui.h
   labeling/qgslabelingwidget.h
   labeling/qgslabellineanchorwidget.h

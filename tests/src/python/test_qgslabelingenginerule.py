@@ -35,6 +35,9 @@ class TestRule(QgsAbstractLabelingEngineRule):
     def id(self):
         return 'test'
 
+    def displayType(self):
+        return 'my type'
+
     def prepare(self, context):
         pass
 
@@ -60,6 +63,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
             self.assertEqual(registry.create(rule_id).id(), rule_id)
 
         self.assertIsNone(registry.create('bad'))
+        self.assertFalse(registry.displayType('bad'))
 
         self.assertIn('minimumDistanceLabelToFeature', registry.ruleIds())
 
@@ -69,6 +73,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
 
         self.assertIn('test', registry.ruleIds())
         self.assertIsInstance(registry.create('test'), TestRule)
+        self.assertEqual(registry.displayType('test'), 'my type')
 
         # no duplicates
         self.assertFalse(registry.addRule(TestRule()))
