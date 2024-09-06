@@ -44,7 +44,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
 
     const double precision( vlayer->geometryOptions()->geometryPrecision() );
     const bool ok = true;
-    QString precisionStr( QLocale().toString( precision, ok ) );
+    QString precisionStr( QLocale().toString( precision, 'g', 15 ) );
     if ( precision == 0.0 || ! ok )
       precisionStr = QString();
     mGeometryPrecisionLineEdit->setText( precisionStr );
