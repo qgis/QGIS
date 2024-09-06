@@ -197,7 +197,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
         }
         feedback->pushInfo( QStringLiteral( "%1" ).arg( totalTiles ) );
 
-        if ( totalTiles > 5000 )
+        if ( totalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
         {
           // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
           feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),

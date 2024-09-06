@@ -971,10 +971,10 @@ void QgsRasterLayerSaveAsDialog::accept()
     const int nbTilesHeight = std::ceil( nRows() / 256 );
     int64_t totalTiles = static_cast<int64_t>( nbTilesWidth ) * nbTilesHeight;
 
-    if ( totalTiles > 5000 )
+    if ( totalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
     {
       QMessageBox::warning( this, tr( "Save Raster Layer" ),
-                            tr( "The number of OpenStreetMap tiles needed to produce the raster layer is too large and will leads to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2." ).arg( QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
+                            tr( "The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2." ).arg( QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
                             QMessageBox::Ok );
       return;
     }
