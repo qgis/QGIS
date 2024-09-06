@@ -11,7 +11,7 @@
     "leaflet": "^1.9.3",
     "leaflet.wms": "^0.2.0",
     "reproject": "^1.2.7",
-    "vue": "^2.6.14",
+    "vue": "^3.0.0",
     "vue-router": "^3.6.5",
     "vue2-leaflet": "^2.7.1",
     "vuetify": "^2.6.12",
@@ -29,8 +29,8 @@
     "sass-loader": "^13.2.0",
     "vue-cli-plugin-vuetify": "~2.5.8",
     "vue-template-compiler": "^2.7.16",
-    "vuetify-loader": "^1.9.2",
-    "webpack-license-plugin": "^4.2.2"
+    "webpack-license-plugin": "^4.2.2",
+    "webpack-plugin-vuetify": "^1.9.2"
   },
   "eslintConfig": {
     "root": true,
