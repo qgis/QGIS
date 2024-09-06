@@ -110,7 +110,7 @@ QString QgsLabelEngineConfigWidget::menuButtonTooltip() const
 
 void QgsLabelEngineConfigWidget::apply()
 {
-  QgsLabelingEngineSettings engineSettings;
+  QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
   // save
   engineSettings.setMaximumLineCandidatesPerCm( spinCandLine->value() );
