@@ -331,6 +331,7 @@ void QgsLabelingEngineRulesWidget::removeRules()
   {
     mModel->removeRow( row );
   }
+  emit changed();
 }
 
 //
