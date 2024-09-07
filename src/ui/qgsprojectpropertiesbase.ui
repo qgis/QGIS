@@ -2196,9 +2196,6 @@
                           <property name="toolTip">
                            <string>The abstract is a descriptive narrative providing more information about the service.</string>
                           </property>
-                          <property name="whatsThis">
-                           <string/>
-                          </property>
                           <property name="documentTitle">
                            <string/>
                           </property>
