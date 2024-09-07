@@ -648,9 +648,6 @@
          <number>0</number>
         </property>
         <widget class="QWidget" name="tbpAuthentication">
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
          <attribute name="title">
           <string>Authentication</string>
          </attribute>
