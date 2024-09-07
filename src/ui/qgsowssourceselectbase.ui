@@ -152,7 +152,7 @@
            <property name="statusTip">
             <string>Adds a few example WMS servers</string>
            </property>
-           <property name="whatsThis">
+           <property name="toolTip">
             <string comment="Adds several example WMS servers to the list"/>
            </property>
            <property name="text">

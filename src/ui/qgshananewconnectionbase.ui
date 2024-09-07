@@ -698,9 +698,6 @@
             <item row="1" column="0">
              <widget class="QCheckBox" name="chkValidateCertificate">
               <property name="toolTip">
-               <string>Restrict the displayed tables to those that are in the layer registries.</string>
-              </property>
-              <property name="whatsThis">
                <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
               </property>
               <property name="text">
@@ -880,9 +877,6 @@
       <item>
        <widget class="QCheckBox" name="chkUserTablesOnly">
         <property name="toolTip">
-         <string>Restrict the displayed tables to those that are in the layer registries.</string>
-        </property>
-        <property name="whatsThis">
          <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
         </property>
         <property name="text">
