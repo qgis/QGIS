@@ -2229,10 +2229,10 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
    </property>
    <property name="text">
-    <string>Copy style of the active layer</string>
+    <string>Copy Style</string>
    </property>
    <property name="toolTip">
-    <string>Copy Style</string>
+    <string>Copy style of the active layer</string>
    </property>
   </action>
   <action name="mActionPasteStyle">
