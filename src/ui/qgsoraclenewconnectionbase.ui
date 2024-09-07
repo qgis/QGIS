@@ -201,9 +201,6 @@
         <property name="toolTip">
          <string>When searching for spatial tables restrict the search to tables that are owned by the user.</string>
         </property>
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owned by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
         <property name="text">
          <string>Only look for user's tables</string>
         </property>
@@ -245,9 +242,6 @@
       <item row="16" column="0" colspan="3">
        <widget class="QCheckBox" name="cb_includeGeoAttributes">
         <property name="toolTip">
-         <string/>
-        </property>
-        <property name="whatsThis">
          <string/>
         </property>
         <property name="text">

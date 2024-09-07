@@ -2604,7 +2604,7 @@
                    <widget class="QComboBox" name="mLayerTreeInsertionMethod">
                     <property name="sizeAdjustPolicy">
                      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-                    </property>                     
+                    </property>
                    </widget>
                   </item>
                   <item row="2" column="0" colspan="2">
@@ -2631,9 +2631,6 @@
                   <item row="4" column="1">
                    <widget class="QgsSpinBox" name="mLegendGraphicResolutionSpinBox">
                     <property name="toolTip">
-                     <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
-                    </property>
-                    <property name="whatsThis">
                      <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
                     </property>
                     <property name="suffix">
@@ -2742,9 +2739,6 @@
                   <item row="0" column="1">
                    <widget class="QgsSpinBox" name="mMapTipsDelaySpinBox">
                     <property name="toolTip">
-                     <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
-                    </property>
-                    <property name="whatsThis">
                      <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
                     </property>
                     <property name="suffix">
