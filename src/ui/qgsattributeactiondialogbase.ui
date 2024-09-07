@@ -177,7 +177,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="whatsThis">
+        <property name="toolTip">
          <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Add to action list button. Actions can be edited here by double clicking on the item.</string>
         </property>
         <property name="selectionMode">
