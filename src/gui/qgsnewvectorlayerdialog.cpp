@@ -218,7 +218,7 @@ void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
 
   if ( !mNameEdit->hasFocus() )
   {
-    mNameEdit->setFocus( Qt::MouseFocusReason );
+    mNameEdit->setFocus();
   }
 }
 
