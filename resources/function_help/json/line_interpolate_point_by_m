@@ -12,6 +12,7 @@
   }, {
     "arg": "use_3d_distance",
     "optional": true,
+    "default": "false",
     "description": "controls whether 2D or 3D distances between vertices should be used during interpolation (this option is only considered for lines with z values)"
   }],
   "examples": [{

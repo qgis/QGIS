@@ -5655,7 +5655,7 @@ static QVariant fcnLineInterpolatePoint( const QVariantList &values, const QgsEx
 
 static QVariant fcnLineInterpolatePointByM( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   const double m = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   const bool use3DDistance = values.at( 2 ).toBool();
 
@@ -5761,7 +5761,7 @@ static QVariant fcnLineLocatePoint( const QVariantList &values, const QgsExpress
 
 static QVariant fcnLineLocateM( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   const double m = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   const bool use3DDistance = values.at( 2 ).toBool();
 
