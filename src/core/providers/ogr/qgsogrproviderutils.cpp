@@ -1314,6 +1314,11 @@ QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QStrin
     field.replace( '`', "``" );
     return field.prepend( '`' ).append( '`' );
   }
+  else if ( driverName == QLatin1String( "GPKG" ) || driverName == QLatin1String( "SQLite" ) )
+  {
+    field.replace( '"', "\"\"" );
+    return field.prepend( '\"' ).append( '\"' );
+  }
   else
   {
     field.replace( '\\', "\\\\" );
