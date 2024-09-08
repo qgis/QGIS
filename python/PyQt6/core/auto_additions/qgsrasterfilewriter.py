@@ -3,19 +3,16 @@ QgsRasterFileWriter.SortRecommended = QgsRasterFileWriter.RasterFormatOption.Sor
 QgsRasterFileWriter.RasterFormatOptions = lambda flags=0: QgsRasterFileWriter.RasterFormatOption(flags)
 try:
     QgsRasterFileWriter.__attribute_docs__ = {'driverName': 'Unique driver name', 'filterString': 'Filter string for file picker dialogs'}
-except NameError:
-    pass
-QgsRasterFileWriter.filterForDriver = staticmethod(QgsRasterFileWriter.filterForDriver)
-QgsRasterFileWriter.supportedFiltersAndFormats = staticmethod(QgsRasterFileWriter.supportedFiltersAndFormats)
-QgsRasterFileWriter.supportedFormatExtensions = staticmethod(QgsRasterFileWriter.supportedFormatExtensions)
-QgsRasterFileWriter.driverForExtension = staticmethod(QgsRasterFileWriter.driverForExtension)
-QgsRasterFileWriter.extensionsForFormat = staticmethod(QgsRasterFileWriter.extensionsForFormat)
-QgsRasterFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
-try:
+    QgsRasterFileWriter.filterForDriver = staticmethod(QgsRasterFileWriter.filterForDriver)
+    QgsRasterFileWriter.supportedFiltersAndFormats = staticmethod(QgsRasterFileWriter.supportedFiltersAndFormats)
+    QgsRasterFileWriter.supportedFormatExtensions = staticmethod(QgsRasterFileWriter.supportedFormatExtensions)
+    QgsRasterFileWriter.driverForExtension = staticmethod(QgsRasterFileWriter.driverForExtension)
+    QgsRasterFileWriter.extensionsForFormat = staticmethod(QgsRasterFileWriter.extensionsForFormat)
     QgsRasterFileWriter.__group__ = ['raster']
 except NameError:
     pass
 try:
+    QgsRasterFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
     QgsRasterFileWriter.FilterFormatDetails.__group__ = ['raster']
 except NameError:
     pass

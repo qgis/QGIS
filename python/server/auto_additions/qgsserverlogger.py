@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/server/qgsserverlogger.h
-QgsServerLogger.instance = staticmethod(QgsServerLogger.instance)
+try:
+    QgsServerLogger.instance = staticmethod(QgsServerLogger.instance)
+except NameError:
+    pass

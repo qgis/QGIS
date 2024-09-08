@@ -18,36 +18,40 @@ QgsMapBoxGlStyleConverter.PropertyType.__doc__ = """Property types, for interpol
 """
 # --
 QgsMapBoxGlStyleConverter.PropertyType.baseClass = QgsMapBoxGlStyleConverter
-QgsMapBoxGlStyleConverter.parseFillLayer = staticmethod(QgsMapBoxGlStyleConverter.parseFillLayer)
-QgsMapBoxGlStyleConverter.parseLineLayer = staticmethod(QgsMapBoxGlStyleConverter.parseLineLayer)
-QgsMapBoxGlStyleConverter.parseCircleLayer = staticmethod(QgsMapBoxGlStyleConverter.parseCircleLayer)
-QgsMapBoxGlStyleConverter.parseSymbolLayer = staticmethod(QgsMapBoxGlStyleConverter.parseSymbolLayer)
-QgsMapBoxGlStyleConverter.parseSymbolLayerAsRenderer = staticmethod(QgsMapBoxGlStyleConverter.parseSymbolLayerAsRenderer)
-QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom)
-QgsMapBoxGlStyleConverter.parseInterpolateByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateByZoom)
-QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom)
-QgsMapBoxGlStyleConverter.parseOpacityStops = staticmethod(QgsMapBoxGlStyleConverter.parseOpacityStops)
-QgsMapBoxGlStyleConverter.parseInterpolatePointByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolatePointByZoom)
-QgsMapBoxGlStyleConverter.parseInterpolateStringByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateStringByZoom)
-QgsMapBoxGlStyleConverter.parsePointStops = staticmethod(QgsMapBoxGlStyleConverter.parsePointStops)
-QgsMapBoxGlStyleConverter.parseArrayStops = staticmethod(QgsMapBoxGlStyleConverter.parseArrayStops)
-QgsMapBoxGlStyleConverter.parseStops = staticmethod(QgsMapBoxGlStyleConverter.parseStops)
-QgsMapBoxGlStyleConverter.parseStringStops = staticmethod(QgsMapBoxGlStyleConverter.parseStringStops)
-QgsMapBoxGlStyleConverter.parseLabelStops = staticmethod(QgsMapBoxGlStyleConverter.parseLabelStops)
-QgsMapBoxGlStyleConverter.parseValueList = staticmethod(QgsMapBoxGlStyleConverter.parseValueList)
-QgsMapBoxGlStyleConverter.parseMatchList = staticmethod(QgsMapBoxGlStyleConverter.parseMatchList)
-QgsMapBoxGlStyleConverter.parseStepList = staticmethod(QgsMapBoxGlStyleConverter.parseStepList)
-QgsMapBoxGlStyleConverter.parseInterpolateListByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateListByZoom)
-QgsMapBoxGlStyleConverter.parseColorExpression = staticmethod(QgsMapBoxGlStyleConverter.parseColorExpression)
-QgsMapBoxGlStyleConverter.parseColor = staticmethod(QgsMapBoxGlStyleConverter.parseColor)
-QgsMapBoxGlStyleConverter.colorAsHslaComponents = staticmethod(QgsMapBoxGlStyleConverter.colorAsHslaComponents)
-QgsMapBoxGlStyleConverter.interpolateExpression = staticmethod(QgsMapBoxGlStyleConverter.interpolateExpression)
-QgsMapBoxGlStyleConverter.parseCapStyle = staticmethod(QgsMapBoxGlStyleConverter.parseCapStyle)
-QgsMapBoxGlStyleConverter.parseJoinStyle = staticmethod(QgsMapBoxGlStyleConverter.parseJoinStyle)
-QgsMapBoxGlStyleConverter.parseExpression = staticmethod(QgsMapBoxGlStyleConverter.parseExpression)
-QgsMapBoxGlStyleConverter.retrieveSprite = staticmethod(QgsMapBoxGlStyleConverter.retrieveSprite)
-QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64 = staticmethod(QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64)
-QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties = staticmethod(QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties)
+try:
+    QgsMapBoxGlStyleConverter.parseFillLayer = staticmethod(QgsMapBoxGlStyleConverter.parseFillLayer)
+    QgsMapBoxGlStyleConverter.parseLineLayer = staticmethod(QgsMapBoxGlStyleConverter.parseLineLayer)
+    QgsMapBoxGlStyleConverter.parseCircleLayer = staticmethod(QgsMapBoxGlStyleConverter.parseCircleLayer)
+    QgsMapBoxGlStyleConverter.parseSymbolLayer = staticmethod(QgsMapBoxGlStyleConverter.parseSymbolLayer)
+    QgsMapBoxGlStyleConverter.parseSymbolLayerAsRenderer = staticmethod(QgsMapBoxGlStyleConverter.parseSymbolLayerAsRenderer)
+    QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom)
+    QgsMapBoxGlStyleConverter.parseInterpolateByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateByZoom)
+    QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom)
+    QgsMapBoxGlStyleConverter.parseOpacityStops = staticmethod(QgsMapBoxGlStyleConverter.parseOpacityStops)
+    QgsMapBoxGlStyleConverter.parseInterpolatePointByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolatePointByZoom)
+    QgsMapBoxGlStyleConverter.parseInterpolateStringByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateStringByZoom)
+    QgsMapBoxGlStyleConverter.parsePointStops = staticmethod(QgsMapBoxGlStyleConverter.parsePointStops)
+    QgsMapBoxGlStyleConverter.parseArrayStops = staticmethod(QgsMapBoxGlStyleConverter.parseArrayStops)
+    QgsMapBoxGlStyleConverter.parseStops = staticmethod(QgsMapBoxGlStyleConverter.parseStops)
+    QgsMapBoxGlStyleConverter.parseStringStops = staticmethod(QgsMapBoxGlStyleConverter.parseStringStops)
+    QgsMapBoxGlStyleConverter.parseLabelStops = staticmethod(QgsMapBoxGlStyleConverter.parseLabelStops)
+    QgsMapBoxGlStyleConverter.parseValueList = staticmethod(QgsMapBoxGlStyleConverter.parseValueList)
+    QgsMapBoxGlStyleConverter.parseMatchList = staticmethod(QgsMapBoxGlStyleConverter.parseMatchList)
+    QgsMapBoxGlStyleConverter.parseStepList = staticmethod(QgsMapBoxGlStyleConverter.parseStepList)
+    QgsMapBoxGlStyleConverter.parseInterpolateListByZoom = staticmethod(QgsMapBoxGlStyleConverter.parseInterpolateListByZoom)
+    QgsMapBoxGlStyleConverter.parseColorExpression = staticmethod(QgsMapBoxGlStyleConverter.parseColorExpression)
+    QgsMapBoxGlStyleConverter.parseColor = staticmethod(QgsMapBoxGlStyleConverter.parseColor)
+    QgsMapBoxGlStyleConverter.colorAsHslaComponents = staticmethod(QgsMapBoxGlStyleConverter.colorAsHslaComponents)
+    QgsMapBoxGlStyleConverter.interpolateExpression = staticmethod(QgsMapBoxGlStyleConverter.interpolateExpression)
+    QgsMapBoxGlStyleConverter.parseCapStyle = staticmethod(QgsMapBoxGlStyleConverter.parseCapStyle)
+    QgsMapBoxGlStyleConverter.parseJoinStyle = staticmethod(QgsMapBoxGlStyleConverter.parseJoinStyle)
+    QgsMapBoxGlStyleConverter.parseExpression = staticmethod(QgsMapBoxGlStyleConverter.parseExpression)
+    QgsMapBoxGlStyleConverter.retrieveSprite = staticmethod(QgsMapBoxGlStyleConverter.retrieveSprite)
+    QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64 = staticmethod(QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64)
+    QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties = staticmethod(QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties)
+    QgsMapBoxGlStyleConverter.__group__ = ['vectortile']
+except NameError:
+    pass
 try:
     QgsMapBoxGlStyleConversionContext.__group__ = ['vectortile']
 except NameError:
@@ -62,9 +66,5 @@ except NameError:
     pass
 try:
     QgsMapBoxGlStyleRasterSubLayer.__group__ = ['vectortile']
-except NameError:
-    pass
-try:
-    QgsMapBoxGlStyleConverter.__group__ = ['vectortile']
 except NameError:
     pass

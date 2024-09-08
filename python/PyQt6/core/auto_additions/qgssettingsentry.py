@@ -1,6 +1,6 @@
 # The following has been generated automatically from src/core/settings/qgssettingsentry.h
-QgsSettingsEntryBase.dynamicKeyPartToList = staticmethod(QgsSettingsEntryBase.dynamicKeyPartToList)
 try:
+    QgsSettingsEntryBase.dynamicKeyPartToList = staticmethod(QgsSettingsEntryBase.dynamicKeyPartToList)
     QgsSettingsEntryBase.__group__ = ['settings']
 except NameError:
     pass

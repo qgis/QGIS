@@ -24,9 +24,6 @@ QgsLayerMetadataResultsModel.DataProviderName = QgsLayerMetadataResultsModel.Sec
 QgsLayerMetadataResultsModel.GeometryType = QgsLayerMetadataResultsModel.Sections.GeometryType
 try:
     QgsLayerMetadataResultsModel.__attribute_docs__ = {'progressChanged': 'Emitted when the progress changed to ``progress``.\n'}
-except NameError:
-    pass
-try:
     QgsLayerMetadataResultsModel.__signal_arguments__ = {'progressChanged': ['progress: int']}
 except NameError:
     pass

@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgsmargins.h
-QgsMargins.fromString = staticmethod(QgsMargins.fromString)
+try:
+    QgsMargins.fromString = staticmethod(QgsMargins.fromString)
+except NameError:
+    pass

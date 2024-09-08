@@ -6,7 +6,16 @@ QgsSizeScaleTransformer.Linear = QgsSizeScaleTransformer.ScaleType.Linear
 QgsSizeScaleTransformer.Area = QgsSizeScaleTransformer.ScaleType.Area
 QgsSizeScaleTransformer.Flannery = QgsSizeScaleTransformer.ScaleType.Flannery
 QgsSizeScaleTransformer.Exponential = QgsSizeScaleTransformer.ScaleType.Exponential
-QgsPropertyTransformer.create = staticmethod(QgsPropertyTransformer.create)
-QgsPropertyTransformer.fromExpression = staticmethod(QgsPropertyTransformer.fromExpression)
-QgsGenericNumericTransformer.fromExpression = staticmethod(QgsGenericNumericTransformer.fromExpression)
-QgsSizeScaleTransformer.fromExpression = staticmethod(QgsSizeScaleTransformer.fromExpression)
+try:
+    QgsPropertyTransformer.create = staticmethod(QgsPropertyTransformer.create)
+    QgsPropertyTransformer.fromExpression = staticmethod(QgsPropertyTransformer.fromExpression)
+except NameError:
+    pass
+try:
+    QgsGenericNumericTransformer.fromExpression = staticmethod(QgsGenericNumericTransformer.fromExpression)
+except NameError:
+    pass
+try:
+    QgsSizeScaleTransformer.fromExpression = staticmethod(QgsSizeScaleTransformer.fromExpression)
+except NameError:
+    pass

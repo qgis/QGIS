@@ -10,6 +10,9 @@ QgsMapSettingsUtils.EffectsCheckFlag.__doc__ = """Flags for controlling the beha
 """
 # --
 QgsMapSettingsUtils.EffectsCheckFlags = lambda flags=0: QgsMapSettingsUtils.EffectsCheckFlag(flags)
-QgsMapSettingsUtils.containsAdvancedEffects = staticmethod(QgsMapSettingsUtils.containsAdvancedEffects)
-QgsMapSettingsUtils.worldFileParameters = staticmethod(QgsMapSettingsUtils.worldFileParameters)
-QgsMapSettingsUtils.worldFileContent = staticmethod(QgsMapSettingsUtils.worldFileContent)
+try:
+    QgsMapSettingsUtils.containsAdvancedEffects = staticmethod(QgsMapSettingsUtils.containsAdvancedEffects)
+    QgsMapSettingsUtils.worldFileParameters = staticmethod(QgsMapSettingsUtils.worldFileParameters)
+    QgsMapSettingsUtils.worldFileContent = staticmethod(QgsMapSettingsUtils.worldFileContent)
+except NameError:
+    pass

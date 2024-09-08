@@ -1,9 +1,6 @@
 # The following has been generated automatically from src/gui/actions/qgsactionmenu.h
 try:
     QgsActionMenu.__attribute_docs__ = {'reinit': 'Emitted after actions have been reloaded.\n'}
-except NameError:
-    pass
-try:
     QgsActionMenu.__group__ = ['actions']
 except NameError:
     pass

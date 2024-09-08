@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgsmultirenderchecker.h
-QgsMultiRenderChecker.drawBackground = staticmethod(QgsMultiRenderChecker.drawBackground)
+try:
+    QgsMultiRenderChecker.drawBackground = staticmethod(QgsMultiRenderChecker.drawBackground)
+except NameError:
+    pass

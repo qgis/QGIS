@@ -22,10 +22,10 @@ QgsGcpTransformerInterface.TransformMethod.__doc__ = """Available transformation
 """
 # --
 QgsGcpTransformerInterface.TransformMethod.baseClass = QgsGcpTransformerInterface
-QgsGcpTransformerInterface.methodToString = staticmethod(QgsGcpTransformerInterface.methodToString)
-QgsGcpTransformerInterface.create = staticmethod(QgsGcpTransformerInterface.create)
-QgsGcpTransformerInterface.createFromParameters = staticmethod(QgsGcpTransformerInterface.createFromParameters)
 try:
+    QgsGcpTransformerInterface.methodToString = staticmethod(QgsGcpTransformerInterface.methodToString)
+    QgsGcpTransformerInterface.create = staticmethod(QgsGcpTransformerInterface.create)
+    QgsGcpTransformerInterface.createFromParameters = staticmethod(QgsGcpTransformerInterface.createFromParameters)
     QgsGcpTransformerInterface.__group__ = ['georeferencing']
 except NameError:
     pass

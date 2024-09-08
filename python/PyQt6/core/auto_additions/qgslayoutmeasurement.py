@@ -1,6 +1,6 @@
 # The following has been generated automatically from src/core/layout/qgslayoutmeasurement.h
-QgsLayoutMeasurement.decodeMeasurement = staticmethod(QgsLayoutMeasurement.decodeMeasurement)
 try:
+    QgsLayoutMeasurement.decodeMeasurement = staticmethod(QgsLayoutMeasurement.decodeMeasurement)
     QgsLayoutMeasurement.__group__ = ['layout']
 except NameError:
     pass

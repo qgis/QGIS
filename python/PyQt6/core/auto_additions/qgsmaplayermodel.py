@@ -45,4 +45,7 @@ QgsMapLayerModel.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsMapLayerModel.CustomRole.baseClass = QgsMapLayerModel
-QgsMapLayerModel.iconForLayer = staticmethod(QgsMapLayerModel.iconForLayer)
+try:
+    QgsMapLayerModel.iconForLayer = staticmethod(QgsMapLayerModel.iconForLayer)
+except NameError:
+    pass

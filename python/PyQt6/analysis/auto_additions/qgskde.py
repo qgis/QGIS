@@ -13,14 +13,11 @@ QgsKernelDensityEstimation.FileCreationError = QgsKernelDensityEstimation.Result
 QgsKernelDensityEstimation.RasterIoError = QgsKernelDensityEstimation.Result.RasterIoError
 try:
     QgsKernelDensityEstimation.__attribute_docs__ = {'source': 'Point feature source', 'radius': 'Fixed radius, in map units', 'radiusField': 'Field for radius, or empty if using a fixed radius', 'weightField': 'Field name for weighting field, or empty if not using weights', 'pixelSize': 'Size of pixel in output file', 'shape': 'Kernel shape', 'decayRatio': 'Decay ratio (Triangular kernels only)', 'outputValues': 'Type of output value'}
-except NameError:
-    pass
-QgsKernelDensityEstimation.Parameters.__doc__ = """KDE parameters"""
-try:
     QgsKernelDensityEstimation.__group__ = ['raster']
 except NameError:
     pass
 try:
+    QgsKernelDensityEstimation.Parameters.__doc__ = """KDE parameters"""
     QgsKernelDensityEstimation.Parameters.__group__ = ['raster']
 except NameError:
     pass

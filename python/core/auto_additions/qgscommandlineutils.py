@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgscommandlineutils.h
-QgsCommandLineUtils.allVersions = staticmethod(QgsCommandLineUtils.allVersions)
+try:
+    QgsCommandLineUtils.allVersions = staticmethod(QgsCommandLineUtils.allVersions)
+except NameError:
+    pass

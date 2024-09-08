@@ -81,9 +81,9 @@ QgsPointCloudAttributeProxyModel.Filter.__bool__ = lambda flag: bool(_force_int(
 QgsPointCloudAttributeProxyModel.Filter.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsPointCloudAttributeProxyModel.Filter.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsPointCloudAttributeProxyModel.Filter.__or__ = lambda flag1, flag2: QgsPointCloudAttributeProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
-QgsPointCloudAttributeModel.attributeToolTip = staticmethod(QgsPointCloudAttributeModel.attributeToolTip)
-QgsPointCloudAttributeModel.iconForAttributeType = staticmethod(QgsPointCloudAttributeModel.iconForAttributeType)
 try:
+    QgsPointCloudAttributeModel.attributeToolTip = staticmethod(QgsPointCloudAttributeModel.attributeToolTip)
+    QgsPointCloudAttributeModel.iconForAttributeType = staticmethod(QgsPointCloudAttributeModel.iconForAttributeType)
     QgsPointCloudAttributeModel.__group__ = ['pointcloud']
 except NameError:
     pass

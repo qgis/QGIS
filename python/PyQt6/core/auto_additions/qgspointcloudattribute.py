@@ -9,8 +9,8 @@ QgsPointCloudAttribute.Int64 = QgsPointCloudAttribute.DataType.Int64
 QgsPointCloudAttribute.UInt64 = QgsPointCloudAttribute.DataType.UInt64
 QgsPointCloudAttribute.Float = QgsPointCloudAttribute.DataType.Float
 QgsPointCloudAttribute.Double = QgsPointCloudAttribute.DataType.Double
-QgsPointCloudAttribute.isNumeric = staticmethod(QgsPointCloudAttribute.isNumeric)
 try:
+    QgsPointCloudAttribute.isNumeric = staticmethod(QgsPointCloudAttribute.isNumeric)
     QgsPointCloudAttribute.__group__ = ['pointcloud']
 except NameError:
     pass

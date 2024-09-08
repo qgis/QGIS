@@ -7,4 +7,7 @@ try:
     QgsExpressionContext.__attribute_docs__ = {'EXPR_FIELDS': 'Inbuilt variable name for fields storage', 'EXPR_ORIGINAL_VALUE': 'Inbuilt variable name for value original value variable', 'EXPR_SYMBOL_COLOR': 'Inbuilt variable name for symbol color variable', 'EXPR_SYMBOL_ANGLE': 'Inbuilt variable name for symbol angle variable', 'EXPR_GEOMETRY_PART_COUNT': 'Inbuilt variable name for geometry part count variable', 'EXPR_GEOMETRY_PART_NUM': 'Inbuilt variable name for geometry part number variable', 'EXPR_GEOMETRY_RING_NUM': 'Inbuilt variable name for geometry ring number variable.\n\n.. versionadded:: 3.20', 'EXPR_GEOMETRY_POINT_COUNT': 'Inbuilt variable name for point count variable', 'EXPR_GEOMETRY_POINT_NUM': 'Inbuilt variable name for point number variable', 'EXPR_CLUSTER_SIZE': 'Inbuilt variable name for cluster size variable', 'EXPR_CLUSTER_COLOR': 'Inbuilt variable name for cluster color variable'}
 except NameError:
     pass
-QgsExpressionContextScope.StaticVariable.__doc__ = """Single variable definition for use within a QgsExpressionContextScope."""
+try:
+    QgsExpressionContextScope.StaticVariable.__doc__ = """Single variable definition for use within a QgsExpressionContextScope."""
+except NameError:
+    pass

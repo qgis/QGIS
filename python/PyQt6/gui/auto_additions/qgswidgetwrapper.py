@@ -19,10 +19,7 @@ QgsWidgetWrapper.Property.__doc__ = """Data defined properties for different edi
 # --
 try:
     QgsWidgetWrapper.__attribute_docs__ = {'contextChanged': 'Signal when :py:class:`QgsAttributeEditorContext` mContext changed\n\n.. versionadded:: 3.4\n'}
-except NameError:
-    pass
-QgsWidgetWrapper.fromWidget = staticmethod(QgsWidgetWrapper.fromWidget)
-try:
+    QgsWidgetWrapper.fromWidget = staticmethod(QgsWidgetWrapper.fromWidget)
     QgsWidgetWrapper.__group__ = ['editorwidgets', 'core']
 except NameError:
     pass

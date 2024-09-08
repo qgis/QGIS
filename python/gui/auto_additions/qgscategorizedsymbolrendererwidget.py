@@ -21,8 +21,8 @@ QgsCategorizedSymbolRendererWidget.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsCategorizedSymbolRendererWidget.CustomRole.baseClass = QgsCategorizedSymbolRendererWidget
-QgsCategorizedSymbolRendererWidget.create = staticmethod(QgsCategorizedSymbolRendererWidget.create)
 try:
+    QgsCategorizedSymbolRendererWidget.create = staticmethod(QgsCategorizedSymbolRendererWidget.create)
     QgsCategorizedSymbolRendererWidget.__group__ = ['symbology']
 except NameError:
     pass

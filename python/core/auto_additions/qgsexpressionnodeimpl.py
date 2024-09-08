@@ -1,5 +1,9 @@
 # The following has been generated automatically from src/core/expression/qgsexpressionnodeimpl.h
-QgsExpressionNodeFunction.validateParams = staticmethod(QgsExpressionNodeFunction.validateParams)
+try:
+    QgsExpressionNodeFunction.validateParams = staticmethod(QgsExpressionNodeFunction.validateParams)
+    QgsExpressionNodeFunction.__group__ = ['expression']
+except NameError:
+    pass
 try:
     QgsExpressionNodeUnaryOperator.__group__ = ['expression']
 except NameError:
@@ -18,10 +22,6 @@ except NameError:
     pass
 try:
     QgsExpressionNodeInOperator.__group__ = ['expression']
-except NameError:
-    pass
-try:
-    QgsExpressionNodeFunction.__group__ = ['expression']
 except NameError:
     pass
 try:

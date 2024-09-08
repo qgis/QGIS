@@ -58,13 +58,7 @@ QgsBrowserModel.CustomRole.__doc__ = """Custom model roles.
 QgsBrowserModel.CustomRole.baseClass = QgsBrowserModel
 try:
     QgsBrowserModel.__attribute_docs__ = {'stateChanged': 'Emitted when item children fetch was finished\n', 'connectionsChanged': 'Emitted when connections for the specified ``providerKey`` have changed in the browser.\n\nForwarded to the widget and used to notify the provider dialogs of a changed connection.\n'}
-except NameError:
-    pass
-try:
     QgsBrowserModel.__signal_arguments__ = {'stateChanged': ['index: QModelIndex', 'oldState: Qgis.BrowserItemState'], 'connectionsChanged': ['providerKey: str']}
-except NameError:
-    pass
-try:
     QgsBrowserModel.__group__ = ['browser']
 except NameError:
     pass

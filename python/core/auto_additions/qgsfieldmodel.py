@@ -89,5 +89,8 @@ QgsFieldModel.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsFieldModel.CustomRole.baseClass = QgsFieldModel
-QgsFieldModel.fieldToolTip = staticmethod(QgsFieldModel.fieldToolTip)
-QgsFieldModel.fieldToolTipExtended = staticmethod(QgsFieldModel.fieldToolTipExtended)
+try:
+    QgsFieldModel.fieldToolTip = staticmethod(QgsFieldModel.fieldToolTip)
+    QgsFieldModel.fieldToolTipExtended = staticmethod(QgsFieldModel.fieldToolTipExtended)
+except NameError:
+    pass

@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgsmaptopixel.h
-QgsMapToPixel.fromScale = staticmethod(QgsMapToPixel.fromScale)
+try:
+    QgsMapToPixel.fromScale = staticmethod(QgsMapToPixel.fromScale)
+except NameError:
+    pass

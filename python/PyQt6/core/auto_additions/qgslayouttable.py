@@ -22,9 +22,6 @@ QgsLayoutTable.FirstRow = QgsLayoutTable.CellStyleGroup.FirstRow
 QgsLayoutTable.LastRow = QgsLayoutTable.CellStyleGroup.LastRow
 try:
     QgsLayoutTableStyle.__attribute_docs__ = {'enabled': 'Whether the styling option is enabled', 'cellBackgroundColor': 'Cell background color'}
-except NameError:
-    pass
-try:
     QgsLayoutTableStyle.__group__ = ['layout']
 except NameError:
     pass

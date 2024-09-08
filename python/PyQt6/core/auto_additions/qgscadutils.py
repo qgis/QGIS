@@ -11,4 +11,7 @@ try:
     QgsCadUtils.AlignMapPointContext.__attribute_docs__ = {'snappingUtils': 'Snapping utils that will be used to snap point to map. Must not be ``None``.', 'mapUnitsPerPixel': 'Map units/pixel ratio from map canvas.', 'xConstraint': 'Constraint for X coordinate', 'yConstraint': 'Constraint for Y coordinate', 'zConstraint': 'Constraint for Z coordinate\n\n.. versionadded:: 3.22', 'mConstraint': 'Constraint for M coordinate\n\n.. versionadded:: 3.22', 'distanceConstraint': 'Constraint for distance', 'angleConstraint': 'Constraint for angle', 'commonAngleConstraint': 'Constraint for soft lock to a common angle', 'snappingToFeaturesOverridesCommonAngle': 'Flag to set snapping to features priority over common angle.\n\n.. versionadded:: 3.32'}
 except NameError:
     pass
-QgsCadUtils.alignMapPoint = staticmethod(QgsCadUtils.alignMapPoint)
+try:
+    QgsCadUtils.alignMapPoint = staticmethod(QgsCadUtils.alignMapPoint)
+except NameError:
+    pass

@@ -21,4 +21,7 @@ QgsValidityCheckResultsModel.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsValidityCheckResultsModel.CustomRole.baseClass = QgsValidityCheckResultsModel
-QgsValidityCheckResultsWidget.runChecks = staticmethod(QgsValidityCheckResultsWidget.runChecks)
+try:
+    QgsValidityCheckResultsWidget.runChecks = staticmethod(QgsValidityCheckResultsWidget.runChecks)
+except NameError:
+    pass

@@ -2,13 +2,13 @@
 QgsPaintEffect.Modifier = QgsPaintEffect.DrawMode.Modifier
 QgsPaintEffect.Render = QgsPaintEffect.DrawMode.Render
 QgsPaintEffect.ModifyAndRender = QgsPaintEffect.DrawMode.ModifyAndRender
-QgsDrawSourceEffect.create = staticmethod(QgsDrawSourceEffect.create)
 try:
-    QgsPaintEffect.__group__ = ['effects']
+    QgsDrawSourceEffect.create = staticmethod(QgsDrawSourceEffect.create)
+    QgsDrawSourceEffect.__group__ = ['effects']
 except NameError:
     pass
 try:
-    QgsDrawSourceEffect.__group__ = ['effects']
+    QgsPaintEffect.__group__ = ['effects']
 except NameError:
     pass
 try:

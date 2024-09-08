@@ -4,13 +4,7 @@ QgsDoubleSpinBox.MaximumValue = QgsDoubleSpinBox.ClearValueMode.MaximumValue
 QgsDoubleSpinBox.CustomValue = QgsDoubleSpinBox.ClearValueMode.CustomValue
 try:
     QgsDoubleSpinBox.__attribute_docs__ = {'returnPressed': 'Emitted when the Return or Enter key is used in the line edit.\n\n.. versionadded:: 3.40\n', 'textEdited': 'Emitted when the the value has been manually edited via line edit.\n\n.. versionadded:: 3.40\n'}
-except NameError:
-    pass
-try:
     QgsDoubleSpinBox.__signal_arguments__ = {'textEdited': ['text: str']}
-except NameError:
-    pass
-try:
     QgsDoubleSpinBox.__group__ = ['editorwidgets']
 except NameError:
     pass
