@@ -10142,13 +10142,13 @@ QgsNativeMetadataValidator: src/core/metadata/qgslayermetadatavalidator.h#L125
 QgsNativeProjectMetadataValidator.validate: src/core/metadata/qgslayermetadatavalidator.h#L149
 QgsNativeProjectMetadataValidator: src/core/metadata/qgslayermetadatavalidator.h#L142
 QgsNetworkAccessManager.abortAuthBrowser: src/core/network/qgsnetworkaccessmanager.h#L651
-QgsNetworkAccessManager.authBrowserAborted: src/core/network/qgsnetworkaccessmanager.h#L828
+QgsNetworkAccessManager.authBrowserAborted: src/core/network/qgsnetworkaccessmanager.h#L831
 QgsNetworkAccessManager.blockingGet: src/core/network/qgsnetworkaccessmanager.h#L483
 QgsNetworkAccessManager.blockingPost: src/core/network/qgsnetworkaccessmanager.h#L505
 QgsNetworkAccessManager.cacheLoadControlFromName: src/core/network/qgsnetworkaccessmanager.h#L406
 QgsNetworkAccessManager.cacheLoadControlName: src/core/network/qgsnetworkaccessmanager.h#L399
-QgsNetworkAccessManager.cookiesChanged: src/core/network/qgsnetworkaccessmanager.h#L835
-QgsNetworkAccessManager.createRequest: src/core/network/qgsnetworkaccessmanager.h#L855
+QgsNetworkAccessManager.cookiesChanged: src/core/network/qgsnetworkaccessmanager.h#L838
+QgsNetworkAccessManager.createRequest: src/core/network/qgsnetworkaccessmanager.h#L858
 QgsNetworkAccessManager.downloadProgress: src/core/network/qgsnetworkaccessmanager.h#L744
 QgsNetworkAccessManager.excludeList: src/core/network/qgsnetworkaccessmanager.h#L368
 QgsNetworkAccessManager.finished: src/core/network/qgsnetworkaccessmanager.h#L715
@@ -10169,7 +10169,7 @@ QgsNetworkAccessManager.requestCreated: src/core/network/qgsnetworkaccessmanager
 QgsNetworkAccessManager.requestEncounteredSslErrors: src/core/network/qgsnetworkaccessmanager.h#L796
 QgsNetworkAccessManager.requestRequiresAuth: src/core/network/qgsnetworkaccessmanager.h#L761
 QgsNetworkAccessManager.requestTimedOut: src/core/network/qgsnetworkaccessmanager.h#L728
-QgsNetworkAccessManager.requestTimedOut: src/core/network/qgsnetworkaccessmanager.h#L813
+QgsNetworkAccessManager.requestTimedOut: src/core/network/qgsnetworkaccessmanager.h#L816
 QgsNetworkAccessManager.setFallbackProxyAndExcludes: src/core/network/qgsnetworkaccessmanager.h#L392
 QgsNetworkAccessManager.setReplyPreprocessor: src/core/network/qgsnetworkaccessmanager.h#L587
 QgsNetworkAccessManager.setRequestPreprocessor: src/core/network/qgsnetworkaccessmanager.h#L521
