@@ -26,6 +26,10 @@ QgsSettingsTreeNode::~QgsSettingsTreeNode()
   if ( mType != Qgis::SettingsTreeNodeType::Root )
     mParent->unregisterChildNode( this );
 
+  // do not use qDeleteAll
+  // the destructor of QgsSettingsTreeNode and QgsSettingsEntry
+  // will call unregister on the parent (see above)
+  // and will modify the containers at the same time
   const auto nodes = mChildrenNodes;
   for ( const auto *node : nodes )
     delete node;
