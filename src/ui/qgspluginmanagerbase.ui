@@ -558,7 +558,7 @@
                     <string>Install, reinstall or upgrade the experimental version of selected plugin</string>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">background-color: #EEEEBB</string>
+                    <string notr="true">background-color: rgba(238, 238, 10, 0.25)</string>
                    </property>
                    <property name="text">
                     <string>Reinstall Experimental</string>
