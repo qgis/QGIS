@@ -1,6 +1,6 @@
 # The following has been generated automatically from src/gui/symbology/qgspointdisplacementrendererwidget.h
-QgsPointDisplacementRendererWidget.create = staticmethod(QgsPointDisplacementRendererWidget.create)
 try:
+    QgsPointDisplacementRendererWidget.create = staticmethod(QgsPointDisplacementRendererWidget.create)
     QgsPointDisplacementRendererWidget.__group__ = ['symbology']
 except NameError:
     pass

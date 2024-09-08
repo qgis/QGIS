@@ -1,16 +1,13 @@
 # The following has been generated automatically from src/core/vectortile/qgsvectortilelayer.h
 try:
     QgsVectorTileLayer.__attribute_docs__ = {'transformContext': 'Coordinate transform context', 'selectionChanged': 'Emitted whenever the selected features in the layer are changed.\n\n.. versionadded:: 3.28\n'}
-except NameError:
-    pass
-QgsVectorTileLayer.LayerOptions.__doc__ = """Setting options for loading vector tile layers.
-
-.. versionadded:: 3.22"""
-try:
     QgsVectorTileLayer.__group__ = ['vectortile']
 except NameError:
     pass
 try:
+    QgsVectorTileLayer.LayerOptions.__doc__ = """Setting options for loading vector tile layers.
+
+.. versionadded:: 3.22"""
     QgsVectorTileLayer.LayerOptions.__group__ = ['vectortile']
 except NameError:
     pass

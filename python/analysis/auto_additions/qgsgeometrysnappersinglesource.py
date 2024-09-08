@@ -1,6 +1,6 @@
 # The following has been generated automatically from src/analysis/vector/qgsgeometrysnappersinglesource.h
-QgsGeometrySnapperSingleSource.run = staticmethod(QgsGeometrySnapperSingleSource.run)
 try:
+    QgsGeometrySnapperSingleSource.run = staticmethod(QgsGeometrySnapperSingleSource.run)
     QgsGeometrySnapperSingleSource.__group__ = ['vector']
 except NameError:
     pass

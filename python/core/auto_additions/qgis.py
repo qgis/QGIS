@@ -10245,15 +10245,15 @@ Qgis.DataProviderReadFlag.__or__ = lambda flag1, flag2: Qgis.DataProviderReadFla
 Qgis.VectorProviderCapability.__or__ = lambda flag1, flag2: Qgis.VectorProviderCapabilities(_force_int(flag1) | _force_int(flag2))
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.'}
+    Qgis.version = staticmethod(Qgis.version)
+    Qgis.versionInt = staticmethod(Qgis.versionInt)
+    Qgis.releaseName = staticmethod(Qgis.releaseName)
+    Qgis.devVersion = staticmethod(Qgis.devVersion)
+    Qgis.defaultProjectScales = staticmethod(Qgis.defaultProjectScales)
+    Qgis.geosVersionInt = staticmethod(Qgis.geosVersionInt)
+    Qgis.geosVersionMajor = staticmethod(Qgis.geosVersionMajor)
+    Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
+    Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
+    Qgis.geosVersion = staticmethod(Qgis.geosVersion)
 except NameError:
     pass
-Qgis.version = staticmethod(Qgis.version)
-Qgis.versionInt = staticmethod(Qgis.versionInt)
-Qgis.releaseName = staticmethod(Qgis.releaseName)
-Qgis.devVersion = staticmethod(Qgis.devVersion)
-Qgis.defaultProjectScales = staticmethod(Qgis.defaultProjectScales)
-Qgis.geosVersionInt = staticmethod(Qgis.geosVersionInt)
-Qgis.geosVersionMajor = staticmethod(Qgis.geosVersionMajor)
-Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
-Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
-Qgis.geosVersion = staticmethod(Qgis.geosVersion)

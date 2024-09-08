@@ -78,18 +78,18 @@ QgsDxfExport.DxfPolylineFlag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsDxfExport.DxfPolylineFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsDxfExport.DxfPolylineFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsDxfExport.DxfPolylineFlag.__or__ = lambda flag1, flag2: QgsDxfExport.DxfPolylineFlag(_force_int(flag1) | _force_int(flag2))
-QgsDxfExport.closestColorMatch = staticmethod(QgsDxfExport.closestColorMatch)
-QgsDxfExport.mapUnitScaleFactor = staticmethod(QgsDxfExport.mapUnitScaleFactor)
-QgsDxfExport.dxfLayerName = staticmethod(QgsDxfExport.dxfLayerName)
-QgsDxfExport.dxfEncoding = staticmethod(QgsDxfExport.dxfEncoding)
-QgsDxfExport.encodings = staticmethod(QgsDxfExport.encodings)
-QgsDxfExport.DxfLayer.__doc__ = """Layers and optional attribute index to split
-into multiple layers using attribute value as layer name."""
 try:
+    QgsDxfExport.closestColorMatch = staticmethod(QgsDxfExport.closestColorMatch)
+    QgsDxfExport.mapUnitScaleFactor = staticmethod(QgsDxfExport.mapUnitScaleFactor)
+    QgsDxfExport.dxfLayerName = staticmethod(QgsDxfExport.dxfLayerName)
+    QgsDxfExport.dxfEncoding = staticmethod(QgsDxfExport.dxfEncoding)
+    QgsDxfExport.encodings = staticmethod(QgsDxfExport.encodings)
     QgsDxfExport.__group__ = ['dxf']
 except NameError:
     pass
 try:
+    QgsDxfExport.DxfLayer.__doc__ = """Layers and optional attribute index to split
+into multiple layers using attribute value as layer name."""
     QgsDxfExport.DxfLayer.__group__ = ['dxf']
 except NameError:
     pass

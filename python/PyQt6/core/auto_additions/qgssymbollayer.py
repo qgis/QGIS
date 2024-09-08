@@ -618,13 +618,13 @@ QgsMarkerSymbolLayer.Bottom = QgsMarkerSymbolLayer.VerticalAnchorPoint.Bottom
 QgsLineSymbolLayer.AllRings = QgsLineSymbolLayer.RenderRingFilter.AllRings
 QgsLineSymbolLayer.ExteriorRingOnly = QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly
 QgsLineSymbolLayer.InteriorRingsOnly = QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly
-QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
 try:
-    QgsSymbolLayer.__group__ = ['symbology']
+    QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
+    QgsMarkerSymbolLayer.__group__ = ['symbology']
 except NameError:
     pass
 try:
-    QgsMarkerSymbolLayer.__group__ = ['symbology']
+    QgsSymbolLayer.__group__ = ['symbology']
 except NameError:
     pass
 try:

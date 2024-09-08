@@ -3,11 +3,8 @@ QgsFileWidget.StorageMode.baseClass = QgsFileWidget
 QgsFileWidget.RelativeStorage.baseClass = QgsFileWidget
 try:
     QgsFileWidget.__attribute_docs__ = {'fileChanged': 'Emitted whenever the current file or directory ``path`` is changed.\n'}
-except NameError:
-    pass
-QgsFileWidget.splitFilePaths = staticmethod(QgsFileWidget.splitFilePaths)
-QgsFileWidget.isMultiFiles = staticmethod(QgsFileWidget.isMultiFiles)
-try:
+    QgsFileWidget.splitFilePaths = staticmethod(QgsFileWidget.splitFilePaths)
+    QgsFileWidget.isMultiFiles = staticmethod(QgsFileWidget.isMultiFiles)
     QgsFileWidget.__signal_arguments__ = {'fileChanged': ['path: str']}
 except NameError:
     pass

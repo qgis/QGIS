@@ -8,9 +8,6 @@ except NameError:
     pass
 try:
     QgsExpressionTreeView.__attribute_docs__ = {'expressionItemDoubleClicked': 'Emitted when a expression item is double clicked\n', 'currentExpressionItemChanged': 'Emitter when the current expression item changed\n'}
-except NameError:
-    pass
-try:
     QgsExpressionTreeView.__signal_arguments__ = {'expressionItemDoubleClicked': ['text: str'], 'currentExpressionItemChanged': ['item: QgsExpressionItem']}
 except NameError:
     pass

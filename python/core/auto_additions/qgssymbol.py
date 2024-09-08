@@ -15,22 +15,22 @@ QgsSymbol.Property.__doc__ = """Data definable properties.
 
 """
 # --
-QgsSymbol.symbolTypeToString = staticmethod(QgsSymbol.symbolTypeToString)
-QgsSymbol.symbolTypeForGeometryType = staticmethod(QgsSymbol.symbolTypeForGeometryType)
-QgsSymbol.defaultSymbol = staticmethod(QgsSymbol.defaultSymbol)
-QgsSymbol._getPoint = staticmethod(QgsSymbol._getPoint)
-QgsSymbol._getLineString = staticmethod(QgsSymbol._getLineString)
-QgsSymbol._getPolygonRing = staticmethod(QgsSymbol._getPolygonRing)
-QgsSymbol._getPolygon = staticmethod(QgsSymbol._getPolygon)
+try:
+    QgsSymbol.symbolTypeToString = staticmethod(QgsSymbol.symbolTypeToString)
+    QgsSymbol.symbolTypeForGeometryType = staticmethod(QgsSymbol.symbolTypeForGeometryType)
+    QgsSymbol.defaultSymbol = staticmethod(QgsSymbol.defaultSymbol)
+    QgsSymbol._getPoint = staticmethod(QgsSymbol._getPoint)
+    QgsSymbol._getLineString = staticmethod(QgsSymbol._getLineString)
+    QgsSymbol._getPolygonRing = staticmethod(QgsSymbol._getPolygonRing)
+    QgsSymbol._getPolygon = staticmethod(QgsSymbol._getPolygon)
+    QgsSymbol.__group__ = ['symbology']
+except NameError:
+    pass
 try:
     QgsSymbolAnimationSettings.__group__ = ['symbology']
 except NameError:
     pass
 try:
     QgsSymbolBufferSettings.__group__ = ['symbology']
-except NameError:
-    pass
-try:
-    QgsSymbol.__group__ = ['symbology']
 except NameError:
     pass

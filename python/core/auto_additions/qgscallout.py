@@ -101,38 +101,35 @@ QgsCallout.Property.__doc__ = """Data definable properties.
 # --
 try:
     QgsCallout.QgsCalloutContext.__attribute_docs__ = {'allFeaturePartsLabeled': '``True`` if all parts of associated feature were labeled', 'originalFeatureCrs': 'Contains the CRS of the original feature associated with this callout.\n\n.. versionadded:: 3.20'}
-except NameError:
-    pass
-QgsCallout.propertyDefinitions = staticmethod(QgsCallout.propertyDefinitions)
-QgsCallout.encodeAnchorPoint = staticmethod(QgsCallout.encodeAnchorPoint)
-QgsCallout.decodeAnchorPoint = staticmethod(QgsCallout.decodeAnchorPoint)
-QgsCallout.encodeLabelAnchorPoint = staticmethod(QgsCallout.encodeLabelAnchorPoint)
-QgsCallout.decodeLabelAnchorPoint = staticmethod(QgsCallout.decodeLabelAnchorPoint)
-QgsSimpleLineCallout.create = staticmethod(QgsSimpleLineCallout.create)
-QgsManhattanLineCallout.create = staticmethod(QgsManhattanLineCallout.create)
-QgsCurvedLineCallout.create = staticmethod(QgsCurvedLineCallout.create)
-QgsBalloonCallout.create = staticmethod(QgsBalloonCallout.create)
-try:
-    QgsCallout.__group__ = ['callouts']
-except NameError:
-    pass
-try:
     QgsCallout.QgsCalloutContext.__group__ = ['callouts']
 except NameError:
     pass
 try:
+    QgsCallout.propertyDefinitions = staticmethod(QgsCallout.propertyDefinitions)
+    QgsCallout.encodeAnchorPoint = staticmethod(QgsCallout.encodeAnchorPoint)
+    QgsCallout.decodeAnchorPoint = staticmethod(QgsCallout.decodeAnchorPoint)
+    QgsCallout.encodeLabelAnchorPoint = staticmethod(QgsCallout.encodeLabelAnchorPoint)
+    QgsCallout.decodeLabelAnchorPoint = staticmethod(QgsCallout.decodeLabelAnchorPoint)
+    QgsCallout.__group__ = ['callouts']
+except NameError:
+    pass
+try:
+    QgsSimpleLineCallout.create = staticmethod(QgsSimpleLineCallout.create)
     QgsSimpleLineCallout.__group__ = ['callouts']
 except NameError:
     pass
 try:
+    QgsManhattanLineCallout.create = staticmethod(QgsManhattanLineCallout.create)
     QgsManhattanLineCallout.__group__ = ['callouts']
 except NameError:
     pass
 try:
+    QgsCurvedLineCallout.create = staticmethod(QgsCurvedLineCallout.create)
     QgsCurvedLineCallout.__group__ = ['callouts']
 except NameError:
     pass
 try:
+    QgsBalloonCallout.create = staticmethod(QgsBalloonCallout.create)
     QgsBalloonCallout.__group__ = ['callouts']
 except NameError:
     pass

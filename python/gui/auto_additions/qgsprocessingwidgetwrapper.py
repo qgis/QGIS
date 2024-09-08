@@ -11,10 +11,8 @@ QgsProcessingParametersGenerator.Flag.__doc__ = """Flags controlling parameter g
 # --
 try:
     QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget) is changed.\n'}
-except NameError:
-    pass
-try:
     QgsAbstractProcessingParameterWidgetWrapper.__signal_arguments__ = {'widgetValueHasChanged': ['wrapper: QgsAbstractProcessingParameterWidgetWrapper']}
+    QgsAbstractProcessingParameterWidgetWrapper.__group__ = ['processing']
 except NameError:
     pass
 try:
@@ -27,10 +25,6 @@ except NameError:
     pass
 try:
     QgsProcessingParameterWidgetContext.__group__ = ['processing']
-except NameError:
-    pass
-try:
-    QgsAbstractProcessingParameterWidgetWrapper.__group__ = ['processing']
 except NameError:
     pass
 try:

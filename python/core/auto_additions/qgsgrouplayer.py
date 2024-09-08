@@ -3,6 +3,9 @@ try:
     QgsGroupLayer.__attribute_docs__ = {'transformContext': 'Coordinate transform context'}
 except NameError:
     pass
-QgsGroupLayer.LayerOptions.__doc__ = """Setting options for loading group layers.
+try:
+    QgsGroupLayer.LayerOptions.__doc__ = """Setting options for loading group layers.
 
 .. versionadded:: 3.16"""
+except NameError:
+    pass

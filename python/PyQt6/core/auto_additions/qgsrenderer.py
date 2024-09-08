@@ -26,17 +26,17 @@ QgsFeatureRenderer.Capability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsFeatureRenderer.Capability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsFeatureRenderer.Capability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsFeatureRenderer.Capability.__or__ = lambda flag1, flag2: QgsFeatureRenderer.Capability(_force_int(flag1) | _force_int(flag2))
-QgsFeatureRenderer.defaultRenderer = staticmethod(QgsFeatureRenderer.defaultRenderer)
-QgsFeatureRenderer.load = staticmethod(QgsFeatureRenderer.load)
-QgsFeatureRenderer.loadSld = staticmethod(QgsFeatureRenderer.loadSld)
-QgsFeatureRenderer._getPoint = staticmethod(QgsFeatureRenderer._getPoint)
-QgsFeatureRenderer.convertSymbolSizeScale = staticmethod(QgsFeatureRenderer.convertSymbolSizeScale)
-QgsFeatureRenderer.convertSymbolRotation = staticmethod(QgsFeatureRenderer.convertSymbolRotation)
 try:
-    QgsSymbolLevelItem.__group__ = ['symbology']
+    QgsFeatureRenderer.defaultRenderer = staticmethod(QgsFeatureRenderer.defaultRenderer)
+    QgsFeatureRenderer.load = staticmethod(QgsFeatureRenderer.load)
+    QgsFeatureRenderer.loadSld = staticmethod(QgsFeatureRenderer.loadSld)
+    QgsFeatureRenderer._getPoint = staticmethod(QgsFeatureRenderer._getPoint)
+    QgsFeatureRenderer.convertSymbolSizeScale = staticmethod(QgsFeatureRenderer.convertSymbolSizeScale)
+    QgsFeatureRenderer.convertSymbolRotation = staticmethod(QgsFeatureRenderer.convertSymbolRotation)
+    QgsFeatureRenderer.__group__ = ['symbology']
 except NameError:
     pass
 try:
-    QgsFeatureRenderer.__group__ = ['symbology']
+    QgsSymbolLevelItem.__group__ = ['symbology']
 except NameError:
     pass

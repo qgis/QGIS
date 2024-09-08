@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/gui/qgsowssourceselect.h
-QgsOWSSourceSelect.SupportedFormat.__doc__ = """Formats supported by provider"""
+try:
+    QgsOWSSourceSelect.SupportedFormat.__doc__ = """Formats supported by provider"""
+except NameError:
+    pass

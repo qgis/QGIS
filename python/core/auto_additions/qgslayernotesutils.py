@@ -1,5 +1,8 @@
 # The following has been generated automatically from src/core/qgslayernotesutils.h
-QgsLayerNotesUtils.layerNotes = staticmethod(QgsLayerNotesUtils.layerNotes)
-QgsLayerNotesUtils.setLayerNotes = staticmethod(QgsLayerNotesUtils.setLayerNotes)
-QgsLayerNotesUtils.layerHasNotes = staticmethod(QgsLayerNotesUtils.layerHasNotes)
-QgsLayerNotesUtils.removeNotes = staticmethod(QgsLayerNotesUtils.removeNotes)
+try:
+    QgsLayerNotesUtils.layerNotes = staticmethod(QgsLayerNotesUtils.layerNotes)
+    QgsLayerNotesUtils.setLayerNotes = staticmethod(QgsLayerNotesUtils.setLayerNotes)
+    QgsLayerNotesUtils.layerHasNotes = staticmethod(QgsLayerNotesUtils.layerHasNotes)
+    QgsLayerNotesUtils.removeNotes = staticmethod(QgsLayerNotesUtils.removeNotes)
+except NameError:
+    pass

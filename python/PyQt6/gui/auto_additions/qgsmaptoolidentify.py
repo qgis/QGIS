@@ -26,13 +26,7 @@ QgsMapToolIdentify.Type.__and__ = lambda flag1, flag2: _force_int(flag1) & _forc
 QgsMapToolIdentify.Type.__or__ = lambda flag1, flag2: QgsMapToolIdentify.Type(_force_int(flag1) | _force_int(flag2))
 try:
     QgsMapToolIdentify.__attribute_docs__ = {'identifyProgress': 'Emitted when the identify action progresses.\n\n:param processed: number of objects processed so far\n:param total: total number of objects to process\n', 'identifyMessage': 'Emitted when the identify operation needs to show a user-facing message\n\n:param message: Message to show to the user\n', 'changedRasterResults': 'Emitted when the format of raster ``results`` is changed and need to be updated in user-facing displays.\n'}
-except NameError:
-    pass
-try:
     QgsMapToolIdentify.__signal_arguments__ = {'identifyProgress': ['processed: int', 'total: int'], 'identifyMessage': ['message: str'], 'changedRasterResults': ['results: List[QgsMapToolIdentify.IdentifyResult]']}
-except NameError:
-    pass
-try:
     QgsMapToolIdentify.__group__ = ['maptools']
 except NameError:
     pass

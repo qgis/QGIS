@@ -3,6 +3,9 @@ try:
     QgsAbstractMapToolHandler.__attribute_docs__ = {'dummy': 'Placeholder only'}
 except NameError:
     pass
-QgsAbstractMapToolHandler.Context.__doc__ = """Context of a QgsAbstractMapToolHandler call.
+try:
+    QgsAbstractMapToolHandler.Context.__doc__ = """Context of a QgsAbstractMapToolHandler call.
 
 .. versionadded:: 3.16"""
+except NameError:
+    pass

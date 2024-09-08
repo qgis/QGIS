@@ -10,17 +10,11 @@ QgsPointCloudDataProvider.Indexing = QgsPointCloudDataProvider.PointCloudIndexGe
 QgsPointCloudDataProvider.Indexed = QgsPointCloudDataProvider.PointCloudIndexGenerationState.Indexed
 try:
     QgsPointCloudDataProvider.__attribute_docs__ = {'indexGenerationStateChanged': 'Emitted when point cloud generation state is changed\n'}
-except NameError:
-    pass
-QgsPointCloudDataProvider.lasClassificationCodes = staticmethod(QgsPointCloudDataProvider.lasClassificationCodes)
-QgsPointCloudDataProvider.translatedLasClassificationCodes = staticmethod(QgsPointCloudDataProvider.translatedLasClassificationCodes)
-QgsPointCloudDataProvider.dataFormatIds = staticmethod(QgsPointCloudDataProvider.dataFormatIds)
-QgsPointCloudDataProvider.translatedDataFormatIds = staticmethod(QgsPointCloudDataProvider.translatedDataFormatIds)
-try:
+    QgsPointCloudDataProvider.lasClassificationCodes = staticmethod(QgsPointCloudDataProvider.lasClassificationCodes)
+    QgsPointCloudDataProvider.translatedLasClassificationCodes = staticmethod(QgsPointCloudDataProvider.translatedLasClassificationCodes)
+    QgsPointCloudDataProvider.dataFormatIds = staticmethod(QgsPointCloudDataProvider.dataFormatIds)
+    QgsPointCloudDataProvider.translatedDataFormatIds = staticmethod(QgsPointCloudDataProvider.translatedDataFormatIds)
     QgsPointCloudDataProvider.__signal_arguments__ = {'indexGenerationStateChanged': ['state: QgsPointCloudDataProvider.PointCloudIndexGenerationState']}
-except NameError:
-    pass
-try:
     QgsPointCloudDataProvider.__group__ = ['pointcloud']
 except NameError:
     pass

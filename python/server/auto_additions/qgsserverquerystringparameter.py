@@ -16,4 +16,7 @@ QgsServerQueryStringParameter.Type.__doc__ = """The Type enum represents the par
 """
 # --
 QgsServerQueryStringParameter.Type.baseClass = QgsServerQueryStringParameter
-QgsServerQueryStringParameter.typeName = staticmethod(QgsServerQueryStringParameter.typeName)
+try:
+    QgsServerQueryStringParameter.typeName = staticmethod(QgsServerQueryStringParameter.typeName)
+except NameError:
+    pass

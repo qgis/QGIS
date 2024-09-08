@@ -17,14 +17,14 @@ QgsClassificationMethod.MethodProperty.__bool__ = lambda flag: bool(_force_int(f
 QgsClassificationMethod.MethodProperty.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsClassificationMethod.MethodProperty.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsClassificationMethod.MethodProperty.__or__ = lambda flag1, flag2: QgsClassificationMethod.MethodProperty(_force_int(flag1) | _force_int(flag2))
-QgsClassificationMethod.rangesToBreaks = staticmethod(QgsClassificationMethod.rangesToBreaks)
-QgsClassificationMethod.create = staticmethod(QgsClassificationMethod.create)
-QgsClassificationMethod.makeBreaksSymmetric = staticmethod(QgsClassificationMethod.makeBreaksSymmetric)
 try:
-    QgsClassificationRange.__group__ = ['classification']
+    QgsClassificationMethod.rangesToBreaks = staticmethod(QgsClassificationMethod.rangesToBreaks)
+    QgsClassificationMethod.create = staticmethod(QgsClassificationMethod.create)
+    QgsClassificationMethod.makeBreaksSymmetric = staticmethod(QgsClassificationMethod.makeBreaksSymmetric)
+    QgsClassificationMethod.__group__ = ['classification']
 except NameError:
     pass
 try:
-    QgsClassificationMethod.__group__ = ['classification']
+    QgsClassificationRange.__group__ = ['classification']
 except NameError:
     pass

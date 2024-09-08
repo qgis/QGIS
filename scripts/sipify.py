@@ -2761,9 +2761,10 @@ else:
           ''.join(CONTEXT.output) +
           ''.join(sip_header_footer()).rstrip())
 
+class_additions = defaultdict(list)
+
 for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
-    CONTEXT.output_python.append(
-        f'try:\n    {class_name}.__attribute_docs__ = {str(attribute_docstrings)}\nexcept NameError:\n    pass\n')
+    class_additions[class_name].append(f'{class_name}.__attribute_docs__ = {str(attribute_docstrings)}')
 
 for class_name, static_methods in CONTEXT.static_methods.items():
     for method_name, is_static in static_methods.items():
@@ -2782,7 +2783,8 @@ for class_name, static_methods in CONTEXT.static_methods.items():
         elif class_name == 'QgsServerApiUtils' and method_name == 'temporalExtentList':
             method_name = 'temporalExtent'
 
-        CONTEXT.output_python.append(f'{class_name}.{method_name} = staticmethod({class_name}.{method_name})\n')
+        class_additions[class_name].append(
+            f'{class_name}.{method_name} = staticmethod({class_name}.{method_name})')
 
 for class_name, signal_arguments in CONTEXT.signal_arguments.items():
     python_signatures = {}
@@ -2799,19 +2801,25 @@ for class_name, signal_arguments in CONTEXT.signal_arguments.items():
             python_signatures[signal] = python_args
 
     if python_signatures:
-        CONTEXT.output_python.append(
-            f'try:\n    {class_name}.__signal_arguments__ = {str(python_signatures)}\nexcept NameError:\n    pass\n')
+        class_additions[class_name].append(
+            f'{class_name}.__signal_arguments__ = {str(python_signatures)}')
 
 for class_name, doc_string in CONTEXT.struct_docstrings.items():
-    CONTEXT.output_python.append(f'{class_name}.__doc__ = """{doc_string}"""\n')
+    class_additions[class_name].append(f'{class_name}.__doc__ = """{doc_string}"""')
 
 group_match = re.match('^.*src/[a-z0-9_]+/(.*?)/[^/]+$', CONTEXT.header_file)
 if group_match:
     groups = list(group for group in group_match.group(1).split('/') if group and group != '.')
     if groups:
         for class_name in CONTEXT.all_fully_qualified_class_names:
-            CONTEXT.output_python.append(
-                f'try:\n    {class_name}.__group__ = {groups}\nexcept NameError:\n    pass\n')
+            class_additions[class_name].append(
+                f'{class_name}.__group__ = {groups}')
+
+for _class, additions in class_additions.items():
+    if additions:
+        this_class_additions = "\n".join("    " + c for c in additions)
+        CONTEXT.output_python.append(
+            f'try:\n{this_class_additions}\nexcept NameError:\n    pass\n')
 
 
 if args.python_output and CONTEXT.output_python:

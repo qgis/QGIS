@@ -6,6 +6,9 @@ QgsDataSourceUri.SslRequire = QgsDataSourceUri.SslMode.SslRequire
 QgsDataSourceUri.SslVerifyCa = QgsDataSourceUri.SslMode.SslVerifyCa
 QgsDataSourceUri.SslVerifyFull = QgsDataSourceUri.SslMode.SslVerifyFull
 QgsDataSourceUri.SslMode.baseClass = QgsDataSourceUri
-QgsDataSourceUri.removePassword = staticmethod(QgsDataSourceUri.removePassword)
-QgsDataSourceUri.decodeSslMode = staticmethod(QgsDataSourceUri.decodeSslMode)
-QgsDataSourceUri.encodeSslMode = staticmethod(QgsDataSourceUri.encodeSslMode)
+try:
+    QgsDataSourceUri.removePassword = staticmethod(QgsDataSourceUri.removePassword)
+    QgsDataSourceUri.decodeSslMode = staticmethod(QgsDataSourceUri.decodeSslMode)
+    QgsDataSourceUri.encodeSslMode = staticmethod(QgsDataSourceUri.encodeSslMode)
+except NameError:
+    pass

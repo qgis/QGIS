@@ -609,13 +609,13 @@ QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
 """
 # --
-QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
 try:
-    QgsSymbolLayer.__group__ = ['symbology']
+    QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
+    QgsMarkerSymbolLayer.__group__ = ['symbology']
 except NameError:
     pass
 try:
-    QgsMarkerSymbolLayer.__group__ = ['symbology']
+    QgsSymbolLayer.__group__ = ['symbology']
 except NameError:
     pass
 try:

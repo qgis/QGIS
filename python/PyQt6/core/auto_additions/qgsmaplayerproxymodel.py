@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgsmaplayerproxymodel.h
-QgsMapLayerProxyModel.layerMatchesFilters = staticmethod(QgsMapLayerProxyModel.layerMatchesFilters)
+try:
+    QgsMapLayerProxyModel.layerMatchesFilters = staticmethod(QgsMapLayerProxyModel.layerMatchesFilters)
+except NameError:
+    pass

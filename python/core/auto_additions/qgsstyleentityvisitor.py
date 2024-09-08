@@ -31,20 +31,17 @@ QgsStyleEntityVisitorInterface.NodeType.__doc__ = """Describes the types of node
 # --
 try:
     QgsStyleEntityVisitorInterface.__attribute_docs__ = {'identifier': 'A string identifying the node. The actual value of ``identifier`` will vary\ndepending on the node being visited. E.g for a rule based renderer, the\nidentifier will be a rule ID. For a project, node identifiers will be\nlayer IDs.', 'description': 'A string describing the node. The actual value of ``description`` will vary\ndepending on the node being visited. E.g for a rule based renderer, the\nidentifier will be a rule label. For a project, node identifiers will be\nlayer names.', 'entity': 'Reference to style entity being visited.', 'type': 'Node type.'}
-except NameError:
-    pass
-QgsStyleEntityVisitorInterface.StyleLeaf.__doc__ = """Contains information relating to the style entity currently being visited."""
-QgsStyleEntityVisitorInterface.Node.__doc__ = """Contains information relating to a node (i.e. a group of symbols or other nodes)
-being visited."""
-try:
     QgsStyleEntityVisitorInterface.__group__ = ['symbology']
 except NameError:
     pass
 try:
+    QgsStyleEntityVisitorInterface.StyleLeaf.__doc__ = """Contains information relating to the style entity currently being visited."""
     QgsStyleEntityVisitorInterface.StyleLeaf.__group__ = ['symbology']
 except NameError:
     pass
 try:
+    QgsStyleEntityVisitorInterface.Node.__doc__ = """Contains information relating to a node (i.e. a group of symbols or other nodes)
+being visited."""
     QgsStyleEntityVisitorInterface.Node.__group__ = ['symbology']
 except NameError:
     pass

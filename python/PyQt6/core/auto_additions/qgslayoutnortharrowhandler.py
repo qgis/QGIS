@@ -3,13 +3,7 @@ QgsLayoutNorthArrowHandler.GridNorth = QgsLayoutNorthArrowHandler.NorthMode.Grid
 QgsLayoutNorthArrowHandler.TrueNorth = QgsLayoutNorthArrowHandler.NorthMode.TrueNorth
 try:
     QgsLayoutNorthArrowHandler.__attribute_docs__ = {'arrowRotationChanged': 'Emitted on arrow rotation change\n'}
-except NameError:
-    pass
-try:
     QgsLayoutNorthArrowHandler.__signal_arguments__ = {'arrowRotationChanged': ['newRotation: float']}
-except NameError:
-    pass
-try:
     QgsLayoutNorthArrowHandler.__group__ = ['layout']
 except NameError:
     pass

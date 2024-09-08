@@ -16,15 +16,9 @@ QgsMapTool.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(fl
 QgsMapTool.Flag.__or__ = lambda flag1, flag2: QgsMapTool.Flag(_force_int(flag1) | _force_int(flag2))
 try:
     QgsMapTool.__attribute_docs__ = {'messageEmitted': 'emit a message\n', 'messageDiscarded': 'emit signal to clear previous message\n', 'activated': 'signal emitted once the map tool is activated\n', 'deactivated': 'signal emitted once the map tool is deactivated\n', 'reactivated': '\n.. versionadded:: 3.32\n'}
-except NameError:
-    pass
-QgsMapTool.searchRadiusMM = staticmethod(QgsMapTool.searchRadiusMM)
-QgsMapTool.searchRadiusMU = staticmethod(QgsMapTool.searchRadiusMU)
-try:
+    QgsMapTool.searchRadiusMM = staticmethod(QgsMapTool.searchRadiusMM)
+    QgsMapTool.searchRadiusMU = staticmethod(QgsMapTool.searchRadiusMU)
     QgsMapTool.__signal_arguments__ = {'messageEmitted': ['message: str', ': Qgis.MessageLevel = Qgis.MessageLevel.Info']}
-except NameError:
-    pass
-try:
     QgsMapTool.__group__ = ['maptools']
 except NameError:
     pass
