@@ -240,7 +240,7 @@ void QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked()
 
     if ( !mFieldNameEdit->hasFocus() )
     {
-      mFieldNameEdit->setFocus( Qt::MouseFocusReason );
+      mFieldNameEdit->setFocus();
     }
   }
 }
