@@ -26,8 +26,12 @@ QgsSettingsTreeNode::~QgsSettingsTreeNode()
   if ( mType != Qgis::SettingsTreeNodeType::Root )
     mParent->unregisterChildNode( this );
 
-  qDeleteAll( mChildrenNodes );
-  qDeleteAll( mChildrenSettings );
+  const auto nodes = mChildrenNodes;
+  for ( const auto *node : nodes )
+    delete node;
+  const auto settings = mChildrenSettings;
+  for ( const auto *setting : settings )
+    delete setting;
 }
 
 QgsSettingsTreeNode *QgsSettingsTreeNode::createRootNode()
