@@ -2360,6 +2360,47 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     if ( geom.isEmpty() )
       return nullptr;
   }
+
+  if ( geom.type() == Qgis::GeometryType::Polygon )
+  {
+    // Remove empty interior rings from polygons to safeguard ourselves from crashes
+    QgsGeometry cleanedGeom;
+    const QgsAbstractGeometry *abstractGeom = geom.constGet();
+    if ( QgsWkbTypes::isMultiType( abstractGeom->wkbType() ) )
+    {
+      const QgsMultiSurface multiSurface( *qgsgeometry_cast< const QgsMultiSurface * >( abstractGeom ) );
+      for ( auto partIterator = multiSurface.const_parts_begin(); partIterator != multiSurface.const_parts_end(); ++partIterator )
+      {
+        QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( *partIterator );
+        QgsCurvePolygon *cleanedPolygon = polygon->createEmptyWithSameType();
+        cleanedPolygon->setExteriorRing( polygon->exteriorRing()->clone() );
+        for ( int i = 0; i < polygon->numInteriorRings(); i++ )
+        {
+          if ( !polygon->interiorRing( i )->isEmpty() )
+          {
+            cleanedPolygon->addInteriorRing( polygon->interiorRing( i )->clone() );
+          }
+        }
+        cleanedGeom.addPartV2( cleanedPolygon, cleanedPolygon->wkbType() );
+      }
+    }
+    else
+    {
+      QgsCurvePolygon *polygon = qgsgeometry_cast< QgsCurvePolygon * >( abstractGeom );
+      QgsCurvePolygon *cleanedPolygon = polygon->createEmptyWithSameType();
+      cleanedPolygon->setExteriorRing( polygon->exteriorRing()->clone() );
+      for ( int i = 0; i < polygon->numInteriorRings(); i++ )
+      {
+        if ( !polygon->interiorRing( i )->isEmpty() )
+        {
+          cleanedPolygon->addInteriorRing( polygon->interiorRing( i )->clone() );
+        }
+      }
+      cleanedGeom.addPartV2( cleanedPolygon, cleanedPolygon->wkbType() );
+    }
+    geom = cleanedGeom;
+  }
+
   geos_geom_clone = QgsGeos::asGeos( geom );
 
   if ( isObstacle || ( geom.type() == Qgis::GeometryType::Point && offsetType == Qgis::LabelOffsetType::FromSymbolBounds ) )
