@@ -80,6 +80,23 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      */
     virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
 
+    /**
+     * Enables automatic update, which causes the setting to be updated immediately when the widget
+     * value is changed.
+     *
+     * Calling this method will set the widget's current value to match the current settings value.
+     *
+     * \note This must called after createEditor() or configureEditor().
+     * \warning Do NOT call this method from places where a widget is embedded in a dialog with a cancel button, as the auto-update logic will immediately overwrite the setting value and prevent rollback if the user cancels the dialog.
+     *
+     * \since QGIS 3.40
+     */
+    void enableAutomaticUpdate()
+    {
+      setWidgetFromSetting();
+      enableAutomaticUpdatePrivate();
+    }
+
 
   protected:
     //! Creates the widgets
@@ -87,6 +104,13 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
 
     //! Configures an existing \a editor widget
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
+
+    /**
+     * Enables automatic update, which causes the setting to be updated immediately when the widget
+     * value is changed.
+     * \since QGIS 3.40
+     */
+    virtual void enableAutomaticUpdatePrivate() = 0;
 
     QStringList mDynamicKeyPartList;
 };

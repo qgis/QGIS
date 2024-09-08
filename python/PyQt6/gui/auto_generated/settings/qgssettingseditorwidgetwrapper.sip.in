@@ -82,6 +82,17 @@ Sets the ``value`` of the widget
 The wrapper must be configured before calling this medthod
 %End
 
+    void enableAutomaticUpdate();
+%Docstring
+Enables automatic update
+so that the setting gets update
+on value change in the widget and
+sets the widget to the current settings value.
+This must called after createEditor or configureEditor.
+
+.. versionadded:: 3.40
+%End
+
 
   protected:
     virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
@@ -92,6 +103,15 @@ Creates the widgets
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
 %Docstring
 Configures an existing ``editor`` widget
+%End
+
+    virtual void enableAutomaticUpdatePrivate() = 0;
+%Docstring
+Enables automatic update
+so that the setting gets update
+on value change in the widget.
+
+.. versionadded:: 3.40
 %End
 
 };
