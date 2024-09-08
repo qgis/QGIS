@@ -684,7 +684,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertTrue(index.isValid())
 
             root_tile = index.rootTile()
-            self.assertEqual(root_tile.metadata(), {'gltfUpAxis': Qgis.Axis.Y})
+            self.assertEqual(
+                root_tile.metadata(),
+                {"gltfUpAxis": int(Qgis.Axis.Y), "contentFormat": "cesiumtiles"},
+            )
 
             root_node_bounds = root_tile.boundingVolume()
             self.compare_boxes(
@@ -1610,7 +1613,10 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertTrue(index.isValid())
 
             root_tile = index.rootTile()
-            self.assertEqual(root_tile.metadata(), {'gltfUpAxis': Qgis.Axis.Z})
+            self.assertEqual(
+                root_tile.metadata(),
+                {"gltfUpAxis": int(Qgis.Axis.Z), "contentFormat": "cesiumtiles"},
+            )
 
     def test_large_dataset(self):
         """
