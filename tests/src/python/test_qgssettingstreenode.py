@@ -170,6 +170,38 @@ class TestQgsSettingsEntry(QgisTestCase):
         self.assertEqual(len(node.childrenNodes()), count + 1)
         self.assertEqual(len(QgsSettingsTree.node("gps").childrenNodes()), count + 1)
 
+    def test_register_unregister_settings(self):
+        root = QgsSettingsTree.createPluginTreeNode(pluginName='crash_at_three')
+        s1 = QgsSettingsEntryString('root setting 1', root, 'value', 'desc')
+        s2 = QgsSettingsEntryString('root setting 2', root, 'value', 'desc')
+        s3 = QgsSettingsEntryString('setting 3', root, 'value', 'desc')
+
+        n1 = root.createChildNode('node 1')
+        n1s1 = QgsSettingsEntryString('node 1 setting 1', n1, 'value', 'desc')
+        n1s2 = QgsSettingsEntryString('node 1 setting 2', n1, 'value', 'desc')
+        n1s3 = QgsSettingsEntryString('node 1 setting 3', n1, 'c', 'node 1 desc 3')
+
+        n1c1 = n1.createChildNode('node 1 child 1')
+        n1c1s1 = QgsSettingsEntryString('node 1 child 1 setting 1', n1c1, 'value', 'desc')
+        n1c1s2 = QgsSettingsEntryString('node 1 child 1 setting 2', n1c1, 'value', 'desc')
+        n1c1s3 = QgsSettingsEntryString('node 1 child 1 setting 3', n1c1, 'value', 'desc')
+
+        n1c2 = n1.createChildNode('node 1 child 2')
+        n1c2s1 = QgsSettingsEntryString('node 1 child 2 setting 1', n1c2, 'value', 'desc')
+        n1c2s2 = QgsSettingsEntryString('node 1 child 2 setting 2', n1c2, 'value', 'desc')
+        n1c2s3 = QgsSettingsEntryString('node 1 child 2 setting 3', n1c2, 'value', 'desc')
+
+        n1c3 = n1.createChildNode('node 1 child 3')
+
+        n2 = root.createChildNode('node 2')
+        n2s1 = QgsSettingsEntryString('node 2 setting 1', n2, 'value', 'desc')
+        n2s2 = QgsSettingsEntryString('node 2 setting 2', n2, 'value', 'desc')
+        n2s3 = QgsSettingsEntryString('node 2 setting 3', n2, 'value', 'desc')
+
+        n3 = root.createChildNode('node 3')
+
+        QgsSettingsTree.unregisterPluginTreeNode(pluginName='crash_at_three')
+
 
 if __name__ == '__main__':
     unittest.main()
