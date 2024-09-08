@@ -701,7 +701,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   QString html = "<style>"
                  "  body {"
-                 "    color:" + QPalette().color( QPalette::ColorRole::Text ).name() + ";"
+                 "    color:" + palette().color( QPalette::ColorRole::Text ).name() + ";"
+                 "    background-color:" + palette().color( QPalette::ColorRole::Base ).name() + ";"
                  "  }"
                  "  body, table {"
                  "    padding:0px;"
@@ -710,12 +711,15 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                  "    font-size:10pt;"
                  "  }"
                  "  a {"
-                 "    color:#08c;"
+                 "    color: " + palette().color( QPalette::ColorRole::Link ).name() + ";"
                  "    text-decoration:none;"
                  "  }"
                  "  a:hover,a:focus {"
-                 "    color:#005580;"
+                 "    color: " + palette().color( QPalette::ColorRole::Link ).name() + ";"
                  "    text-decoration:underline;"
+                 "  }"
+                 "  a:visited {"
+                 "    color: " + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
                  "  }"
                  "  div#votes {"
                  "    width:360px;"
@@ -835,36 +839,36 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       errorMsg = QStringLiteral( "<b>%1</b><br/>%2" ).arg( tr( "This plugin is broken" ), metadata->value( QStringLiteral( "error_details" ) ) );
     }
-    html += QString( "<table bgcolor=\"#FFFF88\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#CC0000\">%1</td></tr>"
+    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 144, 0, 0.25)\">"
+                     "  <tr><td width=\"100%\">%1</td></tr>"
                      "</table>" ).arg( errorMsg );
   }
 
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "upgradeable" ) || metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "upgradeable" ) )
   {
-    html += QString( "<table bgcolor=\"#FFFFAA\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#880000\"><b>%1</b></td></tr>"
+    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(170, 0, 238, 0.25)\">"
+                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "There is a new version available" ) );
   }
 
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "new" ) || metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "new" ) )
   {
-    html += QString( "<table bgcolor=\"#CCFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#008800\"><b>%1</b></td></tr>"
+    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(0, 238, 0, 0.25)\">"
+                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "This is a new plugin" ) );
   }
 
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "newer" ) && metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "newer" ) )
   {
-    html += QString( "<table bgcolor=\"#FFFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#550000\"><b>%1</b></td></tr>"
+    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 133, 0, 0.25)\">"
+                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   }
 
   if ( ! metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
   {
-    html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
+    html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(238, 238, 10, 0.25)\">"
+                     "  <tr><td width=\"100%\">"
                      "    <img src=\"qrc:/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin has an experimental version available" ) );
@@ -872,8 +876,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   if ( metadata->value( QStringLiteral( "deprecated" ) ) == QLatin1String( "true" ) )
   {
-    html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
+    html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(238, 0, 80, 0.25)\">"
+                     "  <tr><td width=\"100%\">"
                      "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
@@ -881,8 +885,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   if ( metadata->value( QStringLiteral( "readonly" ) ) == QLatin1String( "true" ) )
   {
-    html += QString( "<table bgcolor=\"#90EEE9\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#660000\"><b>%1</b></td></tr>"
+    html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(0, 133, 238, 0.25)\">"
+                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "This is a core plugin, so you can't uninstall it" ) );
   }
 
@@ -1373,10 +1377,17 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       tabInfoHTML += "<style>"
                      "  body, p {"
-                     "      color: " + QPalette().color( QPalette::ColorRole::Text ).name() + ";"
+                     "      color: " + palette().color( QPalette::ColorRole::Text ).name() + ";"
+                     "      background-color:" + palette().color( QPalette::ColorRole::Base ).name() + ";"
                      "      margin: 2px;"
                      "      font-family: Verdana, Sans-serif;"
                      "      font-size: 10pt;"
+                     "  }"
+                     "  a, a:hover {"
+                     "      color: " + palette().color( QPalette::ColorRole::Link ).name() + ";"
+                     "  }"
+                     "  a:visited {"
+                     "      color: " + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
                      "  }"
                      "</style>";
       // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
