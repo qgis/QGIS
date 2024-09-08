@@ -3124,6 +3124,27 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # for some reason that I cannto reproduce locally, featureCount returns 2
         # self.assertEqual(vl.featureCount(), 1)
 
+    def testOrderByEscapedIdentifier(self):
+        """Test issue GH #58508"""
+
+        tmpfile = os.path.join(self.basetestpath, 'points_escaped_identifier.gpkg')
+        testdata_path = unitTestDataPath('provider')
+        shutil.copy(os.path.join(testdata_path, 'points_escaped_identifier.gpkg'), tmpfile)
+        vl = QgsVectorLayer(f'{tmpfile}|layername=table\\"\\table', 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 3)
+
+        request = QgsFeatureRequest()
+        orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('NAME', False)])
+        request.setOrderBy(orderBy)
+        features = vl.getFeatures(request)
+
+        featureCount = 0
+        for feature in features:
+            featureCount = featureCount + 1
+
+        self.assertEqual(featureCount, 3)
+
 
 if __name__ == '__main__':
     unittest.main()
