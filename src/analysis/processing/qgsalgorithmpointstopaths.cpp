@@ -210,9 +210,10 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const QString textDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_TEXT_DIR" ), context );
-  if ( ! textDir.isEmpty() &&
-       ! QDir( textDir ).exists() )
-    throw QgsProcessingException( QObject::tr( "The text output directory does not exist" ) );
+  if ( !textDir.isEmpty() && !QDir().mkpath( textDir ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Failed to create the text output directory" ) );
+  }
 
   QgsDistanceArea da = QgsDistanceArea();
   da.setSourceCrs( source->sourceCrs(), context.transformContext() );
