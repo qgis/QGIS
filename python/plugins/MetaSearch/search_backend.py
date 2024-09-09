@@ -199,7 +199,7 @@ class OARecSearch(SearchBase):
         params = {
             'collection_id': self.record_collection,
             'limit': limit,
-            'startindex': offset2
+            'offset': offset2
         }
 
         if keywords:
