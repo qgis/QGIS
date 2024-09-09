@@ -41,7 +41,7 @@ Qt::ItemFlags QgsLabelingEngineRulesModel::flags( const QModelIndex &index ) con
   if ( !rule )
     return Qt::ItemFlags();
 
-  Qt::ItemFlags res = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  Qt::ItemFlags res = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
   if ( index.column() == 0 )
   {
     res |= Qt::ItemIsUserCheckable;
@@ -80,12 +80,9 @@ QVariant QgsLabelingEngineRulesModel::data( const QModelIndex &index, int role )
   switch ( role )
   {
     case Qt::DisplayRole:
-    {
-      return rule->name().isEmpty() ? rule->displayType() : rule->name();
-    }
     case Qt::EditRole:
     {
-      return rule->name();
+      return rule->name().isEmpty() ? rule->displayType() : rule->name();
     }
 
     case Qt::ToolTipRole:
@@ -153,6 +150,17 @@ bool QgsLabelingEngineRulesModel::setData( const QModelIndex &index, const QVari
       rule->setActive( value.toInt() == Qt::Checked );
       emit dataChanged( index, index, { role } );
       return true;
+    }
+
+    case Qt::EditRole:
+    {
+      if ( index.column() == 0 )
+      {
+        rule->setName( value.toString() );
+        emit dataChanged( index, index );
+        return true;
+      }
+      break;
     }
 
     default:
