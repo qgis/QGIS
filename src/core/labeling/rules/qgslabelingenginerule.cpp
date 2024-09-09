@@ -80,4 +80,15 @@ void QgsAbstractLabelingEngineRule::alterCandidateCost( pal::LabelPosition *, Qg
 void QgsAbstractLabelingEngineRule::copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const
 {
   other->mName = mName;
+  other->mIsActive = mIsActive;
+}
+
+bool QgsAbstractLabelingEngineRule::active() const
+{
+  return mIsActive;
+}
+
+void QgsAbstractLabelingEngineRule::setActive( bool active )
+{
+  mIsActive = active;
 }

@@ -167,6 +167,20 @@ rule within their projects.
 .. seealso:: :py:func:`name`
 %End
 
+    bool active() const;
+%Docstring
+Returns ``True`` if the rule is active.
+
+.. seealso:: :py:func:`setActive`
+%End
+
+    void setActive( bool active );
+%Docstring
+Sets whether the rule is ``active``.
+
+.. seealso:: :py:func:`active`
+%End
+
     virtual bool prepare( QgsRenderContext &context ) = 0;
 %Docstring
 Prepares the rule.
