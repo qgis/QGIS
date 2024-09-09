@@ -486,6 +486,8 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 0.75, 0], conversion_context, False), '''CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END''')
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["concat", ["get", "numero"], ["get", "indice_de_repetition"]], conversion_context, False), '''concat("numero", "indice_de_repetition")''')
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
