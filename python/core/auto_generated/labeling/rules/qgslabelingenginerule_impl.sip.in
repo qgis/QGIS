@@ -33,7 +33,7 @@ Base class for labeling engine rules which prevents labels being placed too clos
     virtual void resolveReferences( const QgsProject *project );
 
 
-    QgsMapLayer *labeledLayer();
+    QgsMapLayer *labeledLayer() const;
 %Docstring
 Returns the layer providing the labels.
 
@@ -47,7 +47,7 @@ Sets the ``layer`` providing the labels.
 .. seealso:: :py:func:`labeledLayer`
 %End
 
-    QgsVectorLayer *targetLayer();
+    QgsVectorLayer *targetLayer() const;
 %Docstring
 Returns the layer providing the features which labels must be distant from (or close to).
 
@@ -173,6 +173,7 @@ A labeling engine rule which prevents labels being placed too close to features 
 
     virtual QString displayType() const;
 
+    virtual QString description() const;
 
     SIP_PYOBJECT __repr__();
 %MethodCode
@@ -204,6 +205,8 @@ A labeling engine rule which prevents labels being placed too far from features 
     virtual QString id() const;
 
     virtual QString displayType() const;
+
+    virtual QString description() const;
 
 
     SIP_PYOBJECT __repr__();
@@ -237,6 +240,8 @@ A labeling engine rule which prevents labels being placed too close to labels fr
 
     virtual QString displayType() const;
 
+    virtual QString description() const;
+
     virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
@@ -252,7 +257,7 @@ A labeling engine rule which prevents labels being placed too close to labels fr
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsMapLayer *labeledLayer();
+    QgsMapLayer *labeledLayer() const;
 %Docstring
 Returns the layer providing the labels.
 
@@ -266,7 +271,7 @@ Sets the ``layer`` providing the labels.
 .. seealso:: :py:func:`labeledLayer`
 %End
 
-    QgsMapLayer *targetLayer();
+    QgsMapLayer *targetLayer() const;
 %Docstring
 Returns the layer providing the labels which labels must be distant from.
 
@@ -366,6 +371,8 @@ A labeling engine rule which prevents labels being placed overlapping features f
 
     virtual QString displayType() const;
 
+    virtual QString description() const;
+
     virtual bool prepare( QgsRenderContext &context );
 
     virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
@@ -381,7 +388,7 @@ A labeling engine rule which prevents labels being placed overlapping features f
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsMapLayer *labeledLayer();
+    QgsMapLayer *labeledLayer() const;
 %Docstring
 Returns the layer providing the labels.
 
@@ -395,7 +402,7 @@ Sets the ``layer`` providing the labels.
 .. seealso:: :py:func:`labeledLayer`
 %End
 
-    QgsVectorLayer *targetLayer();
+    QgsVectorLayer *targetLayer() const;
 %Docstring
 Returns the layer providing the features which labels must not overlap.
 

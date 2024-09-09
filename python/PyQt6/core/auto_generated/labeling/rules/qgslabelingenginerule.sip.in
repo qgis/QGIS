@@ -147,6 +147,16 @@ Returns a string uniquely identifying the rule subclass.
 Returns a user-friendly, translated string representing the rule type.
 %End
 
+    virtual QString description() const;
+%Docstring
+Returns a user-friendly description of the rule.
+
+This should include the rule :py:func:`~QgsAbstractLabelingEngineRule.name` if set, and other useful details for users
+to quickly identify the rule's purpose when shown in a tooltip.
+
+The returned string may contain HTML formatting.
+%End
+
     QString name() const;
 %Docstring
 Returns the name for this instance of the rule.

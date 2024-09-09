@@ -83,6 +83,11 @@ void QgsAbstractLabelingEngineRule::copyCommonProperties( QgsAbstractLabelingEng
   other->mIsActive = mIsActive;
 }
 
+QString QgsAbstractLabelingEngineRule::description() const
+{
+  return mName.isEmpty() ? displayType() : mName;
+}
+
 bool QgsAbstractLabelingEngineRule::active() const
 {
   return mIsActive;

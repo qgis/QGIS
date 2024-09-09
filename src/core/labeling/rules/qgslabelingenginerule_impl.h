@@ -49,7 +49,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
      *
      * \see setLabeledLayer()
      */
-    QgsMapLayer *labeledLayer();
+    QgsMapLayer *labeledLayer() const;
 
     /**
      * Sets the \a layer providing the labels.
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
      *
      * \see setTargetLayer()
      */
-    QgsVectorLayer *targetLayer();
+    QgsVectorLayer *targetLayer() const;
 
     /**
      * Sets the \a layer providing the features which labels must be distant from (or close to).
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public Qg
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature *clone() const override SIP_FACTORY;
     QString id() const override;
     QString displayType() const override;
-
+    QString description() const override;
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -229,6 +229,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeature : public Qg
     QgsLabelingEngineRuleMaximumDistanceLabelToFeature *clone() const override SIP_FACTORY;
     QString id() const override;
     QString displayType() const override;
+    QString description() const override;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -260,6 +261,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
     QgsLabelingEngineRuleMinimumDistanceLabelToLabel *clone() const override SIP_FACTORY;
     QString id() const override;
     QString displayType() const override;
+    QString description() const override;
     void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     void resolveReferences( const QgsProject *project ) override;
@@ -280,7 +282,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
      *
      * \see setLabeledLayer()
      */
-    QgsMapLayer *labeledLayer();
+    QgsMapLayer *labeledLayer() const;
 
     /**
      * Sets the \a layer providing the labels.
@@ -294,7 +296,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
      *
      * \see setTargetLayer()
      */
-    QgsMapLayer *targetLayer();
+    QgsMapLayer *targetLayer() const;
 
     /**
      * Sets the \a layer providing the labels which labels must be distant from.
@@ -388,6 +390,7 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
     QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *clone() const override SIP_FACTORY;
     QString id() const override;
     QString displayType() const override;
+    QString description() const override;
     bool prepare( QgsRenderContext &context ) override;
     void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -407,7 +410,7 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
      *
      * \see setLabeledLayer()
      */
-    QgsMapLayer *labeledLayer();
+    QgsMapLayer *labeledLayer() const;
 
     /**
      * Sets the \a layer providing the labels.
@@ -421,7 +424,7 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
      *
      * \see setTargetLayer()
      */
-    QgsVectorLayer *targetLayer();
+    QgsVectorLayer *targetLayer() const;
 
     /**
      * Sets the \a layer providing the features which labels must not overlap.
