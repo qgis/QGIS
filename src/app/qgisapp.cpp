@@ -2015,9 +2015,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     if ( !error.isEmpty() )
     {
       QPushButton *detailsButton = new QPushButton( tr( "View Error" ) );
-      connect( detailsButton, &QPushButton::clicked, this, [detailsButton, error]
+      connect( detailsButton, &QPushButton::clicked, this, [error]
       {
-        QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+        QgsMessageViewer *dialog = new QgsMessageViewer( nullptr, QgsGuiUtils::ModalDialogFlags, true );
         dialog->setTitle( tr( "Font Install Failed" ) );
         dialog->setMessage( error, QgsMessageOutput::MessageText );
         dialog->showMessage();
