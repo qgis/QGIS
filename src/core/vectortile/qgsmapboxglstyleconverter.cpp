@@ -3227,6 +3227,18 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return QStringLiteral( "@vector_tile_zoom" );
   }
+  else if ( op == QLatin1String( "concat" ) )
+  {
+    QString concatString = QStringLiteral( "concat(" );
+    for ( int i = 1; i < expression.size(); i++ )
+    {
+      if ( i > 1 )
+        concatString += QStringLiteral( ", " );
+      concatString += parseExpression( expression.value( i ).toList(), context );
+    }
+    concatString += QStringLiteral( ")" );
+    return concatString;
+  }
   else
   {
     context.pushWarning( QObject::tr( "%1: Skipping unsupported expression \"%2\"" ).arg( context.layerId(), op ) );
