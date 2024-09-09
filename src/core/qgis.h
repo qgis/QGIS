@@ -1886,6 +1886,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Flags which control geos geometry creation behavior.
+     *
+     * \since QGIS 3.40
+     */
+    enum class GeosCreationFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      DontAllowInvalidSubGeom = 1 << 0,  //!< Don't allow invalid sub-geometries to be created
+      SkipEmptyInteriorRings = 1 << 1,   //!< Skip any empty polygon interior ring
+    };
+    Q_ENUM( GeosCreationFlag )
+
+    /**
+     * Geos geometry creation behavior flags.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( GeosCreationFlags, GeosCreationFlag )
+    Q_FLAG( GeosCreationFlags )
+
+    /**
      * Coverage validity results.
      *
      * \since QGIS 3.36
@@ -5532,6 +5552,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeosCreationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceDefinitionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ZonalStatistics )

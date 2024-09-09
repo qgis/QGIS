@@ -1111,6 +1111,15 @@ The development version
       Bevel,
     };
 
+    enum class GeosCreationFlag /BaseType=IntFlag/
+    {
+      DontAllowInvalidSubGeom,
+      SkipEmptyInteriorRings,
+    };
+
+    typedef QFlags<Qgis::GeosCreationFlag> GeosCreationFlags;
+
+
     enum class CoverageValidityResult /BaseType=IntEnum/
     {
       Invalid,
@@ -3196,6 +3205,8 @@ QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags
 QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
 
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
+
+QFlags<Qgis::GeosCreationFlag> operator|(Qgis::GeosCreationFlag f1, QFlags<Qgis::GeosCreationFlag> f2);
 
 QFlags<Qgis::FeatureRequestFlag> operator|(Qgis::FeatureRequestFlag f1, QFlags<Qgis::FeatureRequestFlag> f2);
 
