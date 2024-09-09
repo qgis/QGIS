@@ -99,6 +99,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         rule.setDistanceUnitScale(QgsMapUnitScale(15, 25))
         rule.setCost(6.6)
         rule.setName('my rule')
+        rule.setActive(False)
         self.assertEqual(rule.__repr__(), '<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: my rule>')
 
         self.assertEqual(rule.labeledLayer(), vl)
@@ -109,6 +110,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         self.assertEqual(rule.distanceUnitScale().maxScale, 25)
         self.assertEqual(rule.cost(), 6.6)
         self.assertEqual(rule.name(), 'my rule')
+        self.assertFalse(rule.active())
 
         rule2 = rule.clone()
         self.assertEqual(rule2.labeledLayer(), vl)
@@ -119,6 +121,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         self.assertEqual(rule2.distanceUnitScale().maxScale, 25)
         self.assertEqual(rule2.cost(), 6.6)
         self.assertEqual(rule2.name(), 'my rule')
+        self.assertFalse(rule2.active())
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -157,6 +160,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         self.assertEqual(rule.distanceUnitScale().minScale, 15)
         self.assertEqual(rule.distanceUnitScale().maxScale, 25)
         self.assertEqual(rule.name(), 'my rule')
+        self.assertTrue(rule.active())
 
         rule2 = rule.clone()
         self.assertEqual(rule2.labeledLayer(), vl)
@@ -166,6 +170,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         self.assertEqual(rule2.distanceUnitScale().minScale, 15)
         self.assertEqual(rule2.distanceUnitScale().maxScale, 25)
         self.assertEqual(rule2.name(), 'my rule')
+        self.assertTrue(rule2.active())
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -287,6 +292,7 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         rule2.setLabeledLayer(vl2)
         rule2.setTargetLayer(vl)
         rule2.setName('the second rule of labeling')
+        rule2.setActive(False)
         label_engine_settings.addRule(rule2)
         self.assertEqual([r.id() for r in label_engine_settings.rules()], ['maximumDistanceLabelToFeature', 'avoidLabelOverlapWithFeature'])
 
@@ -299,6 +305,8 @@ class TestQgsLabelingEngineRule(QgisTestCase):
         self.assertEqual([r.name() for r in label_engine_settings.rules()],
                          ['first rule',
                           'the second rule of labeling'])
+        self.assertEqual([r.active() for r in label_engine_settings.rules()],
+                         [True, False])
 
         # save, restore project
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -314,6 +322,9 @@ class TestQgsLabelingEngineRule(QgisTestCase):
             self.assertEqual([r.name() for r in label_engine_settings.rules()],
                              ['first rule',
                               'the second rule of labeling'])
+            self.assertEqual(
+                [r.active() for r in label_engine_settings.rules()],
+                [True, False])
 
             # check layers, settings
             rule1 = label_engine_settings.rules()[0]

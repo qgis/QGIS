@@ -35,6 +35,20 @@ QgsLabelingEngineRulesModel::QgsLabelingEngineRulesModel( QObject *parent )
 
 }
 
+Qt::ItemFlags QgsLabelingEngineRulesModel::flags( const QModelIndex &index ) const
+{
+  const QgsAbstractLabelingEngineRule *rule = ruleAtIndex( index );
+  if ( !rule )
+    return Qt::ItemFlags();
+
+  Qt::ItemFlags res = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  if ( index.column() == 0 )
+  {
+    res |= Qt::ItemIsUserCheckable;
+  }
+  return res;
+}
+
 QgsLabelingEngineRulesModel::~QgsLabelingEngineRulesModel() = default;
 
 QModelIndex QgsLabelingEngineRulesModel::parent( const QModelIndex &child ) const
@@ -82,6 +96,13 @@ QVariant QgsLabelingEngineRulesModel::data( const QModelIndex &index, int role )
       return QStringLiteral( "%1\n%2" ).arg( rule->name(), rule->displayType() );
     }
 
+    case Qt::CheckStateRole:
+    {
+      if ( index.column() != 0 )
+        return QVariant();
+      return rule->active() ? Qt::Checked : Qt::Unchecked;
+    }
+
     default:
       break;
   }
@@ -116,6 +137,31 @@ bool QgsLabelingEngineRulesModel::removeRows( int row, int count, const QModelIn
   return true;
 }
 
+bool QgsLabelingEngineRulesModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+  QgsAbstractLabelingEngineRule *rule = ruleAtIndex( index );
+  if ( !rule )
+    return false;
+
+  switch ( role )
+  {
+    case Qt::CheckStateRole:
+    {
+      rule->setActive( value.toInt() == Qt::Checked );
+      emit dataChanged( index, index, { role } );
+      return true;
+    }
+
+    default:
+      break;
+  }
+
+  return false;
+}
+
 void QgsLabelingEngineRulesModel::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )
 {
   beginResetModel();
@@ -134,7 +180,7 @@ void QgsLabelingEngineRulesModel::addRule( std::unique_ptr<QgsAbstractLabelingEn
   endInsertRows();
 }
 
-const QgsAbstractLabelingEngineRule *QgsLabelingEngineRulesModel::ruleAtIndex( const QModelIndex &index ) const
+QgsAbstractLabelingEngineRule *QgsLabelingEngineRulesModel::ruleAtIndex( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
     return nullptr;
@@ -180,6 +226,7 @@ QgsLabelingEngineRulesWidget::QgsLabelingEngineRulesWidget( QWidget *parent )
   setPanelTitle( tr( "Labeling Rules" ) );
 
   mModel = new QgsLabelingEngineRulesModel( this );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsLabelingEngineRulesWidget::changed );
   viewRules->setModel( mModel );
   viewRules->setHeaderHidden( true );
 

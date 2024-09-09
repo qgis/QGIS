@@ -199,6 +199,20 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
     void setName( const QString &name ) { mName = name; }
 
     /**
+     * Returns TRUE if the rule is active.
+     *
+     * \see setActive()
+     */
+    bool active() const;
+
+    /**
+     * Sets whether the rule is \a active.
+     *
+     * \see active()
+     */
+    void setActive( bool active );
+
+    /**
      * Prepares the rule.
      *
      * This must be called on the main render thread, prior to commencing the render operation. Thread sensitive
@@ -268,6 +282,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
   private:
 
     QString mName;
+    bool mIsActive = true;
 
 };
 

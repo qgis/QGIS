@@ -126,6 +126,8 @@ void QgsLabelingEngineSettings::writeXml( QDomDocument &doc, QDomElement &elemen
       ruleElement.setAttribute( QStringLiteral( "id" ), rule->id() );
       if ( !rule->name().isEmpty() )
         ruleElement.setAttribute( QStringLiteral( "name" ), rule->name() );
+      if ( !rule->active() )
+        ruleElement.setAttribute( QStringLiteral( "active" ), QStringLiteral( "0" ) );
       rule->writeXml( doc, ruleElement, context );
       rulesElement.appendChild( ruleElement );
     }
@@ -144,10 +146,12 @@ void QgsLabelingEngineSettings::readXml( const QDomElement &element, const QgsRe
       const QDomElement ruleElement = rules.at( i ).toElement();
       const QString id = ruleElement.attribute( QStringLiteral( "id" ) );
       const QString name = ruleElement.attribute( QStringLiteral( "name" ) );
+      const bool active = ruleElement.attribute( QStringLiteral( "active" ), QStringLiteral( "1" ) ).toInt();
       std::unique_ptr< QgsAbstractLabelingEngineRule > rule( QgsApplication::labelingEngineRuleRegistry()->create( id ) );
       if ( rule )
       {
         rule->setName( name );
+        rule->setActive( active );
         rule->readXml( ruleElement, context );
         mEngineRules.emplace_back( std::move( rule ) );
       }

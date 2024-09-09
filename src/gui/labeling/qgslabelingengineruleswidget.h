@@ -49,12 +49,14 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     ~QgsLabelingEngineRulesModel() override;
 
     // QAbstractItemModel interface
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Sets the rules to include in the model.
@@ -71,7 +73,7 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     /**
      * Returns the rule at the specified model \a index.
      */
-    const QgsAbstractLabelingEngineRule *ruleAtIndex( const QModelIndex &index ) const;
+    QgsAbstractLabelingEngineRule *ruleAtIndex( const QModelIndex &index ) const;
 
     /**
      * Swaps the rule at the specified \a index for a new \a rule.
