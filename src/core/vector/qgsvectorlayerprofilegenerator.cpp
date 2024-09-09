@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayerprofilegenerator.h"
+#include "qgspolyhedralsurface.h"
 #include "qgsprofilerequest.h"
 #include "qgscurve.h"
 #include "qgsvectorlayer.h"
@@ -1495,7 +1496,25 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     {
       if ( mProfileBufferedCurveEngine->intersects( *it ) )
       {
-        processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( *it ), transformedParts, crossSectionParts, offset, wasCollinear );
+        if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( *it ) )
+        {
+          processPolygon( curvePolygon, transformedParts, crossSectionParts, offset, wasCollinear );
+        }
+        else if ( const QgsPolyhedralSurface *polySurface = qgsgeometry_cast< const QgsPolyhedralSurface * >( *it ) )
+        {
+          for ( int i = 0; i < polySurface->numPatches(); ++i )
+          {
+            const QgsPolygon *polygon = polySurface->patchN( i );
+            if ( mProfileBufferedCurveEngine->intersects( polygon ) )
+            {
+              processPolygon( polygon, transformedParts, crossSectionParts, offset, wasCollinear );
+            }
+          }
+        }
+        else
+        {
+          QgsDebugError( QStringLiteral( "Unhandled Geometry type: %1" ).arg( ( *it )->wktTypeStr() ) );
+        }
       }
     }
 
