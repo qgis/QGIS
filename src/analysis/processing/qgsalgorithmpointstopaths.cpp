@@ -331,7 +331,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
-    if ( ! textDir.isEmpty() )
+    if ( !textDir.isEmpty() )
     {
       const QString filename = QDir( textDir ).filePath( hit.key().toString() + QString( ".txt" ) );
       QFile textFile( filename );
@@ -364,6 +364,10 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   outputs.insert( QStringLiteral( "NUM_PATHS" ), pathCount );
+  if ( !textDir.isEmpty() )
+  {
+    outputs.insert( QStringLiteral( "OUTPUT_TEXT_DIR" ), textDir );
+  }
   return outputs;
 }
 
