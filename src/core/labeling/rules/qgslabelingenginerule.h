@@ -179,6 +179,16 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
     virtual QString displayType() const = 0;
 
     /**
+     * Returns a user-friendly description of the rule.
+     *
+     * This should include the rule name() if set, and other useful details for users
+     * to quickly identify the rule's purpose when shown in a tooltip.
+     *
+     * The returned string may contain HTML formatting.
+     */
+    virtual QString description() const;
+
+    /**
      * Returns the name for this instance of the rule.
      *
      * The name is a user-configurable value which helps them identify and describe the

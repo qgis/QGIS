@@ -87,10 +87,7 @@ QVariant QgsLabelingEngineRulesModel::data( const QModelIndex &index, int role )
 
     case Qt::ToolTipRole:
     {
-      if ( rule->name().isEmpty() )
-        return rule->displayType();
-
-      return QStringLiteral( "%1\n%2" ).arg( rule->name(), rule->displayType() );
+      return rule->description();
     }
 
     case Qt::CheckStateRole:
