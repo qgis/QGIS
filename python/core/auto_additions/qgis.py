@@ -3512,6 +3512,21 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GeosCreationFlag.DontAllowInvalidSubGeom.__doc__ = "Don't allow invalid sub-geometries to be created"
+Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
+Qgis.GeosCreationFlag.__doc__ = """Flags which control geos geometry creation behavior.
+
+.. versionadded:: 3.40
+
+* ``DontAllowInvalidSubGeom``: Don't allow invalid sub-geometries to be created
+* ``SkipEmptyInteriorRings``: Skip any empty polygon interior ring
+
+"""
+# --
+Qgis.GeosCreationFlag.baseClass = Qgis
+Qgis.GeosCreationFlags.baseClass = Qgis
+GeosCreationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.CoverageValidityResult.Invalid.__doc__ = "Coverage is invalid. Invalidity includes polygons that overlap, that have gaps smaller than the gap width, or non-polygonal entries in the input collection."
 Qgis.CoverageValidityResult.Valid.__doc__ = "Coverage is valid"
 Qgis.CoverageValidityResult.Error.__doc__ = "An exception occurred while determining validity"

@@ -886,7 +886,7 @@ bool QgsGeometryCollection::isValid( QString &error, Qgis::GeometryValidityFlags
     return error.isEmpty();
   }
 
-  QgsGeos geos( this, /* tolerance = */ 0, /* allowInvalidSubGeom = */ false );
+  QgsGeos geos( this, /* precision = */ 0, /* flags = */ Qgis::GeosCreationFlag::DontAllowInvalidSubGeom );
   bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {
