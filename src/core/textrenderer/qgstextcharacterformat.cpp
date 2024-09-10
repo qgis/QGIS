@@ -48,6 +48,7 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mStyleName( format.font().styleName() )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
+  , mWordSpacing( format.hasProperty( QTextFormat::FontWordSpacing ) ? format.fontWordSpacing() : std::numeric_limits< double >::quiet_NaN() )
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
@@ -72,6 +73,8 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mTextColor = other.mTextColor;
   if ( mFontPointSize == -1 && other.mFontPointSize != -1 )
     mFontPointSize = other.mFontPointSize;
+  if ( std::isnan( mWordSpacing ) )
+    mWordSpacing = other.mWordSpacing;
   if ( mFontFamily.isEmpty() && !other.mFontFamily.isEmpty() )
     mFontFamily = other.mFontFamily;
   if ( mStrikethrough == BooleanValue::NotSet && other.mStrikethrough != BooleanValue::NotSet )
@@ -201,6 +204,11 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
     font.setOverline( mOverline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mStrikethrough != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setStrikeOut( mStrikethrough == QgsTextCharacterFormat::BooleanValue::SetTrue );
+
+  if ( !std::isnan( mWordSpacing ) )
+  {
+    font.setWordSpacing( scaleFactor * context.convertToPainterUnits( mWordSpacing, Qgis::RenderUnit::Points ) );
+  }
 }
 
 QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::italic() const
@@ -221,4 +229,14 @@ int QgsTextCharacterFormat::fontWeight() const
 void QgsTextCharacterFormat::setFontWeight( int fontWeight )
 {
   mFontWeight = fontWeight;
+}
+
+double QgsTextCharacterFormat::wordSpacing() const
+{
+  return mWordSpacing;
+}
+
+void QgsTextCharacterFormat::setWordSpacing( double spacing )
+{
+  mWordSpacing = spacing;
 }

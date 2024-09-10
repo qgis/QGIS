@@ -4015,6 +4015,41 @@ class PyQgsTextRenderer(QgisTestCase):
             '<sub>sub</sub>N<sup>sup</sup>'],
             point=QPointF(50, 200))
 
+    def testHtmlWordSpacing(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_word_spacing', None, text=[
+            'test of <span style="word-spacing: 20.5">wo space</span>'],
+            point=QPointF(10, 200))
+
+    def testHtmlWordSpacingPx(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        # unit should be ignored, we always treat it as pt as pixels don't
+        # scale
+        assert self.checkRenderPoint(format, 'html_word_spacing', None, text=[
+            'test of <span style="word-spacing: 20.5px">wo space</span>'],
+            point=QPointF(10, 200))
+
+    def testHtmlWordSpacingNegative(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_word_spacing_negative', None, text=[
+            'test of <span style="word-spacing: -20.5">wo space</span>'],
+            point=QPointF(10, 200))
+
     def testTextRenderFormat(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))

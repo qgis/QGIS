@@ -150,6 +150,22 @@ class CORE_EXPORT QgsTextCharacterFormat
     void setFontWeight( int fontWeight );
 
     /**
+     * Returns the font word spacing, in points, or NaN if word spacing is not set and should be inherited.
+     *
+     * \see setWordSpacing()
+     * \since QGIS 3.40
+     */
+    double wordSpacing() const;
+
+    /**
+     * Sets the font word \a spacing, in points, or NaN if word spacing is not set and should be inherited.
+     *
+     * \see wordSpacing()
+     * \since QGIS 3.40
+     */
+    void setWordSpacing( double spacing );
+
+    /**
      * Returns whether the format has italic enabled.
      *
      * \see setItalic()
@@ -274,6 +290,7 @@ class CORE_EXPORT QgsTextCharacterFormat
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
     QString mFontFamily;
+    double mWordSpacing = std::numeric_limits< double >::quiet_NaN();
 
     bool mHasVerticalAlignSet = false;
     Qgis::TextCharacterVerticalAlignment mVerticalAlign = Qgis::TextCharacterVerticalAlignment::Normal;
