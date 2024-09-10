@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgshttpheaders.h"
 #include "qgsprovidermetadata.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenedataprovider.h"
@@ -47,6 +48,9 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
 
     bool containsTile( QgsTileXYZ tile ) const;
     double geometricErrorAtZoom( int zoom ) const;
+
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
 
     QgsRectangle mExtent;
     QgsTiledSceneBoundingVolume mBoundingVolume;
@@ -111,6 +115,10 @@ class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
     QString description() const override;
 
     const QgsQuantizedMeshMetadata &quantizedMeshMetadata() const;
+
+    static constexpr const char *providerName = "quantizedmesh";
+    static constexpr const char *providerDescription = "Cesium Quantized Mesh tiles";
+
 
   private:
     QString mUri; // For clone()

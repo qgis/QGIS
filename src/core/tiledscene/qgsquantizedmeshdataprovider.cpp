@@ -18,6 +18,7 @@
 
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -43,9 +44,6 @@
 #include <qvector.h>
 
 ///@cond PRIVATE
-
-constexpr const char *providerName = "quantizedmesh";
-constexpr const char *providerDescription = "Cesium Quantized Mesh tiles";
 
 class MissingFieldException : public std::exception
 {
@@ -76,11 +74,19 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   const QgsCoordinateTransformContext &transformContext,
   QgsError &error )
 {
-  // The provided URI should be the metadata JSON's location
-  QNetworkRequest requestData( uri );
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+  mAuthCfg = dsUri.authConfigId();
+  mHeaders = dsUri.httpHeaders();
+
+  // The provided URL should be the metadata JSON's location
+  QUrl metadataUrl = dsUri.param( "url" );
+  QNetworkRequest requestData( metadataUrl );
+  mHeaders.updateNetworkRequest( requestData );
   QgsSetRequestInitiatorClass( requestData,
                                QStringLiteral( "QgsQuantizedMeshDataProvider" ) );
   QgsBlockingNetworkRequest request;
+  request.setAuthCfg( mAuthCfg );
   auto respCode = request.get( requestData );
   if ( respCode != QgsBlockingNetworkRequest::ErrorCode::NoError )
   {
@@ -166,7 +172,6 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
 
     QString versionStr =
       QString::fromStdString( jsonGet<std::string>( replyJson, "version" ) );
-    QUrl metadataUrl = uri;
     for ( auto &urlStr : jsonGet<std::vector<std::string>>( replyJson, "tiles" ) )
     {
       QUrl url = metadataUrl.resolved( QString::fromStdString( urlStr ) );
@@ -407,6 +412,8 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
   QNetworkRequest requestData( uri );
   requestData.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   requestData.setRawHeader( "Accept", "application/vnd.quantized-mesh,application/octet-stream;q=0.9" );
+  mMetadata.mHeaders.updateNetworkRequest( requestData );
+  QgsApplication::authManager()->updateNetworkRequest( requestData, mMetadata.mAuthCfg );
   QgsSetRequestInitiatorClass( requestData,
                                QStringLiteral( "QgsQuantizedMeshIndex" ) );
 
@@ -492,7 +499,8 @@ const QgsQuantizedMeshMetadata &QgsQuantizedMeshDataProvider::quantizedMeshMetad
 }
 
 QgsQuantizedMeshProviderMetadata::QgsQuantizedMeshProviderMetadata()
-  : QgsProviderMetadata( providerName, providerDescription ) {}
+  : QgsProviderMetadata( QgsQuantizedMeshDataProvider::providerName,
+                         QgsQuantizedMeshDataProvider::providerDescription ) {}
 
 QgsDataProvider *QgsQuantizedMeshProviderMetadata::createProvider(
   const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
