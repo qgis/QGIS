@@ -136,6 +136,15 @@ void QgsAbstractLabelingEngineRuleDistanceFromFeature::alterCandidateCost( pal::
   }
 }
 
+bool QgsAbstractLabelingEngineRuleDistanceFromFeature::isAvailable() const
+{
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  return true;
+#else
+  return false;
+#endif
+}
+
 QgsMapLayer *QgsAbstractLabelingEngineRuleDistanceFromFeature::labeledLayer() const
 {
   return mLabeledLayer.get();
@@ -352,6 +361,15 @@ QString QgsLabelingEngineRuleMinimumDistanceLabelToLabel::description() const
            ) + QStringLiteral( "</p>" );
   }
   return res;
+}
+
+bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::isAvailable() const
+{
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  return true;
+#else
+  return false;
+#endif
 }
 
 void QgsLabelingEngineRuleMinimumDistanceLabelToLabel::writeXml( QDomDocument &, QDomElement &element, const QgsReadWriteContext & ) const

@@ -107,7 +107,7 @@ bool QgsLabelingEngine::prepare( QgsRenderContext &context )
   bool res = true;
   for ( const QgsAbstractLabelingEngineRule *rule : rules )
   {
-    if ( !rule->active() )
+    if ( !rule->active() || !rule->isAvailable() )
       continue;
 
     std::unique_ptr< QgsAbstractLabelingEngineRule > ruleClone( rule->clone() );

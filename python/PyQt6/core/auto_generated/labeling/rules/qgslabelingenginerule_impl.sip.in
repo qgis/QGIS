@@ -32,6 +32,8 @@ Base class for labeling engine rules which prevents labels being placed too clos
 
     virtual void resolveReferences( const QgsProject *project );
 
+    virtual bool isAvailable() const;
+
 
     QgsMapLayer *labeledLayer() const;
 %Docstring
@@ -241,6 +243,8 @@ A labeling engine rule which prevents labels being placed too close to labels fr
     virtual QString displayType() const;
 
     virtual QString description() const;
+
+    virtual bool isAvailable() const;
 
     virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
 

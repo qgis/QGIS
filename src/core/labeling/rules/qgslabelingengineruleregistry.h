@@ -62,6 +62,14 @@ class CORE_EXPORT QgsLabelingEngineRuleRegistry
     QString displayType( const QString &id ) const;
 
     /**
+     * Returns TRUE if the rule is with matching \a id is available for use within the current QGIS environment.
+     *
+     * Rules can return FALSE if required dependencies are not available, e.g. if a library version
+     * is too old for the rule.
+     */
+    bool isAvailable( const QString &id ) const;
+
+    /**
      * Creates a new rule from the type with matching \a id.
      *
      * Returns NULLPTR if no matching rule was found in the registry.

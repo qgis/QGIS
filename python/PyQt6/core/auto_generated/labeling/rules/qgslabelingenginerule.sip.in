@@ -147,6 +147,16 @@ Returns a string uniquely identifying the rule subclass.
 Returns a user-friendly, translated string representing the rule type.
 %End
 
+    virtual bool isAvailable() const;
+%Docstring
+Returns ``True`` if the rule is available for use within the current QGIS environment.
+
+The base class method returns ``True``.
+
+Rules can return ``False`` if required dependencies are not available, e.g. if a library version
+is too old for the rule.
+%End
+
     virtual QString description() const;
 %Docstring
 Returns a user-friendly description of the rule.

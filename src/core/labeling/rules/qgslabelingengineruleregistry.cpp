@@ -47,6 +47,15 @@ QString QgsLabelingEngineRuleRegistry::displayType( const QString &id ) const
   return it->second->displayType();
 }
 
+bool QgsLabelingEngineRuleRegistry::isAvailable( const QString &id ) const
+{
+  auto it = mRules.find( id );
+  if ( it == mRules.end() )
+    return false;
+
+  return it->second->isAvailable();
+}
+
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleRegistry::create( const QString &id ) const
 {
   auto it = mRules.find( id );
