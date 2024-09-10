@@ -1892,7 +1892,7 @@ class CORE_EXPORT Qgis
      */
     enum class GeosCreationFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      DontAllowInvalidSubGeom = 1 << 0,  //!< Don't allow invalid sub-geometries to be created
+      RejectOnInvalidSubGeometry = 1 << 0,  //!< Don't allow invalid sub-geometries to be created
       SkipEmptyInteriorRings = 1 << 1,   //!< Skip any empty polygon interior ring
     };
     Q_ENUM( GeosCreationFlag )

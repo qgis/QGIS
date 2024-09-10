@@ -1113,7 +1113,7 @@ The development version
 
     enum class GeosCreationFlag /BaseType=IntFlag/
     {
-      DontAllowInvalidSubGeom,
+      RejectOnInvalidSubGeometry,
       SkipEmptyInteriorRings,
     };
 
