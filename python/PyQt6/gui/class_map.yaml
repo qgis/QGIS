@@ -3507,6 +3507,15 @@ QgsLabelSettingsWidgetBase.updateDataDefinedProperties: src/gui/labeling/qgslabe
 QgsLabelSettingsWidgetBase: src/gui/labeling/qgslabelsettingswidgetbase.h#L38
 QgsLabelSettingsWidgetDialog.buttonBox: src/gui/labeling/qgslabelsettingswidgetbase.h#L162
 QgsLabelSettingsWidgetDialog: src/gui/labeling/qgslabelsettingswidgetbase.h#L142
+QgsLabelingEngineRuleWidget.changed: src/gui/labeling/qgslabelingenginerulewidget.h#L74
+QgsLabelingEngineRuleWidget.rule: src/gui/labeling/qgslabelingenginerulewidget.h#L67
+QgsLabelingEngineRuleWidget.setRule: src/gui/labeling/qgslabelingenginerulewidget.h#L58
+QgsLabelingEngineRuleWidget: src/gui/labeling/qgslabelingenginerulewidget.h#L41
+QgsLabelingEngineRulesDialog.setRules: src/gui/labeling/qgslabelingengineruleswidget.h#L190
+QgsLabelingEngineRulesDialog: src/gui/labeling/qgslabelingengineruleswidget.h#L172
+QgsLabelingEngineRulesWidget.changed: src/gui/labeling/qgslabelingengineruleswidget.h#L143
+QgsLabelingEngineRulesWidget.setRules: src/gui/labeling/qgslabelingengineruleswidget.h#L129
+QgsLabelingEngineRulesWidget: src/gui/labeling/qgslabelingengineruleswidget.h#L113
 QgsLayerMetadataResultsModel.QgsLayerMetadataResultsModel: src/gui/qgslayermetadataresultsmodel.h#L82
 QgsLayerMetadataResultsModel.cancel: src/gui/qgslayermetadataresultsmodel.h#L142
 QgsLayerMetadataResultsModel.columnCount: src/gui/qgslayermetadataresultsmodel.h#L90
