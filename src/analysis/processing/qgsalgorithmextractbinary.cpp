@@ -87,8 +87,8 @@ QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( QObject::tr( "Invalid binary field" ) );
 
   const QString folder = parameterAsString( parameters, QStringLiteral( "FOLDER" ), context );
-  if ( !QFileInfo::exists( folder ) )
-    throw QgsProcessingException( QObject::tr( "Destination folder %1 does not exist" ).arg( folder ) );
+  if ( !QDir().mkpath( folder ) )
+    throw QgsProcessingException( QObject::tr( "Failed to create output directory." ) );
 
   const QDir dir( folder );
   const QString filenameExpressionString = parameterAsString( parameters, QStringLiteral( "FILENAME" ), context );
