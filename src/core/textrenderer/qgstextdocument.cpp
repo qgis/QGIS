@@ -86,6 +86,35 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
 
     while ( true )
     {
+      const int headingLevel = sourceBlock.blockFormat().headingLevel();
+      QgsTextCharacterFormat blockFormat;
+      if ( headingLevel > 0 )
+      {
+        switch ( headingLevel )
+        {
+          case 1:
+            blockFormat.setFontPercentageSize( 21.0 / 12 );
+            break;
+          case 2:
+            blockFormat.setFontPercentageSize( 16.0 / 12 );
+            break;
+          case 3:
+            blockFormat.setFontPercentageSize( 13.0 / 12 );
+            break;
+          case 4:
+            blockFormat.setFontPercentageSize( 11.0 / 12 );
+            break;
+          case 5:
+            blockFormat.setFontPercentageSize( 8.0 / 12 );
+            break;
+          case 6:
+            blockFormat.setFontPercentageSize( 7.0 / 12 );
+            break;
+          default:
+            break;
+        }
+      }
+
       auto it = sourceBlock.begin();
       QgsTextBlock block;
       while ( !it.atEnd() )
@@ -115,13 +144,15 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
                 // split line by tab characters, each tab should be a
                 // fragment by itself
                 QgsTextFragment splitFragment( fragment );
+                QgsTextCharacterFormat newFormat { splitFragment.characterFormat() };
+                newFormat.overrideWith( blockFormat );
                 if ( previousFormat )
                 {
                   // Apply overrides from previous fragment
-                  QgsTextCharacterFormat newFormat { splitFragment.characterFormat() };
                   newFormat.overrideWith( *previousFormat );
                   splitFragment.setCharacterFormat( newFormat );
                 }
+                splitFragment.setCharacterFormat( newFormat );
 
                 const QStringList tabSplit = splitLine.split( QStringLiteral( TAB_REPLACEMENT_MARKER ) );
                 int index = 0;
@@ -144,13 +175,14 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
                 QgsTextFragment splitFragment( fragment );
                 splitFragment.setText( splitLine );
 
+                QgsTextCharacterFormat newFormat { splitFragment.characterFormat() };
+                newFormat.overrideWith( blockFormat );
                 if ( previousFormat )
                 {
                   // Apply overrides from previous fragment
-                  QgsTextCharacterFormat newFormat { splitFragment.characterFormat() };
                   newFormat.overrideWith( *previousFormat );
-                  splitFragment.setCharacterFormat( newFormat );
                 }
+                splitFragment.setCharacterFormat( newFormat );
 
                 block.append( splitFragment );
               }
@@ -164,6 +196,11 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
             // split line by tab characters, each tab should be a
             // fragment by itself
             QgsTextFragment tmpFragment( fragment );
+
+            QgsTextCharacterFormat newFormat { tmpFragment.characterFormat() };
+            newFormat.overrideWith( blockFormat );
+            tmpFragment.setCharacterFormat( newFormat );
+
             const QStringList tabSplit = fragmentText.split( QStringLiteral( TAB_REPLACEMENT_MARKER ) );
             int index = 0;
             for ( const QString &part : tabSplit )
@@ -182,7 +219,12 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
           }
           else
           {
-            block.append( QgsTextFragment( fragment ) );
+            QgsTextFragment tmpFragment( fragment );
+            QgsTextCharacterFormat newFormat { tmpFragment.characterFormat() };
+            newFormat.overrideWith( blockFormat );
+            tmpFragment.setCharacterFormat( newFormat );
+
+            block.append( tmpFragment );
           }
         }
         it++;
