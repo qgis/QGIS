@@ -19,12 +19,9 @@
 
 QgsLabelingEngineRuleRegistry::QgsLabelingEngineRuleRegistry()
 {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
   addRule( new QgsLabelingEngineRuleMinimumDistanceLabelToFeature() );
   addRule( new QgsLabelingEngineRuleMaximumDistanceLabelToFeature() );
   addRule( new QgsLabelingEngineRuleMinimumDistanceLabelToLabel() );
-#endif
-
   addRule( new QgsLabelingEngineRuleAvoidLabelOverlapWithFeature() );
 }
 
