@@ -16,12 +16,15 @@
 #include "qgslabelingenginerule_impl.h"
 #include "qgsunittypes.h"
 #include "qgssymbollayerutils.h"
-#include "labelposition.h"
-#include "feature.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsthreadingutils.h"
 #include "qgsspatialindex.h"
 #include "qgsgeos.h"
+#include "labelposition.h"
+#include "feature.h"
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#include "qgsmessagelog.h"
+#endif
 
 //
 // QgsAbstractLabelingEngineRuleDistanceFromFeature
@@ -210,7 +213,7 @@ bool QgsAbstractLabelingEngineRuleDistanceFromFeature::candidateExceedsTolerance
         return mMustBeDistant;
       }
 #else
-      QgsDebugError( QStringLiteral( "This rule requires GEOS 3.10+" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "The %1 labeling rule requires GEOS 3.10+" ).arg( name().isEmpty() ? displayType() : name() ) );
       return false;
 #endif
     }
@@ -288,7 +291,7 @@ QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::id() const
 
 QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::displayType() const
 {
-  return QObject::tr( "Pull Labels toward Features" );
+  return QObject::tr( "Pull Labels Toward Features" );
 }
 
 QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::description() const
@@ -432,7 +435,7 @@ bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::candidatesAreConflicting(
         return true;
       }
 #else
-      QgsDebugError( QStringLiteral( "This rule requires GEOS 3.10+" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "The %1 labeling rule requires GEOS 3.10+" ).arg( name().isEmpty() ? displayType() : name() ) );
       return false;
 #endif
     }
