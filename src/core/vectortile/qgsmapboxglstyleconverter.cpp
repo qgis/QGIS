@@ -1447,6 +1447,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   if ( jsonPaint.contains( QStringLiteral( "text-halo-width" ) ) )
   {
     const QVariant jsonHaloWidth = jsonPaint.value( QStringLiteral( "text-halo-width" ) );
+    QString bufferSizeDataDefined;
     switch ( jsonHaloWidth.userType() )
     {
       case QMetaType::Type::Int:
@@ -1457,18 +1458,41 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
       case QMetaType::Type::QVariantMap:
         bufferSize = 1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, parseInterpolateByZoom( jsonHaloWidth.toMap(), context, context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE, &bufferSize ) );
+        bufferSizeDataDefined = parseInterpolateByZoom( jsonHaloWidth.toMap(), context, context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE, &bufferSize ).asExpression();
         break;
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
         bufferSize = 1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, parseValueList( jsonHaloWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE, 255, nullptr, &bufferSize ) );
+        bufferSizeDataDefined = parseValueList( jsonHaloWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE, 255, nullptr, &bufferSize ).asExpression();
         break;
 
       default:
         context.pushWarning( QObject::tr( "%1: Skipping unsupported text-halo-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonHaloWidth.userType() ) ) ) );
         break;
+    }
+
+    // from the specs halo should not be bigget than 1/4 of the text-size
+    // https://docs.mapbox.com/style-spec/reference/layers/#paint-symbol-text-halo-width
+    if ( bufferSize > 0 )
+    {
+      if ( textSize > 0 && bufferSizeDataDefined.isEmpty() )
+      {
+        bufferSize = std::min( bufferSize, textSize * BUFFER_SIZE_SCALE / 4 );
+      }
+      else if ( textSize > 0 )
+      {
+        bufferSizeDataDefined = QStringLiteral( "min( %1/4, %2)" ).arg( textSize * BUFFER_SIZE_SCALE ).arg( bufferSizeDataDefined );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromExpression( bufferSizeDataDefined ) );
+      }
+      else
+      {
+        bufferSizeDataDefined = QStringLiteral( "min( %1*%2/4, %2)" )
+                                .arg( textSizeProperty.asExpression() )
+                                .arg( BUFFER_SIZE_SCALE )
+                                .arg( textSizeProperty.asExpression() );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromExpression( bufferSizeDataDefined ) );
+      }
     }
   }
 

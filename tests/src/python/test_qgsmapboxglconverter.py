@@ -685,7 +685,6 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(labeling.labelSettings().isExpression)
 
         # text-transform
-
         style = {
             "layout": {
                 "text-field": "name_en",
@@ -747,6 +746,60 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(labeling.labelSettings().fieldName,
                          '''lower(concat(concat("name_en",' - ',"name_fr"),"bar"))''')
         self.assertTrue(labeling.labelSettings().isExpression)
+
+    def testHaloMaxSize(self):
+        # text-halo-width is max 1/4 of font-size
+        # https://docs.mapbox.com/style-spec/reference/layers/#paint-symbol-text-halo-width
+        context = QgsMapBoxGlStyleConversionContext()
+
+        # the pixel based text buffers appear larger when rendered on the web - so automatically scale
+        # them up when converting to a QGIS style
+        BUFFER_SIZE_SCALE = 2.0
+
+        # (text_size, halo_size, expected_size, expected_data_defined)
+        data = (
+            (16, 3, 3, None),
+            (16, 5, 4, None),
+            (12, ["get", "some_field_1"], None, 'min( 24/4, "some_field_1")'),
+            (["get", "some_field_2"], 4, None, 'min( "some_field_2"*2/4, 4)'),
+            (["get", "some_field_3"], ["get", "some_field_4"], None, 'min( "some_field_3"*2/4, "some_field_4")'),
+        )
+
+        for (text_size, halo_size, expected_size, expected_data_defined) in data:
+            style = {
+                "layout": {
+                    "text-field": "name_en",
+                    "text-font": [
+                        "Open Sans Semibold",
+                        "Arial Unicode MS Bold"
+                    ],
+                    "text-transform": "uppercase",
+                    "text-max-width": 8,
+                    "text-anchor": "top",
+                    "text-size": text_size,
+                    "icon-size": 1
+                },
+                "type": "symbol",
+                "id": "poi_label",
+                "paint": {
+                    "text-color": "#666",
+                    "text-halo-width": halo_size,
+                    "text-halo-color": "rgba(255,255,255,0.95)",
+                    "text-halo-blur": 1
+                },
+                "source-layer": "poi_label"
+            }
+            renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+            self.assertFalse(has_renderer)
+            self.assertTrue(has_labeling)
+            if expected_size:
+                f = labeling.labelSettings().format()
+                buffer = f.buffer()
+                self.assertEqual(buffer.size(), expected_size * BUFFER_SIZE_SCALE)
+            if expected_data_defined:
+                ls = labeling.labelSettings()
+                dd = ls.dataDefinedProperties()
+                self.assertEqual(dd.property(QgsPalLayerSettings.Property.BufferSize).asExpression(), expected_data_defined)
 
     def testFontFamilyReplacement(self):
         context = QgsMapBoxGlStyleConversionContext()
