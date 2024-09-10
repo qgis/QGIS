@@ -144,8 +144,8 @@ Returns the point and vertex id of a point within the curve.
 :param node: node number, where the first node is 0
 
 :return: - ``True`` if node exists within the curve
-         - point: will be set to point at corresponding node in the curve
-         - type: will be set to the vertex type of the node
+         - point: point at corresponding node in the curve
+         - type: the vertex type of the node
 %End
 
     virtual int indexOf( const QgsPoint &point ) const = 0;

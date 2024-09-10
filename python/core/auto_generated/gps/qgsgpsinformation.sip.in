@@ -71,7 +71,7 @@ Returns the best fix status and corresponding constellation.
 
 
 :return: - best current fix status
-         - constellation: will be set to the constellation with best fix status
+         - constellation: the constellation with best fix status
 
 .. versionadded:: 3.30
 %End

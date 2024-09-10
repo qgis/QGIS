@@ -250,7 +250,7 @@ Returns ``True`` if a layer style with the specified ``styleId`` exists in the p
 :param styleId: style ID to test for
 
 :return: - ``True`` if the layer style already exists
-         - errorCause: will be set to a descriptive error message, if an error occurs while checking if the style exists
+         - errorCause: a descriptive error message, if an error occurs while checking if the style exists
 
 .. seealso:: :py:func:`getStyleById`
 

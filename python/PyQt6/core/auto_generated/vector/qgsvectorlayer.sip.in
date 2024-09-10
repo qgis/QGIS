@@ -2413,8 +2413,8 @@ and maximum values are required.
 
 .. seealso:: :py:func:`maximumValue`
 
-:return: - minimum: will be set to minimum attribute value or an invalid variant in case of error.
-         - maximum: will be set to maximum attribute value or an invalid variant in case of error.
+:return: - minimum: minimum attribute value or an invalid variant in case of error.
+         - maximum: maximum attribute value or an invalid variant in case of error.
 
 .. versionadded:: 3.20
 %End

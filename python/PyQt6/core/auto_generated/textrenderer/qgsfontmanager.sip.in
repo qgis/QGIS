@@ -197,7 +197,7 @@ font is installed and available for use.
 :param family: input font family name to try to match to known fonts
 
 :return: - ``True`` if match was successful and the download will occur
-         - matchedFamily: will be set to found font family if a match was successful
+         - matchedFamily: found font family if a match was successful
 %End
 
     void enableFontDownloadsForSession();
@@ -219,7 +219,7 @@ return an empty string for any font families not present in this list.
 :param family: input font family name to try to match to known fonts
 
 :return: - URL to download font, or an empty string if no URL is available
-         - matchedFamily: will be set to found font family if a match was successful
+         - matchedFamily: found font family if a match was successful
 
 .. deprecated:: 3.38
 
@@ -239,7 +239,7 @@ return an invalid :py:class:`QgsFontDownloadDetails` for any font families not p
 :param family: input font family name to try to match to known fonts
 
 :return: - details required for downloading font, or an invalid :py:class:`QgsFontDownloadDetails` if no URL is available
-         - matchedFamily: will be set to found font family if a match was successful
+         - matchedFamily: found font family if a match was successful
 
 .. versionadded:: 3.38
 %End
@@ -292,7 +292,7 @@ or a zipped archive of font files.
 :param extension: known file extension (eg "ttf", "otf") for font. Should be specified to avoid issues with font installation on Windows if filename is not specified (since QGIS 3.38)
 
 :return: - ``True`` if installation was successful.
-         - errorMessage: will be set to a descriptive error message if the installation fails
+         - errorMessage: a descriptive error message if the installation fails
          - families: will be populated with a list of font families installed from the data
          - licenseDetails: will be populated with font license details, if found
 %End

@@ -78,7 +78,7 @@ Validates the model, returning ``True`` if all child algorithms in the model are
 
 
 :return: - ``True`` if the child is valid
-         - issues: will be set to a list of issues encountered during the validation
+         - issues: a list of issues encountered during the validation
 
 .. versionadded:: 3.14
 %End
@@ -211,7 +211,7 @@ all mandatory inputs to the algorithm have valid values.
 :param childId: ID for child to validate
 
 :return: - ``True`` if the child is valid
-         - issues: will be set to a list of issues encountered during the validation
+         - issues: a list of issues encountered during the validation
 
 .. versionadded:: 3.14
 %End

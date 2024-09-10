@@ -426,7 +426,7 @@ The :py:func:`~QgsProject.verticalCrsChanged` signal will be raised if the verti
 :param crs: the vertical CRS
 
 :return: - ``True`` if vertical CRS was successfully set
-         - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
+         - errorMessage: a descriptive message if the vertical CRS could not be set
 
 .. seealso:: :py:func:`verticalCrs`
 
@@ -2246,7 +2246,7 @@ that the user has some chance of repairing the damage cleanly.
                     parameter is not mandatory, as the changes from all layers will be committed.
 
 :return: - ``True`` if the commit was successful.
-         - commitErrors: will be set to a list of descriptive errors if the commit fails.
+         - commitErrors: a list of descriptive errors if the commit fails.
 
 .. seealso:: :py:func:`startEditing`
 
@@ -2265,7 +2265,7 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
                     parameter is not mandatory, as the changes from all layers will be rolled back.
 
 :return: - ``True`` if the rollback was successful.
-         - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
+         - rollbackErrors: a list of descriptive errors if the rollback fails.
 
 .. seealso:: :py:func:`startEditing`
 

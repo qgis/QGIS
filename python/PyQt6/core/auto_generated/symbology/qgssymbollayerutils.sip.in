@@ -67,7 +67,7 @@ Decodes a ``string`` representing a symbol coordinate reference mode.
 :param string: string to decode
 
 :return: - decoded marker clip mode
-         - ok: will be set to ``True`` if ``string`` was successfully decoded
+         - ok: ``True`` if ``string`` was successfully decoded
 
 .. seealso:: :py:func:`encodeCoordinateReference`
 
@@ -106,7 +106,7 @@ Decodes a ``string`` representing a marker clip mode.
 :param string: string to decode
 
 :return: - decoded marker clip mode
-         - ok: will be set to ``True`` if ``string`` was successfully decoded
+         - ok: ``True`` if ``string`` was successfully decoded
 
 .. seealso:: :py:func:`encodeMarkerClipMode`
 
@@ -129,7 +129,7 @@ Decodes a ``string`` representing a line clip mode.
 :param string: string to decode
 
 :return: - decoded line clip mode
-         - ok: will be set to ``True`` if ``string`` was successfully decoded
+         - ok: ``True`` if ``string`` was successfully decoded
 
 .. seealso:: :py:func:`encodeLineClipMode`
 
@@ -170,7 +170,7 @@ Converts a ``value`` to a point.
 :param value: value to convert
 
 :return: - converted point
-         - ok: will be set to ``True`` if value was successfully converted
+         - ok: ``True`` if value was successfully converted
 
 .. seealso:: :py:func:`decodePoint`
 
@@ -204,7 +204,7 @@ Converts a ``value`` to a size.
 :param value: value to convert
 
 :return: - converted size
-         - ok: will be set to ``True`` if value was successfully converted
+         - ok: ``True`` if value was successfully converted
 
 .. seealso:: :py:func:`decodeSize`
 
@@ -662,7 +662,7 @@ Attempts to parse mime data as a color
 :param data: mime data to parse
 
 :return: - valid color if mimedata could be interpreted as a color, otherwise an invalid color
-         - hasAlpha: will be set to ``True`` if mime data was interpreted as a color containing an explicit alpha value
+         - hasAlpha: ``True`` if mime data was interpreted as a color containing an explicit alpha value
 %End
 
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );

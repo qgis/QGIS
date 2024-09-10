@@ -83,7 +83,7 @@ that the user has some chance of repairing the damage cleanly.
                     Otherwise the layer editing mode will be disabled if the commit is successful.
 
 :return: - ``True`` on success
-         - commitErrors: will be set to a list of descriptive errors if the commit fails.
+         - commitErrors: a list of descriptive errors if the commit fails.
 %End
 
     bool rollBack( QStringList &rollbackErrors /Out/, bool stopEditing = true );
@@ -94,7 +94,7 @@ Stop editing and discard the edits
                     Otherwise the layer editing mode will be disabled if the rollback is successful.
 
 :return: - ``False`` if errors occurred during rollback
-         - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
+         - rollbackErrors: a list of descriptive errors if the rollback fails.
 %End
 
     bool isEditing() const;

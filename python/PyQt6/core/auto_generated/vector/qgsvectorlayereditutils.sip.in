@@ -327,7 +327,7 @@ Merge features into a single one.
 :param unionGeometry: is the resulting geometry of the merged feature
 
 :return: - ``True`` if the merge was successful, or ``False`` if the operation failed.
-         - errorMessage: will be set to a descriptive error message if any occurs
+         - errorMessage: a descriptive error message if any occurs
 
 .. versionadded:: 3.30
 %End

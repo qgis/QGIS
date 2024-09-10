@@ -272,14 +272,14 @@ Determines whether the geometry is simple (according to OGC definition).
 Splits this geometry according to a given line.
 
 :param splitLine: the line that splits the geometry
-:param newGeometries: list of new geometries that have been created with the split
 :param topological: ``True`` if topological editing is enabled
 :param topologyTestPoints: points that need to be tested for topological completeness in the dataset
 :param errorMsg: error messages emitted, if any
 :param skipIntersectionCheck: set to ``True`` to skip the potentially expensive initial intersection check. Only set this flag if an intersection
                               test has already been performed by the caller!
 
-:return: 0 in case of success, 1 if geometry has not been split, error else
+:return: - 0 in case of success, 1 if geometry has not been split, error else
+         - newGeometries: list of new geometries that have been created with the split
 %End
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;

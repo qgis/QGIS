@@ -52,7 +52,7 @@ Transforms the specified input ``geometry`` using the GCP based transform.
                  If this is done, the geometry will be left in a semi-transformed state.
 
 :return: - transformed geometry
-         - ok: will be set to ``True`` if geometry was successfully transformed, or ``False`` if an error occurred
+         - ok: ``True`` if geometry was successfully transformed, or ``False`` if an error occurred
 %End
 
     QgsGcpTransformerInterface *gcpTransformer() const;
