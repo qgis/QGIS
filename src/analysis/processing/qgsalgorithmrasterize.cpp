@@ -316,7 +316,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     gdal::dataset_unique_ptr hIntermediateDataset( QgsGdalUtils::imageToMemoryDataset( image ) );
     if ( !hIntermediateDataset )
     {
-      throw QgsProcessingException( QStringLiteral( "Error reading tiles from the temporary image" ) );
+      throw QgsProcessingException( QObject::tr( "Error reading tiles from the temporary image" ) );
     }
 
     const int xOffset { x * tileSize };
@@ -329,7 +329,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
                                       tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
     if ( err != CE_None )
     {
-      throw QgsProcessingException( QStringLiteral( "Error reading intermediate raster" ) );
+      throw QgsProcessingException( QObject::tr( "Error reading intermediate raster" ) );
     }
 
     {
@@ -343,7 +343,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
     if ( err != CE_None )
     {
-      throw QgsProcessingException( QStringLiteral( "Error writing output raster" ) );
+      throw QgsProcessingException( QObject::tr( "Error writing output raster" ) );
     }
   };
 
