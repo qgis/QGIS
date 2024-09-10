@@ -84,7 +84,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
   setOutputValue( QStringLiteral( "OUTPUT" ), outputDir );
 
   if ( !QDir().mkpath( outputDir ) )
-    throw QgsProcessingException( QStringLiteral( "Failed to create output directory." ) );
+    throw QgsProcessingException( QObject::tr( "Failed to create output directory." ) );
 
   int length = parameterAsInt( parameters, QStringLiteral( "LENGTH" ), context );
 
