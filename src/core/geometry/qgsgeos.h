@@ -141,7 +141,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * GEOS geometry engine constructor
      * \param geometry The geometry
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
-     * \param flags Geos creation flags (since QGIS 3.40)
+     * \param flags GEOS creation flags (since QGIS 3.40)
      * \note The third parameter was prior to QGIS 3.40 a boolean which has been incorporated into the flag
      */
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
@@ -688,7 +688,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      * \param geometry geometry to convert to GEOS representation
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
-     * \param flags Geos creation flags (since QGIS 3.40)
+     * \param flags GEOS creation flags (since QGIS 3.40)
      */
     static geos::unique_ptr asGeos( const QgsGeometry &geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
 
@@ -696,7 +696,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      * \param geometry geometry to convert to GEOS representation
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
-     * \param flags Geos creation flags (since QGIS 3.40)
+     * \param flags GEOS creation flags (since QGIS 3.40)
      * \note The third parameter was prior to QGIS 3.40 a boolean which has been incorporated into the flag
      */
     static geos::unique_ptr asGeos( const QgsAbstractGeometry *geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );

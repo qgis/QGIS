@@ -282,7 +282,7 @@ void QgsGeos::geometryChanged()
 {
   mGeos.reset();
   mGeosPrepared.reset();
-  cacheGeos( Qgis::GeosCreationFlag::DontAllowInvalidSubGeom );
+  cacheGeos( Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry );
 }
 
 void QgsGeos::prepareGeometry()
@@ -1780,7 +1780,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     for ( int i = 0; i < c->numGeometries(); ++i )
     {
       geos::unique_ptr geosGeom = asGeos( c->geometryN( i ), precision, flags );
-      if ( flags & Qgis::GeosCreationFlag::DontAllowInvalidSubGeom && !geosGeom )
+      if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosGeom )
       {
         return nullptr;
       }
@@ -1802,7 +1802,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     for ( int i = 0; i < polyhedralSurface->numPatches(); ++i )
     {
       geos::unique_ptr geosPolygon = createGeosPolygon( polyhedralSurface->patchN( i ), precision );
-      if ( flags & Qgis::GeosCreationFlag::DontAllowInvalidSubGeom && !geosPolygon )
+      if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosPolygon )
       {
         return nullptr;
       }
