@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenedataitemguiprovider.h"
+#include "qgsquantizedmeshdataprovider.h"
 #include "qgstiledscenedataitems.h"
 #include "qgstiledsceneconnection.h"
 #include "qgstiledsceneconnectiondialog.h"
@@ -52,8 +53,12 @@ void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   if ( QgsTiledSceneRootItem *rootItem = qobject_cast< QgsTiledSceneRootItem * >( item ) )
   {
     QAction *actionNewCesium = new QAction( tr( "New Cesium 3D Tiles Connection…" ), menu );
-    connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newCesium3dTilesConnection( rootItem ); } );
+    connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newConnection( rootItem, "cesiumtiles" ); } );
     menu->addAction( actionNewCesium );
+
+    QAction *actionNewQM = new QAction( tr( "New Quantized Mesh Connection…" ), menu );
+    connect( actionNewQM, &QAction::triggered, this, [rootItem] { newConnection( rootItem, "quantizedmesh" ); } );
+    menu->addAction( actionNewQM );
 
     menu->addSeparator();
 
@@ -100,14 +105,14 @@ void QgsTiledSceneDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   item->parent()->refreshConnections();
 }
 
-void QgsTiledSceneDataItemGuiProvider::newCesium3dTilesConnection( QgsDataItem *item )
+void QgsTiledSceneDataItemGuiProvider::newConnection( QgsDataItem *item, QString provider )
 {
   QgsTiledSceneConnectionDialog dlg;
   if ( !dlg.exec() )
     return;
 
   QgsTiledSceneProviderConnection::Data conn = QgsTiledSceneProviderConnection::decodedUri( dlg.connectionUri() );
-  conn.provider = QStringLiteral( "cesiumtiles" );
+  conn.provider = provider;
 
   QgsTiledSceneProviderConnection::addConnection( dlg.connectionName(), conn );
 
