@@ -368,6 +368,10 @@ Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defi
 
 :param pt1: first point.
 :param pt2: second point.
+
+:return: - a: Output parameter, a coefficient of the equation.
+         - b: Output parameter, b coefficient of the equation.
+         - c: Output parameter, c coefficient of the equation.
 %End
 
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) /HoldGIL/;

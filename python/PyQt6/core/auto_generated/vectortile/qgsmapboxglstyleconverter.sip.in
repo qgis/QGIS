@@ -517,10 +517,12 @@ Parses a symbol layer as renderer or labeling.
    This is private API only, and may change in future QGIS versions
 
 :param jsonLayer: symbol layer to parse
-:param rendererStyle: generated QGIS vector tile style
-:param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
-:param labelingStyle: generated QGIS vector tile labeling
 :param context: conversion context
+
+:return: - rendererStyle: generated QGIS vector tile style
+         - hasRenderer: ``True`` if symbol layer generated a renderer style
+         - labelingStyle: generated QGIS vector tile labeling
+         - hasLabeling: ``True`` if symbol layer generated a labeling style
 %End
 
     static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,

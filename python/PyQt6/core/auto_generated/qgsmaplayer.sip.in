@@ -799,6 +799,8 @@ Saves named and sld style of the layer to the style table in the db.
    Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
    Use :py:func:`QgsProviderRegistry.styleExists()` to test in advance if a style already exists and handle this appropriately
    in your client code.
+
+:return: a descriptive error message if any occurs
 %End
 
 
@@ -1128,6 +1130,8 @@ Export the properties of this layer as named style in a QDomDocument
 :param context: read write context
 :param categories: the style categories to export
                    during the execution of writeSymbology
+
+:return: this QString will be initialized on error
 %End
 
 

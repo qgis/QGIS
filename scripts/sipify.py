@@ -2731,9 +2731,22 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         else:
                             pass  # Return docstring should be single line with SIP_OUT params
 
-                if out_params and CONTEXT.return_type:
-                    exit_with_error(
-                        f"A method with output parameters must contain a return directive ({CONTEXT.current_method_name} method returns {CONTEXT.return_type})")
+                if out_params:
+                    if CONTEXT.return_type:
+                        exit_with_error(
+                            f"A method with output parameters must contain a return directive ({CONTEXT.current_method_name} method returns {CONTEXT.return_type})")
+                    else:
+                        doc_string += "\n"
+
+                        for out_param_idx, out_param in enumerate(out_params):
+                            if out_param_idx == 0:
+                                if len(out_params) > 1:
+                                    doc_string += f":return: - {out_param}\n"
+                                else:
+                                    arg_name_match = re.match(r'^(.*?):\s*(.*?)$', out_param)
+                                    doc_string += f":return: {arg_name_match.group(2)}\n"
+                            else:
+                                doc_string += f"{doc_prepend}         - {out_param}\n"
 
                 dbg_info(f'doc_string is {doc_string}')
                 write_output("DS", doc_string)
