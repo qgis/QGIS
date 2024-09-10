@@ -788,6 +788,28 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         prop = dd_props.property(QgsSymbolLayer.Property.PropertyAngle)
         self.assertEqual(prop.asExpression(), '"ROTATION"')
 
+    def testScaledIcon(self):
+        """ Test icon-rotate property that depends on a data attribute """
+        context = QgsMapBoxGlStyleConversionContext()
+
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
+        context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 2, "height": 2, "pixelRatio": 1}})
+        style = {
+            "layout": {
+                "icon-image": "{foo}",
+                "text-size": 11,
+                "icon-size": 2
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_renderer)
+        self.assertFalse(has_labeling)
+        size = renderer.symbol().symbolLayers()[0].size()
+        self.assertEqual(size, 4)
+
     def testCircleLayer(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {

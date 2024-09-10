@@ -1853,6 +1853,9 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     const QString sprite = retrieveSpriteAsBase64WithProperties( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty );
     if ( !sprite.isEmpty() )
     {
+      if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
+        spriteSize = spriteSize * jsonLayout.value( QStringLiteral( "icon-image" ) ).toDouble();
+
       QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );
       markerLayer->setPath( sprite );
       markerLayer->setSize( spriteSize.width() );
