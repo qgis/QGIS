@@ -82,6 +82,12 @@ is desired and the default format color should be used.
 Returns the font point size, or -1 if the font size is not set
 and should be inherited.
 
+.. note::
+
+   A format should have either :py:func:`~QgsTextCharacterFormat.fontPointSize` or :py:func:`~QgsTextCharacterFormat.fontPercentageSize` set, not both.
+
+.. seealso:: :py:func:`fontPercentageSize`
+
 .. seealso:: :py:func:`setFontPointSize`
 
 .. versionadded:: 3.28
@@ -94,9 +100,47 @@ Sets the font point ``size``.
 Set ``size`` to -1 if the font size is not set
 and should be inherited.
 
+.. note::
+
+   A format should have either :py:func:`~QgsTextCharacterFormat.fontPointSize` or :py:func:`~QgsTextCharacterFormat.fontPercentageSize` set, not both.
+
 .. seealso:: :py:func:`fontPointSize`
 
+.. seealso:: :py:func:`setFontPercentageSize`
+
 .. versionadded:: 3.28
+%End
+
+    double fontPercentageSize() const;
+%Docstring
+Returns the font percentage size (as fraction of inherited font size), or -1 if the font size percentage is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextCharacterFormat.fontPointSize` or :py:func:`~QgsTextCharacterFormat.fontPercentageSize` set, not both.
+
+.. seealso:: :py:func:`fontPointSize`
+
+.. seealso:: :py:func:`setFontPercentageSize`
+
+.. versionadded:: 3.40
+%End
+
+    void setFontPercentageSize( double size );
+%Docstring
+Sets  the font percentage ``size`` (as fraction of inherited font size).
+
+Set ``size`` to -1 if the font percentange size is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextCharacterFormat.fontPointSize` or :py:func:`~QgsTextCharacterFormat.fontPercentageSize` set, not both.
+
+.. seealso:: :py:func:`fontPercentageSize`
+
+.. seealso:: :py:func:`setFontPointSize`
+
+.. versionadded:: 3.40
 %End
 
     QString family() const;

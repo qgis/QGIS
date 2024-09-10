@@ -94,6 +94,9 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Returns the font point size, or -1 if the font size is not set
      * and should be inherited.
      *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPercentageSize()
      * \see setFontPointSize()
      * \since QGIS 3.28
      */
@@ -105,10 +108,37 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Set \a size to -1 if the font size is not set
      * and should be inherited.
      *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
      * \see fontPointSize()
+     * \see setFontPercentageSize()
      * \since QGIS 3.28
      */
     void setFontPointSize( double size );
+
+    /**
+     * Returns the font percentage size (as fraction of inherited font size), or -1 if the font size percentage is not set.
+     *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPointSize()
+     * \see setFontPercentageSize()
+     * \since QGIS 3.40
+     */
+    double fontPercentageSize() const;
+
+    /**
+     * Sets  the font percentage \a size (as fraction of inherited font size).
+     *
+     * Set \a size to -1 if the font percentange size is not set.
+     *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPercentageSize()
+     * \see setFontPointSize()
+     * \since QGIS 3.40
+     */
+    void setFontPercentageSize( double size );
 
     /**
      * Returns the font family name, or an empty string if the
@@ -289,6 +319,7 @@ class CORE_EXPORT QgsTextCharacterFormat
     QString mStyleName;
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
+    double mFontPercentageSize = -1;
     QString mFontFamily;
     double mWordSpacing = std::numeric_limits< double >::quiet_NaN();
 

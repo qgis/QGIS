@@ -3946,6 +3946,28 @@ class PyQgsTextRenderer(QgisTestCase):
             '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
             point=QPointF(50, 200))
 
+    def testHtmlHeadings(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_headings', None, text=[
+            '<h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6>'],
+            point=QPointF(10, 300))
+
+    def testHtmlHeadingsLargerFont(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(40)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_headings_larger', None, text=[
+            '<h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6>'],
+            point=QPointF(10, 350))
+
     def testHtmlSuperSubscript(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))

@@ -73,6 +73,8 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mTextColor = other.mTextColor;
   if ( mFontPointSize == -1 && other.mFontPointSize != -1 )
     mFontPointSize = other.mFontPointSize;
+  if ( mFontPercentageSize == -1 && other.mFontPercentageSize != -1 )
+    mFontPercentageSize = other.mFontPercentageSize;
   if ( std::isnan( mWordSpacing ) )
     mWordSpacing = other.mWordSpacing;
   if ( mFontFamily.isEmpty() && !other.mFontFamily.isEmpty() )
@@ -114,6 +116,16 @@ double QgsTextCharacterFormat::fontPointSize() const
 void QgsTextCharacterFormat::setFontPointSize( double size )
 {
   mFontPointSize = size;
+}
+
+double QgsTextCharacterFormat::fontPercentageSize() const
+{
+  return mFontPercentageSize;
+}
+
+void QgsTextCharacterFormat::setFontPercentageSize( double size )
+{
+  mFontPercentageSize = size;
 }
 
 QString QgsTextCharacterFormat::family() const
@@ -164,6 +176,9 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
 
   if ( mFontPointSize != -1 )
     font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, Qgis::RenderUnit::Points ) );
+
+  if ( mFontPercentageSize != -1 )
+    font.setPixelSize( font.pixelSize() * mFontPercentageSize );
 
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
