@@ -142,6 +142,24 @@ and should be inherited.
 .. versionadded:: 3.28
 %End
 
+    double wordSpacing() const;
+%Docstring
+Returns the font word spacing, in points, or NaN if word spacing is not set and should be inherited.
+
+.. seealso:: :py:func:`setWordSpacing`
+
+.. versionadded:: 3.40
+%End
+
+    void setWordSpacing( double spacing );
+%Docstring
+Sets the font word ``spacing``, in points, or NaN if word spacing is not set and should be inherited.
+
+.. seealso:: :py:func:`wordSpacing`
+
+.. versionadded:: 3.40
+%End
+
     BooleanValue italic() const;
 %Docstring
 Returns whether the format has italic enabled.

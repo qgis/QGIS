@@ -73,6 +73,13 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
     // handle these markers as tab characters in the parsed HTML document.
     line.replace( QString( '\t' ), QStringLiteral( TAB_REPLACEMENT_MARKER ) );
 
+    // cheat a little. Qt css requires word-spacing to have the "px" suffix. But we don't treat word spacing
+    // as pixels, because that doesn't scale well with different dpi render targets! So let's instead use just instead treat the suffix as
+    // optional, and ignore ANY unit suffix the user has put, and then replace it with "px" so that Qt's css parsing engine can process it
+    // correctly...
+    const thread_local QRegularExpression sRxWordSpacingFix( QStringLiteral( "word-spacing:\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)" ) );
+    line.replace( sRxWordSpacingFix, QStringLiteral( "word-spacing: \\1px" ) );
+
     sourceDoc.setHtml( line );
 
     QTextBlock sourceBlock = sourceDoc.firstBlock();
