@@ -361,7 +361,7 @@ the features displayed using that key.
 :param layer: associated vector layer
 
 :return: - QGIS expression string for matching features with the specified key
-         - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
+         - ok: ``True`` if legend key was successfully converted to a filter expression
 
 .. seealso:: :py:func:`legendKeys`
 

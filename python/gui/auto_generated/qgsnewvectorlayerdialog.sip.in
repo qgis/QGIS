@@ -48,8 +48,8 @@ If ``encoding`` is specified, it will be set to the encoding of the created file
 :param crs: default layer CRS to show in dialog
 
 :return: - Newly created file name, or an empty string if user canceled or an error occurred.
-         - errorMessage: will be set to any error message encountered during layer creation
-         - encoding: will be set to file encoding of created layer
+         - errorMessage: any error message encountered during layer creation
+         - encoding: file encoding of created layer
 
 .. versionadded:: 3.4.5
 %End

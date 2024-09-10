@@ -517,9 +517,6 @@ Parses a symbol layer as renderer or labeling.
    This is private API only, and may change in future QGIS versions
 
 :param jsonLayer: symbol layer to parse
-:param rendererStyle: generated QGIS vector tile style
-:param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
-:param labelingStyle: generated QGIS vector tile labeling
 :param context: conversion context
 %End
 
@@ -547,7 +544,7 @@ Parses a color value which is interpolated by zoom range.
 :param context: conversion context
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
-         - defaultColor: storage for a reasonable "default" color representing the overall property.
+         - defaultColor: a reasonable "default" color representing the overall property.
 %End
 
     static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber /Out/ = 0 );
@@ -559,7 +556,7 @@ Parses a numeric value which is interpolated by zoom range.
 :param multiplier: optional multiplication factor
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
-         - defaultNumber: storage for a reasonable "default" number representing the overall property.
+         - defaultNumber: a reasonable "default" number representing the overall property.
 %End
 
     static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );

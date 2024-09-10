@@ -198,7 +198,7 @@ page in the layout.
 :param createReferenceImage: if ``True``, the rendered reference image will be regenerated instead of performing a comparison test with the existing image
 
 :return: - ``True`` if the rendered layout matches the expected reference image.
-         - report: will be set to generated test report
+         - report: generated test report
 %End
 
 };

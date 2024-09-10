@@ -96,7 +96,7 @@ Caller takes ownership of the returned object.
 :param hasZ: set to ``True`` to if geometry includes Z values
 
 :return: - converted geometry
-         - crs: will be set to the parsed geometry CRS
+         - crs: the parsed geometry CRS
 %End
 
     static QgsCoordinateReferenceSystem convertSpatialReference( const QVariantMap &spatialReferenceMap );

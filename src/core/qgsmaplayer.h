@@ -785,6 +785,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param loadFromLocalDb if TRUE forces to load from local db instead of datasource one
      * \param categories the style categories to be loaded.
      * \param flags flags controlling how the style should be loaded (since QGIS 3.38)
+     *
+     * \returns status message, which may indicate success or contain an error message
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
                                     QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,

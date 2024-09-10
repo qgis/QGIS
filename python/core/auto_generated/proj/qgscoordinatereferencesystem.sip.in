@@ -323,7 +323,7 @@ or the compound CRS could not be created for the combination.
 :param verticalCrs: vertical component for CRS
 
 :return: - compound CRS if it was possible to create one, or an invalid CRS if not
-         - error: will be set to a descriptive error if the compound CRS could not be created
+         - error: a descriptive error if the compound CRS could not be created
 
 .. versionadded:: 3.38
 %End

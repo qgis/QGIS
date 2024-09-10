@@ -286,7 +286,7 @@ Save all the values from the editors to the layer.
 
 
 :return: - ``True`` if save was successful
-         - error: will be set to an explanatory error message if an error occurs while saving the form.
+         - error: an explanatory error message if an error occurs while saving the form.
 
 .. versionadded:: 3.18
 %End

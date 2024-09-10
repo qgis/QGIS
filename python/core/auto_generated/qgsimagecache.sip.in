@@ -70,7 +70,7 @@ size, and then the result cached for subsequent lookups.
                     animations. This should be set to -1 if not required.
 
 :return: - rendered image
-         - fitsInCache: will be set to ``True`` if the resultant raster was of a sufficiently small size to store in the cache
+         - fitsInCache: ``True`` if the resultant raster was of a sufficiently small size to store in the cache
 %End
 
     QSize originalSize( const QString &path, bool blocking = false ) const;

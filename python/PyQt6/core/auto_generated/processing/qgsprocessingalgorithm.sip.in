@@ -442,7 +442,7 @@ Note that some combinations of parameter types and values cannot be represented 
 :param context: processing context
 
 :return: - equivalent qgis_process command
-         - ok: will be set to ``True`` if the command was successfully generated
+         - ok: ``True`` if the command was successfully generated
 
 .. versionadded:: 3.24
 %End
@@ -777,7 +777,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :param feedback: feedback object
 
 :return: - path to source layer, or nearly converted compatible layer
-         - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+         - layerName: the target layer name for multi-layer sources (e.g. Geopackage)
 
 .. seealso:: :py:func:`parameterAsCompatibleSourceLayerPath`
 

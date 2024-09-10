@@ -534,7 +534,7 @@ Returns a string version of the parameter input ``value`` (if possible).
 :param context: processing context
 
 :return: - value converted to string
-         - ok: will be set to ``True`` if value could be represented as a string.
+         - ok: ``True`` if value could be represented as a string.
 
 .. seealso:: :py:func:`valueAsStringList`
 
@@ -553,7 +553,7 @@ Returns a string list version of the parameter input ``value`` (if possible).
 :param context: processing context
 
 :return: - value converted to string list
-         - ok: will be set to ``True`` if value could be represented as a string list
+         - ok: ``True`` if value could be represented as a string list
 
 .. seealso:: :py:func:`valueAsString`
 
@@ -1140,7 +1140,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :param feedback: feedback object
 
 :return: - path to source layer, or nearly converted compatible layer
-         - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+         - layerName: the target layer name for multi-layer sources (e.g. Geopackage)
 
 .. seealso:: :py:func:`parameterAsCompatibleSourceLayerPath`
 
@@ -3507,7 +3507,7 @@ calls :py:func:`QgsProcessingProvider.isSupportedOutputValue()` to test compatib
 :param context: Processing context
 
 :return: - ``True`` if ``value`` is supported.
-         - error: will be set to a descriptive error string
+         - error: a descriptive error string
 
 .. versionadded:: 3.14
 %End

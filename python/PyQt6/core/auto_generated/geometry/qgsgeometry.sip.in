@@ -650,10 +650,10 @@ and the indices of the vertices before and after the closest vertex.
 :param point: point to search for
 
 :return: - closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
-         - closestVertexIndex: will be set to the vertex index of the closest found vertex
-         - previousVertexIndex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if not present.
-         - nextVertexIndex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if not present.
-         - sqrDist: will be set to the square distance between the closest vertex and the specified point
+         - closestVertexIndex: the vertex index of the closest found vertex
+         - previousVertexIndex: the vertex index of the previous vertex from the closest one. Will be set to -1 if not present.
+         - nextVertexIndex: the vertex index of the next vertex after the closest one. Will be set to -1 if not present.
+         - sqrDist: the square distance between the closest vertex and the specified point
 %End
 
     double distanceToVertex( int vertex ) const;

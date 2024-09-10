@@ -439,7 +439,7 @@ metadata :py:func:`~QgsProviderMetadata.createDatabase` method can be used to cr
 :param uri: destination URI for newly created database.
 
 :return: - ``True`` if the database was successfully created
-         - errorMessage: will be set to a descriptive error message if the database could not be successfully created.
+         - errorMessage: a descriptive error message if the database could not be successfully created.
 
 .. note::
 
@@ -606,7 +606,7 @@ Returns ``True`` if a layer style with the specified ``styleId`` exists in the p
 :param styleId: style ID to test for
 
 :return: - ``True`` if the layer style already exists
-         - errorCause: will be set to a descriptive error message, if an error occurs while checking if the style exists
+         - errorCause: a descriptive error message, if an error occurs while checking if the style exists
 
 .. seealso:: :py:func:`getStyleById`
 

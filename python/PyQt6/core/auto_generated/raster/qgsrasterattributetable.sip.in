@@ -359,7 +359,7 @@ Returns a field by name or a default constructed field with empty name if the fi
 :param name: of the field
 
 :return: - the matching field or a default constructed one.
-         - ok: will be set to ``True`` if the field was found.
+         - ok: ``True`` if the field was found.
 %End
 
     const QList<QgsRasterAttributeTable::Field> fieldsByUsage( const Qgis::RasterAttributeTableFieldUsage fieldUsage ) const;

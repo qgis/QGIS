@@ -1206,8 +1206,9 @@ def detect_comment_block(strict_mode=True):
     CONTEXT.comment_code_snippet = CodeSnippetType.NotCodeSnippet
     CONTEXT.comment_last_line_note_warning = False
     CONTEXT.found_since = False
-    CONTEXT.skipped_params_out = []
-    CONTEXT.skipped_params_remove = []
+    if CONTEXT.multiline_definition == MultiLineType.NotMultiline:
+        CONTEXT.skipped_params_out = []
+        CONTEXT.skipped_params_remove = []
 
     if re.match(r'^\s*/\*', CONTEXT.current_line) or (
             not strict_mode and '/*' in CONTEXT.current_line):
@@ -2661,13 +2662,16 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     param_match = re.match(r'^:param\s+(\w+)', comment_line)
                     if param_match:
                         param_name = param_match.group(1)
+                        dbg_info(f'found parameter: {param_name}')
                         if param_name in CONTEXT.skipped_params_out or param_name in CONTEXT.skipped_params_remove:
+                            dbg_info(str(CONTEXT.skipped_params_out))
                             if param_name in CONTEXT.skipped_params_out:
+                                dbg_info(f'deferring docs for parameter {param_name} marked as SIP_OUT')
                                 comment_line = re.sub(
                                     r'^:param\s+(\w+):\s*(.*?)$', r'\1: \2',
                                     comment_line)
                                 comment_line = re.sub(
-                                    r'(?:optional|if specified|if given),?\s*',
+                                    r'(?:optional|if specified|if given|storage for|will be set to),?\s*',
                                     '',
                                     comment_line)
                                 out_params.append(comment_line)
@@ -2729,7 +2733,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
                 if out_params and CONTEXT.return_type:
                     exit_with_error(
-                        f"A method with output parameters must contain a return directive (method returns {CONTEXT.return_type})")
+                        f"A method with output parameters must contain a return directive ({CONTEXT.current_method_name} method returns {CONTEXT.return_type})")
 
                 dbg_info(f'doc_string is {doc_string}')
                 write_output("DS", doc_string)

@@ -61,10 +61,10 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 
 :param geometry: line or polygon geometry
 :param distance: distance to traverse along geometry
-:param previousVertex: will be set to previous vertex ID
 
 :return: - ``True`` if vertices were successfully retrieved
-         - nextVertex: will be set to next vertex ID
+         - previousVertex: previous vertex ID
+         - nextVertex: next vertex ID
 
 .. note::
 
@@ -808,11 +808,12 @@ The result is a line (segment) centered in point p and perpendicular to segment 
 :param segmentPoint1y: : y-coordinate of segmentPoint1, the segment's start point
 :param segmentPoint2x: : x-coordinate of segmentPoint2, the segment's end point
 :param segmentPoint2y: : y-coordinate of segmentPoint2, the segment's end point
-:param perpendicularSegmentPoint1x: : x-coordinate of the perpendicularCenterSegment's start point
-:param perpendicularSegmentPoint1y: : y-coordinate of the perpendicularCenterSegment's start point
-:param perpendicularSegmentPoint2x: : x-coordinate of the perpendicularCenterSegment's end point
-:param perpendicularSegmentPoint2y: : y-coordinate of the perpendicularCenterSegment's end point
 :param segmentLength: (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
+
+:return: - perpendicularSegmentPoint1x: : x-coordinate of the perpendicularCenterSegment's start point
+         - perpendicularSegmentPoint1y: : y-coordinate of the perpendicularCenterSegment's start point
+         - perpendicularSegmentPoint2x: : x-coordinate of the perpendicularCenterSegment's end point
+         - perpendicularSegmentPoint2y: : y-coordinate of the perpendicularCenterSegment's end point
 
 .. versionadded:: 3.24
 
@@ -848,10 +849,10 @@ A method to project one skew line onto another.
 :param P12: is the second point that belongs to first skew line,
 :param P2: is the first point that belongs to second skew line,
 :param P22: is the second point that belongs to second skew line,
-:param X1: is the result projection point of line P2P22 onto line P1P12,
 :param epsilon: the tolerance to use.
 
-:return: ``True`` if such point exists, ``False`` - otherwise.
+:return: - ``True`` if such point exists, ``False`` - otherwise.
+         - X1: is the result projection point of line P2P22 onto line P1P12,
 
 .. deprecated:: 3.40
 

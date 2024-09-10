@@ -60,7 +60,7 @@ to the triangle defined by (``outX1``, ``outY1``), (``outY2``, ``outY2``), (``ou
 :param outY3: destination triangle vertex 3 y-coordinate
 
 :return: - Calculated transform (if possible)
-         - ok: will be set to ``True`` if the transform could be determined.
+         - ok: ``True`` if the transform could be determined.
 
 .. versionadded:: 3.34
 %End
