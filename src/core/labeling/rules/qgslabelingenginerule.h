@@ -179,6 +179,16 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
     virtual QString displayType() const = 0;
 
     /**
+     * Returns TRUE if the rule is available for use within the current QGIS environment.
+     *
+     * The base class method returns TRUE.
+     *
+     * Rules can return FALSE if required dependencies are not available, e.g. if a library version
+     * is too old for the rule.
+     */
+    virtual bool isAvailable() const;
+
+    /**
      * Returns a user-friendly description of the rule.
      *
      * This should include the rule name() if set, and other useful details for users

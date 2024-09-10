@@ -47,6 +47,14 @@ Returns a list of the rule IDs for rules present in the registry.
 Returns a user-friendly, translated string representing the rule type with matching ``id``.
 %End
 
+    bool isAvailable( const QString &id ) const;
+%Docstring
+Returns ``True`` if the rule is with matching ``id`` is available for use within the current QGIS environment.
+
+Rules can return ``False`` if required dependencies are not available, e.g. if a library version
+is too old for the rule.
+%End
+
     QgsAbstractLabelingEngineRule *create( const QString &id ) const /TransferBack/;
 %Docstring
 Creates a new rule from the type with matching ``id``.

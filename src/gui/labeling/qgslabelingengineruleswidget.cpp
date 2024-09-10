@@ -41,7 +41,12 @@ Qt::ItemFlags QgsLabelingEngineRulesModel::flags( const QModelIndex &index ) con
   if ( !rule )
     return Qt::ItemFlags();
 
-  Qt::ItemFlags res = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+  Qt::ItemFlags res = Qt::ItemIsSelectable;
+  if ( rule->isAvailable() )
+  {
+    res |= Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+
   if ( index.column() == 0 )
   {
     res |= Qt::ItemIsUserCheckable;
@@ -87,6 +92,9 @@ QVariant QgsLabelingEngineRulesModel::data( const QModelIndex &index, int role )
 
     case Qt::ToolTipRole:
     {
+      if ( !rule->isAvailable() )
+        return tr( "This rule is not available for use on this system." );
+
       return rule->description();
     }
 
@@ -265,6 +273,9 @@ void QgsLabelingEngineRulesWidget::createTypesMenu()
   QList< QAction * > actions;
   for ( const QString &id : ruleIds )
   {
+    if ( ! QgsApplication::labelingEngineRuleRegistry()->isAvailable( id ) )
+      continue;
+
     QAction *action = new QAction( QgsApplication::labelingEngineRuleRegistry()->create( id )->displayType() );
     connect( action, &QAction::triggered, this, [this, id ]
     {
@@ -309,9 +320,8 @@ void QgsLabelingEngineRulesWidget::editSelectedRule()
 void QgsLabelingEngineRulesWidget::editRule( const QModelIndex &index )
 {
   const QgsAbstractLabelingEngineRule *rule = mModel->ruleAtIndex( index );
-  if ( !rule )
+  if ( !rule || !rule->isAvailable() )
     return;
-
 
   // TODO -- move to a registry when there's a need
   QgsLabelingEngineRuleWidget *widget = nullptr;
