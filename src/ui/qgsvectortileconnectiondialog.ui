@@ -20,30 +20,6 @@
       <string>Connection Details</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="11" column="2">
-       <widget class="QLineEdit" name="mEditReferer">
-        <property name="toolTip">
-         <string>Optional custom referer</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QComboBox" name="mModeComboBox"/>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="mEditName">
-        <property name="toolTip">
-         <string>Name of the new connection</string>
-        </property>
-       </widget>
-      </item>
       <item row="8" column="2">
        <widget class="QgsSpinBox" name="mSpinZMax">
         <property name="sizePolicy">
@@ -57,6 +33,26 @@
         </property>
        </widget>
       </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxZMax">
+        <property name="text">
+         <string>Max. Zoom Level</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="lblReferer">
+        <property name="text">
+         <string>Referer</string>
+        </property>
+        <property name="buddy">
+         <cstring>mEditReferer</cstring>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="2">
        <widget class="QLineEdit" name="mEditUrl">
         <property name="toolTip">
@@ -67,13 +63,13 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QgsSpinBox" name="mSpinZMin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxZMin">
+        <property name="text">
+         <string>Min. Zoom Level</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -101,37 +97,45 @@
         </layout>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="mCheckBoxZMin">
-        <property name="text">
-         <string>Min. Zoom Level</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+      <item row="11" column="2">
+       <widget class="QLineEdit" name="mEditReferer">
+        <property name="toolTip">
+         <string>Optional custom referer</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
-       <widget class="QCheckBox" name="mCheckBoxZMax">
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Max. Zoom Level</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>Source URL</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="0">
-       <widget class="QLabel" name="lblReferer">
-        <property name="text">
-         <string>Referer</string>
-        </property>
-        <property name="buddy">
-         <cstring>mEditReferer</cstring>
+      <item row="4" column="2">
+       <widget class="QgsSpinBox" name="mSpinZMin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="mEditName">
+        <property name="toolTip">
+         <string>Name of the new connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
        <widget class="QLineEdit" name="mEditStyleUrl">
         <property name="toolTip">
          <string>If specified, the layer will be automatically styled using styling JSON from the entered URL.</string>
@@ -141,24 +145,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Style URL</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>URL</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Mode</string>
         </property>
        </widget>
       </item>

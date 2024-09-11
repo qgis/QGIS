@@ -45,14 +45,10 @@ class QgsVectorTileConnectionDialog : public QDialog, public Ui::QgsVectorTileCo
     QString connectionUri() const;
     QString connectionName() const;
 
-    LoadingMode loadingMode() const;
-
     void accept() override;
 
   private slots:
     void updateOkButtonState();
-    void modeChanged( int index );
-
 };
 
 ///@endcond
