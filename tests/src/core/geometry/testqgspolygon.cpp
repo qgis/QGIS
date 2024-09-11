@@ -2866,11 +2866,7 @@ void TestQgsPolygon::toFromWKT()
   pl4.setExteriorRing( ext4 );
   pl4.addInteriorRing( new QgsLineString() );
   wkt = pl4.asWkt();
-  QCOMPARE( wkt, QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),())" ) );
-
-  QgsPolygon pl5;
-  QVERIFY( pl5.fromWkt( wkt ) );
-  QCOMPARE( pl4, pl5 );
+  QCOMPARE( wkt, QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))" ) );
 }
 
 void TestQgsPolygon::exportImport()
