@@ -182,12 +182,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>mEditName</tabstop>
+  <tabstop>mEditStyleUrl</tabstop>
   <tabstop>mEditUrl</tabstop>
-  <tabstop>mCheckBoxZMin</tabstop>
   <tabstop>mSpinZMin</tabstop>
-  <tabstop>mCheckBoxZMax</tabstop>
   <tabstop>mSpinZMax</tabstop>
   <tabstop>mEditReferer</tabstop>
+  <tabstop>mCheckBoxZMax</tabstop>
+  <tabstop>mCheckBoxZMin</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -198,8 +199,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>224</x>
-     <y>381</y>
+     <x>236</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -214,8 +215,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>292</x>
-     <y>387</y>
+     <x>304</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
