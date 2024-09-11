@@ -2636,24 +2636,38 @@ geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, do
   {
     geos::unique_ptr exteriorRingGeos( GEOSGeom_createLinearRing_r( context, createCoordinateSequence( exteriorRing, precision, true ) ) );
 
-    int nHoles = polygon->numInteriorRings();
+    int nHoles = 0;
+    int nInteriorRings = polygon->numInteriorRings();
+    if ( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings )
+    {
+      for ( int i = 0; i < nInteriorRings; ++i )
+      {
+        const QgsCurve *interiorRing = polygon->interiorRing( i );
+        if ( !interiorRing->isEmpty() )
+        {
+          nHoles++;
+        }
+      }
+    }
+    else
+    {
+      nHoles = nInteriorRings;
+    }
     GEOSGeometry **holes = nullptr;
     if ( nHoles > 0 )
     {
       holes = new GEOSGeometry*[ nHoles ];
     }
 
-    int nHolesCreated = 0;
-    for ( int i = 0; i < nHoles; ++i )
+    for ( int i = 0; i < nInteriorRings; ++i )
     {
       const QgsCurve *interiorRing = polygon->interiorRing( i );
       if ( !( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) || !interiorRing->isEmpty() )
       {
         holes[i] = GEOSGeom_createLinearRing_r( context, createCoordinateSequence( interiorRing, precision, true ) );
-        nHolesCreated++;
       }
     }
-    geosPolygon.reset( GEOSGeom_createPolygon_r( context, exteriorRingGeos.release(), holes, nHolesCreated ) );
+    geosPolygon.reset( GEOSGeom_createPolygon_r( context, exteriorRingGeos.release(), holes, nHoles ) );
     delete[] holes;
   }
   CATCH_GEOS( nullptr )

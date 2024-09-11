@@ -3512,13 +3512,13 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow invalid sub-geometries to be created"
+Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
 Qgis.GeosCreationFlag.__doc__ = """Flags which control geos geometry creation behavior.
 
 .. versionadded:: 3.40
 
-* ``RejectOnInvalidSubGeometry``: Don't allow invalid sub-geometries to be created
+* ``RejectOnInvalidSubGeometry``: Don't allow geometries with invalid sub-geometries to be created
 * ``SkipEmptyInteriorRings``: Skip any empty polygon interior ring
 
 """
