@@ -729,6 +729,7 @@
 %Include auto_generated/textrenderer/qgsfontmanager.sip
 %Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
 %Include auto_generated/textrenderer/qgstextblock.sip
+%Include auto_generated/textrenderer/qgstextblockformat.sip
 %Include auto_generated/textrenderer/qgstextbuffersettings.sip
 %Include auto_generated/textrenderer/qgstextcharacterformat.sip
 %Include auto_generated/textrenderer/qgstextdocument.sip

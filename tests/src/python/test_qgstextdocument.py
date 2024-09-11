@@ -82,9 +82,11 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[0][5].text(), 'd')
 
     def testFromHtml(self):
-        doc = QgsTextDocument.fromHtml(['abc<div style="color: red"><b style="text-decoration: underline; font-style: italic; font-size: 15pt; font-family: Serif">def</b> ghi<div>jkl</div></div>', 'b c d', 'e'])
+        doc = QgsTextDocument.fromHtml(['abc<div style="color: red; text-align: right"><b style="text-decoration: underline; font-style: italic; font-size: 15pt; font-family: Serif">def</b> ghi<div>jkl</div></div>', 'b c d', 'e'])
         self.assertEqual(len(doc), 5)
         self.assertEqual(len(doc[0]), 1)
+        self.assertTrue(doc[0].blockFormat().hasHorizontalAlignmentSet())
+        self.assertEqual(doc[0].blockFormat().horizontalAlignment(), Qgis.TextHorizontalAlignment.Right)
         self.assertEqual(doc[0][0].text(), 'abc')
         self.assertEqual(doc[0][0].characterFormat().underline(), QgsTextCharacterFormat.BooleanValue.NotSet)
         self.assertEqual(doc[0][0].characterFormat().italic(), QgsTextCharacterFormat.BooleanValue.NotSet)

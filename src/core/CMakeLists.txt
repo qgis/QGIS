@@ -364,6 +364,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgsfontmanager.cpp
   textrenderer/qgstextbackgroundsettings.cpp
   textrenderer/qgstextblock.cpp
+  textrenderer/qgstextblockformat.cpp
   textrenderer/qgstextbuffersettings.cpp
   textrenderer/qgstextcharacterformat.cpp
   textrenderer/qgstextdocument.cpp
@@ -1991,6 +1992,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgsfontmanager.h
   textrenderer/qgstextbackgroundsettings.h
   textrenderer/qgstextblock.h
+  textrenderer/qgstextblockformat.h
   textrenderer/qgstextbuffersettings.h
   textrenderer/qgstextcharacterformat.h
   textrenderer/qgstextdocument.h

@@ -17,6 +17,7 @@ from qgis.core import (
     QgsStringUtils,
     QgsTextBlock,
     QgsTextFragment,
+    QgsTextBlockFormat,
     QgsTextCharacterFormat
 )
 
@@ -39,6 +40,14 @@ class TestQgsTextBlock(QgisTestCase):
         self.assertEqual(len(block), 1)
         self.assertEqual(block[0].text(), fragment.text())
         self.assertEqual(block.toPlainText(), 'ludicrous gibs!')
+
+    def test_format(self):
+        block = QgsTextBlock()
+        self.assertFalse(block.blockFormat().hasHorizontalAlignmentSet())
+        format = QgsTextBlockFormat()
+        format.setHasHorizontalAlignmentSet(True)
+        block.setBlockFormat(format)
+        self.assertTrue(block.blockFormat().hasHorizontalAlignmentSet())
 
     def testFromPlainText(self):
         block = QgsTextBlock.fromPlainText('abc def')

@@ -86,6 +86,11 @@ int QgsTextBlock::size() const
   return mFragments.size();
 }
 
+void QgsTextBlock::setBlockFormat( const QgsTextBlockFormat &format )
+{
+  mBlockFormat = format;
+}
+
 void QgsTextBlock::applyCapitalization( Qgis::Capitalization capitalization )
 {
   for ( QgsTextFragment &fragment : mFragments )
