@@ -32,7 +32,7 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
   QString expression = properties.value( QStringLiteral( "geometryModifier" ) ).toString();
   if ( expression.isEmpty() )
   {
-    expression = QStringLiteral( "$geometry" );
+    expression = QStringLiteral( "@geometry" );
   }
   QgsGeometryGeneratorSymbolLayer *symbolLayer = new QgsGeometryGeneratorSymbolLayer( expression );
 
