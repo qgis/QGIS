@@ -510,3 +510,6 @@ class TestAuthManagerStorageBase():
 
         # Try to update the setting using auth manager
         self.assertFalse(auth_manager.storeAuthSetting('test', 'test value 2'))
+
+        # Remove the temp storage
+        self.assertTrue(registry.removeStorage(tmp_storage.id()))
