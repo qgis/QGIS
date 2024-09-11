@@ -3968,6 +3968,39 @@ class PyQgsTextRenderer(QgisTestCase):
             '<h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6>'],
             point=QPointF(10, 350))
 
+    def testHtmlAlignmentLeftBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRender(format, 'html_align_rect_left_base', None, text=[
+            '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="center">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300))
+
+    def testHtmlAlignmentRightBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRender(format, 'html_align_rect_right_base', None, text=[
+            '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="center">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Right)
+
+    def testHtmlAlignmentCenterBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRender(format, 'html_align_rect_center_base', None, text=[
+            '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="left">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
     def testHtmlSuperSubscript(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
