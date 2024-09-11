@@ -1517,9 +1517,7 @@ QString QgsAuthConfigurationStorageDb::id() const
 {
   QMutexLocker locker( &mMutex );
 
-  static QString id;
-
-  if ( id.isEmpty() )
+  if ( mId.isEmpty() )
   {
     // Create a hash from the driver name, database name, port, hostname and username
     QCryptographicHash hash( QCryptographicHash::Sha256 );
@@ -1528,9 +1526,9 @@ QString QgsAuthConfigurationStorageDb::id() const
     hash.addData( QString::number( mPort ).toUtf8() );
     hash.addData( mHost.toUtf8() );
     hash.addData( mUser.toUtf8() );
-    id = QString( hash.result().toHex() );
+    mId = QString( hash.result().toHex() );
   }
-  return id;
+  return mId;
 }
 
 bool QgsAuthConfigurationStorageDb::createConfigTables()

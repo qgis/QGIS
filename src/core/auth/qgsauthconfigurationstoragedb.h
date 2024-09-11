@@ -225,6 +225,8 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
      */
     virtual void checkCapabilities();
 
+    // Storage ID
+    mutable QString mId;
 
     // From https://doc.qt.io/qt-6/sql-driver.html
     QString mDriver;

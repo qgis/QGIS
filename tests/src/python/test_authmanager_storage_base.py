@@ -9,7 +9,8 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import unittest
-from qgis.PyQt.QtCore import QCoreApplication
+from osgeo import gdal
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
 from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     Qgis,
@@ -474,3 +475,38 @@ class TestAuthManagerStorageBase():
 
         # Check it's empty
         self.assertFalse(self.storage.certAuthorityExists(rootcert))
+
+    def testUpdateReadOnly(self):
+        """Tests that updating a setting in a read-only storage fails"""
+
+        auth_manager = QgsApplication.authManager()
+        auth_manager.ensureInitialized()
+
+        temp_dir = QTemporaryDir()
+        temp_dir_path = temp_dir.path()
+
+        # Create an empty sqlite database using GDAL
+        db_path = os.path.join(temp_dir_path, 'test.sqlite')
+        ds = gdal.GetDriverByName('SQLite').Create(db_path, 0, 0, 0)
+        del ds
+
+        uri = f"QSQLITE://{db_path}"
+        tmp_storage = QgsAuthConfigurationStorageDb(uri)
+
+        self.assertTrue(tmp_storage.initialize(), tmp_storage.lastError())
+
+        # Add the storage to the registry
+        registry = QgsApplication.authConfigurationStorageRegistry()
+        self.assertTrue(registry.addStorage(tmp_storage))
+
+        # Check we have two ready storages
+        self.assertEqual(len(registry.readyStorages()), 2)
+
+        # Create a setting
+        self.assertTrue(self.storage.storeAuthSetting('test', 'test value'))
+
+        # Set the original storage as read-only
+        self.storage.setReadOnly(True)
+
+        # Try to update the setting using auth manager
+        self.assertFalse(auth_manager.storeAuthSetting('test', 'test value 2'))
