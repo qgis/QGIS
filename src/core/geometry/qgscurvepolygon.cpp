@@ -315,10 +315,6 @@ QString QgsCurvePolygon::asWkt( int precision ) const
         }
         wkt += childWkt + ',';
       }
-      else
-      {
-        wkt += QLatin1String( "()" );
-      }
     }
     if ( wkt.endsWith( ',' ) )
     {

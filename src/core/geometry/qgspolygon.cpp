@@ -222,10 +222,6 @@ QString QgsPolygon::asWkt( int precision ) const
         childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
         wkt += childWkt + ',';
       }
-      else
-      {
-        wkt += QLatin1String( "()" );
-      }
     }
     if ( wkt.endsWith( ',' ) )
     {
