@@ -642,28 +642,12 @@ except ModuleNotFoundError:
 try:
    import shapely as _shapely
 
+   def _geometry_as_shapely(self) -> _shapely.geometry.base.BaseGeometry:
+      wkb_qbytearray = self.asWkb()  # Get the geometry in WKB format (QByteArray)
+      wkb_bytes = bytes(wkb_qbytearray)
+      shapely_geom = _shapely.from_wkb(wkb_bytes)
 
-   def _geometry_as_shapely(self) -> _shapely.Geometry:
-       numpy_coords = _qgsgeometry_as_numpy(self)
-
-       if self.isMultipart():
-           if self.type() == QgsWkbTypes.PointGeometry:
-               return _shapely.multipoint([point(coord) for coord in numpy_coords])
-           elif self.type() == QgsWkbTypes.LineGeometry:
-               return _shapely.multilinestring([linestring(coords) for coords in numpy_coords])
-           elif self.type() == QgsWkbTypes.PolygonGeometry:
-               exterior_ring = numpy_coords[0]
-               interior_rings = numpy_coords[1:]
-               return _shapely.multipolygon([polygon(exterior_ring, interior_rings if interior_rings else None) for rings in numpy_coords])
-       else:
-           if self.type() == QgsWkbTypes.PointGeometry:
-               return _shapely.points(numpy_coords)
-           elif self.type() == QgsWkbTypes.LineGeometry:
-               return _shapely.linestrings(numpy_coords)
-           elif self.type() == QgsWkbTypes.PolygonGeometry:
-               exterior_ring = numpy_coords[0]
-               interior_rings = numpy_coords[1:]
-               return _shapely.polygons(exterior_ring, interior_rings if interior_rings else None)
+      return shapely_geom
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
