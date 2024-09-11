@@ -605,7 +605,7 @@
                    <widget class="QLabel" name="textLabel1_8">
                     <property name="text">
                      <string>Ellipsoid
-(for distance and area calculations)</string>
+(distance, area, angle calculations)</string>
                     </property>
                    </widget>
                   </item>
