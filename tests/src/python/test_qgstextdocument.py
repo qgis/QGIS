@@ -85,8 +85,7 @@ class TestQgsTextDocument(QgisTestCase):
         doc = QgsTextDocument.fromHtml(['abc<div style="color: red; text-align: right"><b style="text-decoration: underline; font-style: italic; font-size: 15pt; font-family: Serif">def</b> ghi<div>jkl</div></div>', 'b c d', 'e'])
         self.assertEqual(len(doc), 5)
         self.assertEqual(len(doc[0]), 1)
-        self.assertTrue(doc[0].blockFormat().hasHorizontalAlignmentSet())
-        self.assertEqual(doc[0].blockFormat().horizontalAlignment(), Qgis.TextHorizontalAlignment.Right)
+        self.assertFalse(doc[0].blockFormat().hasHorizontalAlignmentSet())
         self.assertEqual(doc[0][0].text(), 'abc')
         self.assertEqual(doc[0][0].characterFormat().underline(), QgsTextCharacterFormat.BooleanValue.NotSet)
         self.assertEqual(doc[0][0].characterFormat().italic(), QgsTextCharacterFormat.BooleanValue.NotSet)
@@ -99,6 +98,8 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[1][0].text(), 'def')
         self.assertEqual(doc[1][0].characterFormat().underline(), QgsTextCharacterFormat.BooleanValue.SetTrue)
         self.assertEqual(doc[1][0].characterFormat().italic(), QgsTextCharacterFormat.BooleanValue.SetTrue)
+        self.assertTrue(doc[1].blockFormat().hasHorizontalAlignmentSet())
+        self.assertEqual(doc[1].blockFormat().horizontalAlignment(), Qgis.TextHorizontalAlignment.Right)
         if int(QT_VERSION_STR.split('.')[0]) >= 6:
             self.assertEqual(doc[1][0].characterFormat().fontWeight(), 700)
         else:
