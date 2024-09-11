@@ -7987,8 +7987,6 @@ class TestQgsGeometry(QgisTestCase):
         )
 
     def testAsNumpy(self):
-        from qgis.core import QgsGeometry
-
         # Test POINT
         geom_point = QgsGeometry.fromWkt("POINT (1 2)")
         array_point = geom_point.as_numpy()
