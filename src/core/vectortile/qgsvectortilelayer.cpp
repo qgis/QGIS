@@ -36,6 +36,7 @@
 #include "qgsthreadingutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectortiledataprovider.h"
+#include "qgsvectortileconnection.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -44,7 +45,29 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   : QgsMapLayer( Qgis::LayerType::VectorTile, baseName )
   , mTransformContext( options.transformContext )
 {
-  mDataSource = uri;
+  QString fullUri = uri;
+  QgsVectorTileProviderConnection::Data data = QgsVectorTileProviderConnection::decodedUri( uri );
+  if ( data.url.isEmpty() && !data.styleUrl.isEmpty() )
+  {
+    const QMap<QString, QString> sources = QgsVectorTileUtils::parseStyleSourceUrl( data.styleUrl, data.httpHeaders, data.authCfg );
+    QMap<QString, QString>::const_iterator it = sources.constBegin();
+    int i = 1;
+    for ( ; it != sources.constEnd(); it++ )
+    {
+      QString urlKey = QStringLiteral( "url" );
+      QString nameKey = QStringLiteral( "urlName" );
+      if ( i > 1 )
+      {
+        urlKey.append( QString( "_%1" ).arg( i ) );
+        nameKey.append( QString( "_%1" ).arg( i ) );
+      }
+      fullUri.append( QString( "&%1=%2" ).arg( nameKey, it.key() ) );
+      fullUri.append( QString( "&%1=%2" ).arg( urlKey, it.value() ) );
+
+      i += 1;
+    }
+  }
+  mDataSource = fullUri;
 
   if ( !uri.isEmpty() )
     setValid( loadDataSource() );

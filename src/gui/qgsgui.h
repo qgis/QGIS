@@ -19,6 +19,7 @@
 #define QGSGUI_H
 
 #include "qgis_gui.h"
+#include "qgssettingstree.h"
 #include "qgis_sip.h"
 #include <QWidget>
 #include <memory>
@@ -63,6 +64,8 @@ class GUI_EXPORT QgsGui : public QObject
     Q_OBJECT
 
   public:
+
+    static inline QgsSettingsTreeNode *sTtreeWidgetLastUsedValues = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "widget-last-used-values" ) ) SIP_SKIP;
 
     /**
      * Defines the behavior to use when setting the CRS for a newly created project.

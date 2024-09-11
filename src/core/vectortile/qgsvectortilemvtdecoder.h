@@ -28,6 +28,7 @@ class QgsFeature;
 #include "qgsvectortilerenderer.h"
 #include "qgsvectortilematrixset.h"
 
+
 class QgsVectorTileRawData;
 
 /**

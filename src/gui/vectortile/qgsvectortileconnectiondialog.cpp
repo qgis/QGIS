@@ -17,11 +17,15 @@
 #include "qgsvectortileconnection.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
 
 #include <QMessageBox>
 #include <QPushButton>
 
 ///@cond PRIVATE
+
+const auto *QgsVectorTileConnectionDialog::settingsLastLoadingMode = new QgsSettingsEntryEnumFlag<QgsVectorTileConnectionDialog::LoadingMode>( QStringLiteral( "vector-tile-loading-mode" ), QgsGui::sTtreeWidgetLastUsedValues, QgsVectorTileConnectionDialog::LoadingMode::Url, QString() ) ;
+
 
 QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   : QDialog( parent )
@@ -34,6 +38,16 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
   mSpinZMax->setClearValue( 14 );
 
+  connect( mModeComboBox, &QComboBox::currentIndexChanged, this, &QgsVectorTileConnectionDialog::modeChanged );
+  auto *settingsWidgetWrapper = new QgsSettingsEnumEditorWidgetWrapper<QgsVectorTileConnectionDialog::LoadingMode>( this );
+  settingsWidgetWrapper->setDisplayStrings(
+  {
+    {LoadingMode::Style, tr( "Load from style" )},
+    {LoadingMode::Url, tr( "Load from URL" )},
+  } );
+  settingsWidgetWrapper->configureEditor( mModeComboBox, settingsLastLoadingMode );
+  settingsWidgetWrapper->enableAutomaticUpdate();
+
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
   {
@@ -41,6 +55,7 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
+  connect( mEditStyleUrl, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
 }
 
 void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QString &uri )
@@ -60,12 +75,20 @@ void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QS
   mAuthSettings->setConfigId( conn.authCfg );
 
   mEditStyleUrl->setText( conn.styleUrl );
+
+  if ( conn.url.isEmpty() && !conn.styleUrl.isEmpty() )
+    mModeComboBox->setCurrentIndex( mModeComboBox->findData( static_cast<int>( LoadingMode::Style ) ) );
+  else
+    mModeComboBox->setCurrentIndex( mModeComboBox->findData( static_cast<int>( LoadingMode::Url ) ) );
 }
 
 QString QgsVectorTileConnectionDialog::connectionUri() const
 {
+  LoadingMode mode = mModeComboBox->currentData().value<LoadingMode>();
+
   QgsVectorTileProviderConnection::Data conn;
-  conn.url = mEditUrl->text();
+  if ( mode == LoadingMode::Url )
+    conn.url = mEditUrl->text();
   if ( mCheckBoxZMin->isChecked() )
     conn.zMin = mSpinZMin->value();
   if ( mCheckBoxZMax->isChecked() )
@@ -83,10 +106,33 @@ QString QgsVectorTileConnectionDialog::connectionName() const
   return mEditName->text();
 }
 
+QgsVectorTileConnectionDialog::LoadingMode QgsVectorTileConnectionDialog::loadingMode() const
+{
+  return mModeComboBox->currentData().value<QgsVectorTileConnectionDialog::LoadingMode>();
+}
+
 void QgsVectorTileConnectionDialog::updateOkButtonState()
 {
-  const bool enabled = !mEditName->text().isEmpty() && !mEditUrl->text().isEmpty();
+  const bool enabled = !mEditName->text().isEmpty() && ( !mEditUrl->text().isEmpty() || !mEditStyleUrl->text().isEmpty() );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+void QgsVectorTileConnectionDialog::modeChanged( int index )
+{
+  LoadingMode mode = static_cast<LoadingMode>( index );
+  switch ( mode )
+  {
+    case LoadingMode::Style:
+      mEditUrl->setEnabled( false );
+      mEditUrl->setPlaceholderText( tr( "URL(s) will be determined from the style." ) );
+      mEditStyleUrl->setPlaceholderText( QString() );
+      break;
+    case LoadingMode::Url:
+      mEditUrl->setEnabled( true );
+      mEditUrl->setPlaceholderText( QString() );
+      mEditStyleUrl->setPlaceholderText( tr( "Optional" ) );
+      break;
+  }
 }
 
 void QgsVectorTileConnectionDialog::accept()

@@ -23,6 +23,9 @@
 #include <QSet>
 #include <QVariantMap>
 
+#include "qgshttpheaders.h"
+
+
 class QPointF;
 class QPolygon;
 
@@ -47,6 +50,13 @@ class QgsMapBoxGlStyleConversionContext;
 class CORE_EXPORT QgsVectorTileUtils
 {
   public:
+
+    /**
+     * Parse the style URL to get a list of named source URLs.
+     * \since QGIS 3.40
+     */
+    static QMap<QString, QString> parseStyleSourceUrl( const QString &styleUrl, const QgsHttpHeaders &headers = QgsHttpHeaders(), const QString &authCfg = QString() );
+
 
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center );
@@ -92,6 +102,14 @@ class CORE_EXPORT QgsVectorTileUtils
      * \param styleUrl optional the style url
      */
     static void loadSprites( const QVariantMap &styleDefinition, QgsMapBoxGlStyleConversionContext &context, const QString &styleUrl = QString() );
+
+  private:
+
+    /**
+     * Returns the tiles URLs of a source
+     */
+    static QVariantList parseStyleSourceContentUrl( const QString &sourceUrl, const QgsHttpHeaders &headers = QgsHttpHeaders(), const QString &authCfg = QString() );
+
 };
 
 #endif // QGSVECTORTILEUTILS_H
