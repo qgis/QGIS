@@ -2131,12 +2131,6 @@ if (${QT_VERSION_BASE}Positioning_FOUND)
 endif()
 
 
-if (HAVE_OPENCL)
-    set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-        qgsopenclutils.h
-    )
-endif()
-
 if (HAVE_WEBENGINE)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
         web/qgswebenginepage.cpp
