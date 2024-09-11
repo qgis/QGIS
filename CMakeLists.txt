@@ -1049,7 +1049,7 @@ set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required s
 #############################################################
 # Python
 
-set(MIN_PYTHON_VERSION "3.7")
+set(MIN_PYTHON_VERSION "3.9")
 set(Python_FIND_FRAMEWORK "LAST")
 
 
