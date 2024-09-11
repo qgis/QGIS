@@ -23,6 +23,8 @@
 
 class QgsSettingsEntryBase;
 
+class QDialog;
+
 /**
  * \ingroup gui
  * \brief Base class for settings editor wrappers
@@ -84,18 +86,14 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Enables automatic update, which causes the setting to be updated immediately when the widget
      * value is changed.
      *
-     * Calling this method will set the widget's current value to match the current settings value.
+     * If a \a dialog is provided, the setting will be updated when the dialog is accpeted.
+     * If not, the setting will be updated directly at each widget value change.
      *
      * \note This must called after createEditor() or configureEditor().
-     * \warning Do NOT call this method from places where a widget is embedded in a dialog with a cancel button, as the auto-update logic will immediately overwrite the setting value and prevent rollback if the user cancels the dialog.
      *
      * \since QGIS 3.40
      */
-    void enableAutomaticUpdate()
-    {
-      setWidgetFromSetting();
-      enableAutomaticUpdatePrivate();
-    }
+    void enableAutomaticUpdate( QDialog *dialog = nullptr );
 
 
   protected:
