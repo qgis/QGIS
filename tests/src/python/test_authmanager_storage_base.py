@@ -479,6 +479,9 @@ class TestAuthManagerStorageBase():
     def testUpdateReadOnly(self):
         """Tests that updating a setting in a read-only storage fails"""
 
+        if not bool(self.storage.capabilities() & Qgis.AuthConfigurationStorageCapability.UpdateSetting):
+            raise unittest.SkipTest('Storage does not support reading certificate authorities')
+
         auth_manager = QgsApplication.authManager()
         auth_manager.ensureInitialized()
 
