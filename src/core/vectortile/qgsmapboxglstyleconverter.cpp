@@ -2281,18 +2281,22 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
   // top color
   const QString tz = stops.last().toList().value( 0 ).toString();
   const QVariant tcVariant = stops.last().toList().value( 1 );
-  const QColor topColor = parseColor( stops.last().toList().value( 1 ), context );
-  if ( topColor.isValid() )
+  QColor topColor;
+  if ( tcVariant.userType() == QMetaType::Type::QString )
   {
-    int tcHue;
-    int tcSat;
-    int tcLight;
-    int tcAlpha;
-    colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
-    caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 THEN color_hsla(%2, %3, %4, %5) "
-                                  "ELSE color_hsla(%2, %3, %4, %5) END" ).arg( tz ).arg( tcHue ).arg( tcSat ).arg( tcLight ).arg( tcAlpha );
+    topColor = parseColor( tcVariant, context );
+    if ( topColor.isValid() )
+    {
+      int tcHue;
+      int tcSat;
+      int tcLight;
+      int tcAlpha;
+      colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
+      caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 THEN color_hsla(%2, %3, %4, %5) "
+                                    "ELSE color_hsla(%2, %3, %4, %5) END" ).arg( tz ).arg( tcHue ).arg( tcSat ).arg( tcLight ).arg( tcAlpha );
+    }
   }
-  else
+  else if ( tcVariant.userType() == QMetaType::QVariantList )
   {
     const QString topColorExpr = parseColorExpression( tcVariant, context );
 
