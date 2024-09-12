@@ -131,6 +131,18 @@ void QgsMapToolDigitizeFeature::deactivate()
   emit digitizingFinished();
 }
 
+void QgsMapToolDigitizeFeature::reactivate()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  if ( !vlayer )
+    vlayer = currentVectorLayer();
+
+  if ( vlayer && vlayer->geometryType() == Qgis::GeometryType::Null )
+  {
+    layerGeometryCaptured( QgsGeometry() );
+  }
+}
+
 void QgsMapToolDigitizeFeature::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
