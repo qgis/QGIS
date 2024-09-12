@@ -40,10 +40,10 @@
 #include "qgsvectortileconnection.h"
 
 
-bool QgsVectorTileUtils::updateUriSources( QString &uri )
+void QgsVectorTileUtils::updateUriSources( QString &uri, bool forceUpdate )
 {
   QgsVectorTileProviderConnection::Data data = QgsVectorTileProviderConnection::decodedUri( uri );
-  if ( data.url.isEmpty() && !data.styleUrl.isEmpty() )
+  if ( forceUpdate || ( data.url.isEmpty() && !data.styleUrl.isEmpty() ) )
   {
     const QMap<QString, QString> sources = QgsVectorTileUtils::parseStyleSourceUrl( data.styleUrl, data.httpHeaders, data.authCfg );
     QMap<QString, QString>::const_iterator it = sources.constBegin();
@@ -61,9 +61,7 @@ bool QgsVectorTileUtils::updateUriSources( QString &uri )
       uri.append( QString( "&%1=%2" ).arg( nameKey, it.key() ) );
       uri.append( QString( "&%1=%2" ).arg( urlKey, it.value() ) );
     }
-    return i > 0;
   }
-  return true;
 }
 
 QMap<QString, QString> QgsVectorTileUtils::parseStyleSourceUrl( const QString &styleUrl, const QgsHttpHeaders &headers, const QString &authCfg )

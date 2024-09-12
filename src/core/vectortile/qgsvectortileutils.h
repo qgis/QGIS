@@ -53,9 +53,10 @@ class CORE_EXPORT QgsVectorTileUtils
 
     /**
      * Parses the style URL to update the source URLs in the \a uri.
+     * If \a forceUpdate is TRUE, any existing source will be updated.
      * \since QGIS 3.40
      */
-    static bool updateUriSources( QString &uri SIP_OUT );
+    static void updateUriSources( QString &uri SIP_OUT, bool forceUpdate = false );
 
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center );
