@@ -220,7 +220,7 @@ class SomeClass:
 
   mExpressionPreview->setText( R"""(aggregate(layer:='rail_stations',
     aggregate:='collect', -- a comment
-    expression:=centroid($geometry), /* a comment */
+    expression:=centroid(@geometry), /* a comment */
     filter:="region_name" = attribute(@parent,'name') + 55 /* a search result */
 )
 )""");
