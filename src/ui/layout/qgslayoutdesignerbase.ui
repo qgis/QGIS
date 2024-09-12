@@ -182,7 +182,7 @@
      <x>0</x>
      <y>0</y>
      <width>2180</width>
-     <height>22</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -204,6 +204,7 @@
     <addaction name="separator"/>
     <addaction name="mActionLayoutProperties"/>
     <addaction name="mActionRenameLayout"/>
+    <addaction name="mActionPageProperties"/>
     <addaction name="mActionAddPages"/>
     <addaction name="separator"/>
     <addaction name="mActionLoadFromTemplate"/>
@@ -1585,8 +1586,14 @@
     <string>&amp;Keyboard Shortcuts...</string>
    </property>
   </action>
+  <action name="mActionPageProperties">
+   <property name="text">
+    <string>Page Properties…</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
