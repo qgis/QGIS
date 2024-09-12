@@ -15269,6 +15269,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsVectorDataProvider *dprovider = vlayer->dataProvider();
       QString addFeatureText;
+      bool addFeatureCheckable = true;
 
       bool isEditable = vlayer->isEditable();
       bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
@@ -15455,6 +15456,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         {
           mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
           addFeatureText = tr( "Add Record" );
+          addFeatureCheckable = false;
           mActionAddRing->setEnabled( false );
           mActionFillRing->setEnabled( false );
           mActionReshapeFeatures->setEnabled( false );
@@ -15468,6 +15470,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionOpenFieldCalc->setEnabled( true );
         mActionAddFeature->setText( addFeatureText );
         mActionAddFeature->setToolTip( addFeatureText );
+        mActionAddFeature->setCheckable( addFeatureCheckable );
+        mActionAddFeature->setChecked( addFeatureCheckable && mMapCanvas->mapTool() == mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
         QgsGui::shortcutsManager()->unregisterAction( mActionAddFeature );
         if ( !mActionAddFeature->text().isEmpty() ) // The text will be empty on unknown geometry type -> in this case do not create a shortcut
           QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut().toString() );
