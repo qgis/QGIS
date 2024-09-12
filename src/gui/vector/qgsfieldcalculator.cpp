@@ -32,6 +32,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvariantutils.h"
 #include "qgsfields.h"
+#include "qgsmessagebar.h"
 
 
 // FTC = FieldTypeCombo
@@ -161,6 +162,11 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
   setWindowTitle( tr( "%1 — Field Calculator" ).arg( mVectorLayer->name() ) );
+
+  // Init the message bar instance
+  msgBar = new QgsMessageBar( this );
+  msgBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  this->vLayout->insertWidget( 0, msgBar );
 
   setDialogButtonState();
 }
@@ -345,6 +351,7 @@ void QgsFieldCalculator::calculate()
     }
 
     mVectorLayer->endEditCommand();
+    pushMessage( QStringLiteral( "All good, change is applied" ) );
   }
 }
 
@@ -607,4 +614,9 @@ QgsField QgsFieldCalculator::fieldDefinition()
                    QString(),
                    static_cast< QMetaType::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_SUBTYPE_IDX ).toInt() )
                  );
+}
+
+void QgsFieldCalculator::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
+{
+  msgBar->pushMessage( text, level, duration );
 }
