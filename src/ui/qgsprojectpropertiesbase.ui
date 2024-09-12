@@ -603,9 +603,11 @@
                   </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="textLabel1_8">
+                    <property name="toolTip">
+                     <string>For distance, area and angle calculations</string>
+                    </property>
                     <property name="text">
-                     <string>Ellipsoid
-(for distance and area calculations)</string>
+                     <string>Ellipsoid</string>
                     </property>
                    </widget>
                   </item>
