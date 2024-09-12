@@ -2163,6 +2163,16 @@ class QgsVectorFileWriterMetadataContainer
       datasetOptions.clear();
       layerOptions.clear();
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+      layerOptions.insert( QStringLiteral( "TARGET_ARCGIS_VERSION" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Selects which ArcGIS version this dataset should be compatible with. ALL is used by default and means any ArcGIS 10.x or ArcGIS Pro version. Using ARCGIS_PRO_3_2_OR_LATER is required to export 64-bit integer fields as such, otherwise they will be converted as Real fields. ARCGIS_PRO_3_2_OR_LATER also supports proper Date and Time field types." ),
+                             QStringList()
+                             << QStringLiteral( "ALL" )
+                             << QStringLiteral( "ARCGIS_PRO_3_2_OR_LATER" ),
+                             QStringLiteral( "ALL" ) // Default value
+                           ) );
+#endif
+
       layerOptions.insert( QStringLiteral( "FEATURE_DATASET" ), new QgsVectorFileWriter::StringOption(
                              QObject::tr( "When this option is set, the new layer will be created inside the named "
                                           "FeatureDataset folder. If the folder does not already exist, it will be created." ),
