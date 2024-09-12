@@ -490,6 +490,64 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["in", ["get", "subclass"], ["literal", ["allotments", "forest", "glacier"]]], conversion_context, True), '''"subclass" IN ('allotments', 'forest', 'glacier')''')
 
+        # fix last (default) value of a match can be a match
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(
+            [
+                "match",
+                [
+                    "get",
+                    "is_route"
+                ],
+                [
+                    5,
+                    10
+                ],
+                "hsl(16,91%,80%)",
+                [
+                    6,
+                    7,
+                    8
+                ],
+                "hsl(55,91%,80%)",
+                [
+                    "match",
+                    [
+                        "get",
+                        "class"
+                    ],
+                    [
+                        "motorway",
+                        "trunk",
+                        "motorway_construction",
+                        "trunk_construction"
+                    ],
+                    "hsl(41,93%,73%)",
+                    [
+                        "rail",
+                        "rail_construction",
+                        "path",
+                        "path_construction",
+                        "footway",
+                        "footway_construction",
+                        "track",
+                        "track_construction",
+                        "trail",
+                        "trail_construction"
+                    ],
+                    [
+                        "match",
+                        [
+                            "get",
+                            "subclass"
+                        ],
+                        "covered_bridge",
+                        "rgb(255,255,255)",
+                        "rgb(238,238,240)"
+                    ],
+                    "rgba(255,255,255,1)"
+                ]
+            ], conversion_context, True), '''CASE WHEN "is_route" IN (5,10) THEN '#fab69e' WHEN "is_route" IN (6,7,8) THEN '#faf39e' ELSE CASE WHEN "class" IN ('motorway','trunk','motorway_construction','trunk_construction') THEN '#fad27a' WHEN "class" IN ('rail','rail_construction','path','path_construction','footway','footway_construction','track','track_construction','trail','trail_construction') THEN '#000000' ELSE '#ffffff' END END''')
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
