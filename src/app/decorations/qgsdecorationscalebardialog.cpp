@@ -20,7 +20,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, Qgis::DistanceUnit units, QWidget *parent )
+QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, QWidget *parent )
   : QDialog( parent )
   , mDeco( deco )
 {
@@ -34,25 +34,6 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationScaleBarDialog::apply );
-
-  // set the map units in the spin box
-  spnSize->setShowClearButton( false );
-  switch ( units )
-  {
-    case Qgis::DistanceUnit::Meters:
-      spnSize->setSuffix( tr( " meters/km" ) );
-      break;
-    case Qgis::DistanceUnit::Feet:
-    case Qgis::DistanceUnit::Miles:
-      spnSize->setSuffix( tr( " feet/miles" ) );
-      break;
-    case Qgis::DistanceUnit::Degrees:
-      spnSize->setSuffix( tr( " degrees" ) );
-      break;
-    default:
-      QgsDebugError( QStringLiteral( "Error: not picked up map units - actual value = %1" ).arg( qgsEnumValueToKey( units ) ) );
-  }
-  spnSize->setValue( mDeco.mPreferredSize );
 
   chkSnapping->setChecked( mDeco.mSnapping );
 
@@ -113,7 +94,6 @@ void QgsDecorationScaleBarDialog::apply()
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();
-  mDeco.mPreferredSize = spnSize->value();
   mDeco.mSnapping = chkSnapping->isChecked();
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();

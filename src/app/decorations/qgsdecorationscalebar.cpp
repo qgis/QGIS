@@ -75,7 +75,6 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
 void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mPreferredSize = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), 30 );
   mStyleIndex = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Style" ), 0 );
   mSnapping = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Snapping" ), true );
   mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
@@ -118,7 +117,6 @@ void QgsDecorationScaleBar::projectRead()
 void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), mPreferredSize );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Snapping" ), mSnapping );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Style" ), mStyleIndex );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsColorUtils::colorToString( mColor ) );
@@ -138,7 +136,7 @@ void QgsDecorationScaleBar::saveToProject()
 
 void QgsDecorationScaleBar::run()
 {
-  QgsDecorationScaleBarDialog dlg( *this, QgisApp::instance()->mapCanvas()->mapUnits(), QgisApp::instance() );
+  QgsDecorationScaleBarDialog dlg( *this, QgisApp::instance() );
   dlg.exec();
 }
 
@@ -243,34 +241,20 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
   const float deviceWidth = static_cast<float>( device->width() ) / context.devicePixelRatio();
   const Qgis::DistanceUnit preferredUnits = QgsProject::instance()->distanceUnits();
-  Qgis::DistanceUnit scaleBarUnits = mapSettings.mapUnits();
 
   //Get map units per pixel
   const double scaleBarUnitsPerPixel = ( mapWidth( mapSettings ) / mapSettings.outputSize().width() ) * QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), preferredUnits );
-  scaleBarUnits = preferredUnits;
+  Qgis::DistanceUnit scaleBarUnits = preferredUnits;
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
     return;
 
-  double unitsPerSegment = mPreferredSize;
+  //Calculate size of scale bar for 25% of map window
+  double scaleBarWidth = deviceWidth * 0.25;
 
-  //Calculate size of scale bar for preferred number of map units
-  double scaleBarWidth = mPreferredSize / scaleBarUnitsPerPixel;
-
-  //If scale bar is very small reset to 1/4 of the canvas wide
-  if ( scaleBarWidth < 30 )
-  {
-    scaleBarWidth = deviceWidth / 4.0; // value in pixels
-    unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel; // value in map units
-  }
-
-  //if scale bar is more than half the canvas wide keep halving until not
-  while ( scaleBarWidth > deviceWidth / 3.0 )
-  {
-    scaleBarWidth = scaleBarWidth / 3;
-  }
-  unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel;
+  //Calculate units per segment
+  double unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel;
 
   // Work out the exponent for the number - e.g, 1234 will give 3,
   // and .001234 will give -3

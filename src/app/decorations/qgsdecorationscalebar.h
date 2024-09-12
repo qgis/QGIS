@@ -52,8 +52,6 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 
   private:
 
-    //! The size preferred size of the scale bar
-    int mPreferredSize;
     //! Should we snap to integer times power of 10?
     bool mSnapping;
     //! Style of scale bar. An index and the translated text
