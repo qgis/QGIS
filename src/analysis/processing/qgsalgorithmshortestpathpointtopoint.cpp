@@ -90,13 +90,31 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   {
     const double pointDistanceThreshold = parameterAsDouble( parameters, QStringLiteral( "POINT_TOLERANCE" ), context );
 
-    const double distanceStartPointToNetwork = mBuilder->distanceArea()->measureLine( startPoint, snappedStartPoint );
+    double distanceStartPointToNetwork = 0;
+    try
+    {
+      distanceStartPointToNetwork = mBuilder->distanceArea()->measureLine( startPoint, snappedStartPoint );
+    }
+    catch ( QgsCsException & )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+    }
+
     if ( distanceStartPointToNetwork > pointDistanceThreshold )
     {
       throw QgsProcessingException( QObject::tr( "Start point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distanceStartPointToNetwork ).arg( pointDistanceThreshold ) );
     }
 
-    const double distanceEndPointToNetwork = mBuilder->distanceArea()->measureLine( endPoint, snappedEndPoint );
+    double distanceEndPointToNetwork = 0;
+    try
+    {
+      distanceEndPointToNetwork = mBuilder->distanceArea()->measureLine( endPoint, snappedEndPoint );
+    }
+    catch ( QgsCsException & )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+    }
+
     if ( distanceEndPointToNetwork > pointDistanceThreshold )
     {
       throw QgsProcessingException( QObject::tr( "End point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distanceEndPointToNetwork ).arg( pointDistanceThreshold ) );

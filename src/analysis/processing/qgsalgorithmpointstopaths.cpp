@@ -353,7 +353,15 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       for ( int i = 1; i < pathPoints.size(); ++i )
       {
         const double angle = pathPoints.at( i - 1 ).azimuth( pathPoints.at( i ) );
-        const double distance = da.measureLine( pathPoints.at( i - 1 ), pathPoints.at( i ) );
+        double distance = 0;
+        try
+        {
+          distance = da.measureLine( pathPoints.at( i - 1 ), pathPoints.at( i ) );
+        }
+        catch ( QgsCsException & )
+        {
+          throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+        }
         out << QString( "%1;%2;90\n" ).arg( angle ).arg( distance );
       }
     }

@@ -225,8 +225,17 @@ double QgsDecorationScaleBar::mapWidth( const QgsMapSettings &settings ) const
 
     // we measure the horizontal distance across the vertical center of the map
     const double yPosition = 0.5 * ( mapExtent.yMinimum() + mapExtent.yMaximum() );
-    double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), yPosition ),
-                                     QgsPointXY( mapExtent.xMaximum(), yPosition ) );
+    double measure = 0;
+    try
+    {
+      measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), yPosition ),
+                                QgsPointXY( mapExtent.xMaximum(), yPosition ) );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    }
 
     measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
     return measure;

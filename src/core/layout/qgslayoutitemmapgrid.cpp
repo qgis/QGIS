@@ -2007,9 +2007,18 @@ double QgsLayoutItemMapGrid::mapWidth() const
     da.setEllipsoid( mLayout->project()->ellipsoid() );
 
     const Qgis::DistanceUnit units = da.lengthUnits();
-    double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), mapExtent.yMinimum() ),
-                                     QgsPointXY( mapExtent.xMaximum(), mapExtent.yMinimum() ) );
-    measure /= QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, units );
+    double measure = 0;
+    try
+    {
+      measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), mapExtent.yMinimum() ),
+                                QgsPointXY( mapExtent.xMaximum(), mapExtent.yMinimum() ) );
+      measure /= QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, units );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    }
     return measure;
   }
 }

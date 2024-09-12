@@ -238,14 +238,33 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
   {
     QVector<QgsPointXY> tmpPoints = mTool->points();
     tmpPoints.append( point );
-    const double area = mDa.measurePolygon( tmpPoints );
+    double area = 0;
+    try
+    {
+      area = mDa.measurePolygon( tmpPoints );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+    }
+
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && !mTool->points().empty() )
   {
     const QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
-    double d = mDa.measureLine( p1, p2 );
+    double d = 0;
+    try
+    {
+      d = mDa.measureLine( p1, p2 );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    }
     editTotal->setText( formatDistance( mTotal + d, mConvertToDisplayUnits ) );
     d = convertLength( d, mDistanceUnits );
 
@@ -265,7 +284,17 @@ void QgsMeasureDialog::addPoint()
   const int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
-    const double area = mDa.measurePolygon( mTool->points() );
+    double area = 0;
+    try
+    {
+      area = mDa.measurePolygon( mTool->points() );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+    }
+
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && numPoints >= 1 )
@@ -292,7 +321,16 @@ void QgsMeasureDialog::addPoint()
     }
     if ( numPoints > 1 )
     {
-      mTotal = mDa.measureLine( mTool->points() );
+      try
+      {
+        mTotal = mDa.measureLine( mTool->points() );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      }
+
       editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
     }
   }
@@ -308,7 +346,16 @@ void QgsMeasureDialog::removeLastPoint()
       QVector<QgsPointXY> tmpPoints = mTool->points();
       if ( !mTool->done() )
         tmpPoints.append( mLastMousePoint );
-      const double area = mDa.measurePolygon( tmpPoints );
+      double area = 0;
+      try
+      {
+        area = mDa.measurePolygon( tmpPoints );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+      }
       editTotal->setText( formatArea( area ) );
     }
     else
@@ -321,14 +368,31 @@ void QgsMeasureDialog::removeLastPoint()
     //remove final row
     delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
 
-    mTotal = mDa.measureLine( mTool->points() );
+    try
+    {
+      mTotal = mDa.measureLine( mTool->points() );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    }
 
     if ( !mTool->done() )
     {
       // need to add the distance for the temporary mouse cursor point
       const QVector< QgsPointXY > tmpPoints = mTool->points();
       const QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) );
-      double d = mDa.measureLine( p1, mLastMousePoint );
+      double d = 0;
+      try
+      {
+        d = mDa.measureLine( p1, mLastMousePoint );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      }
 
       d = convertLength( d, mDistanceUnits );
 
@@ -628,7 +692,15 @@ void QgsMeasureDialog::updateUi()
     double area = 0.0;
     if ( mTool->points().size() > 1 )
     {
-      area = mDa.measurePolygon( mTool->points() );
+      try
+      {
+        area = mDa.measurePolygon( mTool->points() );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+      }
     }
     mTable->hide(); // Hide the table, only show summary
     mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Expanding );
@@ -654,7 +726,16 @@ void QgsMeasureDialog::updateUi()
       if ( !firstPoint )
       {
         double d = -1;
-        d = mDa.measureLine( previousPoint, point );
+        try
+        {
+          d = mDa.measureLine( previousPoint, point );
+        }
+        catch ( QgsCsException & )
+        {
+          // TODO report errors to user
+          QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        }
+
         if ( mConvertToDisplayUnits )
         {
           if ( mDistanceUnits == Qgis::DistanceUnit::Unknown && mMapDistanceUnits != Qgis::DistanceUnit::Unknown )

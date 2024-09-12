@@ -919,8 +919,18 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   {
     const QgsAbstractGeometry *layerCrsGeom = layerCrsGeometry.constGet();
 
-    double dist = calc.measureLength( feature.geometry() );
-    dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
+    double dist = 0;
+    try
+    {
+      dist = calc.measureLength( feature.geometry() );
+      dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
+    }
+    catch ( QgsCsException & )
+    {
+      //TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    }
+
     QString str;
     if ( ellipsoid != geoNone() )
     {
@@ -975,8 +985,18 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   }
   else if ( geometryType == Qgis::GeometryType::Polygon )
   {
-    double area = calc.measureArea( layerCrsGeometry );
-    area = calc.convertAreaMeasurement( area, displayAreaUnits() );
+    double area = 0;
+    try
+    {
+      area = calc.measureArea( layerCrsGeometry );
+      area = calc.convertAreaMeasurement( area, displayAreaUnits() );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+    }
+
     QString str;
     if ( ellipsoid != geoNone() )
     {
@@ -989,8 +1009,17 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
 
     if ( ellipsoid != geoNone() )
     {
-      double perimeter = calc.measurePerimeter( layerCrsGeometry );
-      perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );
+      double perimeter = 0;
+      try
+      {
+        perimeter = calc.measurePerimeter( layerCrsGeometry );
+        perimeter = calc.convertLengthMeasurement( perimeter, displayDistanceUnits() );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating perimeter" ) );
+      }
       str = formatDistance( perimeter );
       derivedAttributes.insert( tr( "Perimeter (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }

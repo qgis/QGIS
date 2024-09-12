@@ -4266,9 +4266,17 @@ static QVariant fcnGeomArea( const QVariantList &, const QgsExpressionContext *c
   QgsDistanceArea *calc = parent->geomCalculator();
   if ( calc )
   {
-    double area = calc->measureArea( f.geometry() );
-    area = calc->convertAreaMeasurement( area, parent->areaUnits() );
-    return QVariant( area );
+    try
+    {
+      double area = calc->measureArea( f.geometry() );
+      area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+      return QVariant( area );
+    }
+    catch ( QgsCsException & )
+    {
+      parent->setEvalErrorString( QObject::tr( "An error occurred while calculating area" ) );
+      return QVariant();
+    }
   }
   else
   {
@@ -4293,9 +4301,17 @@ static QVariant fcnGeomLength( const QVariantList &, const QgsExpressionContext 
   QgsDistanceArea *calc = parent->geomCalculator();
   if ( calc )
   {
-    double len = calc->measureLength( f.geometry() );
-    len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
-    return QVariant( len );
+    try
+    {
+      double len = calc->measureLength( f.geometry() );
+      len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
+      return QVariant( len );
+    }
+    catch ( QgsCsException & )
+    {
+      parent->setEvalErrorString( QObject::tr( "An error occurred while calculating length" ) );
+      return QVariant();
+    }
   }
   else
   {
@@ -4310,9 +4326,17 @@ static QVariant fcnGeomPerimeter( const QVariantList &, const QgsExpressionConte
   QgsDistanceArea *calc = parent->geomCalculator();
   if ( calc )
   {
-    double len = calc->measurePerimeter( f.geometry() );
-    len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
-    return QVariant( len );
+    try
+    {
+      double len = calc->measurePerimeter( f.geometry() );
+      len = calc->convertLengthMeasurement( len, parent->distanceUnits() );
+      return QVariant( len );
+    }
+    catch ( QgsCsException & )
+    {
+      parent->setEvalErrorString( QObject::tr( "An error occurred while calculating perimeter" ) );
+      return QVariant();
+    }
   }
   else
   {
