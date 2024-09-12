@@ -83,12 +83,12 @@ Sets the ``value`` of the widget
 The wrapper must be configured before calling this medthod
 %End
 
-    void enableAutomaticUpdate( QDialog *dialog = 0 );
+    void configureAutomaticUpdate( QDialog *dialog = 0 );
 %Docstring
 Enables automatic update, which causes the setting to be updated immediately when the widget
 value is changed.
 
-If a ``dialog`` is provided, the setting will be updated when the dialog is accpeted.
+If a ``dialog`` is provided, the setting will be updated when the dialog is accepted.
 If not, the setting will be updated directly at each widget value change.
 
 .. note::
