@@ -55,6 +55,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
 
     void activate() override;
     void deactivate() override;
+    void reactivate() override;
 
     // Overridden to emit digitizingCanceled when ESC is pressed
     void keyPressEvent( QKeyEvent *e ) override;

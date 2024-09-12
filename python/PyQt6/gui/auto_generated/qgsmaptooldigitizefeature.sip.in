@@ -51,6 +51,8 @@ Change the layer edited by the map tool
 
     virtual void deactivate();
 
+    virtual void reactivate();
+
 
     virtual void keyPressEvent( QKeyEvent *e );
 
