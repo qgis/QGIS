@@ -605,19 +605,31 @@ double QgsLayoutItemScaleBar::mapWidth() const
     da.setEllipsoid( mLayout->project()->ellipsoid() );
 
     const Qgis::DistanceUnit units = da.lengthUnits();
-    double measure = 0;
-    try
+
+    // measure across top, center, and bottom of map, and return average of these calculated lengths
+    int validMeasureCount = 0;
+    double sumValidMeasures = 0;
+    for ( const double y : { mapExtent.yMinimum(), mapExtent.yMaximum(), ( mapExtent.yMaximum() - mapExtent.yMinimum() ) * 0.5 } )
     {
-      measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), mapExtent.yMinimum() ),
-                                QgsPointXY( mapExtent.xMaximum(), mapExtent.yMinimum() ) );
-      measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+      double measure = 0;
+      try
+      {
+        measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), y ),
+                                  QgsPointXY( mapExtent.xMaximum(), y ) );
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+        sumValidMeasures += measure;
+        validMeasureCount++;
+      }
+      catch ( QgsCsException & )
+      {
+        continue;
+      }
     }
-    catch ( QgsCsException & )
-    {
-      // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
-    }
-    return measure;
+
+    if ( validMeasureCount == 0 )
+      return std::numeric_limits< double >::quiet_NaN();
+
+    return sumValidMeasures / validMeasureCount;
   }
 }
 
