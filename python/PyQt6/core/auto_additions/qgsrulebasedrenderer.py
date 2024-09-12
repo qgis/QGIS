@@ -5,7 +5,18 @@ QgsRuleBasedRenderer.Rule.Filtered = QgsRuleBasedRenderer.Rule.RenderResult.Filt
 QgsRuleBasedRenderer.Rule.Inactive = QgsRuleBasedRenderer.Rule.RenderResult.Inactive
 QgsRuleBasedRenderer.Rule.Rendered = QgsRuleBasedRenderer.Rule.RenderResult.Rendered
 try:
-    QgsRuleBasedRenderer.__attribute_docs__ = {'ftr': 'Feature to render', 'symbol': 'Symbol to render feature with (not owned by this object).', 'jobs': 'List of jobs to render, owned by this object.'}
+    QgsRuleBasedRenderer.RenderJob.__attribute_docs__ = {'ftr': 'Feature to render', 'symbol': 'Symbol to render feature with (not owned by this object).'}
+    QgsRuleBasedRenderer.RenderJob.__doc__ = """A QgsRuleBasedRenderer rendering job, consisting of a feature to be rendered with a particular symbol."""
+    QgsRuleBasedRenderer.RenderJob.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsRuleBasedRenderer.RenderLevel.__attribute_docs__ = {'jobs': 'List of jobs to render, owned by this object.'}
+    QgsRuleBasedRenderer.RenderLevel.__doc__ = """Render level: a list of jobs to be drawn at particular level for a QgsRuleBasedRenderer."""
+    QgsRuleBasedRenderer.RenderLevel.__group__ = ['symbology']
+except NameError:
+    pass
+try:
     QgsRuleBasedRenderer.create = staticmethod(QgsRuleBasedRenderer.create)
     QgsRuleBasedRenderer.createFromSld = staticmethod(QgsRuleBasedRenderer.createFromSld)
     QgsRuleBasedRenderer.refineRuleCategories = staticmethod(QgsRuleBasedRenderer.refineRuleCategories)
@@ -25,15 +36,5 @@ except NameError:
 try:
     QgsRuleBasedRenderer.FeatureToRender.__doc__ = """Feature for rendering by a QgsRuleBasedRenderer. Contains a QgsFeature and some flags."""
     QgsRuleBasedRenderer.FeatureToRender.__group__ = ['symbology']
-except NameError:
-    pass
-try:
-    QgsRuleBasedRenderer.RenderJob.__doc__ = """A QgsRuleBasedRenderer rendering job, consisting of a feature to be rendered with a particular symbol."""
-    QgsRuleBasedRenderer.RenderJob.__group__ = ['symbology']
-except NameError:
-    pass
-try:
-    QgsRuleBasedRenderer.RenderLevel.__doc__ = """Render level: a list of jobs to be drawn at particular level for a QgsRuleBasedRenderer."""
-    QgsRuleBasedRenderer.RenderLevel.__group__ = ['symbology']
 except NameError:
     pass

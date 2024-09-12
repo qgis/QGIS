@@ -1,6 +1,15 @@
 # The following has been generated automatically from src/core/qgsunittypes.h
 try:
-    QgsUnitTypes.__attribute_docs__ = {'value': 'The value part of the distance. For 3.7 square meters, this will be 3.7.', 'unit': 'The value part of the distance. For 3.7 square meters, this will be QgsUnitTypes.AreaSquareMeters.'}
+    QgsUnitTypes.DistanceValue.__attribute_docs__ = {'value': 'The value part of the distance. For 3.7 meters, this will be 3.7.', 'unit': 'The value part of the distance. For 3.7 meters, this will be QgsUnitTypes.DistanceMeters.'}
+    QgsUnitTypes.DistanceValue.__doc__ = """A combination of distance value and unit."""
+except NameError:
+    pass
+try:
+    QgsUnitTypes.AreaValue.__attribute_docs__ = {'value': 'The value part of the distance. For 3.7 square meters, this will be 3.7.', 'unit': 'The value part of the distance. For 3.7 square meters, this will be QgsUnitTypes.AreaSquareMeters.'}
+    QgsUnitTypes.AreaValue.__doc__ = """A combination of area value and unit."""
+except NameError:
+    pass
+try:
     QgsUnitTypes.encodeUnitType = staticmethod(QgsUnitTypes.encodeUnitType)
     QgsUnitTypes.decodeUnitType = staticmethod(QgsUnitTypes.decodeUnitType)
     QgsUnitTypes.unitType = staticmethod(QgsUnitTypes.unitType)
@@ -28,13 +37,5 @@ try:
     QgsUnitTypes.formatArea = staticmethod(QgsUnitTypes.formatArea)
     QgsUnitTypes.decodeRenderUnit = staticmethod(QgsUnitTypes.decodeRenderUnit)
     QgsUnitTypes.decodeLayoutUnit = staticmethod(QgsUnitTypes.decodeLayoutUnit)
-except NameError:
-    pass
-try:
-    QgsUnitTypes.DistanceValue.__doc__ = """A combination of distance value and unit."""
-except NameError:
-    pass
-try:
-    QgsUnitTypes.AreaValue.__doc__ = """A combination of area value and unit."""
 except NameError:
     pass
