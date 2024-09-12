@@ -3131,9 +3131,18 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     const QString key = parseKey( expression.value( 1 ), context );
     QStringList parts;
-    for ( int i = 2; i < expression.size(); ++i )
+
+    QVariantList values = expression.mid( 2 );
+    if ( expression.size() == 3
+         && expression.at( 2 ).userType() == QMetaType::Type::QVariantList && expression.at( 2 ).toList().count() > 1
+         && expression.at( 2 ).toList().at( 0 ).toString() == QStringLiteral( "literal" ) )
     {
-      const QString part = parseValue( expression.at( i ), context );
+      values = expression.at( 2 ).toList().at( 1 ).toList();
+    }
+
+    for ( const QVariant &value : std::as_const( values ) )
+    {
+      const QString part = parseValue( value, context );
       if ( part.isEmpty() )
       {
         context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
