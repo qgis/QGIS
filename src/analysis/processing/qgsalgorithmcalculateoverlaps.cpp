@@ -155,7 +155,16 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
     if ( feature.hasGeometry() && !qgsDoubleNear( feature.geometry().area(), 0.0 ) )
     {
       const QgsGeometry inputGeom = feature.geometry();
-      const double inputArea = da.measureArea( inputGeom );
+
+      double inputArea = 0;
+      try
+      {
+        inputArea = da.measureArea( inputGeom );
+      }
+      catch ( QgsCsException & )
+      {
+        throw QgsProcessingException( QObject::tr( "An error occurred while calculating feature area" ) );
+      }
 
       // prepare for lots of intersection tests (for speed)
       std::unique_ptr< QgsGeometryEngine > bufferGeomEngine( QgsGeometry::createGeometryEngine( inputGeom.constGet() ) );
@@ -195,7 +204,16 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
 
         const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, geometryParameters );
 
-        const double overlayArea = da.measureArea( overlayIntersection );
+        double overlayArea = 0;
+        try
+        {
+          overlayArea = da.measureArea( overlayIntersection );
+        }
+        catch ( QgsCsException & )
+        {
+          throw QgsProcessingException( QObject::tr( "An error occurred while calculating feature area" ) );
+        }
+
         outAttributes.append( overlayArea );
         outAttributes.append( 100 * overlayArea / inputArea );
       }

@@ -113,7 +113,14 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
     }
 
     const QgsFeatureId neighbourId = spatialIndex.nearestNeighbor( f.geometry().asPoint(), 2 ).at( 1 );
-    sumDist += da.measureLine( spatialIndex.geometry( neighbourId ).asPoint(), f.geometry().asPoint() );
+    try
+    {
+      sumDist += da.measureLine( spatialIndex.geometry( neighbourId ).asPoint(), f.geometry().asPoint() );
+    }
+    catch ( QgsCsException & )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+    }
 
     i++;
     feedback->setProgress( i * step );

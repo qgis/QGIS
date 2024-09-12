@@ -190,7 +190,16 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
           if ( engine->intersects( lineGeom.constGet() ) )
           {
-            const double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
+            double analysisLineLength = 0;
+            try
+            {
+              analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
+            }
+            catch ( QgsCsException & )
+            {
+              throw QgsProcessingException( QObject::tr( "An error occurred while calculating feature length" ) );
+            }
+
             double weight = 1;
 
             if ( !mWeightField.isEmpty() )
@@ -206,7 +215,16 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         if ( absDensity > 0 )
         {
           //only calculate ellipsoidal area if abs density is greater 0
-          const double analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
+          double analysisSearchGeometryArea = 0;
+          try
+          {
+            analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
+          }
+          catch ( QgsCsException & )
+          {
+            throw QgsProcessingException( QObject::tr( "An error occurred while calculating feature area" ) );
+          }
+
           lineDensity = absDensity / analysisSearchGeometryArea;
         }
         rasterDataLine->setValue( 0, col, lineDensity );
