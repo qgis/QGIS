@@ -113,7 +113,17 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   {
     const double pointDistanceThreshold = parameterAsDouble( parameters, QStringLiteral( "POINT_TOLERANCE" ), context );
 
-    const double distancePointToNetwork = mBuilder->distanceArea()->measureLine( startPoint, snappedStartPoint );
+    double distancePointToNetwork = 0;
+    try
+    {
+      distancePointToNetwork = mBuilder->distanceArea()->measureLine( startPoint, snappedStartPoint );
+    }
+    catch ( QgsCsException & )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+    }
+
+
     if ( distancePointToNetwork > pointDistanceThreshold )
     {
       throw QgsProcessingException( QObject::tr( "Point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distancePointToNetwork ).arg( pointDistanceThreshold ) );

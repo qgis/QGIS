@@ -1231,9 +1231,17 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
           QgsGeometry geom = QgsMeshUtils::toGeometry( nativeMesh.face( faceIndex ), nativeMesh.vertices );
           if ( calc )
           {
-            double area = calc->measureArea( geom );
-            area = calc->convertAreaMeasurement( area, parent->areaUnits() );
-            return QVariant( area );
+            try
+            {
+              double area = calc->measureArea( geom );
+              area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+              return QVariant( area );
+            }
+            catch ( QgsCsException & )
+            {
+              parent->setEvalErrorString( QObject::tr( "An error occurred while calculating area" ) );
+              return QVariant();
+            }
           }
           else
           {
