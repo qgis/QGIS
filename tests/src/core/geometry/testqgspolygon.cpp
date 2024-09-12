@@ -2854,6 +2854,19 @@ void TestQgsPolygon::toFromWKT()
   pl3.addInteriorRing( compound );
   wkt = pl3.asWkt();
   QCOMPARE( wkt, QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 1 9, 9 9, 9 1, 1 1))" ) );
+
+  // Test WKT export with empty interior ring
+  QgsPolygon pl4;
+  QgsLineString *ext4 = new QgsLineString();
+  ext4->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+                   << QgsPoint( Qgis::WkbType::Point, 0, 10 )
+                   << QgsPoint( Qgis::WkbType::Point, 10, 10 )
+                   << QgsPoint( Qgis::WkbType::Point, 10, 0 )
+                   << QgsPoint( Qgis::WkbType::Point, 0, 0 ) );
+  pl4.setExteriorRing( ext4 );
+  pl4.addInteriorRing( new QgsLineString() );
+  wkt = pl4.asWkt();
+  QCOMPARE( wkt, QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))" ) );
 }
 
 void TestQgsPolygon::exportImport()
