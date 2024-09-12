@@ -86,7 +86,7 @@ class TestPython__repr__(QgisTestCase):
 
     def testQgsPointRepr(self):
         p = QgsPoint(123.456, 987.654, 100)
-        self.assertTrue(p.__repr__().startswith('<QgsPoint: PointZ (123.456'))
+        self.assertTrue(p.__repr__().startswith('<QgsPoint: Point Z (123.456'))
 
     def testQgsPointXYRepr(self):
         p = QgsPointXY(123.456, 987.654)
