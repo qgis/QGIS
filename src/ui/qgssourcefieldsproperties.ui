@@ -23,31 +23,41 @@
       <number>0</number>
      </property>
      <item row="0" column="4">
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QToolButton" name="mCalculateFieldButton">
+       <property name="toolTip">
+        <string>Field calculator</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="text">
+        <string/>
        </property>
-      </spacer>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
      <item row="0" column="2">
       <widget class="QToolButton" name="mToggleEditingButton">
        <property name="toolTip">
         <string>Toggle editing mode</string>
        </property>
-       <property name="whatsThis">
-        <string>Click to toggle table editing</string>
-       </property>
        <property name="text">
         <string/>
        </property>
        <property name="checkable">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QToolButton" name="mDeleteAttributeButton">
+       <property name="toolTip">
+        <string>Delete field</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+X</string>
        </property>
       </widget>
      </item>
@@ -65,39 +75,28 @@
        <property name="text">
         <string/>
        </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../../../.designer/backup/.designer/xpm/new_attribute.png</normaloff>../../../../.designer/backup/.designer/xpm/new_attribute.png</iconset>
-       </property>
        <property name="shortcut">
         <string>Ctrl+N</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QToolButton" name="mDeleteAttributeButton">
-       <property name="toolTip">
-        <string>Delete field</string>
+     <item row="0" column="6">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-       <property name="text">
-        <string/>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
        </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../../../.designer/backup/.designer/xpm/delete_attribute.png</normaloff>../../../../.designer/backup/.designer/xpm/delete_attribute.png</iconset>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+X</string>
-       </property>
-      </widget>
+      </spacer>
      </item>
      <item row="0" column="3">
-      <widget class="QToolButton" name="mCalculateFieldButton">
+      <widget class="QToolButton" name="mSaveLayerEditsButton">
        <property name="toolTip">
-        <string>Field calculator</string>
-       </property>
-       <property name="whatsThis">
-        <string>Click to toggle table editing</string>
+        <string>Save Layer Edits</string>
        </property>
        <property name="text">
         <string/>
@@ -116,6 +115,7 @@
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mDeleteAttributeButton</tabstop>
   <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mSaveLayerEditsButton</tabstop>
   <tabstop>mCalculateFieldButton</tabstop>
  </tabstops>
  <resources/>
