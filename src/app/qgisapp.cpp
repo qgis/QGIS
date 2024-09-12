@@ -295,6 +295,7 @@
 #include "qgslayoutatlas.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgslayoutitemguiregistry.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutqptdrophandler.h"
 #include "qgslayoutimagedrophandler.h"
