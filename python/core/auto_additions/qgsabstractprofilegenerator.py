@@ -5,11 +5,7 @@ try:
 except NameError:
     pass
 try:
-    QgsAbstractProfileResults.__attribute_docs__ = {'layerIdentifier': 'Identifier for grouping output features', 'geometry': 'Exported geometry', 'attributes': 'Exported attributes'}
-    QgsAbstractProfileResults.__group__ = ['elevation']
-except NameError:
-    pass
-try:
+    QgsAbstractProfileResults.Feature.__attribute_docs__ = {'layerIdentifier': 'Identifier for grouping output features', 'geometry': 'Exported geometry', 'attributes': 'Exported attributes'}
     QgsAbstractProfileResults.Feature.__doc__ = """Encapsulates information about a feature exported from the profile results.
 
 .. versionadded:: 3.32"""
@@ -22,6 +18,10 @@ except NameError:
     pass
 try:
     QgsProfileIdentifyResults.__group__ = ['elevation']
+except NameError:
+    pass
+try:
+    QgsAbstractProfileResults.__group__ = ['elevation']
 except NameError:
     pass
 try:

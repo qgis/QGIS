@@ -1,6 +1,10 @@
 # The following has been generated automatically from src/core/fieldformatter/qgsvaluerelationfieldformatter.h
 try:
-    QgsValueRelationFieldFormatter.__attribute_docs__ = {'group': 'Value used to regroup items during sorting (since QGIS 3.38)'}
+    QgsValueRelationFieldFormatter.ValueRelationItem.__attribute_docs__ = {'group': 'Value used to regroup items during sorting (since QGIS 3.38)'}
+    QgsValueRelationFieldFormatter.ValueRelationItem.__group__ = ['fieldformatter']
+except NameError:
+    pass
+try:
     QgsValueRelationFieldFormatter.valueToStringList = staticmethod(QgsValueRelationFieldFormatter.valueToStringList)
     QgsValueRelationFieldFormatter.expressionRequiresFormScope = staticmethod(QgsValueRelationFieldFormatter.expressionRequiresFormScope)
     QgsValueRelationFieldFormatter.expressionFormAttributes = staticmethod(QgsValueRelationFieldFormatter.expressionFormAttributes)
@@ -11,9 +15,5 @@ try:
     QgsValueRelationFieldFormatter.expressionIsUsable = staticmethod(QgsValueRelationFieldFormatter.expressionIsUsable)
     QgsValueRelationFieldFormatter.resolveLayer = staticmethod(QgsValueRelationFieldFormatter.resolveLayer)
     QgsValueRelationFieldFormatter.__group__ = ['fieldformatter']
-except NameError:
-    pass
-try:
-    QgsValueRelationFieldFormatter.ValueRelationItem.__group__ = ['fieldformatter']
 except NameError:
     pass

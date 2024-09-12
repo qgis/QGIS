@@ -2521,7 +2521,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.current_line) and CONTEXT.comment:
             attribute_name_match = re.match(r'^.*?\s[*&]*(\w+);.*$',
                                             CONTEXT.current_line)
-            class_name = '.'.join([c for c in CONTEXT.classname if c != CONTEXT.actual_class] + [CONTEXT.actual_class])
+            class_name = CONTEXT.current_fully_qualified_struct_name()
             dbg_info(
                 f'storing attribute docstring for {class_name} : {attribute_name_match.group(1)}')
             CONTEXT.attribute_docstrings[class_name][
