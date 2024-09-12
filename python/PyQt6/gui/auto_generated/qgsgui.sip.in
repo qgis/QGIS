@@ -22,6 +22,7 @@ related to GUI classes.
 %End
   public:
 
+
     enum ProjectCrsBehavior /BaseType=IntEnum/
     {
       UseCrsOfFirstLayerAdded,
