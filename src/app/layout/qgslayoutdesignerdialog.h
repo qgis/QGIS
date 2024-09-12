@@ -381,6 +381,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void toggleFullScreen( bool enabled );
 
     void addPages();
+    void showPageProperties();
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
     void undoRedoOccurredForItems( const QSet< QString > &itemUuids );

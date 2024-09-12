@@ -753,6 +753,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mView->resizeSelectedItems( QgsLayoutAligner::ResizeToSquare );
   } );
 
+  connect( mActionPageProperties, &QAction::triggered, this, &QgsLayoutDesignerDialog::showPageProperties );
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
 
   connect( mActionUnlockAll, &QAction::triggered, this, &QgsLayoutDesignerDialog::unlockAllItems );
@@ -1918,6 +1919,16 @@ void QgsLayoutDesignerDialog::addPages()
     if ( dlg.numberPages() > 1 )
       mLayout->undoStack()->endMacro();
 
+  }
+}
+
+void QgsLayoutDesignerDialog::showPageProperties()
+{
+  QgsLayoutItemPage *page = mLayout->pageCollection()->page( 0 );
+
+  if ( page )
+  {
+    showItemOptions( page, true );
   }
 }
 
