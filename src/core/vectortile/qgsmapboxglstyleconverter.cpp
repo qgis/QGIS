@@ -2284,7 +2284,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
   QColor topColor;
   if ( tcVariant.userType() == QMetaType::Type::QString )
   {
-    topColor = parseColor( stops.last().toList().value( 1 ), context );
+    topColor = parseColor( tcVariant, context );
     if ( topColor.isValid() )
     {
       int tcHue;
