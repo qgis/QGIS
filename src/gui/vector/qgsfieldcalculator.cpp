@@ -75,7 +75,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   populateFields();
   populateOutputFieldTypes();
 
-  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setOkButtonState );
+  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setDialogButtonState );
   connect( mOutputFieldWidthSpinBox, &QAbstractSpinBox::editingFinished, this, &QgsFieldCalculator::setPrecisionMinMax );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::showHelp );
   connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsFieldCalculator::calculate );
@@ -162,7 +162,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   setWindowTitle( tr( "%1 — Field Calculator" ).arg( mVectorLayer->name() ) );
 
-  setOkButtonState();
+  setDialogButtonState();
 }
 
 void QgsFieldCalculator::accept()
@@ -437,7 +437,7 @@ void QgsFieldCalculator::mNewFieldGroupBox_toggled( bool on )
 void QgsFieldCalculator::mUpdateExistingGroupBox_toggled( bool on )
 {
   mNewFieldGroupBox->setChecked( !on );
-  setOkButtonState();
+  setDialogButtonState();
 
   if ( on )
   {
@@ -470,7 +470,7 @@ void QgsFieldCalculator::mCreateVirtualFieldCheckbox_stateChanged( int state )
 void QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged( const QString &text )
 {
   Q_UNUSED( text )
-  setOkButtonState();
+  setDialogButtonState();
 }
 
 
@@ -542,27 +542,37 @@ void QgsFieldCalculator::populateFields()
   mExistingFieldComboBox->setCurrentIndex( -1 );
 }
 
-void QgsFieldCalculator::setOkButtonState()
+void QgsFieldCalculator::setDialogButtonState()
 {
-  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  QList<QPushButton *> buttons =
+  {
+    mButtonBox->button( QDialogButtonBox::Ok ),
+    mButtonBox->button( QDialogButtonBox::Apply )
+  };
+
+  bool enableButtons = true;
+  QString tooltip;
 
   if ( ( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() )
        && mOutputFieldNameLineEdit->text().isEmpty() )
   {
-    okButton->setToolTip( tr( "Please enter a field name" ) );
-    okButton->setEnabled( false );
-    return;
+    tooltip = tr( "Please enter a field name" );
+    enableButtons = false;
   }
-
-  if ( !builder->isExpressionValid() )
+  else if ( !builder->isExpressionValid() )
   {
-    okButton->setToolTip( okButton->toolTip() + tr( "\n The expression is invalid see (more info) for details" ) );
-    okButton->setEnabled( false );
-    return;
+    tooltip = tr( "The expression is invalid see (more info) for details" );
+    enableButtons = false;
   }
 
-  okButton->setToolTip( QString() );
-  okButton->setEnabled( true );
+  for ( QPushButton *button : buttons )
+  {
+    if ( button )
+    {
+      button->setEnabled( enableButtons );
+      button->setToolTip( tooltip );
+    }
+  }
 }
 
 void QgsFieldCalculator::setPrecisionMinMax()

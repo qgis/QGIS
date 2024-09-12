@@ -62,8 +62,8 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void mOutputFieldNameLineEdit_textChanged( const QString &text );
     void mOutputFieldTypeComboBox_activated( int index );
 
-    //! Sets the OK button enabled / disabled
-    void setOkButtonState();
+    //! Sets the dialog buttons (Ok and Apply) enabled / disabled
+    void setDialogButtonState();
     void setPrecisionMinMax();
     void showHelp();
     void calculate();
