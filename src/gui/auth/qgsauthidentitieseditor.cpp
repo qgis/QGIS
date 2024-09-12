@@ -49,8 +49,8 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
     connect( btnInfoIdentity, &QToolButton::clicked, this, &QgsAuthIdentitiesEditor::btnInfoIdentity_clicked );
     connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthIdentitiesEditor::btnGroupByOrg_toggled );
 
-    connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-             this, &QgsAuthIdentitiesEditor::authMessageOut );
+    connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+             this, &QgsAuthIdentitiesEditor::authMessageLog );
 
     connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
              this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
@@ -374,17 +374,16 @@ void QgsAuthIdentitiesEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( checked ) ) )
   {
-    authMessageOut( QObject::tr( "Could not store sort by preference." ),
+    authMessageLog( QObject::tr( "Could not store sort by preference." ),
                     QObject::tr( "Authentication Identities" ),
-                    QgsAuthManager::WARNING );
+                    Qgis::MessageLevel::Warning );
   }
   populateIdentitiesView();
 }
 
-void QgsAuthIdentitiesEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthIdentitiesEditor::authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level )
 {
-  const int levelint = static_cast<int>( level );
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
+  messageBar()->pushMessage( authtag, message, level, 7 );
 }
 
 void QgsAuthIdentitiesEditor::showEvent( QShowEvent *e )

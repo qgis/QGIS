@@ -16903,10 +16903,10 @@ void QgisApp::namUpdate()
 
 void QgisApp::masterPasswordSetup()
 {
-  connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-           this, &QgisApp::authMessageOut );
-  connect( QgsApplication::authManager(), &QgsAuthManager::passwordHelperMessageOut,
-           this, &QgisApp::authMessageOut );
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+           this, &QgisApp::authMessageLog );
+  connect( QgsApplication::authManager(), &QgsAuthManager::passwordHelperMessageLog,
+           this, &QgisApp::authMessageLog );
   connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseEraseRequested,
            this, &QgisApp::eraseAuthenticationDatabase );
 }
@@ -16943,7 +16943,7 @@ void QgisApp::eraseAuthenticationDatabase()
   QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), this );
 }
 
-void QgisApp::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
+void QgisApp::authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level )
 {
   // Use system notifications if the main window is not the active one,
   // push message to the message bar if the main window is active
@@ -16953,8 +16953,7 @@ void QgisApp::authMessageOut( const QString &message, const QString &authtag, Qg
   }
   else
   {
-    int levelint = static_cast< int >( level );
-    visibleMessageBar()->pushMessage( authtag, message, static_cast< Qgis::MessageLevel >( levelint ) );
+    visibleMessageBar()->pushMessage( authtag, message, level );
   }
 }
 

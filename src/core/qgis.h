@@ -92,6 +92,61 @@ class CORE_EXPORT Qgis
     //
 
     /**
+     * Authentication configuration storage capabilities.
+     *
+     * \since QGIS 3.40
+     */
+    enum class AuthConfigurationStorageCapability: int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ClearStorage = 1 << 0, //!< Can clear all configurations from storage
+
+      ReadConfiguration = 1 << 1, //!< Can read an authentication configuration
+      UpdateConfiguration = 1 << 2, //!< Can update an authentication configuration
+      DeleteConfiguration = 1 << 3, //!< Can deleet an authentication configuration
+      CreateConfiguration = 1 << 4, //!< Can create a new authentication configuration
+
+      ReadCertificateIdentity = 1 << 5, //!< Can read a certificate identity
+      UpdateCertificateIdentity = 1 << 6, //!< Can update a certificate identity
+      DeleteCertificateIdentity = 1 << 7, //!< Can delete a certificate identity
+      CreateCertificateIdentity = 1 << 8, //!< Can create a new certificate identity
+
+      ReadSslCertificateCustomConfig = 1 << 9, //!< Can read a SSL certificate custom config
+      UpdateSslCertificateCustomConfig = 1 << 10, //!< Can update a SSL certificate custom config
+      DeleteSslCertificateCustomConfig = 1 << 11, //!< Can delete a SSL certificate custom config
+      CreateSslCertificateCustomConfig = 1 << 12, //!< Can create a new SSL certificate custom config
+
+      ReadCertificateAuthority = 1 << 13, //!< Can read a certificate authority
+      UpdateCertificateAuthority = 1 << 14, //!< Can update a certificate authority
+      DeleteCertificateAuthority = 1 << 15, //!< Can delete a certificate authority
+      CreateCertificateAuthority = 1 << 16, //!< Can create a new certificate authority
+
+      ReadCertificateTrustPolicy = 1 << 17, //!< Can read a certificate trust policy
+      UpdateCertificateTrustPolicy = 1 << 18, //!< Can update a certificate trust policy
+      DeleteCertificateTrustPolicy = 1 << 19, //!< Can delete a certificate trust policy
+      CreateCertificateTrustPolicy = 1 << 20, //!< Can create a new certificate trust policy
+
+      ReadMasterPassword = 1 << 21, //!< Can read the master password
+      UpdateMasterPassword = 1 << 22, //!< Can update the master password
+      DeleteMasterPassword = 1 << 23, //!< Can delete the master password
+      CreateMasterPassword = 1 << 24, //!< Can create a new master password
+
+      ReadSetting = 1 << 25, //!< Can read the authentication settings
+      UpdateSetting = 1 << 26, //!< Can update the authentication setting
+      DeleteSetting = 1 << 27, //!< Can delete the authentication setting
+      CreateSetting = 1 << 28, //!< Can create a new authentication setting
+
+    };
+    Q_ENUM( AuthConfigurationStorageCapability )
+
+    /**
+     *  Authentication configuration storage capabilities
+     *  \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( AuthConfigurationStorageCapabilities, AuthConfigurationStorageCapability )
+    Q_FLAG( AuthConfigurationStorageCapabilities )
+
+
+    /**
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
      */
@@ -5498,6 +5553,7 @@ QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )

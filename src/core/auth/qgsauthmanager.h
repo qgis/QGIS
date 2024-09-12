@@ -55,7 +55,9 @@ class QgsAuthMethodEdit;
 class QgsAuthProvider;
 class QgsAuthMethodMetadata;
 class QTimer;
-
+class QgsAuthConfigurationStorage;
+class QgsAuthConfigurationStorageDb;
+class QgsAuthConfigurationStorageRegistry;
 
 /**
  * \ingroup core
@@ -98,7 +100,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * to lazy-initialize when required.
      *
      * \param pluginPath the plugin path
-     * \param authDatabasePath the authentication DB path
+     * \param authDatabasePath the authentication DB URI (or just the file path for SQLite)
      * \see ensureInitialized()
      */
     void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
@@ -114,14 +116,37 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     ~QgsAuthManager() override;
 
-    //! Sets up the application instance of the authentication database connection
-    QSqlDatabase authDatabaseConnection() const;
+    /**
+     * Returns the authentication configuration storage registry.
+     *  \since QGIS 3.40
+     */
+    QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry() const;
 
-    //! Name of the authentication database table that stores configs
-    const QString authDatabaseConfigTable() const { return AUTH_CONFIG_TABLE; }
+    /**
+     * Sets up the application instance of the authentication database connection
+     *
+     * \deprecated QGIS 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead.
+     */
+    Q_DECL_DEPRECATED QSqlDatabase authDatabaseConnection() const SIP_DEPRECATED;
 
-    //! Name of the authentication database table that stores server exceptions/configs
-    const QString authDatabaseServersTable() const { return AUTH_SERVERS_TABLE; }
+    /**
+     * Name of the authentication database table that stores configs
+     * \deprecated QGIS 3.40. Direct access to the DB is not allowed, use methodConfigTableName() instead.
+     */
+    Q_DECL_DEPRECATED const QString authDatabaseConfigTable() const SIP_DEPRECATED { return AUTH_CONFIG_TABLE; }
+
+    /**
+     * Returns the database table from the first ready storage that stores authentication configs,
+     * or an empty string if none available. The table is prefixed with schema and escaped if necessary.
+     * \since QGIS 3.40
+     */
+    const QString methodConfigTableName() const;
+
+    /**
+     * Name of the authentication database table that stores server exceptions/configs
+     * \deprecated QGIS 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead.
+     */
+    Q_DECL_DEPRECATED const QString authDatabaseServersTable() const SIP_DEPRECATED { return AUTH_SERVERS_TABLE; }
 
 
     //! Whether QCA has the qca-ossl plugin, which a base run-time requirement
@@ -133,8 +158,33 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * The standard authentication database file in ~/.qgis3/ or defined location
      * \see QgsApplication::qgisAuthDatabaseFilePath
+     * \deprecated QGIS 3.40. Use authenticationDatabaseUri() instead.
      */
-    const QString authenticationDatabasePath() const { return mAuthDbPath; }
+    Q_DECL_DEPRECATED const QString authenticationDatabasePath() const;
+
+    /**
+     * Returns the TRUE if the \a uri is a filesystem-based database (SQLite).
+     */
+    static bool isFilesystemBasedDatabase( const QString &uri );
+
+    /**
+     * Transitional proxy to the first ready storage of database type.
+     * Exposes the old SQLite local API from the new storage API.
+     * \note not available in Python bindings
+     */
+    QgsAuthConfigurationStorageDb *defaultDbStorage() const SIP_SKIP;
+
+    /**
+     * Returns the authentication database connection URI.
+     * \since QGIS 3.40
+     */
+    const QString authenticationDatabaseUri() const;
+
+    /**
+     * Returns the authentication database connection URI with the password stripped.
+     * \since QGIS 3.40
+     */
+    const QString authenticationDatabaseUriStripped() const;
 
     /**
      * Main call to initially set or continually check master password is set
@@ -712,6 +762,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! The display name of the Authentication Manager
     static const QString AUTH_MAN_TAG;
 
+
   signals:
 
     /**
@@ -732,8 +783,19 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param tag Associated tag (title)
      * \param level Message log level
      * \see QgsMessageLog
+     * \deprecated QGIS 3.40. Use messageLog() instead.
      */
-    void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+    Q_DECL_DEPRECATED void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const SIP_DEPRECATED;
+
+    /**
+     * Custom logging signal to relay to console output and QgsMessageLog
+     * \param message Message to send
+     * \param tag Associated tag (title)
+     * \param level Message log level
+     * \see QgsMessageLog
+     * \since QGIS 3.40
+     */
+    void messageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
 
     /**
      * Custom logging signal to inform the user about master password <-> password manager interactions
@@ -741,9 +803,19 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param tag Associated tag (title)
      * \param level Message log level
      * \see QgsMessageLog
+     * \deprecated QGIS 3.40. Use passwordHelperMessageLog() instead.
      */
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
+    Q_DECL_DEPRECATED void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) SIP_DEPRECATED;
 
+    /**
+     * Custom logging signal to inform the user about master password <-> password manager interactions
+     * \param message Message to send
+     * \param tag Associated tag (title)
+     * \param level Message log level
+     * \see QgsMessageLog
+     * \since QGIS 3.40
+     */
+    void passwordHelperMessageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Emitted when a password has been verify (or not)
@@ -765,7 +837,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void clearCachedConfig( const QString &authcfg );
 
   private slots:
-    void writeToConsole( const QString &message, const QString &tag = QString(), QgsAuthManager::MessageLevel level = INFO );
+    void writeToConsole( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * This slot emits the authDatabaseEraseRequested signal, instead of attempting
@@ -797,7 +869,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
   private:
 
-    bool initPrivate( const QString &pluginPath,  const QString &authDatabasePath );
+    bool initPrivate( const QString &pluginPath );
 
     //////////////////////////////////////////////////////////////////////////////
     // Password Helper methods
@@ -826,10 +898,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     void passwordHelperProcessError();
 
-    bool createConfigTables();
-
-    bool createCertTables();
-
     bool masterPasswordInput();
 
     bool masterPasswordRowsInDb( int *rows ) const;
@@ -854,48 +922,34 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool reencryptAuthenticationIdentity( const QString &identid, const QString &prevpass, const QString &prevciv );
 
-    bool authDbOpen() const;
-
-    bool authDbQuery( QSqlQuery *query ) const;
-
-    bool authDbStartTransaction() const;
-
-    bool authDbCommit() const;
-
-    bool authDbTransactionQuery( QSqlQuery *query ) const;
-
 #ifndef QT_NO_SSL
     void insertCaCertInCache( QgsAuthCertUtils::CaCertSource source, const QList<QSslCertificate> &certs );
 #endif
 
-    const QString authDbPassTable() const { return AUTH_PASS_TABLE; }
-
-    const QString authDbSettingsTable() const { return AUTH_SETTINGS_TABLE; }
-
-    const QString authDbIdentitiesTable() const { return AUTH_IDENTITIES_TABLE; }
-
-    const QString authDbAuthoritiesTable() const { return AUTH_AUTHORITIES_TABLE; }
-
-    const QString authDbTrustTable() const { return AUTH_TRUST_TABLE; }
-
     QString authPasswordHelperKeyName() const;
+
+    /**
+     * Returns the first ready storage with the given \a capability or NULL if none available.
+     */
+    QgsAuthConfigurationStorage *firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
+
+    /**
+     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
+     */
+    const QString sqliteDatabasePath() const;
 
     static QgsAuthManager *sInstance;
     static const QString AUTH_CONFIG_TABLE;
-    static const QString AUTH_PASS_TABLE;
-    static const QString AUTH_SETTINGS_TABLE;
-    static const QString AUTH_IDENTITIES_TABLE;
     static const QString AUTH_SERVERS_TABLE;
-    static const QString AUTH_AUTHORITIES_TABLE;
-    static const QString AUTH_TRUST_TABLE;
     static const QString AUTH_CFG_REGEX;
 
     QString mPluginPath;
-    QString mAuthDatabasePath;
-    mutable bool mLazyInitResult = false;
+    QString mAuthDatabaseConnectionUri;
 
+    mutable bool mLazyInitResult = false;
     bool mAuthInit = false;
-    QString mAuthDbPath;
+
+    mutable std::unique_ptr<QgsAuthConfigurationStorageRegistry> mAuthConfigurationStorageRegistry;
 
     std::unique_ptr<QCA::Initializer> mQcaInitializer;
 

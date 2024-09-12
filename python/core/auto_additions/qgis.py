@@ -1,4 +1,73 @@
 # The following has been generated automatically from src/core/qgis.h
+# monkey patching scoped based enum
+Qgis.AuthConfigurationStorageCapability.ClearStorage.__doc__ = "Can clear all configurations from storage"
+Qgis.AuthConfigurationStorageCapability.ReadConfiguration.__doc__ = "Can read an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.UpdateConfiguration.__doc__ = "Can update an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can deleet an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.CreateConfiguration.__doc__ = "Can create a new authentication configuration"
+Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity.__doc__ = "Can read a certificate identity"
+Qgis.AuthConfigurationStorageCapability.UpdateCertificateIdentity.__doc__ = "Can update a certificate identity"
+Qgis.AuthConfigurationStorageCapability.DeleteCertificateIdentity.__doc__ = "Can delete a certificate identity"
+Qgis.AuthConfigurationStorageCapability.CreateCertificateIdentity.__doc__ = "Can create a new certificate identity"
+Qgis.AuthConfigurationStorageCapability.ReadSslCertificateCustomConfig.__doc__ = "Can read a SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.UpdateSslCertificateCustomConfig.__doc__ = "Can update a SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.DeleteSslCertificateCustomConfig.__doc__ = "Can delete a SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.CreateSslCertificateCustomConfig.__doc__ = "Can create a new SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.ReadCertificateAuthority.__doc__ = "Can read a certificate authority"
+Qgis.AuthConfigurationStorageCapability.UpdateCertificateAuthority.__doc__ = "Can update a certificate authority"
+Qgis.AuthConfigurationStorageCapability.DeleteCertificateAuthority.__doc__ = "Can delete a certificate authority"
+Qgis.AuthConfigurationStorageCapability.CreateCertificateAuthority.__doc__ = "Can create a new certificate authority"
+Qgis.AuthConfigurationStorageCapability.ReadCertificateTrustPolicy.__doc__ = "Can read a certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.UpdateCertificateTrustPolicy.__doc__ = "Can update a certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.DeleteCertificateTrustPolicy.__doc__ = "Can delete a certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.CreateCertificateTrustPolicy.__doc__ = "Can create a new certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.ReadMasterPassword.__doc__ = "Can read the master password"
+Qgis.AuthConfigurationStorageCapability.UpdateMasterPassword.__doc__ = "Can update the master password"
+Qgis.AuthConfigurationStorageCapability.DeleteMasterPassword.__doc__ = "Can delete the master password"
+Qgis.AuthConfigurationStorageCapability.CreateMasterPassword.__doc__ = "Can create a new master password"
+Qgis.AuthConfigurationStorageCapability.ReadSetting.__doc__ = "Can read the authentication settings"
+Qgis.AuthConfigurationStorageCapability.UpdateSetting.__doc__ = "Can update the authentication setting"
+Qgis.AuthConfigurationStorageCapability.DeleteSetting.__doc__ = "Can delete the authentication setting"
+Qgis.AuthConfigurationStorageCapability.CreateSetting.__doc__ = "Can create a new authentication setting"
+Qgis.AuthConfigurationStorageCapability.__doc__ = """Authentication configuration storage capabilities.
+
+.. versionadded:: 3.40
+
+* ``ClearStorage``: Can clear all configurations from storage
+* ``ReadConfiguration``: Can read an authentication configuration
+* ``UpdateConfiguration``: Can update an authentication configuration
+* ``DeleteConfiguration``: Can deleet an authentication configuration
+* ``CreateConfiguration``: Can create a new authentication configuration
+* ``ReadCertificateIdentity``: Can read a certificate identity
+* ``UpdateCertificateIdentity``: Can update a certificate identity
+* ``DeleteCertificateIdentity``: Can delete a certificate identity
+* ``CreateCertificateIdentity``: Can create a new certificate identity
+* ``ReadSslCertificateCustomConfig``: Can read a SSL certificate custom config
+* ``UpdateSslCertificateCustomConfig``: Can update a SSL certificate custom config
+* ``DeleteSslCertificateCustomConfig``: Can delete a SSL certificate custom config
+* ``CreateSslCertificateCustomConfig``: Can create a new SSL certificate custom config
+* ``ReadCertificateAuthority``: Can read a certificate authority
+* ``UpdateCertificateAuthority``: Can update a certificate authority
+* ``DeleteCertificateAuthority``: Can delete a certificate authority
+* ``CreateCertificateAuthority``: Can create a new certificate authority
+* ``ReadCertificateTrustPolicy``: Can read a certificate trust policy
+* ``UpdateCertificateTrustPolicy``: Can update a certificate trust policy
+* ``DeleteCertificateTrustPolicy``: Can delete a certificate trust policy
+* ``CreateCertificateTrustPolicy``: Can create a new certificate trust policy
+* ``ReadMasterPassword``: Can read the master password
+* ``UpdateMasterPassword``: Can update the master password
+* ``DeleteMasterPassword``: Can delete the master password
+* ``CreateMasterPassword``: Can create a new master password
+* ``ReadSetting``: Can read the authentication settings
+* ``UpdateSetting``: Can update the authentication setting
+* ``DeleteSetting``: Can delete the authentication setting
+* ``CreateSetting``: Can create a new authentication setting
+
+"""
+# --
+Qgis.AuthConfigurationStorageCapability.baseClass = Qgis
+Qgis.AuthConfigurationStorageCapabilities.baseClass = Qgis
+AuthConfigurationStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 Qgis.MessageLevel.baseClass = Qgis
 QgsMapLayer.LayerType = Qgis.LayerType
 # monkey patching scoped based enum

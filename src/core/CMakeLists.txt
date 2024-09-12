@@ -207,10 +207,15 @@ set(QGIS_CORE_SRCS
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
   auth/qgsauthcrypto.cpp
+  auth/qgsauthconfigurationstorage.cpp
+  auth/qgsauthconfigurationstorageregistry.cpp
   auth/qgsauthmanager.cpp
   auth/qgsauthmethod.cpp
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
+
+  auth/qgsauthconfigurationstoragesqlite.cpp
+  auth/qgsauthconfigurationstoragedb.cpp
 
   annotations/qgsannotation.cpp
   annotations/qgsannotationitem.cpp
@@ -1362,10 +1367,15 @@ set(QGIS_CORE_HDRS
   auth/qgsauthcertutils.h
   auth/qgsauthconfig.h
   auth/qgsauthcrypto.h
+  auth/qgsauthconfigurationstorage.h
+  auth/qgsauthconfigurationstorageregistry.h
   auth/qgsauthmanager.h
   auth/qgsauthmethod.h
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
+
+  auth/qgsauthconfigurationstoragesqlite.h
+  auth/qgsauthconfigurationstoragedb.h
 
   browser/qgsbrowsermodel.h
   browser/qgsbrowserproxymodel.h
@@ -2298,7 +2308,6 @@ set(IMAGE_RCCS ../../images/images.qrc)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
-
 
 # require c++17
 target_compile_features(qgis_core PRIVATE cxx_std_17)

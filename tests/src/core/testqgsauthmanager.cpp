@@ -93,9 +93,11 @@ void TestQgsAuthManager::initTestCase()
             "Authentication system is DISABLED" );
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
+  Q_NOWARN_DEPRECATED_PUSH
   const QString db1( QFileInfo( QgsApplication::authManager()->authenticationDatabasePath() ).canonicalFilePath() );
+  Q_NOWARN_DEPRECATED_POP
   const QString db2( QFileInfo( mTempDir + "/qgis-auth.db" ).canonicalFilePath() );
-  QVERIFY2( db1 == db2, "Auth db temp path does not match db path of manager" );
+  QCOMPARE( db1, db2 );
 
   // verify master pass can be set manually
   // (this also creates a fresh password hash in the new temp database)

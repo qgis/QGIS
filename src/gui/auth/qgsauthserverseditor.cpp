@@ -49,8 +49,8 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     connect( btnEditServer, &QToolButton::clicked, this, &QgsAuthServersEditor::btnEditServer_clicked );
     connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthServersEditor::btnGroupByOrg_toggled );
 
-    connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-             this, &QgsAuthServersEditor::authMessageOut );
+    connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+             this, &QgsAuthServersEditor::authMessageLog );
 
     connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
              this, &QgsAuthServersEditor::refreshSslConfigsView );
@@ -391,17 +391,16 @@ void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "serverssortby" ), QVariant( checked ) ) )
   {
-    authMessageOut( QObject::tr( "Could not store sort by preference." ),
+    authMessageLog( QObject::tr( "Could not store sort by preference." ),
                     QObject::tr( "Authentication SSL Configs" ),
-                    QgsAuthManager::WARNING );
+                    Qgis::MessageLevel::Warning );
   }
   populateSslConfigsView();
 }
 
-void QgsAuthServersEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthServersEditor::authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level )
 {
-  const int levelint = static_cast<int>( level );
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
+  messageBar()->pushMessage( authtag, message, level, 7 );
 }
 
 void QgsAuthServersEditor::showEvent( QShowEvent *e )

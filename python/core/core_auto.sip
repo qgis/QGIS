@@ -243,8 +243,11 @@
 %Include auto_generated/annotations/qgstextannotation.sip
 %Include auto_generated/auth/qgsauthcertutils.sip
 %Include auto_generated/auth/qgsauthconfig.sip
+%Include auto_generated/auth/qgsauthconfigurationstorage.sip
+%Include auto_generated/auth/qgsauthconfigurationstorageregistry.sip
 %Include auto_generated/auth/qgsauthmanager.sip
 %Include auto_generated/auth/qgsauthmethod.sip
+%Include auto_generated/auth/qgsauthconfigurationstoragedb.sip
 %Include auto_generated/browser/qgsbrowsermodel.sip
 %Include auto_generated/browser/qgsbrowserproxymodel.sip
 %Include auto_generated/browser/qgsconnectionsitem.sip

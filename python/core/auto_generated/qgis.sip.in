@@ -65,6 +65,51 @@ The development version
 %End
 
 
+    enum class AuthConfigurationStorageCapability
+    {
+      ClearStorage,
+
+      ReadConfiguration,
+      UpdateConfiguration,
+      DeleteConfiguration,
+      CreateConfiguration,
+
+      ReadCertificateIdentity,
+      UpdateCertificateIdentity,
+      DeleteCertificateIdentity,
+      CreateCertificateIdentity,
+
+      ReadSslCertificateCustomConfig,
+      UpdateSslCertificateCustomConfig,
+      DeleteSslCertificateCustomConfig,
+      CreateSslCertificateCustomConfig,
+
+      ReadCertificateAuthority,
+      UpdateCertificateAuthority,
+      DeleteCertificateAuthority,
+      CreateCertificateAuthority,
+
+      ReadCertificateTrustPolicy,
+      UpdateCertificateTrustPolicy,
+      DeleteCertificateTrustPolicy,
+      CreateCertificateTrustPolicy,
+
+      ReadMasterPassword,
+      UpdateMasterPassword,
+      DeleteMasterPassword,
+      CreateMasterPassword,
+
+      ReadSetting,
+      UpdateSetting,
+      DeleteSetting,
+      CreateSetting,
+
+    };
+
+    typedef QFlags<Qgis::AuthConfigurationStorageCapability> AuthConfigurationStorageCapabilities;
+
+
+
     enum MessageLevel
     {
       Info,
@@ -3097,6 +3142,8 @@ GEOS string version linked
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
+
+QFlags<Qgis::AuthConfigurationStorageCapability> operator|(Qgis::AuthConfigurationStorageCapability f1, QFlags<Qgis::AuthConfigurationStorageCapability> f2);
 
 QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
