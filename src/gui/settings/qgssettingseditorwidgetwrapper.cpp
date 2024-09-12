@@ -61,7 +61,7 @@ bool QgsSettingsEditorWidgetWrapper::configureEditor( QWidget *editor, const Qgs
   return ok;
 }
 
-void QgsSettingsEditorWidgetWrapper::enableAutomaticUpdate( QDialog *dialog )
+void QgsSettingsEditorWidgetWrapper::configureAutomaticUpdate( QDialog *dialog )
 {
   setWidgetFromSetting();
   if ( dialog )
