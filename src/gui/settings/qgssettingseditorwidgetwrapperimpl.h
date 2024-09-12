@@ -139,6 +139,8 @@ class GUI_EXPORT QgsSettingsStringEditorWidgetWrapper : public QgsSettingsEditor
     QString valueFromWidget() const override;
 
     bool setWidgetValue( const QString &value ) const override;
+
+    void enableAutomaticUpdatePrivate() override;
 };
 
 /**
@@ -164,6 +166,8 @@ class GUI_EXPORT QgsSettingsBoolEditorWidgetWrapper : public QgsSettingsEditorWi
     bool valueFromWidget() const override;
 
     bool setWidgetValue( const bool &value ) const override;
+
+    void enableAutomaticUpdatePrivate() override;
 };
 
 /**
@@ -189,6 +193,8 @@ class GUI_EXPORT QgsSettingsIntegerEditorWidgetWrapper : public QgsSettingsEdito
     int valueFromWidget() const override;
 
     bool setWidgetValue( const int &value ) const override;
+
+    void enableAutomaticUpdatePrivate() override;
 };
 
 
@@ -215,6 +221,8 @@ class GUI_EXPORT QgsSettingsDoubleEditorWidgetWrapper : public QgsSettingsEditor
     double valueFromWidget() const override;
 
     bool setWidgetValue( const double &value ) const override;
+
+    void enableAutomaticUpdatePrivate() override;
 };
 
 
@@ -243,6 +251,8 @@ class GUI_EXPORT QgsSettingsColorEditorWidgetWrapper : public QgsSettingsEditorW
     bool setWidgetValue( const QColor &value ) const override;
 
     void configureEditorPrivateImplementation() override;
+
+    void enableAutomaticUpdatePrivate() override;
 };
 
 

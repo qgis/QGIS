@@ -46,6 +46,14 @@ bool QgsSettingsStringEditorWidgetWrapper::setWidgetValue( const QString &value 
   return false;
 }
 
+void QgsSettingsStringEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    this->mSetting->setValue( text, this->mDynamicKeyPartList );
+  } );
+}
+
 bool QgsSettingsStringEditorWidgetWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
@@ -94,6 +102,14 @@ bool QgsSettingsBoolEditorWidgetWrapper::setWidgetValue( const bool &value ) con
     QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
+}
+
+void QgsSettingsBoolEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QCheckBox::clicked, this, [ = ]( bool checked )
+  {
+    this->mSetting->setValue( checked, this->mDynamicKeyPartList );
+  } );
 }
 
 bool QgsSettingsBoolEditorWidgetWrapper::setSettingFromWidget() const
@@ -148,6 +164,14 @@ bool QgsSettingsIntegerEditorWidgetWrapper::setWidgetValue( const int &value ) c
   return false;
 }
 
+void QgsSettingsIntegerEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int value )
+  {
+    this->mSetting->setValue( value, this->mDynamicKeyPartList );
+  } );
+}
+
 bool QgsSettingsIntegerEditorWidgetWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
@@ -198,6 +222,14 @@ bool QgsSettingsDoubleEditorWidgetWrapper::setWidgetValue( const double &value )
     QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
   return false;
+}
+
+void QgsSettingsDoubleEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    this->mSetting->setValue( value, this->mDynamicKeyPartList );
+  } );
 }
 
 bool QgsSettingsDoubleEditorWidgetWrapper::setSettingFromWidget() const
@@ -260,6 +292,14 @@ void QgsSettingsColorEditorWidgetWrapper::configureEditorPrivateImplementation()
   {
     QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
   }
+}
+
+void QgsSettingsColorEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QgsColorButton::colorChanged, this, [ = ]( const QColor & color )
+  {
+    this->mSetting->setValue( color, this->mDynamicKeyPartList );
+  } );
 }
 
 bool QgsSettingsColorEditorWidgetWrapper::setSettingFromWidget() const

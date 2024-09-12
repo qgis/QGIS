@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgssettingsentry.h"
 
+#include <QDialog>
 #include <QWidget>
 
 
@@ -58,4 +59,20 @@ bool QgsSettingsEditorWidgetWrapper::configureEditor( QWidget *editor, const Qgs
     editor->setProperty( "SETTING-EDITOR-WIDGET-WRAPPER", QVariant::fromValue( this ) );
 
   return ok;
+}
+
+void QgsSettingsEditorWidgetWrapper::configureAutomaticUpdate( QDialog *dialog )
+{
+  setWidgetFromSetting();
+  if ( dialog )
+  {
+    QObject::connect( dialog, &QDialog::accepted, this, [ = ]()
+    {
+      setSettingFromWidget();
+    } );
+  }
+  else
+  {
+    enableAutomaticUpdatePrivate();
+  }
 }

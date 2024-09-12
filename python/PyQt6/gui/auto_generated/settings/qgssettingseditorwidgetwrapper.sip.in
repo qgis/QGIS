@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSettingsEditorWidgetWrapper : QObject
 {
 %Docstring(signature="appended")
@@ -82,6 +83,21 @@ Sets the ``value`` of the widget
 The wrapper must be configured before calling this medthod
 %End
 
+    void configureAutomaticUpdate( QDialog *dialog = 0 );
+%Docstring
+Enables automatic update, which causes the setting to be updated immediately when the widget
+value is changed.
+
+If a ``dialog`` is provided, the setting will be updated when the dialog is accepted.
+If not, the setting will be updated directly at each widget value change.
+
+.. note::
+
+   This must called after :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor` or :py:func:`~QgsSettingsEditorWidgetWrapper.configureEditor`.
+
+.. versionadded:: 3.40
+%End
+
 
   protected:
     virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
@@ -92,6 +108,14 @@ Creates the widgets
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
 %Docstring
 Configures an existing ``editor`` widget
+%End
+
+    virtual void enableAutomaticUpdatePrivate() = 0;
+%Docstring
+Enables automatic update, which causes the setting to be updated immediately when the widget
+value is changed.
+
+.. versionadded:: 3.40
 %End
 
 };
