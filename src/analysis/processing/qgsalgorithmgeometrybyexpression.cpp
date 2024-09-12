@@ -87,7 +87,7 @@ void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "WITH_Z" ), QObject::tr( "Output geometry has z dimension" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "WITH_M" ), QObject::tr( "Output geometry has m values" ), false ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Geometry expression" ),
-                QStringLiteral( "$geometry" ), QStringLiteral( "INPUT" ) ) );
+                QStringLiteral( "@geometry" ), QStringLiteral( "INPUT" ) ) );
 }
 
 bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
