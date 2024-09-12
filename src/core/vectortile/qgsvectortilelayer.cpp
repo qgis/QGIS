@@ -52,7 +52,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
     const QMap<QString, QString> sources = QgsVectorTileUtils::parseStyleSourceUrl( data.styleUrl, data.httpHeaders, data.authCfg );
     QMap<QString, QString>::const_iterator it = sources.constBegin();
     int i = 1;
-    for ( ; it != sources.constEnd(); it++ )
+    for ( ; it != sources.constEnd(); ++it )
     {
       QString urlKey = QStringLiteral( "url" );
       QString nameKey = QStringLiteral( "urlName" );

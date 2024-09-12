@@ -75,7 +75,7 @@ QMap<QString, QString> QgsVectorTileUtils::parseStyleSourceUrl( const QString &s
     else
     {
       QJsonObject::const_iterator it = sourcesData.constBegin();
-      for ( ; it != sourcesData.constEnd(); it++ )
+      for ( ; it != sourcesData.constEnd(); ++it )
       {
         const QString sourceName = it.key();
         const QJsonObject sourceData = it.value().toObject();
