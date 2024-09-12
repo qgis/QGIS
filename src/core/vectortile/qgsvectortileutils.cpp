@@ -37,6 +37,34 @@
 #include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsjsonutils.h"
+#include "qgsvectortileconnection.h"
+
+
+bool QgsVectorTileUtils::updateUriSources( QString &uri )
+{
+  QgsVectorTileProviderConnection::Data data = QgsVectorTileProviderConnection::decodedUri( uri );
+  if ( data.url.isEmpty() && !data.styleUrl.isEmpty() )
+  {
+    const QMap<QString, QString> sources = QgsVectorTileUtils::parseStyleSourceUrl( data.styleUrl, data.httpHeaders, data.authCfg );
+    QMap<QString, QString>::const_iterator it = sources.constBegin();
+    int i = 0;
+    for ( ; it != sources.constEnd(); ++it )
+    {
+      i += 1;
+      QString urlKey = QStringLiteral( "url" );
+      QString nameKey = QStringLiteral( "urlName" );
+      if ( i > 1 )
+      {
+        urlKey.append( QString( "_%1" ).arg( i ) );
+        nameKey.append( QString( "_%1" ).arg( i ) );
+      }
+      uri.append( QString( "&%1=%2" ).arg( nameKey, it.key() ) );
+      uri.append( QString( "&%1=%2" ).arg( urlKey, it.value() ) );
+    }
+    return i > 0;
+  }
+  return true;
+}
 
 QMap<QString, QString> QgsVectorTileUtils::parseStyleSourceUrl( const QString &styleUrl, const QgsHttpHeaders &headers, const QString &authCfg )
 {
