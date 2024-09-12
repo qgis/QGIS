@@ -56,7 +56,7 @@ QDir QgsRenderChecker::testReportDir()
 {
   if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
     return QDir( QDir( "/root/QGIS" ).filePath( QStringLiteral( "qgis_test_report" ) ) );
-  else if ( qgetenv( "QGIS_TEST_REPORT" ) )
+  else if ( !qgetenv( "QGIS_TEST_REPORT" ).isEmpty() )
     return QDir( qgetenv( "QGIS_TEST_REPORT") );
   else
     return QDir( QDir::temp().filePath( QStringLiteral( "qgis_test_report" ) ) );
