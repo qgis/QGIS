@@ -228,7 +228,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   //consider centered first label
   double firstLabelWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << firstLabelString( settings ) ) * painterToMm;
 
-  if ( settings.labelHorizontalPlacement() == Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment )
+  if ( settings.labelHorizontalPlacement() == Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment && !std::isnan( scaleContext.segmentWidth ) )
   {
     if ( firstLabelWidth > scaleContext.segmentWidth )
     {
@@ -249,7 +249,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   const QString largestNumberLabel = settings.numericFormat()->formatDouble( largestLabelNumber, QgsNumericFormatContext() );
   const QString largestLabel = largestNumberLabel + ' ' + settings.unitLabel();
   double largestLabelWidth;
-  if ( settings.labelHorizontalPlacement() == Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment )
+  if ( settings.labelHorizontalPlacement() == Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment && !std::isnan( scaleContext.segmentWidth ) )
   {
     largestLabelWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestLabel ) * painterToMm;
 
@@ -268,7 +268,9 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
                          -  QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestNumberLabel ) * painterToMm / 2;
   }
 
-  const double totalBarLength = scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
+  // segmentWidth can be NaN in extreme cases, eg trying to make a scalebar for a global map with a very small segment size (eg meters)
+  const double totalBarLength =  std::isnan( scaleContext.segmentWidth ) ? 0
+                                 :  scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
 
   double lineWidth = QgsSymbolLayerUtils::estimateMaxSymbolBleed( settings.lineSymbol(), context ) * 2;
   // need to convert to mm
