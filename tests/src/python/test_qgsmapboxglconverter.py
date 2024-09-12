@@ -488,6 +488,8 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["concat", ["get", "numero"], ["get", "indice_de_repetition"]], conversion_context, False), '''concat("numero", "indice_de_repetition")''')
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["in", ["get", "subclass"], ["literal", ["allotments", "forest", "glacier"]]], conversion_context, True), '''"subclass" IN ('allotments', 'forest', 'glacier')''')
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
