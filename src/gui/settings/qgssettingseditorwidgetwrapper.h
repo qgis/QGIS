@@ -83,8 +83,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
 
     /**
-     * Enables automatic update, which causes the setting to be updated immediately when the widget
-     * value is changed.
+     * Configure the settings update behavior when a widget value is changed.
      *
      * If a \a dialog is provided, the setting will be updated when the dialog is accepted.
      * If not, the setting will be updated directly at each widget value change.
