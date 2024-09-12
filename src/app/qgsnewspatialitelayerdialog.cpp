@@ -175,6 +175,11 @@ void QgsNewSpatialiteLayerDialog::mAddAttributeButton_clicked()
     checkOk();
 
     mNameEdit->clear();
+
+    if ( !mNameEdit->hasFocus() )
+    {
+      mNameEdit->setFocus();
+    }
   }
 }
 
