@@ -215,8 +215,15 @@ void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
   //use userrole to avoid translated type string
   const QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
+
   checkOk();
+
   mNameEdit->clear();
+
+  if ( !mNameEdit->hasFocus() )
+  {
+    mNameEdit->setFocus();
+  }
 }
 
 void QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked()
