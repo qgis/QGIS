@@ -850,6 +850,13 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
   if ( color.isValid() )
     tempFormat.setColor( color );
 
+  // always show font previews based on the standard font size for buttons. Otherwise large/small text
+  // will be unreadable, making the button very non-user-friendly.
+  // Note that we take away a few points here, as the text in these buttons is rendered with a fairly large
+  // margin and we'd like to avoid cropping the text.
+  tempFormat.setSize( QToolButton::font().pointSizeF() - 2 );
+  tempFormat.setSizeUnit( Qgis::RenderUnit::Points );
+
   QSize currentIconSize;
   //icon size is button size with a small margin
   if ( menu() )
