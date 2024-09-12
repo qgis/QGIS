@@ -14,7 +14,8 @@ import json
 from qgis.PyQt.QtCore import (
     Qt,
     QCoreApplication,
-    QSize
+    QSize,
+    QSizeF,
 )
 from qgis.PyQt.QtGui import QColor, QImage
 from qgis.core import (
@@ -23,6 +24,7 @@ from qgis.core import (
     QgsMapBoxGlStyleConversionContext,
     QgsMapBoxGlStyleConverter,
     QgsMapBoxGlStyleRasterSource,
+    QgsPalLayerSettings,
     QgsRasterLayer,
     QgsRasterPipe,
     QgsSettings,
@@ -808,7 +810,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(prop.asExpression(), '"ROTATION"')
 
     def testScaledIcon(self):
-        """ Test icon-rotate property that depends on a data attribute """
+        """ Test icon-size property that depends on a data attribute """
         context = QgsMapBoxGlStyleConversionContext()
 
         image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
@@ -828,6 +830,46 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertFalse(has_labeling)
         size = renderer.symbol().symbolLayers()[0].size()
         self.assertEqual(size, 4)
+
+    def testScaledLabelShieldIcon(self):
+        """ Test icon-size property for label shields that depends on a data attribute """
+        context = QgsMapBoxGlStyleConversionContext()
+
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
+        context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 2, "height": 2, "pixelRatio": 1}})
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "symbol-placement": "line",
+                "text-field": "{texte}",
+                "text-size": 11,
+                "text-rotation-alignment": "viewport",
+                "icon-rotation-alignment": "viewport",
+                "icon-image": "{foo}",
+                "icon-size": {
+                    "stops": [[13, 0.25], [16, 0.45], [17, 0.7]]
+                }
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_renderer)
+        size = renderer.symbol().symbolLayers()[0].size()
+        self.assertEqual(size, 0.5)
+        dd_properties = renderer.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyWidth).asExpression(),
+                         "with_variable('marker_size',CASE WHEN \"foo\" = 'foo' THEN 2 END,(CASE WHEN @vector_tile_zoom >= 13 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,13,16,0.25,0.45) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,16,17,0.45,0.7) WHEN @vector_tile_zoom > 17 THEN 0.7 END)*@marker_size)")
+        self.assertTrue(has_labeling)
+        ls = labeling.labelSettings()
+        tf = ls.format()
+        self.assertEqual(tf.background().size(), QSizeF(1, 1))
+        self.assertEqual(ls.dataDefinedProperties().property(QgsPalLayerSettings.Property.ShapeSizeX).asExpression(),
+                         "with_variable('marker_size',CASE WHEN \"foo\" = 'foo' THEN 2 END,(CASE WHEN @vector_tile_zoom >= 13 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,13,16,0.25,0.45) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,16,17,0.45,0.7) WHEN @vector_tile_zoom > 17 THEN 0.7 END)*@marker_size)")
 
     def testCircleLayer(self):
         context = QgsMapBoxGlStyleConversionContext()
