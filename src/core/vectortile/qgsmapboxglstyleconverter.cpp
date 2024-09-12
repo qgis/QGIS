@@ -2751,7 +2751,6 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
                       value.toList().value( 0 ).toDouble() * multiplier );
         break;
       }
-
     }
 
     if ( matchString.count() == 1 )
@@ -2764,45 +2763,58 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
     }
   }
 
-
+  QVariant lastValue = json.constLast();
   QString elseValue;
-  switch ( type )
+
+  switch ( lastValue.userType() )
   {
-    case PropertyType::Color:
-    {
-      const QColor color = parseColor( json.constLast(), context );
-      if ( defaultColor )
-        *defaultColor = color;
+    case QMetaType::Type::QVariantList:
+    case QMetaType::Type::QStringList:
+      elseValue = parseValueList( lastValue.toList(), type, context, multiplier, maxOpacity, defaultColor, defaultNumber ).asExpression();
+      break;
 
-      elseValue = QgsExpression::quotedString( color.name() );
+    default:
+    {
+      switch ( type )
+      {
+        case PropertyType::Color:
+        {
+          const QColor color = parseColor( lastValue, context );
+          if ( defaultColor )
+            *defaultColor = color;
+
+          elseValue = QgsExpression::quotedString( color.name() );
+          break;
+        }
+
+        case PropertyType::Numeric:
+        {
+          const double v = json.constLast().toDouble() * multiplier;
+          if ( defaultNumber )
+            *defaultNumber = v;
+          elseValue = QString::number( v );
+          break;
+        }
+
+        case PropertyType::Opacity:
+        {
+          const double v = json.constLast().toDouble() * maxOpacity;
+          if ( defaultNumber )
+            *defaultNumber = v;
+          elseValue = QString::number( v );
+          break;
+        }
+
+        case PropertyType::Point:
+        {
+          elseValue = QStringLiteral( "array(%1,%2)" ).arg( json.constLast().toList().value( 0 ).toDouble() * multiplier,
+                      json.constLast().toList().value( 0 ).toDouble() * multiplier );
+          break;
+        }
+
+      }
       break;
     }
-
-    case PropertyType::Numeric:
-    {
-      const double v = json.constLast().toDouble() * multiplier;
-      if ( defaultNumber )
-        *defaultNumber = v;
-      elseValue = QString::number( v );
-      break;
-    }
-
-    case PropertyType::Opacity:
-    {
-      const double v = json.constLast().toDouble() * maxOpacity;
-      if ( defaultNumber )
-        *defaultNumber = v;
-      elseValue = QString::number( v );
-      break;
-    }
-
-    case PropertyType::Point:
-    {
-      elseValue = QStringLiteral( "array(%1,%2)" ).arg( json.constLast().toList().value( 0 ).toDouble() * multiplier,
-                  json.constLast().toList().value( 0 ).toDouble() * multiplier );
-      break;
-    }
-
   }
 
   caseString += QStringLiteral( "ELSE %1 END" ).arg( elseValue );
