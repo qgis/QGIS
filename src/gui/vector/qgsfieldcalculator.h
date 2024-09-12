@@ -66,6 +66,7 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void setOkButtonState();
     void setPrecisionMinMax();
     void showHelp();
+    void calculate();
 
   private:
     //! default constructor forbidden

@@ -78,6 +78,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setOkButtonState );
   connect( mOutputFieldWidthSpinBox, &QAbstractSpinBox::editingFinished, this, &QgsFieldCalculator::setPrecisionMinMax );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::showHelp );
+  connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsFieldCalculator::calculate );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs(), QgsProject::instance()->transformContext() );
@@ -165,6 +166,12 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 }
 
 void QgsFieldCalculator::accept()
+{
+  calculate();
+  QDialog::accept();
+}
+
+void QgsFieldCalculator::calculate()
 {
   builder->expressionTree()->saveToRecent( builder->expressionText(), QStringLiteral( "fieldcalc" ) );
 
@@ -339,7 +346,6 @@ void QgsFieldCalculator::accept()
 
     mVectorLayer->endEditCommand();
   }
-  QDialog::accept();
 }
 
 void QgsFieldCalculator::populateOutputFieldTypes()
