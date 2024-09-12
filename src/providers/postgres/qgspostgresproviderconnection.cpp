@@ -124,7 +124,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SinglePoint,
     GeometryColumnCapability::SingleLineString,
     GeometryColumnCapability::SinglePolygon,
-    GeometryColumnCapability::Curves
+    GeometryColumnCapability::Curves,
+    GeometryColumnCapability::PolyhedralSurfaces
   };
   mSqlLayerDefinitionCapabilities =
   {
@@ -930,7 +931,7 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
 
   QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
   vectorLayerOptions.skipCrsValidation = true;
-  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
+  return new QgsVectorLayer{ tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
 }
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::sqlDictionary()

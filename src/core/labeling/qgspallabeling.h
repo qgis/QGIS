@@ -211,11 +211,11 @@ class CORE_EXPORT QgsPalLayerSettings
       LinePlacementOptions = 99, //!< Line placement flags
       OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
       LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
-      PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
-      LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored (since QGIS 3.16)
-      LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation (since QGIS 3.20)
-      LineAnchorType = 115, //!< Line anchor type (since QGIS 3.26)
-      LineAnchorTextPoint = 116, //!< Line anchor text point (since QGIS 3.26)
+      PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced \since QGIS 3.14
+      LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored \since QGIS 3.16
+      LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation \since QGIS 3.20
+      LineAnchorType = 115, //!< Line anchor type \since QGIS 3.26
+      LineAnchorTextPoint = 116, //!< Line anchor text point \since QGIS 3.26
 
       // rendering
       ScaleVisibility = 23,
@@ -231,8 +231,8 @@ class CORE_EXPORT QgsPalLayerSettings
       ZIndex = 90,
       CalloutDraw = 100, //!< Show callout
 
-      AllowDegradedPlacement = 117, //!< Allow degraded label placements (since QGIS 3.26)
-      OverlapHandling = 118, //!< Overlap handling technique (since QGIS 3.26)
+      AllowDegradedPlacement = 117, //!< Allow degraded label placements \since QGIS 3.26
+      OverlapHandling = 118, //!< Overlap handling technique \since QGIS 3.26
 
       // (data defined only)
       Show = 15,
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsExpression *getLabelExpression();
 
     /**
-     * \deprecated since QGIS 3.10. Use QgsTextFormat::previewBackgroundColor() instead.
+     * \deprecated QGIS 3.10. Use QgsTextFormat::previewBackgroundColor() instead.
      */
     Q_DECL_DEPRECATED QColor previewBkgrdColor = Qt::white;
 

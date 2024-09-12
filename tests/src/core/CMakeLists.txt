@@ -62,6 +62,7 @@ set(TESTS
  testqgsfilledmarker.cpp
  testqgsfontmarker.cpp
  testqgsfontutils.cpp
+ testqgsgdalcloudconnection.cpp
  testqgsgdalprovider.cpp
  testqgsgdalutils.cpp
  testqgsgenericspatialindex.cpp
@@ -152,6 +153,7 @@ set(TESTS
  testqgsprojutils.cpp
  testqgsproperty.cpp
  testqgsprovidermetadata.cpp
+ testqgsquantizedmeshtiles.cpp
  testqgsrange.cpp
  testqgsrasterblock.cpp
  testqgsrastercontourrenderer.cpp

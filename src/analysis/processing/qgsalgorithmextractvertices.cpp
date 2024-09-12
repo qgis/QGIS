@@ -54,6 +54,11 @@ QString QgsExtractVerticesAlgorithm::shortHelpString() const
          QObject::tr( "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of vertex for original geometry." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractVerticesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QString QgsExtractVerticesAlgorithm::outputName() const
 {
   return QObject::tr( "Vertices" );
@@ -113,6 +118,9 @@ QgsFeatureSink::SinkFlags QgsExtractVerticesAlgorithm::sinkFlags() const
 bool QgsExtractVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
   mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
   return true;
 }

@@ -88,7 +88,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     /**
      * this sets the related feature using from the foreign key
-     * \deprecated since QGIS 3.10 use setForeignKeys
+     * \deprecated QGIS 3.10. Use setForeignKeys.
      */
     Q_DECL_DEPRECATED void setForeignKey( const QVariant &value ) SIP_DEPRECATED;
 
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     /**
      * returns the related feature foreign key
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED QVariant foreignKey() const SIP_DEPRECATED;
 
@@ -280,15 +280,15 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     /**
      * Emitted when the foreign key changed
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
-    Q_DECL_DEPRECATED void foreignKeyChanged( const QVariant & ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void foreignKeyChanged( const QVariant &key ) SIP_DEPRECATED;
 
     /**
      * Emitted when the foreign keys changed
      * \since QGIS 3.10
      */
-    void foreignKeysChanged( const QVariantList & );
+    void foreignKeysChanged( const QVariantList &keys );
 
   private slots:
     void highlightActionTriggered( QAction *action );

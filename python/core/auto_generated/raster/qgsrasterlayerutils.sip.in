@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -37,9 +37,8 @@ respecting any elevation and temporal settings which affect the rendered band.
 :param temporalRange: temporal range for rendering
 :param elevationRange: elevation range for rendering
 
-:return: - Matched band, or -1 if the layer does not have any elevation
-         - matched: will be set to ``True`` if a band matching the temporal and elevation range was found
-         or temporal settings which affect the rendered band.
+:return: - Matched band, or -1 if the layer does not have any elevation or temporal settings which affect the rendered band.
+         - matched: ``True`` if a band matching the temporal and elevation range was found
 %End
 
 };
@@ -49,5 +48,5 @@ respecting any elevation and temporal settings which affect the rendered band.
  *                                                                      *
  * src/core/raster/qgsrasterlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

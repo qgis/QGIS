@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsdistancearea.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,15 +38,9 @@ Internally, the GeographicLib library is used to calculate all ellipsoid based m
   public:
 
     QgsDistanceArea();
-%Docstring
-Constructor
-%End
     ~QgsDistanceArea();
 
     QgsDistanceArea( const QgsDistanceArea &other );
-%Docstring
-Copy constructor
-%End
 
     bool willUseEllipsoid() const;
 %Docstring
@@ -233,7 +227,7 @@ otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTy
 
 :param p1: start point [can be Cartesian or Geographic]
 :param distance: must be in meters
-:param azimuth: - azimuth in radians, clockwise from North
+:param azimuth: azimuth in radians, clockwise from North
 
 :return: - distance in mapUnits
          - projectedPoint: calculated projected point
@@ -336,9 +330,9 @@ different areal unit.
 Given a location, an azimuth and a distance, computes the
 location of the projected point.
 
-:param p1: - location of first geographic (latitude/longitude) point as degrees.
-:param distance: - distance in meters.
-:param azimuth: - azimuth in radians, clockwise from North
+:param p1: location of first geographic (latitude/longitude) point as degrees.
+:param distance: distance in meters.
+:param azimuth: azimuth in radians, clockwise from North
 
 :return: p2 - location of projected point as longitude/latitude.
 %End
@@ -378,10 +372,9 @@ will also be in this same CRS.
 :param p2: Ending point, in :py:func:`~QgsDistanceArea.ellipsoidCrs`
 
 :return: - the latitude at which the geodesic crosses the antimeridian
-         - fractionAlongLine: will be set to the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
+         - fractionAlongLine: the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
 
 .. seealso:: :py:func:`splitGeometryAtAntimeridian`
-
 
 .. versionadded:: 3.6
 %End
@@ -420,5 +413,5 @@ created at the antimeridian.
  *                                                                      *
  * src/core/qgsdistancearea.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

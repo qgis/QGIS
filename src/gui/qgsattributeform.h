@@ -50,7 +50,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
   public:
 
-    //! Form modes \deprecated Use QgsAttributeEditorContext::Mode instead.
+    //! Form modes \deprecated QGIS 3.40. Use QgsAttributeEditorContext::Mode instead.
     enum Mode
     {
       SingleEditMode, //!< Single edit mode, for editing a single feature
@@ -211,7 +211,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
-     * \deprecated since 3.0
+     * \deprecated QGIS 3.0
      */
     Q_DECL_DEPRECATED void attributeChanged( const QString &attribute, const QVariant &value ) SIP_DEPRECATED;
 
@@ -387,6 +387,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww );
     void updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww );
     void updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrapper *eww = nullptr );
+    void updateFieldDependenciesParent( QgsEditorWidgetWrapper *eww );
 
     void setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids );
 
@@ -422,6 +423,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateValuesDependencies( const int originIdx );
     void updateValuesDependenciesDefaultValues( const int originIdx );
     void updateValuesDependenciesVirtualFields( const int originIdx );
+    void updateValuesDependenciesParent();
     void updateRelatedLayerFields();
 
     void clearMultiEditMessages();
@@ -554,6 +556,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Dependency list for values depending on related layers.
      */
     QSet<QgsEditorWidgetWrapper *> mRelatedLayerFieldsDependencies;
+
+    QSet<QgsEditorWidgetWrapper *> mParentDependencies;
 
     //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;

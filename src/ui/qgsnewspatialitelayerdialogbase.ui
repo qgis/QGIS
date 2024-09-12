@@ -38,10 +38,10 @@
    <item row="0" column="0">
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
+      <enum>QFrame::Shadow::Plain</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -51,34 +51,18 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>450</width>
-        <height>560</height>
+        <width>452</width>
+        <height>577</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="0">
-        <widget class="QLabel" name="mFileFormatLabel">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label">
          <property name="text">
-          <string>Database</string>
+          <string>Geometry type</string>
          </property>
          <property name="buddy">
-          <cstring>mDatabaseComboBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QgsProviderConnectionComboBox" name="mDatabaseComboBox">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+          <cstring>mGeometryTypeBox</cstring>
          </property>
         </widget>
        </item>
@@ -92,6 +76,134 @@
          </property>
         </widget>
        </item>
+       <item row="6" column="0" colspan="3">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Fields List</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0,0,0">
+          <item row="2" column="1" colspan="2">
+           <widget class="QToolButton" name="mRemoveAttributeButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Delete selected field</string>
+            </property>
+            <property name="text">
+             <string>Remove Field</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="QTreeWidget" name="mAttributeView">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="rootIsDecorated">
+             <bool>false</bool>
+            </property>
+            <property name="columnCount">
+             <number>2</number>
+            </property>
+            <column>
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Type</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="3">
+           <layout class="QVBoxLayout" name="pushBtnBox_3" stretch="0,0,1">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="mButtonUp">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Move up</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mButtonDown">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Move down</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Orientation::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label1">
          <property name="text">
@@ -100,6 +212,67 @@
          <property name="buddy">
           <cstring>leLayerName</cstring>
          </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mFileFormatLabel">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Database</string>
+         </property>
+         <property name="buddy">
+          <cstring>mDatabaseComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="3">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox" native="true">
+         <property name="title" stdset="0">
+          <string>Advanced Options</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Geometry column</string>
+            </property>
+            <property name="buddy">
+             <cstring>leGeometryColumn</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="leGeometryColumn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Name of the geometry column</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBoxPrimaryKey">
+            <property name="toolTip">
+             <string>Add an integer id field as the primary key for the new layer</string>
+            </property>
+            <property name="text">
+             <string>Create an autoincrementing primary key</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item row="1" column="1" colspan="2">
@@ -112,32 +285,6 @@
          </property>
          <property name="toolTip">
           <string>Name for the new layer</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Geometry type</string>
-         </property>
-         <property name="buddy">
-          <cstring>mGeometryTypeBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1" colspan="2">
-        <widget class="QComboBox" name="mGeometryTypeBox">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Geometry type&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -160,7 +307,7 @@
          <item>
           <spacer name="horizontalSpacer_3">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -195,9 +342,6 @@
            <property name="toolTip">
             <string>Specify the coordinate reference system of the layer's geometry.</string>
            </property>
-           <property name="whatsThis">
-            <string>Specify the coordinate reference system of the layer's geometry.</string>
-           </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
              <normaloff>:/images/themes/default/mActionSetProjection.svg</normaloff>:/images/themes/default/mActionSetProjection.svg</iconset>
@@ -205,6 +349,35 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="2" column="1" colspan="2">
+        <widget class="QComboBox" name="mGeometryTypeBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Geometry type&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QgsProviderConnectionComboBox" name="mDatabaseComboBox" native="true">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
        <item row="5" column="0" colspan="3">
         <widget class="QGroupBox" name="groupBox1">
@@ -279,7 +452,7 @@
              <string>Add field to list</string>
             </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
             <property name="text">
              <string>Add to Fields List</string>
@@ -289,129 +462,7 @@
               <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
             </property>
             <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="6" column="0" colspan="3">
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Fields List</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0" colspan="3">
-           <widget class="QTreeWidget" name="mAttributeView">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="rootIsDecorated">
-             <bool>false</bool>
-            </property>
-            <property name="columnCount">
-             <number>2</number>
-            </property>
-            <column>
-             <property name="text">
-              <string>Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Type</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QToolButton" name="mRemoveAttributeButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Delete selected field</string>
-            </property>
-            <property name="text">
-             <string>Remove Field</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="7" column="0" colspan="3">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox">
-         <property name="title">
-          <string>Advanced Options</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Geometry column</string>
-            </property>
-            <property name="buddy">
-             <cstring>leGeometryColumn</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="leGeometryColumn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Name of the geometry column</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBoxPrimaryKey">
-            <property name="toolTip">
-             <string>Add an integer id field as the primary key for the new layer</string>
-            </property>
-            <property name="text">
-             <string>Create an autoincrementing primary key</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
+             <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -425,10 +476,10 @@
    <item row="9" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
@@ -457,7 +508,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mDatabaseComboBox</tabstop>
   <tabstop>toolButtonNewDatabase</tabstop>
   <tabstop>leLayerName</tabstop>
   <tabstop>mGeometryTypeBox</tabstop>
@@ -469,6 +519,8 @@
   <tabstop>mTypeBox</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
+  <tabstop>mButtonUp</tabstop>
+  <tabstop>mButtonDown</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
   <tabstop>leGeometryColumn</tabstop>
   <tabstop>checkBoxPrimaryKey</tabstop>

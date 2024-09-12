@@ -42,9 +42,6 @@ class CORE_EXPORT QgsTextCharacterFormat
 {
   public:
 
-    /**
-     * Constructor for QgsTextCharacterFormat.
-     */
     QgsTextCharacterFormat() = default;
 
     /**
@@ -97,6 +94,9 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Returns the font point size, or -1 if the font size is not set
      * and should be inherited.
      *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPercentageSize()
      * \see setFontPointSize()
      * \since QGIS 3.28
      */
@@ -108,10 +108,37 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Set \a size to -1 if the font size is not set
      * and should be inherited.
      *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
      * \see fontPointSize()
+     * \see setFontPercentageSize()
      * \since QGIS 3.28
      */
     void setFontPointSize( double size );
+
+    /**
+     * Returns the font percentage size (as fraction of inherited font size), or -1 if the font size percentage is not set.
+     *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPointSize()
+     * \see setFontPercentageSize()
+     * \since QGIS 3.40
+     */
+    double fontPercentageSize() const;
+
+    /**
+     * Sets  the font percentage \a size (as fraction of inherited font size).
+     *
+     * Set \a size to -1 if the font percentange size is not set.
+     *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPercentageSize()
+     * \see setFontPointSize()
+     * \since QGIS 3.40
+     */
+    void setFontPercentageSize( double size );
 
     /**
      * Returns the font family name, or an empty string if the
@@ -151,6 +178,22 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \since QGIS 3.28
      */
     void setFontWeight( int fontWeight );
+
+    /**
+     * Returns the font word spacing, in points, or NaN if word spacing is not set and should be inherited.
+     *
+     * \see setWordSpacing()
+     * \since QGIS 3.40
+     */
+    double wordSpacing() const;
+
+    /**
+     * Sets the font word \a spacing, in points, or NaN if word spacing is not set and should be inherited.
+     *
+     * \see wordSpacing()
+     * \since QGIS 3.40
+     */
+    void setWordSpacing( double spacing );
 
     /**
      * Returns whether the format has italic enabled.
@@ -263,7 +306,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * are applicable on a font level when rendered in the given \a context.
      *
      * The optional \a scaleFactor parameter can specify a font size scaling factor. It is recommended to set this to
-     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually calculations
+     * QgsTextRenderer::calculateScaleFactorForFormat() and then manually calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      */
@@ -276,7 +319,9 @@ class CORE_EXPORT QgsTextCharacterFormat
     QString mStyleName;
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
+    double mFontPercentageSize = -1;
     QString mFontFamily;
+    double mWordSpacing = std::numeric_limits< double >::quiet_NaN();
 
     bool mHasVerticalAlignSet = false;
     Qgis::TextCharacterVerticalAlignment mVerticalAlign = Qgis::TextCharacterVerticalAlignment::Normal;

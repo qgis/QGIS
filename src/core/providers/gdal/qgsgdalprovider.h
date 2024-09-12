@@ -391,7 +391,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     bool uriIsBlocklisted( const QString &uri ) const override;
-    QgsGdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsGdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QgsGdalProvider *createRasterDataProvider(
       const QString &uri,
       const QString &format,
@@ -410,6 +410,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QStringList sidecarFilesForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errCause SIP_OUT ) override;

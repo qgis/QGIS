@@ -869,6 +869,24 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
         std::cout << alg->shortHelpString().toLocal8Bit().constData() << '\n';
     }
 
+    if ( alg->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
+    {
+      std::cout << "\n----------------\n";
+      std::cout << "Notes\n";
+      std::cout << "----------------\n\n";
+
+      QStringList flags;
+      for ( Qgis::ProcessingAlgorithmDocumentationFlag flag : qgsEnumList< Qgis::ProcessingAlgorithmDocumentationFlag>() )
+      {
+        if ( alg->documentationFlags() & flag )
+        {
+          std::cout << " - " << QgsProcessing::documentationFlagToString( flag ).toUtf8().constData();
+        }
+      }
+
+      std::cout << "\n";
+    }
+
     std::cout << "\n----------------\n";
     std::cout << "Arguments\n";
     std::cout << "----------------\n\n";
@@ -1320,6 +1338,27 @@ void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, con
   algorithmJson.insert( QStringLiteral( "requires_matching_crs" ), bool( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::RequiresMatchingCrs ) );
   algorithmJson.insert( QStringLiteral( "has_known_issues" ), bool( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) );
   algorithmJson.insert( QStringLiteral( "deprecated" ), bool( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::Deprecated ) );
+
+  if ( algorithm->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
+  {
+    QStringList documentationFlags;
+    for ( Qgis::ProcessingAlgorithmDocumentationFlag flag : qgsEnumList< Qgis::ProcessingAlgorithmDocumentationFlag>() )
+    {
+      if ( algorithm->documentationFlags() & flag )
+      {
+        switch ( flag )
+        {
+          case Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey:
+            documentationFlags << QStringLiteral( "regenerates_primary_key" );
+            break;
+          case Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios:
+            documentationFlags << QStringLiteral( "regenerates_primary_key_in_some_scenarios" );
+            break;
+        }
+        algorithmJson.insert( QStringLiteral( "documentation_flags" ), documentationFlags );
+      }
+    }
+  }
 }
 
 void QgsProcessingExec::addProviderInformation( QVariantMap &providerJson, QgsProcessingProvider *provider )

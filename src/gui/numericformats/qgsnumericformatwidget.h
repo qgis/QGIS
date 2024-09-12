@@ -18,10 +18,12 @@
 #include "qgis_sip.h"
 #include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
+#include "qgsexpressioncontextgenerator.h"
 #include <memory>
 #include <QDialog>
 
 class QgsFractionNumericFormat;
+class QgsExpressionBasedNumericFormat;
 
 /**
  * \ingroup gui
@@ -29,7 +31,7 @@ class QgsFractionNumericFormat;
  * \brief Base class for widgets which allow control over the properties of QgsNumericFormat subclasses
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget
+class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -57,12 +59,26 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget
      */
     virtual QgsNumericFormat *format() = 0 SIP_TRANSFERBACK;
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the widget when required.
+     *
+     * \since QGIS 3.40
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
   signals:
 
     /**
      * Emitted whenever the configuration of the numeric format is changed.
      */
     void changed();
+
+  private:
+
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
 };
 
@@ -89,9 +105,9 @@ class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, pr
     QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBasicNumericFormatWidget() override;
 
-    void setFormat( QgsNumericFormat *format ) override;
+    void setFormat( QgsNumericFormat *format ) final;
 
-    QgsNumericFormat *format() override SIP_FACTORY;
+    QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
     std::unique_ptr< QgsBasicNumericFormat > mFormat;
@@ -121,9 +137,9 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
     QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBearingNumericFormatWidget() override;
 
-    void setFormat( QgsNumericFormat *format ) override;
+    void setFormat( QgsNumericFormat *format ) final;
 
-    QgsNumericFormat *format() override SIP_FACTORY;
+    QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
     std::unique_ptr< QgsBearingNumericFormat > mFormat;
@@ -184,9 +200,9 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericF
     QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsGeographicCoordinateNumericFormatWidget() override;
 
-    void setFormat( QgsNumericFormat *format ) override;
+    void setFormat( QgsNumericFormat *format ) final;
 
-    QgsNumericFormat *format() override SIP_FACTORY;
+    QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
     std::unique_ptr< QgsGeographicCoordinateNumericFormat > mFormat;
@@ -248,9 +264,9 @@ class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget,
     QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsCurrencyNumericFormatWidget() override;
 
-    void setFormat( QgsNumericFormat *format ) override;
+    void setFormat( QgsNumericFormat *format ) final;
 
-    QgsNumericFormat *format() override SIP_FACTORY;
+    QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
     std::unique_ptr< QgsCurrencyNumericFormat > mFormat;
@@ -281,9 +297,9 @@ class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidge
     QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsPercentageNumericFormatWidget() override;
 
-    void setFormat( QgsNumericFormat *format ) override;
+    void setFormat( QgsNumericFormat *format ) final;
 
-    QgsNumericFormat *format() override SIP_FACTORY;
+    QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
     std::unique_ptr< QgsPercentageNumericFormat > mFormat;
@@ -315,9 +331,9 @@ class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidge
     QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsScientificNumericFormatWidget() override;
 
-    void setFormat( QgsNumericFormat *format ) override;
+    void setFormat( QgsNumericFormat *format ) final;
 
-    QgsNumericFormat *format() override SIP_FACTORY;
+    QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
     std::unique_ptr< QgsScientificNumericFormat > mFormat;
@@ -346,12 +362,45 @@ class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget,
     QgsFractionNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsFractionNumericFormatWidget() override;
 
-    void setFormat( QgsNumericFormat *format ) override;
+    void setFormat( QgsNumericFormat *format ) final;
 
-    QgsNumericFormat *format() override SIP_FACTORY;
+    QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
     std::unique_ptr< QgsFractionNumericFormat > mFormat;
+    bool mBlockSignals = false;
+
+};
+
+
+#include "ui_qgsexpressionbasednumericformatwidgetbase.h"
+
+/**
+ * \ingroup gui
+ * \class QgsExpressionBasedNumericFormatWidget
+ * \brief A widget which allow control over the properties of a QgsExpressionBasedNumericFormat.
+ * \since QGIS 3.40
+ */
+class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsExpressionBasedNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsExpressionBasedNumericFormatWidget, initially showing the specified \a format.
+     */
+    QgsExpressionBasedNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsExpressionBasedNumericFormatWidget() override;
+
+    QgsExpressionContext createExpressionContext() const final;
+
+    void setFormat( QgsNumericFormat *format ) final;
+
+    QgsNumericFormat *format() final SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsExpressionBasedNumericFormat > mFormat;
     bool mBlockSignals = false;
 
 };

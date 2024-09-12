@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgsprojectmetadata.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,9 +43,6 @@ using :py:class:`QgsNativeProjectMetadataValidator`.
   public:
 
     QgsProjectMetadata();
-%Docstring
-Constructor for QgsProjectMetadata.
-%End
 
     virtual QgsProjectMetadata *clone() const /Factory/;
 
@@ -95,5 +92,5 @@ Sets the project's creation date/timestamp.
  *                                                                      *
  * src/core/metadata/qgsprojectmetadata.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

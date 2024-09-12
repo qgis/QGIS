@@ -101,7 +101,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
      */
     enum Button SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoButton = 0, //!< No button (since QGIS 3.20)
+      NoButton = 0, //!< No button \since QGIS 3.20
       Link = 1 << 1, //!< Link button
       Unlink = 1 << 2, //!< Unlink button
       SaveChildEdits = 1 << 3, //!< Save child edits button
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     /**
      * Duplicates a feature
-     * \deprecated since QGIS 3.18, use duplicateSelectedFeatures() instead
+     * \deprecated QGIS 3.18. Use duplicateSelectedFeatures() instead.
      */
     Q_DECL_DEPRECATED void duplicateFeature() SIP_DEPRECATED;
 
@@ -210,6 +210,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void onDigitizingCompleted( const QgsFeature &feature );
     void onDigitizingCanceled( );
     void multiEditItemSelectionChanged();
+    void linkFeature();
 
   private:
 
@@ -261,6 +262,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     Buttons mButtonsVisibility = Button::AllButtons;
     bool mShowFirstFeature = true;
     bool mAllowAddChildFeatureWithNoGeometry = true;
+    QString mFilterExpression;
 
     QList<QTreeWidgetItem *> mMultiEditPreviousSelectedItems;
     QgsFeatureIds mMultiEdit1NJustAddedIds;
@@ -303,6 +305,10 @@ class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEdito
      */
     void setConfig( const QVariantMap &config ) override;
 
+    /**
+     * Opens an expression dialog and sets its value as filter expression for the linking dialog
+     */
+    void mEditExpression_clicked();
 };
 
 

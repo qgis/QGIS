@@ -55,6 +55,7 @@ class QgsSymbolLayerId;
 /**
  * \ingroup core
  * \class QgsSymbolLayerUtils
+ * \brief Contains utility functions for working with symbols and symbol layers.
  */
 class CORE_EXPORT QgsSymbolLayerUtils
 {
@@ -743,6 +744,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString svgSymbolPathToName( const QString &path, const QgsPathResolver &pathResolver );
 
+    /**
+     * Converts a \a geometry to a set of QPolygonF objects representing
+     * how the geometry should be drawn for a symbol of the given \a type,
+     * as a list of geometry parts and rings.
+     *
+     * \since QGIS 3.40
+     */
+    static QList< QList< QPolygonF > > toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
+
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
 
@@ -859,7 +869,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.30 because it was related to old QgsSymbolLayerReference system
+     * \deprecated QGIS 3.30. Because it was related to old QgsSymbolLayerReference system.
      */
     Q_DECL_DEPRECATED static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 

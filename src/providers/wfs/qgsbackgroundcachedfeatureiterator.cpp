@@ -32,6 +32,7 @@
 #include <QStyle>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QThreadPool>
 
 #include <sqlite3.h>
 
@@ -40,39 +41,54 @@ const QString QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID( QStr
 const QString QgsBackgroundCachedFeatureIteratorConstants::FIELD_HEXWKB_GEOM( QStringLiteral( "__qgis_hexwkb_geom" ) );
 const QString QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5( QStringLiteral( "__qgis_md5" ) );
 
-// -------------------------
 
+//
+// QgsFeatureDownloaderProgressTask
+//
 
-QgsFeatureDownloaderProgressDialog::QgsFeatureDownloaderProgressDialog( const QString &labelText,
-    const QString &cancelButtonText,
-    int minimum, int maximum, QWidget *parent )
-  : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
+QgsFeatureDownloaderProgressTask::QgsFeatureDownloaderProgressTask( const QString &description, long long totalCount )
+  : QgsTask( description,
+             QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
+  , mTotalCount( totalCount )
 {
-  mCancel = new QPushButton( cancelButtonText, this );
-  setCancelButton( mCancel );
-  mHide = new QPushButton( tr( "Hide" ), this );
-  connect( mHide, &QAbstractButton::clicked, this, &QgsFeatureDownloaderProgressDialog::hideRequest );
+
 }
 
-void QgsFeatureDownloaderProgressDialog::resizeEvent( QResizeEvent *ev )
+bool QgsFeatureDownloaderProgressTask::run()
 {
-  QProgressDialog::resizeEvent( ev );
-  // Note: this relies heavily on the details of the layout done in QProgressDialogPrivate::layout()
-  // Might be a bit fragile depending on QT versions.
-  QRect rect = geometry();
-  QRect cancelRect = mCancel->geometry();
-  QRect hideRect = mHide->geometry();
-  int mtb = style()->pixelMetric( QStyle::PM_LayoutRightMargin );
-  int mlr = std::min( width() / 10, mtb );
-  if ( rect.width() - cancelRect.x() - cancelRect.width() > mlr )
+  QgsApplication::taskManager()->threadPool()->releaseThread();
+  mNotFinishedMutex.lock();
+  if ( !mAlreadyFinished )
   {
-    // Force right alignment of cancel button
-    cancelRect.setX( rect.width() - cancelRect.width() - mlr );
-    mCancel->setGeometry( cancelRect );
+    mNotFinishedWaitCondition.wait( &mNotFinishedMutex );
   }
-  mHide->setGeometry( rect.width() - cancelRect.x() - cancelRect.width(),
-                      cancelRect.y(), hideRect.width(), cancelRect.height() );
+  mNotFinishedMutex.unlock();
+
+  QgsApplication::taskManager()->threadPool()->reserveThread();
+  return true;
 }
+
+void QgsFeatureDownloaderProgressTask::cancel()
+{
+  emit canceled();
+
+  QgsTask::cancel();
+}
+
+void QgsFeatureDownloaderProgressTask::finalize()
+{
+  const QMutexLocker lock( &mNotFinishedMutex );
+  mAlreadyFinished = true;
+
+  mNotFinishedWaitCondition.wakeAll();
+}
+
+void QgsFeatureDownloaderProgressTask::setDownloaded( long long count )
+{
+  setProgress( static_cast< double >( count ) / static_cast< double >( mTotalCount ) * 100 );
+}
+
+
 
 // -------------------------
 
@@ -84,8 +100,11 @@ QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedDat
 
 QgsFeatureDownloaderImpl::~QgsFeatureDownloaderImpl()
 {
-  if ( mProgressDialog )
-    mProgressDialog->deleteLater();
+  if ( mProgressTask )
+  {
+    mProgressTask->finalize();
+    mProgressTask = nullptr;
+  }
 }
 
 void QgsFeatureDownloaderImpl::emitFeatureReceived( QVector<QgsFeatureUniqueIdPair> features )
@@ -121,50 +140,24 @@ void QgsFeatureDownloaderImpl::setStopFlag()
   mStop = true;
 }
 
-void QgsFeatureDownloaderImpl::hideProgressDialog()
-{
-  mSharedBase->setHideProgressDialog( true );
-  mProgressDialog->deleteLater();
-  mProgressDialog = nullptr;
-}
 
 // Called from GUI thread
-void QgsFeatureDownloaderImpl::createProgressDialog( int numberMatched )
+void QgsFeatureDownloaderImpl::createProgressTask( long long numberMatched )
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
   // Make sure that the creation is done in an atomic way, so that the
   // starting thread (running QgsFeatureDownloaderImpl::run()) can be sure that
   // this function has either run completely, or not at all (mStop == true),
-  // when it wants to destroy mProgressDialog
-  QMutexLocker locker( &mMutexCreateProgressDialog );
+  // when it wants to destroy mProgressTask
+  QMutexLocker locker( &mMutexCreateProgressTask );
 
   if ( mStop )
     return;
-  Q_ASSERT( !mProgressDialog );
+  Q_ASSERT( !mProgressTask );
 
-  if ( !mMainWindow )
-  {
-    const QWidgetList widgets = QgsApplication::topLevelWidgets();
-    for ( QWidget *widget : widgets )
-    {
-      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
-      {
-        mMainWindow = widget;
-        break;
-      }
-    }
-  }
-
-  if ( !mMainWindow )
-    return;
-
-  mProgressDialog = new QgsFeatureDownloaderProgressDialog( QObject::tr( "Loading features for layer %1" ).arg( mSharedBase->layerName() ),
-      QObject::tr( "Abort" ), 0, numberMatched, mMainWindow );
-  mProgressDialog->setWindowTitle( QObject::tr( "QGIS" ) );
-  mProgressDialog->setValue( 0 );
-  if ( mProgressDialogShowImmediately )
-    mProgressDialog->show();
+  mProgressTask = new QgsFeatureDownloaderProgressTask( QObject::tr( "Loading features for layer %1" ).arg( mSharedBase->layerName() ), numberMatched );
+  QgsApplication::taskManager()->addTask( mProgressTask );
 }
 
 void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
@@ -173,7 +166,7 @@ void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
     const QString &errorMessage )
 {
   {
-    QMutexLocker locker( &mMutexCreateProgressDialog );
+    QMutexLocker locker( &mMutexCreateProgressTask );
     mStop = true;
   }
 
@@ -190,11 +183,12 @@ void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
   // test suite.
   emitEndOfDownload( success );
 
-  if ( mProgressDialog )
+  if ( mProgressTask )
   {
-    mProgressDialog->deleteLater();
-    mProgressDialog = nullptr;
+    mProgressTask->finalize();
+    mProgressTask = nullptr;
   }
+
   if ( mTimer )
   {
     mTimer->deleteLater();
@@ -294,10 +288,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     }
   }
 
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mShared->sourceCrs() )
-  {
-    mTransform = QgsCoordinateTransform( mShared->sourceCrs(), mRequest.destinationCrs(), mRequest.transformContext() );
-  }
+  mTransform = mRequest.calculateTransform( mShared->sourceCrs() );
   try
   {
     mFilterRect = filterRectToSourceCrs( mTransform );

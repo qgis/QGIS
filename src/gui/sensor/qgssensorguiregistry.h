@@ -192,9 +192,7 @@ class GUI_EXPORT QgsSensorGuiRegistry : public QObject
     QgsSensorGuiRegistry( QObject *parent = nullptr );
     ~QgsSensorGuiRegistry() override;
 
-    //! QgsSensorGuiRegistry cannot be copied.
     QgsSensorGuiRegistry( const QgsSensorGuiRegistry &rh ) = delete;
-    //! QgsSensorGuiRegistry cannot be copied.
     QgsSensorGuiRegistry &operator=( const QgsSensorGuiRegistry &rh ) = delete;
 
     /**

@@ -42,8 +42,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 #include "qgsframegraph.h"
 
-QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, QNode *parent )
-  : QgsRenderPassQuad( parent )
+QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
+  : QgsRenderPassQuad( layer, parent )
   , mFrameGraph( frameGraph )
 {
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );

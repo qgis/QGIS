@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/auth/qgsauthconfigeditor.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -60,5 +60,5 @@ Sets whether to relay auth manager messages to internal message bar, e.g. when e
  *                                                                      *
  * src/gui/auth/qgsauthconfigeditor.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

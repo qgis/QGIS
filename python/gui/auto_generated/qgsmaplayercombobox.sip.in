@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmaplayercombobox.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,11 @@ The layers can be filtered and/or ordered.
 
     void setFilters( Qgis::LayerFilters filters );
 %Docstring
-Filters according to layer type and/or geometry type.
+Sets ``filters`` for the layers displayed in the combo box.
+
+This method allows filtering layers according to layer type and/or geometry type.
+
+.. seealso:: :py:func:`filters`
 %End
 
  void setFilters( int filters ) /Deprecated/;
@@ -43,23 +47,30 @@ Filters according to layer type and/or geometry type.
 
 .. versionadded:: 3.34
 
-.. deprecated:: QGIS 3.34
-   use the flag signature instead
+.. deprecated:: 3.34
+
+   Use the flag signature instead.
 %End
 
     Qgis::LayerFilters filters() const;
 %Docstring
-currently used filter on list layers
+Returns any currently used filters on the listed layers.
+
+.. seealso:: :py:func:`setFilters`
 %End
 
     void setExceptedLayerList( const QList<QgsMapLayer *> &layerList );
 %Docstring
-except a list of layers not to be listed
+Sets a list of layers which should be excluded from the combo box.
+
+.. seealso:: :py:func:`exceptedLayerList`
 %End
 
     QList<QgsMapLayer *> exceptedLayerList() const;
 %Docstring
-returns the list of excepted layers
+Returns a list of layers which should be excluded from the combo box.
+
+.. seealso:: :py:func:`setExceptedLayerList`
 %End
 
     void setExcludedProviders( const QStringList &providers );
@@ -170,9 +181,10 @@ Returns the layer currently shown at the specified index within the combo box.
 %End
 
   public slots:
+
     void setLayer( QgsMapLayer *layer );
 %Docstring
-setLayer set the current layer selected in the combo
+Sets the current ``layer`` selected in the combo box.
 %End
 
   signals:
@@ -203,5 +215,5 @@ Emitted whenever the currently selected layer changes.
  *                                                                      *
  * src/gui/qgsmaplayercombobox.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

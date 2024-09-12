@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgsmetadatautils.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -35,5 +35,5 @@ Converts ESRI layer metadata to :py:class:`QgsLayerMetadata`.
  *                                                                      *
  * src/core/metadata/qgsmetadatautils.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsspatialindexkdbush.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,7 @@ Compared to :py:class:`QgsSpatialIndex`, this index:
 
 :py:class:`QgsSpatialIndexKDBush` objects are implicitly shared and can be inexpensively copied.
 
-.. seealso:: :py:class:`QgsSpatialIndex`
+.. seealso:: :py:class:`QgsSpatialIndex` which is an general, mutable index for geometry bounding boxes.
 
 .. versionadded:: 3.4
 %End
@@ -60,10 +60,6 @@ Any non-single point features encountered during iteration will be ignored and n
 
 
     QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
-%Docstring
-Copy constructor
-%End
-
 
     ~QgsSpatialIndexKDBush();
 
@@ -92,5 +88,5 @@ Returns the size of the index, i.e. the number of points contained within the in
  *                                                                      *
  * src/core/qgsspatialindexkdbush.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

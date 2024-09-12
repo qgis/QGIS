@@ -20,16 +20,14 @@
 #include "qgspointcloudlayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeos.h"
-#include "qgsterrainprovider.h"
-#include "qgslinesymbol.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsprofilesnapping.h"
 #include "qgsprofilepoint.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudblockrequest.h"
-#include "qgsmarkersymbol.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 
 //
 // QgsPointCloudLayerProfileGenerator
@@ -356,7 +354,7 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTolerance( request.tolerance() )
-  , mSourceCrs( layer->crs() )
+  , mSourceCrs( layer->crs3D() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
   , mZOffset( layer->elevationProperties()->zOffset() )

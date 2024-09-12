@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/tiledscene/qgstiledscenedataprovider.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,7 @@ Base class for data providers for :py:class:`QgsTiledSceneLayer`
 
     QgsTiledSceneDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Constructor for QgsTiledSceneDataProvider
 %End
@@ -34,10 +34,6 @@ Constructor for QgsTiledSceneDataProvider
     ~QgsTiledSceneDataProvider();
 
     QgsTiledSceneDataProvider( const QgsTiledSceneDataProvider &other );
-%Docstring
-Copy constructor.
-%End
-
 
     virtual Qgis::TiledSceneProviderCapabilities capabilities() const;
 %Docstring
@@ -96,5 +92,5 @@ Returns the provider's z range, or an infinite range if this is not known.
  *                                                                      *
  * src/core/tiledscene/qgstiledscenedataprovider.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

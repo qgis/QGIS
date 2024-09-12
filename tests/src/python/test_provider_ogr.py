@@ -372,27 +372,28 @@ class PyQgsOGRProvider(QgisTestCase):
             ("Triangle ZM((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))", QgsWkbTypes.Type.TriangleZM,
              "Triangle ZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
 
-            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.MultiPolygon,
-             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
-            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.Type.MultiPolygonZ,
-             "MultiPolygon Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
-            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.Type.MultiPolygonM,
-             "MultiPolygon M (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.TIN,
+             "TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.Type.TINZ,
+             "TIN Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.Type.TINM,
+             "TIN M (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
             ("TIN ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonZM,
-             "MultiPolygon ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
+             QgsWkbTypes.Type.TINZM,
+             "TIN ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
 
-            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.MultiPolygon,
-             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.PolyhedralSurface,
+             "PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
             ("PolyhedralSurface Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonZ,
-             "MultiPolygon Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+
+             QgsWkbTypes.Type.PolyhedralSurfaceZ,
+             "PolyhedralSurface Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
             ("PolyhedralSurface M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonM,
-             "MultiPolygon M (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+             QgsWkbTypes.Type.PolyhedralSurfaceM,
+             "PolyhedralSurfaceM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
             ("PolyhedralSurface ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonZM,
-             "MultiPolygon ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
+             QgsWkbTypes.Type.PolyhedralSurfaceZM,
+             "PolyhedralSurface ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
         )
         for row in testsets:
             datasource = os.path.join(self.basetestpath, 'test.csv')
@@ -408,10 +409,6 @@ class PyQgsOGRProvider(QgisTestCase):
             self.assertTrue(vl.getFeatures(QgsFeatureRequest(1)).nextFeature(f))
             self.assertTrue(f.geometry())
             self.assertEqual(f.geometry().constGet().asWkt(), row[2])
-
-    """PolyhedralSurface, Tin => mapped to MultiPolygon
-          Triangle => mapped to Polygon
-      """
 
     def testSetupProxy(self):
         """Test proxy setup"""
@@ -3551,7 +3548,7 @@ class PyQgsOGRProvider(QgisTestCase):
         with open(datasource_2d, 'w') as f:
             f.write('id,WKT\n')
             for i in range(9):
-                f.write(f'{i},POINT ({2*i} {i-3})\n')
+                f.write(f'{i},POINT ({2 * i} {i - 3})\n')
 
         vl = QgsVectorLayer(f'{datasource_2d}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.isValid())
@@ -3568,7 +3565,7 @@ class PyQgsOGRProvider(QgisTestCase):
         with open(datasource_3d, 'w') as f:
             f.write('id,WKT\n')
             for i in range(13):
-                f.write(f'{i},POINT Z({2*i} {i-3} {i-5})\n')
+                f.write(f'{i},POINT Z({2 * i} {i - 3} {i - 5})\n')
 
         vl = QgsVectorLayer(f'{datasource_3d}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.isValid())

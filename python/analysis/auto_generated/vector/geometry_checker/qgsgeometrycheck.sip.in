@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,7 @@ help a user to create valid geometries.
 Implementing a custom geometry check consists of the following parts
 
 Writing the check
------------------
+-----------------------------------------------
 
 A new subclass of :py:class:`QgsGeometryCheck` needs to be written and at least the following
 abstract methods need to be implemented:
@@ -38,7 +38,7 @@ abstract methods need to be implemented:
   The method needs to return a tuple (errors, messages).
 
 Creating a geometry check factory
----------------------------------
+---------------------------------------------------------------
 
 A Geometry check factory manages meta information for checks. There will always be one single
 geometry check factory created per check type, but it's possible that multiple :py:class:`QgsGeometryCheck`
@@ -56,7 +56,7 @@ abstract methods need to be implemented:
 - :py:func:`QgsGeometryCheckFactory.checkType()`: Returns the type of this geometry check.
 
 Registering the geometry check
-------------------------------
+------------------------------------------------------------
 
 Finally the geometry check factory needs to be registered in QGIS, so the system
 is aware of the available geometry checks.
@@ -197,9 +197,9 @@ Returns a list of available resolution methods.
 Returns a list of descriptions for available resolutions for errors.
 The index will be passed as ``method`` to :py:func:`fixError`.
 
-.. deprecated:: QGIS 3.12
-  use :py:func:`~QgsGeometryCheck.availableResolutionMethods` instead
+.. deprecated:: 3.12
 
+   Use :py:func:`~QgsGeometryCheck.availableResolutionMethods` instead.
 .. versionadded:: 3.4
 %End
 
@@ -245,5 +245,5 @@ Returns the context
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -107,6 +107,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsinterpolatedlinerenderer.cpp
   symbology/qgsinvertedpolygonrenderer.cpp
   symbology/qgslegendsymbolitem.cpp
+  symbology/qgslinearreferencingsymbollayer.cpp
   symbology/qgslinesymbol.cpp
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmapinfosymbolconverter.cpp
@@ -195,6 +196,7 @@ set(QGIS_CORE_SRCS
   numericformats/qgsbearingnumericformat.cpp
   numericformats/qgscoordinatenumericformat.cpp
   numericformats/qgscurrencynumericformat.cpp
+  numericformats/qgsexpressionbasednumericformat.cpp
   numericformats/qgsfallbacknumericformat.cpp
   numericformats/qgsfractionnumericformat.cpp
   numericformats/qgsnumericformat.cpp
@@ -220,8 +222,11 @@ set(QGIS_CORE_SRCS
   annotations/qgsannotationlinetextitem.cpp
   annotations/qgsannotationmarkeritem.cpp
   annotations/qgsannotationmanager.cpp
+  annotations/qgsannotationpictureitem.cpp
   annotations/qgsannotationpointtextitem.cpp
   annotations/qgsannotationpolygonitem.cpp
+  annotations/qgsannotationrectangletextitem.cpp
+  annotations/qgsannotationrectitem.cpp
   annotations/qgshtmlannotation.cpp
   annotations/qgsrenderedannotationitemdetails.cpp
   annotations/qgssvgannotation.cpp
@@ -307,6 +312,8 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
 
+  providers/gdal/qgsgdalcloudconnection.cpp
+  providers/gdal/qgsgdalclouddataitems.cpp
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
 
@@ -366,6 +373,8 @@ set(QGIS_CORE_SRCS
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
   tiledscene/qgsgltfutils.cpp
+  tiledscene/qgsquantizedmeshdataprovider.cpp
+  tiledscene/qgsquantizedmeshtiles.cpp
   tiledscene/qgstiledsceneboundingvolume.cpp
   tiledscene/qgstiledsceneconnection.cpp
   tiledscene/qgstiledscenedataitems.cpp
@@ -866,6 +875,9 @@ set(QGIS_CORE_SRCS
   labeling/qgstextlabelfeature.cpp
   labeling/qgsvectorlayerlabeling.cpp
   labeling/qgsvectorlayerlabelprovider.cpp
+  labeling/rules/qgslabelingenginerule.cpp
+  labeling/rules/qgslabelingenginerule_impl.cpp
+  labeling/rules/qgslabelingengineruleregistry.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -893,6 +905,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsorientedbox3d.cpp
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
+  geometry/qgspolyhedralsurface.cpp
   geometry/qgsquadrilateral.cpp
   geometry/qgsrectangle.cpp
   geometry/qgsreferencedgeometry.cpp
@@ -900,6 +913,7 @@ set(QGIS_CORE_SRCS
   geometry/qgssphere.cpp
   geometry/qgssurface.cpp
   geometry/qgstriangle.cpp
+  geometry/qgstriangulatedsurface.cpp
   geometry/qgsvertexid.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
@@ -1334,8 +1348,11 @@ set(QGIS_CORE_HDRS
   annotations/qgsannotationlinetextitem.h
   annotations/qgsannotationmarkeritem.h
   annotations/qgsannotationmanager.h
+  annotations/qgsannotationpictureitem.h
   annotations/qgsannotationpointtextitem.h
   annotations/qgsannotationpolygonitem.h
+  annotations/qgsannotationrectangletextitem.h
+  annotations/qgsannotationrectitem.h
   annotations/qgsannotationregistry.h
   annotations/qgshtmlannotation.h
   annotations/qgsrenderedannotationitemdetails.h
@@ -1479,6 +1496,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsorientedbox3d.h
   geometry/qgspoint.h
   geometry/qgspolygon.h
+  geometry/qgspolyhedralsurface.h
   geometry/qgsquadrilateral.h
   geometry/qgsrectangle.h
   geometry/qgsreferencedgeometry.h
@@ -1486,6 +1504,7 @@ set(QGIS_CORE_HDRS
   geometry/qgssphere.h
   geometry/qgssurface.h
   geometry/qgstriangle.h
+  geometry/qgstriangulatedsurface.h
   geometry/qgsvertexid.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
@@ -1522,6 +1541,9 @@ set(QGIS_CORE_HDRS
   labeling/qgstextlabelfeature.h
   labeling/qgsvectorlayerlabeling.h
   labeling/qgsvectorlayerlabelprovider.h
+  labeling/rules/qgslabelingenginerule.h
+  labeling/rules/qgslabelingenginerule_impl.h
+  labeling/rules/qgslabelingengineruleregistry.h
 
   layertree/qgscolorramplegendnode.h
   layertree/qgscolorramplegendnodesettings.h
@@ -1739,6 +1761,7 @@ set(QGIS_CORE_HDRS
   numericformats/qgsbearingnumericformat.h
   numericformats/qgscoordinatenumericformat.h
   numericformats/qgscurrencynumericformat.h
+  numericformats/qgsexpressionbasednumericformat.h
   numericformats/qgsfallbacknumericformat.h
   numericformats/qgsfractionnumericformat.h
   numericformats/qgsnumericformat.h
@@ -1813,6 +1836,8 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
 
+  providers/gdal/qgsgdalcloudconnection.h
+  providers/gdal/qgsgdalclouddataitems.h
   providers/gdal/qgsgdalprovider.h
 
   providers/memory/qgsmemoryfeatureiterator.h
@@ -1924,6 +1949,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsinterpolatedlinerenderer.h
   symbology/qgsinvertedpolygonrenderer.h
   symbology/qgslegendsymbolitem.h
+  symbology/qgslinearreferencingsymbollayer.h
   symbology/qgslinesymbol.h
   symbology/qgslinesymbollayer.h
   symbology/qgsmapinfosymbolconverter.h
@@ -1970,6 +1996,8 @@ set(QGIS_CORE_HDRS
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
   tiledscene/qgsgltfutils.h
+  tiledscene/qgsquantizedmeshdataprovider.h
+  tiledscene/qgsquantizedmeshtiles.h
   tiledscene/qgstiledsceneboundingvolume.h
   tiledscene/qgstiledsceneconnection.h
   tiledscene/qgstiledscenedataprovider.h
@@ -2102,12 +2130,6 @@ if (${QT_VERSION_BASE}Positioning_FOUND)
   )
 endif()
 
-
-if (HAVE_OPENCL)
-    set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-        qgsopenclutils.h
-    )
-endif()
 
 if (HAVE_WEBENGINE)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2330,6 +2352,7 @@ target_include_directories(qgis_core PUBLIC
   geocoding
   gps
   labeling
+  labeling/rules
   layertree
   layout
   locator
@@ -2416,6 +2439,10 @@ endif()
 
 if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
   install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+
+  if(WITH_INTERNAL_NLOHMANN_JSON)
+    install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
+  endif()
 else()
 
   set_target_properties(qgis_core PROPERTIES

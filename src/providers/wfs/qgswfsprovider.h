@@ -98,7 +98,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     static QString providerKey();
 
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
 
     QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
 
@@ -212,7 +212,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     //! Namespace URL of the server (comes from DescribeFeatureDocument)
     QString mApplicationNamespace;
     //! Server capabilities for this layer (generated from capabilities document)
-    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
+    Qgis::VectorProviderCapabilities mCapabilities;
     //! Fields of this typename. Might be different from mShared->mFields in case of SELECT
     QgsFields mThisTypenameFields;
 

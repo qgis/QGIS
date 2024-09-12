@@ -24,6 +24,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsrasterlayer.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsrasterlayertemporalproperties.h"
 
@@ -48,6 +49,7 @@ class TestQgsProjectProperties : public QObject
     void testEllipsoidCrsSync();
     void testBearingFormat();
     void testTimeSettings();
+    void testColorSettings();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -254,6 +256,54 @@ void TestQgsProjectProperties::testTimeSettings()
 
   QCOMPARE( secondProjectRange, expectedRange );
 }
+
+void TestQgsProjectProperties::testColorSettings()
+{
+  QgsProject::instance()->clear();
+  QCOMPARE( QgsProject::instance()->styleSettings()->colorModel(), Qgis::ColorModel::Rgb );
+  QVERIFY( !QgsProject::instance()->styleSettings()->colorSpace().isValid() );
+
+  std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Rgb );
+  QVERIFY( !pp->mColorSpace.isValid() );
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "<i>None</i>" ) );
+  QVERIFY( !pp->mRemoveIccProfile->isEnabled() );
+#else
+  QVERIFY( !pp->mRemoveIccProfile->isVisible() );
+  QVERIFY( !pp->mAddIccProfile->isVisible() );
+  QVERIFY( !pp->mSaveIccProfile->isVisible() );
+  QVERIFY( !pp->mColorSpaceName->isVisible() );
+  QVERIFY( !pp->mIccProfileLabel->isVisible() );
+#endif
+
+  pp->mColorModel->setCurrentIndex( pp->mColorModel->findData( QVariant::fromValue( Qgis::ColorModel::Cmyk ) ) );
+  QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Cmyk );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+
+  const QString iccProfileFilePath = QStringLiteral( TEST_DATA_DIR ) + "/sRGB2014.icc";
+  pp->addIccProfile( iccProfileFilePath );
+  QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "sRGB2014" ) );
+  QVERIFY( pp->mRemoveIccProfile->isEnabled() );
+  QVERIFY( !pp->mColorModel->isEnabled() );
+  QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Rgb );
+
+  pp->apply();
+  QCOMPARE( QgsProject::instance()->styleSettings()->colorModel(), Qgis::ColorModel::Rgb );
+  QVERIFY( QgsProject::instance()->styleSettings()->colorSpace().isValid() );
+  QCOMPARE( QgsProject::instance()->styleSettings()->colorSpace().description(), QStringLiteral( "sRGB2014" ) );
+
+  pp->removeIccProfile();
+  QVERIFY( !pp->mColorSpace.isValid() );
+  QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "<i>None</i>" ) );
+  QVERIFY( !pp->mRemoveIccProfile->isEnabled() );
+
+#endif
+
+}
+
+
 
 QGSTEST_MAIN( TestQgsProjectProperties )
 

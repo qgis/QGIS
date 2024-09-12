@@ -62,7 +62,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
 
   const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
 
-  item->setPicturePath( file, svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster );
+  item->setPicturePath( file, svg ? Qgis::PictureFormat::SVG : Qgis::PictureFormat::Raster );
 
   // force a resize to the image's actual size
   item->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );
@@ -103,7 +103,7 @@ bool QgsLayoutImageDropHandler::handlePaste( QgsLayoutDesignerInterface *iface, 
   QString path( encoded );
   path.prepend( QLatin1String( "base64:" ) );
 
-  item->setPicturePath( path, QgsLayoutItemPicture::FormatRaster );
+  item->setPicturePath( path, Qgis::PictureFormat::Raster );
 
   // force a resize to the image's actual size
   item->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );

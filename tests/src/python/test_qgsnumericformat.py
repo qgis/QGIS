@@ -23,6 +23,9 @@ from qgis.core import (
     QgsPercentageNumericFormat,
     QgsReadWriteContext,
     QgsScientificNumericFormat,
+    QgsExpressionBasedNumericFormat,
+    QgsExpressionContextScope,
+    QgsExpressionContext
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1420,6 +1423,40 @@ class TestQgsNumericFormat(QgisTestCase):
         self.assertEqual(f.formatDouble(5.44, context), "5☕44°N")
         self.assertEqual(f.formatDouble(-5.44, context), "5☕44°S")
         self.assertEqual(f.formatDouble(-5.44101, context), "5☕44°S")
+
+    def testExpressionBasedFormat(self):
+        """ test expression based formatter """
+        f = QgsExpressionBasedNumericFormat()
+        self.assertEqual(f.expression(), '@value')
+        f.setExpression("@value || @suffix")
+        self.assertEqual(f.expression(), "@value || @suffix")
+
+        context = QgsNumericFormatContext()
+        scope = QgsExpressionContextScope()
+        exp_context = QgsExpressionContext()
+        scope.setVariable('suffix', 'm')
+        exp_context.appendScope(scope)
+        context.setExpressionContext(exp_context)
+
+        self.assertEqual(f.formatDouble(0, context), '0m')
+        self.assertEqual(f.formatDouble(5, context), '5m')
+        self.assertEqual(f.formatDouble(5.5, context), '5.5m')
+        self.assertEqual(f.formatDouble(-5, context), '-5m')
+        self.assertEqual(f.formatDouble(-5.5, context), '-5.5m')
+
+        f2 = f.clone()
+        self.assertIsInstance(f2, QgsExpressionBasedNumericFormat)
+
+        self.assertEqual(f2.expression(), f.expression())
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        f2.writeXml(elem, doc, QgsReadWriteContext())
+
+        f3 = QgsNumericFormatRegistry().createFromXml(elem, QgsReadWriteContext())
+        self.assertIsInstance(f3, QgsExpressionBasedNumericFormat)
+
+        self.assertEqual(f3.expression(), f.expression())
 
     def testRegistry(self):
         registry = QgsNumericFormatRegistry()

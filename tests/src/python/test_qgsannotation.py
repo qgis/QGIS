@@ -11,9 +11,13 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+import os
+import tempfile
+
 from qgis.PyQt.QtCore import QPointF, QRectF, QSize, QSizeF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFillSymbol,
@@ -30,6 +34,9 @@ from qgis.core import (
     QgsSvgAnnotation,
     QgsTextAnnotation,
     QgsVectorLayer,
+    QgsAnnotationPictureItem,
+    QgsAnnotationRectangleTextItem,
+    QgsBalloonCallout
 )
 from qgis.gui import QgsFormAnnotation
 import unittest
@@ -80,6 +87,128 @@ class TestQgsAnnotation(QgisTestCase):
         doc.setHtml('<p style="font-family: arial; font-weight: bold; font-size: 40px;">test annotation</p>')
         a.setDocument(doc)
         self.assertTrue(self.renderAnnotationInLayout('text_annotation_in_layout', a))
+
+    def test_svg_annotation_project_upgrade(self):
+        """
+        Test that svg annotations are upgraded to annotation layers when loading projects
+        """
+        a = QgsSvgAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
+        a.setHasFixedMapPosition(True)
+        a.setMapPosition(QgsPointXY(QPointF(20, 30)))
+        a.setMapPositionCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        a.setFrameOffsetFromReferencePointMm(
+            QPointF(40 / 3.7795275, 50 / 3.7795275))
+        svg = TEST_DATA_DIR + "/sample_svg.svg"
+        a.setFilePath(svg)
+
+        b = QgsSvgAnnotation()
+        b.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        b.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        b.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
+        b.setRelativePosition(QPointF(0.2, 0.7))
+        b.setHasFixedMapPosition(False)
+        svg = TEST_DATA_DIR + "/sample_svg.svg"
+        b.setFilePath(svg)
+
+        p = QgsProject()
+        p.annotationManager().addAnnotation(a)
+        p.annotationManager().addAnnotation(b)
+
+        p2 = QgsProject()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = os.path.join(temp_dir, 'test_project.qgs')
+            p.write(path)
+            p2.read(path)
+
+        # should be no annotations in upgraded project
+        self.assertFalse(p2.annotationManager().annotations())
+        # annotation layer should contain picture items
+        items = p2.mainAnnotationLayer().items()
+        self.assertEqual(len(items), 2)
+
+        item_a = [i for _, i in items.items() if not i.calloutAnchor().isEmpty()][0]
+        item_b = [i for _, i in items.items() if i.calloutAnchor().isEmpty()][0]
+        self.assertIsInstance(item_a, QgsAnnotationPictureItem)
+        self.assertIsInstance(item_b, QgsAnnotationPictureItem)
+
+        self.assertEqual(item_a.calloutAnchor().asWkt(), 'Point (20 30)')
+        self.assertEqual(item_a.placementMode(), Qgis.AnnotationPlacementMode.FixedSize)
+        self.assertIsInstance(item_a.callout(),
+                              QgsBalloonCallout)
+        self.assertAlmostEqual(item_a.fixedSize().width(), 79.375, 1)
+        self.assertAlmostEqual(item_a.fixedSize().height(), 52.9166, 1)
+        self.assertAlmostEqual(item_a.offsetFromCallout().width(), 10.5833, 1)
+        self.assertAlmostEqual(item_a.offsetFromCallout().height(), 13.229, 1)
+
+        self.assertIsNone(item_b.callout())
+        self.assertEqual(item_b.placementMode(), Qgis.AnnotationPlacementMode.RelativeToMapFrame)
+        self.assertAlmostEqual(item_b.fixedSize().width(), 79.375, 1)
+        self.assertAlmostEqual(item_b.fixedSize().height(), 52.9166, 1)
+        self.assertAlmostEqual(item_b.bounds().center().x(), 0.2, 3)
+        self.assertAlmostEqual(item_b.bounds().center().y(), 0.7, 3)
+
+    def test_text_annotation_project_upgrade(self):
+        """
+        Test that text annotations are upgraded to annotation layers when loading projects
+        """
+        a = QgsTextAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
+        a.setHasFixedMapPosition(True)
+        a.setMapPosition(QgsPointXY(QPointF(20, 30)))
+        a.setMapPositionCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        a.setFrameOffsetFromReferencePointMm(
+            QPointF(40 / 3.7795275, 50 / 3.7795275))
+        a.document().setHtml('<p>test annotation</p>')
+
+        b = QgsTextAnnotation()
+        b.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        b.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        b.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
+        b.setRelativePosition(QPointF(0.2, 0.7))
+        b.setHasFixedMapPosition(False)
+        b.document().setHtml('<p>test annotation</p>')
+
+        p = QgsProject()
+        p.annotationManager().addAnnotation(a)
+        p.annotationManager().addAnnotation(b)
+
+        p2 = QgsProject()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = os.path.join(temp_dir, 'test_project.qgs')
+            p.write(path)
+            p2.read(path)
+
+        # should be no annotations in upgraded project
+        self.assertFalse(p2.annotationManager().annotations())
+        # annotation layer should contain text items
+        items = p2.mainAnnotationLayer().items()
+        self.assertEqual(len(items), 2)
+
+        item_a = [i for _, i in items.items() if not i.calloutAnchor().isEmpty()][0]
+        item_b = [i for _, i in items.items() if i.calloutAnchor().isEmpty()][0]
+        self.assertIsInstance(item_a, QgsAnnotationRectangleTextItem)
+        self.assertIsInstance(item_b, QgsAnnotationRectangleTextItem)
+
+        self.assertEqual(item_a.calloutAnchor().asWkt(), 'Point (20 30)')
+        self.assertEqual(item_a.placementMode(), Qgis.AnnotationPlacementMode.FixedSize)
+        self.assertIsInstance(item_a.callout(),
+                              QgsBalloonCallout)
+        self.assertAlmostEqual(item_a.fixedSize().width(), 79.375, 1)
+        self.assertAlmostEqual(item_a.fixedSize().height(), 52.9166, 1)
+        self.assertAlmostEqual(item_a.offsetFromCallout().width(), 10.5833, 1)
+        self.assertAlmostEqual(item_a.offsetFromCallout().height(), 13.229, 1)
+
+        self.assertIsNone(item_b.callout())
+        self.assertEqual(item_b.placementMode(), Qgis.AnnotationPlacementMode.RelativeToMapFrame)
+        self.assertAlmostEqual(item_b.fixedSize().width(), 79.375, 1)
+        self.assertAlmostEqual(item_b.fixedSize().height(), 52.9166, 1)
+        self.assertAlmostEqual(item_b.bounds().center().x(), 0.2, 3)
+        self.assertAlmostEqual(item_b.bounds().center().y(), 0.7, 3)
 
     def testSvgAnnotation(self):
         """ test rendering a svg annotation"""

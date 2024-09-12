@@ -64,6 +64,11 @@ QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
                       "polygons), distance along the original geometry and bisector angle of vertex for the original geometry." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractSpecificVerticesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QString QgsExtractSpecificVerticesAlgorithm::outputName() const
 {
   return QObject::tr( "Vertices" );
@@ -129,6 +134,9 @@ void QgsExtractSpecificVerticesAlgorithm::initParameters( const QVariantMap & )
 bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
   mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
 
   const QString verticesString = parameterAsString( parameters, QStringLiteral( "VERTICES" ), context );

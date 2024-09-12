@@ -53,9 +53,9 @@
  * Attempts to find the best guess at a map item to link \a referenceItem to,
  * by:
  *
- * # Prioritizing a selected map
- * # If no selection, prioritizing the topmost map the item was drawn over
- * # If still none, use the layout's reference map (or biggest map)
+ * - Prioritizing a selected map
+ * - If no selection, prioritizing the topmost map the item was drawn over
+ * - If still none, use the layout's reference map (or biggest map)
  */
 QgsLayoutItemMap *findSensibleDefaultLinkedMapItem( QgsLayoutItem *referenceItem )
 {

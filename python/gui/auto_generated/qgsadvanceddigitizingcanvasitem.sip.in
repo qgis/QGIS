@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsadvanceddigitizingcanvasitem.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -46,5 +46,5 @@ The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CA
  *                                                                      *
  * src/gui/qgsadvanceddigitizingcanvasitem.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

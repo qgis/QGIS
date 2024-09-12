@@ -57,6 +57,8 @@ class TestQgsGeoPdfExport : public QgsTest
     void testCustomGroups();
     void testGroupOrder();
     void compositionMode();
+    void testMutuallyExclusiveGroupsLayers();
+    void testMutuallyExclusiveGroupsCustom();
 };
 
 void TestQgsGeoPdfExport::initTestCase()
@@ -199,6 +201,7 @@ void TestQgsGeoPdfExport::testComposition()
   QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
   QgsAbstractGeoPdfExporter::ComponentLayerDetail detail;
   detail.mapLayerId = QStringLiteral( "layer3" );
+  detail.name = QStringLiteral( "xxx" );
   detail.opacity = 0.7;
   detail.compositionMode = QPainter::CompositionMode_Screen;
   detail.sourcePdfPath = QStringLiteral( "a pdf.pdf" );
@@ -213,6 +216,22 @@ void TestQgsGeoPdfExport::testComposition()
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
+
+  QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
+
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer1" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my first layer" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer3" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "xxx" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+
   QDomNodeList ifLayerOnList = doc.elementsByTagName( QStringLiteral( "IfLayerOn" ) );
   QCOMPARE( ifLayerOnList.count(), 3 );
 
@@ -241,18 +260,6 @@ void TestQgsGeoPdfExport::testComposition()
   QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().elementsByTagName( QStringLiteral( "Blending" ) ).at( 0 ).toElement().attribute( QStringLiteral( "opacity" ) ).toDouble(), 0.7 );
   QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().elementsByTagName( QStringLiteral( "Blending" ) ).at( 0 ).toElement().attribute( QStringLiteral( "function" ) ), QStringLiteral( "Screen" ) );
 
-  QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
-  QCOMPARE( layerTreeList.count(), 3 );
-
-  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer1" ) );
-  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my first layer" ) );
-  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
-
-  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
-  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
-  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
-
-  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer3" ) );
 }
 
 void TestQgsGeoPdfExport::testMetadata()
@@ -521,6 +528,9 @@ void TestQgsGeoPdfExport::testCustomGroups()
   details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
 
+  // this group is empty, since layer3 doesn't exist
+  details.customLayerTreeGroups.insert( QStringLiteral( "layer3" ), QStringLiteral( "my empty group" ) );
+
   QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
@@ -529,35 +539,43 @@ void TestQgsGeoPdfExport::testCustomGroups()
   QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
   QCOMPARE( layerTreeList.count(), 2 );
 
-  int layer1Idx = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ) == QLatin1String( "my group" ) ? 0 : 1;
+  QString group1Id = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().tagName(), QStringLiteral( "Layer" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "my group_layer1" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+
+  QString group2Id = layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().firstChildElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().firstChildElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "my group2_layer2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().firstChildElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+
+  QDomNodeList contentList = doc.documentElement().firstChildElement( QStringLiteral( "Page" ) ).firstChildElement( QStringLiteral( "Content" ) ).childNodes();
+  QCOMPARE( contentList.count(), 2 );
+
+  int layer1Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id ? 0 : 1;
   int layer2Idx = layer1Idx == 0 ? 1 : 0;
+  QCOMPARE( contentList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group1Id );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().tagName(), QStringLiteral( "IfLayerOn" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "my group_layer1" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer1Path );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer1Layer );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "visible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer1" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer1" ) );
 
-  QString group1Id = layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "id" ) );
-  QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group" ) );
-  QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
-
-  QString group2Id = layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "id" ) );
-  QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
-  QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
-
-  QDomNodeList ifLayerOnList = doc.elementsByTagName( QStringLiteral( "IfLayerOn" ) );
-  QCOMPARE( ifLayerOnList.count(), 2 );
-
-  layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id ? 0 : 1;
-  layer2Idx = layer1Idx == 0 ? 1 : 0;
-  QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group1Id );
-  QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer1Path );
-  QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer1Layer );
-  QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "visible" ) ), QStringLiteral( "false" ) );
-  QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer1" ) );
-  QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer1" ) );
-
-  QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group2Id );
-  QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer2Path );
-  QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer2Layer );
-  QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "visible" ) ), QStringLiteral( "false" ) );
-  QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer2" ) );
-  QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group2Id );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().tagName(), QStringLiteral( "IfLayerOn" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "my group2_layer2" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer2Path );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer2Layer );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "visible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer2" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer2" ) );
 }
 
 void TestQgsGeoPdfExport::testGroupOrder()
@@ -653,6 +671,206 @@ void TestQgsGeoPdfExport::testGroupOrder()
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
 }
 
+void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsLayers()
+{
+  TestGeoPdfExporter geoPdfExporter;
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "a2" ), QMetaType::Type::Int ) );
+  QgsFeature f( fields );
+
+  f.setAttributes( QgsAttributes() << 1 << 2 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+  QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
+  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  f.setAttributes( QgsAttributes() << 31 << 32 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
+  renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
+  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  f.setAttributes( QgsAttributes() << 41 << 42 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 6, 7 ) ) );
+  renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(6 6, 7 7)" ) );
+  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer3" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+
+  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
+  QgsAbstractGeoPdfExporter::VectorComponentDetail component;
+  QString layer1Path;
+  QString layer1Layer;
+  QString layer2Path;
+  QString layer2Layer;
+  QString layer3Path;
+  QString layer3Layer;
+
+  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  {
+    if ( it.mapLayerId == QLatin1String( "layer1" ) )
+    {
+      layer1Path = it.sourceVectorPath;
+      layer1Layer = it.sourceVectorLayer;
+    }
+    else if ( it.mapLayerId == QLatin1String( "layer2" ) )
+    {
+      layer2Path = it.sourceVectorPath;
+      layer2Layer = it.sourceVectorLayer;
+    }
+    else if ( it.mapLayerId == QLatin1String( "layer3" ) )
+    {
+      layer3Path = it.sourceVectorPath;
+      layer3Layer = it.sourceVectorLayer;
+    }
+  }
+
+  // test creation of the composition xml
+  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
+  QgsAbstractGeoPdfExporter::ExportDetails details;
+  details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
+  details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
+  details.customLayerTreeGroups.insert( QStringLiteral( "layer3" ), QStringLiteral( "my group3" ) );
+  // groups 1 & 2 should be mutually exclusive
+  details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group" ) );
+  details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group2" ) );
+
+  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  QDomDocument doc;
+  doc.setContent( composition );
+
+  QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+
+  QString group1Id = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "mutuallyExclusiveGroupId" ) ), QStringLiteral( "__mutually_exclusive_groups__" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().tagName(), QStringLiteral( "Layer" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().firstChildElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "my group_layer1" ) );
+
+  QString group2Id = layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "mutuallyExclusiveGroupId" ) ), QStringLiteral( "__mutually_exclusive_groups__" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().firstChildElement().tagName(), QStringLiteral( "Layer" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().firstChildElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().firstChildElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().firstChildElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "my group2_layer2" ) );
+
+  QString group3Id = layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group3" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "mutuallyExclusiveGroupId" ) ), QString() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().firstChildElement().tagName(), QStringLiteral( "Layer" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().firstChildElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer3" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().firstChildElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().firstChildElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "my group3_layer3" ) );
+
+  QDomNodeList contentList = doc.documentElement().firstChildElement( QStringLiteral( "Page" ) ).firstChildElement( QStringLiteral( "Content" ) ).childNodes();
+  QCOMPARE( contentList.count(), 3 );
+
+  int layer1Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id ? 0
+                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id ? 1 : 2;
+  int layer2Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group2Id ? 0
+                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group2Id ? 1 : 2;
+  int layer3Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group3Id ? 0
+                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group3Id ? 1 : 2;
+  QCOMPARE( contentList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group1Id );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().tagName(), QStringLiteral( "IfLayerOn" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "my group_layer1" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer1Path );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer1Layer );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "visible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer1" ) );
+  QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer1" ) );
+
+  QCOMPARE( contentList.at( layer2Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group2Id );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().tagName(), QStringLiteral( "IfLayerOn" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "my group2_layer2" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer2Path );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer2Layer );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "visible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer2" ) );
+  QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer2" ) );
+
+  QCOMPARE( contentList.at( layer3Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group3Id );
+  QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().tagName(), QStringLiteral( "IfLayerOn" ) );
+  QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "my group3_layer3" ) );
+  QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer3Path );
+  QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer3Layer );
+  QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "visible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer3" ) );
+  QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer3" ) );
+}
+
+void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsCustom()
+{
+  TestGeoPdfExporter geoPdfExporter;
+
+  // test creation of the composition xml
+  QgsAbstractGeoPdfExporter::ComponentLayerDetail group1;
+  group1.group = QStringLiteral( "my group" );
+  group1.sourcePdfPath =  QStringLiteral( "group1.pdf" );
+  QgsAbstractGeoPdfExporter::ComponentLayerDetail group2;
+  group2.group = QStringLiteral( "my group2" );
+  group2.sourcePdfPath =  QStringLiteral( "group2.pdf" );
+  QgsAbstractGeoPdfExporter::ComponentLayerDetail group3;
+  group3.group = QStringLiteral( "my group3" );
+  group3.sourcePdfPath =  QStringLiteral( "group3.pdf" );
+  QgsAbstractGeoPdfExporter::ComponentLayerDetail object4;
+  object4.sourcePdfPath =  QStringLiteral( "object4.pdf" );
+
+  QgsAbstractGeoPdfExporter::ExportDetails details;
+  // groups 1 & 2 should be mutually exclusive
+  details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group" ) );
+  details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group2" ) );
+
+  QString composition = geoPdfExporter.createCompositionXml( { group1, group2, group3, object4 }, details );
+
+  QgsDebugError( composition );
+  QDomDocument doc;
+  doc.setContent( composition );
+
+  QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+
+  QString group1Id = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "mutuallyExclusiveGroupId" ) ), QStringLiteral( "__mutually_exclusive_groups__" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().count(), 0 );
+
+  QString group2Id = layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "mutuallyExclusiveGroupId" ) ), QStringLiteral( "__mutually_exclusive_groups__" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().count(), 0 );
+
+  QString group3Id = layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "id" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group3" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "mutuallyExclusiveGroupId" ) ), QString() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().count(), 0 );
+
+  QDomNodeList contentList = doc.documentElement().firstChildElement( QStringLiteral( "Page" ) ).firstChildElement( QStringLiteral( "Content" ) ).childNodes();
+  QCOMPARE( contentList.count(), 4 );
+
+  QCOMPARE( contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ), group1Id );
+  QCOMPARE( contentList.at( 0 ).toElement().childNodes().at( 0 ).toElement().tagName(), QStringLiteral( "PDF" ) );
+  QCOMPARE( contentList.at( 0 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), QStringLiteral( "group1.pdf" ) );
+
+  QCOMPARE( contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ), group2Id );
+  QCOMPARE( contentList.at( 1 ).toElement().childNodes().at( 0 ).toElement().tagName(), QStringLiteral( "PDF" ) );
+  QCOMPARE( contentList.at( 1 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), QStringLiteral( "group2.pdf" ) );
+
+  QCOMPARE( contentList.at( 2 ).toElement().attribute( QStringLiteral( "layerId" ) ), group3Id );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).toElement().tagName(), QStringLiteral( "PDF" ) );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), QStringLiteral( "group3.pdf" ) );
+
+  QCOMPARE( contentList.at( 3 ).toElement().tagName(), QStringLiteral( "PDF" ) );
+  QCOMPARE( contentList.at( 3 ).toElement().attribute( QStringLiteral( "dataset" ) ), QStringLiteral( "object4.pdf" ) );
+}
+
 void TestQgsGeoPdfExport::compositionMode()
 {
   QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_SourceOver ) );
@@ -683,6 +901,7 @@ void TestQgsGeoPdfExport::compositionMode()
   QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Exclusion ), QStringLiteral( "Exclusion" ) );
   QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Plus ), QStringLiteral( "Normal" ) );
 }
+
 
 QGSTEST_MAIN( TestQgsGeoPdfExport )
 #include "testqgsgeopdfexport.moc"

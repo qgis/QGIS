@@ -503,24 +503,9 @@ class CORE_EXPORT QgsFeature
     QgsFeature( const QgsFields &fields, qint64 id = FID_NULL ) SIP_HOLDGIL;
 #endif
 
-    /**
-     * Copy constructor
-     */
     QgsFeature( const QgsFeature &rhs ) SIP_HOLDGIL;
-
-    /**
-     * Assignment operator
-     */
     QgsFeature &operator=( const QgsFeature &rhs ) SIP_HOLDGIL;
-
-    /**
-     * Compares two features
-     */
     bool operator==( const QgsFeature &other ) const SIP_HOLDGIL;
-
-    /**
-     * Compares two features
-     */
     bool operator!=( const QgsFeature &other ) const SIP_HOLDGIL;
 
     virtual ~QgsFeature();

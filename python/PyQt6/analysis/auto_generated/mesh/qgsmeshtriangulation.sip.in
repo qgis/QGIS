@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/mesh/qgsmeshtriangulation.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,10 +26,6 @@ Class that handles mesh creation with Delaunay constrained triangulation
   public:
 
     QgsMeshTriangulation();
-%Docstring
-Constructor
-%End
-
     ~QgsMeshTriangulation();
 
     bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = 0, long featureCount = 1 );
@@ -135,9 +131,6 @@ a Delaunay triangulation on provided existing vertex.
   public:
 
     QgsMeshEditingDelaunayTriangulation();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 
@@ -149,5 +142,5 @@ Constructor
  *                                                                      *
  * src/analysis/mesh/qgsmeshtriangulation.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

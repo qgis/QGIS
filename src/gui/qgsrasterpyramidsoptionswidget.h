@@ -63,8 +63,16 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     void updateUi() SIP_FORCE;
 
   signals:
+
+    /**
+     * Emitted when the list of configured overviews is changed.
+     */
     void overviewListChanged();
-    void someValueChanged(); /* emitted when any other setting changes */
+
+    /**
+     * Emitted when settings are changed in the widget.
+     */
+    void someValueChanged();
 
   private:
 

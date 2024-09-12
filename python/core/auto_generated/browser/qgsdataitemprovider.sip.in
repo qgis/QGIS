@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsdataitemprovider.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,8 +19,8 @@ This is the interface for those who want to add custom data items to the browser
 The method :py:func:`~createDataItem` is ever called only if :py:func:`~capabilities` return non-zero value.
 There are two occasions when :py:func:`~createDataItem` is called:
 
-# to create root items (passed path is empty, parent item is ``None``).
-# to create items in directory structure. For this capabilities have to return at least
+- to create root items (passed path is empty, parent item is ``None``).
+- to create items in directory structure. For this capabilities have to return at least
   of the following: :py:class:`QgsDataProvider`.Dir or :py:class:`QgsDataProvider`.File. Passed path is the file
   or directory being inspected, parent item is a valid :py:class:`QgsDirectoryItem`
 %End
@@ -77,5 +77,5 @@ The default implementation returns ``False`` for all paths.
  *                                                                      *
  * src/core/browser/qgsdataitemprovider.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

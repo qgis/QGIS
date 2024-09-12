@@ -63,9 +63,9 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   if ( !dataProvider )
     return;
 
-  const QgsVectorDataProvider::Capabilities caps = dataProvider->capabilities();
-  mCanAddAttribute = caps & QgsVectorDataProvider::AddAttributes;
-  mCanChangeAttributeValue = caps & QgsVectorDataProvider::ChangeAttributeValues;
+  const Qgis::VectorProviderCapabilities caps = dataProvider->capabilities();
+  mCanAddAttribute = caps & Qgis::VectorProviderCapability::AddAttributes;
+  mCanChangeAttributeValue = caps & Qgis::VectorProviderCapability::ChangeAttributeValues;
 
   QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
 
@@ -313,7 +313,7 @@ void QgsFieldCalculator::accept()
       }
       else if ( updatingGeom )
       {
-        if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+        if ( value.userType() == qMetaTypeId< QgsGeometry>() )
         {
           QgsGeometry geom = value.value< QgsGeometry >();
           mVectorLayer->changeGeometry( feature.id(), geom );

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemmapgrid.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -596,8 +596,9 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setFont().
 
 .. seealso:: :py:func:`annotationFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead.
 %End
 
  QFont annotationFont() const /Deprecated/;
@@ -607,8 +608,9 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.font().
 
 .. seealso:: :py:func:`setAnnotationFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat` instead.
 %End
 
  void setAnnotationFontColor( const QColor &color ) /Deprecated/;
@@ -618,8 +620,9 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setColor() an
 
 .. seealso:: :py:func:`annotationFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead.
 %End
 
  QColor annotationFontColor() const /Deprecated/;
@@ -629,8 +632,9 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.color() and :
 
 .. seealso:: :py:func:`setAnnotationFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat` instead.
 %End
 
     void setAnnotationPrecision( const int precision );
@@ -1141,5 +1145,5 @@ QFlags<QgsLayoutItemMapGrid::FrameSideFlag> operator|(QgsLayoutItemMapGrid::Fram
  *                                                                      *
  * src/core/layout/qgslayoutitemmapgrid.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

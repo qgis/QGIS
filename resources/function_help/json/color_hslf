@@ -1,0 +1,26 @@
+{
+  "name": "color_hslf",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a color object based on its hue, saturation, and lightness attributes.",
+  "arguments": [{
+    "arg": "hue",
+    "description": "hue of the color, as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "saturation",
+    "description": "saturation of the color as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "lightness",
+    "description": "lightness of the color as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "alpha",
+    "optional": true,
+    "default": "1.0",
+    "description": "alpha component as a float value from 0.0 to 1.0"
+  }],
+  "examples": [{
+    "expression": "color_hslf(0.3,0.52,0.7)",
+    "returns": "HSLA: 0.30,0.52,0.70,1.00"
+  }],
+  "tags": ["attributes", "lightness", "color", "hue", "saturation"]
+}

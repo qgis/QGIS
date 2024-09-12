@@ -54,7 +54,7 @@ class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
     //! Returns a cloned instance
     virtual QgsAbstract3DRenderer *clone() const = 0 SIP_FACTORY;
     //! Returns a 3D entity that will be used to show renderer's data in 3D scene
-    virtual Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const = 0 SIP_SKIP;
+    virtual Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const = 0 SIP_SKIP;
 
     //! Writes renderer's properties to given XML element
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
     virtual void resolveReferences( const QgsProject &project );
 
   protected:
-    //! Default constructor
+
     QgsAbstract3DRenderer() = default;
 
   private:

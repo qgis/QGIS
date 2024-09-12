@@ -44,7 +44,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \param parent parent widget
      * \param flags window flags
      * \note Earlier versions had a similar constructor but with extra arguments for \a regexp which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use setRegularExpression() instead.
-     * \since QGIS 3.22.
+     * \since QGIS 3.22
      */
     QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
                       const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),

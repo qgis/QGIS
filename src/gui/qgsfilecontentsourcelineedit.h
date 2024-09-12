@@ -199,7 +199,7 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
     {
       Svg, //!< SVG image
       Image, //!< Raster image
-      AnimatedImage, //!< Animated image (since QGIS 3.26)
+      AnimatedImage, //!< Animated image \since QGIS 3.26
     };
 
     /**

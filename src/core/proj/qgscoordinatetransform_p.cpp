@@ -84,6 +84,7 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mIsValid( other.mIsValid )
   , mShortCircuit( other.mShortCircuit )
   , mGeographicToWebMercator( other.mGeographicToWebMercator )
+  , mHasVerticalComponent( other.mHasVerticalComponent )
   , mSourceCRS( other.mSourceCRS )
   , mDestCRS( other.mDestCRS )
   , mSourceDatumTransform( other.mSourceDatumTransform )
@@ -162,6 +163,8 @@ bool QgsCoordinateTransformPrivate::initialize()
   mGeographicToWebMercator =
     mSourceCRS.isGeographic() &&
     mDestCRS.authid() == QLatin1String( "EPSG:3857" );
+
+  mHasVerticalComponent = mSourceCRS.hasVerticalAxis() && mDestCRS.hasVerticalAxis();
 
   mSourceIsDynamic = mSourceCRS.isDynamic();
   mSourceCoordinateEpoch = mSourceCRS.coordinateEpoch();

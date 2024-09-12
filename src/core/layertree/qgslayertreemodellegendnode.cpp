@@ -95,8 +95,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   ctx->textDocument = &textDocument;
 
   std::optional< QgsScopedRenderContextScaleToPixels > scaleToPx( *ctx->context );
-  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context,
-      ( ctx->context->flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? QgsTextRenderer::FONT_WORKAROUND_SCALE : 1 );
+  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( *ctx->context, f );
+
+  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context, textScaleFactor );
   // cppcheck-suppress autoVariables
   ctx->textDocumentMetrics = &textDocumentMetrics;
   scaleToPx.reset();

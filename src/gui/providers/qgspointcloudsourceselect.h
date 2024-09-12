@@ -38,7 +38,7 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     //! Constructor
     QgsPointCloudSourceSelect( QWidget *parent = nullptr,
                                Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-                               QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+                               QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

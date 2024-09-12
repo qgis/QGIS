@@ -39,6 +39,7 @@ class QgsPathResolver;
 /**
  * \ingroup core
  * \class QgsSimpleFillSymbolLayer
+ * \brief Renders polygons using a single fill and stroke color.
  */
 class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 {
@@ -202,6 +203,7 @@ class QgsColorRamp;
 /**
  * \ingroup core
  * \class QgsGradientFillSymbolLayer
+ * A fill symbol layer which draws a smooth color gradient over a polygon.
  */
 class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 {
@@ -1053,7 +1055,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setWidth()
      * \see setWidthMapUnitScale()
      *
-     * \deprecated use setSizeUnit() instead.
+     * \deprecated QGIS 3.40. Use setSizeUnit() instead.
      */
     Q_DECL_DEPRECATED void setWidthUnit( Qgis::RenderUnit unit ) SIP_DEPRECATED { mSizeUnit = unit; }
 
@@ -1075,7 +1077,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see width()
      * \see widthMapUnitScale()
      *
-     * \deprecated use sizeUnit() instead.
+     * \deprecated QGIS 3.40. Use sizeUnit() instead.
      */
     Q_DECL_DEPRECATED Qgis::RenderUnit widthUnit() const SIP_DEPRECATED { return mSizeUnit; }
 
@@ -1098,7 +1100,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setWidth()
      * \see setWidthUnit()
      *
-     * \deprecated use setSizeMapUnitScale() instead.
+     * \deprecated QGIS 3.40. Use setSizeMapUnitScale() instead.
      */
     Q_DECL_DEPRECATED void setWidthMapUnitScale( const QgsMapUnitScale &scale ) SIP_DEPRECATED { mSizeMapUnitScale = scale; }
 
@@ -1121,7 +1123,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see width()
      * \see widthUnit()
      *
-     * \deprecated use sizeMapUnitScale() instead.
+     * \deprecated QGIS 3.40. Use sizeMapUnitScale() instead.
      */
     Q_DECL_DEPRECATED const QgsMapUnitScale &widthMapUnitScale() const SIP_DEPRECATED { return mSizeMapUnitScale; }
 
@@ -2476,6 +2478,8 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsCentroidFillSymbolLayer
+ *
+ * \brief A fill symbol layer which renders a marker symbol at the centroid of a polygon geometry.
  */
 class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 {

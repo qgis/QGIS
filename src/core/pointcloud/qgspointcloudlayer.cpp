@@ -56,10 +56,10 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
   if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
     const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+    Qgis::DataProviderReadFlags providerFlags;
     if ( options.loadDefaultStyle )
     {
-      providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+      providerFlags |= Qgis::DataProviderReadFlag::LoadDefaultStyle;
     }
     setDataSource( uri, baseName, providerLib, providerOptions, providerFlags );
   }
@@ -150,7 +150,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    QgsDataProvider::ReadFlags flags = providerReadFlags( layerNode, mReadFlags );
+    Qgis::DataProviderReadFlags flags = providerReadFlags( layerNode, mReadFlags );
     // read extent
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
     {
@@ -378,7 +378,7 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 }
 
 void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -427,13 +427,13 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
-  if ( !( flags & QgsDataProvider::SkipGetExtent ) )
+  if ( !( flags & Qgis::DataProviderReadFlag::SkipGetExtent ) )
   {
     setExtent3D( mDataProvider->extent3D() );
   }
 
   bool loadDefaultStyleFlag = false;
-  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  if ( flags & Qgis::DataProviderReadFlag::LoadDefaultStyle )
   {
     loadDefaultStyleFlag = true;
   }
@@ -727,6 +727,8 @@ QString QgsPointCloudLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.historySectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
+
+  myMetadata += customPropertyHtmlMetadata();
 
   myMetadata += QLatin1String( "\n</body>\n</html>\n" );
   return myMetadata;

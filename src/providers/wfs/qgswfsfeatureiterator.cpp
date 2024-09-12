@@ -33,6 +33,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QUrlQuery>
+#include <QTransform>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
@@ -348,13 +349,6 @@ void QgsWFSFeatureDownloaderImpl::gotHitsResponse()
   }
   if ( mNumberMatched >= 0 )
   {
-    if ( mTotalDownloadedFeatureCount == 0 )
-    {
-      // We get at this point after the 4 second delay to emit the hits request
-      // and the delay to get its response. If we don't still have downloaded
-      // any feature at this point, it is high time to give some visual feedback
-      mProgressDialogShowImmediately = true;
-    }
     // If the request didn't include any BBOX, then we can update the layer
     // feature count
     if ( mShared->currentRect().isNull() )
@@ -375,10 +369,10 @@ void QgsWFSFeatureDownloaderImpl::startHitsRequest()
   }
 }
 
-void QgsWFSFeatureDownloaderImpl::createProgressDialog()
+void QgsWFSFeatureDownloaderImpl::createProgressTask()
 {
-  QgsFeatureDownloaderImpl::createProgressDialog( mNumberMatched );
-  CONNECT_PROGRESS_DIALOG( QgsWFSFeatureDownloaderImpl );
+  QgsFeatureDownloaderImpl::createProgressTask( mNumberMatched );
+  CONNECT_PROGRESS_TASK( QgsWFSFeatureDownloaderImpl );
 }
 
 void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeatures )
@@ -582,7 +576,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
           if ( mShared->supportsFastFeatureCount() )
             disconnect( &timerForHits, &QTimer::timeout, this, &QgsWFSFeatureDownloaderImpl::startHitsRequest );
 
-          CREATE_PROGRESS_DIALOG( QgsWFSFeatureDownloaderImpl );
+          CREATE_PROGRESS_TASK( QgsWFSFeatureDownloaderImpl );
         }
       }
 

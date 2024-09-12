@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/annotations/qgsannotationlineitem.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -35,11 +35,13 @@ Constructor for QgsAnnotationLineItem, with the specified ``curve``.
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
-    virtual QList< QgsAnnotationItemNode > nodes() const;
+    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
 
-    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
 
-    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
+
+    virtual Qgis::AnnotationItemFlags flags() const;
 
 
     static QgsAnnotationLineItem *create() /Factory/;
@@ -98,5 +100,5 @@ The item takes ownership of the symbol.
  *                                                                      *
  * src/core/annotations/qgsannotationlineitem.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

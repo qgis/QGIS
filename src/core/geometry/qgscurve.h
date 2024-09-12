@@ -35,9 +35,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 {
   public:
 
-    /**
-     * Constructor for QgsCurve.
-     */
     QgsCurve() = default;
 
     /**

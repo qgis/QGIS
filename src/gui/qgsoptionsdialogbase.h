@@ -74,8 +74,8 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
  *
  * To use:
  *
- * # Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
- * # In source file for dialog, inherit this class instead of QDialog, then in constructor:
+ * - Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+ * - In source file for dialog, inherit this class instead of QDialog, then in constructor:
  *   ...
  *   setupUi( this ); // set up .ui file objects
  *   initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui

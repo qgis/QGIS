@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/network/qgsgraph.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,9 +24,6 @@ This class implements a graph edge
   public:
 
     QgsGraphEdge();
-%Docstring
-Constructor for QgsGraphEdge.
-%End
 
     QVariant cost( int strategyIndex ) const;
 %Docstring
@@ -71,9 +68,6 @@ This class implements a graph vertex
   public:
 
     QgsGraphVertex();
-%Docstring
-Default constructor. It is needed for Qt's container, e.g. QVector
-%End
 
 
     QgsGraphVertex( const QgsPointXY &point );
@@ -115,9 +109,6 @@ Mathematical graph representation
   public:
 
     QgsGraph();
-%Docstring
-Constructor for QgsGraph.
-%End
 
 
     int addVertex( const QgsPointXY &pt );
@@ -286,5 +277,5 @@ Returns whether the vertex of the given index exists.
  *                                                                      *
  * src/analysis/network/qgsgraph.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

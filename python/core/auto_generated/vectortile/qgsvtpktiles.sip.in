@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vectortile/qgsvtpktiles.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -102,7 +102,6 @@ exists but has a zero size.
 %End
 
   private:
-    //! QgsVtpkTiles cannot be copied
     QgsVtpkTiles( const QgsVtpkTiles &other );
 };
 
@@ -112,5 +111,5 @@ exists but has a zero size.
  *                                                                      *
  * src/core/vectortile/qgsvtpktiles.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

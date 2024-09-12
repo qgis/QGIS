@@ -144,7 +144,6 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleLineSymbolLayerWidget( vl ); }
 
-    // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
@@ -617,7 +616,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
     /**
      * This method does nothing anymore, the loading is automatic
-     * \deprecated since QGIS 3.16
+     * \deprecated QGIS 3.16
      */
     Q_DECL_DEPRECATED void populateList() SIP_DEPRECATED {}
 
@@ -1288,6 +1287,51 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
     void mDrawAllPartsCheckBox_stateChanged( int state );
     void mClipPointsCheckBox_stateChanged( int state );
     void mClipOnCurrentPartOnlyCheckBox_stateChanged( int state );
+};
+
+
+///////////
+
+#include "ui_qgslinearreferencingsymbollayerwidgetbase.h"
+
+class QgsLinearReferencingSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsLinearReferencingSymbolLayerWidget
+ * \brief Widget for controlling the properties of a QgsLinearReferencingSymbolLayer.
+ * \since QGIS 3.40
+ */
+class GUI_EXPORT QgsLinearReferencingSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::QgsLinearReferencingSymbolLayerWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLinearReferencingSymbolLayerWidget.
+     */
+    QgsLinearReferencingSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    ~QgsLinearReferencingSymbolLayerWidget() override;
+
+    /**
+     * Creates a new QgsLinearReferencingSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsLinearReferencingSymbolLayerWidget( vl ); }
+
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
+
+  private slots:
+    void changeNumberFormat();
+
+  private:
+
+    QgsLinearReferencingSymbolLayer *mLayer = nullptr;
+    bool mBlockChangesSignal = false;
 };
 
 

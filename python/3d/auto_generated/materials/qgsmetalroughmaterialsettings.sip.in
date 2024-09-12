@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/materials/qgsmetalroughmaterialsettings.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,9 +29,6 @@ A PBR metal rough shading material used for rendering.
   public:
 
     QgsMetalRoughMaterialSettings();
-%Docstring
-Constructor for QgsMetalRoughMaterialSettings.
-%End
 
     virtual QString type() const;
 
@@ -110,5 +107,5 @@ Returns the material's ``roughness``.
  *                                                                      *
  * src/3d/materials/qgsmetalroughmaterialsettings.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

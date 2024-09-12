@@ -86,8 +86,8 @@ class QgsChunkLoaderFactory  : public QObject
      *
      * The default implementation returns true. This only needs to be implemented when the factory
      * would otherwise need to do blocking network requests in createChildren() to avoid GUI freeze.
-     * \sa prepareChildren()
-     * \sa createChildren()
+     * \see prepareChildren()
+     * \see createChildren()
      */
     virtual bool canCreateChildren( QgsChunkNode *node ) { Q_UNUSED( node ); return true; }
 
@@ -98,8 +98,8 @@ class QgsChunkLoaderFactory  : public QObject
      *
      * The default implementation does nothing. This only needs to be implemented when the factory
      * would otherwise need to do blocking network requests in createChildren() to avoid GUI freeze.
-     * \sa canCreateChildren()
-     * \sa createChildren()
+     * \see canCreateChildren()
+     * \see createChildren()
      */
     virtual void prepareChildren( QgsChunkNode *node ) { Q_UNUSED( node ); }
 

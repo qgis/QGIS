@@ -54,6 +54,11 @@ QString QgsRandomExtractAlgorithm::shortHelpString() const
                       "of features in the subset." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsRandomExtractAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsRandomExtractAlgorithm *QgsRandomExtractAlgorithm::createInstance() const
 {
   return new QgsRandomExtractAlgorithm();

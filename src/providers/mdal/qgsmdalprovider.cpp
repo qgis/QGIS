@@ -58,7 +58,7 @@ QStringList QgsMdalProvider::subLayers() const
   return mSubLayersUris;
 }
 
-QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsMeshDataProvider( uri, options, flags )
 {
   temporalCapabilities()->setTemporalUnit( Qgis::TemporalUnit::Hours );
@@ -959,7 +959,7 @@ QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int
 
 /*----------------------------------------------------------------------------------------------*/
 
-QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsMdalProvider( uri, options, flags );
 }

@@ -145,7 +145,7 @@ QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeatur
   }
   else
   {
-    if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+    if ( value.userType() == qMetaTypeId< QgsGeometry>() )
     {
       const QgsGeometry geom = value.value<QgsGeometry>();
       feature.setGeometry( geom );

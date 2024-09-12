@@ -53,11 +53,9 @@ class CORE_EXPORT QgsDistanceArea
 {
   public:
 
-    //! Constructor
     QgsDistanceArea();
     ~QgsDistanceArea();
 
-    //! Copy constructor
     QgsDistanceArea( const QgsDistanceArea &other );
     QgsDistanceArea &operator=( const QgsDistanceArea &other );
 
@@ -198,7 +196,7 @@ class CORE_EXPORT QgsDistanceArea
      * otherwise QgsPoint.project() will be called after QgsUnitTypes::fromUnitToUnitFactor() has been applied to the distance
      * \param p1 start point [can be Cartesian or Geographic]
      * \param distance must be in meters
-     * \param azimuth - azimuth in radians, clockwise from North
+     * \param azimuth azimuth in radians, clockwise from North
      * \param projectedPoint calculated projected point
      * \return distance in mapUnits
      * \see sourceCrs()
@@ -281,9 +279,9 @@ class CORE_EXPORT QgsDistanceArea
      * Given a location, an azimuth and a distance, computes the
      * location of the projected point.
      *
-     * \param p1 - location of first geographic (latitude/longitude) point as degrees.
-     * \param distance - distance in meters.
-     * \param azimuth - azimuth in radians, clockwise from North
+     * \param p1 location of first geographic (latitude/longitude) point as degrees.
+     * \param distance distance in meters.
+     * \param azimuth azimuth in radians, clockwise from North
      * \return p2 - location of projected point as longitude/latitude.
      *
      */

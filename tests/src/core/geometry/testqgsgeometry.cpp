@@ -395,7 +395,7 @@ void TestQgsGeometry::asVariant()
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
-  QCOMPARE( var.userType(), QMetaType::type( "QgsGeometry" ) );
+  QCOMPARE( var.userType(), qMetaTypeId< QgsGeometry>() );
 
   QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
   QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
@@ -427,7 +427,7 @@ void TestQgsGeometry::referenced()
   QVariant var = QVariant::fromValue( geom1 );
   QVERIFY( var.isValid() );
 
-  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
+  QCOMPARE( var.userType(), qMetaTypeId<QgsReferencedGeometry>() );
 
   QgsReferencedGeometry geom2 = qvariant_cast<QgsReferencedGeometry>( var );
   QCOMPARE( geom2.asWkt(), geom1.asWkt() );
@@ -755,7 +755,7 @@ void TestQgsGeometry::fromBox3d()
 {
   QgsBox3D box3d( 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 );
   QgsGeometry result( QgsGeometry::fromBox3D( box3d ) );
-  QCOMPARE( result.asWkt(), "MultiPolygon Z (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))" );
+  QCOMPARE( result.asWkt(), "PolyhedralSurface Z (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))" );
 }
 
 void TestQgsGeometry::fromPoint()
@@ -2624,6 +2624,46 @@ void TestQgsGeometry::snappedToGrid()
     QgsGeometry curve = QgsGeometry::fromWkt( "CompoundCurve(LineString(59.1 402.1, 68.1 415.2),CircularString( 68.1 415.2, 27.1 505.2, 27.1 406.2))" );
     std::unique_ptr<QgsAbstractGeometry> snapped { curve.constGet()->snappedToGrid( 1, 1 ) };
     QCOMPARE( snapped->asWkt(), QStringLiteral( "CompoundCurve ((59 402, 68 415),CircularString (68 415, 27 505, 27 406))" ) );
+  }
+
+  {
+    // PolyhedralSurface
+    QgsGeometry polyhedralSurface = QgsGeometry::fromWkt( "PolyhedralSurface (((0.2 0.3, 0.2 1.4, 2.1 2.4, 1.3 0.2, 0.2 0.3)))" );
+    std::unique_ptr<QgsAbstractGeometry> snapped { polyhedralSurface.constGet()->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "PolyhedralSurface (((0 0, 0 1, 2 2, 1 0, 0 0)))" ) );
+
+    QgsGeometry polyhedralSurfaceZ = QgsGeometry::fromWkt( "PolyhedralSurfaceZ (((0.1 0.1 10.2,1.13 0.2 10.3,0.4 2.3 10.4,0.1 0.1 10.2)),((0.3 0.2 10.4,1.2 0.2 10.2,1.4 0.10 20.2,0.3 0.2 20.1,0.3 0.2 10.4)),((1.13 0.2 10.3,0.4 2.3 10.4,0.1 2.3 20.2,1.2 0.1 20.1,1.13 0.2 10.3)),((0.4 2.3 10.4,0.1 0.1 10.2,0.2 0.1 20.3,0.1 2.3 20.2,0.4 2.3 10.4)),((0.2 0.1 20.3,1.2 0.1 20.1,0.1 2.3 20.2,0.2 0.1 20.3)))" );
+    qDebug() << polyhedralSurfaceZ.isEmpty();
+    std::unique_ptr<QgsAbstractGeometry> snappedZ { polyhedralSurfaceZ.constGet()->snappedToGrid( 1, 1, 10 ) };
+    QCOMPARE( snappedZ->asWkt( 5 ),  QStringLiteral( "PolyhedralSurfaceZ (((0 0 10, 1 0 10, 0 2 10, 0 0 10)),((0 0 10, 1 0 10, 1 0 20, 0 0 20, 0 0 10)),((1 0 10, 0 2 10, 0 2 20, 1 0 20, 1 0 10)),((0 2 10, 0 0 10, 0 0 20, 0 2 20, 0 2 10)),((0 0 20, 1 0 20, 0 2 20, 0 0 20)))" ) );
+
+    QgsGeometry polyhedralSurfaceM = QgsGeometry::fromWkt( "PolyhedralSurfaceM (((0.1 0.1 3.2, 0.3 1.2 3.2, 1.1 1.05 3.2, 0.1 0.1 3.2)))" );
+    std::unique_ptr<QgsAbstractGeometry> snappedM { polyhedralSurfaceM.constGet()->snappedToGrid( 1, 1, 0, 1 ) };
+    QCOMPARE( snappedM->asWkt( 5 ), QStringLiteral( "PolyhedralSurfaceM (((0 0 3, 0 1 3, 1 1 3, 0 0 3)))" ) );
+
+    QgsGeometry polyhedralSurfaceZM = QgsGeometry::fromWkt( "PolyhedralSurfaceZM (((0.2 0.1 1.1 2.2, 0.2 1.2 1.2 2.2, 1.3 1.2 1.4 2.1, 0.2 0.1 1.1 2.2)),((10.1 10.2 0.2 0.3, 10.1 11.1 0.1 0.1, 11.2 11.2 0.1 0.3, 10.1 10.2 0.2 0.3)))" );
+    std::unique_ptr<QgsAbstractGeometry> snappedZM { polyhedralSurfaceZM.constGet()->snappedToGrid( 1, 1, 1, 1 ) };
+    QCOMPARE( snappedZM->asWkt( 5 ), QStringLiteral( "PolyhedralSurfaceZM (((0 0 1 2, 0 1 1 2, 1 1 1 2, 0 0 1 2)),((10 10 0 0, 10 11 0 0, 11 11 0 0, 10 10 0 0)))" ) );
+  }
+
+  {
+    // TIN
+    QgsGeometry triangulatedSurface = QgsGeometry::fromWkt( "TIN (((0.2 0.3, 0.2 1.4, 2.1 2.4, 0.2 0.3)))" );
+    std::unique_ptr<QgsAbstractGeometry> snapped { triangulatedSurface.constGet()->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "TIN (((0 0, 0 1, 2 2, 0 0)))" ) );
+
+    QgsGeometry triangulatedSurfaceZ = QgsGeometry::fromWkt( "TINZ (((0.1 0.1 10.2,1.13 0.2 10.3,0.4 2.3 10.4,0.1 0.1 10.2)),((0.3 0.2 10.4,1.2 0.2 10.2,1.4 0.10 20.2,0.3 0.2 10.4)),((1.13 0.2 10.3,0.4 2.3 10.4,0.1 2.3 20.2,1.13 0.2 10.3)),((0.4 2.3 10.4,0.1 0.1 10.2,0.2 0.1 20.3,0.4 2.3 10.4)),((0.2 0.1 20.3,1.2 0.1 20.1,0.1 2.3 20.2,0.2 0.1 20.3)))" );
+    qDebug() << triangulatedSurfaceZ.isEmpty();
+    std::unique_ptr<QgsAbstractGeometry> snappedZ { triangulatedSurfaceZ.constGet()->snappedToGrid( 1, 1, 10 ) };
+    QCOMPARE( snappedZ->asWkt( 5 ),  QStringLiteral( "TINZ (((0 0 10, 1 0 10, 0 2 10, 0 0 10)),((0 0 10, 1 0 10, 1 0 20, 0 0 10)),((1 0 10, 0 2 10, 0 2 20, 1 0 10)),((0 2 10, 0 0 10, 0 0 20, 0 2 10)),((0 0 20, 1 0 20, 0 2 20, 0 0 20)))" ) );
+
+    QgsGeometry triangulatedSurfaceM = QgsGeometry::fromWkt( "TINM (((0.1 0.1 3.2, 0.3 1.2 3.2, 1.1 1.05 3.2, 0.1 0.1 3.2)))" );
+    std::unique_ptr<QgsAbstractGeometry> snappedM { triangulatedSurfaceM.constGet()->snappedToGrid( 1, 1, 0, 1 ) };
+    QCOMPARE( snappedM->asWkt( 5 ), QStringLiteral( "TINM (((0 0 3, 0 1 3, 1 1 3, 0 0 3)))" ) );
+
+    QgsGeometry triangulatedSurfaceZM = QgsGeometry::fromWkt( "TINZM (((0.2 0.1 1.1 2.2, 0.2 1.2 1.2 2.2, 1.3 1.2 1.4 2.1, 0.2 0.1 1.1 2.2)),((10.1 10.2 0.2 0.3, 10.1 11.1 0.1 0.1, 11.2 11.2 0.1 0.3, 10.1 10.2 0.2 0.3)))" );
+    std::unique_ptr<QgsAbstractGeometry> snappedZM { triangulatedSurfaceZM.constGet()->snappedToGrid( 1, 1, 1, 1 ) };
+    QCOMPARE( snappedZM->asWkt( 5 ), QStringLiteral( "TINZM (((0 0 1 2, 0 1 1 2, 1 1 1 2, 0 0 1 2)),((10 10 0 0, 10 11 0 0, 11 11 0 0, 10 10 0 0)))" ) );
   }
 }
 

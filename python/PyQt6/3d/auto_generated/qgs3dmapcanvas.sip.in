@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgs3dmapcanvas.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,10 +39,6 @@ Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window 
   public:
 
     Qgs3DMapCanvas();
-%Docstring
-Constructor for Qgs3DMapCanvas.
-%End
-
     ~Qgs3DMapCanvas();
 
     Qgs3DMapSettings *mapSettings();
@@ -85,5 +81,5 @@ Resets the aspect ratio of the 3D window.
  *                                                                      *
  * src/3d/qgs3dmapcanvas.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

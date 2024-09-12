@@ -1,0 +1,145 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationrectangletextitem.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAnnotationRectangleTextItem : QgsAnnotationRectItem
+{
+%Docstring(signature="appended")
+An annotation item which renders paragraphs of text within a rectangle.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsannotationrectangletextitem.h"
+%End
+  public:
+
+    QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds );
+%Docstring
+Constructor for QgsAnnotationRectangleTextItem, containing the specified ``text``
+within the specified ``bounds`` rectangle.
+%End
+    ~QgsAnnotationRectangleTextItem();
+
+    virtual QString type() const;
+
+    virtual Qgis::AnnotationItemFlags flags() const;
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+
+    static QgsAnnotationRectangleTextItem *create() /Factory/;
+%Docstring
+Creates a new rectangle text annotation item.
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsAnnotationRectangleTextItem *clone() const /Factory/;
+
+
+    QString text() const;
+%Docstring
+Returns the text rendered by the item.
+
+.. seealso:: :py:func:`setText`
+%End
+
+    void setText( const QString &text );
+%Docstring
+Sets the ``text`` rendered by the item.
+
+.. seealso:: :py:func:`text`
+%End
+
+    QgsTextFormat format() const;
+%Docstring
+Returns the text format used to render the text.
+
+.. seealso:: :py:func:`setFormat`
+%End
+
+    void setFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used to render the text.
+
+.. seealso:: :py:func:`format`
+%End
+
+    Qt::Alignment alignment() const;
+%Docstring
+Returns the text's alignment relative to the :py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
+
+.. seealso:: :py:func:`setAlignment`
+%End
+
+    void setAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the text's ``alignment`` relative to the :py:func:`~QgsAnnotationRectangleTextItem.bounds` rectangle.
+
+.. seealso:: :py:func:`alignment`
+%End
+
+    const QgsMargins &margins() const;
+%Docstring
+Returns the margins between the outside of the item's frame and the interior text.
+
+Units are retrieved via :py:func:`~QgsAnnotationRectangleTextItem.marginsUnit`
+
+.. seealso:: :py:func:`setMargins`
+
+.. seealso:: :py:func:`marginsUnit`
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the ``margins`` between the outside of the item's frame and the interior text.
+
+Units are set via :py:func:`~QgsAnnotationRectangleTextItem.setMarginsUnit`
+
+.. seealso:: :py:func:`margins`
+
+.. seealso:: :py:func:`setMarginsUnit`
+%End
+
+    void setMarginsUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the margins between the item's frame and the interior text.
+
+.. seealso:: :py:func:`margins`
+
+.. seealso:: :py:func:`marginsUnit`
+%End
+
+    Qgis::RenderUnit marginsUnit() const;
+%Docstring
+Returns the units for the margins between the item's frame and the interior text.
+
+.. seealso:: :py:func:`setMarginsUnit`
+
+.. seealso:: :py:func:`margins`
+%End
+
+  protected:
+
+    virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback );
+
+
+  private:
+    QgsAnnotationRectangleTextItem( const QgsAnnotationRectangleTextItem &other );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationrectangletextitem.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

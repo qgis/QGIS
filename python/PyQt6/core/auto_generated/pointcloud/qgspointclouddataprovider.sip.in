@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointclouddataprovider.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -50,7 +50,7 @@ Responsible for reading native point cloud data and returning the indexed data.
 
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Ctor
 %End
@@ -103,7 +103,7 @@ May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointClou
 %Docstring
 Triggers loading of the point cloud index
 
-\sa :py:func:`~QgsPointCloudDataProvider.index`
+.. seealso:: :py:func:`index`
 %End
 
     virtual void generateIndex( ) = 0;
@@ -112,7 +112,7 @@ Triggers generation of the point cloud index
 
 emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 
-\sa :py:func:`~QgsPointCloudDataProvider.index`
+.. seealso:: :py:func:`index`
 %End
 
 
@@ -303,5 +303,5 @@ Emitted when point cloud generation state is changed
  *                                                                      *
  * src/core/pointcloud/qgspointclouddataprovider.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

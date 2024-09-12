@@ -59,3 +59,30 @@ bool QgsAbstract3DEngine::renderCaptureEnabled() const
 {
   return mFrameGraph->renderCaptureEnabled();
 }
+
+void QgsAbstract3DEngine::dumpFrameGraphToConsole() const
+{
+  if ( mFrameGraph )
+  {
+    qDebug() << "FrameGraph:\n" << mFrameGraph->dumpFrameGraph();
+    qDebug() << "SceneGraph:\n" << mFrameGraph->dumpSceneGraph();
+  }
+}
+
+QString QgsAbstract3DEngine::dumpFrameGraph() const
+{
+  if ( mFrameGraph )
+  {
+    return mFrameGraph->dumpFrameGraph();
+  }
+  return QString();
+}
+
+QString QgsAbstract3DEngine::dumpSceneGraph() const
+{
+  if ( mFrameGraph )
+  {
+    return mFrameGraph->dumpSceneGraph();
+  }
+  return QString();
+}

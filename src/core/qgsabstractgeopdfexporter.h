@@ -72,9 +72,6 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
      */
     static QString geoPDFAvailabilityExplanation();
 
-    /**
-     * Constructor for QgsAbstractGeoPdfExporter.
-     */
     QgsAbstractGeoPdfExporter() = default;
 
     virtual ~QgsAbstractGeoPdfExporter() = default;
@@ -85,9 +82,6 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     struct RenderedFeature
     {
 
-      /**
-       * Constructor for RenderedFeature.
-       */
       RenderedFeature() = default;
 
       /**
@@ -301,6 +295,13 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        * \since QGIS 3.38
        */
       QStringList layerTreeGroupOrder;
+
+      /**
+       * Contains a list of group names which should be considered as mutually exclusive.
+       *
+       * \since QGIS 3.40
+       */
+      QSet< QString > mutuallyExclusiveGroups;
 
     };
 

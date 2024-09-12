@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpictureitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAnnotationPictureItem : QgsAnnotationRectItem
+{
+%Docstring(signature="appended")
+An annotation item which renders a picture.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsannotationpictureitem.h"
+%End
+  public:
+
+    QgsAnnotationPictureItem( Qgis::PictureFormat format, const QString &path, const QgsRectangle &bounds );
+%Docstring
+Constructor for QgsAnnotationPictureItem, rendering the specified image ``path``
+within the specified ``bounds`` geometry.
+%End
+    ~QgsAnnotationPictureItem();
+
+    virtual QString type() const;
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsAnnotationPictureItem *clone() const /Factory/;
+
+
+    static QgsAnnotationPictureItem *create() /Factory/;
+%Docstring
+Creates a new polygon annotation item.
+%End
+
+    QString path() const;
+%Docstring
+Returns the path of the image used to render the item.
+
+.. seealso:: :py:func:`setPath`
+%End
+
+    Qgis::PictureFormat format() const;
+%Docstring
+Returns the picture format.
+%End
+
+    void setPath( Qgis::PictureFormat format, const QString &path );
+%Docstring
+Sets the ``format`` and ``path`` of the image used to render the item.
+
+.. seealso:: :py:func:`path`
+
+.. seealso:: :py:func:`format`
+%End
+
+    bool lockAspectRatio() const;
+%Docstring
+Returns ``True`` if the aspect ratio of the picture will be retained.
+
+.. seealso:: :py:func:`setLockAspectRatio`
+%End
+
+    void setLockAspectRatio( bool locked );
+%Docstring
+Sets whether the aspect ratio of the picture will be retained.
+
+.. seealso:: :py:func:`lockAspectRatio`
+%End
+
+  protected:
+
+    virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback );
+
+
+  private:
+    QgsAnnotationPictureItem( const QgsAnnotationPictureItem &other );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpictureitem.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

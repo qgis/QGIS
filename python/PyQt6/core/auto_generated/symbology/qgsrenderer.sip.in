@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsrenderer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -47,6 +47,9 @@ typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
 
 class QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+Abstract base class for all 2D vector feature renderers.
+%End
 
 %TypeHeaderCode
 #include "qgsrenderer.h"
@@ -136,7 +139,6 @@ be followed by a corresponding call to :py:func:`~QgsFeatureRenderer.stopRender`
 :param fields: The fields available for rendering
 
 .. seealso:: :py:func:`stopRender`
-
 
 .. warning::
 
@@ -359,11 +361,9 @@ the features displayed using that key.
 :param layer: associated vector layer
 
 :return: - QGIS expression string for matching features with the specified key
-         - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
-
+         - ok: ``True`` if legend key was successfully converted to a filter expression
 
 .. seealso:: :py:func:`legendKeys`
-
 
 .. versionadded:: 3.26
 %End
@@ -496,7 +496,6 @@ Sets the renderer's property collection, used for data defined overrides.
 :param collection: property collection. Existing properties will be replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
-
 
 .. versionadded:: 3.38
 %End
@@ -705,5 +704,5 @@ QFlags<QgsFeatureRenderer::Capability> operator|(QgsFeatureRenderer::Capability 
  *                                                                      *
  * src/core/symbology/qgsrenderer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

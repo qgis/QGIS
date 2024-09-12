@@ -132,9 +132,6 @@
        <property name="toolTip">
         <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
        </property>
-       <property name="whatsThis">
-        <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
-       </property>
        <property name="showSearchIcon">
         <bool>true</bool>
        </property>

@@ -1,0 +1,23 @@
+{
+  "name": "line_interpolate_point_by_m",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the point interpolated by a matching M value along a linestring geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a linestring geometry"
+  }, {
+    "arg": "m",
+    "description": "an M value"
+  }, {
+    "arg": "use_3d_distance",
+    "optional": true,
+    "default": "false",
+    "description": "controls whether 2D or 3D distances between vertices should be used during interpolation (this option is only considered for lines with z values)"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(line_interpolate_point_by_m(geom_from_wkt('LineStringM(0 0 0, 10 10 10)'), m:=5))",
+    "returns": "'Point (5 5)'"
+  }],
+  "tags": ["distance", "interpolated", "linestring", "point", "specified", "along"]
+}

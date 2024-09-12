@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbol.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -62,6 +62,148 @@ Returns the symbol animation frame rate (in frames per second).
 %End
 
 };
+
+
+class QgsSymbolBufferSettings
+{
+%Docstring(signature="appended")
+
+Contains settings relating to symbol buffers, which draw a "halo" effect around the symbol.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgssymbol.h"
+%End
+  public:
+
+    QgsSymbolBufferSettings();
+    ~QgsSymbolBufferSettings();
+
+    QgsSymbolBufferSettings( const QgsSymbolBufferSettings &other );
+
+    bool enabled() const;
+%Docstring
+Returns whether the buffer is enabled.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the symbol buffer will be drawn.
+
+.. seealso:: :py:func:`enabled`
+%End
+
+    double size() const;
+%Docstring
+Returns the size of the buffer.
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`setSize`
+%End
+
+    void setSize( double size );
+%Docstring
+Sets the ``size`` of the buffer.
+
+The size units are specified using :py:func:`~QgsSymbolBufferSettings.setSizeUnit`.
+
+.. seealso:: :py:func:`size`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    Qgis::RenderUnit sizeUnit() const;
+%Docstring
+Returns the units for the buffer size.
+
+.. seealso:: :py:func:`size`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    void setSizeUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the buffer size.
+
+.. seealso:: :py:func:`setSize`
+
+.. seealso:: :py:func:`sizeUnit`
+%End
+
+    QgsMapUnitScale sizeMapUnitScale() const;
+%Docstring
+Returns the map unit scale object for the buffer size. This is only used if the
+buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+
+.. seealso:: :py:func:`setSizeMapUnitScale`
+
+.. seealso:: :py:func:`sizeUnit`
+%End
+
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` object for the buffer size.
+
+This is only used if the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    Qt::PenJoinStyle joinStyle() const;
+%Docstring
+Returns the buffer join style.
+
+.. seealso:: :py:func:`setJoinStyle`
+%End
+
+    void setJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Sets the join ``style`` used for drawing the buffer.
+
+.. seealso:: :py:func:`joinStyle`
+%End
+
+    QgsFillSymbol *fillSymbol() const;
+%Docstring
+Returns the fill symbol used to render the buffer.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render the buffer. Ownership of ``symbol`` is
+transferred to the buffer.
+
+.. seealso:: :py:func:`fillSymbol`
+%End
+
+
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes the buffer settings to an XML ``element``.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the buffer settings from an XML ``element``.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+};
+
 
 class QgsSymbol
 {
@@ -390,8 +532,9 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
  QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated/;
 %Docstring
 
-.. deprecated::
-   use bigSymbolPreviewImageV2 instead.
+.. deprecated:: 3.40
+
+   Use bigSymbolPreviewImageV2 instead.
 %End
 
     QString dump() const;
@@ -563,6 +706,29 @@ direction.
 .. versionadded:: 3.6
 %End
 
+    QgsSymbolBufferSettings *bufferSettings();
+%Docstring
+Returns the symbol buffer settings, which control an optional "halo" effect around the symbol.
+
+Will be ``None`` if no buffer settings have previously been set for the symbol.
+
+.. seealso:: :py:func:`setBufferSettings`
+
+.. versionadded:: 3.40
+%End
+
+
+    void setBufferSettings( QgsSymbolBufferSettings *settings /Transfer/ );
+%Docstring
+Sets a the symbol buffer ``settings``, which control an optional "halo" effect around the symbol.
+
+Ownership is transferred to the symbol.
+
+.. seealso:: :py:func:`bufferSettings`
+
+.. versionadded:: 3.40
+%End
+
     QgsSymbolAnimationSettings &animationSettings();
 %Docstring
 Returns a reference to the symbol animation settings.
@@ -647,15 +813,17 @@ and returns ``True`` if any of the layers returned ``True``.
 
    the layer will be ``None`` after stopRender
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
  const QgsVectorLayer *layer() const /Deprecated/;
 %Docstring
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
@@ -733,6 +901,13 @@ Retrieve a cloned list of all layers that make up this symbol.
 Ownership is transferred to the caller.
 %End
 
+    void copyCommonProperties( const QgsSymbol *other );
+%Docstring
+Copies common properties from an ``other`` symbol to this symbol.
+
+.. versionadded:: 3.40
+%End
+
     void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Renders a context using a particular symbol layer without passing in a
@@ -768,5 +943,5 @@ Render editing vertex marker at specified point
  *                                                                      *
  * src/core/symbology/qgssymbol.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

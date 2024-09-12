@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssymbolwidgetcontext.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,17 +22,7 @@ map canvas and relevant expression contexts.
   public:
 
     QgsSymbolWidgetContext();
-%Docstring
-Constructor for QgsSymbolWidgetContext.
-%End
-
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsSymbolWidgetContext
-%End
-
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
@@ -141,5 +131,5 @@ of a parent symbol configuration widget.
  *                                                                      *
  * src/gui/symbology/qgssymbolwidgetcontext.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

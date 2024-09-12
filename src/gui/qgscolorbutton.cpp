@@ -16,7 +16,6 @@
 #include "qgscolorbutton.h"
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorswatchgrid.h"
 #include "qgscolorschemeregistry.h"
@@ -25,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgscolortooltip_p.h"
 
 #include <QPainter>
 #include <QMouseEvent>
@@ -175,47 +175,10 @@ bool QgsColorButton::event( QEvent *e )
     if ( !isProjectColor )
       c = mColor;
 
-    const QString name = c.name();
-    const int hue = c.hue();
-    const int value = c.value();
-    const int saturation = c.saturation();
+    QString info = ( isProjectColor ? QStringLiteral( "<p>%1: %2</p>" ).arg( tr( "Linked color" ), mLinkedColorName ) : QString() );
 
-    // create very large preview swatch
-    const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-    const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+    info += QgsColorTooltip::htmlDescription( c, this );
 
-    const int margin = static_cast< int >( height * 0.1 );
-    QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
-    icon.fill( Qt::transparent );
-
-    QPainter p;
-    p.begin( &icon );
-
-    //start with checkboard pattern
-    const QBrush checkBrush = QBrush( transparentBackground() );
-    p.setPen( Qt::NoPen );
-    p.setBrush( checkBrush );
-    p.drawRect( margin, margin, width, height );
-
-    //draw color over pattern
-    p.setBrush( QBrush( c ) );
-
-    //draw border
-    p.setPen( QColor( 197, 197, 197 ) );
-    p.drawRect( margin, margin, width, height );
-    p.end();
-
-    QByteArray data;
-    QBuffer buffer( &data );
-    icon.save( &buffer, "PNG", 100 );
-
-    const QString info = ( isProjectColor ? QStringLiteral( "<p>%1: %2</p>" ).arg( tr( "Linked color" ), mLinkedColorName ) : QString() )
-                         + QStringLiteral( "<b>HEX</b> %1<br>"
-                                           "<b>RGB</b> %2<br>"
-                                           "<b>HSV</b> %3,%4,%5<p>"
-                                           "<img src='data:image/png;base64, %0'>" ).arg( QString( data.toBase64() ), name,
-                                               QgsSymbolLayerUtils::encodeColor( c ) )
-                         .arg( hue ).arg( saturation ).arg( value );
     setToolTip( info );
   }
   return QToolButton::event( e );
@@ -862,4 +825,3 @@ void QgsColorButton::linkToProjectColor( const QString &name )
   mLinkedColorName = name;
   setButtonBackground();
 }
-

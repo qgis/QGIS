@@ -1547,6 +1547,104 @@ QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
   return res.release();
 }
 
+bool QgsLineString::lineLocatePointByM( double m, double &x, double &y, double &z, double &distanceFromStart, bool use3DDistance ) const
+{
+  return lineLocatePointByMPrivate( m, x, y, z, distanceFromStart, use3DDistance, false );
+}
+
+bool QgsLineString::lineLocatePointByMPrivate( double m, double &x, double &y, double &z, double &distanceFromStart, bool use3DDistance, bool haveInterpolatedM ) const
+{
+  if ( !isMeasure() )
+    return false;
+
+  distanceFromStart = 0;
+  const int totalPoints = numPoints();
+  if ( totalPoints == 0 )
+    return false;
+
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
+  const double *mData = mM.constData();
+
+  const double *zData = is3D() ? mZ.constData() : nullptr;
+  use3DDistance &= static_cast< bool >( zData );
+
+  double prevX = *xData++;
+  double prevY = *yData++;
+  double prevZ = zData ? *zData++ : 0;
+  double prevM = *mData++;
+
+  int i = 1;
+  while ( i < totalPoints )
+  {
+    double thisX = *xData++;
+    double thisY = *yData++;
+    double thisZ = zData ? *zData++ : 0;
+    double thisM = *mData++;
+    const double segmentLength = use3DDistance ? QgsGeometryUtilsBase::distance3D( thisX, thisY, thisZ, prevX, prevY, prevZ )
+                                 : QgsGeometryUtilsBase::distance2D( thisX, thisY, prevX, prevY );
+
+    if ( std::isnan( thisM ) )
+    {
+      if ( haveInterpolatedM )
+        return false;
+
+      // if we hit a NaN m value, interpolate m to fill the blanks and then re-try
+      std::unique_ptr< QgsLineString > interpolatedM( interpolateM( use3DDistance ) );
+      return interpolatedM->lineLocatePointByMPrivate( m, x, y, z, distanceFromStart, use3DDistance, true );
+    }
+    else
+    {
+      // check if target m value falls within this segment's range
+      if ( ( prevM < m && thisM > m ) || ( prevM > m && thisM < m ) || qgsDoubleNear( prevM, m ) || qgsDoubleNear( thisM, m ) )
+      {
+        // use centroid for constant value m segments
+        if ( qgsDoubleNear( thisM, m ) && ( i < totalPoints - 1 ) && qgsDoubleNear( *mData, m ) )
+        {
+          distanceFromStart += segmentLength;
+          // scan ahead till we find a vertex with a different m
+          double totalLengthOfSegmentsWithConstantM = 0;
+          for ( int j = 0; j < ( totalPoints - i ); ++j )
+          {
+            if ( !qgsDoubleNear( *( mData + j ), m ) )
+              break;
+
+            const double segmentLength = use3DDistance ? QgsGeometryUtilsBase::distance3D( *( xData + j - 1 ), *( yData + j - 1 ), *( zData + j - 1 ), *( xData + j ), *( yData + j ), *( zData + j ) )
+                                         : QgsGeometryUtilsBase::distance2D( *( xData + j - 1 ), *( yData + j - 1 ), *( xData + j ), *( yData + j ) );
+            totalLengthOfSegmentsWithConstantM += segmentLength;
+          }
+
+          distanceFromStart += totalLengthOfSegmentsWithConstantM / 2;
+          std::unique_ptr< QgsPoint> point( interpolatePoint( distanceFromStart ) );
+          if ( !point )
+            return false;
+          x = point->x();
+          y = point->y();
+          z = point->z();
+          return true;
+        }
+
+        const double delta = ( m - prevM ) / ( thisM - prevM );
+
+        const double distanceToPoint = delta * segmentLength;
+
+        QgsGeometryUtilsBase::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, x, y );
+        z = prevZ + ( thisZ - prevZ ) * delta;
+        distanceFromStart += distanceToPoint;
+        return true;
+      }
+    }
+
+    distanceFromStart += segmentLength;
+    prevX = thisX;
+    prevY = thisY;
+    prevZ = thisZ;
+    prevM = thisM;
+    ++i;
+  }
+  return false;
+}
+
 QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDistance ) const
 {
   if ( startDistance < 0 && endDistance < 0 )
@@ -1992,18 +2090,21 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
   if ( leftOf )
     *leftOf = 0;
 
-  int size = mX.size();
+  const int size = mX.size();
   if ( size == 0 || size == 1 )
   {
     vertexAfter = QgsVertexId( 0, 0, 0 );
     return -1;
   }
+
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
   for ( int i = 1; i < size; ++i )
   {
-    double prevX = mX.at( i - 1 );
-    double prevY = mY.at( i - 1 );
-    double currentX = mX.at( i );
-    double currentY = mY.at( i );
+    double prevX = xData[ i - 1 ];
+    double prevY = yData[ i - 1 ];
+    double currentX = xData[ i ];
+    double currentY = yData[ i ];
     testDist = QgsGeometryUtilsBase::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
     if ( testDist < sqrDist )
     {
@@ -2520,17 +2621,17 @@ QgsLineString *QgsLineString::interpolateM( bool use3DDistance ) const
   const double *yData = mY.constData();
   const double *mData = mM.constData();
   const double *zData = is3D() ? mZ.constData() : nullptr;
-  use3DDistance &= is3D();
+  use3DDistance &= static_cast< bool >( zData );
 
   QVector< double > xOut( totalPoints );
   QVector< double > yOut( totalPoints );
   QVector< double > mOut( totalPoints );
-  QVector< double > zOut( is3D() ? totalPoints : 0 );
+  QVector< double > zOut( static_cast< bool >( zData ) ? totalPoints : 0 );
 
   double *xOutData = xOut.data();
   double *yOutData = yOut.data();
   double *mOutData = mOut.data();
-  double *zOutData = is3D() ? zOut.data() : nullptr;
+  double *zOutData = static_cast< bool >( zData ) ? zOut.data() : nullptr;
 
   int i = 0;
   double currentSegmentLength = 0;

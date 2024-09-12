@@ -833,6 +833,9 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 
 QList<Qgis::CrsAxisDirection> QgsCoordinateReferenceSystem::axisOrdering() const
 {
+  if ( type() == Qgis::CrsType::Compound )
+    return horizontalCrs().axisOrdering() + verticalCrs().axisOrdering();
+
   const PJ *projObject = d->threadLocalProjObject();
   if ( !projObject )
     return {};
@@ -1630,7 +1633,7 @@ QString QgsCoordinateReferenceSystem::toOgcUrn() const
   if ( parts.length() == 2 )
   {
     if ( parts[0] == QLatin1String( "EPSG" ) )
-      return  QStringLiteral( "urn:ogc:def:crs:EPSG:0:%1" ).arg( parts[1] );
+      return  QStringLiteral( "urn:ogc:def:crs:EPSG::%1" ).arg( parts[1] );
     else if ( parts[0] == QLatin1String( "OGC" ) )
     {
       return  QStringLiteral( "urn:ogc:def:crs:OGC:1.3:%1" ).arg( parts[1] );

@@ -261,6 +261,11 @@ QString QgsDissolveAlgorithm::shortHelpString() const
                       "as separate features (instead of parts of a single multipart feature)." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsDissolveAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 {
   return new QgsDissolveAlgorithm();
@@ -360,6 +365,11 @@ QString QgsCollectAlgorithm::shortHelpString() const
                       "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part." ) +
          QStringLiteral( "\n\n" ) +
          QObject::tr( "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsCollectAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
 }
 
 QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const

@@ -139,7 +139,7 @@ Q_DECLARE_METATYPE( QgsMesh );
 class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
 {
   public:
-    //! Dtor
+
     virtual ~QgsMeshDataSourceInterface() = default;
 
     /**
@@ -215,7 +215,6 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
 {
   public:
     QgsMeshDatasetSourceInterface();
-    //! Dtor
     virtual ~QgsMeshDatasetSourceInterface() = default;
 
     /**
@@ -444,7 +443,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
     //! Ctor
     QgsMeshDataProvider( const QString &uri,
                          const QgsDataProvider::ProviderOptions &providerOptions,
-                         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                         Qgis::DataProviderReadFlags = Qgis::DataProviderReadFlags() );
 
     QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;

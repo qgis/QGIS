@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspointlocator.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -345,5 +345,5 @@ Emitted whenever index has been built and initialization is finished
  *                                                                      *
  * src/core/qgspointlocator.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

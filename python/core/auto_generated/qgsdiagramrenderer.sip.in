@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsdiagramrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -69,14 +69,8 @@ Returns the diagram property definitions.
 %End
 
     QgsDiagramLayerSettings();
-%Docstring
-Constructor for QgsDiagramLayerSettings.
-%End
 
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
-%Docstring
-Copy constructor
-%End
 
 
     ~QgsDiagramLayerSettings();
@@ -299,7 +293,7 @@ class QgsDiagramSettings
 Stores the settings for rendering a single diagram.
 
 :py:class:`QgsDiagramSettings` stores the settings related to rendering the individual diagrams themselves, while
-QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
+:py:class:`QgsDiagramLayerSettings` stores settings which control how ALL diagrams within a layer are rendered.
 %End
 
 %TypeHeaderCode
@@ -328,15 +322,8 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
     };
 
     QgsDiagramSettings();
-%Docstring
-Constructor for QgsDiagramSettings
-%End
     ~QgsDiagramSettings();
-
     QgsDiagramSettings( const QgsDiagramSettings &other );
-%Docstring
-Copy constructor
-%End
 
 
     bool enabled;
@@ -604,9 +591,6 @@ Evaluates and returns the diagram settings relating to a diagram for a specific 
   public:
 
     QgsDiagramRenderer();
-%Docstring
-Constructor for QgsDiagramRenderer.
-%End
     virtual ~QgsDiagramRenderer();
 
     virtual QgsDiagramRenderer *clone() const = 0 /Factory/;
@@ -744,9 +728,6 @@ Renders the diagrams for all features with the same settings
   public:
 
     QgsSingleCategoryDiagramRenderer();
-%Docstring
-Constructor for QgsSingleCategoryDiagramRenderer
-%End
 
     virtual QgsSingleCategoryDiagramRenderer *clone() const /Factory/;
 
@@ -779,6 +760,9 @@ Constructor for QgsSingleCategoryDiagramRenderer
 
 class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
 {
+%Docstring(signature="appended")
+Alters the size of rendered diagrams using a linear scaling.
+%End
 
 %TypeHeaderCode
 #include "qgsdiagramrenderer.h"
@@ -787,9 +771,6 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
-%Docstring
-Copy constructor
-%End
 
 
     virtual QgsLinearlyInterpolatedDiagramRenderer *clone() const /Factory/;
@@ -875,5 +856,5 @@ Returns configuration of appearance of legend. Will return ``None`` if no config
  *                                                                      *
  * src/core/qgsdiagramrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

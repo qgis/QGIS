@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsnewvectorlayerdialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,8 +26,9 @@ If the ``initialPath`` argument is specified, then the dialog will default to th
 
 :return: fileName on success, empty string use aborted, QString() if creation failed
 
-.. deprecated:: QGIS 3.4.5
-   - use :py:func:`~QgsNewVectorLayerDialog.execAndCreateLayer` instead.
+.. deprecated:: 3.4.5
+
+   Use :py:func:`~QgsNewVectorLayerDialog.execAndCreateLayer` instead.
 %End
 
     static QString execAndCreateLayer( QString &errorMessage /Out/, QWidget *parent = 0, const QString &initialPath = QString(), QString *encoding /Out/ = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
@@ -47,9 +48,8 @@ If ``encoding`` is specified, it will be set to the encoding of the created file
 :param crs: default layer CRS to show in dialog
 
 :return: - Newly created file name, or an empty string if user canceled or an error occurred.
-         - errorMessage: will be set to any error message encountered during layer creation
-         - encoding: will be set to file encoding of created layer
-
+         - errorMessage: any error message encountered during layer creation
+         - encoding: file encoding of created layer
 
 .. versionadded:: 3.4.5
 %End
@@ -116,5 +116,5 @@ Sets the ``crs`` value for the new layer in the dialog.
  *                                                                      *
  * src/gui/qgsnewvectorlayerdialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

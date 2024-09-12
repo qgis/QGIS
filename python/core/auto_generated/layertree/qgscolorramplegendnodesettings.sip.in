@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layertree/qgscolorramplegendnodesettings.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -34,9 +34,6 @@ Settings for a color ramp legend node.
     ~QgsColorRampLegendNodeSettings();
 
     QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other );
-%Docstring
-Copy constructor
-%End
 
 
     QgsColorRampLegendNodeSettings::Direction direction() const;
@@ -226,5 +223,5 @@ items for each entry.
  *                                                                      *
  * src/core/layertree/qgscolorramplegendnodesettings.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

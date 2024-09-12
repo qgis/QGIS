@@ -540,7 +540,7 @@ QgsVectorLayer *QgsHanaProviderConnection::createSqlVectorLayer( const SqlVector
 
   QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
   vectorLayerOptions.skipCrsValidation = true;
-  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
+  return new QgsVectorLayer{ tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsHanaProviderConnection::sqlOptions( const QString &layerSource )

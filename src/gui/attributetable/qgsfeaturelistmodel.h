@@ -45,9 +45,6 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     {
       public:
 
-        /**
-         * Constructor for FeatureInfo.
-         */
         FeatureInfo() = default;
 
         //! True if feature is a newly added feature.
@@ -167,28 +164,28 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     /**
      * Does nothing except for calling beginRemoveRows()
      *
-     * \deprecated Use beginRemoveRows() instead
+     * \deprecated QGIS 3.40. Use beginRemoveRows() instead.
      */
     Q_DECL_DEPRECATED void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
 
     /**
      * Does nothing except for calling endRemoveRows()
      *
-     * \deprecated Use endRemoveRows() instead
+     * \deprecated QGIS 3.40. Use endRemoveRows() instead.
      */
     Q_DECL_DEPRECATED void onEndRemoveRows( const QModelIndex &parent, int first, int last );
 
     /**
      * Does nothing except for calling beginInsertRows()
      *
-     * \deprecated use beginInsertRows() instead
+     * \deprecated QGIS 3.40. Use beginInsertRows() instead.
      */
     Q_DECL_DEPRECATED void onBeginInsertRows( const QModelIndex &parent, int first, int last );
 
     /**
      * Does nothing except for calling endInsertRows()
      *
-     * \deprecated use endInsertRows() instead
+     * \deprecated QGIS 3.40. Use endInsertRows() instead.
      */
     Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 

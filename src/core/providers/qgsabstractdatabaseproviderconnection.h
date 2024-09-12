@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
       Foreign = 1 << 6,           //!< Foreign data wrapper
-      IncludeSystemTables = 1 << 7, //!< Include system tables (since QGIS 3.30)
+      IncludeSystemTables = 1 << 7, //!< Include system tables \since QGIS 3.30
     };
 
     Q_ENUM( TableFlag )
@@ -505,15 +505,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       DeleteField = 1 << 19,                          //!< Can delete an existing field/column
       DeleteFieldCascade = 1 << 20,                   //!< Can delete an existing field/column with cascade
       AddField = 1 << 21,                             //!< Can add a new field/column
-      ListFieldDomains = 1 << 22,                     //!< Can return a list of field domain names via fieldDomainNames() (since QGIS 3.26)
-      RetrieveFieldDomain = 1 << 23,                  //!< Can retrieve field domain details from provider via fieldDomain() (since QGIS 3.26)
-      SetFieldDomain = 1 << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() (since QGIS 3.26)
-      AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() (since QGIS 3.26)
-      RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() (since QGIS 3.28)
-      RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database (since QGIS 3.28)
-      AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() (since QGIS 3.30)
-      UpdateRelationship = 1 << 29,                   //!< Can update existing relationships in the database via updateRelationship() (since QGIS 3.30)
-      DeleteRelationship = 1 << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() (since QGIS 3.30)
+      ListFieldDomains = 1 << 22,                     //!< Can return a list of field domain names via fieldDomainNames() \since QGIS 3.26
+      RetrieveFieldDomain = 1 << 23,                  //!< Can retrieve field domain details from provider via fieldDomain() \since QGIS 3.26
+      SetFieldDomain = 1 << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() \since QGIS 3.26
+      AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() \since QGIS 3.26
+      RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() \since QGIS 3.28
+      RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database \since QGIS 3.28
+      AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() \since QGIS 3.30
+      UpdateRelationship = 1 << 29,                   //!< Can update existing relationships in the database via updateRelationship() \since QGIS 3.30
+      DeleteRelationship = 1 << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() \since QGIS 3.30
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -530,9 +530,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       M = 1 << 2,                    //!< Supports M dimension
       SinglePart = 1 << 3,           //!< Multi and single part types are distinct types. Deprecated since QGIS 3.28 -- use the granular SinglePoint/SingleLineString/SinglePolygon capabilities instead.
       Curves = 1 << 4,                //!< Supports curves
-      SinglePoint = 1 << 5,            //!< Supports single point types (as distinct from multi point types) (since QGIS 3.28)
-      SingleLineString = 1 << 6,       //!< Supports single linestring types (as distinct from multi line types) (since QGIS 3.28)
-      SinglePolygon = 1 << 7,          //!< Supports single polygon types (as distinct from multi polygon types) (since QGIS 3.28)
+      SinglePoint = 1 << 5,            //!< Supports single point types (as distinct from multi point types) \since QGIS 3.28
+      SingleLineString = 1 << 6,       //!< Supports single linestring types (as distinct from multi line types) \since QGIS 3.28
+      SinglePolygon = 1 << 7,          //!< Supports single polygon types (as distinct from multi polygon types) \since QGIS 3.28
+      PolyhedralSurfaces = 1 << 8,     //!< Supports polyhedral surfaces (PolyhedralSurface, TIN) types (as distinct from multi polygon types) \since QGIS 3.40
     };
     // TODO QGIS 4.0 -- remove SinglePart
 

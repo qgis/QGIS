@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include <QItemSelection>
+
 #include "qgslocatormodelbridge.h"
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
@@ -47,6 +50,29 @@ void QgsLocatorModelBridge::triggerResult( const QModelIndex &index, const int a
       result.filter->triggerResultFromAction( result, actionId );
     else
       result.filter->triggerResult( result );
+  }
+}
+
+void QgsLocatorModelBridge::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  if ( deselected.count() > 0 && deselected.indexes().at( 0 ).isValid() )
+  {
+    const QModelIndex deselectedIndex = deselected.indexes().at( 0 );
+    QgsLocatorResult result = mProxyModel->data( deselectedIndex, static_cast< int >( QgsLocatorModel::CustomRole::ResultData ) ).value< QgsLocatorResult >();
+    if ( result.filter )
+    {
+      result.filter->resultDeselected( result );
+    }
+  }
+
+  if ( selected.count() > 0 && selected.indexes().at( 0 ).isValid() )
+  {
+    const QModelIndex selectedIndex = selected.indexes().at( 0 );
+    QgsLocatorResult result = mProxyModel->data( selectedIndex, static_cast< int >( QgsLocatorModel::CustomRole::ResultData ) ).value< QgsLocatorResult >();
+    if ( result.filter )
+    {
+      result.filter->resultSelected( result );
+    }
   }
 }
 

@@ -43,7 +43,7 @@ class CORE_EXPORT QgsVariantUtils
      * Returns a user-friendly translated string representing a QVariant \a type.
      *
      * The optional \a subType can be used to specify the type of variant list or map values.
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid ) SIP_DEPRECATED;
 

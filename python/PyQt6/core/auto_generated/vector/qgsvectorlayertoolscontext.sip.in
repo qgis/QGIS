@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayertoolscontext.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,17 +24,8 @@ consider.
   public:
 
     QgsVectorLayerToolsContext();
-%Docstring
-Constructor for QgsVectorLayerToolsContext.
-%End
 
     QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsVectorLayerToolsContext
-%End
-
 
     void setExpressionContext( const QgsExpressionContext *context );
 %Docstring
@@ -111,5 +102,5 @@ Sets whether the parent widget should be hidden when showing tools' dialogues.
  *                                                                      *
  * src/core/vector/qgsvectorlayertoolscontext.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

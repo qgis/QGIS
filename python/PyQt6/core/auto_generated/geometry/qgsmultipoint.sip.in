@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsmultipoint.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -323,5 +323,5 @@ Returns the point with the specified ``index``.
  *                                                                      *
  * src/core/geometry/qgsmultipoint.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -51,6 +51,11 @@ QString QgsSymmetricalDifferenceAlgorithm::shortHelpString() const
                       "contains original attributes from both the Input and Difference layers." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSymmetricalDifferenceAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsProcessingAlgorithm *QgsSymmetricalDifferenceAlgorithm::createInstance() const
 {
   return new QgsSymmetricalDifferenceAlgorithm();

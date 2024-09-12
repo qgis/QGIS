@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstrackedvectorlayertools.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -16,9 +16,6 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
   public:
 
     QgsTrackedVectorLayerTools();
-%Docstring
-Constructor for QgsTrackedVectorLayerTools.
-%End
 
     virtual bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature /Out/, const QgsVectorLayerToolsContext &context ) const;
 
@@ -59,5 +56,5 @@ Delete all features which have been added via this object.
  *                                                                      *
  * src/core/qgstrackedvectorlayertools.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

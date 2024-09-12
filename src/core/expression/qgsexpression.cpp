@@ -26,6 +26,7 @@
 #include "qgsexpression_p.h"
 #include "qgsvariantutils.h"
 #include "qgsunittypes.h"
+#include "qgscolorrampimpl.h"
 
 #include <QRegularExpression>
 
@@ -771,6 +772,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Ellipsoid acronym of current layer CRS." ) );
 
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the layer (e.g., 'EPSG:5703')." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_definition" ), QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of layer (full definition)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the layer." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the layer." ) );
+
   //feature variables
   sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "id" ), QCoreApplication::translate( "variable_help", "The ID of the current feature being evaluated." ) );
@@ -1016,7 +1022,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
   const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
-  if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+  if ( value.userType() == qMetaTypeId< QgsGeometry>() )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
@@ -1034,13 +1040,13 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
-  else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
+  else if ( value.userType() == qMetaTypeId< QgsFeature>() )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
-  else if ( value.userType() == QMetaType::type( "QgsInterval" ) )
+  else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {
     QgsInterval interval = value.value<QgsInterval>();
     if ( interval.days() > 1 )
@@ -1060,7 +1066,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
     }
   }
-  else if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
+  else if ( value.userType() == qMetaTypeId< QgsGradientColorRamp>() )
   {
     return startToken + tr( "gradient ramp" ) + endToken;
   }
@@ -1137,6 +1143,45 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       listStr += QLatin1Char( ' ' );
     listStr += QLatin1Char( ']' );
     return listStr;
+  }
+  else if ( value.type() == QVariant::Color )
+  {
+    const QColor color = value.value<QColor>();
+
+    if ( !color.isValid() )
+    {
+      return tr( "<i>Invalid</i>" );
+    }
+
+    switch ( color.spec() )
+    {
+      case QColor::Spec::Cmyk:
+        return QStringLiteral( "CMYKA: %1,%2,%3,%4,%5" )
+               .arg( color.cyanF(), 0, 'f', 2 ).arg( color.magentaF(), 0, 'f', 2 )
+               .arg( color.yellowF(), 0, 'f', 2 ).arg( color.blackF(), 0, 'f', 2 )
+               .arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Hsv:
+        return QStringLiteral( "HSVA: %1,%2,%3,%4" )
+               .arg( color.hsvHueF(), 0, 'f', 2 ).arg( color.hsvSaturationF(), 0, 'f', 2 )
+               .arg( color.valueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Hsl:
+        return QStringLiteral( "HSLA: %1,%2,%3,%4" )
+               .arg( color.hslHueF(), 0, 'f', 2 ).arg( color.hslSaturationF(), 0, 'f', 2 )
+               .arg( color.lightnessF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Rgb:
+      case QColor::Spec::ExtendedRgb:
+        return QStringLiteral( "RGBA: %1,%2,%3,%4" )
+               .arg( color.redF(), 0, 'f', 2 ).arg( color.greenF(), 0, 'f', 2 )
+               .arg( color.blueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Invalid:
+        return tr( "<i>Invalid</i>" );
+    }
+    QgsDebugError( QStringLiteral( "Unknown color format: %1" ).arg( color.spec() ) );
+    return tr( "<i>Unknown color format: %1</i>" ).arg( color.spec() );
   }
   else if ( value.userType() == QMetaType::Type::Int ||
             value.userType() == QMetaType::Type::UInt ||

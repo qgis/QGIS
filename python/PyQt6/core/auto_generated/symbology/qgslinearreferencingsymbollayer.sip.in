@@ -1,0 +1,326 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgslinearreferencingsymbollayer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsLinearReferencingSymbolLayer : QgsLineSymbolLayer
+{
+%Docstring(signature="appended")
+Line symbol layer used for decorating accordingly to linear referencing.
+
+This symbol layer type allows placing text labels at regular intervals along
+a line (or at positions corresponding to existing vertices). Positions
+can be calculated using Cartesian distances, or interpolated from z or m values.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslinearreferencingsymbollayer.h"
+%End
+  public:
+    QgsLinearReferencingSymbolLayer();
+    ~QgsLinearReferencingSymbolLayer();
+
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates a new QgsLinearReferencingSymbolLayer, using the specified ``properties``.
+
+The caller takes ownership of the returned object.
+%End
+
+    virtual QgsLinearReferencingSymbolLayer *clone() const /Factory/;
+
+    virtual QVariantMap properties() const;
+
+    virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used to render the layer.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used to render the layer.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+    QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used to format the labels for the layer.
+
+.. seealso:: :py:func:`setNumericFormat`
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used to format the labels for the layer.
+
+Ownership of ``format`` is transferred to the layer.
+
+.. seealso:: :py:func:`numericFormat`
+%End
+
+    double interval() const;
+%Docstring
+Returns the interval between labels.
+
+Units are always in the original layer CRS units.
+
+.. seealso:: :py:func:`setInterval`
+%End
+
+    void setInterval( double interval );
+%Docstring
+Sets the ``interval`` between labels.
+
+Units are always in the original layer CRS units.
+
+.. seealso:: :py:func:`setInterval`
+%End
+
+    double skipMultiplesOf() const;
+%Docstring
+Returns the multiple distance to skip labels for.
+
+If this value is non-zero, then any labels which are integer multiples of the returned
+value will be skipped. This allows creation of advanced referencing styles where a single
+:py:class:`QgsSymbol` has multiple :py:class:`QgsLinearReferencingSymbolLayer` symbol layers, eg allowing
+labeling every 100 in a normal font and every 1000 in a bold, larger font.
+
+.. seealso:: :py:func:`setSkipMultiplesOf`
+%End
+
+    void setSkipMultiplesOf( double multiple );
+%Docstring
+Sets the ``multiple`` distance to skip labels for.
+
+If this value is non-zero, then any labels which are integer multiples of the returned
+value will be skipped. This allows creation of advanced referencing styles where a single
+:py:class:`QgsSymbol` has multiple :py:class:`QgsLinearReferencingSymbolLayer` symbol layers, eg allowing
+labeling every 100 in a normal font and every 1000 in a bold, larger font.
+
+.. seealso:: :py:func:`skipMultiplesOf`
+%End
+
+    bool rotateLabels() const;
+%Docstring
+Returns ``True`` if the labels and symbols are to be rotated to match their line segment orientation.
+
+.. seealso:: :py:func:`setRotateLabels`
+%End
+
+    void setRotateLabels( bool rotate );
+%Docstring
+Sets whether the labels and symbols should be rotated to match their line segment orientation.
+
+.. seealso:: :py:func:`rotateLabels`
+%End
+
+    QPointF labelOffset() const;
+%Docstring
+Returns the offset between the line and linear referencing labels.
+
+The unit for the offset is retrievable via :py:func:`~QgsLinearReferencingSymbolLayer.labelOffsetUnit`.
+
+.. seealso:: :py:func:`setLabelOffset`
+
+.. seealso:: :py:func:`labelOffsetUnit`
+%End
+
+    void setLabelOffset( const QPointF &offset );
+%Docstring
+Sets the ``offset`` between the line and linear referencing labels.
+
+The unit for the offset is set via :py:func:`~QgsLinearReferencingSymbolLayer.setLabelOffsetUnit`.
+
+.. seealso:: :py:func:`labelOffset`
+
+.. seealso:: :py:func:`setLabelOffsetUnit`
+%End
+
+    Qgis::RenderUnit labelOffsetUnit() const;
+%Docstring
+Returns the unit used for the offset between the line and linear referencing labels.
+
+.. seealso:: :py:func:`setLabelOffsetUnit`
+
+.. seealso:: :py:func:`labelOffset`
+%End
+
+    void setLabelOffsetUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the offset between the line and linear referencing labels.
+
+.. seealso:: :py:func:`labelOffsetUnit`
+
+.. seealso:: :py:func:`setLabelOffset`
+%End
+
+    const QgsMapUnitScale &labelOffsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale used for calculating the offset between the line and linear referencing labels.
+
+.. seealso:: :py:func:`setLabelOffsetMapUnitScale`
+%End
+
+    void setLabelOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` used for calculating the offset between the line and linear referencing labels.
+
+.. seealso:: :py:func:`labelOffsetMapUnitScale`
+%End
+
+    bool showMarker() const;
+%Docstring
+Returns ``True`` if a marker symbol should be shown corresponding to the labeled point on line.
+
+The marker symbol is set using :py:func:`~QgsLinearReferencingSymbolLayer.setSubSymbol`
+
+.. seealso:: :py:func:`setShowMarker`
+%End
+
+    void setShowMarker( bool show );
+%Docstring
+Sets whether a marker symbol should be shown corresponding to the labeled point on line.
+
+The marker symbol is set using :py:func:`~QgsLinearReferencingSymbolLayer.setSubSymbol`
+
+.. seealso:: :py:func:`showMarker`
+%End
+
+    Qgis::LinearReferencingPlacement placement() const;
+%Docstring
+Returns the placement mode for the labels.
+
+.. seealso:: :py:func:`setPlacement`
+%End
+
+    void setPlacement( Qgis::LinearReferencingPlacement placement );
+%Docstring
+Sets the ``placement`` mode for the labels.
+
+.. seealso:: :py:func:`placement`
+%End
+
+    Qgis::LinearReferencingLabelSource labelSource() const;
+%Docstring
+Returns the label source, which dictates what quantity to use for the labels shown.
+
+.. seealso:: :py:func:`setLabelSource`
+%End
+
+    void setLabelSource( Qgis::LinearReferencingLabelSource source );
+%Docstring
+Sets the label ``source``, which dictates what quantity to use for the labels shown.
+
+.. seealso:: :py:func:`labelSource`
+%End
+
+    double averageAngleLength() const;
+%Docstring
+Returns the length of line over which the line's direction is averaged when
+calculating individual label angles. Longer lengths smooth out angles from jagged lines to a greater extent.
+
+Units are retrieved through :py:func:`~QgsLinearReferencingSymbolLayer.averageAngleUnit`
+
+.. seealso:: :py:func:`setAverageAngleLength`
+
+.. seealso:: :py:func:`averageAngleUnit`
+
+.. seealso:: :py:func:`averageAngleMapUnitScale`
+%End
+
+    void setAverageAngleLength( double length );
+%Docstring
+Sets the ``length`` of line over which the line's direction is averaged when
+calculating individual label angles. Longer lengths smooth out angles from jagged lines to a greater extent.
+
+Units are set through :py:func:`~QgsLinearReferencingSymbolLayer.setAverageAngleUnit`
+
+.. seealso:: :py:func:`averageAngleLength`
+
+.. seealso:: :py:func:`setAverageAngleUnit`
+
+.. seealso:: :py:func:`setAverageAngleMapUnitScale`
+%End
+
+    void setAverageAngleUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the length over which the line's direction is averaged when
+calculating individual label angles.
+
+.. seealso:: :py:func:`averageAngleUnit`
+
+.. seealso:: :py:func:`setAverageAngleLength`
+
+.. seealso:: :py:func:`setAverageAngleMapUnitScale`
+%End
+
+    Qgis::RenderUnit averageAngleUnit() const;
+%Docstring
+Returns the unit for the length over which the line's direction is averaged when
+calculating individual label angles.
+
+.. seealso:: :py:func:`setAverageAngleUnit`
+
+.. seealso:: :py:func:`averageAngleLength`
+
+.. seealso:: :py:func:`averageAngleMapUnitScale`
+%End
+
+    void setAverageAngleMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the length over which the line's direction is averaged when
+calculating individual label angles.
+
+.. seealso:: :py:func:`averageAngleMapUnitScale`
+
+.. seealso:: :py:func:`setAverageAngleLength`
+
+.. seealso:: :py:func:`setAverageAngleUnit`
+%End
+
+    const QgsMapUnitScale &averageAngleMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the length over which the line's direction is averaged when
+calculating individual label angles.
+
+.. seealso:: :py:func:`setAverageAngleMapUnitScale`
+
+.. seealso:: :py:func:`averageAngleLength`
+
+.. seealso:: :py:func:`averageAngleUnit`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgslinearreferencingsymbollayer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

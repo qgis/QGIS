@@ -20,8 +20,9 @@ class QgsHanaProviderUtils:
     @staticmethod
     def createConnection(uri):
         ds_uri = QgsDataSourceUri(uri)
+        encrypt = ds_uri.param("ENCRYPT") if ds_uri.hasParam("ENCRYPT") else True
         conn = dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(),
-                             password=ds_uri.password(), ENCRYPT=True, sslValidateCertificate=False, CHAR_AS_UTF8=1)
+                             password=ds_uri.password(), ENCRYPT=encrypt, sslValidateCertificate=False, CHAR_AS_UTF8=1)
         conn.setautocommit(False)
         return conn
 

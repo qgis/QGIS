@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextdocumentmetrics.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -34,7 +34,7 @@ Returns precalculated text metrics for a text ``document``, when rendered using 
 given base ``format`` and render ``context``.
 
 The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
-:py:class:`QgsTextRenderer`.FONT_WORKAROUND_SCALE and then manually calculations
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually calculations
 based on the resultant font metrics. Failure to do so will result in poor quality text rendering
 at small font sizes.
 %End
@@ -133,5 +133,5 @@ Returns the ascent offset of the first block in the document.
  *                                                                      *
  * src/core/textrenderer/qgstextdocumentmetrics.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

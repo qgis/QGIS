@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayerprofilegenerator.h"
+#include "qgspolyhedralsurface.h"
 #include "qgsprofilerequest.h"
 #include "qgscurve.h"
 #include "qgsvectorlayer.h"
@@ -673,7 +674,7 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTerrainProvider( request.terrainProvider() ? request.terrainProvider()->clone() : nullptr )
   , mTolerance( request.tolerance() )
-  , mSourceCrs( layer->crs() )
+  , mSourceCrs( layer->crs3D() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
   , mExtent( layer->extent() )
@@ -806,7 +807,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
 {
   // get features from layer
   QgsFeatureRequest request;
-  request.setDestinationCrs( mTargetCrs, mTransformContext );
+  request.setCoordinateTransform( QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext ) );
   request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
@@ -1495,7 +1496,25 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     {
       if ( mProfileBufferedCurveEngine->intersects( *it ) )
       {
-        processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( *it ), transformedParts, crossSectionParts, offset, wasCollinear );
+        if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( *it ) )
+        {
+          processPolygon( curvePolygon, transformedParts, crossSectionParts, offset, wasCollinear );
+        }
+        else if ( const QgsPolyhedralSurface *polySurface = qgsgeometry_cast< const QgsPolyhedralSurface * >( *it ) )
+        {
+          for ( int i = 0; i < polySurface->numPatches(); ++i )
+          {
+            const QgsPolygon *polygon = polySurface->patchN( i );
+            if ( mProfileBufferedCurveEngine->intersects( polygon ) )
+            {
+              processPolygon( polygon, transformedParts, crossSectionParts, offset, wasCollinear );
+            }
+          }
+        }
+        else
+        {
+          QgsDebugError( QStringLiteral( "Unhandled Geometry type: %1" ).arg( ( *it )->wktTypeStr() ) );
+        }
       }
     }
 

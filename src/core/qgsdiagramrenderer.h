@@ -108,12 +108,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
-    /**
-     * Constructor for QgsDiagramLayerSettings.
-     */
     QgsDiagramLayerSettings();
 
-    //! Copy constructor
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
 
     QgsDiagramLayerSettings &operator=( const QgsDiagramLayerSettings &rh );
@@ -382,11 +378,8 @@ class CORE_EXPORT QgsDiagramSettings
       Counterclockwise, //!< Counter-clockwise orientation
     };
 
-    //! Constructor for QgsDiagramSettings
     QgsDiagramSettings();
     ~QgsDiagramSettings();
-
-    //! Copy constructor
     QgsDiagramSettings( const QgsDiagramSettings &other );
 
     QgsDiagramSettings &operator=( const QgsDiagramSettings &other );
@@ -666,9 +659,6 @@ class CORE_EXPORT QgsDiagramRenderer
 
   public:
 
-    /**
-     * Constructor for QgsDiagramRenderer.
-     */
     QgsDiagramRenderer() = default;
     virtual ~QgsDiagramRenderer() = default;
 
@@ -785,7 +775,6 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
 
-    //! Constructor for QgsSingleCategoryDiagramRenderer
     QgsSingleCategoryDiagramRenderer() = default;
 
     QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
@@ -815,13 +804,13 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 /**
  * \ingroup core
  * \class QgsLinearlyInterpolatedDiagramRenderer
+ * \brief Alters the size of rendered diagrams using a linear scaling.
  */
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer() override;
-    //! Copy constructor
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
 
     QgsLinearlyInterpolatedDiagramRenderer &operator=( const QgsLinearlyInterpolatedDiagramRenderer &other );

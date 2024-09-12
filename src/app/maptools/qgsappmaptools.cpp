@@ -23,13 +23,10 @@
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmeasuretool.h"
-#include "qgsmaptooltextannotation.h"
 #include "qgsmaptoolhtmlannotation.h"
-#include "qgsmaptoolannotation.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmeasurebearing.h"
 #include "qgsmaptoolformannotation.h"
-#include "qgsmaptoolsvgannotation.h"
 #include "qgsmaptoolrotatefeature.h"
 #include "qgsmaptoolscalefeature.h"
 #include "qgsmaptoolmovefeature.h"
@@ -72,10 +69,8 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::MeasureArea, new QgsMeasureTool( canvas, true /* area */ ) );
   mTools.insert( Tool::MeasureAngle, new QgsMapToolMeasureAngle( canvas ) );
   mTools.insert( Tool::MeasureBearing, new QgsMapToolMeasureBearing( canvas ) );
-  mTools.insert( Tool::TextAnnotation, new QgsMapToolTextAnnotation( canvas ) );
   mTools.insert( Tool::FormAnnotation, new QgsMapToolFormAnnotation( canvas ) );
   mTools.insert( Tool::HtmlAnnotation, new QgsMapToolHtmlAnnotation( canvas ) );
-  mTools.insert( Tool::SvgAnnotation, new QgsMapToolSvgAnnotation( canvas ) );
   mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, cadDock, QgsMapToolCapture::CaptureNone ) );
   mTools.insert( Tool::MoveFeature, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::Move ) );
   mTools.insert( Tool::MoveFeatureCopy, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::CopyMove ) );

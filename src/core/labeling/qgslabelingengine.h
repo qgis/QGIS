@@ -345,9 +345,7 @@ class CORE_EXPORT QgsLabelingEngine
     //! Clean up everything (especially the registered providers)
     virtual ~QgsLabelingEngine();
 
-    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine( const QgsLabelingEngine &rh ) = delete;
-    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine &operator=( const QgsLabelingEngine &rh ) = delete;
 
     //! Associate map settings instance
@@ -357,6 +355,15 @@ class CORE_EXPORT QgsLabelingEngine
 
     //! Gets associated labeling engine settings
     const QgsLabelingEngineSettings &engineSettings() const { return mMapSettings.labelingEngineSettings(); }
+
+    /**
+     * Prepares the engine for rendering in the specified \a context.
+     *
+     * \warning This method must be called in advanced on the main rendering thread, not a background thread.
+     *
+     * \since QGIS 3.40
+     */
+    bool prepare( QgsRenderContext &context );
 
     /**
      * Returns a list of layers with providers in the engine.
@@ -438,6 +445,9 @@ class CORE_EXPORT QgsLabelingEngine
     QList<QgsAbstractLabelProvider *> mProviders;
     QList<QgsAbstractLabelProvider *> mSubProviders;
 
+    //!< List of labeling engine rules (owned by the labeling engine)
+    std::vector< std::unique_ptr< QgsAbstractLabelingEngineRule > > mEngineRules;
+
     //! Resulting labeling layout
     std::unique_ptr< QgsLabelingResults > mResults;
 
@@ -467,9 +477,7 @@ class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsDefaultLabelingEngine();
 
-    //! QgsDefaultLabelingEngine cannot be copied.
     QgsDefaultLabelingEngine( const QgsDefaultLabelingEngine &rh ) = delete;
-    //! QgsDefaultLabelingEngine cannot be copied.
     QgsDefaultLabelingEngine &operator=( const QgsDefaultLabelingEngine &rh ) = delete;
 
     void run( QgsRenderContext &context ) override;
@@ -493,9 +501,7 @@ class CORE_EXPORT QgsStagedRenderLabelingEngine : public QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsStagedRenderLabelingEngine();
 
-    //! QgsStagedRenderLabelingEngine cannot be copied.
     QgsStagedRenderLabelingEngine( const QgsStagedRenderLabelingEngine &rh ) = delete;
-    //! QgsStagedRenderLabelingEngine cannot be copied.
     QgsStagedRenderLabelingEngine &operator=( const QgsStagedRenderLabelingEngine &rh ) = delete;
 
     void run( QgsRenderContext &context ) override;

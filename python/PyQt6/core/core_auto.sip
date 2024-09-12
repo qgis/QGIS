@@ -232,8 +232,11 @@
 %Include auto_generated/annotations/qgsannotationlinetextitem.sip
 %Include auto_generated/annotations/qgsannotationmarkeritem.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
+%Include auto_generated/annotations/qgsannotationpictureitem.sip
 %Include auto_generated/annotations/qgsannotationpointtextitem.sip
 %Include auto_generated/annotations/qgsannotationpolygonitem.sip
+%Include auto_generated/annotations/qgsannotationrectangletextitem.sip
+%Include auto_generated/annotations/qgsannotationrectitem.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
 %Include auto_generated/annotations/qgsrenderedannotationitemdetails.sip
 %Include auto_generated/annotations/qgssvgannotation.sip
@@ -350,6 +353,7 @@
 %Include auto_generated/geometry/qgsorientedbox3d.sip
 %Include auto_generated/geometry/qgspoint.sip
 %Include auto_generated/geometry/qgspolygon.sip
+%Include auto_generated/geometry/qgspolyhedralsurface.sip
 %Include auto_generated/geometry/qgsquadrilateral.sip
 %Include auto_generated/geometry/qgsrectangle.sip
 %Include auto_generated/geometry/qgsreferencedgeometry.sip
@@ -357,6 +361,7 @@
 %Include auto_generated/geometry/qgssphere.sip
 %Include auto_generated/geometry/qgssurface.sip
 %Include auto_generated/geometry/qgstriangle.sip
+%Include auto_generated/geometry/qgstriangulatedsurface.sip
 %Include auto_generated/geometry/qgsvertexid.sip
 %Include auto_generated/geometry/qgswkbptr.sip
 %Include auto_generated/geometry/qgswkbtypes.sip
@@ -386,6 +391,9 @@
 %Include auto_generated/labeling/qgspallabeling.sip
 %Include auto_generated/labeling/qgsrulebasedlabeling.sip
 %Include auto_generated/labeling/qgsvectorlayerlabeling.sip
+%Include auto_generated/labeling/rules/qgslabelingenginerule.sip
+%Include auto_generated/labeling/rules/qgslabelingenginerule_impl.sip
+%Include auto_generated/labeling/rules/qgslabelingengineruleregistry.sip
 %Include auto_generated/layertree/qgscolorramplegendnode.sip
 %Include auto_generated/layertree/qgscolorramplegendnodesettings.sip
 %Include auto_generated/layertree/qgslayertree.sip
@@ -540,6 +548,7 @@
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
 %Include auto_generated/numericformats/qgscoordinatenumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip
+%Include auto_generated/numericformats/qgsexpressionbasednumericformat.sip
 %Include auto_generated/numericformats/qgsfallbacknumericformat.sip
 %Include auto_generated/numericformats/qgsfractionnumericformat.sip
 %Include auto_generated/numericformats/qgsnumericformat.sip
@@ -686,6 +695,7 @@
 %Include auto_generated/symbology/qgsinterpolatedlinerenderer.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgslegendsymbolitem.sip
+%Include auto_generated/symbology/qgslinearreferencingsymbollayer.sip
 %Include auto_generated/symbology/qgslinesymbol.sip
 %Include auto_generated/symbology/qgslinesymbollayer.sip
 %Include auto_generated/symbology/qgsmapinfosymbolconverter.sip

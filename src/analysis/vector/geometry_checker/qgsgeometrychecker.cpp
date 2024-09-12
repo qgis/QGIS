@@ -149,7 +149,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = it.value();
     QgsFeaturePool *featurePool = mFeaturePools[it.key()];
-    QgsCoordinateTransform t( featurePool->layer()->crs(), mContext->mapCrs, QgsProject::instance() );
+    QgsCoordinateTransform t( featurePool->crs(), mContext->mapCrs, QgsProject::instance() );
     t.setBallparkTransformsAreAppropriate( true );
     for ( auto layerChangeIt = layerChanges.constBegin(); layerChangeIt != layerChanges.constEnd(); ++layerChangeIt )
     {
@@ -189,7 +189,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( auto it = mFeaturePools.constBegin(); it != mFeaturePools.constEnd(); it++ )
   {
     QgsFeaturePool *featurePool = it.value();
-    QgsCoordinateTransform t( mContext->mapCrs, featurePool->layer()->crs(), QgsProject::instance() );
+    QgsCoordinateTransform t( mContext->mapCrs, featurePool->crs(), QgsProject::instance() );
     recheckAreaFeatures[it.key()] = featurePool->getIntersects( t.transform( recheckArea ) );
   }
 

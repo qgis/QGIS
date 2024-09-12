@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfileutils.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,8 +29,8 @@ Returns the human size from bytes
     static QStringList extensionsFromFilter( const QString &filter );
 %Docstring
 Returns a list of the extensions contained within a file ``filter`` string.
-E.g. a ``filter`` of "GeoTIFF Files (*.tiff *.tif)" would return a list
-containing "tiff", "tif". The initial '.' is stripped off the extension.
+E.g. a ``filter`` of ``GeoTIFF Files (*.tiff *.tif)`` would return a list
+containing ``tiff``, ``tif``. The initial '.' is stripped off the extension.
 
 .. seealso:: :py:func:`ensureFileNameHasExtension`
 
@@ -39,8 +39,8 @@ containing "tiff", "tif". The initial '.' is stripped off the extension.
 
     static QString wildcardsFromFilter( const QString &filter );
 %Docstring
-Given a ``filter`` string like "GeoTIFF Files (*.tiff *.tif)", extracts
-the wildcard portion of this filter (i.e. "*.tiff *.tif").
+Given a ``filter`` string like ``GeoTIFF Files (*.tiff *.tif)``, extracts
+the wildcard portion of this filter (i.e. ``*.tiff *.tif``).
 
 .. versionadded:: 3.18
 %End
@@ -49,8 +49,8 @@ the wildcard portion of this filter (i.e. "*.tiff *.tif").
 %Docstring
 Returns ``True`` if the given ``fileName`` matches a file ``filter`` string.
 
-E.g a filter of "GeoTIFF Files (*.tiff *.tif)" would return ``True`` for a ``fileName``
-of "/home/test.tif", or ``False`` for "/home/test.jpg".
+E.g a filter of ``GeoTIFF Files (*.tiff *.tif)`` would return ``True`` for a ``fileName``
+of ``/home/test.tif``, or ``False`` for ``/home/test.jpg``.
 
 .. versionadded:: 3.18
 %End
@@ -60,9 +60,9 @@ of "/home/test.tif", or ``False`` for "/home/test.jpg".
 Ensures that a ``fileName`` ends with an extension from the provided list of
 ``extensions``.
 
-E.g. if extensions contains "tif" and "tiff", then a ``fileName`` of
-"d:/my_file" will return "d:/my_file.tif". A ``fileName`` of
-"d:/my_file.TIFF" or "d:/my_file.TIF" will be returned unchanged.
+E.g. if extensions contains ``tif`` and ``tiff``, then a ``fileName`` of
+``d:/my_file`` will return ``d:/my_file.tif``. A ``fileName`` of
+``d:/my_file.TIFF`` or ``d:/my_file.TIF`` will be returned unchanged.
 
 .. seealso:: :py:func:`extensionsFromFilter`
 
@@ -74,8 +74,8 @@ E.g. if extensions contains "tif" and "tiff", then a ``fileName`` of
 Ensures that a ``fileName`` ends with an extension from the specified ``filter``
 string.
 
-E.g. a ``fileName`` of "d:/my_file" with a filter of "GeoTIFF Files (*.tiff *.tif)"
-will return "d:/my_file.tif", where as ``fileName`` of "d:/my_file.TIFF" or "d:/my_file.TIF"
+E.g. a ``fileName`` of ``d:/my_file`` with a filter of ``GeoTIFF Files (*.tiff *.tif)``
+will return ``d:/my_file.tif``, where as ``fileName`` of ``d:/my_file.TIFF`` or ``d:/my_file.TIF``
 will be returned unchanged.
 
 .. seealso:: :py:func:`extensionsFromFilter`
@@ -95,8 +95,8 @@ for filenames with an '_' character.
 
     static QString findClosestExistingPath( const QString &path );
 %Docstring
-Returns the top-most existing folder from ``path``. E.g. if ``path`` is "/home/user/projects/2018/P4343"
-and "/home/user/projects" exists but no "2018" subfolder exists, then the function will return "/home/user/projects".
+Returns the top-most existing folder from ``path``. E.g. if ``path`` is ``/home/user/projects/2018/P4343``
+and ``/home/user/projects`` exists but no ``2018`` subfolder exists, then the function will return ``/home/user/projects``.
 
 .. versionadded:: 3.2
 %End
@@ -173,8 +173,7 @@ desired.
 :param flags: optional flags to control file operation behavior
 
 :return: - ``True`` if the dataset was successfully renamed, or ``False`` if an error occurred
-         - error: will be set to a descriptive error message if the rename operation fails
-
+         - error: a descriptive error message if the rename operation fails
 
 .. versionadded:: 3.22
 %End
@@ -186,21 +185,21 @@ desired.
 %Docstring
 Given a file ``path``, returns a list of all the components leading to that path.
 
-E.g. if ``path`` is "/home/user/Pictures/test.png", the returned list will contain
-"/" , "home", "user", "Pictures", "test.png".
+E.g. if ``path`` is ``/home/user/Pictures/test.png``, the returned list will contain
+``/`` , ``home``, ``user``, ``Pictures``, ``test.png``.
 
 .. versionadded:: 3.28
 %End
 
     static QString uniquePath( const QString &path );
 %Docstring
-Creates a unique file path name from a desired path by appending "_<n>" (where "<n>" is an integer number) before the file suffix.
+Creates a unique file path name from a desired path by appending ``_<n>`` (where ``<n>`` is an integer number) before the file suffix.
 
-E.g. if "/path/my_image.png" already exists "/path/my_image_2.png" (and "_3", "_4" etc.) will be checked until a file path that does not already exist is found.
+E.g. if ``/path/my_image.png`` already exists ``/path/my_image_2.png`` (and ``_3`, ``_4`` etc.) will be checked until a file path that does not already exist is found.
 
 :param path: the desired path.
 
-:return: the unmodified path if path is already unique or the new path with "_<n>" (where "<n>" is an integer number) appended to the file name before the suffix.
+:return: the unmodified path if path is already unique or the new path with ``_<n>`` (where ``<n>`` is an integer number) appended to the file name before the suffix.
 
 .. note::
 
@@ -216,5 +215,5 @@ E.g. if "/path/my_image.png" already exists "/path/my_image_2.png" (and "_3", "_
  *                                                                      *
  * src/core/qgsfileutils.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

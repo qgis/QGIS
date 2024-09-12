@@ -378,22 +378,25 @@ class DoxygenParser():
         if self.isDestructor(elem):
             return False
 
-        # ignore constructors with no arguments
         if self.isConstructor(elem):
+            # ignore constructors with no arguments
             try:
-                if elem.find('argsstring').text == '()':
+                if re.match(r'^\s*\(\s*\)\s*(?:=\s*(?:default|delete)\s*)?$', elem.find('argsstring').text):
                     return False
             except:
                 pass
 
+            # ignore copy, move constructors
+            name = elem.find('name').text
+            match = re.match(r'^\s*\(\s*(?:const)?\s*' + name + r'\s*&{0,2}\s*(?:[a-zA-Z0-9_]+)?\s*\)\s*(?:=\s*(?:default|delete)\s*)?$', elem.find('argsstring').text)
+            if match:
+                return False
+
         name = elem.find('name')
 
         # ignore certain obvious operators
-        try:
-            if name.text in ('operator=', 'operator==', 'operator!=', 'Q_ENUM'):
-                return False
-        except:
-            pass
+        if name.text in ('operator=', 'operator==', 'operator!=', 'operator>=', 'operator>', 'operator<=', 'operator<', 'Q_ENUM'):
+            return False
 
         # ignore on_* slots
         try:
@@ -463,7 +466,9 @@ class DoxygenParser():
             name = member_elem.find('name').text
             if f'{name}::{name}' in definition:
                 return True
-        except:
+            if re.match(rf'{name}\s*\<\s*[a-zA-Z0-9_]+\s*\>\s*::{name}', definition):
+                return True
+        except (AttributeError, re.error):
             pass
 
         return False

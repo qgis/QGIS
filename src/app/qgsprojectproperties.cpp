@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgis.h"
+#include "qgscolorutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
@@ -134,6 +135,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::newStyleDatabase );
   connect( mCoordinateDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateGuiForCoordinateType(); } );
   connect( mCoordinateCrs, &QgsProjectionSelectionWidget::crsChanged, this, [ = ]( const QgsCoordinateReferenceSystem & ) { updateGuiForCoordinateCrs(); } );
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  connect( mAddIccProfile, &QToolButton::clicked, this, static_cast<void ( QgsProjectProperties::* )()>( &QgsProjectProperties::addIccProfile ) );
+  connect( mRemoveIccProfile, &QToolButton::clicked, this, &QgsProjectProperties::removeIccProfile );
+  connect( mSaveIccProfile, &QToolButton::clicked, this, &QgsProjectProperties::saveIccProfile );
+#endif
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -923,9 +929,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
       QCheckBox *cbu = new QCheckBox();
       cbu->setEnabled( false );
-      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
+      if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) )
       {
-        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) )
         {
           cbu->setEnabled( true );
           cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
@@ -935,7 +941,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
       QCheckBox *cbi = new QCheckBox();
       cbi->setEnabled( false );
-      if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+      if ( ( provider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) )
       {
         cbi->setEnabled( true );
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
@@ -944,7 +950,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
       QCheckBox *cbd = new QCheckBox();
       cbd->setEnabled( false );
-      if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+      if ( ( provider->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) )
       {
         cbd->setEnabled( true );
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
@@ -1025,6 +1031,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // Random colors
   cbxStyleRandomColors->setChecked( QgsProject::instance()->styleSettings()->randomizeDefaultSymbolColor() );
 
+  mColorModel->addItem( tr( "RGB" ), QVariant::fromValue( Qgis::ColorModel::Rgb ) );
+  mColorModel->addItem( tr( "CMYK" ), QVariant::fromValue( Qgis::ColorModel::Cmyk ) );
+  mColorModel->setCurrentIndex( mColorModel->findData( QVariant::fromValue( QgsProject::instance()->styleSettings()->colorModel() ) ) );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  mColorSpace = QgsProject::instance()->styleSettings()->colorSpace();
+  updateColorSpaceWidgets();
+#else
+  mIccProfileLabel->setVisible( false );
+  mColorSpaceName->setVisible( false );
+  mAddIccProfile->setVisible( false );
+  mRemoveIccProfile->setVisible( false );
+  mSaveIccProfile->setVisible( false );
+#endif
   // Default alpha transparency
   mDefaultOpacityWidget->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
 
@@ -1733,6 +1753,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->styleSettings()->setDefaultTextFormat( mStyleTextFormat->textFormat() );
   QgsProject::instance()->styleSettings()->setRandomizeDefaultSymbolColor( cbxStyleRandomColors->isChecked() );
   QgsProject::instance()->styleSettings()->setDefaultSymbolOpacity( mDefaultOpacityWidget->opacity() );
+  QgsProject::instance()->styleSettings()->setColorModel( mColorModel->currentData().value<Qgis::ColorModel>() );
+  QgsProject::instance()->styleSettings()->setColorSpace( mColorSpace );
 
   {
     QStringList styleDatabasePaths;
@@ -2599,7 +2621,11 @@ void QgsProjectProperties::setCurrentEllipsoid( const QString &ellipsoidAcronym 
 
 void QgsProjectProperties::mButtonAddColor_clicked()
 {
-  QColor newColor = QgsColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
+  const Qgis::ColorModel colorModel = mColorModel->currentData().value<Qgis::ColorModel>();
+  const QColor defaultColor = colorModel == Qgis::ColorModel::Cmyk ?
+                              QColor::fromCmykF( 0., 1., 1., 0. ) : QColor::fromRgbF( 1., 0., 0. );
+
+  QColor newColor = QgsColorDialog::getColor( defaultColor, this->parentWidget(), tr( "Select Color" ), true );
   if ( !newColor.isValid() )
   {
     return;
@@ -2679,6 +2705,77 @@ void QgsProjectProperties::removeStyleDatabase()
   int currentRow = mListStyleDatabases->currentRow();
   delete mListStyleDatabases->takeItem( currentRow );
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+
+void QgsProjectProperties::addIccProfile()
+{
+  const QString iccProfileFilePath = QFileDialog::getOpenFileName(
+                                       this,
+                                       tr( "Load ICC Profile" ),
+                                       QDir::homePath(),
+                                       tr( "ICC Profile" ) + QStringLiteral( " (*.icc)" ) );
+
+  addIccProfile( iccProfileFilePath );
+}
+
+void QgsProjectProperties::addIccProfile( const QString &iccProfileFilePath )
+{
+  if ( iccProfileFilePath.isEmpty() )
+    return;
+
+  QString errorMsg;
+  QColorSpace colorSpace = QgsColorUtils::iccProfile( iccProfileFilePath, errorMsg );
+  if ( !colorSpace.isValid() )
+  {
+    QMessageBox::warning( this, tr( "Load ICC Profile" ), errorMsg );
+    return;
+  }
+
+  mColorSpace = colorSpace;
+  updateColorSpaceWidgets();
+}
+
+void QgsProjectProperties::removeIccProfile()
+{
+  mColorSpace = QColorSpace();
+  updateColorSpaceWidgets();
+}
+
+void QgsProjectProperties::saveIccProfile()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save ICC Profile" ), QDir::homePath(),
+                     tr( "ICC profile files (*.icc *.ICC)" ) );
+
+  if ( fileName.isEmpty() )
+    return;
+
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "icc" ) } );
+  const QString error = QgsColorUtils::saveIccProfile( mColorSpace, fileName );
+  if ( !error.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Save ICC profile" ), error );
+  }
+}
+
+
+void QgsProjectProperties::updateColorSpaceWidgets()
+{
+  mColorSpaceName->setText( mColorSpace.isValid() ? mColorSpace.description() : tr( "<i>None</i>" ) );
+  mRemoveIccProfile->setEnabled( mColorSpace.isValid() );
+  mSaveIccProfile->setEnabled( mColorSpace.isValid() );
+
+  // force color model index according to color space one
+  if ( mColorSpace.isValid() )
+  {
+    const Qgis::ColorModel colorModel = QgsColorUtils::toColorModel( mColorSpace.colorModel() );
+    mColorModel->setCurrentIndex( mColorModel->findData( QVariant::fromValue( colorModel ) ) );
+  }
+
+  mColorModel->setEnabled( !mColorSpace.isValid() );
+}
+
+#endif
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const double newScaleDenominator )
 {

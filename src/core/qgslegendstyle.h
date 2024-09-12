@@ -65,14 +65,14 @@ class CORE_EXPORT QgsLegendStyle
     /**
      * Returns the font used for rendering this legend component.
      * \see setFont()
-     * \deprecated use textFormat() instead
+     * \deprecated QGIS 3.40. Use textFormat() instead.
      */
     Q_DECL_DEPRECATED QFont font() const SIP_DEPRECATED { return mTextFormat.font(); }
 
     /**
      * Sets the \a font used for rendering this legend component.
      * \see font()
-     * \deprecated use setTextFormat() instead
+     * \deprecated QGIS 3.40. Use setTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setFont( const QFont &font ) SIP_DEPRECATED;
 

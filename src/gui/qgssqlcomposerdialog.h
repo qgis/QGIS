@@ -106,7 +106,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QgsSubsetStringEditorInterface, p
       Function( const QString &nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
       //! constructor with name and min,max number of arguments
       Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
-      //! default constructor
+
       Function() = default;
     };
 

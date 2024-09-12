@@ -38,9 +38,6 @@ class CORE_EXPORT QgsLocatorResult
 {
   public:
 
-    /**
-     * Constructor for QgsLocatorResult.
-     */
     QgsLocatorResult() = default;
 
     /**
@@ -109,7 +106,7 @@ class CORE_EXPORT QgsLocatorResult
     struct CORE_EXPORT ResultAction
     {
       public:
-        //! Constructor for ResultAction
+
         ResultAction() = default;
 
         /**
@@ -270,6 +267,22 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * result.
      */
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
+
+    /**
+     * This is called when the \a result is selected by the user.
+     * The filter subclass can implement logic here.
+     *
+     * \since QGIS 3.40
+     */
+    virtual void resultSelected( const QgsLocatorResult &result ) {Q_UNUSED( result )}
+
+    /**
+     * This is called when a \a result is deselected.
+     * The filter subclass can implement logic here.
+     *
+     * \since QGIS 3.40
+     */
+    virtual void resultDeselected( const QgsLocatorResult &result ) {Q_UNUSED( result )}
 
     /**
      * Triggers a filter \a result from this filter for an entry in the context menu.

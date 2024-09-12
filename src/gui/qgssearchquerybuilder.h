@@ -32,7 +32,7 @@ class QgsVectorLayer;
  * \ingroup gui
  * \class QgsSearchQueryBuilder
  * \brief Query Builder for search strings
- * \deprecated Will be removed in QGIS 4
+ * \deprecated QGIS 3.40. Will be removed in QGIS 4.
  */
 class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {

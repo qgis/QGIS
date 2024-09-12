@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsunitselectionwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -131,8 +131,9 @@ class QgsUnitSelectionWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget displaying a combobox allowing the user to choose between various display units,
-such as millimeters or map unit. If the user chooses map units, a button appears allowing
-adjustment of minimum and maximum scaling.
+such as millimeters or map units.
+
+If the user chooses map units, a button appears allowing adjustment of minimum and maximum scaling.
 
 .. seealso:: :py:class:`QgsMapUnitScaleWidget`
 
@@ -233,7 +234,11 @@ Sets whether the widget can show the map scale button when the Map Units option 
 %End
 
   signals:
+
     void changed();
+%Docstring
+Emitted when the selected unit is changed, or the definition of the map unit scale is changed.
+%End
 
 };
 
@@ -242,5 +247,5 @@ Sets whether the widget can show the map scale button when the Map Units option 
  *                                                                      *
  * src/gui/qgsunitselectionwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

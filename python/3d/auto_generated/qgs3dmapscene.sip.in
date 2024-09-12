@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgs3dmapscene.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -122,9 +122,9 @@ Returns a map of 3D map scenes (by name) open in the QGIS application.
 
    Only available from the QGIS desktop application.
 
-.. deprecated:: QGIS 3.36
-  use QgisAppInterface.mapCanvases3D() instead.
+.. deprecated:: 3.36
 
+   Use QgisAppInterface.mapCanvases3D() instead.
 .. versionadded:: 3.30
 %End
 
@@ -188,5 +188,5 @@ Updates the temporale entities
  *                                                                      *
  * src/3d/qgs3dmapscene.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

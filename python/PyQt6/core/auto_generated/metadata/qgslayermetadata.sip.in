@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgslayermetadata.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -109,9 +109,6 @@ Constructor for Constraint.
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
 
     QgsLayerMetadata();
-%Docstring
-Constructor for QgsLayerMetadata.
-%End
 
 
     virtual QgsLayerMetadata *clone() const /Factory/;
@@ -305,5 +302,5 @@ matches any regular expression from ``searchReList``.
  *                                                                      *
  * src/core/metadata/qgslayermetadata.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

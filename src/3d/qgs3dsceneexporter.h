@@ -58,9 +58,8 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     Q_OBJECT
 
   public:
-    //! Constructor
     Qgs3DSceneExporter() { }
-    //! Destructor
+
     ~Qgs3DSceneExporter()
     {
       for ( Qgs3DExportObject *obj : mObjects )
@@ -77,7 +76,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     void parseTerrain( QgsTerrainEntity *terrain, const  QString &layer );
 
     //! Saves the scene to a .obj file
-    void save( const QString &sceneName, const QString &sceneFolderPath );
+    void save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 );
 
     //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }

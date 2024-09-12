@@ -90,15 +90,12 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     };
 
-    /**
-     * Constructor for QgsScaleBarRenderer.
-     */
     QgsScaleBarRenderer() = default;
     virtual ~QgsScaleBarRenderer() = default;
 
     /**
      * Returns the unique name for this style.
-     * \deprecated use id() instead
+     * \deprecated QGIS 3.40. Use id() instead.
      */
     Q_DECL_DEPRECATED QString name() const SIP_DEPRECATED { return id(); }
 
@@ -142,7 +139,7 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Calculates the required box size (in millimeters) for a scalebar using the specified \a settings and \a scaleContext.
-     * \deprecated Use the version with a QgsRenderContext instead.
+     * \deprecated QGIS 3.40. Use the version with a QgsRenderContext instead.
      */
     Q_DECL_DEPRECATED virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
         const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const SIP_DEPRECATED;
@@ -181,7 +178,7 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Returns the x-offset (in millimeters) used for the first label in the scalebar.
-     * \deprecated Use the version with QgsRenderContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsRenderContext instead.
      */
     Q_DECL_DEPRECATED double firstLabelXOffset( const QgsScaleBarSettings &settings ) const SIP_DEPRECATED;
 
@@ -193,7 +190,7 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Returns a list of positions for each segment within the scalebar.
-     * \deprecated use the version with a QgsRenderContext instead
+     * \deprecated QGIS 3.40. Use the version with a QgsRenderContext instead.
      */
     Q_DECL_DEPRECATED QList<double> segmentPositions( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const SIP_DEPRECATED;
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/tiledscene/qgstiledscenerenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,7 +29,6 @@ Encapsulates the render context for a 2D tiled scene rendering operation.
 %Docstring
 Constructor for QgsTiledSceneRenderContext.
 %End
-
 
 
     QgsRenderContext &renderContext();
@@ -107,9 +106,6 @@ Abstract base class for 2d tiled scene renderers.
   public:
 
     QgsTiledSceneRenderer();
-%Docstring
-Constructor for QgsTiledSceneRenderer.
-%End
 
     virtual ~QgsTiledSceneRenderer();
 
@@ -284,5 +280,5 @@ specified DOM ``element``.
  *                                                                      *
  * src/core/tiledscene/qgstiledscenerenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

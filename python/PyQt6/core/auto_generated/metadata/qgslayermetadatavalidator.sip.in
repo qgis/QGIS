@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgslayermetadatavalidator.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -89,9 +89,6 @@ A validator for the native base QGIS metadata schema definition.
   public:
 
     QgsNativeMetadataBaseValidator();
-%Docstring
-Constructor for QgsNativeMetadataBaseValidator.
-%End
 
     virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
@@ -110,11 +107,7 @@ A validator for the native QGIS layer metadata schema definition.
 #include "qgslayermetadatavalidator.h"
 %End
   public:
-
     QgsNativeMetadataValidator();
-%Docstring
-Constructor for QgsNativeMetadataValidator.
-%End
 
     virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
@@ -136,9 +129,6 @@ A validator for the native QGIS project metadata schema definition.
   public:
 
     QgsNativeProjectMetadataValidator();
-%Docstring
-Constructor for QgsNativeProjectMetadataValidator.
-%End
 
     virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
@@ -150,5 +140,5 @@ Constructor for QgsNativeProjectMetadataValidator.
  *                                                                      *
  * src/core/metadata/qgslayermetadatavalidator.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

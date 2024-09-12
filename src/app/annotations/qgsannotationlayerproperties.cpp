@@ -36,6 +36,8 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 {
   setupUi( this );
 
+  mLayerComboBox->setAllowEmptyLayer( true );
+
   connect( this, &QDialog::accepted, this, &QgsAnnotationLayerProperties::apply );
   connect( this, &QDialog::rejected, this, &QgsAnnotationLayerProperties::rollback );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsAnnotationLayerProperties::apply );
@@ -98,6 +100,8 @@ void QgsAnnotationLayerProperties::apply()
   if ( mPaintEffect )
     mLayer->setPaintEffect( mPaintEffect->clone() );
 
+  mLayer->setLinkedVisibilityLayer( mLayerComboBox->currentLayer() );
+
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
 
@@ -144,6 +148,8 @@ void QgsAnnotationLayerProperties::syncToLayer()
     mPaintEffect.reset( mLayer->paintEffect()->clone() );
     mEffectWidget->setPaintEffect( mPaintEffect.get() );
   }
+
+  mLayerComboBox->setLayer( mLayer->linkedVisibilityLayer() );
 
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->syncToLayer( mLayer );

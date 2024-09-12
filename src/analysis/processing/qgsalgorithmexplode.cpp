@@ -58,6 +58,11 @@ QString QgsExplodeAlgorithm::shortHelpString() const
                       "same type and contain only single curve segments." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExplodeAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QList<int> QgsExplodeAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
@@ -103,6 +108,11 @@ QgsFeatureList QgsExplodeAlgorithm::processFeature( const QgsFeature &f, QgsProc
     }
     return features;
   }
+}
+
+Qgis::ProcessingFeatureSourceFlags QgsExplodeAlgorithm::sourceFlags() const
+{
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureSink::SinkFlags QgsExplodeAlgorithm::sinkFlags() const

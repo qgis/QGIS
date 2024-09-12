@@ -44,9 +44,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 
     ~QgsProcessingProvider() override;
 
-    //! Providers cannot be copied
     QgsProcessingProvider( const QgsProcessingProvider &other ) = delete;
-    //! Providers cannot be copied
     QgsProcessingProvider &operator=( const QgsProcessingProvider &other ) = delete;
 
     /**

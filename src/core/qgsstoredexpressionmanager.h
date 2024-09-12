@@ -57,9 +57,6 @@ class CORE_EXPORT QgsStoredExpression
 
 #ifndef SIP_RUN
 
-    /**
-     * Constructor for QgsStoredExpression
-     */
     QgsStoredExpression() = default;
 
     /**
@@ -98,9 +95,6 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
 
   public:
 
-    /**
-    * Constructor for QgsStoredExpressionManager
-    */
     QgsStoredExpressionManager() = default;
 
     /**

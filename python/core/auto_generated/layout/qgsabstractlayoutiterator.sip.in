@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgsabstractlayoutiterator.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -65,5 +65,5 @@ specified base file path and extension.
  *                                                                      *
  * src/core/layout/qgsabstractlayoutiterator.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

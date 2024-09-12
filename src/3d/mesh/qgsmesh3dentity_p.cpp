@@ -20,25 +20,25 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "qgsmeshlayer.h"
-#include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgsmesh3dmaterial_p.h"
 
 
 
-QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DMapSettings &map,
+QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DRenderContext &context,
                                   const QgsTriangularMesh &triangularMesh,
                                   const QgsMesh3DSymbol *symbol )
-  : mMapSettings( map )
+  : mRenderContext( context )
   , mTriangularMesh( triangularMesh )
   , mSymbol( symbol->clone() )
 {}
 
 QgsMeshDataset3DEntity::QgsMeshDataset3DEntity(
-  const Qgs3DMapSettings &map,
+  const Qgs3DRenderContext &context,
   const QgsTriangularMesh &triangularMesh,
   QgsMeshLayer *meshLayer,
   const QgsMesh3DSymbol *symbol )
-  : QgsMesh3DEntity( map, triangularMesh, symbol ),
+  : QgsMesh3DEntity( context, triangularMesh, symbol ),
     mLayerRef( meshLayer )
 {}
 
@@ -54,7 +54,7 @@ void QgsMeshDataset3DEntity::buildGeometry()
     return;
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMeshDataset3DGeometry( mTriangularMesh, layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mMapSettings.extent(), mSymbol.get(), mesh ) );
+  mesh->setGeometry( new QgsMeshDataset3DGeometry( mTriangularMesh, layer(), mRenderContext.temporalRange(), mRenderContext.origin(), mRenderContext.extent(), mSymbol.get(), mesh ) );
   addComponent( mesh );
 }
 
@@ -67,7 +67,7 @@ void QgsMeshDataset3DEntity::applyMaterial()
     if ( datasetGroupIndex >= 0 )
       mSymbol->setColorRampShader( rendererSettings.scalarSettings( datasetGroupIndex ).colorRampShader() );
   }
-  QgsMesh3DMaterial *material = new QgsMesh3DMaterial( layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mSymbol.get(), QgsMesh3DMaterial::ScalarDataSet );
+  QgsMesh3DMaterial *material = new QgsMesh3DMaterial( layer(), mRenderContext.temporalRange(), mRenderContext.origin(), mSymbol.get(), QgsMesh3DMaterial::ScalarDataSet );
   addComponent( material );
 }
 
@@ -76,20 +76,19 @@ QgsMeshLayer *QgsMeshDataset3DEntity::layer() const
   return qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
 }
 
-QgsMesh3DTerrainTileEntity::QgsMesh3DTerrainTileEntity(
-  const Qgs3DMapSettings &map,
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMesh3DSymbol *symbol,
-  QgsChunkNodeId nodeId,
-  Qt3DCore::QNode *parent )
+QgsMesh3DTerrainTileEntity::QgsMesh3DTerrainTileEntity( const Qgs3DRenderContext &context,
+    const QgsTriangularMesh &triangularMesh,
+    const QgsMesh3DSymbol *symbol,
+    QgsChunkNodeId nodeId,
+    Qt3DCore::QNode *parent )
   : QgsTerrainTileEntity( nodeId, parent )
-  , QgsMesh3DEntity( map, triangularMesh, symbol )
+  , QgsMesh3DEntity( context, triangularMesh, symbol )
 {}
 
 void QgsMesh3DTerrainTileEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMeshTerrain3DGeometry( mTriangularMesh, mMapSettings.origin(), mMapSettings.extent(), mSymbol.get()->verticalScale(), mesh ) );
+  mesh->setGeometry( new QgsMeshTerrain3DGeometry( mTriangularMesh, mRenderContext.origin(), mRenderContext.extent(), mSymbol.get()->verticalScale(), mesh ) );
   addComponent( mesh );
 }
 
@@ -97,7 +96,7 @@ void QgsMesh3DTerrainTileEntity::applyMaterial()
 {
   QgsMesh3DMaterial *material = new QgsMesh3DMaterial(
     nullptr, QgsDateTimeRange(),
-    mMapSettings.origin(),
+    mRenderContext.origin(),
     mSymbol.get(),
     QgsMesh3DMaterial::ZValue );
   addComponent( material );

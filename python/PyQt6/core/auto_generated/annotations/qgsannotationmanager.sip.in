@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/annotations/qgsannotationmanager.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -92,6 +92,7 @@ present in the XML document.
 .. seealso:: :py:func:`writeXml`
 %End
 
+
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns a DOM element representing the state of the manager.
@@ -134,5 +135,5 @@ Emitted when an annotation is about to be removed from the manager
  *                                                                      *
  * src/core/annotations/qgsannotationmanager.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

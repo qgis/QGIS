@@ -23,6 +23,7 @@
 #include "qobjectuniqueptr.h"
 #include "qgspointxy.h"
 #include "qgsannotationitemnode.h"
+#include "qgsrectangle.h"
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
@@ -90,6 +91,7 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QgsAnnotationLayer *annotationLayerFromId( const QString &layerId );
     QgsAnnotationItem *annotationItemFromId( const QString &layerId, const QString &itemId );
 
+    void setHoveredItemFromPoint( const QgsPointXY &mapPoint );
     void setHoveredItem( const QgsRenderedAnnotationItemDetails *item, const QgsRectangle &itemMapBounds );
 
     /**
@@ -113,16 +115,20 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QObjectUniquePtr<QgsRubberBand> mSelectedRubberBand;
     QObjectUniquePtr<QgsRubberBand> mTemporaryRubberBand;
 
+    QPoint mLastHoverPoint;
     QString mHoveredItemId;
     QString mHoveredItemLayerId;
+    QgsRectangle mHoveredItemBounds;
 
     QString mSelectedItemId;
     QString mSelectedItemLayerId;
+    QgsRectangle mSelectedItemBounds;
 
     std::unique_ptr< QgsAnnotationItemNodesSpatialIndex > mHoveredItemNodesSpatialIndex;
 
     QgsPointXY mMoveStartPointCanvasCrs;
     QgsPointXY mMoveStartPointLayerCrs;
+    QgsPointXY mMoveStartPointPixels;
 
     bool mRefreshSelectedItemAfterRedraw = false;
 

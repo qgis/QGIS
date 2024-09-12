@@ -77,9 +77,7 @@ namespace QgsGuiUtils
    * \param enc        encoding?
    * \param title      the title for the dialog
    * \param cancelAll  add button to cancel further requests
-   * \note
-   *
-   * Stores persistent settings under /UI/.  The sub-keys will be
+   * \note Stores persistent settings under /UI/.  The sub-keys will be
    * filterName and filterName + "Dir".
    *
    * Opens dialog on last directory associated with the filter name, or
@@ -225,9 +223,7 @@ class GUI_EXPORT QWidgetUpdateBlocker
      */
     QWidgetUpdateBlocker( QWidget *widget );
 
-    //! QWidgetUpdateBlocker cannot be copied
     QWidgetUpdateBlocker( const QWidgetUpdateBlocker &other ) = delete;
-    //! QWidgetUpdateBlocker cannot be copied
     QWidgetUpdateBlocker &operator=( const QWidgetUpdateBlocker &other ) = delete;
 
     ~QWidgetUpdateBlocker();

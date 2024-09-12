@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgstablewidgetitem.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,9 +20,6 @@ specific role can be set to sort.
   public:
 
     QgsTableWidgetItem();
-%Docstring
-Constructor for QgsTableWidgetItem.
-%End
 
     QgsTableWidgetItem( const QString &text );
 %Docstring
@@ -52,5 +49,5 @@ By default this will be Qt.DisplayRole
  *                                                                      *
  * src/gui/qgstablewidgetitem.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

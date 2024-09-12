@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutmeasurementconverter.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -14,7 +14,9 @@ class QgsLayoutMeasurementConverter
 {
 %Docstring(signature="appended")
 This class provides a method of converting :py:class:`QgsLayoutMeasurements` from
-one unit to another. Conversion to or from pixel units utilizes a specified
+one unit to another.
+
+Conversion to or from pixel units utilizes a specified
 dots per inch (DPI) property for the converter. Converters default to using
 300 DPI.
 
@@ -27,9 +29,6 @@ dots per inch (DPI) property for the converter. Converters default to using
   public:
 
     QgsLayoutMeasurementConverter();
-%Docstring
-Constructor for QgsLayoutMeasurementConverter.
-%End
 
     void setDpi( const double dpi );
 %Docstring
@@ -84,5 +83,5 @@ Converts a layout point from one unit to another.
  *                                                                      *
  * src/core/layout/qgslayoutmeasurementconverter.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -21,9 +21,22 @@
 #include "qgsscientificnumericformat.h"
 #include "qgsfractionnumericformat.h"
 #include "qgscoordinatenumericformat.h"
+#include "qgsexpressionbasednumericformat.h"
 #include "qgsgui.h"
 #include "qgis.h"
 #include <QDialogButtonBox>
+
+void QgsNumericFormatWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
+}
+
+QgsExpressionContext QgsNumericFormatWidget::createExpressionContext() const
+{
+  if ( mExpressionContextGenerator )
+    return mExpressionContextGenerator->createExpressionContext();
+  return QgsExpressionContext();
+}
 
 //
 // QgsBasicNumericFormatWidget
@@ -603,3 +616,53 @@ QgsNumericFormat *QgsFractionNumericFormatWidget::format()
 {
   return mFormat->clone();
 }
+
+
+//
+// QgsExpressionBasedNumericFormatWidget
+//
+QgsExpressionBasedNumericFormatWidget::QgsExpressionBasedNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent )
+  : QgsNumericFormatWidget( parent )
+{
+  setupUi( this );
+  setFormat( format->clone() );
+
+  mExpressionSelector->setMultiLine( true );
+  mExpressionSelector->registerExpressionContextGenerator( this );
+
+  connect( mExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, [ = ]( const QString & text )
+  {
+    mFormat->setExpression( text );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+}
+
+QgsExpressionContext QgsExpressionBasedNumericFormatWidget::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsNumericFormatWidget::createExpressionContext();
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 1234.5678 ) );
+  context.appendScope( scope );
+  context.setHighlightedVariables( { QStringLiteral( "value" )} );
+  return context;
+}
+
+QgsExpressionBasedNumericFormatWidget::~QgsExpressionBasedNumericFormatWidget() = default;
+
+void QgsExpressionBasedNumericFormatWidget::setFormat( QgsNumericFormat *format )
+{
+  mFormat.reset( static_cast< QgsExpressionBasedNumericFormat * >( format ) );
+
+  mBlockSignals = true;
+  mExpressionSelector->setExpression( mFormat->expression() );
+  mBlockSignals = false;
+}
+
+QgsNumericFormat *QgsExpressionBasedNumericFormatWidget::format()
+{
+  return mFormat->clone();
+}
+

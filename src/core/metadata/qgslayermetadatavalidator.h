@@ -109,9 +109,6 @@ class CORE_EXPORT QgsNativeMetadataBaseValidator : public QgsAbstractMetadataBas
 
   public:
 
-    /**
-     * Constructor for QgsNativeMetadataBaseValidator.
-     */
     QgsNativeMetadataBaseValidator() = default;
 
     bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results SIP_OUT ) const override;
@@ -129,10 +126,6 @@ class CORE_EXPORT QgsNativeMetadataValidator : public QgsNativeMetadataBaseValid
 {
 
   public:
-
-    /**
-     * Constructor for QgsNativeMetadataValidator.
-     */
     QgsNativeMetadataValidator() = default;
 
     bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results SIP_OUT ) const override;
@@ -151,9 +144,6 @@ class CORE_EXPORT QgsNativeProjectMetadataValidator : public QgsNativeMetadataBa
 
   public:
 
-    /**
-     * Constructor for QgsNativeProjectMetadataValidator.
-     */
     QgsNativeProjectMetadataValidator() = default;
 
     bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results SIP_OUT ) const override;

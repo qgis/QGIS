@@ -44,9 +44,6 @@ class ANALYSIS_EXPORT QgsGraphEdge
 {
   public:
 
-    /**
-     * Constructor for QgsGraphEdge.
-     */
     QgsGraphEdge() = default;
 
     /**
@@ -94,9 +91,6 @@ class ANALYSIS_EXPORT QgsGraphVertex
 {
   public:
 
-    /**
-     * Default constructor. It is needed for Qt's container, e.g. QVector
-     */
     QgsGraphVertex() = default;
 
     /**
@@ -140,9 +134,6 @@ class ANALYSIS_EXPORT QgsGraph
 {
   public:
 
-    /**
-     * Constructor for QgsGraph.
-     */
     QgsGraph() = default;
 
     // Graph constructing methods

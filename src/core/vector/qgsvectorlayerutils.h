@@ -62,7 +62,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     {
       public:
 
-        //! Constructor for QgsDuplicateFeatureContext
         QgsDuplicateFeatureContext() = default;
 
         /**

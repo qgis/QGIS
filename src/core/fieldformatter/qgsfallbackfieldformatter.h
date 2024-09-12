@@ -30,9 +30,6 @@ class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter
 {
   public:
 
-    /**
-      * Default constructor of field formatter as a fallback when no specialized formatter is defined.
-      */
     QgsFallbackFieldFormatter() = default;
     QString id() const override;
 };

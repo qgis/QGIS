@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectordataprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,44 +27,11 @@ of feature and attribute information from a spatial datasource.
 %End
   public:
 
-
-    enum Capability
-    {
-      NoCapabilities,
-      AddFeatures,
-      DeleteFeatures,
-      ChangeAttributeValues,
-      AddAttributes,
-      DeleteAttributes,
-      CreateSpatialIndex,
-      SelectAtId,
-      ChangeGeometries,
-      SelectEncoding,
-      CreateAttributeIndex,
-      SimplifyGeometries,
-      SimplifyGeometriesWithTopologicalValidation,
-      TransactionSupport,
-      CircularGeometries,
-      ChangeFeatures,
-      RenameAttributes,
-      FastTruncate,
-      ReadLayerMetadata,
-      WriteLayerMetadata,
-      CancelSupport,
-      CreateRenderer,
-      CreateLabeling,
-      ReloadData,
-      FeatureSymbology,
-    };
-
-    typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
-
-
     static const int EditingCapabilities;
 
     QgsVectorDataProvider( const QString &uri = QString(),
                            const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                           Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Constructor for a vector data provider.
 
@@ -247,6 +214,8 @@ Returns the possible enum values of an attribute. Returns an empty stringlist if
 or if the given attribute is not an enum type.
 
 :param index: the index of the attribute
+
+:return: reference to the list to fill
 %End
 
     virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
@@ -406,7 +375,7 @@ Creates a spatial index on the datasource (if supported by the provider type).
 Create an attribute index on the datasource
 %End
 
-    virtual QgsVectorDataProvider::Capabilities capabilities() const;
+    virtual Qgis::VectorProviderCapabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities
 \note, some capabilities may change depending on whether
@@ -477,8 +446,9 @@ Returns list of indexes of fields that make up the primary key
 %Docstring
 Returns list of indexes to names for :py:class:`QgsPalLabeling` fix
 
-.. deprecated:: QGIS 3.32
-   this method is unused and will always return an empty hash
+.. deprecated:: 3.32
+
+   This method is unused and will always return an empty hash.
 %End
 
     bool supportedType( const QgsField &field ) const;
@@ -577,8 +547,9 @@ Convert ``value`` to ``type``
 %Docstring
 Convert ``value`` to ``type``
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     virtual QgsTransaction *transaction() const;
@@ -589,8 +560,9 @@ Returns the transaction this data provider is included in, if any.
  virtual void forceReload() /Deprecated/;
 %Docstring
 
-.. deprecated::
-   QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
+.. deprecated:: 3.12
+
+   Will be removed in QGIS 4.0 - use reloadData instead.
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
@@ -719,13 +691,10 @@ Converts the ``geometry`` to the provider geometry type ``providerGeometryType``
 
 };
 
-QFlags<QgsVectorDataProvider::Capability> operator|(QgsVectorDataProvider::Capability f1, QFlags<QgsVectorDataProvider::Capability> f2);
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/core/vector/qgsvectordataprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -6,6 +6,8 @@
 %Include auto_generated/qgsadvanceddigitizingcanvasitem.sip
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
 %Include auto_generated/qgsadvanceddigitizingfloater.sip
+%Include auto_generated/qgsadvanceddigitizingtools.sip
+%Include auto_generated/qgsadvanceddigitizingtoolsregistry.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
 %Include auto_generated/qgsalignmentcombobox.sip
 %Include auto_generated/qgsapplicationexitblockerinterface.sip
@@ -130,17 +132,6 @@
 %Include auto_generated/qgsmapmouseevent.sip
 %Include auto_generated/qgsmapoverviewcanvas.sip
 %Include auto_generated/qgsmaptip.sip
-%Include auto_generated/qgsmaptool.sip
-%Include auto_generated/qgsmaptooladvanceddigitizing.sip
-%Include auto_generated/qgsmaptoolcapture.sip
-%Include auto_generated/qgsmaptooldigitizefeature.sip
-%Include auto_generated/qgsmaptooledit.sip
-%Include auto_generated/qgsmaptoolemitpoint.sip
-%Include auto_generated/qgsmaptoolextent.sip
-%Include auto_generated/qgsmaptoolidentify.sip
-%Include auto_generated/qgsmaptoolidentifyfeature.sip
-%Include auto_generated/qgsmaptoolpan.sip
-%Include auto_generated/qgsmaptoolzoom.sip
 %Include auto_generated/qgsmediawidget.sip
 %Include auto_generated/qgsmenuheader.sip
 %Include auto_generated/qgsmessagebar.sip
@@ -277,6 +268,7 @@
 %Include auto_generated/auth/qgsauthsslerrorsdialog.sip
 %Include auto_generated/auth/qgsauthsslimportdialog.sip
 %Include auto_generated/auth/qgsauthtrustedcasdialog.sip
+%Include auto_generated/callouts/qgscalloutpanelwidget.sip
 %Include auto_generated/callouts/qgscalloutwidget.sip
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditor.sip
@@ -366,6 +358,8 @@
 %End
 %Include auto_generated/inputcontroller/qgsabstractinputcontroller.sip
 %Include auto_generated/inputcontroller/qgsinputcontrollermanager.sip
+%Include auto_generated/labeling/qgslabelingenginerulewidget.sip
+%Include auto_generated/labeling/qgslabelingengineruleswidget.sip
 %Include auto_generated/labeling/qgslabellineanchorwidget.sip
 %Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
 %Include auto_generated/labeling/qgslabelsettingswidgetbase.sip
@@ -400,7 +394,18 @@
 %Include auto_generated/layout/qgslayoutviewtooltemporarymousepan.sip
 %Include auto_generated/layout/qgslayoutviewtoolzoom.sip
 %Include auto_generated/locator/qgslocatorwidget.sip
+%Include auto_generated/maptools/qgsmaptool.sip
+%Include auto_generated/maptools/qgsmaptooladvanceddigitizing.sip
+%Include auto_generated/maptools/qgsmaptoolcapture.sip
 %Include auto_generated/maptools/qgsmaptoolcapturelayergeometry.sip
+%Include auto_generated/maptools/qgsmaptooldigitizefeature.sip
+%Include auto_generated/maptools/qgsmaptooledit.sip
+%Include auto_generated/maptools/qgsmaptoolemitpoint.sip
+%Include auto_generated/maptools/qgsmaptoolextent.sip
+%Include auto_generated/maptools/qgsmaptoolidentify.sip
+%Include auto_generated/maptools/qgsmaptoolidentifyfeature.sip
+%Include auto_generated/maptools/qgsmaptoolpan.sip
+%Include auto_generated/maptools/qgsmaptoolzoom.sip
 %Include auto_generated/mesh/qgsmeshlayerproperties.sip
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
@@ -505,6 +510,7 @@
 %Include auto_generated/symbology/qgsstylesavedialog.sip
 %Include auto_generated/symbology/qgssvgselectorwidget.sip
 %Include auto_generated/symbology/qgssymbolanimationsettingswidget.sip
+%Include auto_generated/symbology/qgssymbolbuffersettingswidget.sip
 %Include auto_generated/symbology/qgssymbollayerwidget.sip
 %Include auto_generated/symbology/qgssymbollevelsdialog.sip
 %Include auto_generated/symbology/qgssymbolselectordialog.sip

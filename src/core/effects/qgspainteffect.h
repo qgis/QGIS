@@ -106,9 +106,6 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
       ModifyAndRender //!< The result of the effect is both rendered and passed on to subsequent effects in the stack
     };
 
-    /**
-     * Constructor for QgsPaintEffect.
-     */
     QgsPaintEffect() = default;
 
     QgsPaintEffect( const QgsPaintEffect &other );
@@ -289,8 +286,10 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * when drawing QPictures. This may need to be called by derived classes prior
      * to rendering results onto a painter.
      * \param painter destination painter
+     *
+     * \deprecated QGIS 3.40. Use QgsPainting::drawPicture() or QgsPainting::applyScaleFixForQPictureDpi() instead.
      */
-    void fixQPictureDpi( QPainter *painter ) const;
+    Q_DECL_DEPRECATED void fixQPictureDpi( QPainter *painter ) const SIP_DEPRECATED;
 
   private:
 
@@ -326,7 +325,6 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
   public:
 
-    //! Constructor for QgsDrawSourceEffect
     QgsDrawSourceEffect() = default;
 
     /**

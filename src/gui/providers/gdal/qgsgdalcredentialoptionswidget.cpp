@@ -18,7 +18,6 @@
 
 #include "qgsgdalcredentialoptionswidget.h"
 #include "qgsgdalguiutils.h"
-#include "qgsvariantutils.h"
 #include "qgsapplication.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
@@ -111,7 +110,7 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
           return option.first;
 
         case Column::Value:
-          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QStringLiteral( "YES" ) ? tr( "Yes" ) : option.second == QStringLiteral( "NO" ) ? tr( "No" ) : option.second )
+          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QLatin1String( "YES" ) ? tr( "Yes" ) : option.second == QLatin1String( "NO" ) ? tr( "No" ) : option.second )
                  :  option.second;
 
         default:
@@ -540,20 +539,20 @@ QgsGdalCredentialOptionsWidget::QgsGdalCredentialOptionsWidget( QWidget *parent 
   connect( mModel, &QgsGdalCredentialOptionsModel::optionsChanged, this, &QgsGdalCredentialOptionsWidget::modelOptionsChanged );
 }
 
-void QgsGdalCredentialOptionsWidget::setDriver( const QString &driver )
+void QgsGdalCredentialOptionsWidget::setHandler( const QString &handler )
 {
-  if ( driver == mDriver )
+  if ( handler == mHandler )
     return;
 
-  mDriver = driver;
+  mHandler = handler;
 
-  if ( QgsGdalUtils::vsiHandlerType( mDriver ) != Qgis::VsiHandlerType::Cloud )
+  if ( QgsGdalUtils::vsiHandlerType( mHandler ) != Qgis::VsiHandlerType::Cloud )
   {
     mModel->setAvailableOptions( {} );
     return;
   }
 
-  const QString vsiPrefix = QStringLiteral( "/%1/" ).arg( mDriver );
+  const QString vsiPrefix = QStringLiteral( "/%1/" ).arg( mHandler );
   const char *pszVsiOptions( VSIGetFileSystemOptions( vsiPrefix.toLocal8Bit().constData() ) );
   if ( !pszVsiOptions )
     return;

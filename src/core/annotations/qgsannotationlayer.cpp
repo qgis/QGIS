@@ -110,7 +110,7 @@ QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions 
 
   QgsDataProvider::ProviderOptions providerOptions;
   providerOptions.transformContext = options.transformContext;
-  mDataProvider = new QgsAnnotationLayerDataProvider( providerOptions, QgsDataProvider::ReadFlags() );
+  mDataProvider = new QgsAnnotationLayerDataProvider( providerOptions, Qgis::DataProviderReadFlags() );
 
   mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   mPaintEffect->setEnabled( false );
@@ -265,6 +265,13 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEdit( QgsAbstra
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  return applyEditV2( operation, QgsAnnotationItemEditContext() );
+}
+
+Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Qgis::AnnotationItemEditOperationResult res = Qgis::AnnotationItemEditOperationResult::Invalid;
   if ( QgsAnnotationItem *targetItem = item( operation->itemId() ) )
   {
@@ -274,7 +281,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEdit( QgsAbstra
     {
       mSpatialIndex->remove( operation->itemId(), targetItem->boundingBox() );
     }
-    res = targetItem->applyEdit( operation );
+    res = targetItem->applyEditV2( operation, context );
 
     switch ( res )
     {
@@ -326,6 +333,8 @@ QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 
   if ( mPaintEffect )
     layer->setPaintEffect( mPaintEffect->clone() );
+
+  layer->mLinkedLayer = mLinkedLayer;
 
   return layer.release();
 }
@@ -380,6 +389,14 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   readItems( layerNode, errorMsg, context );
   readSymbology( layerNode, errorMsg, context );
 
+  {
+    const QString layerId = layerNode.toElement().attribute( QStringLiteral( "linkedLayer" ) );
+    const QString layerName = layerNode.toElement().attribute( QStringLiteral( "linkedLayerName" ) );
+    const QString layerSource = layerNode.toElement().attribute( QStringLiteral( "linkedLayerSource" ) );
+    const QString layerProvider = layerNode.toElement().attribute( QStringLiteral( "linkedLayerProvider" ) );
+    mLinkedLayer = QgsMapLayerRef( layerId, layerName, layerSource, layerProvider );
+  }
+
   triggerRepaint();
 
   return mValid;
@@ -399,6 +416,14 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
   }
 
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Annotation ) );
+
+  if ( mLinkedLayer )
+  {
+    mapLayerNode.setAttribute( QStringLiteral( "linkedLayer" ), mLinkedLayer.layerId );
+    mapLayerNode.setAttribute( QStringLiteral( "linkedLayerName" ), mLinkedLayer.name );
+    mapLayerNode.setAttribute( QStringLiteral( "linkedLayerSource" ), mLinkedLayer.source );
+    mapLayerNode.setAttribute( QStringLiteral( "linkedLayerProvider" ), mLinkedLayer.provider );
+  }
 
   QString errorMsg;
   writeItems( layer_node, doc, errorMsg, context );
@@ -635,6 +660,11 @@ QString QgsAnnotationLayer::htmlMetadata() const
   return metadata;
 }
 
+void QgsAnnotationLayer::resolveReferences( QgsProject *project )
+{
+  mLinkedLayer.resolve( project );
+}
+
 QgsPaintEffect *QgsAnnotationLayer::paintEffect() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -649,6 +679,21 @@ void QgsAnnotationLayer::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect.reset( effect );
 }
 
+QgsMapLayer *QgsAnnotationLayer::linkedVisibilityLayer()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mLinkedLayer.get();
+}
+
+void QgsAnnotationLayer::setLinkedVisibilityLayer( QgsMapLayer *layer )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mLinkedLayer.setLayer( layer );
+  triggerRepaint();
+}
+
 
 //
 // QgsAnnotationLayerDataProvider
@@ -656,7 +701,7 @@ void QgsAnnotationLayer::setPaintEffect( QgsPaintEffect *effect )
 ///@cond PRIVATE
 QgsAnnotationLayerDataProvider::QgsAnnotationLayerDataProvider(
   const ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( QString(), options, flags )
 {}
 

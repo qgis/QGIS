@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/history/qgshistoryproviderregistry.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -100,7 +100,7 @@ Entry options are specified via the ``options`` argument.
 :param options: options
 
 :return: - ID of newly added entry.
-         - ok: will be set to ``True`` if entry was successfully added
+         - ok: ``True`` if entry was successfully added
 %End
 
     long long addEntry( const QgsHistoryEntry &entry, bool &ok /Out/, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
@@ -111,8 +111,7 @@ Adds an ``entry`` to the history logs.
 :param options: options
 
 :return: - ID of newly added entry.
-         - ok: will be set to ``True`` if entry was successfully added
-
+         - ok: ``True`` if entry was successfully added
 
 .. seealso:: :py:func:`entryAdded`
 %End
@@ -198,5 +197,5 @@ specified provider.
  *                                                                      *
  * src/gui/history/qgshistoryproviderregistry.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

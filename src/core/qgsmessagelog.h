@@ -42,9 +42,6 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
   public:
 
-    /**
-     * Constructor for QgsMessageLog.
-     */
     QgsMessageLog() = default;
 
     /**
@@ -112,10 +109,7 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
      */
     QgsMessageLogNotifyBlocker();
 
-    //! QgsMessageLogNotifyBlocker cannot be copied
     QgsMessageLogNotifyBlocker( const QgsMessageLogNotifyBlocker &other ) = delete;
-
-    //! QgsMessageLogNotifyBlocker cannot be copied
     QgsMessageLogNotifyBlocker &operator=( const QgsMessageLogNotifyBlocker &other ) = delete;
 
     ~QgsMessageLogNotifyBlocker();

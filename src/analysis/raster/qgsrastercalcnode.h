@@ -80,9 +80,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opNONE,
     };
 
-    /**
-     * Constructor for QgsRasterCalcNode.
-     */
     QgsRasterCalcNode() = default;
 
     QgsRasterCalcNode( double number );
@@ -93,9 +90,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
-    //! QgsRasterCalcNode cannot be copied
     QgsRasterCalcNode( const QgsRasterCalcNode &rh ) = delete;
-    //! QgsRasterCalcNode cannot be copied
     QgsRasterCalcNode &operator=( const QgsRasterCalcNode &rh ) = delete;
 
     Type type() const { return mType; }

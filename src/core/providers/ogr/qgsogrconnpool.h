@@ -86,10 +86,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
       initTimer( this );
     }
 
-    //! QgsOgrConnPoolGroup cannot be copied
     QgsOgrConnPoolGroup( const QgsOgrConnPoolGroup &other ) = delete;
-
-    //! QgsOgrConnPoolGroup cannot be copied
     QgsOgrConnPoolGroup &operator=( const QgsOgrConnPoolGroup &other ) = delete;
 
     void ref() { ++mRefCount; }
@@ -132,20 +129,16 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     //
     static void cleanupInstance();
 
-    //! QgsOgrConnPool cannot be copied
     QgsOgrConnPool( const QgsOgrConnPool &other ) = delete;
-
-    //! QgsOgrConnPool cannot be copied
     QgsOgrConnPool &operator=( const QgsOgrConnPool &other ) = delete;
 
     /**
      * \brief Increases the reference count on the connection pool for the specified connection.
      * \param connInfo The connection string.
-     * \note
-     *     Any user of the connection pool needs to increase the reference count
-     *     before it acquires any connections and decrease the reference count after
-     *     releasing all acquired connections to ensure that all open OGR handles
-     *     are freed when and only when no one is using the pool anymore.
+     * \note Any user of the connection pool needs to increase the reference count
+     * before it acquires any connections and decrease the reference count after
+     * releasing all acquired connections to ensure that all open OGR handles
+     * are freed when and only when no one is using the pool anymore.
      */
     void ref( const QString &connInfo )
     {

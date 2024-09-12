@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/annotations/qgsannotationpointtextitem.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -51,11 +51,11 @@ Creates a new text at point annotation item.
 
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 
-    virtual QList< QgsAnnotationItemNode > nodes() const;
+    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
 
-    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
 
-    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 
 
     QgsPointXY point() const;
@@ -159,5 +159,5 @@ Sets the rotation ``mode`` for the text item.
  *                                                                      *
  * src/core/annotations/qgsannotationpointtextitem.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

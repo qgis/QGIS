@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -49,5 +49,5 @@ Sets the ``context`` in which the widget is shown, e.g., the associated map canv
  *                                                                      *
  * src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

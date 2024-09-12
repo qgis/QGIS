@@ -214,7 +214,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     void nodeRemovedChildren();
 
   private:
-    //! Copy constructor \see clone()
     QgsLayerTree( const QgsLayerTree &other );
 
     void init();

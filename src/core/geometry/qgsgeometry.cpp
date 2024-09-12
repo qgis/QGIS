@@ -22,6 +22,7 @@ email                : morb at ozemail dot com dot au
 
 #include "qgis.h"
 #include "qgsgeometry.h"
+#include "qgsabstractgeometry.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
 
@@ -45,6 +46,8 @@ email                : morb at ozemail dot com dot au
 #include "qgslinestring.h"
 #include "qgscircle.h"
 #include "qgscurve.h"
+#include "qgspolyhedralsurface.h"
+#include "qgstriangle.h"
 
 struct QgsGeometryPrivate
 {
@@ -259,7 +262,7 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
     return fromRect( box.toRectangle() );
   }
 
-  std::unique_ptr< QgsMultiPolygon > multiPolygon = std::make_unique< QgsMultiPolygon >();
+  std::unique_ptr< QgsPolyhedralSurface > polyhedralSurface = std::make_unique< QgsPolyhedralSurface >();
 
   std::unique_ptr< QgsLineString > ext1 = std::make_unique< QgsLineString >(
       QVector< double >() << box.xMinimum()
@@ -278,7 +281,7 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
       << box.zMinimum()
       << box.zMinimum() );
   std::unique_ptr< QgsPolygon > polygon1 = std::make_unique< QgsPolygon >( ext1.release() );
-  multiPolygon->addGeometry( polygon1.release() );
+  polyhedralSurface->addPatch( polygon1.release() );
 
   std::unique_ptr< QgsLineString > ext2 = std::make_unique< QgsLineString >(
       QVector< double >() << box.xMinimum()
@@ -297,7 +300,7 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
       << box.zMaximum()
       << box.zMinimum() );
   std::unique_ptr< QgsPolygon > polygon2 = std::make_unique< QgsPolygon >( ext2.release() );
-  multiPolygon->addGeometry( polygon2.release() );
+  polyhedralSurface->addPatch( polygon2.release() );
 
   std::unique_ptr< QgsLineString > ext3 = std::make_unique< QgsLineString >(
       QVector< double >() << box.xMinimum()
@@ -316,7 +319,7 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
       << box.zMaximum()
       << box.zMinimum() );
   std::unique_ptr< QgsPolygon > polygon3 = std::make_unique< QgsPolygon >( ext3.release() );
-  multiPolygon->addGeometry( polygon3.release() );
+  polyhedralSurface->addPatch( polygon3.release() );
 
   std::unique_ptr< QgsLineString > ext4 = std::make_unique< QgsLineString >(
       QVector< double >() << box.xMaximum()
@@ -335,7 +338,7 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
       << box.zMaximum()
       << box.zMaximum() );
   std::unique_ptr< QgsPolygon > polygon4 = std::make_unique< QgsPolygon >( ext4.release() );
-  multiPolygon->addGeometry( polygon4.release() );
+  polyhedralSurface->addPatch( polygon4.release() );
 
   std::unique_ptr< QgsLineString > ext5 = std::make_unique< QgsLineString >(
       QVector< double >() << box.xMaximum()
@@ -354,7 +357,7 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
       << box.zMinimum()
       << box.zMaximum() );
   std::unique_ptr< QgsPolygon > polygon5 = std::make_unique< QgsPolygon >( ext5.release() );
-  multiPolygon->addGeometry( polygon5.release() );
+  polyhedralSurface->addPatch( polygon5.release() );
 
   std::unique_ptr< QgsLineString > ext6 = std::make_unique< QgsLineString >(
       QVector< double >() << box.xMaximum()
@@ -373,9 +376,9 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
       << box.zMaximum()
       << box.zMaximum() );
   std::unique_ptr< QgsPolygon > polygon6 = std::make_unique< QgsPolygon >( ext6.release() );
-  multiPolygon->addGeometry( polygon6.release() );
+  polyhedralSurface->addPatch( polygon6.release() );
 
-  return QgsGeometry( std::move( multiPolygon ) );
+  return QgsGeometry( std::move( polyhedralSurface ) );
 }
 
 QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
@@ -409,6 +412,22 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
 
 QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius )
 {
+  const double startAngle = azimuth - angularWidth * 0.5;
+  const double endAngle = azimuth + angularWidth * 0.5;
+
+  return createWedgeBufferFromAngles( center, startAngle, endAngle, outerRadius, innerRadius );
+}
+
+QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius )
+{
+  std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
+
+  const double DEG_TO_RAD = M_PI / 180.0;
+  const double RAD_TO_DEG = 180.0 / M_PI;
+
+  const double angularWidth =  endAngle - startAngle;
+  const bool useShortestArc = QgsGeometryUtilsBase::normalizedAngle( angularWidth * DEG_TO_RAD ) * RAD_TO_DEG <= 180.0;
+
   if ( std::abs( angularWidth ) >= 360.0 )
   {
     std::unique_ptr< QgsCompoundCurve > outerCc = std::make_unique< QgsCompoundCurve >();
@@ -432,15 +451,8 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
     return QgsGeometry( std::move( cp ) );
   }
 
-  std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
-
-  const double startAngle = azimuth - angularWidth * 0.5;
-  const double endAngle = azimuth + angularWidth * 0.5;
-
   const QgsPoint outerP1 = center.project( outerRadius, startAngle );
   const QgsPoint outerP2 = center.project( outerRadius, endAngle );
-
-  const bool useShortestArc = angularWidth <= 180.0;
 
   wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP1, outerP2, center, useShortestArc ) ) );
 
@@ -487,7 +499,6 @@ Qgis::WkbType QgsGeometry::wkbType() const
     return d->geometry->wkbType();
   }
 }
-
 
 Qgis::GeometryType QgsGeometry::type() const
 {
@@ -1763,6 +1774,36 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     }
     newGeom = QgsGeometry( std::move( mp ) );
   }
+
+  //(Multi)Polygon to PolyhedralSurface
+  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::PolyhedralSurface &&
+       QgsWkbTypes::flatType( QgsWkbTypes::singleType( newGeom.wkbType() ) ) == Qgis::WkbType::Polygon )
+  {
+    std::unique_ptr< QgsPolyhedralSurface > polySurface = std::make_unique< QgsPolyhedralSurface >();
+    const QgsGeometry source = newGeom;
+    for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
+    {
+      if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *part ) )
+      {
+        polySurface->addPatch( polygon->clone() );
+      }
+    }
+    newGeom = QgsGeometry( std::move( polySurface ) );
+  }
+
+  // Polygon -> Triangle
+  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::Triangle &&
+       QgsWkbTypes::flatType( newGeom.wkbType() ) == Qgis::WkbType::Polygon )
+  {
+    std::unique_ptr< QgsTriangle > triangle = std::make_unique< QgsTriangle >();
+    const QgsGeometry source = newGeom;
+    if ( QgsPolygon *polygon = qgsgeometry_cast< QgsPolygon * >( newGeom.constGet() ) )
+    {
+      triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+    }
+    newGeom = QgsGeometry( std::move( triangle ) );
+  }
+
 
   // Single -> multi
   if ( QgsWkbTypes::isMultiType( type ) && ! newGeom.isMultipart( ) )

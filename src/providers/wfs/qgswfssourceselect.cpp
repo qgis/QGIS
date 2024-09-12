@@ -64,7 +64,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Standalone )
   {
     mHoldDialogOpen->hide();
   }
@@ -550,7 +550,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     emit addLayer( Qgis::LayerType::Vector, mUri, layerName, isOapif() ? QgsOapifProvider::OAPIF_PROVIDER_KEY : QgsWFSProvider::WFS_PROVIDER_KEY );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
+  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
   {
     accept();
   }

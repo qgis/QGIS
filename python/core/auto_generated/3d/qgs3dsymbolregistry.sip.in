@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/./3d/qgs3dsymbolregistry.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -122,5 +122,5 @@ The caller takes ownership of the returned symbol.
  *                                                                      *
  * src/core/./3d/qgs3dsymbolregistry.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

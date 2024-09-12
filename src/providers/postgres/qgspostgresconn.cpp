@@ -2557,6 +2557,18 @@ void QgsPostgresConn::postgisWkbType( Qgis::WkbType wkbType, QString &geometryTy
       geometryType = QStringLiteral( "MULTISURFACE" );
       break;
 
+    case Qgis::WkbType::Triangle:
+      geometryType = QStringLiteral( "TRIANGLE" );
+      break;
+
+    case Qgis::WkbType::PolyhedralSurface:
+      geometryType = QStringLiteral( "POLYHEDRALSURFACE" );
+      break;
+
+    case Qgis::WkbType::TIN:
+      geometryType = QStringLiteral( "TIN" );
+      break;
+
     case Qgis::WkbType::Unknown:
       geometryType = QStringLiteral( "GEOMETRY" );
       break;
@@ -2612,7 +2624,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, Qgis::WkbType wkbTy
     case Qgis::GeometryType::Line:
       return QStringLiteral( "upper(geometrytype(%1)) IN ('LINESTRING','LINESTRINGZ','LINESTRINGM','LINESTRINGZM','CIRCULARSTRING','CIRCULARSTRINGZ','CIRCULARSTRINGM','CIRCULARSTRINGZM','COMPOUNDCURVE','COMPOUNDCURVEZ','COMPOUNDCURVEM','COMPOUNDCURVEZM','MULTILINESTRING','MULTILINESTRINGZ','MULTILINESTRINGM','MULTILINESTRINGZM','MULTICURVE','MULTICURVEZ','MULTICURVEM','MULTICURVEZM')" ).arg( geomCol );
     case Qgis::GeometryType::Polygon:
-      return QStringLiteral( "upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','POLYHEDRALSURFACE','TIN')" ).arg( geomCol );
+      return QStringLiteral( "upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','TRIANGLE','TRIANGLEZ','TRIANGLEM','TRIANGLEZM','POLYHEDRALSURFACE','POLYHEDRALSURFACEZ','POLYHEDRALSURFACEM','POLYHEDRALSURFACEZM','TIN','TINZ','TINM','TINZM')" ).arg( geomCol );
     case Qgis::GeometryType::Null:
       return QStringLiteral( "geometrytype(%1) IS NULL" ).arg( geomCol );
     default: //unknown geometry
@@ -2632,56 +2644,11 @@ int QgsPostgresConn::postgisWkbTypeDim( Qgis::WkbType wkbType )
 
 Qgis::WkbType QgsPostgresConn::wkbTypeFromPostgis( const QString &type )
 {
-  // Polyhedral surfaces and TIN are stored in PostGIS as geometry collections
-  // of Polygons and Triangles.
-  // So, since QGIS does not natively support PS and TIN, but we would like to open them if possible,
-  // we consider them as multipolygons. WKB will be converted by the feature iterator
-  if ( ( type == QLatin1String( "POLYHEDRALSURFACE" ) ) || ( type == QLatin1String( "TIN" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygon;
-  }
-  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZ" ) ) || ( type == QLatin1String( "TINZ" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygonZ;
-  }
-  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEM" ) ) || ( type == QLatin1String( "TINM" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygonM;
-  }
-  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZM" ) ) || ( type == QLatin1String( "TINZM" ) ) )
-  {
-    return Qgis::WkbType::MultiPolygonZM;
-  }
-  else if ( type == QLatin1String( "TRIANGLE" ) )
-  {
-    return Qgis::WkbType::Polygon;
-  }
-  else if ( type == QLatin1String( "TRIANGLEZ" ) )
-  {
-    return Qgis::WkbType::PolygonZ;
-  }
-  else if ( type == QLatin1String( "TRIANGLEM" ) )
-  {
-    return Qgis::WkbType::PolygonM;
-  }
-  else if ( type == QLatin1String( "TRIANGLEZM" ) )
-  {
-    return Qgis::WkbType::PolygonZM;
-  }
   return QgsWkbTypes::parseType( type );
 }
 
 Qgis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
 {
-  // PolyhedralSurface => MultiPolygon
-  if ( wkbType % 1000 == 15 )
-    return ( Qgis::WkbType )( wkbType / 1000 * 1000 + static_cast< quint32>( Qgis::WkbType::MultiPolygon ) );
-  // TIN => MultiPolygon
-  if ( wkbType % 1000 == 16 )
-    return ( Qgis::WkbType )( wkbType / 1000 * 1000 + static_cast< quint32>( Qgis::WkbType::MultiPolygon ) );
-  // Triangle => Polygon
-  if ( wkbType % 1000 == 17 )
-    return ( Qgis::WkbType )( wkbType / 1000 * 1000 + static_cast< quint32>( Qgis::WkbType::Polygon ) );
   return ( Qgis::WkbType ) wkbType;
 }
 
@@ -2757,44 +2724,44 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
 
   QgsSettings settings;
 
-  QString key = "/PostgreSQL/connections/" + connName;
+  QString key = QStringLiteral( "/PostgreSQL/connections/" ) + connName;
 
-  QString service = settings.value( key + "/service" ).toString();
-  QString host = settings.value( key + "/host" ).toString();
-  QString port = settings.value( key + "/port" ).toString();
+  QString service = settings.value( key + QStringLiteral( "/service" ) ).toString();
+  QString host = settings.value( key + QStringLiteral( "/host" ) ).toString();
+  QString port = settings.value( key + QStringLiteral( "/port" ) ).toString();
   if ( port.length() == 0 )
   {
     port = QStringLiteral( "5432" );
   }
-  QString database = settings.value( key + "/database" ).toString();
+  QString database = settings.value( key + QStringLiteral( "/database" ) ).toString();
 
   bool estimatedMetadata = useEstimatedMetadata( connName );
-  QgsDataSourceUri::SslMode sslmode = settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer );
+  QgsDataSourceUri::SslMode sslmode = settings.enumValue( key + QStringLiteral( "/sslmode" ), QgsDataSourceUri::SslPrefer );
 
   QString username;
   QString password;
-  if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
+  if ( settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() == QLatin1String( "true" ) )
   {
-    username = settings.value( key + "/username" ).toString();
+    username = settings.value( key + QStringLiteral( "/username" ) ).toString();
   }
 
-  if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
+  if ( settings.value( key + QStringLiteral( "/savePassword" ) ).toString() == QLatin1String( "true" ) )
   {
-    password = settings.value( key + "/password" ).toString();
+    password = settings.value( key + QStringLiteral( "/password" ) ).toString();
   }
 
   // Old save setting
-  if ( settings.contains( key + "/save" ) )
+  if ( settings.contains( key + QStringLiteral( "/save" ) ) )
   {
-    username = settings.value( key + "/username" ).toString();
+    username = settings.value( key + QStringLiteral( "/username" ) ).toString();
 
-    if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + QStringLiteral( "/save" ) ).toString() == QLatin1String( "true" ) )
     {
-      password = settings.value( key + "/password" ).toString();
+      password = settings.value( key + QStringLiteral( "/password" ) ).toString();
     }
   }
 
-  QString authcfg = settings.value( key + "/authcfg" ).toString();
+  QString authcfg = settings.value( key + QStringLiteral( "/authcfg" ) ).toString();
 
   QgsDataSourceUri uri;
   if ( !service.isEmpty() )
@@ -2870,8 +2837,39 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
   settings.remove( key + "/authcfg" );
-  settings.remove( key + "/keys" );
+  settings.remove( key + "/projectsInDatabase" );
+  settings.remove( key + "/metadataInDatabase" );
+  settings.remove( key + "/dontResolveType" );
+  settings.remove( key + "/session_role" );
   settings.remove( key );
+}
+
+void QgsPostgresConn::duplicateConnection( const QString &src, const QString &dst )
+{
+  const QString key( QStringLiteral( "/PostgreSQL/connections/" ) + src );
+  const QString newKey( QStringLiteral( "/PostgreSQL/connections/" ) + dst );
+
+  QgsSettings settings;
+  settings.setValue( newKey + QStringLiteral( "/service" ), settings.value( key + QStringLiteral( "/service" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/host" ), settings.value( key + QStringLiteral( "/host" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/port" ), settings.value( key + QStringLiteral( "/port" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/database" ), settings.value( key + QStringLiteral( "/database" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/username" ), settings.value( key + QStringLiteral( "/username" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/password" ), settings.value( key + QStringLiteral( "/password" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/sslmode" ), settings.value( key + QStringLiteral( "/sslmode" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/publicOnly" ), settings.value( key + QStringLiteral( "/publicOnly" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/geometryColumnsOnly" ), settings.value( key + QStringLiteral( "/geometryColumnsOnly" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/allowGeometrylessTables" ), settings.value( key + QStringLiteral( "/allowGeometrylessTables" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/estimatedMetadata" ), settings.value( key + QStringLiteral( "/estimatedMetadata" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/projectsInDatabase" ), settings.value( key + QStringLiteral( "/projectsInDatabase" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/metadataInDatabase" ), settings.value( key + QStringLiteral( "/metadataInDatabase" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/dontResolveType" ), settings.value( key + QStringLiteral( "/dontResolveType" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/session_role" ), settings.value( key + QStringLiteral( "/session_role" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + QStringLiteral( "/authcfg" ) ).toString() );
+
+  settings.sync();
 }
 
 bool QgsPostgresConn::allowMetadataInDatabase( const QString &connName )

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgshttpheaderwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -53,8 +53,9 @@ fill the inner header map from the settings defined at ``key``
 :param settings:
 :param key:
 
-.. deprecated:: QGIS 3.30
-   use setFromHeaders instead
+.. deprecated:: 3.30
+
+   Use setFromHeaders instead.
 %End
 
  void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated/;
@@ -66,8 +67,9 @@ update the ``settings`` with the http headers present in the inner map.
 :param settings:
 :param key:
 
-.. deprecated:: QGIS 3.30
-   use a variant map for settinds directly
+.. deprecated:: 3.30
+
+   Use a variant map for settinds directly.
 %End
 
 };
@@ -77,5 +79,5 @@ update the ``settings`` with the http headers present in the inner map.
  *                                                                      *
  * src/gui/qgshttpheaderwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

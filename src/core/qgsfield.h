@@ -106,7 +106,7 @@ class CORE_EXPORT QgsField
      * \param subType If the field is a collection, its element's type. When
      *                all the elements don't need to have the same type, leave
      *                this to QVariant::Invalid.
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED QgsField( const QString &name,
                                 QVariant::Type type,
@@ -116,14 +116,7 @@ class CORE_EXPORT QgsField
                                 const QString &comment = QString(),
                                 QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL SIP_DEPRECATED;
 
-    /**
-     * Copy constructor
-     */
     QgsField( const QgsField &other ) SIP_HOLDGIL;
-
-    /**
-     * Assignment operator
-     */
     QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
     virtual ~QgsField();
@@ -296,7 +289,7 @@ class CORE_EXPORT QgsField
 
     /**
      * Set variant \a type.
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED void setType( QVariant::Type type ) SIP_HOLDGIL SIP_DEPRECATED;
 
@@ -311,7 +304,7 @@ class CORE_EXPORT QgsField
      * If the field is a collection, set its element's type.
      * When all the elements don't need to have the same type, set this to
      * QVariant::Invalid.
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED void setSubType( QVariant::Type subType ) SIP_HOLDGIL  SIP_DEPRECATED;
 
@@ -349,7 +342,7 @@ class CORE_EXPORT QgsField
     /**
      * Sets an expression to use when calculating the default value for the field.
      * \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
-     * a default constructed QgsDefaultValue() to reset.
+     * a default constructed QgsDefaultValue to reset.
      * \see defaultValueDefinition()
      */
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition ) SIP_HOLDGIL;

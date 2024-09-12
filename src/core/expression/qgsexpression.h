@@ -110,7 +110,6 @@ struct HelpVariant
 
 struct Help
 {
-  //! Constructor for expression help
   Help() = default;
 
   Help( const QString &name, const QString &type, const QString &description, const QList<HelpVariant> &variants )
@@ -671,7 +670,7 @@ class CORE_EXPORT QgsExpression
      * \param type value type
      * \see quotedString()
      * \see quotedColumnRef()
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QString quotedValue( const QVariant &value, QVariant::Type type ) SIP_DEPRECATED;
 
@@ -763,7 +762,7 @@ class CORE_EXPORT QgsExpression
      * \param value the value of the field
      * \param fieldType the type of the field on the left side used to quote the value. If not given, the value type is used instead
      * \returns the expression to evaluate field equality
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType ) SIP_DEPRECATED;
 

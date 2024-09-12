@@ -1743,6 +1743,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setBlendMode( QPainter::CompositionMode_Darken );
   original->setExcludeFromExports( true );
   original->setItemOpacity( 0.75 );
+  original->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "_export_layer_" ) );
 
   std::unique_ptr< QgsLayoutItem > copy = createCopyViaXml( &l, original );
 
@@ -1772,6 +1773,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
   QVERIFY( copy->excludeFromExports( ) );
   QCOMPARE( copy->itemOpacity(), 0.75 );
+  QCOMPARE( copy->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString(), QStringLiteral( "_export_layer_" ) );
   delete original;
 }
 

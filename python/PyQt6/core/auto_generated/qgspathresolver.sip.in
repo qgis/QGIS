@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspathresolver.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -61,7 +61,6 @@ Example - replace an outdated folder path with a new one:
 
 Example - replace a stored database host with a new one:
 
-
 .. code-block:: python
 
        def my_processor(path):
@@ -69,9 +68,7 @@ Example - replace a stored database host with a new one:
 
        QgsPathResolver.setPathPreprocessor(my_processor)
 
-
 Example - replace stored database credentials with new ones:
-
 
 .. code-block:: python
 
@@ -81,8 +78,6 @@ Example - replace stored database credentials with new ones:
           return path
 
        QgsPathResolver.setPathPreprocessor(my_processor)
-
-
 
 .. versionadded:: 3.10
 %End
@@ -215,5 +210,5 @@ An KeyError will be raised if no processor with the specified ``id`` exists.
  *                                                                      *
  * src/core/qgspathresolver.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/sensorthings/qgssensorthingsutils.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -136,8 +136,7 @@ Returns the cardinality of the relationship between a base entity type and a rel
 :param relatedType: related entity type
 
 :return: - relationship cardinality
-         - valid: will be set to ``True`` if a relationship exists between the entity types, or ``False`` if no relationship exists
-
+         - valid: ``True`` if a relationship exists between the entity types, or ``False`` if no relationship exists
 
 .. versionadded:: 3.38
 %End
@@ -335,5 +334,5 @@ Optionally a list of additional query options can be specified for the expansion
  *                                                                      *
  * src/core/providers/sensorthings/qgssensorthingsutils.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

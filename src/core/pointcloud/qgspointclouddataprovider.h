@@ -23,9 +23,6 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
-#include "qgspoint.h"
-#include "qgsray3d.h"
-#include <memory>
 
 class IndexedPointCloudNode;
 class QgsPointCloudIndex;
@@ -57,7 +54,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       ReadLayerMetadata = 1 << 0, //!< Provider can read layer metadata from data store.
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
       CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
-      ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example (since QGIS 3.32)
+      ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example \since QGIS 3.32
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -75,7 +72,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     //! Ctor
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
 
@@ -136,7 +133,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Triggers loading of the point cloud index
      *
-     * \sa index()
+     * \see index()
      */
     virtual void loadIndex( ) = 0;
 
@@ -145,7 +142,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * emits indexGenerationStateChanged()
      *
-     * \sa index()
+     * \see index()
      */
     virtual void generateIndex( ) = 0;
 

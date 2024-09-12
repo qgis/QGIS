@@ -28,7 +28,9 @@ class QgsRenderContext;
 
 /**
  * \ingroup core
- * \brief Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
+ * \brief Stores coordinates of a tile in a tile matrix set.
+ *
+ * Tile matrix is identified
  * by the zoomLevel(), and the position within tile matrix is given by column()
  * and row().
  *

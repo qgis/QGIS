@@ -80,11 +80,11 @@ QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   mValidityFailureReason = p.mValidityFailureReason;
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
 {
   if ( &p != this )
   {
-    clearCache();
     QgsSurface::operator=( p );
     if ( p.mExteriorRing )
     {

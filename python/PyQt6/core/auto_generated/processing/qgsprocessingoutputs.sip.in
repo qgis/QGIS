@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingoutputs.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -131,10 +131,9 @@ Returns a string version of the parameter output ``value`` (if possible).
 :param context: processing context
 
 :return: - value converted to string
-         - ok: will be set to ``True`` if value could be represented as a string.
+         - ok: ``True`` if value could be represented as a string.
 
 .. seealso:: :py:func:`valueAsFormattedString`
-
 
 .. versionadded:: 3.36
 %End
@@ -149,10 +148,9 @@ By default this will return the same value as :py:func:`~QgsProcessingOutputDefi
 :param context: processing context
 
 :return: - value converted to string
-         - ok: will be set to ``True`` if value could be represented as a string.
+         - ok: ``True`` if value could be represented as a string.
 
 .. seealso:: :py:func:`valueAsString`
-
 
 .. versionadded:: 3.36
 %End
@@ -556,5 +554,5 @@ Returns the type name for the output class.
  *                                                                      *
  * src/core/processing/qgsprocessingoutputs.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

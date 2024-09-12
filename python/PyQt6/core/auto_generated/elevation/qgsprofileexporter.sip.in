@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/elevation/qgsprofileexporter.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,6 @@ results.
 
 After construction, call :py:func:`~QgsProfileExporter.run` to initiate the profile generation.
 %End
-
 
 
     ~QgsProfileExporter();
@@ -133,5 +132,5 @@ Returns a descriptive error message, if available.
  *                                                                      *
  * src/core/elevation/qgsprofileexporter.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

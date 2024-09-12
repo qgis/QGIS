@@ -29,6 +29,7 @@
 #include "qgis_app.h"
 
 #include <QList>
+#include <QColorSpace>
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -204,6 +205,35 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void removeStyleDatabase();
     void newStyleDatabase();
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+
+    /**
+     * Called whenever user select the add ICC profile button
+     */
+    void addIccProfile();
+
+    /**
+     * load \a iccProfileFilePath and set resulting color space to project
+     */
+    void addIccProfile( const QString &iccProfileFilePath );
+
+    /**
+     * Called whenever user select the remove ICC profile button
+     */
+    void removeIccProfile();
+
+    /**
+     * Called whenever user select the save ICC profile button
+     */
+    void saveIccProfile();
+
+    /**
+     * Update color space widget according to current project color space
+     */
+    void updateColorSpaceWidgets();
+
+#endif
+
   private:
 
     /**
@@ -240,6 +270,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
     bool mBlockCrsUpdates = false;
+    QColorSpace mColorSpace;
 
     QList< QgsOptionsPageWidget * > mAdditionalProjectPropertiesWidgets;
 

@@ -41,6 +41,7 @@ class QgsJoinByAttributeAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsJoinByAttributeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

@@ -99,6 +99,16 @@ class CORE_EXPORT QgsVector3D
       return QgsVector3D( mX - other.mX, mY - other.mY, mZ - other.mZ );
     }
 
+    /**
+     * Swaps the sign of the components of the vector.
+     *
+     * \since QGIS 3.40
+     */
+    const QgsVector3D operator-() const SIP_HOLDGIL
+    {
+      return QgsVector3D( -mX, -mY, -mZ );
+    }
+
     //! Returns a new vector multiplied by scalar
     QgsVector3D operator *( const double factor ) const SIP_HOLDGIL
     {

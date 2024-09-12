@@ -487,9 +487,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 {
   public:
 
-    /**
-     * Constructor for QgsRandomColorRamp.
-     */
     QgsRandomColorRamp() = default;
 
     int count() const override;
@@ -701,6 +698,8 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
 /**
  * \ingroup core
  * \class QgsCptCityColorRamp
+ *
+ * \brief A color ramp from the CPT City collection.
  */
 class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 {

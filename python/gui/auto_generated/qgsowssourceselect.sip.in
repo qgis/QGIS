@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsowssourceselect.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,7 +33,7 @@ layers from the WCS server to the map canvas.
       QString label;
     };
 
-    QgsOWSSourceSelect( const QString &service, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsOWSSourceSelect( const QString &service, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 %Docstring
 Constructor
 %End
@@ -201,5 +201,5 @@ canvas if it is available.
  *                                                                      *
  * src/gui/qgsowssourceselect.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

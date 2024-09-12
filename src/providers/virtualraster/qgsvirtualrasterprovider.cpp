@@ -272,7 +272,7 @@ QIcon QgsVirtualRasterProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
 }
 
-QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   Q_UNUSED( flags );
   return new QgsVirtualRasterProvider( uri, options );

@@ -321,11 +321,11 @@ void QgsLayoutPictureWidget::setGuiElementValues()
 
     switch ( mPicture->originalMode() )
     {
-      case QgsLayoutItemPicture::FormatSVG:
-      case QgsLayoutItemPicture::FormatUnknown:
+      case Qgis::PictureFormat::SVG:
+      case Qgis::PictureFormat::Unknown:
         mRadioSVG->setChecked( true );
         break;
-      case QgsLayoutItemPicture::FormatRaster:
+      case Qgis::PictureFormat::Raster:
         mRadioRaster->setChecked( true );
         break;
     }
@@ -453,7 +453,7 @@ void QgsLayoutPictureWidget::modeChanged( bool checked )
     return;
 
   const bool svg = mRadioSVG->isChecked();
-  const QgsLayoutItemPicture::Format newFormat = svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster;
+  const Qgis::PictureFormat newFormat = svg ? Qgis::PictureFormat::SVG : Qgis::PictureFormat::Raster;
 
   if ( svg )
     mSvgSelectorWidget->sourceLineEdit()->setMode( QgsPictureSourceLineEditBase::Svg );
@@ -477,7 +477,7 @@ void QgsLayoutPictureWidget::sourceChanged( const QString &source )
   if ( mPicture )
   {
     mPicture->beginCommand( tr( "Change Picture" ) );
-    mPicture->setPicturePath( source, mRadioSVG->isChecked() ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster );
+    mPicture->setPicturePath( source, mRadioSVG->isChecked() ? Qgis::PictureFormat::SVG : Qgis::PictureFormat::Raster );
     mPicture->update();
     mPicture->endCommand();
     updateSvgParamGui();

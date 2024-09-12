@@ -142,7 +142,8 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   // Finally add all point cloud layers' results
   for ( auto it = pointCloudResults.constKeyValueBegin(); it != pointCloudResults.constKeyValueEnd(); ++it )
   {
-    QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( it->first, it->second, identifyResults );
+    QgsMapToolIdentify identifyTool( nullptr );
+    identifyTool.fromPointCloudIdentificationToIdentifyResults( it->first, it->second, identifyResults );
     identifyTool2D->showIdentifyResults( identifyResults );
   }
 

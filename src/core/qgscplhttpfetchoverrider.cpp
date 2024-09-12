@@ -128,7 +128,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
   {
     if ( pszCustomRequest == nullptr || EQUAL( pszCustomRequest, "GET" ) )
     {
-      errCode = blockingRequest.get( request, forceRefresh, pThis->mFeedback );
+      errCode = blockingRequest.get( request, forceRefresh, pThis->mFeedback, QgsBlockingNetworkRequest::RequestFlag::EmptyResponseIsValid );
     }
     else if ( EQUAL( pszCustomRequest, "HEAD" ) )
     {

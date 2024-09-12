@@ -32,6 +32,7 @@ class QgsSourceSelectProviderRegistry;
 class QgsNative;
 class QgsLayoutItemGuiRegistry;
 class QgsAnnotationItemGuiRegistry;
+class QgsAdvancedDigitizingToolsRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
 class QgsProcessingFavoriteAlgorithmManager;
@@ -73,10 +74,7 @@ class GUI_EXPORT QgsGui : public QObject
     };
     Q_ENUM( ProjectCrsBehavior )
 
-    //! QgsGui cannot be copied
     QgsGui( const QgsGui &other ) = delete;
-
-    //! QgsGui cannot be copied
     QgsGui &operator=( const QgsGui &other ) = delete;
 
     /**
@@ -133,6 +131,13 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.22
      */
     static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global advanced digitizing tools registry, used for registering advanced digitizing tools.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
@@ -296,6 +301,14 @@ class GUI_EXPORT QgsGui : public QObject
      */
     static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 
+    /**
+     * Initializes callout widgets.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.40
+     */
+    static void initCalloutWidgets() SIP_SKIP;
+
     ///@cond PRIVATE
     void emitOptionsChanged() SIP_SKIP;
     ///@endcond
@@ -329,6 +342,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsAnnotationItemGuiRegistry *mAnnotationItemGuiRegistry = nullptr;
+    QgsAdvancedDigitizingToolsRegistry *mAdvancedDigitizingToolsRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
     QgsProcessingFavoriteAlgorithmManager *mProcessingFavoriteAlgorithmManager = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;

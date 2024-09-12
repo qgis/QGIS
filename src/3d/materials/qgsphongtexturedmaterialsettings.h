@@ -36,9 +36,6 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
 {
   public:
 
-    /**
-     * Constructor for QgsPhongTexturedMaterialSettings.
-     */
     QgsPhongTexturedMaterialSettings() = default;
 
     QString type() const override;
@@ -60,7 +57,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     //! Returns specular color component
     QColor specular() const { return mSpecular; }
     //! Returns shininess of the surface
-    float shininess() const { return mShininess; }
+    double shininess() const { return mShininess; }
 
     QMap<QString, QString> toExportParameters() const override;
 
@@ -93,7 +90,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
      * Returns the opacity of the surface
      * \since QGIS 3.28
      */
-    float opacity() const { return mOpacity; }
+    double opacity() const { return mOpacity; }
 
     //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
@@ -101,7 +98,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     //! Sets specular color component
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
     //! Sets shininess of the surface
-    void setShininess( float shininess ) { mShininess = shininess; }
+    void setShininess( double shininess ) { mShininess = shininess; }
 
     /**
      * Sets the \a path of the diffuse texture.
@@ -147,8 +144,8 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
   private:
     QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
-    float mShininess = 0.0f;
-    float mOpacity = 1.0f;
+    double mShininess = 0.0;
+    double mOpacity = 1.0;
     QString mDiffuseTexturePath;
     float mTextureScale{ 1.0f };
     float mTextureRotation{ 0.0f };

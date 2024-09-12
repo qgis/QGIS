@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgsvectorlayerlabeling.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,9 +31,6 @@ Abstract base class - its implementations define different approaches to the lab
   public:
 
     QgsAbstractVectorLayerLabeling();
-%Docstring
-Default constructor
-%End
     virtual ~QgsAbstractVectorLayerLabeling();
 
     virtual QString type() const = 0;
@@ -187,5 +184,5 @@ Create the instance from a DOM element with saved configuration
  *                                                                      *
  * src/core/labeling/qgsvectorlayerlabeling.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

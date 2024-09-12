@@ -41,9 +41,7 @@ class CORE_EXPORT QgsVtpkTiles
     explicit QgsVtpkTiles( const QString &filename );
 
 #ifndef SIP_RUN
-    //! QgsVtpkTiles cannot be copied
     QgsVtpkTiles( const QgsVtpkTiles &other ) = delete;
-    //! QgsVtpkTiles cannot be copied
     QgsVtpkTiles &operator=( const QgsVtpkTiles &other ) = delete;
 #endif
     ~QgsVtpkTiles();
@@ -118,7 +116,6 @@ class CORE_EXPORT QgsVtpkTiles
   private:
 
 #ifdef SIP_RUN
-    //! QgsVtpkTiles cannot be copied
     QgsVtpkTiles( const QgsVtpkTiles &other );
 #endif
 

@@ -40,7 +40,7 @@ namespace Qt3DCore
 class CORE_EXPORT QgsAbstractPointCloud3DRenderer : public QgsAbstract3DRenderer SIP_ABSTRACT
 {
   public:
-    //! Default destructor
+
     virtual ~QgsAbstractPointCloud3DRenderer() = default;
 
     /**
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsAbstractPointCloud3DRenderer : public QgsAbstract3DRenderer
     virtual bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) = 0;
 
   protected:
-    //! Default constructor
+
     QgsAbstractPointCloud3DRenderer() = default;
 
   private:

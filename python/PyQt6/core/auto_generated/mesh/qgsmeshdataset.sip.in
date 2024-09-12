@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshdataset.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -47,6 +47,7 @@ Returns a dataset index within :py:func:`~QgsMeshDatasetIndex.group`
 %Docstring
 Returns whether index is valid, ie at least groups is set
 %End
+
     bool operator == ( QgsMeshDatasetIndex other ) const;
     bool operator != ( QgsMeshDatasetIndex other ) const;
 };
@@ -135,8 +136,8 @@ vectors (e.g. vector dataset doubles x,y values)
 data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
-Data can be accessed all at once with :py:func:`~QgsMeshDatasetValue.values` (faster) or
-value by value (slower) with :py:func:`~QgsMeshDatasetValue.active` or :py:func:`~QgsMeshDatasetValue.value`
+Data can be accessed all at once with :py:func:`~values` (faster) or
+value by value (slower) with :py:func:`~active` or :py:func:`~value`
 
 .. versionadded:: 3.6
 %End
@@ -262,7 +263,6 @@ std.numeric_limits<double>.quiet_NaN() represents NODATA value
    In QGIS 3.34 this class was renamed from :py:class:`QgsMesh3dDataBlock` to :py:class:`QgsMesh3DDataBlock`. The old :py:class:`QgsMesh3dDataBlock` name
    remains available in PyQGIS for compatibility.
 
-
 .. versionadded:: 3.12
 %End
 
@@ -274,7 +274,6 @@ std.numeric_limits<double>.quiet_NaN() represents NODATA value
 %Docstring
 Constructs an invalid block
 %End
-
     ~QgsMesh3DDataBlock();
 
     QgsMesh3DDataBlock( int count, bool isVector );
@@ -586,10 +585,8 @@ Abstract class that represents a dataset
 #include "qgsmeshdataset.h"
 %End
   public:
+
     QgsMeshDataset();
-%Docstring
-Constructor
-%End
 
     virtual ~QgsMeshDataset();
 
@@ -640,16 +637,13 @@ Abstract class that represents a dataset group
 
     enum Type /BaseType=IntEnum/
     {
-      None,
+      Unknown,
       Persistent,
       Memory,
       Virtual,
     };
 
     QgsMeshDatasetGroup();
-%Docstring
-Default constructor
-%End
     virtual ~QgsMeshDatasetGroup();
 
     QgsMeshDatasetGroup( const QString &name );
@@ -1041,5 +1035,5 @@ Writes the item and its children in a DOM document
  *                                                                      *
  * src/core/mesh/qgsmeshdataset.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

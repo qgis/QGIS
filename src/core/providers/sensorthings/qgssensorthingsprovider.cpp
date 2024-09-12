@@ -33,7 +33,7 @@
 
 ///@cond PRIVATE
 
-QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   mSharedData = std::make_shared< QgsSensorThingsSharedData >( uri );
@@ -165,7 +165,7 @@ long long QgsSensorThingsProvider::featureCount() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( ( mReadFlags & QgsDataProvider::SkipFeatureCount ) != 0 )
+  if ( ( mReadFlags & Qgis::DataProviderReadFlag::SkipFeatureCount ) != 0 )
   {
     return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
   }
@@ -212,13 +212,13 @@ Qgis::DataProviderFlags QgsSensorThingsProvider::flags() const
   return Qgis::DataProviderFlag::FastExtent2D;
 }
 
-QgsVectorDataProvider::Capabilities QgsSensorThingsProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsSensorThingsProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId
-                                          | QgsVectorDataProvider::ReadLayerMetadata
-                                          | QgsVectorDataProvider::Capability::ReloadData;
+  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId
+                                       | Qgis::VectorProviderCapability::ReadLayerMetadata
+                                       | Qgis::VectorProviderCapability::ReloadData;
 
   return c;
 }
@@ -534,7 +534,7 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
     dsUri.setWkbType( Qgis::WkbType::MultiPolygonZ );
   }
 
-  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).userType() == QMetaType::type( "QgsRectangle" ) )
+  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).userType() == qMetaTypeId<QgsRectangle>() )
   {
     const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
     dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
@@ -546,7 +546,7 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   return dsUri.uri( false );
 }
 
-QgsSensorThingsProvider *QgsSensorThingsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsSensorThingsProvider *QgsSensorThingsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsSensorThingsProvider( uri, options, flags );
 }

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshtracerenderer.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -35,9 +35,6 @@ Constructor to use with Python binding
 %End
 
     QgsMeshVectorTraceAnimationGenerator( const QgsMeshVectorTraceAnimationGenerator &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsMeshVectorTraceAnimationGenerator();
 
@@ -99,5 +96,5 @@ Sets the visual persistence of the tail
  *                                                                      *
  * src/core/mesh/qgsmeshtracerenderer.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

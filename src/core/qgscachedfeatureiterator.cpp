@@ -23,10 +23,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   : QgsAbstractFeatureIterator( featureRequest )
   , mVectorLayerCache( vlCache )
 {
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
-  {
-    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs(), mRequest.transformContext() );
-  }
+  mTransform = mRequest.calculateTransform( mVectorLayerCache->sourceCrs() );
   try
   {
     mFilterRect = filterRectToSourceCrs( mTransform );
@@ -93,7 +90,7 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
 {
   f.setValid( false );
 
-  if ( mClosed )
+  if ( mClosed || !mVectorLayerCache )
     return false;
 
   while ( mFeatureIdIterator != mFeatureIds.constEnd() )
@@ -143,10 +140,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
   : QgsAbstractFeatureIterator( featureRequest )
   , mVectorLayerCache( vlCache )
 {
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
-  {
-    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs(), mRequest.transformContext() );
-  }
+  mTransform = mRequest.calculateTransform( mVectorLayerCache->sourceCrs() );
   try
   {
     mFilterRect = filterRectToSourceCrs( mTransform );
@@ -168,7 +162,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
 
 bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
 {
-  if ( mClosed )
+  if ( mClosed || !mVectorLayerCache )
   {
     f.setValid( false );
     return false;

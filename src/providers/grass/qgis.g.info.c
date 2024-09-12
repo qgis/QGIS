@@ -53,43 +53,52 @@ int main( int argc, char **argv )
   info_opt->key = "info";
   info_opt->type = TYPE_STRING;
   info_opt->description = "info key";
-  info_opt->options = "proj,window,size,query,info,colors,stats";
+  info_opt->options = "proj,wkt,srid,window,size,query,info,colors,stats";
 
   rast_opt = G_define_standard_option( G_OPT_R_INPUT );
   rast_opt->key = "rast";
+  rast_opt->description = "rast";
   rast_opt->required = NO;
 
   vect_opt = G_define_standard_option( G_OPT_V_INPUT );
   vect_opt->key = "vect";
+  vect_opt->description = "vect";
   vect_opt->required = NO;
 
   coor_opt = G_define_option();
   coor_opt->key = "coor";
+  coor_opt->description = "coor";
   coor_opt->type = TYPE_DOUBLE;
   coor_opt->multiple = YES;
 
   north_opt = G_define_option();
   north_opt->key = "north";
+  north_opt->description = "north";
   north_opt->type = TYPE_STRING;
 
   south_opt = G_define_option();
   south_opt->key = "south";
+  south_opt->description = "south";
   south_opt->type = TYPE_STRING;
 
   east_opt = G_define_option();
   east_opt->key = "east";
+  east_opt->description = "east";
   east_opt->type = TYPE_STRING;
 
   west_opt = G_define_option();
   west_opt->key = "west";
+  west_opt->description = "west";
   west_opt->type = TYPE_STRING;
 
   rows_opt = G_define_option();
   rows_opt->key = "rows";
+  rows_opt->description = "rows";
   rows_opt->type = TYPE_INTEGER;
 
   cols_opt = G_define_option();
   cols_opt->key = "cols";
+  cols_opt->description = "cols";
   cols_opt->type = TYPE_INTEGER;
 
   if ( G_parser( argc, argv ) )
@@ -98,7 +107,6 @@ int main( int argc, char **argv )
   if ( strcmp( "proj", info_opt->answer ) == 0 )
   {
     G_get_window( &window );
-    /* code from g.proj */
     if ( window.proj != PROJECTION_XY )
     {
       struct Key_Value *projinfo, *projunits;
@@ -107,6 +115,30 @@ int main( int argc, char **argv )
       projunits = G_get_projunits();
       wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
       fprintf( stdout, "%s", wkt );
+    }
+  }
+  else if ( strcmp( "wkt", info_opt->answer ) == 0 )
+  {
+    G_get_window( &window );
+    if ( window.proj != PROJECTION_XY )
+    {
+      char *wkt = G_get_projwkt();
+      if ( wkt )
+      {
+        fprintf( stdout, "%s", wkt );
+      }
+    }
+  }
+  else if ( strcmp( "srid", info_opt->answer ) == 0 )
+  {
+    G_get_window( &window );
+    if ( window.proj != PROJECTION_XY )
+    {
+      char *srid = G_get_projsrid();
+      if ( srid )
+      {
+        fprintf( stdout, "%s", srid );
+      }
     }
   }
   else if ( strcmp( "window", info_opt->answer ) == 0 )

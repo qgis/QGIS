@@ -140,7 +140,9 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * TRUE if the block has no data value.
      * \returns TRUE if the block has no data value
-     * \see noDataValue(), setNoDataValue(), resetNoDataValue()
+     * \see noDataValue()
+     * \see setNoDataValue()
+     * \see resetNoDataValue()
      */
     bool hasNoDataValue() const SIP_HOLDGIL { return mHasNoDataValue; }
 
@@ -157,14 +159,18 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Sets cell value that will be considered as "no data".
-     * \see noDataValue(), hasNoDataValue(), resetNoDataValue()
+     * \see noDataValue()
+     * \see hasNoDataValue()
+     * \see resetNoDataValue()
      */
     void setNoDataValue( double noDataValue ) SIP_HOLDGIL;
 
     /**
      * Reset no data value: if there was a no data value previously set,
      * it will be discarded.
-     * \see noDataValue(), hasNoDataValue(), setNoDataValue()
+     * \see noDataValue()
+     * \see hasNoDataValue()
+     * \see setNoDataValue()
      */
     void resetNoDataValue() SIP_HOLDGIL;
 
@@ -172,7 +178,9 @@ class CORE_EXPORT QgsRasterBlock
      * Returns no data value. If the block does not have a no data value the
      *  returned value is undefined.
      * \returns No data value
-     * \see hasNoDataValue(), setNoDataValue(), resetNoDataValue()
+     * \see hasNoDataValue()
+     * \see setNoDataValue()
+     * \see resetNoDataValue()
      */
     double noDataValue() const SIP_HOLDGIL { return mNoDataValue; }
 

@@ -81,6 +81,11 @@ QString QgsBufferAlgorithm::shortHelpString() const
                       "The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsBufferAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios;
+}
+
 QgsBufferAlgorithm *QgsBufferAlgorithm::createInstance() const
 {
   return new QgsBufferAlgorithm();
@@ -92,11 +97,6 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs() ) );
-  if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
-
   // fixed parameters
   const bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
   const bool keepDisjointSeparate = parameterAsBoolean( parameters, QStringLiteral( "SEPARATE_DISJOINT" ), context );
@@ -106,6 +106,12 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   const double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
   const double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   const bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs(), keepDisjointSeparate ? QgsFeatureSink::RegeneratePrimaryKey : QgsFeatureSink::SinkFlags() ) );
+  if ( !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   QgsProperty bufferProperty;
   if ( dynamicBuffer )

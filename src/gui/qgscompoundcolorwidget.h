@@ -20,6 +20,7 @@
 #include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QgsScreenHelper;
 
@@ -66,6 +67,14 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * \param allowOpacity set to FALSE to disable opacity modification
      */
     void setAllowOpacity( bool allowOpacity );
+
+    /**
+     * Sets whether color model is editable or not
+     * \param colorModelEditable set to FALSE to disable color model modification
+     * Defaults to TRUE.
+     * \since QGIS 3.40
+     */
+    void setColorModelEditable( bool colorModelEditable );
 
     /**
      * Sets whether the widget's color has been "discarded" and the selected color should not

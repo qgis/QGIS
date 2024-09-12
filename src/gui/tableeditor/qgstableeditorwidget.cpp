@@ -27,6 +27,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   : QTableWidget( parent )
 {
   mHeaderMenu = new QMenu( this );
+  mCellMenu = new QMenu( this );
   setColumnCount( 0 );
   setRowCount( 0 );
   connect( this, &QgsTableEditorWidget::cellChanged, this, [ = ]
@@ -34,6 +35,26 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
     if ( !mBlockSignals )
       emit tableChanged();
   } );
+
+  setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( this, &QWidget::customContextMenuRequested, this, [ = ]( const QPoint & point )
+  {
+
+    mCellMenu->clear();
+    if ( canMergeSelection() )
+    {
+      QAction *mergeCells = mCellMenu->addAction( tr( "Merge Selected Cells" ) );
+      connect( mergeCells, &QAction::triggered, this, &QgsTableEditorWidget::mergeSelectedCells );
+    }
+    if ( canSplitSelection() )
+    {
+      QAction *splitCells = mCellMenu->addAction( tr( "Split Selected Cells" ) );
+      connect( splitCells, &QAction::triggered, this, &QgsTableEditorWidget::splitSelectedCells );
+    }
+    if ( !mCellMenu->isEmpty() )
+      mCellMenu->popup( mapToGlobal( point ) );
+  } );
+
 
   horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( horizontalHeader(), &QWidget::customContextMenuRequested, this, [ = ]( const QPoint & point )
@@ -271,6 +292,56 @@ QList<int> QgsTableEditorWidget::collectUniqueColumns( const QModelIndexList &li
   return res;
 }
 
+bool QgsTableEditorWidget::isRectangularSelection( const QModelIndexList &list ) const
+{
+  if ( list.empty() )
+    return false;
+
+  int minRow = -1;
+  int maxRow = -1;
+  int minCol = -1;
+  int maxCol = -1;
+  QSet< QPair< int, int > > selectedSet;
+  for ( const QModelIndex &index : list )
+  {
+    if ( minRow == -1 || index.row() < minRow )
+      minRow = index.row();
+    if ( maxRow == -1 || index.row() > maxRow )
+      maxRow = index.row();
+    if ( minCol == -1 || index.column() < minCol )
+      minCol = index.column();
+    if ( maxCol == -1 || index.column() > maxCol )
+      maxCol = index.column();
+    selectedSet.insert( qMakePair( index.row(), index.column() ) );
+  }
+
+  // check if the number of cells matches the expected rectangle size
+  if ( list.size() != ( maxRow - minRow + 1 ) * ( maxCol - minCol + 1 ) )
+    return false;
+
+  // check if all cells within the rectangle are selected
+  QSet< QPair< int, int > > expectedSet;
+  for ( int row = minRow; row <= maxRow; ++row )
+  {
+    for ( int col = minCol; col <= maxCol; ++col )
+    {
+      expectedSet.insert( qMakePair( row, col ) );
+    }
+  }
+  return selectedSet == expectedSet;
+}
+
+bool QgsTableEditorWidget::hasMergedCells( const QModelIndexList &list ) const
+{
+  for ( const QModelIndex &index : list )
+  {
+    if ( rowSpan( index.row(), index.column() ) > 1
+         || columnSpan( index.row(), index.column() ) > 1 )
+      return true;
+  }
+  return false;
+}
+
 void QgsTableEditorWidget::keyPressEvent( QKeyEvent *event )
 {
   switch ( event->key() )
@@ -339,6 +410,10 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
         item->setData( Qt::DisplayRole, mNumericFormats.value( item )->formatDouble( col.content().toDouble(), numericContext ) );
       }
       setItem( rowNumber, colNumber, item );
+
+      if ( col.rowSpan() > 1 || col.columnSpan() > 1 )
+        setSpan( rowNumber, colNumber, col.rowSpan(), col.columnSpan() );
+
       colNumber++;
     }
     rowNumber++;
@@ -361,6 +436,7 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
   QgsTableContents items;
   items.reserve( rowCount() );
 
+  QSet< QPair< int, int > > spannedCells;
   for ( int r = mIncludeHeader ? 1 : 0; r < rowCount(); r++ )
   {
     QgsTableRow row;
@@ -375,6 +451,25 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
         cell.setTextFormat( i->data( TextFormat ).value< QgsTextFormat >() );
         cell.setHorizontalAlignment( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) );
         cell.setVerticalAlignment( static_cast< Qt::Alignment >( i->data( VerticalAlignment ).toInt() ) );
+
+        // we only want to set row/col span > 1 for the left/top most cells in a span:
+        if ( !spannedCells.contains( qMakePair( r, c ) ) )
+        {
+          const int rowsSpan = rowSpan( r, c );
+          const int colsSpan = columnSpan( r, c );
+          for ( int spannedRow = r; spannedRow < r + rowsSpan; ++spannedRow )
+          {
+            for ( int spannedCol = c; spannedCol < c + colsSpan; ++spannedCol )
+            {
+              spannedCells.insert( qMakePair( spannedRow, spannedCol ) );
+            }
+          }
+          cell.setSpan( rowSpan( r, c ), columnSpan( r, c ) );
+        }
+        else
+        {
+          cell.setSpan( 1, 1 );
+        }
 
         if ( mNumericFormats.value( i ) )
         {
@@ -763,12 +858,26 @@ QVariantList QgsTableEditorWidget::tableHeaders() const
   return res;
 }
 
-bool QgsTableEditorWidget::isHeaderCellSelected()
+bool QgsTableEditorWidget::isHeaderCellSelected() const
 {
   if ( !mIncludeHeader )
     return false;
 
   return collectUniqueRows( selectedIndexes() ).contains( 0 );
+}
+
+bool QgsTableEditorWidget::canMergeSelection() const
+{
+  return selectedIndexes().size() > 1
+         && !isHeaderCellSelected()
+         && isRectangularSelection( selectedIndexes() );
+}
+
+bool QgsTableEditorWidget::canSplitSelection() const
+{
+  return !selectedIndexes().empty()
+         && !isHeaderCellSelected()
+         && hasMergedCells( selectedIndexes() );
 }
 
 void QgsTableEditorWidget::insertRowsBelow()
@@ -1244,6 +1353,48 @@ void QgsTableEditorWidget::setTableHeaders( const QVariantList &headers )
     }
   }
   mBlockSignals--;
+}
+
+void QgsTableEditorWidget::mergeSelectedCells()
+{
+  const QModelIndexList selection = selectedIndexes();
+  if ( selection.size() < 2 )
+    return;
+
+  int minRow = -1;
+  int maxRow = -1;
+  int minCol = -1;
+  int maxCol = -1;
+  for ( const QModelIndex &index : selection )
+  {
+    if ( minRow == -1 || index.row() < minRow )
+      minRow = index.row();
+    if ( maxRow == -1 || index.row() > maxRow )
+      maxRow = index.row();
+    if ( minCol == -1 || index.column() < minCol )
+      minCol = index.column();
+    if ( maxCol == -1 || index.column() > maxCol )
+      maxCol = index.column();
+  }
+
+  setSpan( minRow, minCol, maxRow - minRow + 1, maxCol - minCol + 1 );
+
+  if ( !mBlockSignals )
+    emit tableChanged();
+}
+
+void QgsTableEditorWidget::splitSelectedCells()
+{
+  const QModelIndexList selection = selectedIndexes();
+  for ( const QModelIndex &index : selection )
+  {
+    if ( rowSpan( index.row(), index.column() ) > 1 ||
+         columnSpan( index.row(), index.column() ) > 1 )
+      setSpan( index.row(), index.column(), 1, 1 );
+  }
+
+  if ( !mBlockSignals )
+    emit tableChanged();
 }
 
 /// @cond PRIVATE

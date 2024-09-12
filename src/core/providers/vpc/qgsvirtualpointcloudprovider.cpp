@@ -46,7 +46,7 @@
 QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
@@ -536,7 +536,7 @@ QIcon QgsVirtualPointCloudProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconPointCloudLayer.svg" ) );
 }
 
-QgsVirtualPointCloudProvider *QgsVirtualPointCloudProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsVirtualPointCloudProvider *QgsVirtualPointCloudProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsVirtualPointCloudProvider( uri, options, flags );
 }

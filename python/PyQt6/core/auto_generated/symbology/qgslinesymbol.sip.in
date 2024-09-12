@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgslinesymbol.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -120,5 +120,5 @@ style and colors instead of the symbol's normal style.
  *                                                                      *
  * src/core/symbology/qgslinesymbol.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

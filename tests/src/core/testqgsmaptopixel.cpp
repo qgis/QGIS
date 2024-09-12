@@ -30,6 +30,7 @@ class TestQgsMapToPixel: public QObject
     void fromScale();
     void equality();
     void toMapCoordinates();
+    void transformBounds();
 };
 
 void TestQgsMapToPixel::isValid()
@@ -182,6 +183,26 @@ void TestQgsMapToPixel::toMapCoordinates()
 
   p = m2p.toMapCoordinates( 20, 20 );
   QCOMPARE( p, QgsPointXY( 20, 20 ) );
+}
+
+void TestQgsMapToPixel::transformBounds()
+{
+  // no rotation
+  const QgsMapToPixel m2p( 1.5, 5, 15, 20, 10, 0 );
+  QRectF result = m2p.transformBounds( QRectF( 10, 20, 30, 40 ) );
+
+  QGSCOMPARENEAR( result.left(), 13.3333333333, 6 );
+  QGSCOMPARENEAR( result.right(), 33.3333333333, 6 );
+  QCOMPARE( result.top(), -25 );
+  QGSCOMPARENEAR( result.bottom(), 1.66666666667, 6 );
+
+  // with rotation
+  const QgsMapToPixel m2pRotated( 1.5, 5, 15, 20, 10, 45 );
+  result = m2pRotated.transformBounds( QRectF( 10, 20, 30, 40 ) );
+  QGSCOMPARENEAR( result.left(), 14.7140452079, 6 );
+  QGSCOMPARENEAR( result.right(), 47.7123616633, 6 );
+  QGSCOMPARENEAR( result.top(), -13.8561808316, 6 );
+  QGSCOMPARENEAR( result.bottom(), 19.1421356237, 6 );
 }
 
 QGSTEST_MAIN( TestQgsMapToPixel )

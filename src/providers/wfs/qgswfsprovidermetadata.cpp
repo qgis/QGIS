@@ -40,7 +40,7 @@
 #include <QUrl>
 #include <QTimer>
 
-QgsDataProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDataProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   Q_UNUSED( flags );
   return new QgsWFSProvider( uri, options );

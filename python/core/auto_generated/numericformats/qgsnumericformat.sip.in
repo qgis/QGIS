@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/numericformats/qgsnumericformat.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,7 +32,6 @@ Constructor for QgsNumericFormatContext.
 
 The context will be populated based on the user's current locale settings.
 %End
-
 
     QChar thousandsSeparator() const;
 %Docstring
@@ -157,6 +156,24 @@ Sets the ``interpretation`` of the numbers being converted.
 .. versionadded:: 3.26
 %End
 
+    QgsExpressionContext expressionContext() const;
+%Docstring
+Returns the expression context to use when evaluating :py:class:`QgsExpressions`.
+
+.. seealso:: :py:func:`setExpressionContext`
+
+.. versionadded:: 3.40
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression ``context`` to use when evaluating :py:class:`QgsExpressions`.
+
+.. seealso:: :py:func:`expressionContext`
+
+.. versionadded:: 3.40
+%End
+
 };
 
 %ModuleHeaderCode
@@ -167,6 +184,7 @@ Sets the ``interpretation`` of the numbers being converted.
 #include <qgspercentagenumericformat.h>
 #include <qgsscientificnumericformat.h>
 #include <qgscoordinatenumericformat.h>
+#include <qgsexpressionbasednumericformat.h>
 %End
 
 class QgsNumericFormat
@@ -201,15 +219,14 @@ This is an abstract base class and will always need to be subclassed.
       sipType = sipType_QgsBasicNumericFormat;
     else if ( dynamic_cast< QgsFractionNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsFractionNumericFormat;
+    else if ( dynamic_cast< QgsExpressionBasedNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsExpressionBasedNumericFormat;
     else
       sipType = NULL;
 %End
   public:
 
     QgsNumericFormat();
-%Docstring
-Default constructor
-%End
 
     virtual ~QgsNumericFormat();
 
@@ -281,5 +298,5 @@ Writes the format to an XML ``element``.
  *                                                                      *
  * src/core/numericformats/qgsnumericformat.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

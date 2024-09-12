@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgscachedfeatureiterator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -56,8 +56,6 @@ Implementation for fetching a feature.
 :param f: Will write to this feature
 
 :return: bool  ``True`` if the operation was OK
-
-.. seealso:: :py:func:`bool`
 %End
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
@@ -118,8 +116,6 @@ Implementation for fetching a feature.
 :param f: Will write to this feature
 
 :return: bool  ``True`` if the operation was OK
-
-.. seealso:: :py:func:`bool`
 %End
 
 };
@@ -128,5 +124,5 @@ Implementation for fetching a feature.
  *                                                                      *
  * src/core/qgscachedfeatureiterator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

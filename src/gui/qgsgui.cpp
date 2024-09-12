@@ -26,6 +26,9 @@
 #include "qgssourceselectproviderregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgsannotationitemguiregistry.h"
+#include "qgsadvanceddigitizingtoolsregistry.h"
+#include "qgscalloutsregistry.h"
+#include "callouts/qgscalloutwidget.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
 #elif defined (Q_OS_WIN)
@@ -142,6 +145,11 @@ QgsAnnotationItemGuiRegistry *QgsGui::annotationItemGuiRegistry()
   return instance()->mAnnotationItemGuiRegistry;
 }
 
+QgsAdvancedDigitizingToolsRegistry *QgsGui::advancedDigitizingToolsRegistry()
+{
+  return instance()->mAdvancedDigitizingToolsRegistry;
+}
+
 QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
 {
   return instance()->mProcessingGuiRegistry;
@@ -241,6 +249,7 @@ QgsGui::~QgsGui()
   delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
   delete mAnnotationItemGuiRegistry;
+  delete mAdvancedDigitizingToolsRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
@@ -350,6 +359,9 @@ QgsGui::QgsGui()
   mAnnotationItemGuiRegistry = new QgsAnnotationItemGuiRegistry();
   mAnnotationItemGuiRegistry->addDefaultItems();
 
+  mAdvancedDigitizingToolsRegistry = new QgsAdvancedDigitizingToolsRegistry();
+  mAdvancedDigitizingToolsRegistry->addDefaultTools();
+
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingFavoriteAlgorithmManager = new QgsProcessingFavoriteAlgorithmManager();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
@@ -429,6 +441,39 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
       }
   }
   return false;
+}
+
+void QgsGui::initCalloutWidgets()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+
+    auto _initCalloutWidgetFunction = []( const QString & name, QgsCalloutWidgetFunc f )
+    {
+      QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
+
+      QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
+      if ( !abstractMetadata )
+      {
+        QgsDebugError( QStringLiteral( "Failed to find callout entry in registry: %1" ).arg( name ) );
+      }
+      QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
+      if ( !metadata )
+      {
+        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ) .arg( name ) );
+      }
+      else
+      {
+        metadata->setWidgetFunction( f );
+      }
+    };
+
+    _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
+    _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
+    _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
+    _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
+  } );
 }
 
 ///@cond PRIVATE

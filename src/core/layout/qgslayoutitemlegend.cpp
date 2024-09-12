@@ -22,6 +22,7 @@
 #include "qgslayoutmodel.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslegendstyle.h"
 #include "qgslogger.h"
@@ -153,7 +154,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   }
   mInitialMapScaleCalculated = true;
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer = createRenderer();
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
 
   const QPointF oldPos = pos();
@@ -265,7 +266,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
     Q_NOWARN_DEPRECATED_POP
   }
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer = createRenderer();
   legendRenderer.setLegendSize( rect().size() );
 
   legendRenderer.drawLegend( rc );
@@ -288,7 +289,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
   QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) :
                              QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer = createRenderer();
   const QSizeF size = legendRenderer.minimumSize( &context );
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ), 2 );
   if ( size.isValid() )
@@ -319,16 +320,33 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
   mCustomLayerTree.reset( rootGroup );
 }
 
-void QgsLayoutItemLegend::ensureModelIsInitialized()
+void QgsLayoutItemLegend::ensureModelIsInitialized() const
 {
   if ( mDeferLegendModelInitialization )
   {
-    mDeferLegendModelInitialization = false;
-    setCustomLayerTree( mCustomLayerTree.release() );
+    QgsLayoutItemLegend *mutableThis = const_cast< QgsLayoutItemLegend * >( this );
+    mutableThis->mDeferLegendModelInitialization = false;
+    mutableThis->setCustomLayerTree( mutableThis->mCustomLayerTree.release() );
   }
 }
 
+QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
+{
+  QgsLegendRenderer res( mLegendModel.get(), mSettings );
+
+  // only show private layers when not in auto update mode
+  res.proxyModel()->setShowPrivateLayers( static_cast< bool >( mCustomLayerTree ) );
+
+  return res;
+}
+
 QgsLegendModel *QgsLayoutItemLegend::model()
+{
+  ensureModelIsInitialized();
+  return mLegendModel.get();
+}
+
+const QgsLegendModel *QgsLayoutItemLegend::model() const
 {
   ensureModelIsInitialized();
   return mLegendModel.get();
@@ -1200,7 +1218,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         {
           mapExtent.transform( mapTransform );
         }
-        catch ( QgsCsException &cse )
+        catch ( QgsCsException & )
         {
           continue;
         }
@@ -1345,7 +1363,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
     }
     return true;
   };
-  return visit( mLegendModel->rootGroup( ) );
+  return visit( model()->rootGroup( ) );
 }
 
 bool QgsLayoutItemLegend::isRefreshing() const

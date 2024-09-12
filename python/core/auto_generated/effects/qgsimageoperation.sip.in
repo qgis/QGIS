@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/effects/qgsimageoperation.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -202,5 +202,5 @@ Crop any transparent border from around an image.
  *                                                                      *
  * src/core/effects/qgsimageoperation.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

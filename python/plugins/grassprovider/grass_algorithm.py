@@ -961,17 +961,17 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         # safety check: we can only use external for ogr layers which support random read
         if external:
             if feedback is not None:
-                feedback.pushInfo('Attempting to use v.external for direct layer read')
+                feedback.pushInfo(self.tr('Attempting to use v.external for direct layer read'))
             ds = ogr.Open(file_path)
             if ds is not None:
                 ogr_layer = ds.GetLayer()
                 if ogr_layer is None or not ogr_layer.TestCapability(ogr.OLCRandomRead):
                     if feedback is not None:
-                        feedback.reportError('Cannot use v.external: layer does not support random read')
+                        feedback.reportError(self.tr('Cannot use v.external: layer does not support random read'))
                     external = False
             else:
                 if feedback is not None:
-                    feedback.reportError('Cannot use v.external: error reading layer')
+                    feedback.reportError(self.tr('Cannot use v.external: error reading layer'))
                 external = False
 
         self.inputLayers.append(layer)
@@ -985,6 +985,10 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
             os.path.normpath(file_path),
             ' layer="{}"'.format(layer_name) if layer_name else '',
             destFilename)
+        if layer.subsetString():
+            escaped_subset = layer.subsetString().replace('"', '\\"')
+            command += f' where="{escaped_subset}"'
+
         self.commands.append(command)
 
     def exportVectorLayerFromParameter(self, name, parameters, context, layer=None, nocats=False):

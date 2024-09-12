@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/interpolation/qgsinterpolator.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,14 +20,11 @@ struct QgsInterpolatorVertexData
 
   QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
-Constructor for :py:class:`QgsInterpolatorVertexData` with the specified
+Constructor for QgsInterpolatorVertexData with the specified
 ``x``, ``y``, and ``z`` coordinate.
 %End
 
   QgsInterpolatorVertexData();
-%Docstring
-Constructor for :py:class:`QgsInterpolatorVertexData`
-%End
 
   double x;
   double y;
@@ -121,5 +118,5 @@ progress reports from the cache operation.
  *                                                                      *
  * src/analysis/interpolation/qgsinterpolator.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

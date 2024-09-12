@@ -1,0 +1,78 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptoolpan.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapToolPan : QgsMapTool
+{
+%Docstring(signature="appended")
+A map tool for panning the map.
+
+.. seealso:: :py:class:`QgsMapTool`
+%End
+
+%TypeHeaderCode
+#include "qgsmaptoolpan.h"
+%End
+  public:
+    QgsMapToolPan( QgsMapCanvas *canvas );
+%Docstring
+constructor
+%End
+    ~QgsMapToolPan();
+
+    virtual void activate();
+
+    virtual void deactivate();
+
+
+    virtual Flags flags() const;
+
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
+
+    virtual bool gestureEvent( QGestureEvent *e );
+
+
+    bool isDragging() const;
+%Docstring
+Returns ``True`` if a drag operation is in progress.
+
+.. versionadded:: 3.12
+%End
+
+  signals:
+
+    void panDistanceBearingChanged( double distance, Qgis::DistanceUnit unit, double bearing );
+%Docstring
+Emitted whenever the distance or bearing of an in-progress panning
+operation is changed.
+
+This signal will be emitted during a pan operation as the user moves the map,
+giving the total distance and bearing between the map position at the
+start of the pan and the current pan position.
+
+.. versionadded:: 3.12
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptoolpan.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

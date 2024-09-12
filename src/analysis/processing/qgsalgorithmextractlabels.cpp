@@ -107,6 +107,11 @@ QString QgsExtractLabelsAlgorithm::shortDescription() const
   return QObject::tr( "Converts map labels to a point layer with relevant details saved as attributes." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractLabelsAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QString QgsExtractLabelsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm extracts label information from a rendered map at a given extent and scale.\n\n"

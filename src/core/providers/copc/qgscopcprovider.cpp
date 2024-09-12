@@ -35,7 +35,7 @@
 QgsCopcProvider::QgsCopcProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
   bool isRemote = uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive );
@@ -157,7 +157,7 @@ QIcon QgsCopcProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconPointCloudLayer.svg" ) );
 }
 
-QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsCopcProvider( uri, options, flags );
 }

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointcloudrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,7 +39,6 @@ taken from the point cloud index.
 The ``zValueFixedOffset`` argument specifies any constant offset value which must be added to z values
 taken from the point cloud index.
 %End
-
 
 
     QgsRenderContext &renderContext();
@@ -194,9 +193,6 @@ Abstract base class for 2d point cloud renderers.
   public:
 
     QgsPointCloudRenderer();
-%Docstring
-Constructor for QgsPointCloudRenderer.
-%End
 
     virtual ~QgsPointCloudRenderer();
 
@@ -615,5 +611,5 @@ specified DOM ``element``.
  *                                                                      *
  * src/core/pointcloud/qgspointcloudrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

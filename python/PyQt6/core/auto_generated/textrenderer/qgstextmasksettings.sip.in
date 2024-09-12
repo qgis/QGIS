@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextmasksettings.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,6 +15,7 @@ class QgsTextMaskSettings
 {
 %Docstring(signature="appended")
 Container for settings relating to a selective masking around a text.
+
 A selective masking only makes sense in contexts where the text is rendered over some other map layers, especially for labeling.
 
 .. note::
@@ -37,12 +38,6 @@ A selective masking only makes sense in contexts where the text is rendered over
     QgsTextMaskSettings();
 
     QgsTextMaskSettings( const QgsTextMaskSettings &other );
-%Docstring
-Copy constructor.
-
-:param other: source settings
-%End
-
 
     ~QgsTextMaskSettings();
 
@@ -240,5 +235,5 @@ Returns all field names referenced by the configuration (e.g. from data defined 
  *                                                                      *
  * src/core/textrenderer/qgstextmasksettings.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

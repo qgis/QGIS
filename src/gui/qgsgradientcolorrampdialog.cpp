@@ -15,9 +15,7 @@
 
 #include "qgsgradientcolorrampdialog.h"
 
-#include "qgscolorramp.h"
 #include "qgsdialog.h"
-#include "qgscolordialog.h"
 #include "qgscptcityarchive.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -53,24 +51,34 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  mColorWidget->setColorModelEditable( false );
+
   mStopColorSpec->addItem( tr( "RGB" ), static_cast< int >( QColor::Spec::Rgb ) );
   mStopColorSpec->addItem( tr( "HSV" ), static_cast< int >( QColor::Spec::Hsv ) );
   mStopColorSpec->addItem( tr( "HSL" ), static_cast< int >( QColor::Spec::Hsl ) );
+  mStopColorSpec->addItem( tr( "CMYK" ), static_cast< int >( QColor::Spec::Cmyk ) );
   mStopColorSpec->setCurrentIndex( mStopColorSpec->findData( static_cast< int >( ramp.colorSpec() ) ) );
 
   mStopDirection->addItem( tr( "Clockwise" ), static_cast< int >( Qgis::AngularDirection::Clockwise ) );
   mStopDirection->addItem( tr( "Counterclockwise" ), static_cast< int >( Qgis::AngularDirection::CounterClockwise ) );
   mStopDirection->setCurrentIndex( mStopColorSpec->findData( static_cast< int >( ramp.direction() ) ) );
 
-  mStopDirection->setEnabled( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) != QColor::Spec::Rgb );
+  mStopDirection->setEnabled( hasDirection( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) ) );
 
   connect( mStopColorSpec, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
-    mStopDirection->setEnabled( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) != QColor::Spec::Rgb );
+    const QColor::Spec colorSpec = static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() );
+    mStopDirection->setEnabled( hasDirection( colorSpec ) );
+
+    if ( colorSpec != mColorWidget->color().spec() )
+    {
+      mColorWidget->setColor( mColorWidget->color().convertTo( colorSpec ) );
+    }
 
     if ( mBlockChanges )
       return;
-    mStopEditor->setSelectedStopColorSpec( static_cast< QColor::Spec>( mStopColorSpec->currentData().toInt() ) );
+
+    mStopEditor->setSelectedStopColorSpec( colorSpec );
   } );
 
   connect( mStopDirection, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
@@ -359,7 +367,7 @@ void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop &sto
 
   // first stop cannot have color spec or direction set
   mStopColorSpec->setEnabled( !( stop.offset == 0 && stop.color == mRamp.color1() ) );
-  mStopDirection->setEnabled( !( stop.offset == 0 && stop.color == mRamp.color1() ) && mStopEditor->selectedStop().colorSpec() != QColor::Rgb );
+  mStopDirection->setEnabled( !( stop.offset == 0 && stop.color == mRamp.color1() ) && hasDirection( mStopEditor->selectedStop().colorSpec() ) );
 
   updatePlot();
 }
@@ -529,6 +537,24 @@ void QgsGradientColorRampDialog::addMarkersForColor( double x, const QColor &col
     addPlotMarker( x, color.alphaF(), color, isSelected && mCurrentPlotColorComponent == 3 );
 }
 
+bool QgsGradientColorRampDialog::hasDirection( QColor::Spec colorSpec )
+{
+  switch ( colorSpec )
+  {
+    case QColor::Spec::Rgb:
+    case QColor::Spec::ExtendedRgb:
+    case QColor::Spec::Cmyk:
+    case QColor::Spec::Invalid:
+      return false;
+
+    case QColor::Spec::Hsv:
+    case QColor::Spec::Hsl:
+      return true;
+  }
+
+  BUILTIN_UNREACHABLE
+}
+
 void QgsGradientColorRampDialog::updatePlot()
 {
   // remove existing markers
@@ -609,7 +635,7 @@ void QgsGradientColorRampDialog::updateRampFromStopEditor()
 
   // first stop cannot have color spec or direction set
   mStopColorSpec->setEnabled( !( mStopEditor->selectedStop().offset == 0 && mStopEditor->selectedStop().color == mRamp.color1() ) );
-  mStopDirection->setEnabled( !( mStopEditor->selectedStop().offset == 0 && mStopEditor->selectedStop().color == mRamp.color1() ) && mStopEditor->selectedStop().colorSpec() != QColor::Rgb );
+  mStopDirection->setEnabled( !( mStopEditor->selectedStop().offset == 0 && mStopEditor->selectedStop().color == mRamp.color1() ) && hasDirection( mStopEditor->selectedStop().colorSpec() ) );
 
   updateColorButtons();
   updatePlot();

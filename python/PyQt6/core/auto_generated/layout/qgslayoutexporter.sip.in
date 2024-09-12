@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutexporter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -122,9 +122,6 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
     struct ImageExportSettings
     {
       ImageExportSettings();
-%Docstring
-Constructor for ImageExportSettings
-%End
 
       double dpi;
 
@@ -178,9 +175,6 @@ to the error description.
     struct PdfExportSettings
     {
       PdfExportSettings();
-%Docstring
-Constructor for PdfExportSettings
-%End
 
       double dpi;
 
@@ -256,9 +250,6 @@ to the error description.
     struct PrintExportSettings
     {
       PrintExportSettings();
-%Docstring
-Constructor for PrintExportSettings
-%End
 
       double dpi;
 
@@ -296,9 +287,6 @@ to the error description.
     struct SvgExportSettings
     {
       SvgExportSettings();
-%Docstring
-Constructor for SvgExportSettings
-%End
 
       double dpi;
 
@@ -442,5 +430,5 @@ Subclasses can override this method to customize page file naming.
  *                                                                      *
  * src/core/layout/qgslayoutexporter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

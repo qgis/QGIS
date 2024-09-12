@@ -45,6 +45,7 @@ class QgsMergeVectorAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortDescription() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsMergeVectorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

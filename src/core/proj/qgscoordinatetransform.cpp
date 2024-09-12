@@ -174,6 +174,20 @@ QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTr
 
 QgsCoordinateTransform::~QgsCoordinateTransform() {} //NOLINT
 
+bool QgsCoordinateTransform::operator==( const QgsCoordinateTransform &other ) const
+{
+  return d->mSourceCRS == other.d->mSourceCRS
+         && d->mDestCRS == other.d->mDestCRS
+         && mBallparkTransformsAreAppropriate == other.mBallparkTransformsAreAppropriate
+         && d->mProjCoordinateOperation == other.d->mProjCoordinateOperation
+         && instantiatedCoordinateOperationDetails().proj == other.instantiatedCoordinateOperationDetails().proj;
+}
+
+bool QgsCoordinateTransform::operator!=( const QgsCoordinateTransform &other ) const
+{
+  return !( *this == other );
+}
+
 bool QgsCoordinateTransform::isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
   if ( !source.isValid() || !destination.isValid() )
@@ -919,6 +933,11 @@ bool QgsCoordinateTransform::isValid() const
 bool QgsCoordinateTransform::isShortCircuited() const
 {
   return !d->mIsValid || d->mShortCircuit;
+}
+
+bool QgsCoordinateTransform::hasVerticalComponent() const
+{
+  return d->mIsValid && d->mHasVerticalComponent;
 }
 
 QString QgsCoordinateTransform::coordinateOperation() const

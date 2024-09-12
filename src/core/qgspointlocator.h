@@ -155,7 +155,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
       Area    = 1 << 2, //!< Snapped to an area
       Centroid = 1 << 3, //!< Snapped to a centroid
       MiddleOfSegment = 1 << 4, //!< Snapped to the middle of a segment
-      LineEndpoint = 1 << 5, //!< Start or end points of lines only (since QGIS 3.20)
+      LineEndpoint = 1 << 5, //!< Start or end points of lines only \since QGIS 3.20
       All = Vertex | Edge | Area | Centroid | MiddleOfSegment //!< Combination of all types. Note LineEndpoint is not included as endpoints made redundant by the presence of the Vertex flag.
     };
 

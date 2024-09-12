@@ -66,7 +66,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     /**
      * Returns TRUE if the action can run using the specified layer.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual bool canRunUsingLayer( QgsMapLayer *layer ) const SIP_DEPRECATED;
 
@@ -82,21 +82,21 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     /**
      * Triggers the action with the specified layer and list of feature.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) SIP_DEPRECATED;
 
     /**
      * Triggers the action with the specified layer and feature.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature ) SIP_DEPRECATED;
 
     /**
      * Triggers the action with the specified layer.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual void triggerForLayer( QgsMapLayer *layer ) SIP_DEPRECATED;
 
@@ -135,21 +135,21 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     /**
      * Triggered when action has been run for a specific list of features
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) SIP_DEPRECATED;
 
     /**
      * Triggered when action has been run for a specific feature
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature ) SIP_DEPRECATED;
 
     /**
      * Triggered when action has been run for a specific layer
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED void triggeredForLayer( QgsMapLayer *layer ) SIP_DEPRECATED;
 

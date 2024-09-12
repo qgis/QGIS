@@ -67,13 +67,11 @@ class CORE_EXPORT QgsMeshSpatialIndex
      */
     explicit QgsMeshSpatialIndex( const QgsMesh &mesh, QgsFeedback *feedback = nullptr, QgsMesh::ElementType elementType = QgsMesh::ElementType::Face );
 
-    //! Copy constructor
     QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other );
 
     //! Destructor finalizes work with spatial index
     ~QgsMeshSpatialIndex();
 
-    //! Implement assignment operator
     QgsMeshSpatialIndex &operator=( const QgsMeshSpatialIndex &other );
 
     /**

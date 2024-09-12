@@ -325,7 +325,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>812</width>
-                <height>640</height>
+                <height>641</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -377,35 +377,14 @@
                  <property name="saveCollapsedState" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_2">
+                 <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,0,0,2">
                   <property name="leftMargin">
                    <number>0</number>
                   </property>
                   <property name="rightMargin">
                    <number>3</number>
                   </property>
-                  <item row="0" column="1" colspan="3">
-                   <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="lblBlend">
-                    <property name="text">
-                     <string>Blending mode</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="lblTransparency">
-                    <property name="text">
-                     <string>Opacity</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0" colspan="4">
+                  <item row="3" column="0" colspan="4">
                    <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
                     <property name="minimumSize">
                      <size>
@@ -418,13 +397,48 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="lblTransparency">
+                    <property name="text">
+                     <string>Opacity</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="1" column="1" colspan="3">
+                   <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="lblBlend">
+                    <property name="text">
+                     <string>Blending mode</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" colspan="3">
                    <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                       <horstretch>4</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="layerLabel">
+                    <property name="text">
+                     <string>Linked layer</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" colspan="3">
+                   <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
+                    <property name="toolTip">
+                     <string>Allows the annotation layer to be associated with a map layer. If set, the annotations will only be visible when the layer is visible.</string>
                     </property>
                    </widget>
                   </item>
@@ -543,6 +557,11 @@
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

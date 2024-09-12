@@ -19,12 +19,12 @@
 #include "qgslayoutitemscalebar.h"
 #include "qgsscalebarrendererregistry.h"
 #include "qgslayout.h"
-#include "qgsvectorlayer.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgslayoutundostack.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsvectorlayer.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -50,8 +50,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mLabelBarSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged );
   connect( mBoxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged );
   connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, &QgsLayoutScaleBarWidget::alignmentChanged );
-  connect( mLabelVerticalPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLabelVerticalPlacementComboBox_currentIndexChanged );
-  connect( mLabelHorizontalPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLabelHorizontalPlacementComboBox_currentIndexChanged );
+  connect( mDistanceLabelPlacementComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mDistanceLabelPlacementComboBox_currentIndexChanged );
   connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged );
   connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
@@ -96,10 +95,10 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   }
 
   //label vertical/horizontal placement combo box
-  mLabelVerticalPlacementComboBox->addItem( tr( "Above Segments" ), static_cast< int >( QgsScaleBarSettings::LabelAboveSegment ) );
-  mLabelVerticalPlacementComboBox->addItem( tr( "Below Segments" ), static_cast< int >( QgsScaleBarSettings::LabelBelowSegment ) );
-  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at Segment Edge" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredEdge ) );
-  mLabelHorizontalPlacementComboBox->addItem( tr( "Centered at Center of Segment" ), static_cast< int >( QgsScaleBarSettings::LabelCenteredSegment ) );
+  mDistanceLabelPlacementComboBox->addItem( tr( "Above Segment Edges" ), static_cast< int >( DistanceLabelPlacement::CenteredAboveSegmentEdges ) );
+  mDistanceLabelPlacementComboBox->addItem( tr( "Above Segment Centers" ), static_cast< int >( DistanceLabelPlacement::CenteredAboveSegmentCenters ) );
+  mDistanceLabelPlacementComboBox->addItem( tr( "Below Segment Edges" ), static_cast< int >( DistanceLabelPlacement::CenteredBelowSegmentEdges ) );
+  mDistanceLabelPlacementComboBox->addItem( tr( "Below Segment Centers" ), static_cast< int >( DistanceLabelPlacement::CenteredBelowSegmentCenters ) );
 
   //alignment combo box
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
@@ -304,21 +303,21 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   toggleStyleSpecificControls( style );
 
   //label vertical/horizontal placement
-  mLabelVerticalPlacementComboBox->setCurrentIndex( mLabelVerticalPlacementComboBox->findData( static_cast< int >( mScalebar->labelVerticalPlacement() ) ) );
-  mLabelHorizontalPlacementComboBox->setCurrentIndex( mLabelHorizontalPlacementComboBox->findData( static_cast< int >( mScalebar->labelHorizontalPlacement() ) ) );
+  mDistanceLabelPlacementComboBox->setCurrentIndex( mDistanceLabelPlacementComboBox->findData( static_cast< int >(
+        distanceLabelPlacement( mScalebar->labelHorizontalPlacement(), mScalebar->labelVerticalPlacement() ) ) ) );
 
   //alignment
 
   Qt::Alignment a = Qt::AlignLeft;
   switch ( mScalebar->alignment() )
   {
-    case QgsScaleBarSettings::AlignLeft:
+    case Qgis::ScaleBarAlignment::Left:
       a = Qt::AlignLeft;
       break;
-    case QgsScaleBarSettings::AlignRight:
+    case Qgis::ScaleBarAlignment::Right:
       a = Qt::AlignRight;
       break;
-    case QgsScaleBarSettings::AlignMiddle:
+    case Qgis::ScaleBarAlignment::Middle:
       a = Qt::AlignHCenter;
       break;
   }
@@ -327,19 +326,25 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   //units
   mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( static_cast< int >( mScalebar->units() ) ) );
 
-  if ( mScalebar->segmentSizeMode() == QgsScaleBarSettings::SegmentSizeFixed )
+  switch ( mScalebar->segmentSizeMode() )
   {
-    mFixedSizeRadio->setChecked( true );
-    mSegmentSizeWidget->setEnabled( true );
-    mMinWidthWidget->setEnabled( false );
-    mMaxWidthWidget->setEnabled( false );
-  }
-  else /*if(mComposerScaleBar->segmentSizeMode() == QgsComposerScaleBar::SegmentSizeFitWidth)*/
-  {
-    mFitWidthRadio->setChecked( true );
-    mSegmentSizeWidget->setEnabled( false );
-    mMinWidthWidget->setEnabled( true );
-    mMaxWidthWidget->setEnabled( true );
+    case Qgis::ScaleBarSegmentSizeMode::Fixed:
+    {
+      mFixedSizeRadio->setChecked( true );
+      mSegmentSizeWidget->setEnabled( true );
+      mMinWidthWidget->setEnabled( false );
+      mMaxWidthWidget->setEnabled( false );
+      break;
+    }
+
+    case Qgis::ScaleBarSegmentSizeMode::FitWidth:
+    {
+      mFitWidthRadio->setChecked( true );
+      mSegmentSizeWidget->setEnabled( false );
+      mMinWidthWidget->setEnabled( true );
+      mMaxWidthWidget->setEnabled( true );
+      break;
+    }
   }
   mMinWidthSpinBox->setValue( mScalebar->minimumBarWidth() );
   mMaxWidthSpinBox->setValue( mScalebar->maximumBarWidth() );
@@ -477,6 +482,33 @@ void QgsLayoutScaleBarWidget::changeNumberFormat()
   return;
 }
 
+QgsLayoutScaleBarWidget::DistanceLabelPlacement QgsLayoutScaleBarWidget::distanceLabelPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement horizontalPlacement, Qgis::ScaleBarDistanceLabelVerticalPlacement verticalPlacement )
+{
+  switch ( horizontalPlacement )
+  {
+    case Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge:
+      switch ( verticalPlacement )
+      {
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment:
+          return DistanceLabelPlacement::CenteredAboveSegmentEdges;
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment:
+          return DistanceLabelPlacement::CenteredBelowSegmentEdges;
+      }
+      BUILTIN_UNREACHABLE
+
+    case Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment:
+      switch ( verticalPlacement )
+      {
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment:
+          return DistanceLabelPlacement::CenteredAboveSegmentCenters;
+        case Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment:
+          return DistanceLabelPlacement::CenteredBelowSegmentCenters;
+      }
+      BUILTIN_UNREACHABLE
+  }
+  BUILTIN_UNREACHABLE
+}
+
 void QgsLayoutScaleBarWidget::mUnitLabelLineEdit_textChanged( const QString &text )
 {
   if ( !mScalebar )
@@ -558,10 +590,9 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
     mGroupBoxSegments->setCollapsed( true );
   mLabelBarSpaceSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
   mLabelBarSpaceLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
-  mLabelVerticalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
-  mLabelVerticalPlacementLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
-  mLabelHorizontalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
-  mLabelHorizontalPlacementLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
+  mDistanceLabelPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
+  mLabelVerticalPlacementLabel->setEnabled( renderer ? ( renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement
+      || renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement ) : true );
   mAlignmentComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
   mAlignmentLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
   mFillSymbol1Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );
@@ -606,31 +637,37 @@ void QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged( double d )
   mScalebar->endCommand();
 }
 
-void QgsLayoutScaleBarWidget::mLabelVerticalPlacementComboBox_currentIndexChanged( int index )
+void QgsLayoutScaleBarWidget::mDistanceLabelPlacementComboBox_currentIndexChanged( int index )
 {
   if ( !mScalebar )
   {
     return;
   }
 
-  mScalebar->beginCommand( tr( "Set Scalebar Label Vertical Placement" ) );
+  mScalebar->beginCommand( tr( "Set Scalebar Label Placement" ) );
   disconnectUpdateSignal();
-  mScalebar->setLabelVerticalPlacement( static_cast<QgsScaleBarSettings::LabelVerticalPlacement>( mLabelVerticalPlacementComboBox->itemData( index ).toInt() ) );
-  mScalebar->update();
-  connectUpdateSignal();
-  mScalebar->endCommand();
-}
 
-void QgsLayoutScaleBarWidget::mLabelHorizontalPlacementComboBox_currentIndexChanged( int index )
-{
-  if ( !mScalebar )
+  const DistanceLabelPlacement placement = static_cast<DistanceLabelPlacement>( mDistanceLabelPlacementComboBox->itemData( index ).toInt() );
+  switch ( placement )
   {
-    return;
+    case DistanceLabelPlacement::CenteredAboveSegmentEdges:
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge );
+      break;
+    case DistanceLabelPlacement::CenteredAboveSegmentCenters:
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment );
+      break;
+    case DistanceLabelPlacement::CenteredBelowSegmentEdges:
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge );
+      break;
+    case DistanceLabelPlacement::CenteredBelowSegmentCenters:
+      mScalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment );
+      mScalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment );
+      break;
   }
 
-  mScalebar->beginCommand( tr( "Set Scalebar Label Horizontal Placement" ) );
-  disconnectUpdateSignal();
-  mScalebar->setLabelHorizontalPlacement( static_cast<QgsScaleBarSettings::LabelHorizontalPlacement>( mLabelHorizontalPlacementComboBox->itemData( index ).toInt() ) );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
@@ -646,8 +683,8 @@ void QgsLayoutScaleBarWidget::alignmentChanged()
   mScalebar->beginCommand( tr( "Set Scalebar Alignment" ) );
   disconnectUpdateSignal();
 
-  const QgsScaleBarSettings::Alignment a = mAlignmentComboBox->currentAlignment() & Qt::AlignLeft ? QgsScaleBarSettings::AlignLeft
-      : mAlignmentComboBox->currentAlignment() & Qt::AlignRight ? QgsScaleBarSettings::AlignRight : QgsScaleBarSettings::AlignMiddle;
+  const Qgis::ScaleBarAlignment a = mAlignmentComboBox->currentAlignment() & Qt::AlignLeft ? Qgis::ScaleBarAlignment::Left
+                                    : mAlignmentComboBox->currentAlignment() & Qt::AlignRight ? Qgis::ScaleBarAlignment::Right : Qgis::ScaleBarAlignment::Middle;
   mScalebar->setAlignment( a );
   mScalebar->update();
   connectUpdateSignal();
@@ -698,8 +735,7 @@ void QgsLayoutScaleBarWidget::blockMemberSignals( bool block )
   mSubdivisionStyleButton->blockSignals( block );
   mLabelBarSpaceSpinBox->blockSignals( block );
   mBoxSizeSpinBox->blockSignals( block );
-  mLabelVerticalPlacementComboBox->blockSignals( block );
-  mLabelHorizontalPlacementComboBox->blockSignals( block );
+  mDistanceLabelPlacementComboBox->blockSignals( block );
   mAlignmentComboBox->blockSignals( block );
   mUnitsComboBox->blockSignals( block );
   mFillSymbol1Button->blockSignals( block );
@@ -743,12 +779,12 @@ void QgsLayoutScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio )
   disconnectUpdateSignal();
   if ( mFixedSizeRadio->isChecked() )
   {
-    mScalebar->setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeFixed );
+    mScalebar->setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode::Fixed );
     mScalebar->setUnitsPerSegment( mSegmentSizeSpinBox->value() );
   }
   else /*if(mFitWidthRadio->isChecked())*/
   {
-    mScalebar->setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeFitWidth );
+    mScalebar->setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode::FitWidth );
   }
   mScalebar->update();
   connectUpdateSignal();

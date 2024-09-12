@@ -43,6 +43,7 @@ class QgsSplitFeaturesByAttributeCharacterAlgorithm : public QgsProcessingFeatur
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     Qgis::ProcessingSourceType outputLayerType() const override;

@@ -31,9 +31,6 @@ class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
 
-    /**
-     * Constructor for QgsSingleBoxScaleBarRenderer.
-     */
     QgsSingleBoxScaleBarRenderer() = default;
 
     QString id() const override;

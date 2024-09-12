@@ -106,7 +106,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     /**
      * Accepts all panel widgets open in the stack in turn until only the mainPanel()
      * remains.
-     * \see acceptCurrentPanel();
+     * \see acceptCurrentPanel()
      */
     void acceptAllPanels();
 

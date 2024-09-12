@@ -41,18 +41,11 @@ class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
     //! Constructor for QgsTiledSceneDataProvider
     QgsTiledSceneDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsTiledSceneDataProvider() override;
 
-    /**
-     * Copy constructor.
-     */
     QgsTiledSceneDataProvider( const QgsTiledSceneDataProvider &other );
-
-    /**
-     * QgsTiledSceneDataProvider cannot be assigned.
-     */
     QgsTiledSceneDataProvider &operator=( const QgsTiledSceneDataProvider &other ) = delete;
 
     /**

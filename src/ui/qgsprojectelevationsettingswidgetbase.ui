@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>486</height>
+    <height>445</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Project Elevation Settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -27,34 +27,155 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Vertical Reference System</string>
+    <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QgsStackedWidget" name="mVerticalCrsStackedWidget">
-        <widget class="QWidget" name="mCrsPageDisabled">
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>504</width>
+        <height>447</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Vertical Reference System</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QLabel" name="mCrsDisabledLabel">
+           <widget class="QgsStackedWidget" name="mVerticalCrsStackedWidget">
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
+            <widget class="QWidget" name="mCrsPageDisabled">
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="mCrsDisabledLabel">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="mCrsPageEnabled"/>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="mElevationRangeCheckBox">
+         <property name="title">
+          <string>Elevation Range</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,2">
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mElevationUpperSpin">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Maximum elevation of interest</string>
+            </property>
+            <property name="decimals">
+             <number>4</number>
+            </property>
+            <property name="minimum">
+             <double>-9999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>9999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDoubleSpinBox" name="mElevationLowerSpin">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Minimum elevation of interest</string>
+            </property>
+            <property name="decimals">
+             <number>4</number>
+            </property>
+            <property name="minimum">
+             <double>-9999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>9999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mEndDateTimeLabel_2">
             <property name="text">
-             <string/>
+             <string>Upper</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mStartDateTimeLabel_2">
+            <property name="text">
+             <string>Lower</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>When set, these heights define the upper and lower elevation limits for the area of interest in this project.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -63,299 +184,209 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="mCrsPageEnabled"/>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="mElevationRangeCheckBox">
-     <property name="title">
-      <string>Elevation Range</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-     <property name="collapsed" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="syncGroup" stdset="0">
-      <string notr="true">composeritem</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,2">
-      <item row="2" column="1">
-       <widget class="QgsDoubleSpinBox" name="mElevationUpperSpin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Maximum elevation of interest</string>
-        </property>
-        <property name="decimals">
-         <number>4</number>
-        </property>
-        <property name="minimum">
-         <double>-9999999999.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>9999999999.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsDoubleSpinBox" name="mElevationLowerSpin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Minimum elevation of interest</string>
-        </property>
-        <property name="decimals">
-         <number>4</number>
-        </property>
-        <property name="minimum">
-         <double>-9999999999.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>9999999999.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="mEndDateTimeLabel_2">
-        <property name="text">
-         <string>Upper</string>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mStartDateTimeLabel_2">
-        <property name="text">
-         <string>Lower</string>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>When set, these heights define the upper and lower elevation limits for the area of interest in this project.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Terrain</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelTerrainType">
-        <property name="text">
-         <string>Type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="mComboTerrainType"/>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QgsStackedWidget" name="mStackedWidget">
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="mPageFlat">
-         <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mTerrainGroupBox">
+         <property name="title">
+          <string>Terrain</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_13">
+           <widget class="QLabel" name="labelTerrainType">
             <property name="text">
-             <string>Terrain height</string>
+             <string>Type</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QgsDoubleSpinBox" name="mFlatHeightSpinBox">
-            <property name="minimum">
-             <double>-1000000.000000000000000</double>
+           <widget class="QComboBox" name="mComboTerrainType"/>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QgsStackedWidget" name="mStackedWidget">
+            <property name="currentIndex">
+             <number>0</number>
             </property>
-            <property name="maximum">
-             <double>1000000.000000000000000</double>
-            </property>
+            <widget class="QWidget" name="mPageFlat">
+             <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Terrain height</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QgsDoubleSpinBox" name="mFlatHeightSpinBox">
+                <property name="minimum">
+                 <double>-1000000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000000.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="mPageRasterDem">
+             <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,2">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>Offset</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="labelTerrainScale">
+                <property name="text">
+                 <string>Vertical scale</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsDoubleSpinBox" name="mDemOffsetSpinBox">
+                <property name="minimum">
+                 <double>-1000000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000000.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QgsMapLayerComboBox" name="mComboDemLayer"/>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsDoubleSpinBox" name="mDemScaleSpinBox">
+                <property name="value">
+                 <double>1.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="labelTerrainLayer">
+                <property name="text">
+                 <string>DEM layer</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="mPageMesh">
+             <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,2">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="1" column="0">
+               <widget class="QLabel" name="labelTerrainScale_2">
+                <property name="text">
+                 <string>Vertical scale</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="labelTerrainLayer_2">
+                <property name="text">
+                 <string>Mesh layer</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsDoubleSpinBox" name="mMeshOffsetSpinBox">
+                <property name="minimum">
+                 <double>-1000000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000000.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QgsMapLayerComboBox" name="mComboMeshLayer"/>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsDoubleSpinBox" name="mMeshScaleSpinBox">
+                <property name="value">
+                 <double>1.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>Offset</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="mPageRasterDem">
-         <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_14">
-            <property name="text">
-             <string>Offset</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="labelTerrainScale">
-            <property name="text">
-             <string>Vertical scale</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsDoubleSpinBox" name="mDemOffsetSpinBox">
-            <property name="minimum">
-             <double>-1000000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QgsMapLayerComboBox" name="mComboDemLayer"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mDemScaleSpinBox">
-            <property name="value">
-             <double>1.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="labelTerrainLayer">
-            <property name="text">
-             <string>DEM layer</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="mPageMesh">
-         <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="0">
-           <widget class="QLabel" name="labelTerrainScale_2">
-            <property name="text">
-             <string>Vertical scale</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="labelTerrainLayer_2">
-            <property name="text">
-             <string>Mesh layer</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMeshOffsetSpinBox">
-            <property name="minimum">
-             <double>-1000000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QgsMapLayerComboBox" name="mComboMeshLayer"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMeshScaleSpinBox">
-            <property name="value">
-             <double>1.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_15">
-            <property name="text">
-             <string>Offset</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </item>
-     </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="mElevationShadingSettingsLayout"/>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="mElevationShadingSettingsLayout"/>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>140</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
@@ -367,15 +398,21 @@
    <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsMessageBar</class>
-   <extends>QWidget</extends>
-   <header>qgsmessagebar.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsStackedWidget</class>
    <extends>QStackedWidget</extends>
    <header>qgsstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

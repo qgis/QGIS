@@ -814,9 +814,8 @@ void QgsSymbolSelectorWidget::duplicateLayer()
 void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
 {
   SymbolLayerItem *item = currentLayerItem();
-  QgsSymbolLayer *layer = item->layer();
 
-  if ( layer->subSymbol() )
+  if ( item->rowCount() > 0 )
   {
     item->removeRow( 0 );
   }

@@ -3,8 +3,9 @@
  *                                                                      *
  * src/core/locator/qgslocatormodelbridge.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
+
 
 
 
@@ -113,6 +114,13 @@ Update the canvas extent used to create search context
 Update the canvas CRS used to create search context
 %End
 
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+%Docstring
+This will call filters implementation of selection/deselection of results
+
+.. versionadded:: 3.40
+%End
+
 };
 
 /************************************************************************
@@ -120,5 +128,5 @@ Update the canvas CRS used to create search context
  *                                                                      *
  * src/core/locator/qgslocatormodelbridge.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

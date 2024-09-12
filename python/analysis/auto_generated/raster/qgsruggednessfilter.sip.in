@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsruggednessfilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -36,5 +36,5 @@ Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies top
  *                                                                      *
  * src/analysis/raster/qgsruggednessfilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

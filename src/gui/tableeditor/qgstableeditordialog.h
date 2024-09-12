@@ -166,7 +166,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     QgsTableEditorFormattingWidget *mFormattingWidget = nullptr;
     bool mBlockSignals = false;
 
-    void updateActionNamesFromSelection();
+    void updateActionsFromSelection();
 };
 
 #endif // QGSTABLEEDITORSHEETWIDGET_H

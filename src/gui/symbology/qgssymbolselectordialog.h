@@ -199,8 +199,9 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void symbolChanged();
 
     /**
-     * alters tree and sets proper widget when Layer Type is changed
-     * \note: The layer is received from the LayerPropertiesWidget
+     * Alters tree and sets proper widget when Layer Type is changed
+     *
+     * \note The layer is received from the LayerPropertiesWidget
      */
     void changeLayer( QgsSymbolLayer *layer );
 
@@ -285,6 +286,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 /**
  * \ingroup gui
  * \class QgsSymbolSelectorDialog
+ * \brief A dialog that can be used to select and build a symbol.
  */
 class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 {
@@ -362,8 +364,9 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void symbolChanged();
 
     /**
-     * alters tree and sets proper widget when Layer Type is changed
-     * \note: The layer is received from the LayerPropertiesWidget
+     * Alters tree and sets proper widget when Layer Type is changed
+     *
+     * \note The layer is received from the LayerPropertiesWidget
      */
     void changeLayer( QgsSymbolLayer *layer );
 
@@ -378,6 +381,9 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
   signals:
 
+    /**
+     * Emitted when the symbol defined in the dialog is modified.
+     */
     void symbolModified();
 
   private:

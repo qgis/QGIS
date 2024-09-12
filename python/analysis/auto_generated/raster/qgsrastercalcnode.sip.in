@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsrastercalcnode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -62,9 +62,6 @@ Represents a node in a raster calculator.
     };
 
     QgsRasterCalcNode();
-%Docstring
-Constructor for QgsRasterCalcNode.
-%End
 
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
@@ -78,9 +75,6 @@ Constructor for the tFunction type
 
 
     Type type() const;
-%Docstring
-QgsRasterCalcNode cannot be copied
-%End
 
     void setLeft( QgsRasterCalcNode *left );
     void setRight( QgsRasterCalcNode *right );
@@ -133,5 +127,5 @@ Returns a list of raster layer references that are addressed in the formula, wit
  *                                                                      *
  * src/analysis/raster/qgsrastercalcnode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

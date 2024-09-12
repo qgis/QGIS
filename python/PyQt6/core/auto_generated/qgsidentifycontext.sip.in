@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsidentifycontext.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,9 +23,6 @@ an identify action.
   public:
 
     QgsIdentifyContext();
-%Docstring
-Constructor for QgsIdentifyContext
-%End
 
     void setTemporalRange( const QgsDateTimeRange &range );
 %Docstring
@@ -78,5 +75,5 @@ Set to an infinite range if no filtering by z should be applied.
  *                                                                      *
  * src/core/qgsidentifycontext.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

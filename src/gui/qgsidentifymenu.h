@@ -60,7 +60,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     struct ActionData
     {
-      //! Constructor for ActionData
+
       ActionData() = default;
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = nullptr )
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     /**
      * Applies style from the settings to the highlight
      *
-     * \deprecated Use QgsHighlight::applyDefaultStyle() instead.
+     * \deprecated QGIS 3.40. Use QgsHighlight::applyDefaultStyle() instead.
      */
     Q_DECL_DEPRECATED static void styleHighlight( QgsHighlight *highlight ) SIP_DEPRECATED;
 

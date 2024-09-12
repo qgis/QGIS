@@ -19,10 +19,10 @@
 #include "qgis_sip.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgscallout.h"
+#include "qgsvectorlayer.h"
 #include <QWidget>
 #include <QStandardItemModel>
 
-class QgsVectorLayer;
 class QgsMapCanvas;
 
 /**
@@ -39,19 +39,19 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
 
     /**
      * Constructor for QgsCalloutWidget.
-     * \param vl associated vector layer
+     * \param vl associated map layer
      * \param parent parent widget
      */
-    QgsCalloutWidget( QWidget *parent SIP_TRANSFERTHIS, QgsVectorLayer *vl = nullptr )
+    QgsCalloutWidget( QWidget *parent SIP_TRANSFERTHIS, QgsMapLayer *vl = nullptr )
       : QWidget( parent )
-      , mVectorLayer( vl )
+      , mLayer( vl )
     {}
 
     /**
      * Sets the \a callout to show in the widget. Ownership is not transferred.
      * \see callout()
      */
-    virtual void setCallout( QgsCallout *callout ) = 0;
+    virtual void setCallout( const QgsCallout *callout ) = 0;
 
     /**
      * Returns the callout defined by the current settings in the widget. Ownership is not transferred,
@@ -75,8 +75,17 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
 
     /**
      * Returns the vector layer associated with the widget.
+     *
+     * \deprecated QGIS 3.40. Use layer() instead.
      */
-    const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
+    Q_DECL_DEPRECATED const QgsVectorLayer *vectorLayer() const SIP_DEPRECATED { return qobject_cast< QgsVectorLayer * >( mLayer ); }
+
+    /**
+     * Returns the vector layer associated with the widget.
+     *
+     * \since QGIS 3.40
+     */
+    const QgsMapLayer *layer() const { return mLayer; }
 
     /**
      * Sets the geometry \a type of the features to customize the widget accordingly.
@@ -95,7 +104,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
 
     QgsMapCanvas *mMapCanvas = nullptr;
 
@@ -132,11 +141,11 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
 
   public:
 
-    QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsSimpleLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleLineCalloutWidget( vl ); }
+    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsSimpleLineCalloutWidget( vl ); }
 
-    void setCallout( QgsCallout *callout ) override;
+    void setCallout( const QgsCallout *callout ) override;
 
     QgsCallout *callout() override;
 
@@ -167,9 +176,9 @@ class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidg
 
   public:
 
-    QgsManhattanLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsManhattanLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); }
+    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); }
 
 };
 
@@ -186,11 +195,11 @@ class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private U
 
   public:
 
-    QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsCurvedLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsCurvedLineCalloutWidget( vl ); }
+    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsCurvedLineCalloutWidget( vl ); }
 
-    void setCallout( QgsCallout *callout ) override;
+    void setCallout( const QgsCallout *callout ) override;
 
     QgsCallout *callout() override;
 
@@ -228,11 +237,11 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
 
   public:
 
-    QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsBalloonCalloutWidget( vl ); }
+    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsBalloonCalloutWidget( vl ); }
 
-    void setCallout( QgsCallout *callout ) override;
+    void setCallout( const QgsCallout *callout ) override;
 
     QgsCallout *callout() override;
 
@@ -243,6 +252,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
     void offsetFromAnchorUnitWidgetChanged();
     void offsetFromAnchorChanged();
     void fillSymbolChanged();
+    void markerSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
     void mCalloutBlendComboBox_currentIndexChanged( int index );
 

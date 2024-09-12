@@ -22,6 +22,8 @@
 #include "qgsnewnamedialog.h"
 #include "qgspgsourceselect.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgssettings.h"
+#include "qgspostgresconn.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -56,6 +58,10 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
+
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate );
 
     const QList< QgsPGConnectionItem * > pgConnectionItems = QgsDataItem::filteredItems<QgsPGConnectionItem>( selection );
     QAction *actionDelete = new QAction( pgConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
@@ -243,6 +249,25 @@ void QgsPostgresDataItemGuiProvider::editConnection( QgsDataItem *item )
       item->parent()->refreshConnections();
   }
 }
+
+void QgsPostgresDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
+{
+  const QString connectionName = item->name();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
+  const QStringList connections = settings.childGroups();
+  settings.endGroup();
+
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsPostgresConn::duplicateConnection( connectionName, newConnectionName );
+
+  if ( item->parent() )
+  {
+    item->parent()->refreshConnections();
+  }
+}
+
 
 void QgsPostgresDataItemGuiProvider::refreshConnection( QgsDataItem *item )
 {

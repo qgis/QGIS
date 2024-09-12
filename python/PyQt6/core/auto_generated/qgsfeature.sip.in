@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeature.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -309,13 +309,7 @@ Constructor for QgsFeature
 %End
 
     QgsFeature( const QgsFeature &rhs ) /HoldGIL/;
-%Docstring
-Copy constructor
-%End
-
-
     bool operator==( const QgsFeature &other ) const /HoldGIL/;
-
     bool operator!=( const QgsFeature &other ) const /HoldGIL/;
 
     virtual ~QgsFeature();
@@ -372,7 +366,6 @@ Returns the feature's attributes as a map of field name to value.
 
 :raises ValueError: if the field definition is unset or the size of the fields does not match the size of the feature's attributes()
 
-
 .. seealso:: :py:func:`attributes`
 
 .. seealso:: :py:func:`setAttributes`
@@ -422,7 +415,6 @@ The number of provided attributes need to exactly match the number of the featur
    If the number of provided attributes does not exactly match
    the number of the feature's fields then it will not be possible to add this feature to the corresponding data
    provider.
-
 
 .. seealso:: :py:func:`setAttribute`
 
@@ -568,8 +560,6 @@ Alternatively, in Python it is possible to directly `del` an attribute via its i
        # will now print [11, NONE]
        print(feature.attributes())
 
-
-
 :raises KeyError: if the field is not found
 
 .. seealso:: :py:func:`setAttribute`
@@ -648,7 +638,7 @@ This method is a shortcut for calling:
        feature.setGeometry( QgsGeometry( geometry ) )
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -661,8 +651,6 @@ Example
        feature.setGeometry( QgsLineString( [ QgsPoint( 210, 41 ), QgsPoint( 301, 55 ) ] ) )
        print(feature.geometry())
        # output: <QgsGeometry: LineString (210 41, 301 55)>
-
-
 
 .. seealso:: :py:func:`geometry`
 
@@ -997,5 +985,5 @@ typedef QList<QgsFeature> QgsFeatureList;
  *                                                                      *
  * src/core/qgsfeature.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

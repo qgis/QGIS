@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/inputcontroller/qgs2dmapcontroller.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,5 +40,5 @@ Constructor for QgsAbstract2DMapController, with the specified ``parent`` object
  *                                                                      *
  * src/gui/inputcontroller/qgs2dmapcontroller.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

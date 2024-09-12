@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgscubicrasterresampler.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,9 +22,6 @@ Cubic Raster Resampler.
   public:
 
     QgsCubicRasterResampler();
-%Docstring
-Constructor for QgsCubicRasterResampler.
-%End
     virtual QgsCubicRasterResampler *clone() const /Factory/;
 
 
@@ -43,5 +40,5 @@ Constructor for QgsCubicRasterResampler.
  *                                                                      *
  * src/core/raster/qgscubicrasterresampler.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

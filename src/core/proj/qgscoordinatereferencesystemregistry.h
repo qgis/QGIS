@@ -292,9 +292,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 
     bool insertProjection( const QString &projectionAcronym );
 
-    mutable QList< QgsCelestialBody > mCelestialBodies;
-    mutable QMap< QString, QgsProjOperation > mProjOperations;
-    mutable QSet< QString > mKnownAuthorities;
+    mutable QReadWriteLock mCrsDbRecordsLock;
+    mutable bool mCrsDbRecordsPopulated = false;
     mutable QList< QgsCrsDbRecord > mCrsDbRecords;
 
 };

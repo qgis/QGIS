@@ -42,9 +42,6 @@ class CORE_EXPORT QgsProfileSourceRegistry
      */
     QgsProfileSourceRegistry();
 
-    /**
-     * Destructor
-     */
     ~QgsProfileSourceRegistry();
 
     /**

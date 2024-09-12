@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgscolorscheme.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -51,9 +51,6 @@ can be generated using an optional base color.
 
 
     QgsColorScheme();
-%Docstring
-Constructor for QgsColorScheme.
-%End
 
     virtual ~QgsColorScheme();
 
@@ -132,9 +129,6 @@ A color scheme which stores its colors in a gpl palette file.
   public:
 
     QgsGplColorScheme();
-%Docstring
-Constructor for QgsGplColorScheme.
-%End
 
      virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                    const QColor &baseColor = QColor() );
@@ -226,9 +220,6 @@ A color scheme which contains the most recently used colors.
   public:
 
     QgsRecentColorScheme();
-%Docstring
-Constructor for QgsRecentColorScheme.
-%End
 
     virtual QString schemeName() const;
 
@@ -269,9 +260,6 @@ A color scheme which contains custom colors set through QGIS app options dialog.
   public:
 
     QgsCustomColorScheme();
-%Docstring
-Constructor for QgsCustomColorScheme.
-%End
 
     virtual QString schemeName() const;
 
@@ -301,9 +289,6 @@ A color scheme which contains project specific colors set through project proper
   public:
 
     QgsProjectColorScheme();
-%Docstring
-Constructor for QgsProjectColorScheme.
-%End
 
     virtual QString schemeName() const;
 
@@ -326,5 +311,5 @@ Constructor for QgsProjectColorScheme.
  *                                                                      *
  * src/core/qgscolorscheme.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -343,7 +343,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     for ( int i = 0; i < datasourceOptions.size(); i++ )
     {
       QgsDebugMsgLevel( QStringLiteral( "-dsco=%1" ).arg( datasourceOptions[i] ), 2 );
-      options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().constData() );
+      options[i] = CPLStrdup( datasourceOptions[i].toUtf8().constData() );
     }
     options[ datasourceOptions.size()] = nullptr;
   }
@@ -456,7 +456,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     for ( int i = 0; i < layerOptions.size(); i++ )
     {
       QgsDebugMsgLevel( QStringLiteral( "-lco=%1" ).arg( layerOptions[i] ), 2 );
-      options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().constData() );
+      options[i] = CPLStrdup( layerOptions[i].toUtf8().constData() );
     }
     options[ layerOptions.size()] = nullptr;
   }

@@ -171,15 +171,15 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
 
   QVariantMap configuration;
-  configuration.insert( "userTablesOnly", cb_userTablesOnly->isChecked() );
-  configuration.insert( "geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
-  configuration.insert( "allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
-  configuration.insert( "onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  configuration.insert( "saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
-  configuration.insert( "savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
-  configuration.insert( "includeGeoAttributes", cb_includeGeoAttributes->isChecked() );
-  configuration.insert( "schema", txtSchema->text() );
-  configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
+  configuration.insert( QStringLiteral( "userTablesOnly" ), cb_userTablesOnly->isChecked() );
+  configuration.insert( QStringLiteral( "geometryColumnsOnly" ), cb_geometryColumnsOnly->isChecked() );
+  configuration.insert( QStringLiteral( "allowGeometrylessTables" ), cb_allowGeometrylessTables->isChecked() );
+  configuration.insert( QStringLiteral( "onlyExistingTypes" ), cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  configuration.insert( QStringLiteral( "saveUsername" ), mAuthSettings->storeUsernameIsChecked( ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  configuration.insert( QStringLiteral( "savePassword" ), mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  configuration.insert( QStringLiteral( "includeGeoAttributes" ), cb_includeGeoAttributes->isChecked() );
+  configuration.insert( QStringLiteral( "schema" ), txtSchema->text() );
+  configuration.insert( QStringLiteral( "projectsInDatabase" ), cb_projectsInDatabase->isChecked() );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
   QgsOracleProviderConnection *providerConnection =  static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );

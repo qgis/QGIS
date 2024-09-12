@@ -200,7 +200,7 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mBandDynamicElevationTable->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
   mBandDynamicElevationTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
 
-  if ( QgsApplication::rasterRendererRegistry()->rendererCapabilities( mLayer->renderer()->type() ) & Qgis::RasterRendererCapability::UsesMultipleBands )
+  if ( mLayer->renderer() && QgsApplication::rasterRendererRegistry()->rendererCapabilities( mLayer->renderer()->type() ) & Qgis::RasterRendererCapability::UsesMultipleBands )
   {
     mWidgetFixedRangePerBand->hide();
     mFixedRangePerBandLabel->setText( tr( "This mode cannot be used with a multi-band renderer." ) );

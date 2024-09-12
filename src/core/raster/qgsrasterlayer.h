@@ -200,7 +200,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     /**
      * Set the data provider.
-     * \deprecated Use the version with ProviderOptions instead.
+     * \deprecated QGIS 3.40. Use the version with ProviderOptions instead.
      */
     Q_DECL_DEPRECATED void setDataProvider( const QString &provider ) SIP_DEPRECATED;
 
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * \param flags provider flags since QGIS 3.16
      * \since QGIS 3.2
      */
-    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /**
      * Returns the raster layer type (which is a read only property).
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     /**
      * Returns a list with classification items (Text and color).
      *
-     * \deprecated use QgsRasterRenderer::createLegendNodes() instead.
+     * \deprecated QGIS 3.40. Use QgsRasterRenderer::createLegendNodes() instead.
      */
     Q_DECL_DEPRECATED QgsLegendColorList legendSymbologyItems() const SIP_DEPRECATED;
 
@@ -545,7 +545,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * \see dataSourceChanged()
      * \since QGIS 3.20
      */
-    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
     /**
      * Writes the paths to the external raster attribute table files associated with the raster bands.

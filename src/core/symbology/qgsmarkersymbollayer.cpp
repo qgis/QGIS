@@ -29,6 +29,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfontmanager.h"
 #include "qgscolorutils.h"
+#include "qgspainting.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -40,21 +41,7 @@
 
 #include <cmath>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
-
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
-
-static void _fixQPictureDPI( QPainter *p )
-{
-  // QPicture makes an assumption that we drawing to it with system DPI.
-  // Then when being drawn, it scales the painter. The following call
-  // negates the effect. There is no way of setting QPicture's DPI.
-  // See QTBUG-20361
-  p->scale( static_cast< double >( qt_defaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
-}
-
 
 //////
 
@@ -1129,7 +1116,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   // use caching only when:
   // - size, rotation, shape, color, stroke color is not data-defined
   // - drawing to screen (not printer)
-  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
+  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.forceVectorRendering()
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeColor )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle );
@@ -2416,7 +2403,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   bool fitsInCache = true;
   bool usePict = true;
   const bool rasterizeSelected = !mHasFillParam || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name );
-  if ( ( !context.renderContext().forceVectorOutput() && !rotated ) || ( useSelectedColor && rasterizeSelected ) )
+  if ( ( !context.forceVectorRendering() && !rotated ) || ( useSelectedColor && rasterizeSelected ) )
   {
     QImage img = QgsApplication::svgCache()->svgAsImage( path, width * devicePixelRatio, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio,
@@ -2465,13 +2452,11 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     p->setOpacity( context.opacity() );
     const QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, width, fillColor, strokeColor, strokeWidth,
-                         context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio,
+                         context.renderContext().scaleFactor(), context.forceVectorRendering(), aspectRatio,
                          ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {
-      const QgsScopedQPainterState painterPictureState( p );
-      _fixQPictureDPI( p );
-      p->drawPicture( 0, 0, pct );
+      QgsPainting::drawPicture( p, QPointF( 0, 0 ), pct );
     }
   }
 

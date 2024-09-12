@@ -26,6 +26,7 @@
 /**
  * \ingroup core
  * \brief Defines left outer join from our vector layer to some other vector layer.
+ *
  * The join is done based on [our layer].targetField = [join layer].joinField
  *
  */
@@ -33,9 +34,6 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 {
   public:
 
-    /**
-     * Constructor for QgsVectorLayerJoinInfo.
-     */
     QgsVectorLayerJoinInfo() = default;
 
     //! Sets weak reference to the joined layer
@@ -137,14 +135,14 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     /**
      * Sets a list of fields to ignore whatever happens.
      *
-     * \deprecated use setJoinFieldNamesBlockList() instead
+     * \deprecated QGIS 3.40. Use setJoinFieldNamesBlockList() instead.
      */
     Q_DECL_DEPRECATED void setJoinFieldNamesBlackList( const QStringList &blackList ) SIP_DEPRECATED { mBlockList = blackList; }
 
     /**
      * Returns the list of fields to ignore.
      *
-     * \deprecated use joinFieldNamesBlockList() instead
+     * \deprecated QGIS 3.40. Use joinFieldNamesBlockList() instead.
      */
     Q_DECL_DEPRECATED QStringList joinFieldNamesBlackList() const SIP_DEPRECATED { return mBlockList; }
 

@@ -1491,7 +1491,7 @@ struct LayerToLoad
   QString provider;
   QString dataSource;
   QgsDataProvider::ProviderOptions options;
-  QgsDataProvider::ReadFlags flags;
+  Qgis::DataProviderReadFlags flags;
   QDomElement layerElement;
 };
 
@@ -1522,8 +1522,8 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
     layerToLoad.flags = QgsMapLayer::providerReadFlags( node, layerReadFlags );
 
     // Requesting credential from worker thread could lead to deadlocks because the main thread is waiting for worker thread to fininsh
-    layerToLoad.flags.setFlag( QgsDataProvider::SkipCredentialsRequest, true );
-    layerToLoad.flags.setFlag( QgsDataProvider::ParallelThreadLoading, true );
+    layerToLoad.flags.setFlag( Qgis::DataProviderReadFlag::SkipCredentialsRequest, true );
+    layerToLoad.flags.setFlag( Qgis::DataProviderReadFlag::ParallelThreadLoading, true );
 
     layersToLoad.insert( layerToLoad.layerId, layerToLoad );
   }
@@ -1583,9 +1583,9 @@ void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
       QString layerId;
       {
         const LayerToLoad &lay = it.value();
-        QgsDataProvider::ReadFlags providerFlags = lay.flags;
-        providerFlags.setFlag( QgsDataProvider::SkipCredentialsRequest, false );
-        providerFlags.setFlag( QgsDataProvider::ParallelThreadLoading, false );
+        Qgis::DataProviderReadFlags providerFlags = lay.flags;
+        providerFlags.setFlag( Qgis::DataProviderReadFlag::SkipCredentialsRequest, false );
+        providerFlags.setFlag( Qgis::DataProviderReadFlag::ParallelThreadLoading, false );
         QgsScopedRuntimeProfile profile( "Create data providers/" + lay.layerId, QStringLiteral( "projectload" ) );
         provider.reset( QgsProviderRegistry::instance()->createProvider( lay.provider, lay.dataSource, lay.options, providerFlags ) );
         i++;
@@ -2375,6 +2375,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   {
     it.value()->resolveReferences( this );
   }
+  mMainAnnotationLayer->resolveReferences( this );
 
   mLayerTreeRegistryBridge->setEnabled( true );
 
@@ -2495,10 +2496,23 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
   profile.switchTask( tr( "Loading label settings" ) );
   mLabelingEngineSettings->readSettingsFromProject( this );
+  {
+    const QDomElement labelEngineSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "labelEngineSettings" ) );
+    mLabelingEngineSettings->readXml( labelEngineSettingsElement, context );
+  }
+  mLabelingEngineSettings->resolveReferences( this );
+
   emit labelingEngineSettingsChanged();
 
   profile.switchTask( tr( "Loading annotations" ) );
-  mAnnotationManager->readXml( doc->documentElement(), context );
+  if ( flags & Qgis::ProjectReadFlag::DontUpgradeAnnotations )
+  {
+    mAnnotationManager->readXml( doc->documentElement(), context );
+  }
+  else
+  {
+    mAnnotationManager->readXmlAndUpgradeToAnnotationLayerItems( doc->documentElement(), context, mMainAnnotationLayer, mTransformContext );
+  }
   if ( !( flags & Qgis::ProjectReadFlag::DontLoadLayouts ) )
   {
     profile.switchTask( tr( "Loading layouts" ) );
@@ -3357,6 +3371,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( layerOrderNode );
 
   mLabelingEngineSettings->writeSettingsToProject( this );
+  {
+    QDomElement labelEngineSettingsElement = doc->createElement( QStringLiteral( "labelEngineSettings" ) );
+    mLabelingEngineSettings->writeXml( *doc, labelEngineSettingsElement, context );
+    qgisNode.appendChild( labelEngineSettingsElement );
+  }
 
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), mBackgroundColor.red() );
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), mBackgroundColor.green() );

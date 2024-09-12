@@ -38,9 +38,6 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     static QString DATE_DISPLAY_FORMAT; //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
     static QString DATETIME_DISPLAY_FORMAT; //! Date time display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
 
-    /**
-      * Default constructor of field formatter for a date time field.
-      */
     QgsDateTimeFieldFormatter() = default;
 
     QString id() const override;
@@ -65,7 +62,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      * - QVariant::Date
      * - QVariant::Time
      *
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QString defaultFormat( QVariant::Type type ) SIP_DEPRECATED;
 
@@ -90,7 +87,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      * - QVariant::Time
      *
      * \since QGIS 3.30
-     * \deprecated since QGIS 3.38, use the method with a QMetaType::Type argument instead
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED static QString defaultDisplayFormat( QVariant::Type type ) SIP_DEPRECATED;
 

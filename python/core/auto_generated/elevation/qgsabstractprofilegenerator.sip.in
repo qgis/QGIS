@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/elevation/qgsabstractprofilegenerator.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -363,13 +363,13 @@ Qt containers and various Qt classes use implicit sharing.
 
 The scenario will be:
 
-# elevation profile job (doing preparation in the GUI thread) calls
+- elevation profile job (doing preparation in the GUI thread) calls
   :py:func:`QgsAbstractProfileSource.createProfileGenerator()` and gets an instance of this class.
   The instance is initialized at that point and should not need
   additional calls to the source.
-# profile job (still in GUI thread) stores the generator for later use.
-# profile job (in worker thread) calls :py:func:`QgsAbstractProfileGenerator.generateProfile()`
-# profile job (again in GUI thread) will check :py:func:`~QgsProfileGenerationContext.errors` and report them
+- profile job (still in GUI thread) stores the generator for later use.
+- profile job (in worker thread) calls :py:func:`QgsAbstractProfileGenerator.generateProfile()`
+- profile job (again in GUI thread) will check :py:func:`~errors` and report them
 
 .. versionadded:: 3.26
 %End
@@ -421,5 +421,5 @@ Ownership is transferred to the caller.
  *                                                                      *
  * src/core/elevation/qgsabstractprofilegenerator.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

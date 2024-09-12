@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstranslationcontext.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,9 +24,6 @@ Used for the collecting of strings from projects for translation and creation of
   public:
 
     QgsTranslationContext();
-%Docstring
-Constructor
-%End
 
     QgsProject *project() const;
 %Docstring
@@ -74,5 +71,5 @@ Writes the Ts-file
  *                                                                      *
  * src/core/qgstranslationcontext.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

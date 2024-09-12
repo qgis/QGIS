@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/externalstorage/qgsexternalstorage.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -91,7 +91,7 @@ Fetches file from ``url`` using ``authCfg`` for this project external storage.
 class QgsExternalStorageContent : QObject
 {
 %Docstring(signature="appended")
-Base class for QgsExternalStorage stored and fetched content
+Base class for :py:class:`QgsExternalStorage` stored and fetched content
 
 .. versionadded:: 3.22
 %End
@@ -219,5 +219,5 @@ The signal is emitted when the resource has successfully been stored
  *                                                                      *
  * src/core/externalstorage/qgsexternalstorage.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

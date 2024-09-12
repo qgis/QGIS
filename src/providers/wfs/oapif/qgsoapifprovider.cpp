@@ -42,7 +42,7 @@ const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OG
 
 const QString QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS = QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
 
-QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags ),
     mShared( new QgsOapifSharedData( uri ) )
 {
@@ -418,9 +418,9 @@ bool QgsOapifProvider::isValid() const
 
 void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsRequest )
 {
-  mCapabilities = QgsVectorDataProvider::SelectAtId |
-                  QgsVectorDataProvider::ReadLayerMetadata |
-                  QgsVectorDataProvider::Capability::ReloadData;
+  mCapabilities = Qgis::VectorProviderCapability::SelectAtId |
+                  Qgis::VectorProviderCapability::ReadLayerMetadata |
+                  Qgis::VectorProviderCapability::ReloadData;
 
   // Determine edition capabilities: create (POST on /items),
   // update (PUT on /items/some_id) and delete (DELETE on /items/some_id)
@@ -430,7 +430,7 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
   QStringList supportedOptions = optionsItemsRequest.sendOPTIONS( mShared->mItemsUrl );
   if ( supportedOptions.contains( QLatin1String( "POST" ) ) )
   {
-    mCapabilities |= QgsVectorDataProvider::AddFeatures;
+    mCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
 
     const auto &features = itemsRequest.features();
     QString testId;
@@ -452,12 +452,12 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
     supportedOptions = optionsOneItemRequest.sendOPTIONS( url );
     if ( supportedOptions.contains( QLatin1String( "PUT" ) ) )
     {
-      mCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
-      mCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+      mCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
+      mCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
     }
     if ( supportedOptions.contains( QLatin1String( "DELETE" ) ) )
     {
-      mCapabilities |= QgsVectorDataProvider::DeleteFeatures;
+      mCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures;
     }
     if ( supportedOptions.contains( QLatin1String( "PATCH" ) ) )
     {
@@ -466,7 +466,7 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
   }
 }
 
-QgsVectorDataProvider::Capabilities QgsOapifProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsOapifProvider::capabilities() const
 {
   return mCapabilities;
 }
@@ -1211,10 +1211,10 @@ QgsOapifFeatureDownloaderImpl::~QgsOapifFeatureDownloaderImpl()
 {
 }
 
-void QgsOapifFeatureDownloaderImpl::createProgressDialog()
+void QgsOapifFeatureDownloaderImpl::createProgressTask()
 {
-  QgsFeatureDownloaderImpl::createProgressDialog( mNumberMatched );
-  CONNECT_PROGRESS_DIALOG( QgsOapifFeatureDownloaderImpl );
+  QgsFeatureDownloaderImpl::createProgressTask( mNumberMatched );
+  CONNECT_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
 }
 
 void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeatures )
@@ -1387,7 +1387,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     if ( mNumberMatched < 0 && !mTimer && useProgressDialog && itemsRequest.numberMatched() > 0 )
     {
       mNumberMatched = itemsRequest.numberMatched();
-      CREATE_PROGRESS_DIALOG( QgsOapifFeatureDownloaderImpl );
+      CREATE_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
     }
 
     totalDownloadedFeatureCount += itemsRequest.features().size();
@@ -1469,7 +1469,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
 
 // ---------------------------------
 
-QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsOapifProvider( uri, options, flags );
 }

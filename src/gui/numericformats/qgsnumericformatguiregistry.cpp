@@ -89,6 +89,17 @@ class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericForm
       return new QgsFractionNumericFormatWidget( format );
     }
 };
+
+class QgsExpressionBasedNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
+{
+  public:
+
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    {
+      return new QgsExpressionBasedNumericFormatWidget( format );
+    }
+};
+
 ///@endcond
 
 QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
@@ -100,6 +111,7 @@ QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
   addFormatConfigurationWidgetFactory( QStringLiteral( "scientific" ), new QgsScientificNumericFormatConfigurationWidgetFactory() );
   addFormatConfigurationWidgetFactory( QStringLiteral( "fraction" ), new QgsFractionNumericFormatConfigurationWidgetFactory() );
   addFormatConfigurationWidgetFactory( QStringLiteral( "geographiccoordinate" ), new QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( QStringLiteral( "expression" ), new QgsExpressionBasedNumericFormatConfigurationWidgetFactory() );
 }
 
 QgsNumericFormatGuiRegistry::~QgsNumericFormatGuiRegistry()

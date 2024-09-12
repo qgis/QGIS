@@ -25,6 +25,7 @@ endif()
 
 set(TESTS
   testqgsadvanceddigitizingdockwidget.cpp
+  testqgsadvanceddigitizingtoolsregistry.cpp
   testqgsannotationitemguiregistry.cpp
   testqgsmaptoolzoom.cpp
   testqgsmaptooledit.cpp

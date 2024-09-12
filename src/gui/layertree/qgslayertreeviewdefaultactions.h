@@ -58,7 +58,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
     /**
      * Action to zoom to the active layer from the layer tree.
-     * \deprecated since QGIS 3.18, use actionZoomToLayers()
+     * \deprecated QGIS 3.18. Use actionZoomToLayers().
      */
     Q_DECL_DEPRECATED QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY SIP_DEPRECATED;
 
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
-     * \deprecated since QGIS 3.2, use actionMoveOutOfGroup()
+     * \deprecated QGIS 3.2. Use actionMoveOutOfGroup().
      */
     Q_DECL_DEPRECATED QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
     /**
     * Zooms a map \a canvas to the extent of the active layer in the layer tree.
-    * \deprecated since QGIS 3.18, use zoomToLayers()
+    * \deprecated QGIS 3.18. Use zoomToLayers().
     */
     Q_DECL_DEPRECATED void zoomToLayer( QgsMapCanvas *canvas ) SIP_DEPRECATED;
 
@@ -135,7 +135,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
     /**
      * Zooms to the extent of the active layer in the layer tree.
-     * \deprecated since QGIS 3.18, use zoomToLayers()
+     * \deprecated QGIS 3.18. Use zoomToLayers().
      */
     Q_DECL_DEPRECATED void zoomToLayer() SIP_DEPRECATED;
 
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void zoomToGroup();
 
     /**
-     * \deprecated since QGIS 3.2, use moveOutOfGroup()
+     * \deprecated QGIS 3.2. Use moveOutOfGroup().
      */
     Q_DECL_DEPRECATED void makeTopLevel() SIP_DEPRECATED;
 

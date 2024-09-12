@@ -29,12 +29,10 @@
 #include "qgscoordinatetransform.h"
 #include "qgsellipsoidutils.h"
 #include "qgsunittypes.h"
-
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-
+#include "qgspainting.h"
 
 QgsMapSettings::QgsMapSettings()
-  : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
+  : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )

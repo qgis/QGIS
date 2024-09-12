@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsdatadefinedsizelegend.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,9 +33,6 @@ Constructor for QgsDataDefinedSizeLegend.
     ~QgsDataDefinedSizeLegend();
 
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
-%Docstring
-Copy constructor
-%End
 
     enum LegendType /BaseType=IntEnum/
     {
@@ -199,5 +196,5 @@ Writes configuration to the given XML element.
  *                                                                      *
  * src/core/qgsdatadefinedsizelegend.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

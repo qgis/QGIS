@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsexpressionfieldbuffer.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,9 +29,6 @@ Buffers information about expression fields for a vector layer.
     };
 
     QgsExpressionFieldBuffer();
-%Docstring
-Constructor for QgsExpressionFieldBuffer.
-%End
 
     void addExpression( const QString &exp, const QgsField &fld );
 %Docstring
@@ -90,5 +87,5 @@ Adds fields with the expressions buffered in this object to a :py:class:`QgsFiel
  *                                                                      *
  * src/core/qgsexpressionfieldbuffer.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

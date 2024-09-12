@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/annotations/qgsannotationitemguiregistry.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -248,5 +248,5 @@ Emitted whenever a new item type is added to the registry, with the specified
  *                                                                      *
  * src/gui/annotations/qgsannotationitemguiregistry.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

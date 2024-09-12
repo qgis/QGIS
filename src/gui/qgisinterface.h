@@ -100,7 +100,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
   public:
 
-    //! Constructor
     QgisInterface() = default;
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
@@ -568,7 +567,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      *  Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
      *
-     *  \deprecated Use actionZoomToLayers() instead.
+     *  \deprecated QGIS 3.40. Use actionZoomToLayers() instead.
      */
     Q_DECL_DEPRECATED virtual QAction *actionZoomToLayer() = 0 SIP_DEPRECATED;
 
@@ -693,97 +692,97 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle2Points() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle3Points() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle3Tangents() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle2TangentsPoint() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add circle from center action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircleCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseCenter2Points() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseExtent() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseFoci() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangleCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangleExtent() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangle3PointsDistance() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangle3PointsProjected() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRegularPolygon2Points() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRegularPolygonCenterPoint() SIP_DEPRECATED {return actionAddFeature();}
 
     /**
      * Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
-     * \deprecated since QGIS 3.26 shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
+     * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRegularPolygonCenterCorner() SIP_DEPRECATED {return actionAddFeature();}
 
@@ -1380,7 +1379,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param url URL to open
      * \param useQgisDocDirectory If TRUE, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
-     * \deprecated Use QDesktopServices instead
+     * \deprecated QGIS 3.40. Use QDesktopServices instead.
      */
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED

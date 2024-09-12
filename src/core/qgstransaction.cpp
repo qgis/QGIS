@@ -202,7 +202,7 @@ bool QgsTransaction::rollback( QString &errorMsg )
 bool QgsTransaction::supportsTransaction( const QgsVectorLayer *layer )
 {
   //test if provider supports transactions
-  if ( !layer->dataProvider() || ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::TransactionSupport ) == 0 )
+  if ( !layer->dataProvider() || ( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::TransactionSupport ) == 0 )
     return false;
 
   return true;

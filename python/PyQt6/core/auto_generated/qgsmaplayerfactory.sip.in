@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayerfactory.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,8 +32,7 @@ Returns the map layer type corresponding a ``string`` value.
 :param string: string to convert to map layer type
 
 :return: - converted map layer type
-         - ok: will be set to ``True`` if ``string`` was successfully converted to a map layer type
-
+         - ok: ``True`` if ``string`` was successfully converted to a map layer type
 
 .. seealso:: :py:func:`typeToString`
 %End
@@ -77,5 +76,5 @@ Caller takes ownership of the returned layer.
  *                                                                      *
  * src/core/qgsmaplayerfactory.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

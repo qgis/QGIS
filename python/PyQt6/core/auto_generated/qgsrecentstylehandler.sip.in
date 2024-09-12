@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsrecentstylehandler.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,7 +43,7 @@ Pushes a recently used ``symbol`` with the specified ``identifier``.
 Ownership of ``symbol`` is transferred.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -79,5 +79,5 @@ Caller takes ownership of the returned object.
  *                                                                      *
  * src/core/qgsrecentstylehandler.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

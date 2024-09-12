@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsgeometrytransformer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -37,10 +37,9 @@ Transforms the point defined by the coordinates (``x``, ``y``, ``z``) and the sp
 :return: ``True`` if point was transformed (or no transformation was required), or ``False`` if point could not be transformed successfully.
 
 Example
--------
+-------------------------------------
 
 A transformer which multiples the x coordinate by 3 and adds 10 to the y coordinate:
-
 
 .. code-block:: python
 
@@ -58,5 +57,5 @@ A transformer which multiples the x coordinate by 3 and adds 10 to the y coordin
  *                                                                      *
  * src/core/geometry/qgsgeometrytransformer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

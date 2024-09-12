@@ -48,13 +48,8 @@ class SERVER_EXPORT QgsServerCacheManager
     //! Constructor
     QgsServerCacheManager( const QgsServerSettings &settings = QgsServerSettings() );
 
-    //! Copy constructor
     QgsServerCacheManager( const QgsServerCacheManager &copy );
-
-    //! Assignment operator
     QgsServerCacheManager &operator=( const QgsServerCacheManager &copy );
-
-    //! Destructor
     ~QgsServerCacheManager();
 
     /**

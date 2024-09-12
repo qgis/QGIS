@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsdataitem.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -126,7 +126,7 @@ Set item state. It also take care about starting/stopping loading icon animation
 Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
 
 :param child: child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-:param refresh: - set to ``True`` to refresh populated item, emitting relevant signals to the model
+:param refresh: set to ``True`` to refresh populated item, emitting relevant signals to the model
 
 .. seealso:: :py:func:`deleteChildItem`
 %End
@@ -160,8 +160,7 @@ Returns source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
 
 Use :py:func:`QgsDataItemGuiProvider.createParamWidget()` instead
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     virtual QList<QAction *> actions( QWidget *parent );
@@ -193,8 +192,7 @@ Subclasses should override this and :py:func:`~QgsDataItem.handleDrop` to accept
 
 .. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
 
@@ -207,8 +205,7 @@ accept dropped layers.
 
 .. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     virtual bool handleDoubleClick();
@@ -234,8 +231,9 @@ Items that return valid URI will be returned in mime data when dragging a select
 
 .. seealso:: :py:func:`hasDragEnabled`
 
-.. deprecated:: QGIS 3.18
-  use :py:func:`~QgsDataItem.mimeUris` instead
+.. deprecated:: 3.18
+
+   Use :py:func:`~QgsDataItem.mimeUris` instead.
 %End
 
     virtual QgsMimeDataUtils::UriList mimeUris() const;
@@ -254,7 +252,8 @@ Items that return valid URI will be returned in mime data when dragging a select
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
 
-.. deprecated:: QGIS 3.6.
+.. deprecated:: 3.6
+
    This method is no longer used by QGIS and will be removed in QGIS 4.0.
 %End
 
@@ -270,8 +269,7 @@ Use :py:class:`QgsDataItemGuiProvider`:
 
 .. versionadded:: 3.4
 
-.. deprecated::
-   QGIS 3.10
+.. deprecated:: 3.10
 %End
 
 
@@ -292,8 +290,9 @@ Sets the capabilities for the data item.
  void setCapabilities( int capabilities ) /Deprecated/;
 %Docstring
 
-.. deprecated::
-   use setCapabilitiesV2 instead.
+.. deprecated:: 3.40
+
+   Use setCapabilitiesV2 instead.
 %End
 
 
@@ -455,11 +454,55 @@ all providers will be refreshed (which is potentially very expensive!).
     virtual void childrenCreated();
 
   signals:
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
+%Docstring
+Emitted before child items are added to this data item.
+
+This signal *must* be followed by :py:func:`~QgsDataItem.endInsertItems`.
+
+:param parent: the parent item having children added, will always be this object
+:param first: index of first child item to be added
+:param last: index last child item, after the addition has occurred
+
+.. seealso:: :py:func:`endInsertItems`
+%End
+
     void endInsertItems();
+%Docstring
+Emitted after child items have been added to this data item.
+
+This signal will always be preceded by :py:func:`~QgsDataItem.beginInsertItems`.
+
+.. seealso:: :py:func:`beginInsertItems`
+%End
+
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
+%Docstring
+Emitted before child items are removed from this data item.
+
+This signal *must* be followed by :py:func:`~QgsDataItem.endRemoveItems`.
+
+:param parent: the parent item having children removed, will always be this object
+:param first: index of first child item to be removed
+:param last: index of the last child item to be removed
+
+.. seealso:: :py:func:`endRemoveItems`
+%End
+
     void endRemoveItems();
+%Docstring
+Emitted after child items have been removed from this data item.
+
+This signal will always be preceded by :py:func:`~QgsDataItem.beginRemoveItems`.
+
+.. seealso:: :py:func:`beginRemoveItems`
+%End
+
     void dataChanged( QgsDataItem *item );
+%Docstring
+Emitted when data changes for an ``item``.
+%End
 
     void stateChanged( QgsDataItem *item, Qgis::BrowserItemState oldState );
 %Docstring
@@ -512,5 +555,5 @@ Data item that can be used to report problems (e.g. network error)
  *                                                                      *
  * src/core/browser/qgsdataitem.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgis.h                                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -133,6 +133,8 @@ The development version
       CurvePolygon,
       MultiCurve,
       MultiSurface,
+      PolyhedralSurface,
+      TIN,
       NoGeometry,
       PointZ,
       LineStringZ,
@@ -147,6 +149,8 @@ The development version
       CurvePolygonZ,
       MultiCurveZ,
       MultiSurfaceZ,
+      PolyhedralSurfaceZ,
+      TINZ,
       PointM,
       LineStringM,
       PolygonM,
@@ -160,6 +164,8 @@ The development version
       CurvePolygonM,
       MultiCurveM,
       MultiSurfaceM,
+      PolyhedralSurfaceM,
+      TINM,
       PointZM,
       LineStringZM,
       PolygonZM,
@@ -172,6 +178,8 @@ The development version
       CurvePolygonZM,
       MultiCurveZM,
       MultiSurfaceZM,
+      PolyhedralSurfaceZM,
+      TINZM,
       TriangleZM,
       Point25D,
       LineString25D,
@@ -232,6 +240,55 @@ The development version
       Always,
       NotForThisSession,
     };
+
+    enum class DataProviderReadFlag /BaseType=IntFlag/
+    {
+      TrustDataSource,
+      SkipFeatureCount,
+      LoadDefaultStyle,
+      SkipGetExtent,
+      SkipFullScan,
+      ForceReadOnly,
+      SkipCredentialsRequest,
+      ParallelThreadLoading,
+    };
+
+    typedef QFlags<Qgis::DataProviderReadFlag> DataProviderReadFlags;
+
+
+
+    enum class VectorProviderCapability /BaseType=IntFlag/
+    {
+      NoCapabilities,
+      AddFeatures,
+      DeleteFeatures,
+      ChangeAttributeValues,
+      AddAttributes,
+      DeleteAttributes,
+      CreateSpatialIndex,
+      SelectAtId,
+      ChangeGeometries,
+      SelectEncoding,
+      CreateAttributeIndex,
+      SimplifyGeometries,
+      SimplifyGeometriesWithTopologicalValidation,
+      TransactionSupport,
+      CircularGeometries,
+      ChangeFeatures,
+      RenameAttributes,
+      FastTruncate,
+      ReadLayerMetadata,
+      WriteLayerMetadata,
+      CancelSupport,
+      CreateRenderer,
+      CreateLabeling,
+      ReloadData,
+      FeatureSymbology,
+      EditingCapabilities,
+    };
+
+    typedef QFlags<Qgis::VectorProviderCapability> VectorProviderCapabilities;
+
 
     enum class FeatureCountState /BaseType=IntEnum/
       {
@@ -363,6 +420,8 @@ The development version
     {
       DynamicRotation,
       IsSymbolLayerSubSymbol,
+      ForceVectorRendering,
+      ExcludeSymbolBuffers,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
@@ -1230,9 +1289,18 @@ The development version
     enum class AnnotationItemFlag /BaseType=IntFlag/
     {
       ScaleDependentBoundingBox,
+      SupportsReferenceScale,
+      SupportsCallouts,
     };
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
+
+    enum class AnnotationPlacementMode /BaseType=IntEnum/
+    {
+      SpatialBounds,
+      FixedSize,
+      RelativeToMapFrame,
+    };
 
     enum class AnnotationItemGuiFlag /BaseType=IntFlag/
     {
@@ -1244,6 +1312,7 @@ The development version
     enum class AnnotationItemNodeType /BaseType=IntEnum/
     {
       VertexHandle,
+      CalloutHandle,
     };
 
     enum class AnnotationItemEditOperationResult /BaseType=IntEnum/
@@ -1567,6 +1636,21 @@ The development version
     typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
 
 
+    enum class LinearReferencingPlacement /BaseType=IntFlag/
+    {
+      IntervalCartesian2D,
+      IntervalZ,
+      IntervalM,
+      Vertex,
+    };
+
+    enum class LinearReferencingLabelSource /BaseType=IntEnum/
+    {
+      CartesianDistance2D,
+      Z,
+      M,
+    };
+
     enum class GradientColorSource /BaseType=IntEnum/
       {
       SimpleTwoColor,
@@ -1771,6 +1855,15 @@ The development version
     };
 
     typedef QFlags<Qgis::ProcessingAlgorithmFlag> ProcessingAlgorithmFlags;
+
+
+    enum class ProcessingAlgorithmDocumentationFlag /BaseType=IntFlag/
+    {
+      RegeneratesPrimaryKey,
+      RegeneratesPrimaryKeyInSomeScenarios,
+    };
+
+    typedef QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> ProcessingAlgorithmDocumentationFlags;
 
 
     enum class ProcessingPropertyAvailability /BaseType=IntEnum/
@@ -2094,6 +2187,7 @@ The development version
       DontLoad3DViews,
       DontLoadProjectStyles,
       ForceReadOnlyLayers,
+      DontUpgradeAnnotations,
     };
 
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
@@ -2542,6 +2636,39 @@ The development version
       ScreenUnits
     };
 
+    enum class PictureFormat /BaseType=IntEnum/
+      {
+      SVG,
+      Raster,
+      Unknown,
+    };
+
+
+    enum class ScaleBarAlignment /BaseType=IntEnum/
+      {
+      Left,
+      Middle,
+      Right,
+    };
+
+    enum class ScaleBarSegmentSizeMode /BaseType=IntEnum/
+      {
+      Fixed,
+      FitWidth
+    };
+
+    enum class ScaleBarDistanceLabelVerticalPlacement /BaseType=IntEnum/
+      {
+      AboveSegment,
+      BelowSegment,
+    };
+
+    enum class ScaleBarDistanceLabelHorizontalPlacement /BaseType=IntEnum/
+      {
+      CenteredEdge,
+      CenteredSegment,
+    };
+
     enum class InputControllerType /BaseType=IntEnum/
     {
       Map2D,
@@ -2886,6 +3013,12 @@ The development version
       MultiDatastream,
     };
 
+    enum class ColorModel /BaseType=IntEnum/
+    {
+      Rgb,
+      Cmyk,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3086,6 +3219,8 @@ QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, 
 
 QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
 
+QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> operator|(Qgis::ProcessingAlgorithmDocumentationFlag f1, QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> f2);
+
 QFlags<Qgis::ProcessingFeatureSourceFlag> operator|(Qgis::ProcessingFeatureSourceFlag f1, QFlags<Qgis::ProcessingFeatureSourceFlag> f2);
 
 QFlags<Qgis::ProcessingParameterTypeFlag> operator|(Qgis::ProcessingParameterTypeFlag f1, QFlags<Qgis::ProcessingParameterTypeFlag> f2);
@@ -3095,6 +3230,10 @@ QFlags<Qgis::ProcessingParameterFlag> operator|(Qgis::ProcessingParameterFlag f1
 QFlags<Qgis::DataItemProviderCapability> operator|(Qgis::DataItemProviderCapability f1, QFlags<Qgis::DataItemProviderCapability> f2);
 
 QFlags<Qgis::VectorRenderingSimplificationFlag> operator|(Qgis::VectorRenderingSimplificationFlag f1, QFlags<Qgis::VectorRenderingSimplificationFlag> f2);
+
+QFlags<Qgis::DataProviderReadFlag> operator|(Qgis::DataProviderReadFlag f1, QFlags<Qgis::DataProviderReadFlag> f2);
+
+QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability f1, QFlags<Qgis::VectorProviderCapability> f2);
 
 
 
@@ -3290,5 +3429,5 @@ QString geoNone();
  *                                                                      *
  * src/core/qgis.h                                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

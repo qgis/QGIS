@@ -478,6 +478,12 @@ class QgsPostgresConn : public QObject
     static void deleteConnection( const QString &connName );
     static bool allowMetadataInDatabase( const QString &connName );
 
+    /**
+     * Duplicates \a src connection settings to a new \a dst connection.
+     * \since QGIS 3.40
+     */
+    static void duplicateConnection( const QString &src, const QString &dst );
+
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }

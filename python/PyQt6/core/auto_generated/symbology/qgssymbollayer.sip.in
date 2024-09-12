@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbollayer.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -60,6 +60,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsRasterLineSymbolLayer;
         else if ( sipCpp->layerType() == "Lineburst" )
           sipType = sipType_QgsLineburstSymbolLayer;
+        else if ( sipCpp->layerType() == "LinearReferencing" )
+          sipType = sipType_QgsLinearReferencingSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
@@ -167,6 +169,8 @@ class QgsSymbolLayer
       RandomOffsetX,
       RandomOffsetY,
       LineClipping,
+      SkipMultiples,
+      ShowMarker,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -175,7 +179,6 @@ Returns the symbol layer property definitions.
 %End
 
     virtual ~QgsSymbolLayer();
-
 
 
     virtual Qgis::SymbolLayerFlags flags() const;
@@ -361,7 +364,6 @@ The default implementation does nothing.
 
 .. seealso:: :py:func:`startRender`
 
-
 .. versionadded:: 3.12
 %End
 
@@ -384,7 +386,6 @@ The default implementation does nothing.
 .. seealso:: :py:func:`startFeatureRender`
 
 .. seealso:: :py:func:`stopRender`
-
 
 .. versionadded:: 3.12
 %End
@@ -681,7 +682,6 @@ for mask geometries. Only mask geometries which intersect ``rect`` will be insta
 
 .. seealso:: :py:func:`removeMasks`
 
-
 .. versionadded:: 3.30
 %End
 
@@ -772,12 +772,8 @@ Abstract base class for marker symbol layers.
     };
 
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
 
-%Docstring
-QgsMarkerSymbolLayer cannot be copied
-%End
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
@@ -1125,6 +1121,10 @@ Adjusts a marker offset to account for rotation.
 
 class QgsLineSymbolLayer : QgsSymbolLayer
 {
+%Docstring(signature="appended")
+
+Abstract base class for line symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayer.h"
@@ -1139,12 +1139,8 @@ class QgsLineSymbolLayer : QgsSymbolLayer
     };
 
 
-
     virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-%Docstring
-QgsLineSymbolLayer cannot be copied
-%End
     virtual Qgis::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -1343,12 +1339,14 @@ for a polygon.
 
 class QgsFillSymbolLayer : QgsSymbolLayer
 {
+%Docstring(signature="appended")
+Abstract base class for fill symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayer.h"
 %End
   public:
-
 
 
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
@@ -1414,5 +1412,5 @@ Default method to render polygon
  *                                                                      *
  * src/core/symbology/qgssymbollayer.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

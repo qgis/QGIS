@@ -20,6 +20,7 @@
 #include "qgsvariantutils.h"
 #include "qgsproject.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgssymbollayerutils.h"
 
 ///@cond PRIVATE
 
@@ -40,9 +41,22 @@ QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
 QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
 
 
+QColor QgsExpressionUtils::getColorValue( const QVariant &value, QgsExpression *parent, bool &isQColor )
+{
+  isQColor = value.userType() == QMetaType::Type::QColor;
+  QColor color = isQColor ? value.value<QColor>() : QgsSymbolLayerUtils::decodeColor( value.toString() );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to color" ).arg( value.toString() ) );
+  }
+
+  return color;
+}
+
 QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpression *parent, bool report_error )
 {
-  if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
+  if ( value.userType() == qMetaTypeId<QgsGradientColorRamp>() )
     return value.value<QgsGradientColorRamp>();
 
   // If we get here then we can't convert so we just error and return invalid.

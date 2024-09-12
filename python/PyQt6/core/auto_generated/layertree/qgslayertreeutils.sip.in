@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layertree/qgslayertreeutils.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -166,5 +166,5 @@ A base map is defined as a non-gdal provider raster layer (e.g. XYZ raster layer
  *                                                                      *
  * src/core/layertree/qgslayertreeutils.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -20,6 +20,9 @@
 
 #include "qgsannotationitemwidget_impl.h"
 #include "qgscreateannotationitemmaptool_impl.h"
+
+#include <QImageReader>
+
 //
 // QgsAnnotationItemAbstractGuiMetadata
 //
@@ -246,5 +249,33 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
   [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
   {
     return new QgsCreateLineTextItemMapTool( canvas, cadDockWidget );
+  } ) );
+
+  addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "recttext" ),
+                                QObject::tr( "Text Annotation in Rectangle" ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionTextInsideRect.svg" ) ),
+                                [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
+  {
+    QgsAnnotationRectangleTextItemWidget *widget = new QgsAnnotationRectangleTextItemWidget( nullptr );
+    widget->setItem( item );
+    return widget;
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
+  {
+    return new QgsCreateRectangleTextItemMapTool( canvas, cadDockWidget );
+  } ) );
+
+  addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "picture" ),
+                                QObject::tr( "Picture" ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
+                                [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
+  {
+    QgsAnnotationPictureItemWidget *widget = new QgsAnnotationPictureItemWidget( nullptr );
+    widget->setItem( item );
+    return widget;
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
+  {
+    return new QgsCreatePictureItemMapTool( canvas, cadDockWidget );
   } ) );
 }

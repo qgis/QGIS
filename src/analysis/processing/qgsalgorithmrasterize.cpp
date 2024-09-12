@@ -24,6 +24,8 @@
 
 #include "qgsalgorithmrasterize.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprovidermetadata.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmapthemecollection.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsmaprenderercustompainterjob.h"
@@ -150,6 +152,68 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   int height { yTileCount * tileSize };
   int nBands { transparent ? 4 : 3 };
 
+  int64_t totalTiles = 0;
+  for ( auto &layer : std::as_const( mMapLayers ) )
+  {
+    if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer.get() ) )
+    {
+      if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( ( layer.get() ) ) )
+      {
+        const QList< double > resolutions = rasterLayer->dataProvider()->nativeResolutions();
+        if ( resolutions.isEmpty() )
+        {
+          continue;
+        }
+
+        if ( totalTiles == 0 )
+        {
+          const QgsCoordinateTransform ct( context.project()->crs(), rasterLayer->crs(), context.transformContext() );
+          QgsRectangle extentLayer;
+          try
+          {
+            extentLayer = ct.transform( extent );
+          }
+          catch ( QgsCsException & )
+          {
+            totalTiles = -1;
+            continue;
+          }
+
+          const double mapUnitsPerPixelLayer = extentLayer.width() / width;
+          int i;
+          for ( i = 0; i < resolutions.size() && resolutions.at( i ) < mapUnitsPerPixelLayer; i++ )
+          {
+          }
+
+          if ( i == resolutions.size() ||
+               ( i > 0 && resolutions.at( i ) - mapUnitsPerPixelLayer > mapUnitsPerPixelLayer - resolutions.at( i - 1 ) ) )
+          {
+            i--;
+          }
+
+          const int nbTilesWidth = std::ceil( extentLayer.width() / resolutions.at( i ) / 256 );
+          const int nbTilesHeight = std::ceil( extentLayer.height() / resolutions.at( i ) / 256 );
+          totalTiles = static_cast<int64_t>( nbTilesWidth ) * nbTilesHeight;
+        }
+        feedback->pushInfo( QStringLiteral( "%1" ).arg( totalTiles ) );
+
+        if ( totalTiles > 5000 )
+        {
+          // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
+          feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
+                                          QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QString(), QString() ) );
+
+          layer->deleteLater();
+          std::vector<std::unique_ptr<QgsMapLayer>>::iterator position = std::find( mMapLayers.begin(), mMapLayers.end(), layer );
+          if ( position != mMapLayers.end() )
+          {
+            mMapLayers.erase( position );
+          }
+        }
+      }
+    }
+  }
+
   const QString driverName { QgsRasterFileWriter::driverForExtension( QFileInfo( outputLayerFileName ).suffix() ) };
   if ( driverName.isEmpty() )
   {
@@ -252,7 +316,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     gdal::dataset_unique_ptr hIntermediateDataset( QgsGdalUtils::imageToMemoryDataset( image ) );
     if ( !hIntermediateDataset )
     {
-      throw QgsProcessingException( QStringLiteral( "Error reading tiles from the temporary image" ) );
+      throw QgsProcessingException( QObject::tr( "Error reading tiles from the temporary image" ) );
     }
 
     const int xOffset { x * tileSize };
@@ -265,7 +329,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
                                       tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
     if ( err != CE_None )
     {
-      throw QgsProcessingException( QStringLiteral( "Error reading intermediate raster" ) );
+      throw QgsProcessingException( QObject::tr( "Error reading intermediate raster" ) );
     }
 
     {
@@ -279,7 +343,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
     if ( err != CE_None )
     {
-      throw QgsProcessingException( QStringLiteral( "Error writing output raster" ) );
+      throw QgsProcessingException( QObject::tr( "Error writing output raster" ) );
     }
   };
 

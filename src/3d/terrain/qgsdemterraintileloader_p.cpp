@@ -93,11 +93,11 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
     return nullptr;
   }
 
-  const Qgs3DMapSettings &map = terrain()->map3D();
+  Qgs3DMapSettings *map = terrain()->mapSettings();
   QgsChunkNodeId nodeId = mNode->tileId();
-  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
-  double x0 = extent.xMinimum() - map.origin().x();
-  double y0 = extent.yMinimum() - map.origin().y();
+  QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
+  double x0 = extent.xMinimum() - map->origin().x();
+  double y0 = extent.yMinimum() - map->origin().y();
   double side = extent.width();
   double half = side / 2;
 
@@ -107,12 +107,12 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   // create geometry renderer
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map.terrainVerticalScale(), mSkirtHeight, mHeightMap, mesh ) );
+  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map->terrainVerticalScale(), mSkirtHeight, mHeightMap, mesh ) );
   entity->addComponent( mesh ); // takes ownership if the component has no parent
 
   // create material
 
-  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial(), !map.layers().empty() );
+  createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 
   // create transform
 
@@ -123,7 +123,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   transform->setScale( side );
   transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
 
-  mNode->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
+  mNode->setExactBbox( QgsAABB( x0, zMin * map->terrainVerticalScale(), -y0, x0 + side, zMax * map->terrainVerticalScale(), -( y0 + side ) ) );
   mNode->updateParentBoundingBoxesRecursively();
 
   entity->setParent( parent );

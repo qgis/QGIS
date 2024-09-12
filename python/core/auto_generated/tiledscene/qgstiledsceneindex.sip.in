@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/tiledscene/qgstiledsceneindex.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -35,9 +35,6 @@ threads.
     ~QgsTiledSceneIndex();
 
     QgsTiledSceneIndex( const QgsTiledSceneIndex &other );
-%Docstring
-Copy constructor
-%End
 
     bool isValid() const;
 %Docstring
@@ -111,5 +108,5 @@ The optional ``feedback`` argument can be used the cancel the request early.
  *                                                                      *
  * src/core/tiledscene/qgstiledsceneindex.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

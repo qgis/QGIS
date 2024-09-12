@@ -86,9 +86,7 @@ namespace pal
 
       ~Problem();
 
-      //! Problem cannot be copied
       Problem( const Problem &other ) = delete;
-      //! Problem cannot be copied
       Problem &operator=( const Problem &other ) = delete;
 
       /**
@@ -105,13 +103,16 @@ namespace pal
       /**
        * Returns the number of candidates generated for the \a feature at the specified index.
        */
-      int featureCandidateCount( int feature ) const { return mFeatNbLp[feature]; }
+      int featureCandidateCount( int feature ) const { return mCandidateCountForFeature[feature]; }
 
       /**
        * Returns the candidate corresponding to the specified \a feature and \a candidate index.
        */
-      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFeatStartId[feature] + candidate ].get(); }
+      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFirstCandidateIndexForFeature[feature] + candidate ].get(); }
 
+      /**
+       * Gets called AFTER extractProblem.
+       */
       void reduce();
 
       /**
@@ -203,9 +204,12 @@ namespace pal
 
       std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
 
-      std::vector< int > mFeatStartId;
-      std::vector< int > mFeatNbLp;
-      std::vector< double > mInactiveCost;
+      //! Index of the position in mLabelPositions which corresponds to the first candidate for a feature, array index corresponds to label feature index
+      std::vector< int > mFirstCandidateIndexForFeature;
+      //! Total number of registered candidates for each feature, array index corresponds to label feature index
+      std::vector< int > mCandidateCountForFeature;
+      //! Cost for excluding (ie not labeling) a feature, array index corresponds to label feature index
+      std::vector< double > mUnlabeledCostForFeature;
 
       class Sol
       {
@@ -223,6 +227,7 @@ namespace pal
       Sol mSol;
       double mNbOverlap = 0.0;
 
+      // seed is actually a feature ID, maybe it should be renamed?
       Chain *chain( int seed );
 
       Pal *pal = nullptr;

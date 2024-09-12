@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/effects/qgseffectstack.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,9 +43,6 @@ the map parameter, and always returns an empty effect stack.
 %End
 
     QgsEffectStack();
-%Docstring
-Constructor for empty QgsEffectStack.
-%End
 
     QgsEffectStack( const QgsEffectStack &other );
 
@@ -157,5 +154,5 @@ Returns a pointer to the effect at a specified index within the stack
  *                                                                      *
  * src/core/effects/qgseffectstack.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

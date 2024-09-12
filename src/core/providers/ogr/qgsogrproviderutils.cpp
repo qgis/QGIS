@@ -1314,6 +1314,11 @@ QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QStrin
     field.replace( '`', "``" );
     return field.prepend( '`' ).append( '`' );
   }
+  else if ( driverName == QLatin1String( "GPKG" ) || driverName == QLatin1String( "SQLite" ) )
+  {
+    field.replace( '"', "\"\"" );
+    return field.prepend( '\"' ).append( '\"' );
+  }
   else
   {
     field.replace( '\\', "\\\\" );
@@ -1823,6 +1828,24 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( Qgis::WkbType type 
     case Qgis::WkbType::TriangleZM:
       return wkbTriangleZM;
 
+    case Qgis::WkbType::PolyhedralSurface:
+      return wkbPolyhedralSurface;
+    case Qgis::WkbType::PolyhedralSurfaceZ:
+      return wkbPolyhedralSurfaceZ;
+    case Qgis::WkbType::PolyhedralSurfaceM:
+      return wkbPolyhedralSurfaceM;
+    case Qgis::WkbType::PolyhedralSurfaceZM:
+      return wkbPolyhedralSurfaceZM;
+
+    case Qgis::WkbType::TIN:
+      return wkbTIN;
+    case Qgis::WkbType::TINZ:
+      return wkbTINZ;
+    case Qgis::WkbType::TINM:
+      return wkbTINM;
+    case Qgis::WkbType::TINZM:
+      return wkbTINZM;
+
     case Qgis::WkbType::NoGeometry:
       return wkbNone;
 
@@ -1944,6 +1967,24 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbTriangleZM:
       return Qgis::WkbType::TriangleZM;
 
+    case wkbPolyhedralSurface:
+      return Qgis::WkbType::PolyhedralSurface;
+    case wkbPolyhedralSurfaceZ:
+      return Qgis::WkbType::PolyhedralSurfaceZ;
+    case wkbPolyhedralSurfaceM:
+      return Qgis::WkbType::PolyhedralSurfaceM;
+    case wkbPolyhedralSurfaceZM:
+      return Qgis::WkbType::PolyhedralSurfaceZM;
+
+    case wkbTIN:
+      return Qgis::WkbType::TIN;
+    case wkbTINZ:
+      return Qgis::WkbType::TINZ;
+    case wkbTINM:
+      return Qgis::WkbType::TINM;
+    case wkbTINZM:
+      return Qgis::WkbType::TINZM;
+
     case wkbPoint25D:
       return Qgis::WkbType::Point25D;
     case wkbLineString25D:
@@ -1970,14 +2011,6 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
       return Qgis::WkbType::Unknown; // abstract types - no direct mapping to QGIS types
 
     case wkbLinearRing:
-    case wkbTIN:
-    case wkbTINZ:
-    case wkbTINM:
-    case wkbTINZM:
-    case wkbPolyhedralSurface:
-    case wkbPolyhedralSurfaceZ:
-    case wkbPolyhedralSurfaceM:
-    case wkbPolyhedralSurfaceZM:
       return Qgis::WkbType::Unknown; // unsupported types
   }
   return Qgis::WkbType::Unknown;
@@ -2552,7 +2585,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   // TODO: add support for multiple
   QString geometryColumnName;
   OGRwkbGeometryType layerGeomType = wkbUnknown;
-  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" );
+  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) ;
   if ( !slowGeomTypeRetrieval )
   {
     QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
@@ -2625,71 +2658,80 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
 
     long long layerFeatureCount = 0;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-    int nEntryCount = 0;
-    OGRGeometryTypeCounter *pasCounter = nullptr;
-    {
-      QRecursiveMutex *mutex;
-      OGRLayerH hLayer = layer->getHandleAndMutex( mutex );
-      QMutexLocker locker( mutex );
+    const bool limitScanToOneFeature = driverName == QLatin1String( "OGCAPI" );
 
-      constexpr int iGeomField = 0;
-      GDALProgressFunc pfnProgress = nullptr;
-      if ( feedback )
-      {
-        pfnProgress = []( double, const char *, void *pData )
-        {
-          return static_cast<QgsFeedback *>( pData )->isCanceled() ? 0 : 1;
-        };
-      }
-      int flags = 0;
-      if ( isMultiPatchAsGeomCollectionZOfTinZ( driverName ) )
-        flags |= OGR_GGT_GEOMCOLLECTIONZ_TINZ;
-      pasCounter = OGR_L_GetGeometryTypes(
-                     hLayer, iGeomField, flags, &nEntryCount,
-                     pfnProgress, feedback );
-    }
-    if ( pasCounter )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+    if ( !limitScanToOneFeature )
     {
-      for ( int i = 0; i < nEntryCount; ++i )
+      int nEntryCount = 0;
+      OGRGeometryTypeCounter *pasCounter = nullptr;
       {
-        layerFeatureCount += pasCounter[i].nCount;
-        OGRwkbGeometryType gType = pasCounter[i].eGeomType;
+        QRecursiveMutex *mutex;
+        OGRLayerH hLayer = layer->getHandleAndMutex( mutex );
+        QMutexLocker locker( mutex );
+
+        constexpr int iGeomField = 0;
+        GDALProgressFunc pfnProgress = nullptr;
+        if ( feedback )
+        {
+          pfnProgress = []( double, const char *, void *pData )
+          {
+            return static_cast<QgsFeedback *>( pData )->isCanceled() ? 0 : 1;
+          };
+        }
+        int flags = 0;
+        if ( isMultiPatchAsGeomCollectionZOfTinZ( driverName ) )
+          flags |= OGR_GGT_GEOMCOLLECTIONZ_TINZ;
+        pasCounter = OGR_L_GetGeometryTypes(
+                       hLayer, iGeomField, flags, &nEntryCount,
+                       pfnProgress, feedback );
+      }
+      if ( pasCounter )
+      {
+        for ( int i = 0; i < nEntryCount; ++i )
+        {
+          layerFeatureCount += pasCounter[i].nCount;
+          OGRwkbGeometryType gType = pasCounter[i].eGeomType;
+          if ( gType != wkbNone )
+          {
+            if ( gType == wkbTINZ )
+              gType = wkbMultiPolygon25D;
+            bool hasZ = wkbHasZ( gType );
+            gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+            fCount[gType] = fCount.value( gType ) + pasCounter[i].nCount;
+            if ( hasZ )
+              fHasZ.insert( gType );
+          }
+        }
+        CPLFree( pasCounter );
+      }
+    }
+    else
+#endif
+    {
+      layer->ResetReading();
+      gdal::ogr_feature_unique_ptr fet;
+      while ( fet.reset( layer->GetNextFeature() ), fet )
+      {
+        ++layerFeatureCount;
+        OGRwkbGeometryType gType =  resolveGeometryTypeForFeature( fet.get(), driverName );
         if ( gType != wkbNone )
         {
-          if ( gType == wkbTINZ )
-            gType = wkbMultiPolygon25D;
           bool hasZ = wkbHasZ( gType );
           gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
-          fCount[gType] = fCount.value( gType ) + pasCounter[i].nCount;
+          fCount[gType] = fCount.value( gType ) + 1;
           if ( hasZ )
             fHasZ.insert( gType );
         }
+
+        if ( limitScanToOneFeature )
+          break;
+        if ( feedback && feedback->isCanceled() )
+          break;
       }
-      CPLFree( pasCounter );
+      layer->ResetReading();
     }
 
-#else
-    layer->ResetReading();
-    gdal::ogr_feature_unique_ptr fet;
-    while ( fet.reset( layer->GetNextFeature() ), fet )
-    {
-      ++layerFeatureCount;
-      OGRwkbGeometryType gType =  resolveGeometryTypeForFeature( fet.get(), driverName );
-      if ( gType != wkbNone )
-      {
-        bool hasZ = wkbHasZ( gType );
-        gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
-        fCount[gType] = fCount.value( gType ) + 1;
-        if ( hasZ )
-          fHasZ.insert( gType );
-      }
-
-      if ( feedback && feedback->isCanceled() )
-        break;
-    }
-    layer->ResetReading();
-#endif
     if ( fCount.isEmpty() )
     {
       if ( layerFeatureCount > 0 )
@@ -2761,7 +2803,8 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
       const OGRwkbGeometryType eOGRGeomType = ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key();
 
-      details.setFeatureCount( fCount.value( countIt.key() ) );
+      if ( !limitScanToOneFeature )
+        details.setFeatureCount( fCount.value( countIt.key() ) );
       details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( eOGRGeomType ) );
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
@@ -2778,7 +2821,8 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
                       ogrWkbGeometryTypeName( eOGRGeomType ) );
         if ( fCount.size() == 1 )
         {
-          details.setFeatureCount( layerFeatureCount );
+          if ( !limitScanToOneFeature )
+            details.setFeatureCount( layerFeatureCount );
           parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
         }
       }

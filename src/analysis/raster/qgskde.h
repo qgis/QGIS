@@ -100,9 +100,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
      */
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
 
-    //! QgsKernelDensityEstimation cannot be copied.
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other ) = delete;
-    //! QgsKernelDensityEstimation cannot be copied.
     QgsKernelDensityEstimation &operator=( const QgsKernelDensityEstimation &other ) = delete;
 
     /**

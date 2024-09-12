@@ -98,7 +98,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
   private slots:
 
-    void initCalloutWidgets();
     void updateCalloutWidget( QgsCallout *callout );
     void showObstacleSettings();
     void showLineAnchorSettings();

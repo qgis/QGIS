@@ -545,7 +545,7 @@ namespace QgsWfs
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         QgsVectorDataProvider *provider = vlayer->dataProvider();
-        if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
         {
           //wfs:Insert element
           QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
@@ -554,8 +554,8 @@ namespace QgsWfs
           operationsElement.appendChild( operationElement );
         }
 
-        if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
-             ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
+        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) &&
+             ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) &&
              wfstUpdateLayersId.contains( layer->id() ) )
         {
           //wfs:Update element
@@ -565,7 +565,7 @@ namespace QgsWfs
           operationsElement.appendChild( operationElement );
         }
 
-        if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
         {
           //wfs:Delete element
           QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );

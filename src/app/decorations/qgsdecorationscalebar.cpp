@@ -363,7 +363,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setNumberOfSegments( mStyleIndex == 3 ? 2 : 1 );
   mSettings.setUnitsPerSegment( mStyleIndex == 3 ? unitsPerSegment / 2 : unitsPerSegment );
   mSettings.setUnitLabel( scaleBarUnitLabel );
-  mSettings.setLabelHorizontalPlacement( mPlacement == TopCenter || mPlacement == BottomCenter ? QgsScaleBarSettings::LabelCenteredSegment : QgsScaleBarSettings::LabelCenteredEdge );
+  mSettings.setLabelHorizontalPlacement( mPlacement == TopCenter || mPlacement == BottomCenter ? Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment : Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge );
 
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
   scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSizeInMm / 2 : segmentSizeInMm;

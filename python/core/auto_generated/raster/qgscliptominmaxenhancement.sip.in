@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgscliptominmaxenhancement.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,6 +13,7 @@ class QgsClipToMinMaxEnhancement : QgsContrastEnhancementFunction
 {
 %Docstring(signature="appended")
 A raster contrast enhancement that will clip a value to the specified min/max range.
+
 For example if a min max range of [10,240] is specified in the constructor, and
 a value of 250 is called using :py:func:`~enhance`, the value will be truncated ('clipped')
 to 240.
@@ -36,5 +37,5 @@ to 240.
  *                                                                      *
  * src/core/raster/qgscliptominmaxenhancement.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

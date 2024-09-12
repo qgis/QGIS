@@ -395,7 +395,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
   return Qgis::VectorExportResult::Success;
 }
 
-QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
   QgsApplication::registerOgrDrivers();
@@ -461,7 +461,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::ForceReadOnly )
   {
     open( OpenModeForceReadOnly );
   }
@@ -594,7 +594,7 @@ QStringList subLayerDetailsToStringList( const QList< QgsProviderSublayerDetails
 
 QStringList QgsOgrProvider::subLayers() const
 {
-  const bool withFeatureCount = ( mReadFlags & QgsDataProvider::SkipFeatureCount ) == 0;
+  const bool withFeatureCount = ( mReadFlags & Qgis::DataProviderReadFlag::SkipFeatureCount ) == 0;
 
   Qgis::SublayerQueryFlags flags = withFeatureCount
                                    ? ( Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::ResolveGeometryType )
@@ -1464,7 +1464,7 @@ bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::C
     // stricter check
     return mDefaultValues.contains( fieldIndex ) && !QgsVariantUtils::isNull( value ) && (
              mDefaultValues.value( fieldIndex ) == value.toString()
-             || value.userType() == QMetaType::type( "QgsUnsetAttributeValue" ) );
+             || value.userType() == qMetaTypeId<QgsUnsetAttributeValue>() );
   }
 }
 
@@ -1498,14 +1498,6 @@ Qgis::WkbType QgsOgrProvider::wkbType() const
   {
     wkb = QgsWkbTypes::multiType( wkb );
   }
-  if ( mOGRGeomType % 1000 == wkbPolyhedralSurface ) // is PolyhedralSurface, PolyhedralSurfaceZ, PolyhedralSurfaceM or PolyhedralSurfaceZM => map to MultiPolygon
-  {
-    wkb = static_cast<Qgis::WkbType>( mOGRGeomType - ( wkbPolyhedralSurface - wkbMultiPolygon ) );
-  }
-  else if ( mOGRGeomType % 1000 == wkbTIN ) // is TIN, TINZ, TINM or TINZM => map to MultiPolygon
-  {
-    wkb = static_cast<Qgis::WkbType>( mOGRGeomType - ( wkbTIN - wkbMultiPolygon ) );
-  }
   return wkb;
 }
 
@@ -1514,7 +1506,7 @@ Qgis::WkbType QgsOgrProvider::wkbType() const
  */
 long long QgsOgrProvider::featureCount() const
 {
-  if ( ( mReadFlags & QgsDataProvider::SkipFeatureCount ) != 0 )
+  if ( ( mReadFlags & Qgis::DataProviderReadFlag::SkipFeatureCount ) != 0 )
   {
     return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
   }
@@ -1739,7 +1731,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
             OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, stringToBool( strVal, &ok ) );
             if ( !ok )
             {
-              pushError( tr( "wrong value for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( strVal ) );
+              pushError( tr( "wrong value for attribute %1 of feature %2: %3" )
+                         .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                         .arg( f.id() )
+                         .arg( strVal ) );
               errorEmitted = true;
             }
           }
@@ -1954,7 +1949,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
       {
         if ( !errorEmitted )
         {
-          pushError( tr( "wrong data type for attribute %1 of feature %2: %3" ).arg( qgisAttributeId ) .arg( f.id() ).arg( attrVal.typeName() ) );
+          pushError( tr( "wrong data type for attribute %1 of feature %2: Got %3, expected %4" )
+                     .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                     .arg( f.id() )
+                     .arg( attrVal.typeName(), QVariant::typeToName( mAttributeFields.at( qgisAttributeId ).type() ) ) );
         }
         returnValue = false;
       }
@@ -3385,7 +3383,7 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   return true;
 }
 
-QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsOgrProvider::capabilities() const
 {
   return mCapabilities;
 }
@@ -3397,7 +3395,7 @@ Qgis::VectorDataProviderAttributeEditCapabilities QgsOgrProvider::attributeEditC
 
 void QgsOgrProvider::computeCapabilities()
 {
-  QgsVectorDataProvider::Capabilities ability = QgsVectorDataProvider::Capabilities();
+  Qgis::VectorProviderCapabilities ability;
   bool updateModeActivated = false;
 
   // collect abilities reported by OGR
@@ -3424,19 +3422,19 @@ void QgsOgrProvider::computeCapabilities()
       //       (vs read from disk every time) based on this setting.
     {
       // the latter flag is here just for compatibility
-      ability |= QgsVectorDataProvider::SelectAtId;
+      ability |= Qgis::VectorProviderCapability::SelectAtId;
     }
 
     if ( mWriteAccessPossible && mOgrLayer->TestCapability( "SequentialWrite" ) )
       // true if the CreateFeature() method works for this layer.
     {
-      ability |= QgsVectorDataProvider::AddFeatures;
+      ability |= Qgis::VectorProviderCapability::AddFeatures;
     }
 
     if ( mWriteAccessPossible && mOgrLayer->TestCapability( "DeleteFeature" ) )
       // true if this layer can delete its features
     {
-      ability |= DeleteFeatures;
+      ability |= Qgis::VectorProviderCapability::DeleteFeatures;
     }
 
     if ( mWriteAccessPossible && mOgrLayer->TestCapability( "RandomWrite" ) )
@@ -3447,8 +3445,8 @@ void QgsOgrProvider::computeCapabilities()
       // TODO Need to work out versions of shapelib vs versions of GDAL/OGR
       // TODO And test appropriately.
 
-      ability |= ChangeAttributeValues;
-      ability |= ChangeGeometries;
+      ability |= Qgis::VectorProviderCapability::ChangeAttributeValues;
+      ability |= Qgis::VectorProviderCapability::ChangeGeometries;
     }
 
 #if 0
@@ -3470,40 +3468,41 @@ void QgsOgrProvider::computeCapabilities()
 
     if ( mWriteAccessPossible && mOgrLayer->TestCapability( "CreateField" ) )
     {
-      ability |= AddAttributes;
+      ability |= Qgis::VectorProviderCapability::AddAttributes;
     }
 
     if ( mWriteAccessPossible && mOgrLayer->TestCapability( "DeleteField" ) )
     {
-      ability |= DeleteAttributes;
+      ability |= Qgis::VectorProviderCapability::DeleteAttributes;
     }
 
     if ( mWriteAccessPossible && mOgrLayer->TestCapability( "AlterFieldDefn" ) )
     {
-      ability |= RenameAttributes;
+      ability |= Qgis::VectorProviderCapability::RenameAttributes;
     }
 
     if ( !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) )
     {
-      ability |= SelectEncoding;
+      ability |= Qgis::VectorProviderCapability::SelectEncoding;
     }
 
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
     if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
     {
-      ability |= CreateSpatialIndex;
-      ability |= CreateAttributeIndex;
+      ability |= Qgis::VectorProviderCapability::CreateSpatialIndex;
+      ability |= Qgis::VectorProviderCapability::CreateAttributeIndex;
 
-      if ( ( ability & ChangeAttributeValues ) == 0 )
+      if ( ( ability & Qgis::VectorProviderCapability::ChangeAttributeValues ) == 0 )
       {
         // on readonly shapes OGR reports that it can delete features although it can't RandomWrite
-        ability &= ~( AddAttributes | DeleteFeatures );
+        ability.setFlag( Qgis::VectorProviderCapability::AddAttributes, false );
+        ability.setFlag( Qgis::VectorProviderCapability::DeleteFeatures, false );
       }
     }
     else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
     {
-      ability |= CreateSpatialIndex;
-      ability |= CreateAttributeIndex;
+      ability |= Qgis::VectorProviderCapability::CreateSpatialIndex;
+      ability |= Qgis::VectorProviderCapability::CreateAttributeIndex;
     }
     else if ( mGDALDriverName == QLatin1String( "SQLite" ) )
     {
@@ -3520,20 +3519,20 @@ void QgsOgrProvider::computeCapabilities()
       }
 
       if ( isSpatialite )
-        ability |= CreateSpatialIndex;
-      ability |= CreateAttributeIndex;
+        ability |= Qgis::VectorProviderCapability::CreateSpatialIndex;
+      ability |= Qgis::VectorProviderCapability::CreateAttributeIndex;
     }
 
     /* Curve geometries are available in some drivers starting with GDAL 2.0 */
     if ( mOgrLayer->TestCapability( "CurveGeometries" ) )
     {
-      ability |= CircularGeometries;
+      ability |= Qgis::VectorProviderCapability::CircularGeometries;
     }
 
     if ( mGDALDriverName == QLatin1String( "GPKG" ) )
     {
       //supports transactions
-      ability |= TransactionSupport;
+      ability |= Qgis::VectorProviderCapability::TransactionSupport;
     }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
@@ -3543,8 +3542,8 @@ void QgsOgrProvider::computeCapabilities()
     if ( mGDALDriverName != QLatin1String( "KML" ) && GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) != nullptr )
 #endif
     {
-      ability |= FeatureSymbology;
-      ability |= CreateRenderer;
+      ability |= Qgis::VectorProviderCapability::FeatureSymbology;
+      ability |= Qgis::VectorProviderCapability::CreateRenderer;
     }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
@@ -3564,8 +3563,8 @@ void QgsOgrProvider::computeCapabilities()
 #endif
   }
 
-  ability |= ReadLayerMetadata;
-  ability |= ReloadData;
+  ability |= Qgis::VectorProviderCapability::ReadLayerMetadata;
+  ability |= Qgis::VectorProviderCapability::ReloadData;
 
   if ( updateModeActivated )
     leaveUpdateMode();
@@ -4193,7 +4192,7 @@ bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
 
 QgsFeatureRenderer *QgsOgrProvider::createRenderer( const QVariantMap & ) const
 {
-  if ( !( mCapabilities & FeatureSymbology ) )
+  if ( !( mCapabilities & Qgis::VectorProviderCapability::FeatureSymbology ) )
     return nullptr;
 
   std::unique_ptr< QgsSymbol > defaultSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::geometryType( wkbType() ) ) );
@@ -4209,7 +4208,7 @@ void QgsOgrProvider::open( OpenMode mode )
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( dataSourceUri( true ) );
-  if ( ( !vsiPrefix.isEmpty() && vsiPrefix != QStringLiteral( "/vsimem/" ) ) || mFilePath.startsWith( QLatin1String( "/vsicurl/" ) ) )
+  if ( ( !vsiPrefix.isEmpty() && vsiPrefix != QLatin1String( "/vsimem/" ) ) || mFilePath.startsWith( QLatin1String( "/vsicurl/" ) ) )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.

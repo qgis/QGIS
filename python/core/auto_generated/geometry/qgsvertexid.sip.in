@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsvertexid.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -14,7 +14,7 @@ struct QgsVertexId
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, Qgis::VertexType _type = Qgis::VertexType::Segment ) /HoldGIL/;
 %Docstring
-Constructor for :py:class:`QgsVertexId`.
+Constructor for QgsVertexId.
 %End
 
   bool isValid() const  /HoldGIL/;
@@ -68,5 +68,5 @@ Returns ``True`` if this vertex ID is valid for the specified ``geom``.
  *                                                                      *
  * src/core/geometry/qgsvertexid.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

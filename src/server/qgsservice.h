@@ -44,10 +44,7 @@ class SERVER_EXPORT QgsService
 
   public:
 
-    //! Constructor
     QgsService();
-
-    //! Destructor
     virtual ~QgsService() = default;
 
     /**

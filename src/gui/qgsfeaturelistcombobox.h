@@ -104,7 +104,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * The identifier value of the currently selected feature. A value from the
      * identifierField.
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED QVariant identifierValue() const SIP_DEPRECATED;
 
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * The identifier value of the currently selected feature. A value from the
      * identifierField.
-     * \deprecated since QGIS 3.10 use setIdentifierValues
+     * \deprecated QGIS 3.10. Use setIdentifierValues.
      */
     Q_DECL_DEPRECATED void setIdentifierValue( const QVariant &identifierValue ) SIP_DEPRECATED;
 
@@ -168,7 +168,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * Field name that will be used to uniquely identify the current feature.
      * Normally the primary key of the layer.
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED QString identifierField() const SIP_DEPRECATED;
 
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * Field name that will be used to uniquely identify the current feature.
      * Normally the primary key of the layer.
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED void setIdentifierField( const QString &identifierField ) SIP_DEPRECATED;
 

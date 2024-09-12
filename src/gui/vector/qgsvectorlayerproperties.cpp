@@ -285,8 +285,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( mLayer->dataProvider() )
   {
     //enable spatial index button group if supported by provider, or if one already exists
-    QgsVectorDataProvider::Capabilities capabilities = mLayer->dataProvider()->capabilities();
-    if ( !( capabilities & QgsVectorDataProvider::CreateSpatialIndex ) )
+    Qgis::VectorProviderCapabilities capabilities = mLayer->dataProvider()->capabilities();
+    if ( !( capabilities & Qgis::VectorProviderCapability::CreateSpatialIndex ) )
     {
       pbnIndex->setEnabled( false );
     }
@@ -296,7 +296,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       pbnIndex->setText( tr( "Spatial Index Exists" ) );
     }
 
-    if ( capabilities & QgsVectorDataProvider::SelectEncoding )
+    if ( capabilities & Qgis::VectorProviderCapability::SelectEncoding )
     {
       cboProviderEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
       QString enc = mLayer->dataProvider()->encoding();
@@ -667,7 +667,7 @@ void QgsVectorLayerProperties::syncToLayer()
 
   QString remark = QStringLiteral( " (%1)" ).arg( tr( "Not supported" ) );
   const QgsVectorDataProvider *provider = mLayer->dataProvider();
-  if ( !( provider && ( provider->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) ) )
+  if ( !( provider && ( provider->capabilities() & Qgis::VectorProviderCapability::SimplifyGeometries ) ) )
   {
     mSimplifyDrawingAtProvider->setChecked( false );
     mSimplifyDrawingAtProvider->setEnabled( false );
@@ -771,7 +771,7 @@ void QgsVectorLayerProperties::apply()
   // provider-specific options
   if ( mLayer->dataProvider() )
   {
-    if ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::SelectEncoding )
+    if ( mLayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::SelectEncoding )
     {
       mLayer->setProviderEncoding( cboProviderEncoding->currentText() );
     }
@@ -970,7 +970,7 @@ void QgsVectorLayerProperties::apply()
     if ( newSource != mLayer->source() )
     {
       mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
-                             QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
+                             QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags() );
 
       // resync dialog to layer's new state -- this allows any changed layer properties
       // (such as a forced creation of a new renderer compatible with the new layer, new field configuration, etc)
@@ -1724,7 +1724,7 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 void QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled( bool checked )
 {
   const QgsVectorDataProvider *provider = mLayer->dataProvider();
-  if ( !( provider && ( provider->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) != 0 ) )
+  if ( !( provider && ( provider->capabilities() & Qgis::VectorProviderCapability::SimplifyGeometries ) != 0 ) )
   {
     mSimplifyDrawingAtProvider->setEnabled( false );
   }

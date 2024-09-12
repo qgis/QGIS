@@ -36,7 +36,7 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
 
   public:
     //! Constructor
-    QgsPostprocessingEntity( QgsFrameGraph *frameGraph, QNode *parent = nullptr );
+    QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
     //! Sets the parts of the scene where objects cast shadows
     void setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ );
     //! Sets up a directional light that is used to render shadows

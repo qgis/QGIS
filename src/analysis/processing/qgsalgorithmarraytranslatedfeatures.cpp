@@ -60,6 +60,11 @@ QString QgsArrayTranslatedFeaturesAlgorithm::shortDescription() const
   return QObject::tr( "Creates multiple translated copies of features in a layer." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsArrayTranslatedFeaturesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsArrayTranslatedFeaturesAlgorithm *QgsArrayTranslatedFeaturesAlgorithm::createInstance() const
 {
   return new QgsArrayTranslatedFeaturesAlgorithm();

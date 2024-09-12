@@ -53,7 +53,6 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
 
   public:
 
-    //! Default constructor
     QgsAbstractVectorLayerLabeling() = default;
     virtual ~QgsAbstractVectorLayerLabeling() = default;
 

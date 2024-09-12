@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverparameters.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,10 +40,10 @@ Constructor for QgsServerParameterDefinition.
 :param type: The type of the parameter
 :param defaultValue: The default value of the parameter
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
-%End
+.. deprecated:: 3.38
 
+   Use the method with a QMetaType.Type argument instead.
+%End
 
     virtual ~QgsServerParameterDefinition();
 
@@ -256,8 +256,9 @@ Constructor for QgsServerParameter.
 :param type: The type of the parameter
 :param defaultValue: The default value to use if not defined
 
-.. deprecated:: QGIS 3.38
-  use the method with a QMetaType.Type argument instead
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     void raiseError() const;
@@ -418,5 +419,5 @@ implemented in subclasses.
  *                                                                      *
  * src/server/qgsserverparameters.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -100,30 +100,13 @@ class CORE_EXPORT QgsDataProvider : public QObject
     };
 
     /**
-     * Flags which control dataprovider construction.
-     * \since QGIS 3.16
-     */
-    enum ReadFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagTrustDataSource = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
-      SkipFeatureCount = 1 << 1, //!< Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.
-      FlagLoadDefaultStyle = 1 << 2, //!< Reset the layer's style to the default for the datasource
-      SkipGetExtent = 1 << 3, //!< Skip the extent from provider
-      SkipFullScan = 1 << 4, //!< Skip expensive full scan on files (i.e. on delimited text) (since QGIS 3.24)
-      ForceReadOnly = 1 << 5, //!< Open layer in a read-only mode (since QGIS 3.28)
-      SkipCredentialsRequest =  1 << 6, //! Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread (since QGIS 3.32).
-      ParallelThreadLoading = 1 << 7, //! Provider is created in a parallel thread than the one where it will live (since QGIS 3.32.1).
-    };
-    Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
-
-    /**
      * Create a new dataprovider with the specified in the \a uri.
      *
      * Additional creation options are specified within the \a options value and since QGIS 3.16 creation flags are specified within the \a flags value.
      */
     QgsDataProvider( const QString &uri = QString(),
                      const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /**
      * Returns the coordinate system for the data source.
@@ -388,6 +371,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
+    // TODO? Instead of being pure virtual, might be better to generalize this
+    // behavior and presume that none of the sub-classes are going to do
+    // anything strange with regards to their name or description?
+
     /**
      * Returns a provider name
      *
@@ -395,13 +382,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * dialogs so that providers can be shown with their supported types. Thus
      * if more than one provider supports a given format, the user is able to
      * select a specific provider to open that file.
-     *
-     * \note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
      */
     virtual QString name() const = 0;
 
@@ -410,13 +390,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Returns description
      *
      * Returns a terse string describing what the provider is.
-     *
-     * \note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
      */
     virtual QString description() const = 0;
 
@@ -428,8 +401,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * supported by the data provider.  Naturally this will be an empty string
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
-     *
-     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const
     {
@@ -444,8 +415,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * supported by the data provider.  Naturally this will be an empty string
      * for those data providers that do not deal with plain files, such as
      * databases and servers.
-     *
-     * \note It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileRasterFilters() const
     {
@@ -694,7 +663,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void setError( const QgsError &error ) { mError = error;}
 
     //! Read flags. It's up to the subclass to respect these when needed
-    QgsDataProvider::ReadFlags mReadFlags = QgsDataProvider::ReadFlags();
+    Qgis::DataProviderReadFlags mReadFlags;
 
   private:
 
@@ -721,7 +690,5 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     friend class TestQgsProject;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataProvider::ReadFlags )
 
 #endif

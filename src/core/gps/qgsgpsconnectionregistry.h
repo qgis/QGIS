@@ -37,15 +37,10 @@ class CORE_EXPORT QgsGpsConnectionRegistry
 {
   public:
 
-    /**
-     * Constructor for QgsGpsConnectionRegistry.
-     */
     QgsGpsConnectionRegistry() = default;
     ~QgsGpsConnectionRegistry();
 
-    //! QgsGpsConnectionRegistry cannot be copied.
     QgsGpsConnectionRegistry( const QgsGpsConnectionRegistry &rh ) = delete;
-    //! QgsGpsConnectionRegistry cannot be copied.
     QgsGpsConnectionRegistry &operator=( const QgsGpsConnectionRegistry &rh ) = delete;
 
     //! Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again

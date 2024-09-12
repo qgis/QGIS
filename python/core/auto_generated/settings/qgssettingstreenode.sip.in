@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/settings/qgssettingstreenode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,6 +15,7 @@ class QgsSettingsTreeNode
 %Docstring(signature="appended")
 :py:class:`QgsSettingsTreeNode` is a tree node for the settings tree
 to help organizing and introspecting the tree.
+
 It is either a root node, a normal node or
 a named list (to store a group of settings under a dynamic named key).
 to automatically register a settings entry on its creation when a parent is provided.
@@ -278,5 +279,5 @@ Init the nodes with the specific ``options``
  *                                                                      *
  * src/core/settings/qgssettingstreenode.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

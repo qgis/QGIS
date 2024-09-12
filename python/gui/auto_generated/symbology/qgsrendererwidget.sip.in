@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgsrendererwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -83,8 +83,9 @@ to re-synchronize with the variables.
 %Docstring
 Emitted when the symbol levels settings have been changed.
 
-.. deprecated:: QGIS 3.20
-   -- no longer emitted.
+.. deprecated:: 3.20
+
+   No longer emitted.
 %End
 
   protected:
@@ -298,5 +299,5 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
  *                                                                      *
  * src/gui/symbology/qgsrendererwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

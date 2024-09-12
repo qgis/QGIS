@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -106,7 +106,7 @@ and help text for the associated property.
 class QgsLabelSettingsWidgetDialog : QDialog
 {
 %Docstring(signature="appended")
-A blocking dialog containing a QgsLabelSettingsWidgetBase.
+A blocking dialog containing a :py:class:`QgsLabelSettingsWidgetBase`.
 
 .. versionadded:: 3.12
 %End
@@ -140,5 +140,5 @@ Returns the dialog's button box.
  *                                                                      *
  * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

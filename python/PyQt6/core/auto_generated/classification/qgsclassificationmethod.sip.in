@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/classification/qgsclassificationmethod.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -248,8 +248,9 @@ This will calculate the classes for a given layer to define the classes.
 :param expression: The name of the field on which the classes are calculated
 :param nclasses: The number of classes to be returned
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsClassificationMethod.classesV2` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsClassificationMethod.classesV2` instead.
 %End
 
     QList<QgsClassificationRange> classesV2( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString &error /Out/ );
@@ -261,8 +262,7 @@ This will calculate the classes for a given layer to define the classes.
 :param nclasses: The number of classes to be returned
 
 :return: - list of generated classes
-         - error: will be set to error string if an error occurred while generating the classes
-
+         - error: error string if an error occurred while generating the classes
 
 .. versionadded:: 3.38
 %End
@@ -386,5 +386,5 @@ QFlags<QgsClassificationMethod::MethodProperty> operator|(QgsClassificationMetho
  *                                                                      *
  * src/core/classification/qgsclassificationmethod.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

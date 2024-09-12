@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditor.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -150,16 +150,18 @@ Set margin visible state
 
 :param margin: Set margin in the editor
 
-.. deprecated::
-   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.setLineNumbersVisible`
+.. deprecated:: 3.40
+
+   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.setLineNumbersVisible`.
 %End
 
  bool marginVisible() /Deprecated/;
 %Docstring
 Returns whether margins are in a visible state
 
-.. deprecated::
-   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.lineNumbersVisible`
+.. deprecated:: 3.40
+
+   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.lineNumbersVisible`.
 %End
 
     void setLineNumbersVisible( bool visible );
@@ -610,5 +612,5 @@ QFlags<QgsCodeEditor::Flag> operator|(QgsCodeEditor::Flag f1, QFlags<QgsCodeEdit
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditor.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

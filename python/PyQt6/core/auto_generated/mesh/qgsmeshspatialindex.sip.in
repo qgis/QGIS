@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshspatialindex.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,8 +25,7 @@ A spatial index for :py:class:`QgsMeshFace` or :py:class:`QgsMeshEdge` objects.
    class implements its own locks and accordingly, a single :py:class:`QgsMeshSpatialIndex` object can safely
    be used across multiple threads
 
-.. seealso:: :py:class:`QgsSpatialIndex`
-
+.. seealso:: :py:class:`QgsSpatialIndex` which is for vector features
 
 .. versionadded:: 3.6
 %End
@@ -54,9 +53,6 @@ that of the spatial index construction.
 %End
 
     QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsMeshSpatialIndex();
 
@@ -107,5 +103,5 @@ Removes a face with ``faceIndex`` from the ``mesh`` in the spatial index
  *                                                                      *
  * src/core/mesh/qgsmeshspatialindex.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

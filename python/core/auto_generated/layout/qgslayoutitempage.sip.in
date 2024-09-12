@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitempage.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -156,5 +156,5 @@ page orientation.
  *                                                                      *
  * src/core/layout/qgslayoutitempage.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

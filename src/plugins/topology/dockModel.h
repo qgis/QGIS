@@ -39,7 +39,7 @@ class DockModel : public QAbstractTableModel
 
     /**
      * \param errorList reference to the ErrorList where errors will be stored
-     * \since 3.38
+     * \since QGIS 3.38
      */
     void setErrors( const ErrorList &errorList );
 

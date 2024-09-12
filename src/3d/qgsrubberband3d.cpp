@@ -24,6 +24,7 @@
 #include "qgsvertexid.h"
 #include "qgslinestring.h"
 #include "qgssymbollayer.h"
+#include "qgs3dmapsettings.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -167,7 +168,7 @@ void QgsRubberBand3D::updateGeometry()
 {
   QgsLineVertexData lineData;
   lineData.withAdjacency = true;
-  lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, mMapSettings );
+  lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
   lineData.addLineString( mLineString );
 
   mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
@@ -189,7 +190,7 @@ void QgsRubberBand3D::updateMarkerMaterial()
 {
   delete mMarkerMaterial;
   mMarkerMaterial = new QgsPoint3DBillboardMaterial();
-  mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol, *mMapSettings );
+  mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol, Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
   mMarkerEntity->addComponent( mMarkerMaterial );
 
   //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param

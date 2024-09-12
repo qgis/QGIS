@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/tiledscene/qgstiledscenelayer.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -51,9 +51,6 @@ Constructor for QgsTiledSceneLayer.
 
 
     SIP_PYOBJECT __repr__();
-%Docstring
-QgsTiledSceneLayer cannot be copied.
-%End
 %MethodCode
     QString str = QStringLiteral( "<QgsTiledSceneLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -121,5 +118,5 @@ Ownership of ``renderer`` is transferred to the layer.
  *                                                                      *
  * src/core/tiledscene/qgstiledscenelayer.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

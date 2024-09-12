@@ -1252,6 +1252,33 @@ class TestQgsSymbolLayer(QgisTestCase):
             layer.shouldRenderUsingSelectionColor(context)
         )
 
+    def test_force_vector_rendering(self):
+        render_context = QgsRenderContext()
+        context = QgsSymbolRenderContext(render_context,
+                                         Qgis.RenderUnit.Millimeters,
+                                         selected=False)
+        self.assertFalse(
+            context.forceVectorRendering()
+        )
+
+        # render context flag should force vector rendering
+        render_context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, True)
+        context = QgsSymbolRenderContext(render_context,
+                                         Qgis.RenderUnit.Millimeters,
+                                         selected=False)
+        self.assertTrue(
+            context.forceVectorRendering()
+        )
+
+        # symbol render hint should also force vector rendering
+        render_context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, False)
+        context = QgsSymbolRenderContext(render_context,
+                                         Qgis.RenderUnit.Millimeters,
+                                         renderHints=Qgis.SymbolRenderHint.ForceVectorRendering)
+        self.assertTrue(
+            context.forceVectorRendering()
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

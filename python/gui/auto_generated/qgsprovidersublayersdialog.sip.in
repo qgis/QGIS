@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsprovidersublayersdialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -107,5 +107,5 @@ Emitted when sublayers selected from the dialog should be added to the project.
  *                                                                      *
  * src/gui/qgsprovidersublayersdialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessing.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -46,6 +46,13 @@ Converts a source ``type`` to a string representation.
 .. versionadded:: 3.6
 %End
 
+    static QString documentationFlagToString( Qgis::ProcessingAlgorithmDocumentationFlag flag );
+%Docstring
+Converts a documentation ``flag`` to a translated string.
+
+.. versionadded:: 3.40
+%End
+
     static const QString TEMPORARY_OUTPUT;
 
 };
@@ -55,5 +62,5 @@ Converts a source ``type`` to a string representation.
  *                                                                      *
  * src/core/processing/qgsprocessing.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

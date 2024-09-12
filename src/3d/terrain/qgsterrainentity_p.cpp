@@ -57,30 +57,29 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
 // -----------
 
 
-QgsTerrainEntity::QgsTerrainEntity( const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
-  : QgsChunkedEntity( map.maxTerrainScreenError(), map.terrainGenerator(), false, std::numeric_limits<int>::max(), parent )
-  , mMap( map )
+QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *parent )
+  : QgsChunkedEntity( map, map->maxTerrainScreenError(), map->terrainGenerator(), false, std::numeric_limits<int>::max(), parent )
 {
-  map.terrainGenerator()->setTerrain( this );
-  mIsValid = map.terrainGenerator()->isValid();
+  map->terrainGenerator()->setTerrain( this );
+  mIsValid = map->terrainGenerator()->isValid();
 
-  connect( &map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
-  connect( &map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( &map, &Qgs3DMapSettings::showLabelsChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( &map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
-  connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( &map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( &map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
+  connect( map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
+  connect( map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsTerrainEntity::invalidateMapImages );
+  connect( map, &Qgs3DMapSettings::showLabelsChanged, this, &QgsTerrainEntity::invalidateMapImages );
+  connect( map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
+  connect( map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
+  connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
+  connect( map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
 
   connectToLayersRepaintRequest();
 
-  mTextureGenerator = new QgsTerrainTextureGenerator( map );
+  mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
   mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, map.terrainElevationOffset(), 0.0f ) );
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, map->terrainElevationOffset(), 0.0f ) );
   addComponent( mTerrainTransform );
 }
 
@@ -99,17 +98,17 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
 
   float minDist = -1;
   QVector3D intersectionPoint;
-  switch ( mMap.terrainGenerator()->type() )
+  switch ( mMapSettings->terrainGenerator()->type() )
   {
     case QgsTerrainGenerator::Flat:
     {
       if ( ray.direction().y() == 0 )
         break;  // the ray is parallel to the flat terrain
 
-      const float dist = static_cast<float>( mMap.terrainElevationOffset() - ray.origin().y() ) / ray.direction().y();
+      const float dist = static_cast<float>( mMapSettings->terrainElevationOffset() - ray.origin().y() ) / ray.direction().y();
       const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
-      const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMap.origin() );
-      if ( mMap.extent().contains( mapCoords.x(), mapCoords.y() ) )
+      const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMapSettings->origin() );
+      if ( mMapSettings->extent().contains( mapCoords.x(), mapCoords.y() ) )
       {
         minDist = dist;
         intersectionPoint = terrainPlanePoint;
@@ -158,7 +157,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
 
 void QgsTerrainEntity::onShowBoundingBoxesChanged()
 {
-  setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
+  setShowBoundingBoxes( mMapSettings->showTerrainBoundingBoxes() );
 }
 
 
@@ -201,7 +200,7 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }
 
-  mLayers = mMap.layers();
+  mLayers = mMapSettings->layers();
 
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
@@ -216,7 +215,7 @@ void QgsTerrainEntity::onTerrainElevationOffsetChanged( float newOffset )
 
 float QgsTerrainEntity::terrainElevationOffset() const
 {
-  return mMap.terrainElevationOffset();
+  return mMapSettings->terrainElevationOffset();
 }
 
 

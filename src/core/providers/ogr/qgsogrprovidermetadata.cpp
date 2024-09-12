@@ -47,7 +47,7 @@ email                : nyall dot dawson at gmail dot com
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "OGR data provider" )
 
 QgsDataProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
 {
   return new QgsOgrProvider( uri, options, flags );
 }

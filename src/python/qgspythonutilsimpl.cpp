@@ -159,7 +159,11 @@ def run_startup_script(script_path):
 
   // import QGIS bindings
   QString error_msg = QObject::tr( "Couldn't load PyQGIS." ) + '\n' + QObject::tr( "Python support will be disabled." );
-  if ( !runString( QStringLiteral( "from qgis.core import *" ), error_msg ) || !runString( QStringLiteral( "from qgis.gui import *" ), error_msg ) )
+  if ( !runString( QStringLiteral( "from qgis.core import *" ), error_msg )
+#ifdef HAVE_GUI
+       || !runString( QStringLiteral( "from qgis.gui import *" ), error_msg )
+#endif
+     )
   {
     return false;
   }

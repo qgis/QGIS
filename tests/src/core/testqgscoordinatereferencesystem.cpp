@@ -289,6 +289,24 @@ void TestQgsCoordinateReferenceSystem::compoundCrs()
   QCOMPARE( crs.type(), Qgis::CrsType::Compound );
   QVERIFY( !crs.isGeographic() );
   QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::Meters );
+  QVERIFY( !crs.hasAxisInverted() );
+  QCOMPARE( crs.axisOrdering(),
+            QList<Qgis::CrsAxisDirection>()
+            << Qgis::CrsAxisDirection::East
+            << Qgis::CrsAxisDirection::North
+            << Qgis::CrsAxisDirection::Up );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3903" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.type(), Qgis::CrsType::Compound );
+  QVERIFY( !crs.isGeographic() );
+  QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::Meters );
+  QVERIFY( crs.hasAxisInverted() );
+  QCOMPARE( crs.axisOrdering(),
+            QList<Qgis::CrsAxisDirection>()
+            << Qgis::CrsAxisDirection::North
+            << Qgis::CrsAxisDirection::East
+            << Qgis::CrsAxisDirection::Up );
 }
 
 void TestQgsCoordinateReferenceSystem::verticalCrs()

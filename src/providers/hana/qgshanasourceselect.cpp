@@ -213,7 +213,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Standalone )
     mHoldDialogOpen->hide();
   else
     setWindowTitle( tr( "Add SAP HANA Table(s)" ) );
@@ -407,7 +407,7 @@ void QgsHanaSourceSelect::addButtonClicked()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "hana" ) );
-    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
       accept();
   }
 }

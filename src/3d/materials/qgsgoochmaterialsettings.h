@@ -37,9 +37,6 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
 
-    /**
-     * Constructor for QgsGoochMaterialSettings.
-     */
     QgsGoochMaterialSettings() = default;
 
     QString type() const override;
@@ -134,7 +131,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     float mBeta = 0.5f;
 
     //! Constructs a material from shader files
-    Qt3DRender::QMaterial *dataDefinedMaterial() const;
+    Qt3DRender::QMaterial *buildMaterial( const QgsMaterialContext &context ) const;
 };
 
 

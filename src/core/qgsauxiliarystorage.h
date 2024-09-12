@@ -73,9 +73,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      */
     QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer );
 
-    /**
-     * Copy constructor deactivated
-     */
     QgsAuxiliaryLayer( const QgsAuxiliaryLayer &rhs ) = delete;
 
     QgsAuxiliaryLayer &operator=( QgsAuxiliaryLayer const &rhs ) = delete;
@@ -322,9 +319,6 @@ class CORE_EXPORT QgsAuxiliaryStorage
      */
     QgsAuxiliaryStorage( const QString &filename = QString(), bool copy = true );
 
-    /**
-     * Destructor.
-     */
     virtual ~QgsAuxiliaryStorage();
 
     /**

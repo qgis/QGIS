@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsoverlaywidgetlayout.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -81,5 +81,5 @@ Returns the spacing between widgets that are laid out on top of each other.
  *                                                                      *
  * src/gui/qgsoverlaywidgetlayout.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

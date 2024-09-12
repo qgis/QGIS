@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsprojectproperty.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -116,9 +116,6 @@ Project property value node, contains a :py:class:`QgsProjectPropertyKey`'s valu
   public:
 
     QgsProjectPropertyValue();
-%Docstring
-Constructor for QgsProjectPropertyValue.
-%End
 
     QgsProjectPropertyValue( const QVariant &value );
 %Docstring
@@ -151,14 +148,14 @@ Project property key node.
 Can, itself, contain :py:class:`QgsProjectPropertyKey` and :py:class:`QgsProjectPropertyValues`.
 
 The internal QHash, mProperties, maps key names to their respective
-QgsProjectPropertyValue or next QgsProjectPropertyKey in the key name sequence.  The key with
-the current name should contain its QgsProjectPropertyValue.
+:py:class:`QgsProjectPropertyValue` or next :py:class:`QgsProjectPropertyKey` in the key name sequence.  The key with
+the current name should contain its :py:class:`QgsProjectPropertyValue`.
 
 E.g., given the key sequence "/foo/bar", "foo" will have a corresponding
 :py:class:`QgsProjectPropertyKey` with a name "foo".  It will contain an element in its
 mProperties that maps to "bar", which is another :py:class:`QgsProjectPropertyKey`.  The "bar"
 :py:class:`QgsProjectPropertyKey` will, in turn, have an element that maps to itself, i.e. "bar",
-that will contain a QgsProjectPropertyValue.
+that will contain a :py:class:`QgsProjectPropertyValue`.
 %End
 
 %TypeHeaderCode
@@ -281,5 +278,5 @@ Attempts to find a property with a matching sub-key name.
  *                                                                      *
  * src/core/project/qgsprojectproperty.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

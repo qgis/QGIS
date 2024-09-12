@@ -255,7 +255,6 @@ class CORE_EXPORT QgsOgcUtils
     class LayerProperties
     {
       public:
-        //! Constructor
         LayerProperties() = default;
 
         //! Layer name
@@ -603,12 +602,12 @@ class CORE_EXPORT QgsOgcCrsUtils
     //! CRS flavor
     enum class CRSFlavor
     {
-      UNKNOWN, //! unknown/unhandled flavor
-      AUTH_CODE, //! e.g EPSG:4326
-      HTTP_EPSG_DOT_XML, //! e.g. http://www.opengis.net/gml/srs/epsg.xml#4326 (called "OGC HTTP URL" in GeoServer WFS configuration panel)
-      OGC_URN, //! e.g. urn:ogc:def:crs:EPSG::4326
-      X_OGC_URN, //! e.g. urn:x-ogc:def:crs:EPSG::4326
-      OGC_HTTP_URI, //! e.g. http://www.opengis.net/def/crs/EPSG/0/4326
+      UNKNOWN, //!< Unknown/unhandled flavor
+      AUTH_CODE, //!< E.g EPSG:4326
+      HTTP_EPSG_DOT_XML, //!< E.g. http://www.opengis.net/gml/srs/epsg.xml#4326 (called "OGC HTTP URL" in GeoServer WFS configuration panel)
+      OGC_URN, //!< E.g. urn:ogc:def:crs:EPSG::4326
+      X_OGC_URN, //!< E.g. urn:x-ogc:def:crs:EPSG::4326
+      OGC_HTTP_URI, //!< E.g. http://www.opengis.net/def/crs/EPSG/0/4326
     };
 
     /**

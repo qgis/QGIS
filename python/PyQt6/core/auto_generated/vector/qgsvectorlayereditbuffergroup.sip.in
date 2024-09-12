@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayereditbuffergroup.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,7 +13,9 @@
 class QgsVectorLayerEditBufferGroup : QObject
 {
 %Docstring(signature="appended")
-The edit buffer group manages a group of edit buffers. Commands like commit and rollback are
+The edit buffer group manages a group of edit buffers.
+
+Commands like commit and rollback are
 managed by the group invokes individual :py:func:`~addFeature`, :py:func:`~deleteFeature`, ... in the correct order
 across all contained edit buffers.
 
@@ -81,7 +83,7 @@ that the user has some chance of repairing the damage cleanly.
                     Otherwise the layer editing mode will be disabled if the commit is successful.
 
 :return: - ``True`` on success
-         - commitErrors: will be set to a list of descriptive errors if the commit fails.
+         - commitErrors: a list of descriptive errors if the commit fails.
 %End
 
     bool rollBack( QStringList &rollbackErrors /Out/, bool stopEditing = true );
@@ -92,7 +94,7 @@ Stop editing and discard the edits
                     Otherwise the layer editing mode will be disabled if the rollback is successful.
 
 :return: - ``False`` if errors occurred during rollback
-         - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
+         - rollbackErrors: a list of descriptive errors if the rollback fails.
 %End
 
     bool isEditing() const;
@@ -107,5 +109,5 @@ Returns ``True`` if the layers are in editing mode
  *                                                                      *
  * src/core/vector/qgsvectorlayereditbuffergroup.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

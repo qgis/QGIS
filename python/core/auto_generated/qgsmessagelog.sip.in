@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmessagelog.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,9 +31,6 @@ window for the user.
   public:
 
     QgsMessageLog();
-%Docstring
-Constructor for QgsMessageLog.
-%End
 
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true );
 %Docstring
@@ -71,7 +68,7 @@ temporarily suppressed.
 class QgsMessageLogNotifyBlocker
 {
 %Docstring(signature="appended")
-Temporarily blocks the application QgsMessageLog (see :py:func:`QgsApplication.messageLog()`) from emitting the messageReceived( bool )
+Temporarily blocks the application :py:class:`QgsMessageLog` (see :py:func:`QgsApplication.messageLog()`) from emitting the messageReceived( bool )
 signal for the lifetime of the object.
 
 Using this blocker allows messages to be logged without causing user interface hints flagging message log
@@ -94,7 +91,6 @@ Constructor for QgsMessageLogNotifyBlocker.
 
 This will block the log from emitting the messageReceived( bool ) signal for the lifetime of this object.
 %End
-
 
 
     ~QgsMessageLogNotifyBlocker();
@@ -152,5 +148,5 @@ Logs a message to stderr.
  *                                                                      *
  * src/core/qgsmessagelog.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

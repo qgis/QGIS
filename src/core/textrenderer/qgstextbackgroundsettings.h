@@ -81,10 +81,6 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     QgsTextBackgroundSettings();
 
-    /**
-     * Copy constructor.
-     * \param other source QgsTextBackgroundSettings
-     */
     QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other );
 
     QgsTextBackgroundSettings &operator=( const QgsTextBackgroundSettings &other );

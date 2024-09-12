@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointcloudblock.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,6 +32,7 @@ Base class for storing raw data from point cloud nodes
 %Docstring
 Ctor
 %End
+
     virtual ~QgsPointCloudBlock();
 
     QgsPointCloudBlock *clone() const /Factory/;
@@ -77,8 +78,10 @@ Returns the custom offset of the block.
     void setPointCount( int size );
 %Docstring
 Changes the number of points in the block.
+
 This is used in order to remove all points after point ``size``.
-If a ``size`` larger than ``pointCount``() is used, data for the new points will be uninitialized
+
+If a ``size`` larger than :py:func:`~QgsPointCloudBlock.pointCount` is used, data for the new points will be uninitialized.
 
 .. versionadded:: 3.26
 %End
@@ -91,5 +94,5 @@ If a ``size`` larger than ``pointCount``() is used, data for the new points will
  *                                                                      *
  * src/core/pointcloud/qgspointcloudblock.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

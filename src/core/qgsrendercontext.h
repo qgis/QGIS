@@ -172,7 +172,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see disabledSymbolLayers()
      * \see isSymbolLayerEnabled()
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.30 and replaced with setDisabledSymbolLayersV2
+     * \deprecated QGIS 3.30. And replaced with setDisabledSymbolLayersV2.
      */
     Q_DECL_DEPRECATED void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers ) SIP_DEPRECATED;
 
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setDisabledSymbolLayers()
      * \see isSymbolLayerEnabled()
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.30 and replaced with disabledSymbolLayersV2
+     * \deprecated QGIS 3.30. And replaced with disabledSymbolLayersV2.
      */
     Q_DECL_DEPRECATED QSet<const QgsSymbolLayer *> disabledSymbolLayers() const SIP_DEPRECATED;
 
@@ -641,7 +641,16 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * \see setVectorSimplifyMethod()
      */
-    const QgsVectorSimplifyMethod &vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
+    QgsVectorSimplifyMethod &vectorSimplifyMethod() { return mVectorSimplifyMethod; }
+
+    /**
+     * Returns the simplification settings to use when rendering vector layers.
+     *
+     * The default is to use no simplification.
+     *
+     * \see setVectorSimplifyMethod()
+     */
+    const QgsVectorSimplifyMethod &vectorSimplifyMethod() const SIP_SKIP { return mVectorSimplifyMethod; }
 
     /**
      * Sets the simplification setting to use when rendering vector layers.
@@ -736,9 +745,19 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * is used in some contexts to refine the converted size. For example, a Qgis::RenderSubcomponentProperty::BlurSize
      * property will be limited to a suitably fast range when the render context has the Qgis::RenderContextFlag::RenderSymbolPreview set.
      *
+     * \see convertFromPainterUnits()
      * \see convertToMapUnits()
      */
     double convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
+
+    /**
+     * Converts a size from painter units (pixels) to the specified render unit.
+     *
+     * \see convertToPainterUnits()
+     * \see convertToMapUnits()
+     * \since QGIS 3.40
+     */
+    double convertFromPainterUnits( double size, Qgis::RenderUnit unit ) const;
 
     /**
      * Converts a size from the specified units to map units. The conversion respects the limits
@@ -755,8 +774,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
-     * \note
-      * When the sourceCrs() is geographic, the center of the Extent will be used
+     * \note When the sourceCrs() is geographic, the center of the Extent will be used
      */
     double convertMetersToMapUnits( double meters ) const;
 
@@ -855,26 +873,54 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets custom rendering flags. Layers might honour these to alter their rendering.
      * \returns a map of custom flags
      * \see setCustomRenderingFlag()
-     * \since QGIS 3.12
+     * \deprecated QGIS 3.40. Use customProperties() instead.
      */
-    QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
+    Q_DECL_DEPRECATED QVariantMap customRenderingFlags() const SIP_DEPRECATED { return mCustomProperties; }
+
+    /**
+     * Returns custom rendering properties.
+     *
+     * Objects might honour these to alter their rendering.
+     *
+     * \see setCustomProperty()
+     * \since QGIS 3.40
+     */
+    QVariantMap customProperties() const { return mCustomProperties; }
 
     /**
      * Sets a custom rendering flag. Layers might honour these to alter their rendering.
      * \param flag the flag name
      * \param value the flag value
      * \see customRenderingFlags()
-     * \since QGIS 3.12
+     * \deprecated QGIS 3.40. Use setCustomProperty() instead.
      */
-    void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
+    Q_DECL_DEPRECATED void setCustomRenderingFlag( const QString &flag, const QVariant &value ) SIP_DEPRECATED { mCustomProperties[flag] = value; }
+
+    /**
+     * Sets a custom rendering property.
+     *
+     * Objects might honour these to alter their rendering.
+     *
+     * \see customProperties()
+     * \since QGIS 3.40
+     */
+    void setCustomProperty( const QString &property, const QVariant &value ) { mCustomProperties[property] = value; }
 
     /**
      * Clears the specified custom rendering flag.
      * \param flag the flag name
      * \see setCustomRenderingFlag()
-     * \since QGIS 3.12
+     * \deprecated QGIS 3.40. Use clearCustomProperty() instead.
      */
-    void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
+    Q_DECL_DEPRECATED void clearCustomRenderingFlag( const QString &flag ) SIP_DEPRECATED { mCustomProperties.remove( flag ); }
+
+    /**
+     * Clears the specified custom rendering property.
+     *
+     * \see setCustomProperty()
+     * \since QGIS 3.40
+     */
+    void clearCustomProperty( const QString &property ) { mCustomProperties.remove( property ); }
 
     /**
      * Returns the list of clipping regions to apply during the render.
@@ -961,7 +1007,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Add a clip \a path to be applied to the \a symbolLayer before rendering
      * \see addSymbolLayerClipGeometry()
      *
-     * \deprecated QGIS 3.38, use addSymbolLayerClipGeometry() instead.
+     * \deprecated QGIS 3.38. Use addSymbolLayerClipGeometry() instead.
      */
     Q_DECL_DEPRECATED void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path ) SIP_DEPRECATED;
 
@@ -969,7 +1015,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns clip paths to be applied to the \a symbolLayer before rendering
      *
      *\see symbolLayerClipGeometries()
-     * \deprecated QGIS 3.38, use symbolLayerClipGeometries() instead.
+     * \deprecated QGIS 3.38. Use symbolLayerClipGeometries() instead.
      */
     Q_DECL_DEPRECATED QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const SIP_DEPRECATED;
 
@@ -1261,7 +1307,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     Qgis::TextRenderFormat mTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
-    QVariantMap mCustomRenderingFlags;
+    QVariantMap mCustomProperties;
 
     QSet<QString> mDisabledSymbolLayers;
 

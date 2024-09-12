@@ -63,6 +63,8 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     bool apply();
 
     void showHelp();
+    void moveFieldsUp();
+    void moveFieldsDown();
 
     static QString quotedIdentifier( QString id );
 

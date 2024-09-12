@@ -150,9 +150,6 @@ class CORE_EXPORT QgsAbstractGeometry
     };
     Q_ENUM( QgsAbstractGeometry::AxisOrder )
 
-    /**
-     * Constructor for QgsAbstractGeometry.
-     */
     QgsAbstractGeometry() = default;
     virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
@@ -306,7 +303,7 @@ class CORE_EXPORT QgsAbstractGeometry
     enum WkbFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagExportTrianglesAsPolygons = 1 << 0, //!< Triangles should be exported as polygon geometries
-      FlagExportNanAsDoubleMin = 1 << 1, //!< Use -DOUBLE_MAX to represent NaN (since QGIS 3.30)
+      FlagExportNanAsDoubleMin = 1 << 1, //!< Use -DOUBLE_MAX to represent NaN \since QGIS 3.30
     };
     Q_DECLARE_FLAGS( WkbFlags, WkbFlag )
 
@@ -1204,7 +1201,7 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 class CORE_EXPORT QgsVertexIterator
 {
   public:
-    //! Constructor for QgsVertexIterator
+
     QgsVertexIterator() = default;
 
     //! Constructs iterator for the given geometry
@@ -1253,7 +1250,7 @@ class CORE_EXPORT QgsVertexIterator
 class CORE_EXPORT QgsGeometryPartIterator
 {
   public:
-    //! Constructor for QgsGeometryPartIterator
+
     QgsGeometryPartIterator() = default;
 
     //! Constructs iterator for the given geometry
@@ -1303,7 +1300,7 @@ class CORE_EXPORT QgsGeometryPartIterator
 class CORE_EXPORT QgsGeometryConstPartIterator
 {
   public:
-    //! Constructor for QgsGeometryConstPartIterator
+
     QgsGeometryConstPartIterator() = default;
 
     //! Constructs iterator for the given geometry

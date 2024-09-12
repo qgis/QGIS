@@ -62,6 +62,16 @@
 #define QGIS_CHECK_QOBJECT_THREAD_EQUALITY(other) do {} while(false);(void)other;
 #endif
 
+#ifdef __clang_analyzer__
+#define QGIS_CHECK_OTHER_QOBJECT_THREAD_ACCESS(other) do {} while(false);(void)other;
+#elif defined(AGGRESSIVE_SAFE_MODE)
+#define QGIS_CHECK_OTHER_QOBJECT_THREAD_ACCESS(other) if ( other->thread() != QThread::currentThread() ) {qFatal( "%s", QStringLiteral("%2 (%1:%3) Access from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), other->objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( other->thread() ), 0, 16 ).toLocal8Bit().constData() ); }
+#elif defined(QGISDEBUG)
+#define QGIS_CHECK_OTHER_QOBJECT_THREAD_ACCESS(other) if ( other->thread() != QThread::currentThread() ) {qWarning() << QStringLiteral("%2 (%1:%3) Access from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), other->objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( other->thread() ), 0, 16 ).toLocal8Bit().constData(); }
+#else
+#define QGIS_CHECK_OTHER_QOBJECT_THREAD_ACCESS(other) do {} while(false);(void)other;
+#endif
+
 
 /**
  * \ingroup core
@@ -93,9 +103,7 @@ class QgsScopedAssignObjectToCurrentThread
       mObject->moveToThread( nullptr );
     }
 
-    //! QgsScopedAssignObjectToCurrentThread cannot be copied
     QgsScopedAssignObjectToCurrentThread( const QgsScopedAssignObjectToCurrentThread &other ) = delete;
-    //! QgsScopedAssignObjectToCurrentThread cannot be copied
     QgsScopedAssignObjectToCurrentThread &operator =( const QgsScopedAssignObjectToCurrentThread & ) = delete;
 
   private:

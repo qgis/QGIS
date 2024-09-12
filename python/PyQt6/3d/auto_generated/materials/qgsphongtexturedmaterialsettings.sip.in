@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/materials/qgsphongtexturedmaterialsettings.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,9 +29,6 @@ A phong shading model with diffuse texture map.
   public:
 
     QgsPhongTexturedMaterialSettings();
-%Docstring
-Constructor for QgsPhongTexturedMaterialSettings.
-%End
 
     virtual QString type() const;
 
@@ -57,7 +54,7 @@ Returns ambient color component
 %Docstring
 Returns specular color component
 %End
-    float shininess() const;
+    double shininess() const;
 %Docstring
 Returns shininess of the surface
 %End
@@ -90,7 +87,7 @@ during triangulation.quiresTextureCoordinates
 Returns the texture rotation, in degrees.
 %End
 
-    float opacity() const;
+    double opacity() const;
 %Docstring
 Returns the opacity of the surface
 
@@ -106,7 +103,7 @@ Sets ambient color component
 %Docstring
 Sets specular color component
 %End
-    void setShininess( float shininess );
+    void setShininess( double shininess );
 %Docstring
 Sets shininess of the surface
 %End
@@ -152,5 +149,5 @@ Sets opacity of the surface.
  *                                                                      *
  * src/3d/materials/qgsphongtexturedmaterialsettings.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

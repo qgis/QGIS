@@ -61,6 +61,11 @@ QString QgsSplitLinesByLengthAlgorithm::shortDescription() const
   return QObject::tr( "Splits lines into parts which are no longer than a specified length." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitLinesByLengthAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QList<int> QgsSplitLinesByLengthAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );

@@ -38,8 +38,9 @@ typedef QList< QgsTask * > QgsTaskList;
 /**
  * \ingroup core
  * \class QgsTask
- * \brief Abstract base class for long running background tasks. Tasks can be controlled directly,
- * or added to a QgsTaskManager for automatic management.
+ * \brief Abstract base class for long running background tasks.
+ *
+ * Tasks can be controlled directly, or added to a QgsTaskManager for automatic management.
  *
  * Derived classes should implement the process they want to execute in the background
  * within the run() method. This method will be called when the
@@ -72,8 +73,8 @@ class CORE_EXPORT QgsTask : public QObject
     {
       CanCancel = 1 << 1, //!< Task can be canceled
       CancelWithoutPrompt = 1 << 2, //!< Task can be canceled without any users prompts, e.g. when closing a project or QGIS.
-      Hidden = 1 << 3, //!< Hide task from GUI (since QGIS 3.26)
-      Silent = 1 << 4, //!< Don't show task updates (such as completion/failure messages) as operating-system level notifications (since QGIS 3.26)
+      Hidden = 1 << 3, //!< Hide task from GUI \since QGIS 3.26
+      Silent = 1 << 4, //!< Don't show task updates (such as completion/failure messages) as operating-system level notifications \since QGIS 3.26
       AllFlags = CanCancel, //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -385,8 +386,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
 /**
  * \ingroup core
  * \class QgsTaskManager
- * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
- * or accessed via QgsApplication::taskManager().
+ * \brief Task manager for managing a set of long-running QgsTask tasks.
+ *
+ * This class can be created directly, or accessed via QgsApplication::taskManager().
  */
 class CORE_EXPORT QgsTaskManager : public QObject
 {
@@ -672,8 +674,6 @@ class CORE_EXPORT QgsTaskWithSerialSubTasks : public QgsTask
   public:
     //! Constructor
     QgsTaskWithSerialSubTasks( const QString &desc = QString() ) : QgsTask( desc ) {}
-
-    //! Destructor
     ~QgsTaskWithSerialSubTasks() override;
 
     /**

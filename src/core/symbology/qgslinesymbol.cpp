@@ -236,7 +236,8 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 
   //save old painter
   QPainter *renderPainter = context.painter();
-  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, mRenderHints, f );
+
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, renderHints(), f );
   symbolContext.setOriginalGeometryType( Qgis::GeometryType::Line );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
@@ -303,14 +304,6 @@ void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer *layer, const Q
 QgsLineSymbol *QgsLineSymbol::clone() const
 {
   QgsLineSymbol *cloneSymbol = new QgsLineSymbol( cloneLayers() );
-  cloneSymbol->setOpacity( mOpacity );
-  Q_NOWARN_DEPRECATED_PUSH
-  cloneSymbol->setLayer( mLayer );
-  Q_NOWARN_DEPRECATED_POP
-  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
-  cloneSymbol->setForceRHR( mForceRHR );
-  cloneSymbol->setDataDefinedProperties( dataDefinedProperties() );
-  cloneSymbol->setFlags( mSymbolFlags );
-  cloneSymbol->setAnimationSettings( mAnimationSettings );
+  cloneSymbol->copyCommonProperties( this );
   return cloneSymbol;
 }

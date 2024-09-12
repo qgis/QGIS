@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutruler.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -72,7 +72,7 @@ the view.
 %End
 
   signals:
-    void cursorPosChanged( QPointF );
+    void cursorPosChanged( QPointF position );
 %Docstring
 Emitted when mouse cursor coordinates change
 %End
@@ -94,5 +94,5 @@ Emitted when mouse cursor coordinates change
  *                                                                      *
  * src/gui/layout/qgslayoutruler.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

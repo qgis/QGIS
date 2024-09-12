@@ -22,12 +22,24 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprojectionselectionwidget.h"
 
 QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
   setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+
+  mVerticalCrsStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  mVerticalCrsWidget = new QgsProjectionSelectionWidget( nullptr, QgsCoordinateReferenceSystemProxyModel::FilterVertical );
+  mVerticalCrsWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mVerticalCrsWidget->setNotSetText( tr( "Not set" ) );
+  mVerticalCrsWidget->setDialogTitle( tr( "Layer Vertical CRS" ) );
+  vl->addWidget( mVerticalCrsWidget );
+  mCrsPageEnabled->setLayout( vl );
 
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
@@ -108,6 +120,9 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mSurfaceLineStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mSurfaceMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mExtrusionGroupBox, &QGroupBox::toggled, this, &QgsVectorElevationPropertiesWidget::toggleSymbolWidgets );
+
+  connect( mLayer, &QgsMapLayer::crsChanged, this, &QgsVectorElevationPropertiesWidget::updateVerticalCrsOptions );
+
 
   setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#elevation-properties" ) );
 }
@@ -195,6 +210,8 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   clampingChanged();
   bindingChanged();
+
+  updateVerticalCrsOptions();
 }
 
 QgsExpressionContext QgsVectorElevationPropertiesWidget::createExpressionContext() const
@@ -243,6 +260,7 @@ void QgsVectorElevationPropertiesWidget::apply()
 
   props->setDataDefinedProperties( mPropertyCollection );
 
+  mLayer->setVerticalCrs( mVerticalCrsWidget->crs() );
   mLayer->trigger3DUpdate();
 }
 
@@ -361,6 +379,58 @@ void QgsVectorElevationPropertiesWidget::updateProperty()
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsMapLayerElevationProperties::Property key = static_cast<  QgsMapLayerElevationProperties::Property >( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
+}
+
+void QgsVectorElevationPropertiesWidget::updateVerticalCrsOptions()
+{
+  switch ( mLayer->crs().type() )
+  {
+    case Qgis::CrsType::Compound:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." ).arg(
+                                    mLayer->crs().userFriendlyIdentifier(),
+                                    mLayer->verticalCrs().userFriendlyIdentifier()
+                                  ) );
+      break;
+
+    case Qgis::CrsType::Geographic3d:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
+                                    mLayer->crs().userFriendlyIdentifier()
+                                  ) );
+      break;
+
+    case Qgis::CrsType::Geocentric:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
+                                    mLayer->crs().userFriendlyIdentifier()
+                                  ) );
+      break;
+
+    case Qgis::CrsType::Projected:
+      if ( mLayer->crs().hasVerticalAxis() )
+      {
+        mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
+        mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
+                                      mLayer->crs().userFriendlyIdentifier()
+                                    ) );
+        break;
+      }
+      [[fallthrough]];
+
+    case Qgis::CrsType::Unknown:
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Vertical:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+    case Qgis::CrsType::Other:
+    case Qgis::CrsType::DerivedProjected:
+      mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageEnabled );
+      mVerticalCrsWidget->setCrs( mLayer->verticalCrs() );
+      break;
+  }
 }
 
 void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsMapLayerElevationProperties::Property key )

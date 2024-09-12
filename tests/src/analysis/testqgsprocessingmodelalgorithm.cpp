@@ -504,7 +504,7 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( map["default_value"].toMap()["create_options"].toMap()[QStringLiteral( "fileEncoding" )].toString(), QStringLiteral( "my_encoding" ) );
   QgsProcessingModelOutput out;
   out.loadVariant( map );
-  QCOMPARE( out.defaultValue().userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
+  QCOMPARE( out.defaultValue().userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   layerDef = out.defaultValue().value<QgsProcessingOutputLayerDefinition>();
   QCOMPARE( layerDef.sink.staticValue().toString(), QStringLiteral( "my_path" ) );
   QCOMPARE( layerDef.createOptions[QStringLiteral( "fileEncoding" )].toString(), QStringLiteral( "my_encoding" ) );
@@ -1042,7 +1042,7 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).source(), Qgis::ProcessingModelChildParameterSource::Expression );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).expression(), QStringLiteral( "1+2" ) );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
-  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).staticValue().userType(), QMetaType::type( "QgsProperty" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).staticValue().userType(), qMetaTypeId<QgsProperty>() );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).staticValue().value< QgsProperty >().expressionString(), QStringLiteral( "1+8" ) );
 
   QCOMPARE( alg6c1.modelOutputs().count(), 1 );
@@ -1334,7 +1334,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
-  QCOMPARE( params.value( "OUTPUT" ).userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
+  QCOMPARE( params.value( "OUTPUT" ).userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   const QgsProcessingOutputLayerDefinition outDef = qvariant_cast<QgsProcessingOutputLayerDefinition>( params.value( "OUTPUT" ) );
   QCOMPARE( outDef.destinationName, QStringLiteral( "MY_OUT" ) );
   QCOMPARE( outDef.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
@@ -1347,7 +1347,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QVERIFY( error.isEmpty() );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
-  QCOMPARE( params.value( "OUTPUT" ).userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
+  QCOMPARE( params.value( "OUTPUT" ).userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   const QgsProcessingOutputLayerDefinition outDef2 = qvariant_cast<QgsProcessingOutputLayerDefinition>( params.value( "OUTPUT" ) );
   QCOMPARE( outDef2.destinationName, QStringLiteral( "MY_OUT" ) );
   QCOMPARE( outDef2.sink.staticValue().toString(), QStringLiteral( "memory:" ) );

@@ -22,23 +22,43 @@ __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Nathan Woodrow'
 
 from qgis.PyQt import QtCore
-from qgis._3d import *
+from qgis._3d_p import *
 
-from qgis.core import Qgis
+from qgis.core import Qgis as _Qgis
 
 @MONKEYPATCH_INJECTIONS@
 
 # manual monkey patching for old enum values
-Qgs3DTypes.AltitudeClamping = Qgis.AltitudeClamping
-Qgs3DTypes.AltClampAbsolute = Qgis.AltitudeClamping.Absolute
+Qgs3DTypes.AltitudeClamping = _Qgis.AltitudeClamping
+Qgs3DTypes.AltClampAbsolute = _Qgis.AltitudeClamping.Absolute
 Qgs3DTypes.AltClampAbsolute.is_monkey_patched = True
-Qgs3DTypes.AltClampRelative = Qgis.AltitudeClamping.Relative
+Qgs3DTypes.AltClampRelative = _Qgis.AltitudeClamping.Relative
 Qgs3DTypes.AltClampRelative.is_monkey_patched = True
-Qgs3DTypes.AltClampTerrain = Qgis.AltitudeClamping.Terrain
+Qgs3DTypes.AltClampTerrain = _Qgis.AltitudeClamping.Terrain
 Qgs3DTypes.AltClampTerrain.is_monkey_patched = True
 
-Qgs3DTypes.AltitudeBinding = Qgis.AltitudeBinding
-Qgs3DTypes.AltBindVertex = Qgis.AltitudeBinding.Vertex
+Qgs3DTypes.AltitudeBinding = _Qgis.AltitudeBinding
+Qgs3DTypes.AltBindVertex = _Qgis.AltitudeBinding.Vertex
 Qgs3DTypes.AltBindVertex.is_monkey_patched = True
-Qgs3DTypes.AltBindCentroid = Qgis.AltitudeBinding.Centroid
+Qgs3DTypes.AltBindCentroid = _Qgis.AltitudeBinding.Centroid
 Qgs3DTypes.AltBindCentroid.is_monkey_patched = True
+
+QgsPoint3DSymbol.Shape = _Qgis.Point3DShape
+QgsPoint3DSymbol.Cylinder = _Qgis.Point3DShape.Cylinder
+QgsPoint3DSymbol.Cylinder.is_monkey_patched = True
+QgsPoint3DSymbol.Sphere = _Qgis.Point3DShape.Sphere
+QgsPoint3DSymbol.Sphere.is_monkey_patched = True
+QgsPoint3DSymbol.Cone = _Qgis.Point3DShape.Cone
+QgsPoint3DSymbol.Cone.is_monkey_patched = True
+QgsPoint3DSymbol.Cube = _Qgis.Point3DShape.Cube
+QgsPoint3DSymbol.Cube.is_monkey_patched = True
+QgsPoint3DSymbol.Torus = _Qgis.Point3DShape.Torus
+QgsPoint3DSymbol.Torus.is_monkey_patched = True
+QgsPoint3DSymbol.Plane = _Qgis.Point3DShape.Plane
+QgsPoint3DSymbol.Plane.is_monkey_patched = True
+QgsPoint3DSymbol.ExtrudedText = _Qgis.Point3DShape.ExtrudedText
+QgsPoint3DSymbol.ExtrudedText.is_monkey_patched = True
+QgsPoint3DSymbol.Model = _Qgis.Point3DShape.Model
+QgsPoint3DSymbol.Model.is_monkey_patched = True
+QgsPoint3DSymbol.Billboard = _Qgis.Point3DShape.Billboard
+QgsPoint3DSymbol.Billboard.is_monkey_patched = True

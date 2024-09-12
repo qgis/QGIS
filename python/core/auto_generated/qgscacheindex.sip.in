@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgscacheindex.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,9 +22,6 @@ Abstract base class for cache indices
   public:
 
     QgsAbstractCacheIndex();
-%Docstring
-Constructor for QgsAbstractCacheIndex.
-%End
     virtual ~QgsAbstractCacheIndex();
 
     virtual void flushFeature( QgsFeatureId fid ) = 0;
@@ -71,5 +68,5 @@ it will return ``False``.
  *                                                                      *
  * src/core/qgscacheindex.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

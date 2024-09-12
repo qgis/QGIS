@@ -166,14 +166,13 @@ class CORE_EXPORT QgsGeometry
 
   public:
 
-    //! Constructor
     QgsGeometry() SIP_HOLDGIL;
 
-    //! Copy constructor will prompt a deep copy of the object
+    //! Copy constructor will prompt a shallow copy of the geometry
     QgsGeometry( const QgsGeometry & );
 
     /**
-     * Creates a deep copy of the object
+     * Creates a shallow copy of the geometry
      * \note not available in Python bindings
      */
     QgsGeometry &operator=( QgsGeometry const &rhs ) SIP_SKIP;
@@ -319,6 +318,8 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Creates a new geometry from a QgsBox3D object
+     * Returns a 2D polygon geometry if the box is purely 2d,
+     * otherwise returns a polyhedral surface geometry.
      *
      * \since QGIS 3.34
      */
@@ -345,6 +346,22 @@ class CORE_EXPORT QgsGeometry
      */
     static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
                                           double outerRadius, double innerRadius = 0 );
+
+    /**
+     * Creates a wedge shaped buffer from a \a center point.
+     *
+     * The wedges goes from the \a startAngle to \a endAngle in degrees.
+     *
+     * The outer radius of the buffer is specified via \a outerRadius, and optionally an
+     * \a innerRadius can also be specified.
+     *
+     * The returned geometry will be a CurvePolygon geometry containing circular strings. It may
+     * need to be segmentized to convert to a standard Polygon geometry.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle,
+        double outerRadius, double innerRadius = 0 );
 
     /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
@@ -751,12 +768,12 @@ class CORE_EXPORT QgsGeometry
      *
      * This function takes into account the following factors:
      *
-     * # If the given vertex index is at the end of a linestring,
-     *    the adjacent index will be -1 (for "no adjacent vertex")
-     * # If the given vertex index is at the end of a linear ring
-     *    (such as in a polygon), the adjacent index will take into
-     *    account the first vertex is equal to the last vertex (and will
-     *    skip equal vertex positions).
+     * - If the given vertex index is at the end of a linestring,
+     *   the adjacent index will be -1 (for "no adjacent vertex")
+     * - If the given vertex index is at the end of a linear ring
+     *   (such as in a polygon), the adjacent index will take into
+     *   account the first vertex is equal to the last vertex (and will
+     *   skip equal vertex positions).
      */
     void adjacentVertices( int atVertex, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT ) const;
 
@@ -908,7 +925,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPointsXY ) SIP_DEPRECATED;
 
@@ -926,7 +943,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPoints ) SIP_DEPRECATED;
 
@@ -944,7 +961,7 @@ class CORE_EXPORT QgsGeometry
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.38 - will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_DEPRECATED;
 
@@ -1019,7 +1036,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
-     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature = true ) SIP_SKIP;
 
@@ -2921,7 +2938,7 @@ class CORE_EXPORT QgsGeometry
      * \param polygon source polygon
      * \returns QgsPolylineXY
      * \see createPolygonFromQPolygonF
-     * \deprecated use QgsGeometry::fromQPolygonF() or QgsLineString::fromQPolygonF() instead.
+     * \deprecated QGIS 3.40. Use QgsGeometry::fromQPolygonF() or QgsLineString::fromQPolygonF() instead.
      */
     Q_DECL_DEPRECATED static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_DEPRECATED;
 
@@ -2930,7 +2947,7 @@ class CORE_EXPORT QgsGeometry
      * \param polygon source polygon
      * \returns QgsPolygon
      * \see createPolylineFromQPolygonF
-     * \deprecated use QgsGeometry::fromQPolygonF() or QgsLineString::fromQPolygonF() instead.
+     * \deprecated QGIS 3.40. Use QgsGeometry::fromQPolygonF() or QgsLineString::fromQPolygonF() instead.
      */
     Q_DECL_DEPRECATED static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_DEPRECATED;
 

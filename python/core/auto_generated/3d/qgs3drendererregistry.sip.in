@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/./3d/qgs3drendererregistry.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -56,10 +56,8 @@ Keeps track of available 3D renderers. Should be accessed through :py:func:`QgsA
 #include "qgs3drendererregistry.h"
 %End
   public:
+
     Qgs3DRendererRegistry();
-%Docstring
-Creates registry of 3D renderers
-%End
 
     ~Qgs3DRendererRegistry();
 
@@ -90,5 +88,5 @@ Returns a list of all available 3D renderer types.
  *                                                                      *
  * src/core/./3d/qgs3drendererregistry.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

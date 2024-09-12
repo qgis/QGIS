@@ -201,7 +201,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
      */
     void addFeature( QgsPointCloudLayer *layer,
                      const QString &label,
-                     const QMap< QString, QString > &attributes );
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
 
     /**
      * Adds results from tiled scene layer

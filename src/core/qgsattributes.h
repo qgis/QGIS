@@ -31,6 +31,7 @@
 
 
 #include "qgsfields.h"
+#include "qgsunsetattributevalue.h"
 #include "qgsvariantutils.h"
 
 
@@ -59,7 +60,6 @@ class QgsAttributes : public QVector<QVariant>
 {
   public:
 
-    //! Constructor for QgsAttributes
     QgsAttributes() = default;
 
     /**
@@ -131,7 +131,7 @@ class QgsAttributes : public QVector<QVariant>
       if ( index < 0 || index >= size() )
         return false;
 
-      return at( index ).userType() == QMetaType::type( "QgsUnsetAttributeValue" );
+      return at( index ).userType() == qMetaTypeId<QgsUnsetAttributeValue>();
     }
 
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspluginlayerregistry.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -61,9 +61,6 @@ A registry of plugin layers types.
   public:
 
     QgsPluginLayerRegistry();
-%Docstring
-Constructor for QgsPluginLayerRegistry.
-%End
     ~QgsPluginLayerRegistry();
 
 
@@ -105,5 +102,5 @@ Returns new layer if corresponding plugin has been found else returns ``None``.
  *                                                                      *
  * src/core/qgspluginlayerregistry.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

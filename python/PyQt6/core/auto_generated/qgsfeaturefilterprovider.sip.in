@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturefilterprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -56,5 +56,5 @@ Create a clone of the feature filter provider
  *                                                                      *
  * src/core/qgsfeaturefilterprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

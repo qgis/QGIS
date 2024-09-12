@@ -52,6 +52,10 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     void setCurrentFeatureEdited( bool state );
 
   signals:
+
+    /**
+     * Emitted when the edit button is clicked for the feature with matching \a index.
+     */
     void editButtonClicked( QModelIndex &index );
 
   protected:

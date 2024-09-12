@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointcloudlayer.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -69,9 +69,6 @@ Constructor - creates a point cloud layer
 
 
     SIP_PYOBJECT __repr__();
-%Docstring
-QgsPointCloudLayer cannot be copied.
-%End
 %MethodCode
     QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -237,5 +234,5 @@ Emitted when statistics calculation state has changed
  *                                                                      *
  * src/core/pointcloud/qgspointcloudlayer.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

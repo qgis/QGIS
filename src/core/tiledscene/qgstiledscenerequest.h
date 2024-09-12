@@ -73,8 +73,8 @@ class CORE_EXPORT QgsTiledSceneRequest
     void setFilterBox( const QgsOrientedBox3D &box ) { mFilterBox = box; }
 
     /**
-     * Returns the required geometric error threshold for the returned tiles, in
-     * scene CRS units.
+     * Returns the required geometric error threshold for the returned tiles,
+     * in meters.
      *
      * If the error is 0 then no geometric error filtering will be applied.
      *
@@ -83,8 +83,8 @@ class CORE_EXPORT QgsTiledSceneRequest
     double requiredGeometricError() const { return mRequiredGeometricError; }
 
     /**
-     * Sets the required geometric \a error threshold for the returned tiles, in
-     * scene CRS units.
+     * Sets the required geometric \a error threshold for the returned tiles,
+     * in meters.
      *
      * If the \a error is 0 then no geometric error filtering will be applied.
      *

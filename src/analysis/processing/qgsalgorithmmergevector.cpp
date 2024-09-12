@@ -69,6 +69,11 @@ QString QgsMergeVectorAlgorithm::shortHelpString() const
                       "taken from the first input layer. All layers will all be reprojected to match this CRS." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsMergeVectorAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsMergeVectorAlgorithm *QgsMergeVectorAlgorithm::createInstance() const
 {
   return new QgsMergeVectorAlgorithm();

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsproject.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -240,8 +240,9 @@ Returns QFileInfo object for the project's associated file.
 
 .. seealso:: :py:func:`fileName`
 
-.. deprecated:: QGIS 3.2
-   use :py:func:`~QgsProject.absoluteFilePath`, :py:func:`~QgsProject.baseName` or :py:func:`~QgsProject.lastModifiedTime` instead
+.. deprecated:: 3.2
+
+   Use :py:func:`~QgsProject.absoluteFilePath`, :py:func:`~QgsProject.baseName` or :py:func:`~QgsProject.lastModifiedTime` instead.
 %End
 
     QgsProjectStorage *projectStorage() const;
@@ -342,7 +343,6 @@ on the returned value to determine the type of CRS returned by this method.
 
 .. seealso:: :py:func:`crs3DChanged`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -408,7 +408,6 @@ The returned CRS will be invalid if the project has no vertical CRS.
 
 .. seealso:: :py:func:`setVerticalCrs`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -426,15 +425,12 @@ The :py:func:`~QgsProject.verticalCrsChanged` signal will be raised if the verti
 
 :param crs: the vertical CRS
 
-
 :return: - ``True`` if vertical CRS was successfully set
-         - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
-
+         - errorMessage: a descriptive message if the vertical CRS could not be set
 
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`setCrs`
-
 
 .. versionadded:: 3.38
 %End
@@ -942,24 +938,27 @@ Returns pointer to the project's annotation manager.
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated:: 3.4
+
+   Use :py:func:`QgsMapLayer.setFlags()` instead.
 %End
 
  void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated:: 3.4
+
+   Use :py:func:`QgsMapLayer.setFlags()` instead.
 %End
 
  QStringList nonIdentifiableLayers() const;
 %Docstring
 Gets the list of layers which currently should not be taken into account on map identification
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated:: 3.4
+
+   Use :py:func:`QgsMapLayer.setFlags()` instead.
 %End
 
  bool autoTransaction() const /Deprecated/;
@@ -968,8 +967,9 @@ Transactional editing means that on supported datasources (postgres databases) t
 all tables that originate from the same database are synchronized and executed in a server side
 transaction.
 
-.. deprecated::
-   QGIS 3.26 use transactionMode instead
+.. deprecated:: 3.26
+
+   Use transactionMode instead.
 %End
 
  void setAutoTransaction( bool autoTransaction ) /Deprecated/;
@@ -982,8 +982,9 @@ transaction.
 
    Make sure that this is only called when all layers are not in edit mode.
 
-.. deprecated::
-   QGIS 3.26 use setTransactionMode instead
+.. deprecated:: 3.26
+
+   Use setTransactionMode instead.
 %End
 
     Qgis::TransactionMode transactionMode() const;
@@ -1031,7 +1032,8 @@ Returns the edit buffer group
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Test whether the :py:func:`~QgsProject.flags` method returns the :py:class:`Qgis`.ProjectFlag.EvaluateDefaultValuesOnProviderSide flag instead.
 %End
 
@@ -1039,8 +1041,9 @@ Should default values be evaluated on provider side when requested and not when 
 %Docstring
 Defines if default values should be evaluated on provider side when requested and not when committed.
 
-.. deprecated::
-   use setFlag( :py:class:`Qgis`.ProjectFlag.EvaluateDefaultValuesOnProviderSide ) instead.
+.. deprecated:: 3.40
+
+   Use setFlag( :py:class:`Qgis`.ProjectFlag.EvaluateDefaultValuesOnProviderSide ) instead.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -1180,8 +1183,7 @@ Returns ``True`` if the project comes from a zip archive, ``False`` otherwise.
 
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
-                                       bool addToLegend = true);
-
+                                       bool addToLegend = true );
 %Docstring
 Add a list of layers to the map of loaded layers.
 
@@ -1197,7 +1199,6 @@ The :py:func:`~QgsProject.legendLayersAdded` signal is emitted only if addToLege
          successfully. If a layer or already exists in the registry,
          it will not be part of the returned QList.
 
-
 .. note::
 
    As a side-effect QgsProject is made dirty.
@@ -1211,8 +1212,7 @@ The :py:func:`~QgsProject.legendLayersAdded` signal is emitted only if addToLege
 %End
 
     QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/,
-                              bool addToLegend = true);
-
+                              bool addToLegend = true );
 %Docstring
 Add a layer to the map of loaded layers.
 
@@ -1228,9 +1228,7 @@ If you are adding multiple layers at once, you should use
 
 :return: ``None`` if unable to add layer, otherwise pointer to newly added layer
 
-
 .. seealso:: :py:func:`addMapLayers`
-
 
 .. note::
 
@@ -1386,7 +1384,8 @@ materialized views with Postgres provider.
 
 :param trust: ``True`` to trust the project, ``False`` otherwise
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use setFlag( :py:class:`Qgis`.ProjectFlag.TrustStoredLayerStatistics ) instead.
 %End
 
@@ -1399,7 +1398,8 @@ to determine it. Moreover, when this option is activated, primary key
 unicity is not checked for views and materialized views with Postgres
 provider.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Test whether the :py:func:`~QgsProject.flags` method returns the :py:class:`Qgis`.ProjectFlag.TrustStoredLayerStatistics flag instead.
 %End
 
@@ -1500,9 +1500,9 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.flags()` instead
+.. deprecated:: 3.4
 
+   Use :py:func:`QgsMapLayer.flags()` instead.
 .. versionadded:: 3.2
 %End
 
@@ -1513,9 +1513,9 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
-.. deprecated:: QGIS 3.4
-   use :py:func:`QgsMapLayer.setFlags()` instead
+.. deprecated:: 3.4
 
+   Use :py:func:`QgsMapLayer.setFlags()` instead.
 .. versionadded:: 3.2
 %End
 
@@ -1575,8 +1575,9 @@ The ``scales`` list consists of a list of scale denominator values, e.g.
 
 .. seealso:: :py:func:`mapScalesChanged`
 
-.. deprecated::
-   Use :py:func:`~QgsProject.viewSettings` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
  QVector<double> mapScales() const /Deprecated/;
@@ -1590,8 +1591,9 @@ The scales list consists of a list of scale denominator values, e.g.
 
 .. seealso:: :py:func:`mapScalesChanged`
 
-.. deprecated::
-   Use :py:func:`~QgsProject.viewSettings` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
  void setUseProjectScales( bool enabled ) /Deprecated/;
@@ -1602,8 +1604,9 @@ Sets whether project :py:func:`~QgsProject.mapScales` are ``enabled``.
 
 .. seealso:: :py:func:`setMapScales`
 
-.. deprecated::
-   Use :py:func:`~QgsProject.viewSettings` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
  bool useProjectScales() const /Deprecated/;
@@ -1614,8 +1617,9 @@ Returns ``True`` if project :py:func:`~QgsProject.mapScales` are enabled.
 
 .. seealso:: :py:func:`mapScales`
 
-.. deprecated::
-   Use :py:func:`~QgsProject.viewSettings` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
     void generateTsFile( const QString &locale );
@@ -1627,18 +1631,6 @@ Triggers the collection strings of .qgs to be included in ts file and calls :py:
 
     virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const;
 
-%Docstring
-Translates the project with QTranslator and qm file
-
-:return: the result string (in case there is no QTranslator loaded the sourceText)
-
-:param context: describing layer etc.
-:param sourceText: is the identifier of this text
-:param disambiguation: it's the disambiguation
-:param n: if -1 uses the appropriate form
-
-.. versionadded:: 3.4
-%End
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
@@ -1693,17 +1685,17 @@ Emitted when the project is about to be cleared.
 .. versionadded:: 3.34
 %End
 
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &document );
 %Docstring
 Emitted when a project is being read.
 %End
 
-    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+    void readProjectWithContext( const QDomDocument &document, QgsReadWriteContext &context );
 %Docstring
 Emitted when a project is being read. And passing the /a context
 %End
 
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument &document );
 %Docstring
 Emitted when the project is being written.
 %End
@@ -1733,12 +1725,13 @@ additional information to the layer.
 Emitted when the project file has been written and closed.
 %End
 
- void oldProjectVersionWarning( const QString & ) /Deprecated/;
+ void oldProjectVersionWarning( const QString &warning ) /Deprecated/;
 %Docstring
 Emitted when an old project file is read.
 
-.. deprecated::
-   use :py:func:`~QgsProject.readVersionMismatchOccurred` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProject.readVersionMismatchOccurred` instead.
 %End
 
     void readVersionMismatchOccurred( const QString &fileVersion );
@@ -1783,7 +1776,7 @@ Emitted when loading layers has produced some messages
 %Docstring
 Emitted when the list of layer which are excluded from map identification changes
 
-.. deprecated:: QGIS 3.4
+.. deprecated:: 3.4
 %End
 
     void fileNameChanged();
@@ -2131,8 +2124,9 @@ Emitted when the list of custom project map scales changes.
 
 .. seealso:: :py:func:`setMapScales`
 
-.. deprecated::
-   Use :py:func:`~QgsProject.viewSettings` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
     void elevationShadingRendererChanged();
@@ -2226,7 +2220,6 @@ be made persistent until :py:func:`~QgsProject.commitChanges` is called, and can
 
 .. seealso:: :py:func:`rollBack`
 
-
 .. versionadded:: 3.26
 %End
 
@@ -2253,13 +2246,11 @@ that the user has some chance of repairing the damage cleanly.
                     parameter is not mandatory, as the changes from all layers will be committed.
 
 :return: - ``True`` if the commit was successful.
-         - commitErrors: will be set to a list of descriptive errors if the commit fails.
-
+         - commitErrors: a list of descriptive errors if the commit fails.
 
 .. seealso:: :py:func:`startEditing`
 
 .. seealso:: :py:func:`rollBack`
-
 
 .. versionadded:: 3.26
 %End
@@ -2274,13 +2265,11 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
                     parameter is not mandatory, as the changes from all layers will be rolled back.
 
 :return: - ``True`` if the rollback was successful.
-         - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
-
+         - rollbackErrors: a list of descriptive errors if the rollback fails.
 
 .. seealso:: :py:func:`startEditing`
 
 .. seealso:: :py:func:`commitChanges`
-
 
 .. versionadded:: 3.26
 %End
@@ -2290,7 +2279,7 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
 class QgsProjectDirtyBlocker
 {
 %Docstring(signature="appended")
-Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
+Temporarily blocks :py:class:`QgsProject` "dirtying" for the lifetime of the object.
 
 :py:class:`QgsProjectDirtyBlocker` supports "stacked" blocking, so two :py:class:`QgsProjectDirtyBlockers` created
 for the same project will both need to be destroyed before the project can be dirtied again.
@@ -2324,7 +2313,6 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
 %End
 
 
-
     ~QgsProjectDirtyBlocker();
 
   private:
@@ -2340,5 +2328,5 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
  *                                                                      *
  * src/core/project/qgsproject.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

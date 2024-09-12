@@ -102,6 +102,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
  * \ingroup core
  * \class QgsExpressionContextScope
  * \brief Single scope for storing variables and functions for use within a QgsExpressionContext.
+ *
  * Examples include a project's scope, which could contain information about the current project such as
  * the project file's location. QgsExpressionContextScope can encapsulate both variables (static values)
  * and functions(which are calculated only when an expression is evaluated).
@@ -158,9 +159,6 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     QgsExpressionContextScope( const QString &name = QString() );
 
-    /**
-     * Copy constructor
-     */
     QgsExpressionContextScope( const QgsExpressionContextScope &other );
 
     QgsExpressionContextScope &operator=( const QgsExpressionContextScope &other );
@@ -459,7 +457,9 @@ class CORE_EXPORT QgsExpressionContextScope
  * \ingroup core
  * \class QgsExpressionContext
  * \brief Expression contexts are used to encapsulate the parameters around which a QgsExpression should
- * be evaluated. QgsExpressions can then utilize the information stored within a context to contextualise
+ * be evaluated.
+ *
+ * QgsExpressions can then utilize the information stored within a context to contextualise
  * their evaluated result. A QgsExpressionContext consists of a stack of QgsExpressionContextScope objects,
  * where scopes added later to the stack will override conflicting variables and functions from scopes
  * lower in the stack.
@@ -471,7 +471,6 @@ class CORE_EXPORT QgsExpressionContext
 {
   public:
 
-    //! Constructor for QgsExpressionContext
     QgsExpressionContext();
 
     /**
@@ -480,9 +479,6 @@ class CORE_EXPORT QgsExpressionContext
      */
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
-    /**
-     * Copy constructor
-     */
     QgsExpressionContext( const QgsExpressionContext &other );
 
     QgsExpressionContext &operator=( const QgsExpressionContext &other ) SIP_SKIP;

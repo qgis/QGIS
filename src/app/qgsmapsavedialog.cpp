@@ -47,8 +47,6 @@
 #include "qgsfileutils.h"
 #include "qgsannotationlayer.h"
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-
 QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )

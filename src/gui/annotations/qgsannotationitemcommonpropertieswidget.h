@@ -22,6 +22,7 @@
 #include "qgssymbolwidgetcontext.h"
 
 class QgsAnnotationItem;
+class QgsCallout;
 
 /**
  * \class QgsAnnotationItemCommonPropertiesWidget
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget: public QWidget, privat
      * Constructor for QgsAnnotationItemCommonPropertiesWidget.
      */
     QgsAnnotationItemCommonPropertiesWidget( QWidget *parent SIP_TRANSFERTHIS );
+    ~QgsAnnotationItemCommonPropertiesWidget() override;
 
     /**
      * Sets the \a item whose properties should be shown in the widget.
@@ -71,12 +73,18 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget: public QWidget, privat
      */
     void itemChanged();
 
+  private slots:
+
+    void openCalloutProperties();
+
   private:
 
     bool mBlockChangedSignal = false;
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
+
+    std::unique_ptr< QgsCallout > mCallout;
 };
 
 #endif // QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H

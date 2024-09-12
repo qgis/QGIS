@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsprojectversion.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -64,15 +64,10 @@ Returns ``True`` if this is a NULL project version.
 %End
 
     bool operator==( const QgsProjectVersion &other ) const;
-
     bool operator!=( const QgsProjectVersion &other ) const;
-
     bool operator>=( const QgsProjectVersion &other ) const;
-
     bool operator>( const QgsProjectVersion &other ) const;
-
     bool operator<( const QgsProjectVersion &other ) const;
-
     bool operator<=( const QgsProjectVersion &other ) const;
 
 };
@@ -82,5 +77,5 @@ Returns ``True`` if this is a NULL project version.
  *                                                                      *
  * src/core/project/qgsprojectversion.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

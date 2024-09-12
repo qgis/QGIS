@@ -67,7 +67,7 @@ const QString QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION = QStringLiteral( "MS
 int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &options,
-                                    QgsDataProvider::ReadFlags flags )
+                                    Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mShared( new QgsMssqlSharedData )
 {
@@ -89,7 +89,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
   mHost = anUri.host();
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mUseEstimatedMetadata = true;
   }
@@ -1867,24 +1867,24 @@ void QgsMssqlProvider::updateExtents()
   mExtent.setNull();
 }
 
-QgsVectorDataProvider::Capabilities QgsMssqlProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsMssqlProvider::capabilities() const
 {
-  QgsVectorDataProvider::Capabilities cap = CreateAttributeIndex | AddFeatures | AddAttributes | TransactionSupport;
+  Qgis::VectorProviderCapabilities cap = Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::TransactionSupport;
   bool hasGeom = false;
   if ( !mGeometryColName.isEmpty() )
   {
     hasGeom = true;
-    cap |= CreateSpatialIndex;
+    cap |= Qgis::VectorProviderCapability::CreateSpatialIndex;
   }
 
   if ( mPrimaryKeyAttrs.isEmpty() )
     return cap;
 
   if ( hasGeom )
-    cap |= ChangeGeometries;
+    cap |= Qgis::VectorProviderCapability::ChangeGeometries;
 
-  return cap | DeleteFeatures | ChangeAttributeValues | DeleteAttributes |
-         QgsVectorDataProvider::SelectAtId;
+  return cap | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::DeleteAttributes |
+         Qgis::VectorProviderCapability::SelectAtId;
 }
 
 bool QgsMssqlProvider::createSpatialIndex()
@@ -2421,7 +2421,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
 
   const QgsDataProvider::ProviderOptions providerOptions;
-  const QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  const Qgis::DataProviderReadFlags flags;
   QgsMssqlProvider *provider = new QgsMssqlProvider( dsUri.uri(), providerOptions, flags );
   if ( !provider->isValid() )
   {
@@ -2493,7 +2493,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
 QgsMssqlProvider *QgsMssqlProviderMetadata::createProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
 {
   return new QgsMssqlProvider( uri, options, flags );
 }

@@ -37,7 +37,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Mask sources</string>
+      <string>Masking symbol layers</string>
      </property>
     </widget>
    </item>

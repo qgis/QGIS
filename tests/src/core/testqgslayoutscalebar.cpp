@@ -225,7 +225,7 @@ void TestQgsLayoutScaleBar::singleBoxLabelBelowSegment()
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
-  scalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelBelowSegment );
+  scalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment );
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
@@ -421,8 +421,8 @@ void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
   Q_NOWARN_DEPRECATED_POP
   scalebar->setStyle( QStringLiteral( "Double Box" ) );
 
-  scalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelBelowSegment );
-  scalebar->setLabelHorizontalPlacement( QgsScaleBarSettings::LabelCenteredSegment );
+  scalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment );
+  scalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment );
   scalebar->setUnitLabel( QStringLiteral( "units" ) );
   qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 

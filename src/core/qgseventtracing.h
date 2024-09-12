@@ -51,13 +51,13 @@
  *
  * Currently we recognize these kinds of events:
  *
- * # Duration events - they provide a way to mark a duration of work within a thread.
+ * - Duration events - they provide a way to mark a duration of work within a thread.
  *   Their duration is specified by begin and end timestamps. They can be nested
  *   and the viewer will stack them. If you need durations that do not nest properly
  *   (i.e. they only partially overlap), you should use Async events instead.
- * # Instant events - they correspond to something that happens but has no duration
+ * - Instant events - they correspond to something that happens but has no duration
  *   associated with it.
- * # Async events - they are used to specify asynchronous operations. They also require
+ * - Async events - they are used to specify asynchronous operations. They also require
  *   additional "id" parameter to group them into the same event tree.
  *
  * Duration events are for example to record run of a single function. Async events
@@ -72,9 +72,9 @@
  *
  * The intended usage:
  *
- * # call startTracing()
- * # repeatedly call addEvent()
- * # call stopTracing() and writeTrace() to export the data to JSON
+ * - call startTracing()
+ * - repeatedly call addEvent()
+ * - call stopTracing() and writeTrace() to export the data to JSON
  *
  * \note not available in Python bindings
  * \since QGIS 3.12

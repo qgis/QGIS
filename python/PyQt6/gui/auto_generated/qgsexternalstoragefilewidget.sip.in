@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsexternalstoragefilewidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -89,6 +89,8 @@ Set ``urlExpression`` expression, which once evaluated, provide the URL used to 
 documents. This is used only if an external storage has been defined
 
 .. seealso:: :py:func:`setStorageType`
+
+.. seealso:: :py:func:`externalStorage`
 
 .. versionadded:: 3.22
 %End
@@ -184,5 +186,5 @@ Add file widget specific scope to expression context
  *                                                                      *
  * src/gui/qgsexternalstoragefilewidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -57,9 +57,6 @@ class GUI_EXPORT QgsScrollBarHighlight
     */
     QgsScrollBarHighlight( int category, int position, const QColor &color, QgsScrollBarHighlight::Priority priority = QgsScrollBarHighlight::Priority::NormalPriority );
 
-    /**
-    * Default constructor for QgsScrollBarHighlight.
-    */
     QgsScrollBarHighlight() = default;
 
     //! Category ID

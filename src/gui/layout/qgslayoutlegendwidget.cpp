@@ -43,6 +43,7 @@
 #include "qgslayoutundostack.h"
 #include "qgsexpressionfinder.h"
 #include "qgscolorramplegendnode.h"
+#include "qgspainting.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -50,8 +51,6 @@
 #include <QActionGroup>
 
 ///@cond PRIVATE
-
-Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
 {
@@ -853,6 +852,11 @@ void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool us
   {
     // update widgets state based on current selection
     selectedChanged( QModelIndex(), QModelIndex() );
+    mItemTreeView->proxyModel()->setShowPrivateLayers( true );
+  }
+  else
+  {
+    mItemTreeView->proxyModel()->setShowPrivateLayers( false );
   }
 }
 
@@ -1411,7 +1415,7 @@ void QgsLayoutLegendWidget::setLegendMapViewData()
 {
   if ( mLegend->linkedMap() )
   {
-    int dpi = qt_defaultDpiX();
+    const int dpi = QgsPainting::qtDefaultDpiX();
     QgsLayoutMeasurementConverter measurementConverter = QgsLayoutMeasurementConverter();
     measurementConverter.setDpi( dpi );
     double mapWidth = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), Qgis::LayoutUnit::Pixels ).width();

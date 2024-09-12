@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgslocalizeddatapathregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,6 +17,7 @@ class QgsLocalizedDataPathRegistry
 {
 %Docstring(signature="appended")
 A registry class to hold localized data paths which can be used for basemaps, logos, etc.
+
 Paths are meant to be absolute paths and are stored by order of preference.
 
 If a layer from one of the paths is loaded, it will be saved as localized in the project file.
@@ -72,5 +73,5 @@ Unregisters a localized path
  *                                                                      *
  * src/core/qgslocalizeddatapathregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -106,9 +106,9 @@ double QgsRasterTransparency::opacityForRgbValues( double redValue, double green
   //Search through the transparency list looking for a match
   auto it = std::find_if( mTransparentThreeValuePixelList.constBegin(), mTransparentThreeValuePixelList.constEnd(), [redValue, greenValue, blueValue]( const TransparentThreeValuePixel & p )
   {
-    return qgsDoubleNear( p.red, redValue )
-           &&  qgsDoubleNear( p.green, greenValue )
-           && qgsDoubleNear( p.blue, blueValue );
+    return qgsDoubleNear( p.red, redValue, p.fuzzyToleranceRed )
+           && qgsDoubleNear( p.green, greenValue, p.fuzzyToleranceGreen )
+           && qgsDoubleNear( p.blue, blueValue, p.fuzzyToleranceBlue );
   } );
 
   if ( it != mTransparentThreeValuePixelList.constEnd() )
@@ -153,6 +153,12 @@ void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem
       pixelListElement.setAttribute( QStringLiteral( "green" ), QgsRasterBlock::printValue( it->green ) );
       pixelListElement.setAttribute( QStringLiteral( "blue" ), QgsRasterBlock::printValue( it->blue ) );
       pixelListElement.setAttribute( QStringLiteral( "percentTransparent" ), QString::number( 100.0 * ( 1 - it->opacity ) ) );
+      if ( !qgsDoubleNear( it->fuzzyToleranceRed, 0 ) )
+        pixelListElement.setAttribute( QStringLiteral( "toleranceRed" ), QString::number( it->fuzzyToleranceRed ) );
+      if ( !qgsDoubleNear( it->fuzzyToleranceGreen, 0 ) )
+        pixelListElement.setAttribute( QStringLiteral( "toleranceGreen" ), QString::number( it->fuzzyToleranceGreen ) );
+      if ( !qgsDoubleNear( it->fuzzyToleranceBlue, 0 ) )
+        pixelListElement.setAttribute( QStringLiteral( "toleranceBlue" ), QString::number( it->fuzzyToleranceBlue ) );
       threeValuePixelListElement.appendChild( pixelListElement );
     }
     rasterTransparencyElem.appendChild( threeValuePixelListElement );
@@ -205,7 +211,16 @@ void QgsRasterTransparency::readXml( const QDomElement &elem )
       const double green = currentEntryElem.attribute( QStringLiteral( "green" ) ).toDouble();
       const double blue = currentEntryElem.attribute( QStringLiteral( "blue" ) ).toDouble();
       const double opacity = 1.0 - currentEntryElem.attribute( QStringLiteral( "percentTransparent" ) ).toDouble() / 100.0;
-      mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( red, green, blue, opacity ) );
+      bool redOk = false;
+      const double toleranceRed = currentEntryElem.attribute( QStringLiteral( "toleranceRed" ) ).toDouble( &redOk );
+      bool greenOk = false;
+      const double toleranceGreen = currentEntryElem.attribute( QStringLiteral( "toleranceGreen" ) ).toDouble( &greenOk );
+      bool blueOk = false;
+      const double toleranceBlue = currentEntryElem.attribute( QStringLiteral( "toleranceBlue" ) ).toDouble( &blueOk );
+      mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( red, green, blue, opacity,
+                                              redOk ? toleranceRed : 4 * std::numeric_limits<double>::epsilon(),
+                                              greenOk ? toleranceGreen : 4 * std::numeric_limits<double>::epsilon(),
+                                              blueOk ? toleranceBlue : 4 * std::numeric_limits<double>::epsilon() ) );
     }
   }
 }

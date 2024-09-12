@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmessageoutput.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -87,9 +87,6 @@ be the right choice for apps without GUI.
   public:
 
     QgsMessageOutputConsole();
-%Docstring
-Constructor for QgsMessageOutputConsole.
-%End
 
     virtual void setMessage( const QString &message, MessageType msgType );
 
@@ -120,5 +117,5 @@ signals that object will be destroyed and shouldn't be used anymore
  *                                                                      *
  * src/core/qgsmessageoutput.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

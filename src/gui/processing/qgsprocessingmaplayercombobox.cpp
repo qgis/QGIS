@@ -188,8 +188,6 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   if ( filters )
     mCombo->setFilters( filters );
 
-  mCombo->setExcludedProviders( QStringList() << QStringLiteral( "grass" ) ); // not sure if this is still required...
-
   // Check compatibility with virtualraster data provider
   // see https://github.com/qgis/QGIS/issues/55890
   if ( mayBeRaster &&
@@ -249,7 +247,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   bool found = false;
   bool selectedOnly = false;
   bool iterate = false;
-  if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+  if ( val.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
   {
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
@@ -268,7 +266,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) )
+  if ( val.userType() == qMetaTypeId<QgsProperty>() )
   {
     if ( val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
     {

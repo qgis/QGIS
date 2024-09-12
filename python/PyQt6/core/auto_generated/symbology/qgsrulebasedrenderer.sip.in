@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsrulebasedrenderer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -582,5 +582,5 @@ helper function to convert the size scale and rotation fields present in some ot
  *                                                                      *
  * src/core/symbology/qgsrulebasedrenderer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

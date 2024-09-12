@@ -295,7 +295,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * Returns a list of descriptions for available resolutions for errors.
      * The index will be passed as ``method`` to \see fixError().
      *
-     * \deprecated since QGIS 3.12, use availableResolutionMethods() instead
+     * \deprecated QGIS 3.12. Use availableResolutionMethods() instead.
      * \since QGIS 3.4
      */
     Q_DECL_DEPRECATED virtual QStringList resolutionMethods() const SIP_DEPRECATED;

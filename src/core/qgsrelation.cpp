@@ -356,6 +356,26 @@ QgsAttributeList QgsRelation::referencingFields() const
 
 }
 
+bool QgsRelation::referencingFieldsAllowNull() const
+{
+  if ( ! referencingLayer() )
+  {
+    return false;
+  }
+
+  const auto fields = referencingFields();
+
+  return std::find_if( fields.constBegin(), fields.constEnd(), [&]( const auto & fieldIdx )
+  {
+    if ( !referencingLayer()->fields().exists( fieldIdx ) )
+    {
+      return false;
+    }
+    const QgsField field = referencingLayer()->fields().field( fieldIdx );
+    return field.constraints().constraints().testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull );
+  } ) == fields.constEnd();
+}
+
 bool QgsRelation::isValid() const
 {
   return d->mValid && !d->mReferencingLayer.isNull() && !d->mReferencedLayer.isNull() && d->mReferencingLayer.data()->isValid() && d->mReferencedLayer.data()->isValid();

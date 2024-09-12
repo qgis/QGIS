@@ -55,9 +55,6 @@ class CORE_EXPORT QgsNetworkRequestParameters
       AttributeInitiatorRequestId, //!< Internal ID used by originator object to identify requests
     };
 
-    /**
-     * Default constructor.
-     */
     QgsNetworkRequestParameters() = default;
 
     /**
@@ -669,9 +666,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
   signals:
 
     /**
-     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     * \deprecated QGIS 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
      */
-    Q_DECL_DEPRECATED void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void requestAboutToBeCreated( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, QIODevice *device ) SIP_DEPRECATED;
 
     /**
      * Emitted when a network request is about to be created.
@@ -809,11 +806,14 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #endif
 
     /**
-     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     * \deprecated QGIS 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
      */
-    Q_DECL_DEPRECATED void requestCreated( QNetworkReply * ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void requestCreated( QNetworkReply *reply ) SIP_DEPRECATED;
 
-    void requestTimedOut( QNetworkReply * );
+    /**
+     * Emitted when a request times out.
+     */
+    void requestTimedOut( QNetworkReply *reply );
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

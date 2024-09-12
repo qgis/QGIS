@@ -21,3 +21,7 @@ reason = "...the built application is meant to be run on the client and not on t
 [[IgnoredVulns]]
 id = "GHSA-8jmw-wjr8-2x66"
 reason = "The implementation of git-clone is part of the vue/cli@^5.0.8 is ran by the client and is not ran on the server and the input for this function is static. Look to https://github.com/jaz303/git-clone/commit/fd330459593aef7c7a8c54d786e3c4d5722749f9?diff=unified&w=0"
+
+[[IgnoredVulns]]
+id = "GHSA-grv7-fg5c-xmjg"
+reason = "...the built application is meant to be run on the client and not on the server... Look to https://github.com/qgis/QGIS/pull/55748"

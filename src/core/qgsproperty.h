@@ -265,9 +265,7 @@ class CORE_EXPORT QgsProperty
      */
     static QgsProperty fromValue( const QVariant &value, bool isActive = true );
 
-    //! Copy constructor
     QgsProperty( const QgsProperty &other );
-
     QgsProperty &operator=( const QgsProperty &other );
 
     /**

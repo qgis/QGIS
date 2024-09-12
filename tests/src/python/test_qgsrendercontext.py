@@ -28,6 +28,7 @@ from qgis.core import (
     QgsRenderedFeatureHandlerInterface,
     QgsUnitTypes,
     QgsVectorSimplifyMethod,
+    QgsVectorLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -186,6 +187,11 @@ class TestQgsRenderContext(QgisTestCase):
         ms.setFrameRate(30)
         ms.setCurrentFrame(6)
 
+        layer1 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        layer2 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        layer3 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        ms.setLayers([layer1, layer2, layer3])
+
         ms.setTextRenderFormat(QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
@@ -200,6 +206,7 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(rc.imageFormat(), QImage.Format.Format_Alpha8)
         self.assertEqual(rc.frameRate(), 30)
         self.assertEqual(rc.currentFrame(), 6)
+        self.assertEqual(rc.customProperties()['visible_layer_ids'], [layer1.id(), layer2.id(), layer3.id()])
 
         # should have an valid mapToPixel
         self.assertTrue(rc.mapToPixel().isValid())
@@ -696,6 +703,42 @@ class TestQgsRenderContext(QgisTestCase):
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0 / 2, places=5)
         self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4)
+
+    def testConvertFromPainterUnits(self):
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 100, 100))
+        ms.setOutputSize(QSize(100, 50))
+        ms.setOutputDpi(300)
+        r = QgsRenderContext.fromMapSettings(ms)
+
+        # renderer scale should be about 1:291937841
+
+        # self.assertEqual(r.scaleFactor(),666)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderMapUnits)
+        self.assertAlmostEqual(sf, 2.0, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderMapUnits)
+        self.assertAlmostEqual(size, 4.0, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderMillimeters)
+        self.assertAlmostEqual(sf, 1 / 11.8110236, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderMillimeters)
+        self.assertAlmostEqual(size, 2 / 11.8110236, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderPoints)
+        self.assertAlmostEqual(sf, 1 / 4.166666665625, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderPoints)
+        self.assertAlmostEqual(size, 2 / 4.166666665625, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderInches)
+        self.assertAlmostEqual(sf, 1 / 300.0, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderInches)
+        self.assertAlmostEqual(size, 2 / 300.0, places=5)
+
+        sf = r.convertFromPainterUnits(1, QgsUnitTypes.RenderUnit.RenderPixels)
+        self.assertAlmostEqual(sf, 1.0, places=5)
+        size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderPixels)
+        self.assertAlmostEqual(size, 2.0, places=5)
 
     def testPixelSizeScaleFactor(self):
         ms = QgsMapSettings()

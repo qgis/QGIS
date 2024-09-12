@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/painting/qgspainting.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -60,8 +60,7 @@ to the triangle defined by (``outX1``, ``outY1``), (``outY2``, ``outY2``), (``ou
 :param outY3: destination triangle vertex 3 y-coordinate
 
 :return: - Calculated transform (if possible)
-         - ok: will be set to ``True`` if the transform could be determined.
-
+         - ok: ``True`` if the transform could be determined.
 
 .. versionadded:: 3.34
 %End
@@ -87,6 +86,57 @@ Returns ``True`` if the triangle could be rendered, or ``False`` if it could not
 .. versionadded:: 3.34
 %End
 
+    static int qtDefaultDpiX();
+%Docstring
+Returns the default Qt horizontal DPI.
+
+.. note::
+
+   This method proxies the internal Qt :py:func:`~QgsPainting.qt_defaultDpiX` function.
+
+.. seealso:: :py:func:`qtDefaultDpiY`
+
+.. versionadded:: 3.40
+%End
+
+    static int qtDefaultDpiY();
+%Docstring
+Returns the default Qt vertical DPI.
+
+.. note::
+
+   This method proxies the internal Qt :py:func:`~QgsPainting.qt_defaultDpiY` function.
+
+.. seealso:: :py:func:`qtDefaultDpiX`
+
+.. versionadded:: 3.40
+%End
+
+    static void applyScaleFixForQPictureDpi( QPainter *painter );
+%Docstring
+Applies a workaround to a ``painter`` to avoid an issue with incorrect scaling
+when drawing QPictures.
+
+.. note::
+
+   This is a low-level method, which alters the ``painter`` state and relies on the
+   caller saving/restoring painter state accordingly. Consider using
+   the high-level :py:func:`~QgsPainting.drawPicture` method instead.
+
+.. seealso:: :py:func:`drawPicture`
+
+.. versionadded:: 3.40
+%End
+
+    static void drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture );
+%Docstring
+Draws a picture onto a ``painter``, correctly applying workarounds to avoid issues
+with incorrect scaling.
+
+.. seealso:: :py:func:`applyScaleFixForQPictureDpi`
+
+.. versionadded:: 3.40
+%End
 };
 
 /************************************************************************
@@ -94,5 +144,5 @@ Returns ``True`` if the triangle could be rendered, or ``False`` if it could not
  *                                                                      *
  * src/core/painting/qgspainting.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

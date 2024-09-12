@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsexpressiontreeview.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -133,10 +133,8 @@ instance to provide custom context menus (opened upon right-click).
 #include "qgsexpressiontreeview.h"
 %End
       public:
+
         explicit MenuProvider();
-%Docstring
-Constructor
-%End
         virtual ~MenuProvider();
 
         virtual QMenu *createContextMenu( QgsExpressionItem *item ) /Factory/;
@@ -283,5 +281,5 @@ Sets the text to filter the expression tree
  *                                                                      *
  * src/gui/qgsexpressiontreeview.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

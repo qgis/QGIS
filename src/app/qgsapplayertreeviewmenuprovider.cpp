@@ -632,7 +632,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
 
         QgisApp *app = QgisApp::instance();
-        if ( layer->type() == Qgis::LayerType::Vector )
+        if ( layer->type() == Qgis::LayerType::Vector || layer->type() == Qgis::LayerType::Raster )
         {
           QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style" ) );
           copyStyleMenu->setToolTipsVisible( true );
@@ -660,7 +660,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( layer && app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
-          if ( layer->type() == Qgis::LayerType::Vector )
+          if ( layer->type() == Qgis::LayerType::Vector || layer->type() == Qgis::LayerType::Raster )
           {
             QDomDocument doc( QStringLiteral( "qgis" ) );
             QString errorMsg;

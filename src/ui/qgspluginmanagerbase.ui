@@ -558,7 +558,7 @@
                     <string>Install, reinstall or upgrade the experimental version of selected plugin</string>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">background-color: #EEEEBB</string>
+                    <string notr="true">background-color: rgba(238, 238, 10, 0.25)</string>
                    </property>
                    <property name="text">
                     <string>Reinstall Experimental</string>
@@ -1153,9 +1153,6 @@
                          <property name="toolTip">
                           <string>Configure an additional plugin repository</string>
                          </property>
-                         <property name="whatsThis">
-                          <string>Add a new plugin repository</string>
-                         </property>
                          <property name="text">
                           <string>Add…</string>
                          </property>
@@ -1176,9 +1173,6 @@
                          <property name="toolTip">
                           <string>Edit the selected repository</string>
                          </property>
-                         <property name="whatsThis">
-                          <string>Edit the selected repository</string>
-                         </property>
                          <property name="text">
                           <string>Edit…</string>
                          </property>
@@ -1191,9 +1185,6 @@
                        <item>
                         <widget class="QPushButton" name="buttonDeleteRep">
                          <property name="toolTip">
-                          <string>Remove the selected repository</string>
-                         </property>
-                         <property name="whatsThis">
                           <string>Remove the selected repository</string>
                          </property>
                          <property name="text">

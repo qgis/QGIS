@@ -44,9 +44,6 @@ class CORE_EXPORT QgsPlot
 {
   public:
 
-    /**
-     * Constructor for QgsPlot.
-     */
     QgsPlot() = default;
 
     virtual ~QgsPlot();
@@ -81,9 +78,7 @@ class CORE_EXPORT QgsPlotAxis
     QgsPlotAxis();
     ~QgsPlotAxis();
 
-    //! QgsPlotAxis cannot be copied
     QgsPlotAxis( const QgsPlotAxis &other ) = delete;
-    //! QgsPlotAxis cannot be copied
     QgsPlotAxis &operator=( const QgsPlotAxis &other ) = delete;
 
     /**
@@ -285,9 +280,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 
     ~Qgs2DPlot() override;
 
-    //! Qgs2DPlot cannot be copied
     Qgs2DPlot( const Qgs2DPlot &other ) = delete;
-    //! Qgs2DPlot cannot be copied
     Qgs2DPlot &operator=( const Qgs2DPlot &other ) = delete;
 
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;

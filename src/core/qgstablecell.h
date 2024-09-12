@@ -42,7 +42,6 @@ class CORE_EXPORT QgsTableCell
      */
     QgsTableCell( const QVariant &content = QVariant() );
 
-    //! Copy constructor
     QgsTableCell( const QgsTableCell &other );
 
     ~QgsTableCell();
@@ -168,6 +167,36 @@ class CORE_EXPORT QgsTableCell
     void setVerticalAlignment( Qt::Alignment alignment );
 
     /**
+     * Sets the row and column span for the cell.
+     *
+     * \see rowSpan()
+     * \see columnSpan()
+     *
+     * \since QGIS 3.40
+     */
+    void setSpan( int rowSpan, int columnSpan );
+
+    /**
+     * Returns the row span for the cell.
+     *
+     * \see columnSpan()
+     * \see setSpan()
+     *
+     * \since QGIS 3.40
+     */
+    int rowSpan() const { return mRowSpan; }
+
+    /**
+     * Returns the column span for the cell.
+     *
+     * \see rowSpan()
+     * \see setSpan()
+     *
+     * \since QGIS 3.40
+     */
+    int columnSpan() const { return mColumnSpan; }
+
+    /**
      * Returns the properties of the cell.
      *
      * \see setProperties()
@@ -200,6 +229,9 @@ class CORE_EXPORT QgsTableCell
 
     Qt::Alignment mHAlign = Qt::AlignLeft;
     Qt::Alignment mVAlign = Qt::AlignVCenter;
+
+    int mRowSpan = 1;
+    int mColumnSpan = 1;
 
 };
 

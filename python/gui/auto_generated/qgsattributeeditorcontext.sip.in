@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsattributeeditorcontext.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -53,9 +53,6 @@ showing an embedded form due to relations)
     };
 
     QgsAttributeEditorContext();
-%Docstring
-Constructor for QgsAttributeEditorContext
-%End
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode );
 
@@ -278,5 +275,5 @@ Returns the main message bar
  *                                                                      *
  * src/gui/qgsattributeeditorcontext.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

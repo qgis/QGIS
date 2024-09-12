@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayouttablecolumn.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -192,8 +192,9 @@ If sort rank is <= 0 then the column is not being sorted.
 
 .. seealso:: :py:func:`sortOrder`
 
-.. deprecated:: QGIS 3.14
-   the order is now hold in a dedicated model
+.. deprecated:: 3.14
+
+   The order is now hold in a dedicated model.
 %End
 
  void setSortByRank( int rank ) /Deprecated/;
@@ -213,8 +214,9 @@ If the sort ``rank`` is <= 0 then the column is not being sorted.
 
 .. seealso:: :py:func:`setSortOrder`
 
-.. deprecated:: QGIS 3.14
-   the order is now hold in a dedicated model
+.. deprecated:: 3.14
+
+   The order is now hold in a dedicated model.
 %End
 
  QgsLayoutTableColumn *clone() /Deprecated,Factory/;
@@ -223,8 +225,9 @@ Creates a duplicate column which is a deep copy of this column.
 
 :return: a new QgsLayoutTableColumn with same properties as this column.
 
-.. deprecated:: QGIS 3.14
-   use a copy instead
+.. deprecated:: 3.14
+
+   Use a copy instead.
 %End
 
     bool operator==( const QgsLayoutTableColumn &other ) const;
@@ -246,5 +249,5 @@ Creates a duplicate column which is a deep copy of this column.
  *                                                                      *
  * src/core/layout/qgslayouttablecolumn.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

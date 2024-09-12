@@ -299,6 +299,12 @@ class QgsHanaSettings
      */
     void save();
 
+    /**
+     * Duplicates \a src connection settings to a new \a dst connection.
+     * \since QGIS 3.40
+     */
+    static void duplicateConnection( const QString &src, const QString &dst );
+
     static QStringList getConnectionNames();
     static QString getSelectedConnection();
     static void setSelectedConnection( const QString &name );

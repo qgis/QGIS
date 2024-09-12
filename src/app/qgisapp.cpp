@@ -177,8 +177,6 @@
 #include <QNetworkProxy>
 #include <QAuthenticator>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-
 //
 // Mac OS X Includes
 // Must include before GEOS 3 due to unqualified use of 'Point'
@@ -836,6 +834,12 @@ void QgisApp::annotationItemTypeAdded( int id )
       return;
 
     QgsCreateAnnotationItemMapToolInterface *tool = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->createMapTool( mMapCanvas, mAdvancedDigitizingDockWidget );
+    if ( !tool )
+    {
+      action->setChecked( false );
+      return;
+    }
+
     tool->mapTool()->setAction( action );
     mMapCanvas->setMapTool( tool->mapTool() );
     if ( qobject_cast< QgsMapToolCapture * >( tool->mapTool() ) )
@@ -1182,7 +1186,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   // Advanced Digitizing dock
   startProfile( tr( "Advanced digitize panel" ) );
-  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this, mUserInputDockWidget );
   mAdvancedDigitizingDockWidget->setWindowTitle( tr( "Advanced Digitizing" ) );
   mAdvancedDigitizingDockWidget->setObjectName( QStringLiteral( "AdvancedDigitizingTools" ) );
 
@@ -2011,9 +2015,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     if ( !error.isEmpty() )
     {
       QPushButton *detailsButton = new QPushButton( tr( "View Error" ) );
-      connect( detailsButton, &QPushButton::clicked, this, [detailsButton, error]
+      connect( detailsButton, &QPushButton::clicked, this, [error]
       {
-        QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+        QgsMessageViewer *dialog = new QgsMessageViewer( nullptr, QgsGuiUtils::ModalDialogFlags, true );
         dialog->setTitle( tr( "Font Install Failed" ) );
         dialog->setMessage( error, QgsMessageOutput::MessageText );
         dialog->showMessage();
@@ -3017,10 +3021,8 @@ void QgisApp::createActions()
   connect( mActionMapTips, &QAction::toggled, this, &QgisApp::toggleMapTips );
   connect( mActionNewBookmark, &QAction::triggered, this, [ = ] { newBookmark( true );  } );
   connect( mActionDraw, &QAction::triggered, this, [this] { refreshMapCanvas( true ); } );
-  connect( mActionTextAnnotation, &QAction::triggered, this, &QgisApp::addTextAnnotation );
   connect( mActionFormAnnotation, &QAction::triggered, this, &QgisApp::addFormAnnotation );
   connect( mActionHtmlAnnotation, &QAction::triggered, this, &QgisApp::addHtmlAnnotation );
-  connect( mActionSvgAnnotation, &QAction::triggered, this, &QgisApp::addSvgAnnotation );
   connect( mActionLabeling, &QAction::triggered, this, &QgisApp::labeling );
   mStatisticalSummaryDockWidget->setToggleVisibilityAction( mActionStatisticalSummary );
   connect( mActionManage3DMapViews, &QAction::triggered, this, &QgisApp::show3DMapViewsManager );
@@ -3963,25 +3965,17 @@ void QgisApp::createToolBars()
 
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
-  bt->addAction( mActionTextAnnotation );
   bt->addAction( mActionFormAnnotation );
   bt->addAction( mActionHtmlAnnotation );
-  bt->addAction( mActionSvgAnnotation );
 
-  QAction *defAnnotationAction = mActionTextAnnotation;
+  QAction *defAnnotationAction = mActionHtmlAnnotation;
   switch ( settings.value( QStringLiteral( "UI/annotationTool" ), 0 ).toInt() )
   {
     case 0:
-      defAnnotationAction = mActionTextAnnotation;
+      defAnnotationAction = mActionHtmlAnnotation;
       break;
     case 1:
       defAnnotationAction = mActionFormAnnotation;
-      break;
-    case 2:
-      defAnnotationAction = mActionHtmlAnnotation;
-      break;
-    case 3:
-      defAnnotationAction = mActionSvgAnnotation;
       break;
   }
   bt->setDefaultAction( defAnnotationAction );
@@ -4360,8 +4354,6 @@ void QgisApp::setTheme( const QString &themeName )
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormAnnotation.svg" ) ) );
   mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHtmlAnnotation.svg" ) ) );
-  mActionSvgAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSvgAnnotation.svg" ) ) );
-  mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTextAnnotation.svg" ) ) );
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabeling.svg" ) ) );
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPinnedLabels.svg" ) ) );
   mActionPinLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPinLabels.svg" ) ) );
@@ -4581,10 +4573,8 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::MeasureArea )->setAction( mActionMeasureArea );
   mMapTools->mapTool( QgsAppMapTools::MeasureAngle )->setAction( mActionMeasureAngle );
   mMapTools->mapTool( QgsAppMapTools::MeasureBearing )->setAction( mActionMeasureBearing );
-  mMapTools->mapTool( QgsAppMapTools::TextAnnotation )->setAction( mActionTextAnnotation );
   mMapTools->mapTool( QgsAppMapTools::FormAnnotation )->setAction( mActionFormAnnotation );
   mMapTools->mapTool( QgsAppMapTools::HtmlAnnotation )->setAction( mActionHtmlAnnotation );
-  mMapTools->mapTool( QgsAppMapTools::SvgAnnotation )->setAction( mActionSvgAnnotation );
   mMapTools->mapTool( QgsAppMapTools::AddFeature )->setAction( mActionAddFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeature )->setAction( mActionMoveFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeatureCopy )->setAction( mActionMoveFeatureCopy );
@@ -7936,16 +7926,6 @@ void QgisApp::addHtmlAnnotation()
   mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::HtmlAnnotation ) );
 }
 
-void QgisApp::addTextAnnotation()
-{
-  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::TextAnnotation ) );
-}
-
-void QgisApp::addSvgAnnotation()
-{
-  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::SvgAnnotation ) );
-}
-
 void QgisApp::reprojectAnnotations()
 {
   const auto annotations = annotationItems();
@@ -8790,7 +8770,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
     return;
   }
 
-  if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+  if ( !( vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) )
   {
     visibleMessageBar()->pushMessage( tr( "Provider does not support deletion" ),
                                       tr( "Data provider does not support deleting features" ),
@@ -11519,7 +11499,7 @@ void QgisApp::updateLayerModifiedActions()
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
         if ( QgsVectorDataProvider *dprovider = vlayer->dataProvider() )
         {
-          enableSaveLayerEdits = ( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues
+          enableSaveLayerEdits = ( dprovider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues
                                    && vlayer->isEditable()
                                    && vlayer->isModified() );
         }
@@ -12595,6 +12575,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "CRS" ), QStringLiteral( "mProjOptsCRS" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Transformations" ), QStringLiteral( "mProjTransformations" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Colors" ), QStringLiteral( "mTabColors" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Data Sources" ), QStringLiteral( "mTab_DataSources" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Relations" ), QStringLiteral( "mTabRelations" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Variables" ), QStringLiteral( "mTab_Variables" ) );
@@ -13043,7 +13024,11 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
   CFRelease( urlRef );
 #elif defined(Q_OS_WIN)
   if ( url.startsWith( "file://", Qt::CaseInsensitive ) )
+#ifdef UNICODE
+    ShellExecute( 0, 0, url.mid( 7 ).toStdWString().c_str(), 0, 0, SW_SHOWNORMAL );
+#else
     ShellExecute( 0, 0, url.mid( 7 ).toLocal8Bit().constData(), 0, 0, SW_SHOWNORMAL );
+#endif
   else
     QDesktopServices::openUrl( url );
 #else
@@ -13503,9 +13488,9 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name )
     QgsSettings settings;
 
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
-    if ( !prj->crs().isGeographic() )
+    if ( !prj->crs3D().isGeographic() )
     {
-      map->setCrs( prj->crs() );
+      map->setCrs( prj->crs3D() );
     }
     else
     {
@@ -15331,10 +15316,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
       if ( dprovider )
       {
-        bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-        bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
-        bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
-        bool canChangeGeometry = isSpatial && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
+        bool canChangeAttributes = dprovider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues;
+        bool canDeleteFeatures = dprovider->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures;
+        bool canAddFeatures = dprovider->capabilities() & Qgis::VectorProviderCapability::AddFeatures;
+        bool canChangeGeometry = isSpatial && dprovider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries;
         bool canSupportEditing = vlayer->supportsEditing();
 
         mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
@@ -16270,7 +16255,7 @@ void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
     {
       QString smalltext = tr( "This project file was saved by QGIS version %1."
                               " When saving this project file, QGIS will update it to version %2, "
-                              "possibly rendering it useless for older versions of QGIS." ).arg( projectVersion, Qgis::version() );
+                              "possibly rendering it unusable with older versions of QGIS." ).arg( projectVersion, Qgis::version() );
 
       QString title = tr( "Project file is older" );
 
@@ -17022,14 +17007,10 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 1 );
   else if ( action == mActionMeasureAngle )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 2 );
-  else if ( action == mActionTextAnnotation )
-    settings.setValue( QStringLiteral( "UI/annotationTool" ), 0 );
   else if ( action == mActionFormAnnotation )
     settings.setValue( QStringLiteral( "UI/annotationTool" ), 1 );
   else if ( action == mActionHtmlAnnotation )
-    settings.setValue( QStringLiteral( "UI/annotationTool" ), 2 );
-  else if ( action == mActionSvgAnnotation )
-    settings.setValue( QStringLiteral( "UI/annotationTool" ), 3 );
+    settings.setValue( QStringLiteral( "UI/annotationTool" ), 0 );
   else if ( action == mActionNewSpatiaLiteLayer )
     settings.setValue( QStringLiteral( "UI/defaultNewLayer" ), 0 );
   else if ( action == mActionNewVectorLayer )

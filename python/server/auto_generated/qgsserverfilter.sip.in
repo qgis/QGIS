@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverfilter.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -52,8 +52,9 @@ parameters, just before entering the main switch for core services.
 This method is considered as deprecated and :py:func:`onRequestReady` should
 be used instead.
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
  virtual void responseComplete() /Deprecated/;
@@ -65,8 +66,9 @@ and before final sending response.
 This method is considered as deprecated and :py:func:`onResponseComplete` should
 be used instead.
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
  virtual void sendResponse() /Deprecated/;
@@ -81,8 +83,9 @@ is called once for each feature before hitting :py:func:`~QgsServerFilter.respon
 This method is considered as deprecated and :py:func:`onSendResponse` should
 be used instead.
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
     virtual bool onRequestReady();
@@ -141,5 +144,5 @@ typedef QMultiMap<int, QgsServerFilter *> QgsServerFiltersMap;
  *                                                                      *
  * src/server/qgsserverfilter.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

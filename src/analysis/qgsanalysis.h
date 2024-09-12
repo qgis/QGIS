@@ -35,10 +35,7 @@ class ANALYSIS_EXPORT QgsAnalysis
 {
   public:
 
-    //! QgsAnalysis cannot be copied
     QgsAnalysis( const QgsAnalysis &other ) = delete;
-
-    //! QgsAnalysis cannot be copied
     QgsAnalysis &operator=( const QgsAnalysis &other ) = delete;
 
     /**

@@ -36,9 +36,6 @@ class CORE_EXPORT QgsRendererCategory
 {
   public:
 
-    /**
-     * Constructor for QgsRendererCategory.
-     */
     QgsRendererCategory() = default;
 
     /**
@@ -56,9 +53,6 @@ class CORE_EXPORT QgsRendererCategory
     */
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true, const QString &uuid = QString() );
 
-    /**
-     * Copy constructor.
-     */
     QgsRendererCategory( const QgsRendererCategory &cat );
     QgsRendererCategory &operator=( QgsRendererCategory cat );
     ~QgsRendererCategory();
@@ -486,13 +480,13 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void rebuildHash();
 
     /**
-     * \deprecated No longer used, will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED QgsSymbol *skipRender() SIP_DEPRECATED;
 
     /**
      * Returns the matching symbol corresponding to an attribute \a value.
-     * \deprecated use variant which takes a second bool argument instead.
+     * \deprecated QGIS 3.40. Use variant which takes a second bool argument instead.
      */
     Q_DECL_DEPRECATED QgsSymbol *symbolForValue( const QVariant &value ) const SIP_DEPRECATED;
 

@@ -170,7 +170,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
-     * \deprecated Unused, will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED virtual QString helpString() const SIP_HOLDGIL SIP_DEPRECATED;
 
@@ -180,6 +180,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see shortHelpString()
      */
     virtual QString helpUrl() const SIP_HOLDGIL;
+
+    /**
+     * Returns the flags describing algorithm behavior for documentation purposes.
+     *
+     * The default is to return no flags.
+     *
+     * \since QGIS 3.40
+     */
+    virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const SIP_HOLDGIL;
 
     /**
      * Returns an icon for the algorithm.
@@ -925,7 +934,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Evaluates the parameter with matching \a name to a list of fields.
      *
-     * \deprecated use parameterAsStrings() instead.
+     * \deprecated QGIS 3.40. Use parameterAsStrings() instead.
      */
     Q_DECL_DEPRECATED QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_DEPRECATED;
 
@@ -1143,9 +1152,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 {
   public:
 
-    /**
-      * Constructor for QgsProcessingFeatureBasedAlgorithm.
-      */
     QgsProcessingFeatureBasedAlgorithm() = default;
 
     Qgis::ProcessingAlgorithmFlags flags() const override SIP_HOLDGIL;

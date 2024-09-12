@@ -63,19 +63,15 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
   }
   if ( !layerFeature.useMapCrs() )
   {
-    QgsVectorLayer *vl = layerFeature.layer().data();
-    if ( vl )
+    const QgsCoordinateTransform ct( layerFeature.layerCrs(), check->context()->mapCrs, check->context()->transformContext );
+    try
     {
-      const QgsCoordinateTransform ct( vl->crs(), check->context()->mapCrs, check->context()->transformContext );
-      try
-      {
-        mGeometry.transform( ct );
-        mErrorLocation = ct.transform( mErrorLocation );
-      }
-      catch ( const QgsCsException & )
-      {
-        QgsDebugError( QStringLiteral( "Can not show error in current map coordinate reference system" ) );
-      }
+      mGeometry.transform( ct );
+      mErrorLocation = ct.transform( mErrorLocation );
+    }
+    catch ( const QgsCsException & )
+    {
+      QgsDebugError( QStringLiteral( "Can not show error in current map coordinate reference system" ) );
     }
   }
 }

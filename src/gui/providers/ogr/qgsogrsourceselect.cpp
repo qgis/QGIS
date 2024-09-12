@@ -62,7 +62,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 
-  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Standalone )
   {
     this->layout()->setSizeConstraint( QLayout::SetNoConstraint );
   }
@@ -741,7 +741,7 @@ void QgsOgrSourceSelect::updateProtocolOptions()
   const QString currentProtocol = cmbProtocolTypes->currentData().toString();
   if ( radioSrcProtocol->isChecked() && QgsGdalUtils::vsiHandlerType( currentProtocol ) == Qgis::VsiHandlerType::Cloud )
   {
-    mCredentialsWidget->setDriver( currentProtocol );
+    mCredentialsWidget->setHandler( currentProtocol );
     mCredentialOptionsGroupBox->setVisible( true );
   }
   else

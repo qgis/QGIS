@@ -23,6 +23,11 @@ from qgis.core import (
     QgsPropertyDefinition,
     QgsVectorLayer,
     QgsVectorLayerJoinInfo,
+    QgsPoint,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsDatumTransform,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -532,6 +537,262 @@ class TestQgsFeatureIterator(QgisTestCase):
                layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid))]
         self.assertEqual(res, ['a', 'b'])
         layer.rollBack()
+
+    def test_vertical_transformation_4978_to_4979(self):
+        """
+        Test vertical transformations are correctly handled during iteration
+
+        EPSG:4978 to EPSG:4979
+        """
+
+        vl = QgsVectorLayer('PointZ?crs=EPSG:4978', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:4978')
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:4978')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5543.325))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        dest_crs = QgsCoordinateReferenceSystem('EPSG:4979')
+        self.assertTrue(dest_crs.isValid())
+        self.assertEqual(dest_crs.horizontalCrs().authid(), 'EPSG:4979')
+
+        transform = QgsCoordinateTransform(
+            vl.crs3D(),
+            dest_crs,
+            QgsCoordinateTransformContext()
+        )
+
+        request = QgsFeatureRequest().setCoordinateTransform(
+            transform)
+
+        transformed_features = list(vl.getFeatures(request))
+        self.assertEqual(len(transformed_features), 1)
+        geom = transformed_features[0].geometry()
+        self.assertAlmostEqual(geom.constGet().x(), -9.8921668708, 4)
+        self.assertAlmostEqual(geom.constGet().y(), 89.839008, 4)
+        self.assertAlmostEqual(geom.constGet().z(), -6351023.00373, 3)
+
+    def test_vertical_transformation_gda2020_to_AVWS(self):
+        """
+        Test vertical transformations are correctly handled during iteration
+
+        GDA2020 to AVWS
+        """
+
+        # GDA2020 vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7843', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:7843')
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:7843')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5543.325))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # AVWS
+        dest_crs, msg = QgsCoordinateReferenceSystem.createCompoundCrs(
+            QgsCoordinateReferenceSystem('EPSG:7844'),
+            QgsCoordinateReferenceSystem('EPSG:9458'))
+        self.assertFalse(msg)
+        self.assertTrue(dest_crs.isValid())
+        self.assertEqual(dest_crs.horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(dest_crs.verticalCrs().authid(), 'EPSG:9458')
+
+        available_operations = QgsDatumTransform.operations(vl.crs3D(), dest_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AGQG_20201120.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        transform = QgsCoordinateTransform(
+            vl.crs3D(),
+            dest_crs,
+            QgsCoordinateTransformContext()
+        )
+        # for debugging
+        # self.assertEqual(transform.instantiatedCoordinateOperationDetails().proj, '+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=vgridshift +grids=au_ga_AGQG_20201120.tif +multiplier=1 +step +proj=unitconvert +xy_in=rad +xy_out=deg')
+
+        request = QgsFeatureRequest().setCoordinateTransform(
+            transform)
+
+        transformed_features = list(vl.getFeatures(request))
+        self.assertEqual(len(transformed_features), 1)
+        geom = transformed_features[0].geometry()
+        self.assertAlmostEqual(geom.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(geom.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/avws
+        self.assertAlmostEqual(geom.constGet().z(), 5524.13969, 3)
+
+    def test_vertical_transformation_AVWS_to_gda2020(self):
+        """
+        Test vertical transformations are correctly handled during iteration
+
+        AVWS to GDA2020
+        """
+
+        # GDA2020 vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7844', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5524.13969))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # AVWS
+        source_crs, msg = QgsCoordinateReferenceSystem.createCompoundCrs(
+            QgsCoordinateReferenceSystem('EPSG:7844'),
+            QgsCoordinateReferenceSystem('EPSG:9458'))
+        self.assertFalse(msg)
+        self.assertTrue(source_crs.isValid())
+        self.assertEqual(source_crs.horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(source_crs.verticalCrs().authid(), 'EPSG:9458')
+
+        available_operations = QgsDatumTransform.operations(source_crs,
+                                                            QgsCoordinateReferenceSystem('EPSG:7843'))
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AGQG_20201120.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        # dest CRS is GDA2020
+
+        transform = QgsCoordinateTransform(
+            source_crs,
+            QgsCoordinateReferenceSystem('EPSG:7843'),
+            QgsCoordinateTransformContext()
+        )
+        # for debugging
+        # self.assertEqual(transform.instantiatedCoordinateOperationDetails().proj, '+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=vgridshift +grids=au_ga_AGQG_20201120.tif +multiplier=1 +step +proj=unitconvert +xy_in=rad +xy_out=deg')
+
+        request = QgsFeatureRequest().setCoordinateTransform(
+            transform)
+
+        transformed_features = list(vl.getFeatures(request))
+        self.assertEqual(len(transformed_features), 1)
+        geom = transformed_features[0].geometry()
+        self.assertAlmostEqual(geom.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(geom.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/avws
+        self.assertAlmostEqual(geom.constGet().z(), 5543.325, 3)
+
+    def test_vertical_transformation_gda2020_to_AHD(self):
+        """
+        Test vertical transformations are correctly handled during iteration
+
+        GDA2020 to AHD
+        """
+
+        # GDA2020 vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7843', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:7843')
+
+        self.assertEqual(vl.crs3D().horizontalCrs().authid(), 'EPSG:7843')
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5543.325))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # AHD
+        dest_crs, msg = QgsCoordinateReferenceSystem.createCompoundCrs(
+            QgsCoordinateReferenceSystem('EPSG:7844'),
+            QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(msg)
+        self.assertTrue(dest_crs.isValid())
+        self.assertEqual(dest_crs.horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(dest_crs.verticalCrs().authid(), 'EPSG:5711')
+
+        available_operations = QgsDatumTransform.operations(vl.crs3D(),
+                                                            dest_crs)
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AUSGeoid2020_20180201.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        transform = QgsCoordinateTransform(
+            vl.crs3D(),
+            dest_crs,
+            QgsCoordinateTransformContext()
+        )
+        # for debugging
+        # self.assertEqual(transform.instantiatedCoordinateOperationDetails().proj, '+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=vgridshift +grids=au_ga_AGQG_20201120.tif +multiplier=1 +step +proj=unitconvert +xy_in=rad +xy_out=deg')
+
+        request = QgsFeatureRequest().setCoordinateTransform(
+            transform)
+
+        transformed_features = list(vl.getFeatures(request))
+        self.assertEqual(len(transformed_features), 1)
+        geom = transformed_features[0].geometry()
+        self.assertAlmostEqual(geom.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(geom.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/ausgeoid2020
+        self.assertAlmostEqual(geom.constGet().z(), 5523.598, 3)
+
+    def test_vertical_transformation_AHD_to_gda2020(self):
+        """
+        Test vertical transformations are correctly handled during iteration
+
+        AHD to GDA2020
+        """
+
+        # GDA2020 vertical CRS
+        vl = QgsVectorLayer('PointZ?crs=EPSG:7844', 'gda2020points', 'memory')
+        self.assertTrue(vl.isValid())
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(134.445567853,
+                               -23.445567853,
+                               5523.598))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # AHD
+        source_crs, msg = QgsCoordinateReferenceSystem.createCompoundCrs(
+            QgsCoordinateReferenceSystem('EPSG:7844'),
+            QgsCoordinateReferenceSystem('EPSG:5711'))
+        self.assertFalse(msg)
+        self.assertTrue(source_crs.isValid())
+        self.assertEqual(source_crs.horizontalCrs().authid(), 'EPSG:7844')
+        self.assertEqual(source_crs.verticalCrs().authid(), 'EPSG:5711')
+
+        # dest CRS is GDA2020
+
+        available_operations = QgsDatumTransform.operations(source_crs,
+                                                            QgsCoordinateReferenceSystem('EPSG:7843'))
+        self.assertEqual(len(available_operations[0].grids), 1)
+        self.assertEqual(available_operations[0].grids[0].shortName, 'au_ga_AUSGeoid2020_20180201.tif')
+        if not available_operations[0].isAvailable:
+            self.skipTest(f'Required grid {available_operations[0].grids[0].shortName} not available on system')
+
+        transform = QgsCoordinateTransform(
+            source_crs,
+            QgsCoordinateReferenceSystem('EPSG:7843'),
+            QgsCoordinateTransformContext()
+        )
+        # for debugging
+        # self.assertEqual(transform.instantiatedCoordinateOperationDetails().proj, '+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=vgridshift +grids=au_ga_AGQG_20201120.tif +multiplier=1 +step +proj=unitconvert +xy_in=rad +xy_out=deg')
+
+        request = QgsFeatureRequest().setCoordinateTransform(
+            transform)
+
+        transformed_features = list(vl.getFeatures(request))
+        self.assertEqual(len(transformed_features), 1)
+        geom = transformed_features[0].geometry()
+        self.assertAlmostEqual(geom.constGet().x(), 134.445567853, 6)
+        self.assertAlmostEqual(geom.constGet().y(), -23.445567853, 6)
+        # comparing against results from https://geodesyapps.ga.gov.au/avws
+        self.assertAlmostEqual(geom.constGet().z(), 5543.325, 3)
 
 
 if __name__ == '__main__':

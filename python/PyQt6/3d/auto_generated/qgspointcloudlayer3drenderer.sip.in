@@ -3,9 +3,8 @@
  *                                                                      *
  * src/3d/qgspointcloudlayer3drenderer.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -116,5 +115,5 @@ Sets the maximum number of points to be rendered in the scene
  *                                                                      *
  * src/3d/qgspointcloudlayer3drenderer.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

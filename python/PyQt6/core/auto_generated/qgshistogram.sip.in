@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgshistogram.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,9 +25,6 @@ Calculator for a numeric histogram from a list of values.
   public:
 
     QgsHistogram();
-%Docstring
-Constructor for QgsHistogram.
-%End
 
     virtual ~QgsHistogram();
 
@@ -113,5 +110,5 @@ Returns the calculated list of the counts for the histogram bins.
  *                                                                      *
  * src/core/qgshistogram.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

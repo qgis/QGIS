@@ -78,9 +78,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
         Rule( QgsAbstract3DSymbol *symbol SIP_TRANSFER, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
-        //! Rules cannot be copied.
         Rule( const Rule &rh ) = delete;
-        //! Rules cannot be copied.
         Rule &operator=( const Rule &rh ) = delete;
 
         //! The result of registering a rule
@@ -303,7 +301,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
 
     QString type() const override { return "rulebased"; }
     QgsRuleBased3DRenderer *clone() const override SIP_FACTORY;
-    Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
+    Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgssnappingconfig.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -54,8 +54,9 @@ Convenient method to return the translated name of the enum type
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.26
-   use :py:class:`Qgis`.snappingTypeToString instead
+.. deprecated:: 3.26
+
+   Use :py:class:`Qgis`.snappingTypeToString instead.
 %End
 
 
@@ -72,9 +73,9 @@ Convenient method to return an icon corresponding to the enum type
 Convenient method to return an icon corresponding to the enum type
 :py:class:`Qgis`.SnappingTypes.
 
-.. deprecated:: QGIS 3.26
-   use :py:class:`Qgis`.snappingTypeToString instead
+.. deprecated:: 3.26
 
+   Use :py:class:`Qgis`.snappingTypeToString instead.
 .. versionadded:: 3.20
 %End
 
@@ -98,8 +99,9 @@ IndividualLayerSettings
 :param tolerance:
 :param units:
 
-.. deprecated:: QGIS 3.12
-   use the method with :py:class:`Qgis`.SnappingTypes instead.
+.. deprecated:: 3.12
+
+   Use the method with :py:class:`Qgis`.SnappingTypes instead.
 %End
 
         IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, Qgis::MapToolUnit units, double minScale = 0.0, double maxScale = 0.0 );
@@ -147,16 +149,18 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
-.. deprecated:: QGIS 3.12
-   use typeFlag instead.
+.. deprecated:: 3.12
+
+   Use typeFlag instead.
 %End
 
  void setType( SnappingType type ) /Deprecated/;
 %Docstring
 define the type of snapping
 
-.. deprecated:: QGIS 3.12
-   use setTypeFlag instead.
+.. deprecated:: 3.12
+
+   Use setTypeFlag instead.
 %End
 
         void setTypeFlag( Qgis::SnappingTypes type );
@@ -263,16 +267,18 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
-.. deprecated:: QGIS 3.12
-   use typeFlag instead.
+.. deprecated:: 3.12
+
+   Use typeFlag instead.
 %End
 
  void setType( QgsSnappingConfig::SnappingType type );
 %Docstring
 define the type of snapping
 
-.. deprecated:: QGIS 3.12
-   use setTypeFlag instead.
+.. deprecated:: 3.12
+
+   Use setTypeFlag instead.
 %End
 
     void setTypeFlag( Qgis::SnappingTypes type );
@@ -478,5 +484,5 @@ The project from which the snapped layers should be retrieved
  *                                                                      *
  * src/core/qgssnappingconfig.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

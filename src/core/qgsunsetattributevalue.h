@@ -32,9 +32,6 @@ class CORE_EXPORT QgsUnsetAttributeValue
 {
   public:
 
-    /**
-     * Constructor for a QgsUnsetAttributeValue.
-     */
     QgsUnsetAttributeValue() = default;
 
     /**

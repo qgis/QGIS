@@ -59,9 +59,7 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
 
     virtual ~QgsAbstractContentCacheEntry() = default;
 
-    //! QgsAbstractContentCacheEntry cannot be copied.
     QgsAbstractContentCacheEntry( const QgsAbstractContentCacheEntry &rh ) = delete;
-    //! QgsAbstractContentCacheEntry cannot be copied.
     QgsAbstractContentCacheEntry &operator=( const QgsAbstractContentCacheEntry &rh ) = delete;
 
     /**

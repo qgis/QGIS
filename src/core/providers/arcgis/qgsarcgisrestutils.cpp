@@ -16,6 +16,7 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsfields.h"
 #include "qgslogger.h"
+#include "qgspropertytransformer.h"
 #include "qgsrectangle.h"
 #include "qgspallabeling.h"
 #include "qgssymbol.h"
@@ -42,9 +43,17 @@
 #include "qgsfillsymbol.h"
 #include "qgsvariantutils.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgscolorrampimpl.h"
 
 #include <QRegularExpression>
 #include <QUrl>
+#include "qgsclassificationcustom.h"
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationfixedinterval.h"
+#include "qgsclassificationjenks.h"
+#include "qgsclassificationquantile.h"
+#include "qgsclassificationstandarddeviation.h"
+#include "qgsgraduatedsymbolrenderer.h"
 
 QMetaType::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
@@ -563,8 +572,7 @@ QgsSymbol *QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
   }
   else if ( type == QLatin1String( "esriTS" ) )
   {
-    // text symbol - not supported
-    return nullptr;
+    return parseEsriTextMarkerSymbolJson( symbolData ).release();
   }
   return nullptr;
 }
@@ -742,6 +750,83 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
 
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
+  layers.append( markerLayer.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
+  return symbol;
+}
+
+std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJson( const QVariantMap &symbolData )
+{
+  QgsSymbolLayerList layers;
+
+  const QString fontFamily = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
+
+  const QString chr = symbolData.value( QStringLiteral( "text" ) ).toString();
+
+  const double pointSize = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toDouble();
+
+  const QColor color = convertColor( symbolData.value( QStringLiteral( "color" ) ) );
+
+  const double esriAngle = symbolData.value( QStringLiteral( "angle" ) ).toDouble();
+
+  const double angle = 90.0 - esriAngle;
+
+  std::unique_ptr< QgsFontMarkerSymbolLayer > markerLayer = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, chr, pointSize, color, angle );
+
+  QColor strokeColor = convertColor( symbolData.value( QStringLiteral( "borderLineColor" ) ) );
+  markerLayer->setStrokeColor( strokeColor );
+
+  double borderLineSize = symbolData.value( QStringLiteral( "borderLineSize" ) ).toDouble();
+  markerLayer->setStrokeWidth( borderLineSize );
+
+  const QString fontStyle = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "style" ) ).toString();
+  markerLayer->setFontStyle( fontStyle );
+
+  double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
+
+  markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
+  markerLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
+
+  QgsMarkerSymbolLayer::HorizontalAnchorPoint hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::HCenter;
+  QgsMarkerSymbolLayer::VerticalAnchorPoint vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::VCenter;
+
+  QString horizontalAnchorPoint = symbolData.value( QStringLiteral( "horizontalAlignment" ) ).toString();
+  QString verticalAnchorPoint = symbolData.value( QStringLiteral( "verticalAlignment" ) ).toString();
+
+  if ( horizontalAnchorPoint == QString( "center" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::HCenter;
+  }
+  else if ( horizontalAnchorPoint == QString( "left" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left;
+  }
+  else if ( horizontalAnchorPoint == QString( "right" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Right;
+  }
+
+  if ( verticalAnchorPoint == QString( "center" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::VCenter;
+  }
+  else if ( verticalAnchorPoint == QString( "top" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Top;
+  }
+  else if ( verticalAnchorPoint == QString( "bottom" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom;
+  }
+
+  markerLayer->setHorizontalAnchorPoint( hAlign );
+  markerLayer->setVerticalAnchorPoint( vAlign );
+
   layers.append( markerLayer.release() );
 
   std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
@@ -945,8 +1030,157 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
   }
   else if ( type == QLatin1String( "classBreaks" ) )
   {
-    // currently unsupported
-    return nullptr;
+    const QString attrName = rendererData.value( QStringLiteral( "field" ) ).toString();
+
+    const QVariantList classBreakInfos = rendererData.value( QStringLiteral( "classBreakInfos" ) ).toList();
+    const QVariantMap authoringInfo = rendererData.value( QStringLiteral( "authoringInfo" ) ).toMap();
+    QVariantMap symbolData;
+
+    QString esriMode = authoringInfo.value( QStringLiteral( "classificationMethod" ) ).toString();
+    if ( esriMode.isEmpty() )
+    {
+      esriMode = rendererData.value( QStringLiteral( "classificationMethod" ) ).toString();
+    }
+
+    if ( !classBreakInfos.isEmpty() )
+    {
+      symbolData = classBreakInfos.at( 0 ).toMap().value( QStringLiteral( "symbol" ) ).toMap();
+    }
+    std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+    if ( !symbol )
+      return nullptr;
+
+    const double transparency = rendererData.value( QStringLiteral( "transparency" ) ).toDouble();
+    const double opacity = ( 100.0 - transparency ) / 100.0;
+    symbol->setOpacity( opacity );
+
+    const QVariantList visualVariablesData = rendererData.value( QStringLiteral( "visualVariables" ) ).toList();
+
+    for ( const QVariant &visualVariable : visualVariablesData )
+    {
+      const QVariantMap visualVariableData = visualVariable.toMap();
+      const QString variableType = visualVariableData.value( QStringLiteral( "type" ) ).toString();
+      if ( variableType == QLatin1String( "sizeInfo" ) )
+      {
+        continue;
+      }
+      else if ( variableType == QLatin1String( "colorInfo" ) )
+      {
+        const QVariantList stops = visualVariableData.value( QStringLiteral( "stops" ) ).toList();
+        if ( stops.size() < 2 )
+          continue;
+
+        // layer has continuous coloring, so convert to a symbol using color ramp assistant
+        bool ok = false;
+        const double minValue = stops.front().toMap().value( QStringLiteral( "value" ) ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        const QColor minColor = convertColor( stops.front().toMap().value( QStringLiteral( "color" ) ) );
+
+        const double maxValue = stops.back().toMap().value( QStringLiteral( "value" ) ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        const QColor maxColor = convertColor( stops.back().toMap().value( QStringLiteral( "color" ) ) );
+
+        QgsGradientStopsList gradientStops;
+        for ( int i = 1; i < stops.size() - 1; ++i )
+        {
+          const QVariantMap stopData = stops.at( i ).toMap();
+          const double breakpoint = stopData.value( QStringLiteral( "value" ) ).toDouble();
+          const double scaledBreakpoint = ( breakpoint - minValue ) / ( maxValue - minValue );
+          const QColor fillColor = convertColor( stopData.value( QStringLiteral( "color" ) ) );
+
+          gradientStops.append( QgsGradientStop( scaledBreakpoint, fillColor ) );
+        }
+
+        std::unique_ptr< QgsGradientColorRamp > colorRamp = std::make_unique< QgsGradientColorRamp >(
+              minColor, maxColor, false, gradientStops
+            );
+
+        QgsProperty colorProperty = QgsProperty::fromField( attrName );
+        colorProperty.setTransformer(
+          new QgsColorRampTransformer( minValue, maxValue, colorRamp.release() )
+        );
+        for ( int layer = 0; layer < symbol->symbolLayerCount(); ++layer )
+        {
+          symbol->symbolLayer( layer )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, colorProperty );
+        }
+
+        std::unique_ptr< QgsSingleSymbolRenderer > singleSymbolRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
+
+        return singleSymbolRenderer.release();
+      }
+      else
+      {
+        QgsDebugError( QStringLiteral( "ESRI visualVariable type %1 is not currently supported" ).arg( variableType ) );
+      }
+    }
+
+    double lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
+
+    std::unique_ptr< QgsGraduatedSymbolRenderer > graduatedRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( attrName );
+
+    graduatedRenderer->setSourceSymbol( symbol.release() );
+
+    if ( esriMode == QLatin1String( "esriClassifyDefinedInterval" ) )
+    {
+      QgsClassificationFixedInterval *method = new QgsClassificationFixedInterval();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyEqualInterval" ) )
+    {
+      QgsClassificationEqualInterval *method = new QgsClassificationEqualInterval();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyGeometricalInterval" ) )
+    {
+      QgsClassificationCustom *method = new QgsClassificationCustom();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyManual" ) )
+    {
+      QgsClassificationCustom *method = new QgsClassificationCustom();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyNaturalBreaks" ) )
+    {
+      QgsClassificationJenks *method = new QgsClassificationJenks();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyQuantile" ) )
+    {
+      QgsClassificationQuantile *method = new QgsClassificationQuantile();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyStandardDeviation" ) )
+    {
+      QgsClassificationStandardDeviation *method = new QgsClassificationStandardDeviation();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( !esriMode.isEmpty() )
+    {
+      QgsDebugError( QStringLiteral( "ESRI classification mode %1 is not currently supported" ).arg( esriMode ) );
+    }
+
+    for ( const QVariant &classBreakInfo : classBreakInfos )
+    {
+      const QVariantMap symbolData = classBreakInfo.toMap().value( QStringLiteral( "symbol" ) ).toMap();
+      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+      double classMaxValue = classBreakInfo.toMap().value( QStringLiteral( "classMaxValue" ) ).toDouble();
+      const QString label = classBreakInfo.toMap().value( QStringLiteral( "label" ) ).toString();
+
+      QgsRendererRange range;
+
+      range.setLowerValue( lastValue );
+      range.setUpperValue( classMaxValue );
+      range.setLabel( label );
+      range.setSymbol( symbol.release() );
+
+      lastValue = classMaxValue;
+      graduatedRenderer->addClass( range );
+    }
+
+    return graduatedRenderer.release();
   }
   else if ( type == QLatin1String( "heatmap" ) )
   {

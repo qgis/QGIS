@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfieldmappingmodel.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -72,8 +72,9 @@ Sets the destination fields editable state to ``editable``
 %Docstring
 Returns a static map of supported data types
 
-.. deprecated::
-   QGIS 3.24 use :py:func:`~QgsFieldMappingModel.supportedDataTypes` instead
+.. deprecated:: 3.24
+
+   Use :py:func:`~QgsFieldMappingModel.supportedDataTypes` instead.
 %End
 
     static const QList<QgsVectorDataProvider::NativeType> supportedDataTypes();
@@ -176,5 +177,5 @@ field name to the corresponding expression.
  *                                                                      *
  * src/gui/qgsfieldmappingmodel.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

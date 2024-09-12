@@ -37,6 +37,8 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsconfig.h"
+#include "qgspointcloudlayer.h"
 
 #include <QTimer>
 
@@ -66,6 +68,10 @@ class TestQgsIdentify : public QObject
     void clickxy(); // test if click_x and click_y variables are propagated
     void closestPoint();
     void testRelations();
+    void testPointZ();
+    void testLineStringZ();
+    void testPolygonZ();
+    void identifyPointCloud();
 
   private:
     void doAction();
@@ -1167,6 +1173,135 @@ void TestQgsIdentify::testRelations()
   }
 }
 
+void TestQgsIdentify::testPointZ()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "PointZ?crs=epsg:4979" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+  QCOMPARE( tempLayer->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(134.445567853 -23.445567853 5543.325)" ) ) );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // set project CRS and ellipsoid
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4985" ) );
+  QgsProject::instance()->setCrs( srs );
+  canvas->setDestinationCrs( srs );
+  QCOMPARE( QgsProject::instance()->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4985" ) );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 134.445567853, -23.445567853 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << tempLayer.get() );
+  QCOMPARE( result.length(), 1 );
+  double z4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4979 - WGS 84)" )].toDouble();
+  double z4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4985 - WGS 72)" )].toDouble();
+  QGSCOMPARENEAR( z4979, 5543.325, 0.001 );
+  QGSCOMPARENEAR( z4985, 5545.6857, 0.01 );
+}
+
+void TestQgsIdentify::testLineStringZ()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=epsg:4979" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+  QCOMPARE( tempLayer->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ(134.445567853 -23.445567853 5543.325, 140.485567853 -23.445567853 5563.325)" ) ) );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // set project CRS and ellipsoid
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4985" ) );
+  QgsProject::instance()->setCrs( srs );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( tempLayer->extent() );
+  QCOMPARE( QgsProject::instance()->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4985" ) );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 136.46, -23.445567853 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << tempLayer.get() );
+  QCOMPARE( result.length(), 1 );
+  double interpolatedZ4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4979 - WGS 84)" )].toDouble();
+  double interpolatedZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4985 - WGS 72)" )].toDouble();
+  double closestZ4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Closest vertex Z (EPSG:4979 - WGS 84)" )].toDouble();
+  double closestZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Closest vertex Z (EPSG:4985 - WGS 72)" )].toDouble();
+  QGSCOMPARENEAR( interpolatedZ4979, 5548.472636, 0.001 );
+  QGSCOMPARENEAR( interpolatedZ4985, 5550.8333350, 0.01 );
+  QGSCOMPARENEAR( closestZ4979, 5543.325, 0.001 );
+  QGSCOMPARENEAR( closestZ4985, 5545.6857, 0.01 );
+}
+
+void TestQgsIdentify::testPolygonZ()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "PolygonZ?crs=epsg:4979" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+  QCOMPARE( tempLayer->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PolygonZ((134.445567853 -23.445567853 5543.325, 140.485567853 -23.445567853 5563.325, 140.485567853 -20.445567853 5523.325, 134.445567853 -23.445567853 5543.325))" ) ) );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // set project CRS and ellipsoid
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4985" ) );
+  QgsProject::instance()->setCrs( srs );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( tempLayer->extent() );
+  QCOMPARE( QgsProject::instance()->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4985" ) );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 136.46, -23.445567853 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << tempLayer.get() );
+  QCOMPARE( result.length(), 1 );
+  double interpolatedZ4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4979 - WGS 84)" )].toDouble();
+  double interpolatedZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Interpolated Z (EPSG:4985 - WGS 72)" )].toDouble();
+  double closestZ4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Closest vertex Z (EPSG:4979 - WGS 84)" )].toDouble();
+  double closestZ4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Closest vertex Z (EPSG:4985 - WGS 72)" )].toDouble();
+  QGSCOMPARENEAR( interpolatedZ4979, 5549.9817600000, 0.02 );
+  QGSCOMPARENEAR( interpolatedZ4985, 5552.3424580000, 0.02 );
+  QGSCOMPARENEAR( closestZ4979, 5543.325, 0.001 );
+  QGSCOMPARENEAR( closestZ4985, 5545.6857, 0.01 );
+}
+
+void TestQgsIdentify::identifyPointCloud()
+{
+#ifdef HAVE_EPT
+  std::unique_ptr< QgsPointCloudLayer > pointCloud = std::make_unique< QgsPointCloudLayer >( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/rgb16/ept.json", QStringLiteral( "pointcloud" ), QStringLiteral( "ept" ) );
+  QVERIFY( pointCloud->isValid() );
+  pointCloud->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ) );
+  QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
+
+  // set project CRS and ellipsoid
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4985" ) );
+  QgsProject::instance()->setCrs( srs );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( QgsRectangle::fromCenterAndSize( QgsPointXY( 7.42006, 2.74911 ), 0.1, 0.1 ) );
+  QCOMPARE( QgsProject::instance()->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4985" ) );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 4 );
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 7.42006, 2.74911 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << pointCloud.get() );
+  QCOMPARE( result.length(), 1 );
+  double z4979 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4979 - WGS 84)" )].toDouble();
+  double z4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4985 - WGS 72)" )].toDouble();
+  QGSCOMPARENEAR( z4979, -5.79000, 0.001 );
+  QGSCOMPARENEAR( z4985, -5.40314874, 0.001 );
+#endif
+}
 
 QGSTEST_MAIN( TestQgsIdentify )
 #include "testqgsidentify.moc"

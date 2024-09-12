@@ -12,5 +12,36 @@ QgsStyleEntityVisitorInterface.NodeType.ReportFooter.__doc__ = "Report footer se
 QgsStyleEntityVisitorInterface.NodeType.ReportSection.__doc__ = "Report sub section"
 QgsStyleEntityVisitorInterface.NodeType.Annotations.__doc__ = "Annotations collection"
 QgsStyleEntityVisitorInterface.NodeType.Annotation.__doc__ = "An individual annotation"
-QgsStyleEntityVisitorInterface.NodeType.__doc__ = "Describes the types of nodes which may be visited by the visitor.\n\n" + '* ``Project``: ' + QgsStyleEntityVisitorInterface.NodeType.Project.__doc__ + '\n' + '* ``Layer``: ' + QgsStyleEntityVisitorInterface.NodeType.Layer.__doc__ + '\n' + '* ``SymbolRule``: ' + QgsStyleEntityVisitorInterface.NodeType.SymbolRule.__doc__ + '\n' + '* ``Layouts``: ' + QgsStyleEntityVisitorInterface.NodeType.Layouts.__doc__ + '\n' + '* ``PrintLayout``: ' + QgsStyleEntityVisitorInterface.NodeType.PrintLayout.__doc__ + '\n' + '* ``LayoutItem``: ' + QgsStyleEntityVisitorInterface.NodeType.LayoutItem.__doc__ + '\n' + '* ``Report``: ' + QgsStyleEntityVisitorInterface.NodeType.Report.__doc__ + '\n' + '* ``ReportHeader``: ' + QgsStyleEntityVisitorInterface.NodeType.ReportHeader.__doc__ + '\n' + '* ``ReportFooter``: ' + QgsStyleEntityVisitorInterface.NodeType.ReportFooter.__doc__ + '\n' + '* ``ReportSection``: ' + QgsStyleEntityVisitorInterface.NodeType.ReportSection.__doc__ + '\n' + '* ``Annotations``: ' + QgsStyleEntityVisitorInterface.NodeType.Annotations.__doc__ + '\n' + '* ``Annotation``: ' + QgsStyleEntityVisitorInterface.NodeType.Annotation.__doc__
+QgsStyleEntityVisitorInterface.NodeType.__doc__ = """Describes the types of nodes which may be visited by the visitor.
+
+* ``Project``: QGIS Project node
+* ``Layer``: Map layer
+* ``SymbolRule``: Rule based symbology or label child rule
+* ``Layouts``: Layout collection
+* ``PrintLayout``: An individual print layout
+* ``LayoutItem``: Individual item in a print layout
+* ``Report``: A QGIS print report
+* ``ReportHeader``: Report header section
+* ``ReportFooter``: Report footer section
+* ``ReportSection``: Report sub section
+* ``Annotations``: Annotations collection
+* ``Annotation``: An individual annotation
+
+"""
 # --
+try:
+    QgsStyleEntityVisitorInterface.__attribute_docs__ = {'identifier': 'A string identifying the node. The actual value of ``identifier`` will vary\ndepending on the node being visited. E.g for a rule based renderer, the\nidentifier will be a rule ID. For a project, node identifiers will be\nlayer IDs.', 'description': 'A string describing the node. The actual value of ``description`` will vary\ndepending on the node being visited. E.g for a rule based renderer, the\nidentifier will be a rule label. For a project, node identifiers will be\nlayer names.', 'entity': 'Reference to style entity being visited.', 'type': 'Node type.'}
+    QgsStyleEntityVisitorInterface.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleEntityVisitorInterface.StyleLeaf.__doc__ = """Contains information relating to the style entity currently being visited."""
+    QgsStyleEntityVisitorInterface.StyleLeaf.__group__ = ['symbology']
+except NameError:
+    pass
+try:
+    QgsStyleEntityVisitorInterface.Node.__doc__ = """Contains information relating to a node (i.e. a group of symbols or other nodes)
+being visited."""
+    QgsStyleEntityVisitorInterface.Node.__group__ = ['symbology']
+except NameError:
+    pass

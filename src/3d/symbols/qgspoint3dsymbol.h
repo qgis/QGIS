@@ -41,7 +41,6 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
     QgsPoint3DSymbol();
 
-    //! Copy Constructor for QgsPoint3DSymbol
     QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
 
     ~QgsPoint3DSymbol() override;
@@ -93,6 +92,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
      * correctly handle default values when a property has not been
      * explicitly set.
      *
+     * \see setShapeProperties() for a description of available properties.
      * \see shapeProperty()
      */
     QVariantMap shapeProperties() const { return mShapeProperties; }
@@ -103,11 +103,55 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
      * This method accounts for default property values for the symbol's shape(),
      * used when the property has not been explicitly set.
      *
+     * \see setShapeProperties() for a description of available properties.
      * \since QGIS 3.36
      */
     QVariant shapeProperty( const QString &property ) const;
 
-    //! Sets a key-value dictionary of point shape properties
+    /**
+     * Sets a key-value dictionary of point shape \a properties.
+     *
+     * The available properties depend on the point shape().
+     *
+     * ### Cylinders (Qgis.Point3DShape.Cylinder)
+     *
+     * - \a radius
+     * - \a length
+     *
+     * ### Spheres (Qgis.Point3DShape.Sphere)
+     *
+     * - \a radius
+     *
+     * ### Cones (Qgis.Point3DShape.Cone)
+     *
+     * - \a length
+     * - \a topRadius
+     * - \a bottomRadius
+     *
+     * ### Cubes (Qgis.Point3DShape.Cube)
+     *
+     * - \a size
+     *
+     * ### Torus (Qgis.Point3DShape.Torus)
+     *
+     * - \a radius
+     * - \a minorRadius
+     *
+     * ### Flat Planes (Qgis.Point3DShape.Plane)
+     *
+     * - \a size
+     *
+     * ### Extruded Text (Qgis.Point3DShape.ExtrudedText)
+     *
+     * - \a depth
+     * - \a text (string)
+     *
+     * ### Models (Qgis.Point3DShape.Model)
+     *
+     * - \a model (path to model file)
+     *
+     * \see shapeProperty()
+     */
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 
     //! Returns a symbol for billboard

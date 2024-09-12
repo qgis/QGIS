@@ -177,7 +177,7 @@ class TcpServerWorker: public QObject
           };
 
           // This will delete the connection
-          QTcpSocket::connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, connectionDeleter, Qt::QueuedConnection );
+          QObject::connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, connectionDeleter, Qt::QueuedConnection );
 
 #if 0     // Debugging output
           clientConnection->connect( clientConnection, &QAbstractSocket::errorOccurred, clientConnection, [ = ]( QAbstractSocket::SocketError socketError )
@@ -187,7 +187,7 @@ class TcpServerWorker: public QObject
 #endif
 
           // Incoming connection parser
-          QTcpSocket::connect( clientConnection, &QIODevice::readyRead, context, [ = ] {
+          QObject::connect( clientConnection, &QIODevice::readyRead, context, [ = ] {
 
             // Read all incoming data
             while ( clientConnection->bytesAvailable() > 0 )
@@ -612,7 +612,8 @@ int main( int argc, char *argv[] )
                                          Qgis::ProjectReadFlag::DontResolveLayers
                                          | Qgis::ProjectReadFlag::DontLoadLayouts
                                          | Qgis::ProjectReadFlag::DontStoreOriginalStyles
-                                         | Qgis::ProjectReadFlag::DontLoad3DViews ) )
+                                         | Qgis::ProjectReadFlag::DontLoad3DViews
+                                         | Qgis::ProjectReadFlag::DontUpgradeAnnotations ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
     }

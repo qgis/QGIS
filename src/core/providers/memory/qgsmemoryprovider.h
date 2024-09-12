@@ -33,7 +33,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
 
   public:
     explicit QgsMemoryProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext,
-                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                                Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsMemoryProvider() override;
 
@@ -64,7 +64,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     bool supportsSubsetString() const override { return true; }
     bool createSpatialIndex() override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     bool truncate() override;
 
     /* Implementation of functions from QgsDataProvider */
@@ -106,7 +106,7 @@ class QgsMemoryProviderMetadata final: public QgsProviderMetadata
   public:
     QgsMemoryProviderMetadata();
     QIcon icon() const override;
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 

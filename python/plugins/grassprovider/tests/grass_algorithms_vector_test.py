@@ -299,6 +299,15 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         alg.loadVectorLayer('test_layer', vl, context, external=True)
         self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" output="###" --overwrite -o')
 
+        # layer with filter
+        vl = QgsVectorLayer(source + '|layername=pol3')
+        self.assertTrue(vl.isValid())
+        vl.setSubsetString('"field"=\'value\'')
+        alg.loadVectorLayer('test_layer', vl, context, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o where="\\"field\\"=\'value\'"')
+        alg.loadVectorLayer('test_layer', vl, context, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o where="\\"field\\"=\'value\'"')
+
 
 if __name__ == '__main__':
     nose2.main()

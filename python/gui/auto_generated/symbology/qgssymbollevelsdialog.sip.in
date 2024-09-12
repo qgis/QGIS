@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssymbollevelsdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -59,7 +59,8 @@ Sets whether the level ordering is always forced on and hide the checkbox (used 
 %Docstring
 Apply button.
 
-.. deprecated:: QGIS 3.20.
+.. deprecated:: 3.20
+
    Use :py:func:`~QgsSymbolLevelsWidget.symbolLevels` and manually apply the changes to the renderer as appropriate.
 %End
 
@@ -108,5 +109,5 @@ Returns the current legend symbols with rendering passes set, as defined in the 
  *                                                                      *
  * src/gui/symbology/qgssymbollevelsdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

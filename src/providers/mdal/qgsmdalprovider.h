@@ -48,7 +48,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
      * \param uri file name
      * \param options generic provider options
      */
-    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     ~QgsMdalProvider() override;
 
     bool isValid() const override;
@@ -148,7 +148,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QIcon icon() const override;
     QString filters( Qgis::FileFilterType type ) override;
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
-    QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     bool createMeshData( const QgsMesh &mesh,
                          const QString &fileName,
                          const QString &driverName,

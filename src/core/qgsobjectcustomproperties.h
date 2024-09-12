@@ -35,9 +35,6 @@ class CORE_EXPORT QgsObjectCustomProperties
 {
   public:
 
-    /**
-     * Constructor for QgsObjectCustomProperties.
-     */
     QgsObjectCustomProperties() = default;
 
     /**

@@ -110,7 +110,7 @@ class CORE_EXPORT QgsGpsDetector : public QObject
      * Emitted when the GPS connection has been detected. A single connection must listen for this signal and
      * immediately take ownership of the \a connection object.
      *
-     * \deprecated This signal is dangerous and extremely unsafe! It is recommended to instead set the \a useUnsafeSignals parameter to FALSE in the QgsGpsDetector constructor and use the safe connectionDetected() signal instead.
+     * \deprecated QGIS 3.40. This signal is dangerous and extremely unsafe! It is recommended to instead set the \a useUnsafeSignals parameter to FALSE in the QgsGpsDetector constructor and use the safe connectionDetected() signal instead.
      */
     Q_DECL_DEPRECATED void detected( QgsGpsConnection *connection ) SIP_DEPRECATED;
 

@@ -125,6 +125,10 @@
 #define QGSVERIFYRENDERMAPSETTINGSCHECK(...) QVERIFY( renderMapSettingsCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
 
 // args are either:
+// const QString &name, const QString &referenceName, const QString &actualStr
+#define QGSCOMPARELONGSTR(...) QVERIFY (checkLongStr(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+
+// args are either:
 // const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
 // const QString &name, const QString &referenceImage, const QString &renderedFileName, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
 #define QGSIMAGECHECK(...) imageCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
@@ -293,12 +297,77 @@ class TEST_EXPORT QgsTest : public QObject
     }
 
     /**
+     * For internal use only -- use QGSCOMPARELONGSTR macro instead.
+     */
+    bool checkLongStr( const char *file, const char *, int line, const QString &name, const QString &referenceName, const QByteArray &actualStr )
+    {
+      QString header = QString( "checkLongStr (%1, %2):" ).arg( name, referenceName );
+      QString subPath = "control_files/" + mControlPathPrefix + "/expected_" + name + "/" + "expected_" + referenceName;
+      QString expectedPath = testDataPath( subPath );
+      QFile expectedFile( expectedPath );
+      if ( ! expectedFile.open( QFile::ReadOnly  | QIODevice::Text ) )
+      {
+        qWarning() << header.toStdString().c_str() << "Unable to open expected data file" << expectedPath;
+        return false;
+      }
+      QByteArray expectedStr = expectedFile.readAll();
+
+      if ( actualStr.size() != expectedStr.size() )
+      {
+        qWarning() << header.toStdString().c_str() << "Array have not the same length (actual vs expected):" << actualStr.size() << "vs" << expectedStr.size() << ".";
+      }
+
+      const int strSize = std::max( actualStr.size(), expectedStr.size() );
+      constexpr int step = 100;
+      for ( int i = 0; i < strSize || i < strSize + step; i += step )
+      {
+        QByteArray act = actualStr.mid( i, step );
+        QByteArray exp = expectedStr.mid( i, step );
+
+        if ( act != exp )
+        {
+          QString actualPath = QDir::tempPath() + "/actual_" + name + "_" + referenceName;
+          QFile actualFile( actualPath );
+          if ( actualFile.open( QFile::WriteOnly | QIODevice::Text ) )
+          {
+            actualFile.write( actualStr );
+          }
+          else
+          {
+            qWarning() << header.toStdString().c_str() << "Unable to write actual data to file" << actualPath << ".";
+          }
+
+          qWarning() << header.toStdString().c_str() << "Hex version of the parts of array that differ starting from char" << i << "."
+                     <<  "\n   Actual hex:  " << act.toHex() << "\n   Expected hex:" << exp.toHex();
+          QString msg = QString( "%1 Comparison failed in starting from char %2." ).arg( header ).arg( QString::number( i ) );
+
+          // create copies of data as QTest::compare_helper will delete them
+          char *actualCopy = new char[act.size() + 1];
+          memcpy( actualCopy, act.data(), act.size() );
+          actualCopy[act.size()] = 0;
+          char *expectedCopy = new char[exp.size() + 1];
+          memcpy( expectedCopy, exp.data(), exp.size() );
+          expectedCopy[exp.size()] = 0;
+
+          return QTest::compare_helper( act == exp, msg.toStdString().c_str(), // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
+                                        actualCopy, expectedCopy,
+                                        actualPath.toStdString().c_str(), subPath.toStdString().c_str(),
+                                        file, line );
+        }
+      }
+      return true;
+    }
+
+    /**
      * For internal use only -- use QGSIMAGECHECK or QGSVERIFYIMAGECHECK macros instead.
      */
     bool imageCheck( const char *file, const char *function, int line, const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0 )
     {
+      if ( image.isNull() )
+        return false;
       const QString renderedFileName = QDir::tempPath() + '/' + name + ".png";
-      image.save( renderedFileName );
+      if ( !image.save( renderedFileName ) )
+        return false;
 
       return imageCheck( file, function, line, name, referenceImage, renderedFileName, controlName, allowedMismatch, sizeTolerance, colorTolerance );
     }

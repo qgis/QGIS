@@ -94,8 +94,8 @@ void TestQgsMapToolEditAnnotation::testSelectItem()
   item1->setZIndex( 1 );
   const QString i1id = layer->addItem( item1 );
 
-  QgsAnnotationPolygonItem *item2 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 4 ), QgsPoint( 5, 4 ), QgsPoint( 5, 9 ), QgsPoint( 1, 9 ), QgsPoint( 1, 4 ) } ) ) );
-  item2->setZIndex( 2 );
+  QgsAnnotationPolygonItem *item2 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 4 ), QgsPoint( 1.6, 4 ), QgsPoint( 1.6, 4.6 ), QgsPoint( 1, 4.6 ), QgsPoint( 1, 4 ) } ) ) );
+  item2->setZIndex( 0 );
   const QString i2id = layer->addItem( item2 );
 
   QgsAnnotationPolygonItem *item3 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 7, 1 ), QgsPoint( 8, 1 ), QgsPoint( 8, 2 ), QgsPoint( 7, 2 ), QgsPoint( 7, 1 ) } ) ) );
@@ -131,7 +131,7 @@ void TestQgsMapToolEditAnnotation::testSelectItem()
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
 
-  // overlapping items, highest z order should be selected
+  // overlapping items, smallest area item should be selected
   utils.mouseMove( 1.5, 4.5 );
   utils.mouseClick( 1.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QCOMPARE( spy.count(), 2 );

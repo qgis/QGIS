@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshlayertemporalproperties.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,7 @@ The time in a mesh layer is defined by :
 - each dataset is associated with a relative times
 - time extent is defined by the first time and the last time of all dataset
 
-.. code-block:: raw
+.. code-block:: text
 
      Reference time :          AT
      Dataset 1 time            o-----RT------RT-----RT-----------RT
@@ -32,8 +32,6 @@ The time in a mesh layer is defined by :
 
      AT : absolute time (QDateTime)
      RT : relative time (qint64)
-
-
 
 .. versionadded:: 3.14
 %End
@@ -130,5 +128,5 @@ Sets whether the time proporties are automatically reloaded from provider when p
  *                                                                      *
  * src/core/mesh/qgsmeshlayertemporalproperties.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

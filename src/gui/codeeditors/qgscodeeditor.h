@@ -145,7 +145,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       CodeFolding = 1 << 0, //!< Indicates that code folding should be enabled for the editor
-      ImmediatelyUpdateHistory = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close. Since QGIS 3.32.
+      ImmediatelyUpdateHistory = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close \since QGIS 3.32
     };
     Q_ENUM( Flag )
 
@@ -202,13 +202,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     /**
      * Set margin visible state
      * \param margin Set margin in the editor
-     * \deprecated Use base class methods for individual margins instead, or setLineNumbersVisible()
+     * \deprecated QGIS 3.40. Use base class methods for individual margins instead, or setLineNumbersVisible().
      */
     Q_DECL_DEPRECATED void setMarginVisible( bool margin ) SIP_DEPRECATED;
 
     /**
      * Returns whether margins are in a visible state
-     * \deprecated Use base class methods for individual margins instead, or lineNumbersVisible()
+     * \deprecated QGIS 3.40. Use base class methods for individual margins instead, or lineNumbersVisible().
      */
     Q_DECL_DEPRECATED bool marginVisible() SIP_DEPRECATED { return mMargin; }
 

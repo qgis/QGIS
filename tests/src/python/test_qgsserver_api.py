@@ -294,15 +294,21 @@ class QgsServerAPITestBase(QgsServerTestBase):
 class RestrictedLayerAccessControl(QgsAccessControlFilter):
     """Access control filter to exclude a list of layers by ID, used by WFS3 test"""
 
-    def __init__(self, server_iface, ecxluded_layers=[]):
+    def __init__(self, server_iface, ecxluded_layers=[], can_delete=False, can_edit=False, can_insert=False):
         self.excluded_layers = ecxluded_layers
+        self.can_delete = can_delete
+        self.can_edit = can_edit
+        self.can_insert = can_insert
         super(QgsAccessControlFilter, self).__init__(server_iface)
 
     def layerPermissions(self, layer):
         """ Return the layer rights """
 
         rights = QgsAccessControlFilter.LayerPermissions()
-        rights.canRead = layer.id() not in self.excluded_layers
+        rights.canRead = layer.id() not in self.excluded_layers or self.can_edit or self.can_delete or self.can_insert
+        rights.canUpdate = layer.id() not in self.excluded_layers or self.can_edit
+        rights.canInsert = layer.id() not in self.excluded_layers or self.can_insert
+        rights.canDelete = layer.id() not in self.excluded_layers or self.can_delete
         return rights
 
 
@@ -439,6 +445,48 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project = QgsProject()
         project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
         self.compareApi(request, project, 'test_wfs3_api_project.json')
+
+    def test_wfs3_api_permissions(self):
+        """Test the API with different permissions on a layer"""
+
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+
+        server = QgsServer()
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/api.openapi3')
+
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        result = bytes(response.body()).decode('utf8')
+        jresult = json.loads(result)
+        paths = jresult['paths']['/wfs3/collections/testlayer èé/items/{featureId}']
+
+        self.assertIn('get', paths)
+        self.assertIn('put', paths)
+        self.assertIn('delete', paths)
+        self.assertIn('patch', paths)
+
+        self.assertIn('post', jresult['paths']['/wfs3/collections/testlayer èé/items'])
+
+        # Access control filter to exclude a layer
+        acfilter = RestrictedLayerAccessControl(server.serverInterface(), ['testlayer20150528120452665'], can_edit=True, can_delete=False, can_insert=False)
+        server.serverInterface().registerAccessControl(acfilter, 100)
+
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        result = bytes(response.body()).decode('utf8')
+        jresult = json.loads(result)
+        paths = jresult['paths']['/wfs3/collections/testlayer èé/items/{featureId}']
+
+        self.assertIn('put', paths)
+        self.assertIn('patch', paths)
+        self.assertNotIn('delete', paths)
+
+        self.assertNotIn('post', jresult['paths']['/wfs3/collections/testlayer èé/items'])
 
     def test_wfs3_conformance(self):
         """Test WFS3 API"""

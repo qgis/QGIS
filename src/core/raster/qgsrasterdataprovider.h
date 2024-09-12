@@ -103,7 +103,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     QgsRasterDataProvider( const QString &uri,
                            const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                           Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     QgsRasterDataProvider *clone() const override = 0;
 
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual Qgis::RasterProviderCapabilities providerCapabilities() const;
 
-    /* It makes no sense to set input on provider */
+    // It makes no sense to set input on provider
     bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ) return false; }
 
     QgsRectangle extent() const override = 0;
@@ -440,7 +440,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
      * By default providers are not editable. Use setEditable() method to enable/disable editing.
-     * \see setEditable(), writeBlock()
+     * \see setEditable()
+     * \see writeBlock()
      */
     virtual bool isEditable() const { return false; }
 
@@ -451,7 +452,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note Only some providers support editing mode and even those may fail to turn
      * the underlying data source into editing mode, so it is necessary to check the return
      * value whether the operation was successful.
-     * \see isEditable(), writeBlock()
+     * \see isEditable()
+     * \see writeBlock()
      */
     virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ) return false; }
 
@@ -481,7 +483,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * Writing is supported only by some data providers. Provider has to be in editing mode
      * in order to allow write operations.
-     * \see isEditable(), setEditable()
+     * \see isEditable()
+     * \see setEditable()
      * \returns TRUE on success
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );

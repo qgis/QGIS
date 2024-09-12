@@ -43,6 +43,11 @@ from qgis.core import (Qgis, QgsApplication, QgsCoordinateReferenceSystem,
 from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
+try:
+    from owslib.util import Authentication
+except ImportError:
+    pass
+
 from MetaSearch import link_types
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
 from MetaSearch.dialogs.newconnectiondialog import NewConnectionDialog
@@ -408,14 +413,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """set bounding box from map extent"""
 
         crs = self.map.mapSettings().destinationCrs()
-        try:
-            crsid = int(crs.authid().split(':')[1])
-        except IndexError:  # no projection
-            crsid = 4326
+        crsid = crs.authid()
 
         extent = self.map.extent()
 
-        if crsid != 4326:  # reproject to EPSG:4326
+        if crsid != 'EPSG:4326':  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
             dest = QgsCoordinateReferenceSystem("EPSG:4326")
             xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
@@ -425,7 +427,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                                                extent.yMaximum()))
             minx, miny = minxy
             maxx, maxy = maxxy
-        else:  # 4326
+        else:  # EPSG:4326
             minx = extent.xMinimum()
             miny = extent.yMinimum()
             maxx = extent.xMaximum()

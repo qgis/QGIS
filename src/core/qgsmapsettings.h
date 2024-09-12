@@ -73,6 +73,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
 /**
  * \ingroup core
  * \brief The QgsMapSettings class contains configuration for rendering of the map.
+ *
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
  * In order to set up QgsMapSettings instance, it is necessary to set at least
@@ -292,7 +293,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns custom rendering flags. Layers might honour these to alter their rendering.
      * \returns custom flags strings, separated by ';'
      * \see setCustomRenderFlags()
-     * \deprecated use \see customRenderingFlags().
+     * \deprecated QGIS 3.40. Use \see customRenderingFlags().
      */
     Q_DECL_DEPRECATED QString customRenderFlags() const { return mCustomRenderFlags; }
 
@@ -300,7 +301,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \see customRenderFlags()
-     * \deprecated use \see setCustomRenderingFlag() instead.
+     * \deprecated QGIS 3.40. Use \see setCustomRenderingFlag() instead.
      */
     Q_DECL_DEPRECATED void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
@@ -511,7 +512,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /**
-     * Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+     * Computes an *estimated* conversion factor between layer and map units, where ``layerUnits × layerToMapUnits = mapUnits``
      * \param layer The layer
      * \param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      */
@@ -602,10 +603,18 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;
 
-    /* serialization */
-
+    /**
+     * Restore the map settings from a XML \a node.
+     *
+     * \see writeXml()
+     */
     void readXml( QDomNode &node );
 
+    /**
+     * Writes the map settings to an XML \a node.
+     *
+     * \see readXml()
+     */
     void writeXml( QDomNode &node, QDomDocument &doc );
 
     /**

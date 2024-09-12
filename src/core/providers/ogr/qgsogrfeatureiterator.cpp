@@ -123,10 +123,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   }
   QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
 
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
-  {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
-  }
+  mTransform = mRequest.calculateTransform( mSource->mCrs );
   try
   {
     mFilterRect = filterRectToSourceCrs( mTransform );

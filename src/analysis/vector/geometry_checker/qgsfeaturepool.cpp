@@ -32,9 +32,11 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   , mLayer( layer )
   , mGeometryType( layer->geometryType() )
   , mFeatureSource( std::make_unique<QgsVectorLayerFeatureSource>( layer ) )
+  , mLayerId( layer->id() )
   , mLayerName( layer->name() )
+  , mCrs( layer->crs() )
 {
-
+  Q_ASSERT( QThread::currentThread() == mLayer->thread() );
 }
 
 bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
@@ -71,9 +73,10 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
 
 QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
-  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Write );
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
   Q_UNUSED( feedback )
-  Q_ASSERT( QThread::currentThread() == qApp->thread() );
+  Q_ASSERT( mLayer );
+  Q_ASSERT( QThread::currentThread() == mLayer->thread() );
 
   mFeatureCache.clear();
   mIndex = QgsSpatialIndex();
@@ -107,7 +110,8 @@ QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect ) const
 
 QgsVectorLayer *QgsFeaturePool::layer() const
 {
-  Q_ASSERT( QThread::currentThread() == qApp->thread() );
+  if ( mLayer )
+    Q_ASSERT( QThread::currentThread() == mLayer->thread() );
 
   return mLayer.data();
 }
@@ -169,8 +173,7 @@ QString QgsFeaturePool::layerName() const
 
 QgsCoordinateReferenceSystem QgsFeaturePool::crs() const
 {
-  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
-  return mFeatureSource->crs();
+  return mCrs;
 }
 
 Qgis::GeometryType QgsFeaturePool::geometryType() const
@@ -180,6 +183,5 @@ Qgis::GeometryType QgsFeaturePool::geometryType() const
 
 QString QgsFeaturePool::layerId() const
 {
-  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
-  return mFeatureSource->id();
+  return mLayerId;
 }

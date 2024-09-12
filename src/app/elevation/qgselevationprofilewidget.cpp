@@ -57,6 +57,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsterrainprovider.h"
 #include "qgsprofilesourceregistry.h"
+#include "qgsnewnamedialog.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -417,6 +418,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mOptionsMenu->addAction( mSettingsAction );
 
+  mOptionsMenu->addSeparator();
+
+  mRenameProfileAction = new QAction( tr( "Rename Profile…" ), this );
+  connect( mRenameProfileAction, &QAction::triggered, this, &QgsElevationProfileWidget::renameProfileTriggered );
+  mOptionsMenu->addAction( mRenameProfileAction );
+
   mBtnOptions = new QToolButton();
   mBtnOptions->setAutoRaise( true );
   mBtnOptions->setToolTip( tr( "Options" ) );
@@ -479,6 +486,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mLayerTreeView->populateInitialLayers( QgsProject::instance() );
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
+  connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
 
   updateCanvasLayers();
 }
@@ -691,7 +699,7 @@ void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &, const 
 void QgsElevationProfileWidget::updatePlot()
 {
   mCanvas->setTolerance( mSettingsAction->toleranceSpinBox()->value() );
-  mCanvas->setCrs( mMainCanvas->mapSettings().destinationCrs() );
+  mCanvas->setCrs( QgsProject::instance()->crs3D() );
 
   if ( !mProfileCurve.isEmpty() )
   {
@@ -768,7 +776,7 @@ void QgsElevationProfileWidget::exportAsPdf()
   pageLayout.setMode( QPageLayout::FullPageMode );
   pdfWriter.setPageLayout( pageLayout );
   pdfWriter.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
-  pdfWriter.setResolution( 300 );
+  pdfWriter.setResolution( 1200 );
 
   QPainter p;
   if ( !p.begin( &pdfWriter ) )
@@ -880,7 +888,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
   file = QgsFileUtils::ensureFileNameHasExtension( file, QgsFileUtils::extensionsFromFilter( selectedFilter ) );
 
   QgsProfileRequest request( profileCurve.release() );
-  request.setCrs( mMainCanvas->mapSettings().destinationCrs() );
+  request.setCrs( QgsProject::instance()->crs3D() );
   request.setTolerance( mSettingsAction->toleranceSpinBox()->value() );
   request.setTransformContext( QgsProject::instance()->transformContext() );
   request.setTerrainProvider( QgsProject::instance()->elevationProperties()->terrainProvider() ? QgsProject::instance()->elevationProperties()->terrainProvider()->clone() : nullptr );
@@ -959,6 +967,18 @@ void QgsElevationProfileWidget::axisScaleLockToggled( bool active )
 {
   settingLockAxis->setValue( active );
   mCanvas->setLockAxisScales( active );
+}
+
+void QgsElevationProfileWidget::renameProfileTriggered()
+{
+  QgsNewNameDialog dlg( tr( "elevation profile" ), canvasName(), {}, {}, Qt::CaseSensitive, this );
+  dlg.setWindowTitle( tr( "Rename Elevation Profile" ) );
+  dlg.setHintString( tr( "Enter a new elevation profile title" ) );
+  dlg.setAllowEmptyName( false );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    setCanvasName( dlg.name() );
+  }
 }
 
 void QgsElevationProfileWidget::createOrUpdateRubberBands( )

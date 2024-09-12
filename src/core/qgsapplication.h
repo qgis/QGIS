@@ -78,6 +78,7 @@ class QgsDatabaseQueryLog;
 class QgsFontManager;
 class QgsSensorRegistry;
 class QgsProfileSourceRegistry;
+class QgsLabelingEngineRuleRegistry;
 
 /**
  * \ingroup core
@@ -158,8 +159,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     enum StyleSheetType
     {
-      Qt, //! StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
-      WebBrowser, //! StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
+      Qt, //!< StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
+      WebBrowser, //!< StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
     };
 
     static const char *QGIS_ORGANIZATION_NAME;
@@ -676,7 +677,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's settings registry, used for managing application settings.
      * \since QGIS 3.20
-     * \deprecated since QGIS 3.30 use QgsSettings::treeRoot() instead
+     * \deprecated QGIS 3.30. Use QgsSettings::treeRoot() instead.
      */
     Q_DECL_DEPRECATED static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE SIP_DEPRECATED;
 
@@ -931,6 +932,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Gets the registry of available labeling engine rules.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns registry of available project storage implementations.
      * \since QGIS 3.2
      */
@@ -964,17 +972,26 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() SIP_KEEPREFERENCE;
 
     /**
-     * This string is used to represent the value `NULL` throughout QGIS.
+     * Returns the string used to represent the value `NULL` throughout QGIS.
      *
-     * In general, when passing values around, prefer to use a null QVariant
-     * `QVariant( field.type() )` or `QVariant( QVariant::Int )`. This value
-     * should only be used in the final presentation step when showing values
+     * \note In general, when passing values around, prefer to use an invalid QVariant.
+     * The nullRepresentation() value should only be used in the final presentation step when showing values
      * in a widget or sending it to a web browser.
+     *
+     * \see setNullRepresentation()
+     * \see nullRepresentationChanged()
      */
     static QString nullRepresentation();
 
     /**
-     * \copydoc nullRepresentation()
+     * Sets the string used to represent the value `NULL` throughout QGIS.
+     *
+     * \note In general, when passing values around, prefer to use an invalid QVariant.
+     * The nullRepresentation() value should only be used in the final presentation step when showing values
+     * in a widget or sending it to a web browser.
+     *
+     * \see nullRepresentation()
+     * \see nullRepresentationChanged()
      */
     static void setNullRepresentation( const QString &nullRepresentation );
 
@@ -1072,9 +1089,11 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void customVariablesChanged();
 
-
     /**
-     * \copydoc nullRepresentation()
+     * Emitted when the string representing the `NULL` value is changed.
+     *
+     * \see setNullRepresentation()
+     * \see nullRepresentation()
      */
     void nullRepresentationChanged();
 
@@ -1135,6 +1154,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsBabelFormatRegistry *mGpsBabelFormatRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
       QgsScaleBarRendererRegistry *mScaleBarRendererRegistry = nullptr;
+      QgsLabelingEngineRuleRegistry *mLabelingEngineRuleRegistry = nullptr;
       QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;

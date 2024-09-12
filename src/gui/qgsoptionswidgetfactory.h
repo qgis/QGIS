@@ -113,7 +113,6 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
 
   public:
 
-    //! Constructor
     QgsOptionsWidgetFactory() = default;
 
     //! Constructor

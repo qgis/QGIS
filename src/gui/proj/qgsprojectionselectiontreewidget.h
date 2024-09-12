@@ -67,7 +67,7 @@ class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
  * QgsProjectionSelectionDialog dialog. In most cases it is more
  * suitable to use the compact QgsProjectionSelectionWidget widget.
  *
- * \see QgsProjectionSelectionDialog.
+ * \see QgsProjectionSelectionDialog
  * \see QgsProjectionSelectionWidget
  */
 
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Marks the current selected projection for push to front of recent projections list.
      *
-     * \deprecated Has no effect since QGIS 3.20
+     * \deprecated QGIS 3.40. Has no effect since QGIS 3.20.
      */
     Q_DECL_DEPRECATED void pushProjectionToFront() SIP_DEPRECATED;
 
@@ -206,7 +206,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Notifies others that the widget is now fully initialized, including deferred selection of projection.
-     * \deprecated no longer emitted
+     * \deprecated QGIS 3.40. No longer emitted.
      */
     Q_DECL_DEPRECATED void initialized() SIP_DEPRECATED;
 

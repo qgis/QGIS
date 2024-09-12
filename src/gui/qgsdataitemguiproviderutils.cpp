@@ -46,3 +46,16 @@ void QgsDataItemGuiProviderUtils::deleteConnectionsPrivate( const QStringList &c
   if ( firstParent )
     firstParent->refreshConnections();
 }
+
+const QString QgsDataItemGuiProviderUtils::uniqueName( const QString &name, const QStringList &connectionNames )
+{
+  int i = 0;
+  QString newConnectionName( name );
+  while ( connectionNames.contains( newConnectionName ) )
+  {
+    ++i;
+    newConnectionName = QObject::tr( "%1 (copy %2)" ).arg( name ) .arg( i );
+  }
+
+  return newConnectionName;
+}

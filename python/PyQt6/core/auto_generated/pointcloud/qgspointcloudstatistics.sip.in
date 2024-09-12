@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointcloudstatistics.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -34,9 +34,6 @@ Class used to store statistics of a point cloud dataset.
 %End
   public:
     QgsPointCloudStatistics();
-%Docstring
-Constructor
-%End
 
 
     int sampledPointsCount() const;
@@ -111,5 +108,5 @@ Creates a statistics object from the JSON object ``stats``
  *                                                                      *
  * src/core/pointcloud/qgspointcloudstatistics.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

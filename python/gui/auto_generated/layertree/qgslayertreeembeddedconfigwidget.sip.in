@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -44,5 +44,5 @@ Store changes made in the widget to the layer
  *                                                                      *
  * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

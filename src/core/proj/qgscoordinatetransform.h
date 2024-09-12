@@ -128,24 +128,20 @@ class CORE_EXPORT QgsCoordinateTransform
      * to \a destination coordinate reference system, with the specified
      * datum transforms (see QgsDatumTransform).
      *
-     * \deprecated will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination,
         int sourceDatumTransformId,
         int destinationDatumTransformId ) SIP_DEPRECATED;
 
-    /**
-     * Copy constructor
-     */
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
-
-    /**
-     * Assignment operator
-     */
     QgsCoordinateTransform &operator=( const QgsCoordinateTransform &o );
 
     ~QgsCoordinateTransform();
+
+    bool operator==( const QgsCoordinateTransform &other ) const;
+    bool operator!=( const QgsCoordinateTransform &other ) const;
 
     /**
      * Returns TRUE if it is theoretically possible to transform between \a source and \a destination CRSes.
@@ -379,6 +375,14 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isShortCircuited() const;
 
     /**
+     * Returns TRUE if the transform includes a vertical component, i.e. if both the sourceCrs()
+     * and destinationCrs() have a vertical axis.
+     *
+     * \since QGIS 3.40
+     */
+    bool hasVerticalComponent() const;
+
+    /**
      * Returns a Proj string representing the coordinate operation which will be used to transform
      * coordinates.
      *
@@ -525,7 +529,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setSourceDatumTransformId()
      * \see destinationDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED int sourceDatumTransformId() const SIP_DEPRECATED;
 
@@ -540,7 +544,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see sourceDatumTransformId()
      * \see setDestinationDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED void setSourceDatumTransformId( int datumId ) SIP_DEPRECATED;
 
@@ -555,7 +559,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setDestinationDatumTransformId()
      * \see sourceDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED int destinationDatumTransformId() const SIP_DEPRECATED;
 
@@ -570,7 +574,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see destinationDatumTransformId()
      * \see setSourceDatumTransformId()
      *
-     * \deprecated Unused on builds based on Proj 6.0 or later
+     * \deprecated QGIS 3.40. Unused on builds based on Proj 6.0 or later.
      */
     Q_DECL_DEPRECATED void setDestinationDatumTransformId( int datumId ) SIP_DEPRECATED;
 

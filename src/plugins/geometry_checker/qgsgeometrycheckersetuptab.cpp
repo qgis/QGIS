@@ -408,7 +408,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   QList<QgsVectorLayer *> nonEditableLayers;
   for ( QgsVectorLayer *layer : std::as_const( processLayers ) )
   {
-    if ( ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+    if ( ( layer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) == 0 )
     {
       nonEditableLayers.append( layer );
     }

@@ -42,6 +42,7 @@
 #include "qgsproviderutils.h"
 #include "qgscplerrorhandler_p.h"
 #include "qgsmetadatautils.h"
+#include "qgsgdalclouddataitems.h"
 
 #include <QImage>
 #include <QColor>
@@ -525,6 +526,10 @@ QString QgsGdalProvider::htmlMetadata() const
 
   QString myMetadata;
 
+  // Use the base dataset to display metadata, rather than potentially the
+  // warped VRT one, which might lack it.
+  GDALDatasetH dsForMetadata = mGdalBaseDataset;
+
   // GDAL Driver description
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + mDriverName + QStringLiteral( "</td></tr>\n" );
 
@@ -532,16 +537,16 @@ QString QgsGdalProvider::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( hDriver, GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
 
   // Dataset description
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( mGdalDataset ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( dsForMetadata ) ) + QStringLiteral( "</td></tr>\n" );
 
   // compression
-  QString compression = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
+  QString compression = QString( GDALGetMetadataItem( dsForMetadata, "COMPRESSION", "IMAGE_STRUCTURE" ) );
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Compression" ) + QStringLiteral( "</td><td>" ) + compression + QStringLiteral( "</td></tr>\n" );
 
   // Band details
-  for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); ++i )
+  for ( int i = 1; i <= GDALGetRasterCount( dsForMetadata ); ++i )
   {
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
+    GDALRasterBandH gdalBand = GDALGetRasterBand( dsForMetadata, i );
     char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band %1" ).arg( i ) + QStringLiteral( "</td><td>" );
     if ( GDALmetadata )
@@ -573,7 +578,7 @@ QString QgsGdalProvider::htmlMetadata() const
     myMetadata += tr( "Mask band (exposed as alpha band)" ) + QStringLiteral( "<br />\n" );
   }
 
-  char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
+  char **GDALmetadata = GDALGetMetadata( dsForMetadata, nullptr );
   if ( GDALmetadata )
   {
     QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
@@ -2134,7 +2139,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
  * pyramids (.ovr) are to be created. If no parameter is passed in
  * it will default to nearest neighbor resampling.
  *
- * \param tryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
+ * \param tryInternalFlag Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
  * \return null string on success, otherwise a string specifying error
  */
 QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
@@ -2733,7 +2738,7 @@ bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 }
 
 
-QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   Q_UNUSED( flags );
   return new QgsGdalProvider( uri, options );
@@ -4625,6 +4630,14 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
 QList<Qgis::LayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Raster };
+}
+
+QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
+{
+  return
+  {
+    new QgsGdalCloudDataItemProvider()
+  };
 }
 
 int QgsGdalProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names,

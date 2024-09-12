@@ -160,7 +160,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * \param filteredFeatures  A list of feature ids
      *
-     * \deprecated since filterFeatures is handled in the attribute filter model itself
+     * \deprecated QGIS 3.40. Since filterFeatures is handled in the attribute filter model itself.
     */
     Q_DECL_DEPRECATED void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 

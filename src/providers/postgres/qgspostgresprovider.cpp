@@ -100,7 +100,7 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 
 
 QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
   , mShared( new QgsPostgresSharedData )
 {
@@ -134,7 +134,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     {
       mCheckPrimaryKeyUnicity = true;
     }
-    if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+    if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
     {
       mCheckPrimaryKeyUnicity = false;
     }
@@ -155,7 +155,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
 
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
-  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mUseEstimatedMetadata = true;
   }
@@ -174,7 +174,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( Qgis::DataProviderReadFlag::SkipCredentialsRequest ) );
   if ( !mConnectionRO )
   {
     return;
@@ -311,7 +311,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   // Constructor is called in another thread than the thread where the provider will live,
   // so we disconnect the DB, connection will be done later in the provider thread when needed
-  if ( flags.testFlag( QgsDataProvider::ParallelThreadLoading ) )
+  if ( flags.testFlag( Qgis::DataProviderReadFlag::ParallelThreadLoading ) )
     disconnectDb();
 }
 
@@ -334,7 +334,7 @@ QgsPostgresConn *QgsPostgresProvider::connectionRO() const
     return mTransaction->connection();
 
   if ( !mConnectionRO )
-    mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( QgsDataProvider::SkipCredentialsRequest ) );
+    mConnectionRO = QgsPostgresConn::connectDb( mUri, true, true, false, !mReadFlags.testFlag( Qgis::DataProviderReadFlag::SkipCredentialsRequest ) );
 
   return mConnectionRO;
 }
@@ -1490,20 +1490,12 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 {
   QgsDebugMsgLevel( QStringLiteral( "Checking for permissions on the relation" ), 2 );
 
-  mEnabledCapabilities = QgsVectorDataProvider::Capability::ReloadData;
+  mEnabledCapabilities = Qgis::VectorProviderCapability::ReloadData;
 
-  QString sql;
   QgsPostgresResult testAccess;
 
-  bool forceReadOnly = ( mReadFlags & QgsDataProvider::ForceReadOnly );
+  bool forceReadOnly = ( mReadFlags & Qgis::DataProviderReadFlag::ForceReadOnly );
   bool inRecovery = false;
-  sql = QStringLiteral( "SELECT "
-                        "has_table_privilege(%1,'SELECT'),"   // 0
-                        "pg_is_in_recovery(),"                // 1
-                        "current_schema(), "                  // 2
-                        "has_table_privilege(%1,'INSERT'),"   // 3
-                        "has_table_privilege(%1,'DELETE')" ) // 4
-        .arg( quotedValue( mQuery ) );
 
   if ( !mIsQuery )
   {
@@ -1512,26 +1504,40 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     // the latter flag is here just for compatibility
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
+      mEnabledCapabilities |= Qgis::VectorProviderCapability::SelectAtId;
     }
+
+    QString sql = QStringLiteral(
+                    "SELECT "
+                    "has_table_privilege(%1,'SELECT')," // 0 (select priv)
+                    "pg_is_in_recovery(),"              // 1 (in recovery)
+                    "current_schema() "                 // 2 (current schema)
+                  ).arg( quotedValue( mQuery ) );
+
 
     if ( connectionRO()->pgVersion() >= 80400 )
     {
-      sql += QString( ",has_any_column_privilege(%1,'UPDATE')" // 5
-                      ",%2" ) // 6
-             .arg( quotedValue( mQuery ),
-                   mGeometryColumn.isNull()
-                   ? QStringLiteral( "'f'" )
-                   : QStringLiteral( "has_column_privilege(%1,%2,'UPDATE')" )
-                   .arg( quotedValue( mQuery ),
-                         quotedValue( mGeometryColumn ) )
-                 );
+      sql += QString(
+               ",has_any_column_privilege(%1,'INSERT')" // 3 (insert priv)
+               ",has_table_privilege(%1,'DELETE')"      // 4 (delete priv)
+               ",has_any_column_privilege(%1,'UPDATE')" // 5 (update priv)
+               ",%2"                                    // 6 (geom upd priv)
+             ).arg( quotedValue( mQuery ),
+                    mGeometryColumn.isNull()
+                    ? QStringLiteral( "'f'" )
+                    : QStringLiteral( "has_column_privilege(%1,%2,'UPDATE')" )
+                    .arg( quotedValue( mQuery ),
+                          quotedValue( mGeometryColumn ) )
+                  );
     }
     else
     {
-      sql += QString( ",has_table_privilege(%1,'UPDATE')" // 5
-                      ",has_table_privilege(%1,'UPDATE')" ) // 6
-             .arg( quotedValue( mQuery ) );
+      sql += QString(
+               ",has_table_privilege(%1,'INSERT')" // 3 (insert priv)
+               ",has_table_privilege(%1,'DELETE')" // 4 (delete priv)
+               ",has_table_privilege(%1,'UPDATE')" // 5 (update priv)
+               ",has_table_privilege(%1,'UPDATE')" // 6 (geom col priv)
+             ).arg( quotedValue( mQuery ) );
     }
 
     testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
@@ -1574,25 +1580,25 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       if ( testAccess.PQgetvalue( 0, 3 ) == QLatin1String( "t" ) )
       {
         // INSERT
-        mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
       }
 
       if ( testAccess.PQgetvalue( 0, 4 ) == QLatin1String( "t" ) )
       {
         // DELETE
-        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::FastTruncate;
       }
 
       if ( testAccess.PQgetvalue( 0, 5 ) == QLatin1String( "t" ) )
       {
         // UPDATE
-        mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
       }
 
       if ( testAccess.PQgetvalue( 0, 6 ) == QLatin1String( "t" ) )
       {
         // UPDATE (geom column specific)
-        mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
       }
 
       // TODO: merge this with the previous query
@@ -1606,7 +1612,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
       if ( testAccess.PQresultStatus() == PGRES_TUPLES_OK && testAccess.PQntuples() == 1 )
       {
-        mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes | QgsVectorDataProvider::RenameAttributes;
+        mEnabledCapabilities |= Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes;
       }
     }
   }
@@ -1650,27 +1656,27 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
+      mEnabledCapabilities = Qgis::VectorProviderCapability::SelectAtId;
     }
   }
 
   // supports geometry simplification on provider side
-  mEnabledCapabilities |= ( QgsVectorDataProvider::SimplifyGeometries | QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation );
+  mEnabledCapabilities |= ( Qgis::VectorProviderCapability::SimplifyGeometries | Qgis::VectorProviderCapability::SimplifyGeometriesWithTopologicalValidation );
 
   //supports transactions
-  mEnabledCapabilities |= QgsVectorDataProvider::TransactionSupport;
+  mEnabledCapabilities |= Qgis::VectorProviderCapability::TransactionSupport;
 
   // supports circular geometries
-  mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
+  mEnabledCapabilities |= Qgis::VectorProviderCapability::CircularGeometries;
 
   // supports layer metadata
-  mEnabledCapabilities |= QgsVectorDataProvider::ReadLayerMetadata;
+  mEnabledCapabilities |= Qgis::VectorProviderCapability::ReadLayerMetadata;
 
-  if ( ( mEnabledCapabilities & QgsVectorDataProvider::ChangeGeometries ) &&
-       ( mEnabledCapabilities & QgsVectorDataProvider::ChangeAttributeValues ) &&
+  if ( ( mEnabledCapabilities & Qgis::VectorProviderCapability::ChangeGeometries ) &&
+       ( mEnabledCapabilities & Qgis::VectorProviderCapability::ChangeAttributeValues ) &&
        mSpatialColType != SctTopoGeometry )
   {
-    mEnabledCapabilities |= QgsVectorDataProvider::ChangeFeatures;
+    mEnabledCapabilities |= Qgis::VectorProviderCapability::ChangeFeatures;
   }
 
   return true;
@@ -1761,7 +1767,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
             mPrimaryKeyType = PktTid;
 
             QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
-            mEnabledCapabilities &= ~( QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::ChangeFeatures );
+            mEnabledCapabilities &= ~( Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::ChangeGeometries | Qgis::VectorProviderCapability::ChangeFeatures );
           }
         }
 
@@ -3728,7 +3734,7 @@ QgsAttributeList QgsPostgresProvider::attributeIndexes() const
   return lst;
 }
 
-QgsVectorDataProvider::Capabilities QgsPostgresProvider::capabilities() const
+Qgis::VectorProviderCapabilities QgsPostgresProvider::capabilities() const
 {
   return mEnabledCapabilities;
 }
@@ -4092,7 +4098,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   // Trust the datasource config means that we used requested geometry type and srid
   // We only need to get the spatial column type
-  if ( ( mReadFlags & QgsDataProvider::FlagTrustDataSource ) &&
+  if ( ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource ) &&
        mRequestedGeomType != Qgis::WkbType::Unknown &&
        !mRequestedSrid.isEmpty() )
   {
@@ -4863,7 +4869,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  Qgis::DataProviderReadFlags flags;
   std::unique_ptr< QgsPostgresProvider > provider = std::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions, flags );
   if ( !provider->isValid() )
   {
@@ -5390,7 +5396,7 @@ bool QgsPostgresProvider::hasMetadata() const
   return hasMetadata;
 }
 
-QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsPostgresProvider( uri, options, flags );
 }

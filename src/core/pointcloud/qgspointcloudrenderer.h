@@ -58,10 +58,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
                                 double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = nullptr );
 
-    //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh ) = delete;
-
-    //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloudRenderContext &operator=( const QgsPointCloudRenderContext & ) = delete;
 
     /**
@@ -343,9 +340,6 @@ class CORE_EXPORT QgsPointCloudRenderer
 
   public:
 
-    /**
-     * Constructor for QgsPointCloudRenderer.
-     */
     QgsPointCloudRenderer() = default;
 
     virtual ~QgsPointCloudRenderer() = default;

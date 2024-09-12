@@ -244,7 +244,7 @@
 
 /*
  * Define Python special method (bool, repr, etc.) using the given method or code
- * sipify.pl will create a dedicated python file named according to the class
+ * sipify.py will create a dedicated python file named according to the class
  * and located in python/{module}/auto_additions/{classname}.py
  * a simple method name can be provided (e.g. isValid) and sipify will create the proper code
  * or some Python code can be provided:

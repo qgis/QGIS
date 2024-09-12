@@ -232,42 +232,42 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
 
     default:
 
-      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+      if ( value.userType() == qMetaTypeId<QgsProperty>() )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProperty" ) );
         const QDomElement propertyElem = QgsXmlUtils::writeVariant( value.value< QgsProperty >().toVariant(), doc );
         element.appendChild( propertyElem );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
+      else if ( value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsCoordinateReferenceSystem" ) );
         const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
         crs.writeXml( element, doc );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+      else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsGeometry" ) );
         const QgsGeometry geom = value.value< QgsGeometry >();
         element.setAttribute( QStringLiteral( "value" ), geom.asWkt() );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+      else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsProcessingOutputLayerDefinition >().toVariant(), doc );
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+      else if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsProcessingFeatureSourceDefinition >().toVariant(), doc );
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingFeatureSourceDefinition" ) );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsRemappingSinkDefinition" ) )
+      else if ( value.userType() == qMetaTypeId<QgsRemappingSinkDefinition>() )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsRemappingSinkDefinition >().toVariant(), doc );
         element.appendChild( valueElement );

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/proj/qgsprojectionselectionwidget.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -171,7 +171,7 @@ Sets ``filters`` for the available CRS.
 
   signals:
 
-    void crsChanged( const QgsCoordinateReferenceSystem & );
+    void crsChanged( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Emitted when the selected CRS is changed
 %End
@@ -225,5 +225,5 @@ Opens the dialog for selecting a new CRS
  *                                                                      *
  * src/gui/proj/qgsprojectionselectionwidget.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

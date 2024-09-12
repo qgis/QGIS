@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsreferencedgeometry.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -67,9 +67,6 @@ and ``crs``.
 %End
 
     QgsReferencedRectangle();
-%Docstring
-Constructor for QgsReferencedRectangle.
-%End
 
     operator QVariant() const;
 
@@ -103,9 +100,6 @@ and ``crs``.
 %End
 
     QgsReferencedPointXY();
-%Docstring
-Constructor for QgsReferencedPointXY.
-%End
 
     operator QVariant() const;
 
@@ -141,9 +135,6 @@ and ``crs``.
 %End
 
     QgsReferencedGeometry();
-%Docstring
-Constructor for QgsReferencedGeometry.
-%End
 
     operator QVariant() const;
 
@@ -175,5 +166,5 @@ Construct a new QgsReferencedGeometry from referenced ``rectangle``
  *                                                                      *
  * src/core/geometry/qgsreferencedgeometry.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

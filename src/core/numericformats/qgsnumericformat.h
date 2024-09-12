@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsexpressioncontext.h"
 
 #include <QString>
 #include <QVariantMap>
@@ -43,7 +44,6 @@ class CORE_EXPORT QgsNumericFormatContext
      * The context will be populated based on the user's current locale settings.
      */
     QgsNumericFormatContext();
-
 
     /**
      * Returns the thousands separator character.
@@ -222,6 +222,22 @@ class CORE_EXPORT QgsNumericFormatContext
       mInterpretation = interpretation;
     }
 
+    /**
+     * Returns the expression context to use when evaluating QgsExpressions.
+     *
+     * \see setExpressionContext()
+     * \since QGIS 3.40
+     */
+    QgsExpressionContext expressionContext() const;
+
+    /**
+     * Sets the expression \a context to use when evaluating QgsExpressions.
+     *
+     * \see expressionContext()
+     * \since QGIS 3.40
+     */
+    void setExpressionContext( const QgsExpressionContext &context );
+
   private:
     QChar mThousandsSep;
     QChar mDecimalSep;
@@ -232,6 +248,8 @@ class CORE_EXPORT QgsNumericFormatContext
     QChar mExponential;
 
     Interpretation mInterpretation = Interpretation::Generic;
+
+    QgsExpressionContext mExpressionContext;
 };
 
 #ifdef SIP_RUN
@@ -243,6 +261,7 @@ class CORE_EXPORT QgsNumericFormatContext
 #include <qgspercentagenumericformat.h>
 #include <qgsscientificnumericformat.h>
 #include <qgscoordinatenumericformat.h>
+#include <qgsexpressionbasednumericformat.h>
 % End
 #endif
 
@@ -277,6 +296,8 @@ class CORE_EXPORT QgsNumericFormat
       sipType = sipType_QgsBasicNumericFormat;
     else if ( dynamic_cast< QgsFractionNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsFractionNumericFormat;
+    else if ( dynamic_cast< QgsExpressionBasedNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsExpressionBasedNumericFormat;
     else
       sipType = NULL;
     SIP_END
@@ -284,9 +305,6 @@ class CORE_EXPORT QgsNumericFormat
 
   public:
 
-    /**
-      * Default constructor
-      */
     QgsNumericFormat() = default;
 
     virtual ~QgsNumericFormat() = default;

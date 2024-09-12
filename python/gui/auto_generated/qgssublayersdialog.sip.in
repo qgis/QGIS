@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgssublayersdialog.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -12,8 +12,9 @@ class QgsSublayersDialog : QDialog
 {
 %Docstring(signature="appended")
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
 %TypeHeaderCode
@@ -71,8 +72,9 @@ Construct a new QgsSublayersDialog object - a dialog to select which sub layers 
 :param fl: window flags
 :param dataSourceUri: data source URI
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
     ~QgsSublayersDialog();
@@ -122,5 +124,5 @@ Returns column with count or -1
  *                                                                      *
  * src/gui/qgssublayersdialog.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

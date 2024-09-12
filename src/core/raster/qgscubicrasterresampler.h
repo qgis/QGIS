@@ -33,9 +33,6 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
 {
   public:
 
-    /**
-     * Constructor for QgsCubicRasterResampler.
-     */
     QgsCubicRasterResampler() = default;
     QgsCubicRasterResampler *clone() const override SIP_FACTORY;
 

@@ -43,6 +43,11 @@ QString QgsShortestPathPointToLayerAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm computes optimal (shortest or fastest) route between given start point and multiple end points defined by point vector layer." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsShortestPathPointToLayerAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsShortestPathPointToLayerAlgorithm *QgsShortestPathPointToLayerAlgorithm::createInstance() const
 {
   return new QgsShortestPathPointToLayerAlgorithm();

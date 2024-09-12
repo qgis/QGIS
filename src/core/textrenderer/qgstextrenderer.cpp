@@ -29,23 +29,11 @@
 #include "qgstextmetrics.h"
 #include "qgstextrendererutils.h"
 #include "qgsgeos.h"
-
+#include "qgspainting.h"
 #include <optional>
 
 #include <QTextBoundaryFinder>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
-
-static void _fixQPictureDPI( QPainter *p )
-{
-  // QPicture makes an assumption that we drawing to it with system DPI.
-  // Then when being drawn, it scales the painter. The following call
-  // negates the effect. There is no way of setting QPicture's DPI.
-  // See QTBUG-20361
-  p->scale( static_cast< double >( qt_defaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
-}
 
 Qgis::TextHorizontalAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
 {
@@ -731,7 +719,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio, component.dpiRatio );
-  _fixQPictureDPI( p );
+  QgsPainting::applyScaleFixForQPictureDpi( p );
   p->drawPicture( 0, 0, buffPict );
 
   return advance / scaleFactor;
@@ -1408,7 +1396,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
       // scale for any print output or image saving @ specific dpi
       p->scale( component.dpiRatio, component.dpiRatio );
-      _fixQPictureDPI( p );
+      QgsPainting::applyScaleFixForQPictureDpi( p );
       p->drawPicture( 0, 0, shapePict );
       p->setCompositionMode( QPainter::CompositionMode_SourceOver ); // just to be sure
       break;
@@ -1931,7 +1919,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         case Qgis::TextRenderFormat::AlwaysOutlines:
         {
           // draw outlined text
-          _fixQPictureDPI( context.painter() );
+          QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
           context.painter()->drawPicture( 0, 0, textPict );
           break;
         }
@@ -2211,7 +2199,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
           {
             // draw outlined text
             context.painter()->translate( 0, currentBlockYOffset );
-            _fixQPictureDPI( context.painter() );
+            QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
             context.painter()->drawPicture( 0, 0, textPict );
             currentBlockYOffset += partYOffset;
             break;
@@ -2252,16 +2240,21 @@ double QgsTextRenderer::calculateScaleFactorForFormat( const QgsRenderContext &c
 
   const double pixelSize = context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() );
 
-  // THESE THRESHOLD MAY NEED TWEAKING!
+  // THESE THRESHOLDS MAY NEED TWEAKING!
+
+  // NOLINTBEGIN(bugprone-branch-clone)
 
   // for small font sizes we need to apply a growth scaling workaround designed to stablise the rendering of small font sizes
+  // we scale the painter up so that we render small text at 200 pixel size and let the painter scaling handle making it the correct size
   if ( pixelSize < 50 )
-    return FONT_WORKAROUND_SCALE;
-  //... but for font sizes we might run into https://bugreports.qt.io/browse/QTBUG-98778, which messes up the spacing between words for large fonts!
+    return 200 / pixelSize;
+  //... but for large font sizes we might run into https://bugreports.qt.io/browse/QTBUG-98778, which messes up the spacing between words for large fonts!
   // so instead we scale down the painter so that we render the text at 200 pixel size and let painter scaling handle making it the correct size
   else if ( pixelSize > 200 )
     return 200 / pixelSize;
   else
     return 1.0;
+
+  // NOLINTEND(bugprone-branch-clone)
 }
 

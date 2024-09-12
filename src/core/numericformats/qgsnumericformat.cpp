@@ -45,6 +45,16 @@ QgsNumericFormatContext::QgsNumericFormatContext()
 #endif
 }
 
+QgsExpressionContext QgsNumericFormatContext::expressionContext() const
+{
+  return mExpressionContext;
+}
+
+void QgsNumericFormatContext::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+}
+
 int QgsNumericFormat::sortKey()
 {
   return DEFAULT_SORT_KEY;

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayereditbuffer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,6 +13,9 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsVectorLayerEditBuffer : QObject
 {
+%Docstring(signature="appended")
+Stores queued vector layer edit operations prior to committing changes to the layer's data provider.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorlayereditbuffer.h"
@@ -226,7 +229,14 @@ Emitted when modifications has been done on layer
 %End
 
     void featureAdded( QgsFeatureId fid );
+%Docstring
+Emitted when a feature has been added to the buffer
+%End
+
     void featureDeleted( QgsFeatureId fid );
+%Docstring
+Emitted when a feature was deleted from the buffer
+%End
 
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
 %Docstring
@@ -236,9 +246,20 @@ Emitted when a feature's geometry is changed.
 :param geom: new feature geometry
 %End
 
-    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
+    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+%Docstring
+Emitted when a feature's attribute value has been changed.
+%End
+
     void attributeAdded( int idx );
+%Docstring
+Emitted when an attribute was added to the buffer.
+%End
+
     void attributeDeleted( int idx );
+%Docstring
+Emitted when an attribute was deleted from the buffer.
+%End
 
     void attributeRenamed( int idx, const QString &newName );
 %Docstring
@@ -250,9 +271,13 @@ Emitted when an attribute has been renamed
 
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
 %Docstring
-Signals emitted after committing changes
+Emitted after attribute deletion has been committed to the layer.
 %End
+
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
+%Docstring
+Emitted after attribute addition has been committed to the layer.
+%End
 
     void committedAttributesRenamed( const QString &layerId, const QgsFieldNameMap &renamedAttributes );
 %Docstring
@@ -261,17 +286,30 @@ Emitted after committing an attribute rename
 :param layerId: ID of layer
 :param renamedAttributes: map of field index to new name
 %End
+
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
+%Docstring
+Emitted after feature addition has been committed to the layer.
+%End
+
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
+%Docstring
+Emitted after feature removal has been committed to the layer.
+%End
+
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
+%Docstring
+Emitted after feature attribute value changes have been committed to the layer.
+%End
+
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
+%Docstring
+Emitted after feature geometry changes have been committed to the layer.
+%End
 
   protected:
 
     QgsVectorLayerEditBuffer();
-%Docstring
-Constructor for QgsVectorLayerEditBuffer
-%End
 
     void updateFeatureGeometry( QgsFeature &f );
 %Docstring
@@ -321,5 +359,5 @@ Updates an index in an attribute map to a new value (for updates of changed attr
  *                                                                      *
  * src/core/vector/qgsvectorlayereditbuffer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

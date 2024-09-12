@@ -120,6 +120,7 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setFont( font, QsciLexerPython::DoubleQuotedString );
 
   pyLexer->setColor( defaultColor, QsciLexerPython::Default );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ), QsciLexerPython::UnclosedString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Class ), QsciLexerPython::ClassName );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Method ), QsciLexerPython::FunctionMethodName );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerPython::Number );
@@ -130,7 +131,9 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Keyword ), QsciLexerPython::Keyword );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Decoration ), QsciLexerPython::Decorator );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedString );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedFString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedString );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedFString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 

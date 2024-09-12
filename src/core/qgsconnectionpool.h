@@ -70,6 +70,9 @@ class QgsConnectionPoolGroup
       QTime lastUsedTime;
     };
 
+    /**
+     * Constructor for QgsConnectionPoolGroup, with the specified connection info.
+     */
     QgsConnectionPoolGroup( const QString &ci )
       : connInfo( ci )
       , sem( QgsApplication::instance()->maxConcurrentConnectionsPerPool() + CONN_POOL_SPARE_CONNECTIONS )
@@ -84,9 +87,7 @@ class QgsConnectionPoolGroup
       }
     }
 
-    //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup( const QgsConnectionPoolGroup &other ) = delete;
-    //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup &operator=( const QgsConnectionPoolGroup &other ) = delete;
 
     /**

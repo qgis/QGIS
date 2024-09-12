@@ -173,7 +173,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   mFileWidget->setFilePath( QString() );
   txtLayerName->setText( QString() );
 
-  if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
   {
     accept();
   }
@@ -978,7 +978,7 @@ bool QgsDelimitedTextFileScanTask::run()
   QgsDelimitedTextProvider provider(
     mDataSource,
     QgsDataProvider::ProviderOptions(),
-    QgsDataProvider::ReadFlag::SkipFeatureCount | QgsDataProvider::ReadFlag::SkipGetExtent | QgsDataProvider::ReadFlag::SkipFullScan );
+    Qgis::DataProviderReadFlag::SkipFeatureCount | Qgis::DataProviderReadFlag::SkipGetExtent | Qgis::DataProviderReadFlag::SkipFullScan );
 
   connect( &mFeedback, &QgsFeedback::processedCountChanged, this, &QgsDelimitedTextFileScanTask::processedCountChanged );
 

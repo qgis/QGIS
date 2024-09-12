@@ -59,6 +59,14 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
   }
 
+  // Draw current tool
+  if ( QgsAdvancedDigitizingTool *tool =  mAdvancedDigitizingDockWidget->tool() )
+  {
+    // if a tool is active in the dock, then delegate to that tool to handle decorating the canvas instead of using the default decorations
+    tool->paint( painter );
+    return;
+  }
+
   // Use visible polygon rather than extent to properly handle rotated maps
   QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
   const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();

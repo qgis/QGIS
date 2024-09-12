@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstemporalutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -80,7 +80,7 @@ support.
 :param feedback: optional feedback object for progress reports and cancellation checks
 
 :return: - ``True`` if the export was successful.
-         - error: will be set to a descriptive error message if the export fails
+         - error: a descriptive error message if the export fails
 %End
 
     static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval &interval );
@@ -103,7 +103,6 @@ the number of days in the current month.
 
 :return: The calculated datetime for the frame.
 
-
 .. versionadded:: 3.18
 %End
 
@@ -117,8 +116,8 @@ Calculates a complete list of datetimes between ``start`` and ``end``, using the
 :param maxValues: maximum number of values to return, or -1 to return all values
 
 :return: - calculated list of date times
-         - ok: will be set to ``True`` if ``duration`` was successfully parsed and date times could be calculated
-         - maxValuesExceeded: will be set to ``True`` if the maximum number of values to return was exceeded
+         - ok: ``True`` if ``duration`` was successfully parsed and date times could be calculated
+         - maxValuesExceeded: ``True`` if the maximum number of values to return was exceeded
 
 .. versionadded:: 3.20
 %End
@@ -132,8 +131,8 @@ Calculates a complete list of datetimes from a ISO8601 ``string`` containing a d
 :param maxValues: maximum number of values to return, or -1 to return all values
 
 :return: - calculated list of date times
-         - ok: will be set to ``True`` if ``string`` was successfully parsed and date times could be calculated
-         - maxValuesExceeded: will be set to ``True`` if the maximum number of values to return was exceeded
+         - ok: ``True`` if ``string`` was successfully parsed and date times could be calculated
+         - maxValuesExceeded: ``True`` if the maximum number of values to return was exceeded
 
 .. versionadded:: 3.20
 %End
@@ -146,5 +145,5 @@ Calculates a complete list of datetimes from a ISO8601 ``string`` containing a d
  *                                                                      *
  * src/core/qgstemporalutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

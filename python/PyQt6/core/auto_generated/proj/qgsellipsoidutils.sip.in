@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgsellipsoidutils.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -78,9 +78,7 @@ Returns a list of all known celestial bodies.
 
    This method requires PROJ 8.1 or later
 
-
 :raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
-
 
 .. versionadded:: 3.20
 %End
@@ -93,5 +91,5 @@ Returns a list of all known celestial bodies.
  *                                                                      *
  * src/core/proj/qgsellipsoidutils.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

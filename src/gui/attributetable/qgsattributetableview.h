@@ -161,7 +161,6 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
   signals:
 
     /**
-     * \brief
      * Emitted in order to provide a hook to add additional* menu entries to the context menu.
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.
@@ -177,7 +176,10 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
      */
     void columnResized( int column, int width );
 
-    void finished();
+    /**
+     * \deprecated QGIS 3.40. No longer used.
+     */
+    Q_DECL_DEPRECATED void finished() SIP_DEPRECATED;
 
   public slots:
     void repaintRequested( const QModelIndexList &indexes );

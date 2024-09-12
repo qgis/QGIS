@@ -27,8 +27,10 @@ class QgsRasterBlock;
 /**
  * \ingroup core
  * \brief Stores digital elevation model in a raster image which may get updated
- * as a part of map layer rendering process. Afterwards the elevations can
- * be used for post-processing effects of the rendered color map image.
+ * as a part of map layer rendering process.
+ *
+ * Afterwards the elevations can be used for post-processing effects of the
+ * rendered color map image.
  *
  * Elevations are encoded as colors in QImage, thanks to this it is not
  * only possible to set elevation for each pixel, but also to use QPainter
@@ -43,7 +45,6 @@ class CORE_EXPORT QgsElevationMap
 {
   public:
 
-    //! Default constructor
     QgsElevationMap() = default;
 
     //! Constructs an elevation map with the given width and height
@@ -58,7 +59,6 @@ class CORE_EXPORT QgsElevationMap
      */
     explicit QgsElevationMap( const QImage &image );
 
-    //! Copy constructor
     QgsElevationMap( const QgsElevationMap &other );
 
     /**

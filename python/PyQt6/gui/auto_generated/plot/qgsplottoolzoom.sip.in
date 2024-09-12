@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/plot/qgsplottoolzoom.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -62,5 +62,5 @@ Constructor for QgsPlotToolZoom, with the associated ``canvas``.
  *                                                                      *
  * src/gui/plot/qgsplottoolzoom.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

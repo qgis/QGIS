@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstablecell.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,9 +27,6 @@ Constructor for QgsTableCell, with the specified ``content``.
 %End
 
     QgsTableCell( const QgsTableCell &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsTableCell();
 
@@ -166,6 +163,39 @@ Sets the vertical ``alignment`` for text in the cell.
 .. versionadded:: 3.16
 %End
 
+    void setSpan( int rowSpan, int columnSpan );
+%Docstring
+Sets the row and column span for the cell.
+
+.. seealso:: :py:func:`rowSpan`
+
+.. seealso:: :py:func:`columnSpan`
+
+.. versionadded:: 3.40
+%End
+
+    int rowSpan() const;
+%Docstring
+Returns the row span for the cell.
+
+.. seealso:: :py:func:`columnSpan`
+
+.. seealso:: :py:func:`setSpan`
+
+.. versionadded:: 3.40
+%End
+
+    int columnSpan() const;
+%Docstring
+Returns the column span for the cell.
+
+.. seealso:: :py:func:`rowSpan`
+
+.. seealso:: :py:func:`setSpan`
+
+.. versionadded:: 3.40
+%End
+
     QVariantMap properties( const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the properties of the cell.
@@ -200,5 +230,5 @@ typedef QVector<QVector<QgsTableCell>> QgsTableContents;
  *                                                                      *
  * src/core/qgstablecell.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
