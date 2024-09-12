@@ -17,6 +17,8 @@
 #ifndef QGSMAPLAYERUTILS_H
 #define QGSMAPLAYERUTILS_H
 
+#define MAXIMUM_OPENSTREETMAP_TILES_FETCH  5000
+
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgis.h"
