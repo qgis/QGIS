@@ -125,9 +125,9 @@ bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const Q
                                 QCryptographicHash::Sha256 );
 
   const QByteArray signature = QMessageAuthenticationCode::hash( stringToSign, signingKey, QCryptographicHash::Sha256 ).toHex();
-  const QByteArray authorizationHeader = QString("%1 Credential=%2/%3/%4/s3/aws4_request, SignedHeaders=%5, Signature=%6")
-                                             .arg(encryptionMethod, username, date, region, headerList, signature)
-                                             .toUtf8();
+  const QByteArray authorizationHeader = QString( "%1 Credential=%2/%3/%4/s3/aws4_request, SignedHeaders=%5, Signature=%6" )
+                                         .arg( encryptionMethod, username, date, region, headerList, signature )
+                                         .toUtf8();
 
   request.setRawHeader( QByteArray( "Host" ), request.url().host().toUtf8() );
   request.setRawHeader( QByteArray( "X-Amz-Date" ), dateTime );
