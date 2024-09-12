@@ -920,6 +920,8 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
     layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
     layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
+    layerElement.setAttribute( QStringLiteral( "autoRefreshMode" ), qgsEnumValueToKey( mAutoRefreshMode ) );
+    layerElement.setAttribute( QStringLiteral( "autoRefreshInterval" ), QString::number( autoRefreshInterval() ) );
   }
 
   if ( categories.testFlag( Symbology3D ) )
@@ -2544,6 +2546,11 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     {
       setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
       setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+    }
+    if ( layerElement.hasAttribute( QStringLiteral( "autoRefreshMode" ) ) )
+    {
+      setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
+      setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshInterval" ) ).toInt() );
     }
   }
 
