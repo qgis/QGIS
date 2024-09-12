@@ -88,6 +88,13 @@ class CORE_EXPORT QgsScaleBarRenderer
       //! Scalebar renderer flags
       Flags flags;
 
+      /**
+       * Returns TRUE if the context has valid settings.
+       *
+       * \since QGIS 3.40
+       */
+      bool isValid() const;
+
     };
 
     QgsScaleBarRenderer() = default;
