@@ -175,9 +175,9 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
     }
 
     int rootTileCount = 1;
-    if ( crsString == QStringLiteral( "EPSG:4326" ) )
+    if ( crsString == QLatin1String( "EPSG:4326" ) )
       rootTileCount = 2;
-    else if ( crsString != QStringLiteral( "EPSG:3857" ) )
+    else if ( crsString != QLatin1String( "EPSG:3857" ) )
       error.append( QObject::tr( "Unhandled CRS: %1" ).arg( crsString ) );
 
     QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
@@ -218,7 +218,7 @@ bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
     return false;
   // We operate with XYZ-style tile coordinates, but the availability array may
   // be given in TMS-style
-  if ( mTileScheme == QStringLiteral( "tms" ) )
+  if ( mTileScheme == QLatin1String( "tms" ) )
     tile = tileToTms( tile );
   for ( auto &range : mAvailableTiles[tile.zoomLevel()] )
   {

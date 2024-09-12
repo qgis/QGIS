@@ -2308,9 +2308,9 @@ const QMap<QString, QVariant> QgsAuthConfigurationStorageDb::uriToSettings( cons
     settings.insert( QStringLiteral( "port" ), QString::number( url.port() ) );
     QString path { url.path() };
     // Remove leading slash from the path unless the driver is QSQLITE or QSPATIALITE
-    if ( path.startsWith( QStringLiteral( "/" ) ) &&
-         !( settings.value( QStringLiteral( "driver" ) ) == QStringLiteral( "QSQLITE" ) ||
-            settings.value( QStringLiteral( "driver" ) ) == QStringLiteral( "QSPATIALITE" ) ) )
+    if ( path.startsWith( QLatin1Char( '/' ) ) &&
+         !( settings.value( QStringLiteral( "driver" ) ) == QLatin1String( "QSQLITE" ) ||
+            settings.value( QStringLiteral( "driver" ) ) == QLatin1String( "QSPATIALITE" ) ) )
     {
       path = path.mid( 1 );
     }

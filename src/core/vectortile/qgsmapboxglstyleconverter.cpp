@@ -3240,10 +3240,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     for ( int i = 1; i < expression.size(); i++ )
     {
       if ( i > 1 )
-        concatString += QStringLiteral( ", " );
+        concatString += QLatin1String( ", " );
       concatString += parseExpression( expression.value( i ).toList(), context );
     }
-    concatString += QStringLiteral( ")" );
+    concatString += QLatin1Char( ')' );
     return concatString;
   }
   else

@@ -98,7 +98,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
 
     const QString &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
     QStringList errors;
-    if ( format == QStringLiteral( "quantizedmesh" ) )
+    if ( format == QLatin1String( "quantizedmesh" ) )
     {
       try
       {

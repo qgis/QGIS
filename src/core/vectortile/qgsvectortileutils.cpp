@@ -105,7 +105,7 @@ QMap<QString, QString> QgsVectorTileUtils::parseStyleSourceUrl( const QString &s
       {
         const QString sourceName = it.key();
         const QJsonObject sourceData = it.value().toObject();
-        if ( sourceData.value( QStringLiteral( "type" ) ).toString() != QStringLiteral( "vector" ) )
+        if ( sourceData.value( QStringLiteral( "type" ) ).toString() != QLatin1String( "vector" ) )
         {
           // raster layers are handled separately
           // ideally we should handle the sources here also, the same way than for vector

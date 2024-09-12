@@ -386,7 +386,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   mCurrentModelId++;
   // TODO: Somehow de-hardcode this switch?
   const auto &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
-  if ( format == QStringLiteral( "quantizedmesh" ) )
+  if ( format == QLatin1String( "quantizedmesh" ) )
   {
     try
     {
@@ -400,7 +400,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
       return false;
     }
   }
-  else if ( format == QStringLiteral( "cesiumtiles" ) )
+  else if ( format == QLatin1String( "cesiumtiles" ) )
   {
     const QgsCesiumUtils::TileContents content = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
     if ( content.gltf.isEmpty() )

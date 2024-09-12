@@ -176,7 +176,7 @@ const QString QgsAuthManager::authenticationDatabaseUriStripped() const
 
 bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabasePath )
 {
-  mAuthDatabaseConnectionUri = authDatabasePath.startsWith( QStringLiteral( "QSQLITE://" ) ) ? authDatabasePath : QStringLiteral( "QSQLITE://" ) + authDatabasePath;
+  mAuthDatabaseConnectionUri = authDatabasePath.startsWith( QLatin1String( "QSQLITE://" ) ) ? authDatabasePath : QStringLiteral( "QSQLITE://" ) + authDatabasePath;
   return initPrivate( pluginPath );
 }
 
