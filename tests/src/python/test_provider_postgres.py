@@ -432,32 +432,32 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         test_table(self.dbconn, 'p3d',
-                   'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')
+                   'Polygon Z ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')
         test_table(self.dbconn, 'triangle2d', 'Triangle ((0 0, 1 0, 1 1, 0 0))')
         test_table(self.dbconn, 'triangle3d',
-                   'TriangleZ ((0 0 0, 1 0 0, 1 1 0, 0 0 0))')
+                   'Triangle Z ((0 0 0, 1 0 0, 1 1 0, 0 0 0))')
         test_table(self.dbconn, 'tin2d',
                    'TIN (((0 0, 1 0, 1 1, 0 0)),((0 0, 0 1, 1 1, 0 0)))')
         test_table(self.dbconn, 'tin3d',
-                   'TINZ (((0 0 0, 1 0 0, 1 1 0, 0 0 0)),((0 0 0, 0 1 0, 1 1 0, 0 0 0)))')
+                   'TIN Z (((0 0 0, 1 0 0, 1 1 0, 0 0 0)),((0 0 0, 0 1 0, 1 1 0, 0 0 0)))')
         test_table(self.dbconn, 'ps2d',
                    'PolyhedralSurface (((0 0, 1 0, 1 1, 0 1, 0 0)))')
         test_table(self.dbconn, 'ps3d',
-                   'PolyhedralSurfaceZ (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
+                   'PolyhedralSurface Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
         test_table(self.dbconn, 'mp3d',
-                   'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
+                   'MultiPolygon Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
         test_table(self.dbconn, 'pt2d', 'Point (0 0)')
-        test_table(self.dbconn, 'pt3d', 'PointZ (0 0 0)')
+        test_table(self.dbconn, 'pt3d', 'Point Z (0 0 0)')
         test_table(self.dbconn, 'ls2d', 'LineString (0 0, 1 1)')
-        test_table(self.dbconn, 'ls3d', 'LineStringZ (0 0 0, 1 1 1)')
+        test_table(self.dbconn, 'ls3d', 'LineString Z (0 0 0, 1 1 1)')
         test_table(self.dbconn, 'mpt2d', 'MultiPoint ((0 0),(1 1))')
-        test_table(self.dbconn, 'mpt3d', 'MultiPointZ ((0 0 0),(1 1 1))')
+        test_table(self.dbconn, 'mpt3d', 'MultiPoint Z ((0 0 0),(1 1 1))')
         test_table(self.dbconn, 'mls2d',
                    'MultiLineString ((0 0, 1 1),(2 2, 3 3))')
         test_table(self.dbconn, 'mls3d',
-                   'MultiLineStringZ ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
+                   'MultiLineString Z ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
 
-        test_table(self.dbconn, 'pt4d', 'PointZM (1 2 3 4)')
+        test_table(self.dbconn, 'pt4d', 'Point ZM (1 2 3 4)')
 
     def testMetadata(self):
         """ Test that metadata is correctly acquired from provider """

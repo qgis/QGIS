@@ -103,7 +103,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   QVERIFY( polySurface.is3D() );
   QVERIFY( polySurface.isMeasure() );
   QCOMPARE( polySurface.wkbType(), Qgis::WkbType::PolyhedralSurfaceZM );
-  QCOMPARE( polySurface.wktTypeStr(), QString( "PolyhedralSurfaceZM" ) );
+  QCOMPARE( polySurface.wktTypeStr(), QString( "PolyhedralSurface ZM" ) );
   QCOMPARE( polySurface.geometryType(), QString( "PolyhedralSurface" ) );
   QCOMPARE( polySurface.dimension(), 2 );
   QVERIFY( !polySurface.hasCurvedSegments() );
