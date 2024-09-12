@@ -93,6 +93,7 @@
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsvectortileutils.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -2516,6 +2517,8 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
       QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
+
+      QgsVectorTileUtils::updateUriSources( uri );
 
       const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
       QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name, options );

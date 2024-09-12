@@ -1,0 +1,414 @@
+{
+  "basename": "tiles/ch.swisstopo.base.vt/v1.0.0",
+  "name": "Basiskarte_v1.0.0",
+  "description": "A tileset showcasing all SwissTopo layers.",
+  "attribution": "© swisstopo",
+  "version": "v1.0.0",
+  "format": "pbf",
+  "minzoom": 0,
+  "maxzoom": 14,
+  "scale": 1,
+  "vector_layers": [
+    {
+      "id": "aerodrome_label",
+      "description": "[Aerodrome labels](http://wiki.openstreetmap.org/wiki/Tag:aeroway%3Daerodrome)",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "feature_id": "Number",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "class": "String",
+        "iata": "String",
+        "icao": "String",
+        "closest_station_id": "String"
+      }
+    },
+    {
+      "id": "aeroway",
+      "description": "Airport buildings are contained in the **building** layer but all\nother airport related polygons can be found in the **aeroway** layer.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String"
+      }
+    },
+    {
+      "id": "area_name",
+      "description": "area_name layer",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "feature_id": "Number",
+        "class": "String",
+        "subclass": "String",
+        "name": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "name:latin": "String",
+        "size": "Number",
+        "direction": "Number",
+        "extent_uuid": "String",
+        "bbox_coord": "String"
+      }
+    },
+    {
+      "id": "bathymetry",
+      "description": "bathymetry can be used to show different lake depths.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "lake_depth": "Number",
+        "lake_depth_ft": "Number"
+      }
+    },
+    {
+      "id": "boundary",
+      "description": "Contains administrative boundaries as linestrings.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "admin_level": "Number",
+        "adm2_l": "String",
+        "adm2_r": "String",
+        "adm4_l": "String",
+        "adm4_r": "String",
+        "adm8_l": "String",
+        "adm8_r": "String",
+        "disputed": "Number",
+        "maritime": "Number"
+      }
+    },
+    {
+      "id": "building",
+      "description": "buildings including roofs without sidewalls",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "render_height": "Number",
+        "render_min_height": "Number"
+      }
+    },
+    {
+      "id": "building_ln",
+      "description": "building_line layer for the LBM",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String"
+      }
+    },
+    {
+      "id": "construct",
+      "description": "manmade structures not suitable for the layer building.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String"
+      }
+    },
+    {
+      "id": "contour_line",
+      "description": "contour lines",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "ele": "Number",
+        "ele_ft": "Number",
+        "lake_depth": "Number",
+        "lake_depth_ft": "Number"
+      }
+    },
+    {
+      "id": "contour_line_pt",
+      "description": "contour lines points that can be used to label contour lines. were removed if in graphic conflict with other elements of the map.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "ele": "Number",
+        "ele_ft": "Number",
+        "lake_depth": "Number",
+        "lake_depth_ft": "Number",
+        "direction": "Number"
+      }
+    },
+    {
+      "id": "extent",
+      "description": "extent polygons of corresponding point or line features used for labelling map features.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "layer": "String",
+        "class": "String",
+        "subclass": "String",
+        "extent_uuid": "String"
+      }
+    },
+    {
+      "id": "housenumber",
+      "description": "Housenumber of buildings.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "housenumber": "String"
+      }
+    },
+    {
+      "id": "landcover",
+      "description": "Landcover is used to describe the physical material at the surface of the earth.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "subclass": "String"
+      }
+    },
+    {
+      "id": "landcover_pt",
+      "description": "Landcover Point is used to describe the physical elements at the surface of the earth.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "subclass": "String"
+      }
+    },
+    {
+      "id": "landuse",
+      "description": "Landuse is used to describe use of land by humans.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String"
+      }
+    },
+    {
+      "id": "mountain_peak",
+      "description": "peaks or other topographical landmarks.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "feature_id": "Number",
+        "class": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "rank": "Number",
+        "weather_id": "Number",
+        "closest_station_id": "String",
+        "landmark_id": "Number"
+      }
+    },
+    {
+      "id": "park",
+      "description": "The park layer contains parks from national park and protected areas. contains polygons for area and points for labelling",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "feature_id": "Number",
+        "class": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "extent_uuid": "String",
+        "bbox_coord": "String"
+      }
+    },
+    {
+      "id": "place",
+      "description": "used to label places.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "feature_id": "Number",
+        "class": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "rank": "Number",
+        "capital": "Number",
+        "iso_a2": "String",
+        "code": "String",
+        "population": "Number",
+        "weather_id": "Number",
+        "closest_station_id": "String"
+      }
+    },
+    {
+      "id": "poi",
+      "description": "LBM POIs",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "feature_id": "Number",
+        "class": "String",
+        "subclass": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "name:en": "String",
+        "address": "String",
+        "website": "String",
+        "email": "String",
+        "phone": "String",
+        "direction": "Number",
+        "station_id": "Number",
+        "station_area_id": "Number",
+        "station_stop_id": "Number",
+        "bbox_coord": "String",
+        "closest_station_id": "String",
+        "weather_id": "Number",
+        "api_id": "String",
+        "landmark_id": "Number"
+      }
+    },
+    {
+      "id": "shortest_path",
+      "description": "shortest path from a poi to the closest public transport stop.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "shortest_path_id": "Number"
+      }
+    },
+    {
+      "id": "spot_elevation",
+      "description": "spot elevation.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String"
+      }
+    },
+    {
+      "id": "transportation",
+      "description": "**transportation** contains roads, railways, aerialways, and ferry lines.\nIt contains all roads from motorways to primary, secondary and\ntertiary roads to residential roads and\nfoot paths. Styling the roads is the most essential part of the map.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "subclass": "String",
+        "brunnel": "String",
+        "ramp": "Number",
+        "oneway": "Number",
+        "layer": "Number",
+        "surface": "String",
+        "sac_scale": "String",
+        "service": "String",
+        "is_route": "Number"
+      }
+    },
+    {
+      "id": "transportation_name",
+      "description": "Labeling geometry for transportation layer.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "subclass": "String",
+        "brunnel": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "ref": "String",
+        "ref_length": "Number",
+        "layer": "Number",
+        "is_route": "Number"
+      }
+    },
+    {
+      "id": "water",
+      "description": "Water polygons representing rivers and lakes but also artificial constructions such as pools.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String"
+      }
+    },
+    {
+      "id": "waterway",
+      "description": "Lines of waterways or outlines of waterbodies. Underground waterways are not included.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "intermittent": "Number",
+        "width": "Number"
+      }
+    },
+    {
+      "id": "water_name",
+      "description": "The water_name layer contains centerlines for larger waterbodies and centerpoints for smaller waterbodies for labelling.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "class": "String",
+        "name": "String",
+        "name:latin": "String",
+        "name:de": "String",
+        "name:fr": "String",
+        "name:it": "String",
+        "name:rm": "String",
+        "direction": "Number",
+        "size": "Number"
+      }
+    }
+  ],
+  "profile": "mercator",
+  "scheme": "xyz",
+  "bounds": [
+    5.9559,
+    45.818,
+    10.4921,
+    47.8084
+  ],
+  "center": [
+    8.2,
+    46.8,
+    7
+  ],
+  "tilejson": "2.0.0",
+  "tiles": [
+    "https://vectortiles0.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles1.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles2.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles3.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles4.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/{z}/{x}/{y}.pbf"
+  ]
+}
