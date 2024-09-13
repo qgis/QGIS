@@ -169,16 +169,6 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
 
   auto boundQuery = []( const QSqlQuery * query ) -> QString
   {
-#ifdef QGISDEBUG
-    QString str = query->lastQuery();
-    QMapIterator<QString, QVariant> it( query->boundValues() );
-    while ( it.hasNext() )
-    {
-      it.next();
-      str.replace( it.key(), it.value().toString() );
-    }
-    return str;
-#endif
     return query->executedQuery();
   };
 
