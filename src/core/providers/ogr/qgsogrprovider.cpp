@@ -2211,6 +2211,15 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     }
   }
 
+  // We at least want to syncToDisc() for OpenFileGDB, because its AddField
+  // implementation doesn't update immediately system tables.
+  // We exclude GeoJSON because leaveUpdateMode() has specific behavior for it.
+  if ( mGDALDriverName != QLatin1String( "GeoJSON" ) && !syncToDisc() )
+
+  {
+    returnvalue = false;
+  }
+
   // Backup existing fields. We need them to 'restore' field type, length, precision
   QgsFields oldFields = mAttributeFields;
 
@@ -2291,6 +2300,15 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
       res = false;
     }
   }
+
+  // We at least want to syncToDisc() for OpenFileGDB, because its DeleteField
+  // implementation doesn't update immediately system tables.
+  // We exclude GeoJSON because leaveUpdateMode() has specific behavior for it.
+  if ( mGDALDriverName != QLatin1String( "GeoJSON" ) && !syncToDisc() )
+  {
+    res = false;
+  }
+
   loadFields();
 
   if ( mTransaction )
@@ -2345,6 +2363,15 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
       result = false;
     }
   }
+
+  // We at least want to syncToDisc() for OpenFileGDB, because its AlterFieldDefn
+  // implementation doesn't update immediately system tables.
+  // We exclude GeoJSON because leaveUpdateMode() has specific behavior for it.
+  if ( mGDALDriverName != QLatin1String( "GeoJSON" ) && !syncToDisc() )
+  {
+    result = false;
+  }
+
   loadFields();
 
   if ( mTransaction )
