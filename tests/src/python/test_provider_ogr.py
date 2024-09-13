@@ -3615,6 +3615,7 @@ class PyQgsOGRProvider(QgisTestCase):
         del vl
 
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    @unittest.skipIf(gdal.GetDriverByName("OpenFileGDB") is None, "GDAL OpenFileGDB driver required")
     def testReadOnlyFieldsFileGeodatabase(self):
 
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -3625,6 +3626,39 @@ class PyQgsOGRProvider(QgisTestCase):
 
             vl = QgsVectorLayer(dest_file_name, 'vl')
             self.assertTrue(vl.fields()["Shape_Area"].isReadOnly())
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    @unittest.skipIf(gdal.GetDriverByName("OpenFileGDB") is None, "GDAL OpenFileGDB driver required")
+    def testDeleteFieldFileGeodatabase(self):
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = os.path.join(temp_dir, 'testDeleteFieldFileGeodatabase.gdb')
+            ds = ogr.GetDriverByName("OpenFileGDB").CreateDataSource(dest_file_name)
+            lyr = ds.CreateLayer("test", geom_type=ogr.wkbNone)
+            lyr.CreateField(ogr.FieldDefn("fld1"))
+            lyr.CreateField(ogr.FieldDefn("fld2"))
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f["fld1"] = "a"
+            f["fld2"] = "b"
+            lyr.CreateFeature(f)
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f["fld1"] = "c"
+            f["fld2"] = "d"
+            lyr.CreateFeature(f)
+            ds = None
+
+            vl = QgsVectorLayer(dest_file_name, 'vl')
+            self.assertTrue(vl.startEditing())
+            self.assertTrue(vl.deleteAttribute(1))  # delete field fld1
+            self.assertTrue(vl.commitChanges())
+
+            # Re-open a connection without explicitly closing the one we've edited
+            vl2 = QgsVectorLayer(dest_file_name, 'vl2')
+            features = {f.id(): f.attributes() for f in vl2.getFeatures()}
+            self.assertEqual(features, {
+                1: [1, 'b'],
+                2: [2, 'd']
+            })
 
 
 if __name__ == '__main__':
