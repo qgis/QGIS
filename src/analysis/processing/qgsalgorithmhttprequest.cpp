@@ -19,16 +19,12 @@
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
 
-#include <QNetworkAccessManager>
-#include "qgsnetworkaccessmanager.h"
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include "qgsblockingnetworkrequest.h"
 #include <QUrl>
+#include <QNetworkRequest>
 #include <QDesktopServices>
 #include <QUrlQuery>
 #include <QMimeDatabase>
-#include <QEventLoop>
-#include <QTimer>
 
 ///@cond PRIVATE
 
@@ -96,20 +92,25 @@ void QgsHttpRequestAlgorithm::initAlgorithm( const QVariantMap & )
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
   addParameter( dataParam.release() );
 
+  std::unique_ptr< QgsProcessingParameterFileDestination > outputFileParam = std::make_unique < QgsProcessingParameterFileDestination >(
+        QStringLiteral( "OUTPUT" ), tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true, false );
+  outputFileParam->setHelp( tr( "The result can be written to a file instead of being returned as a string" ) );
+  addParameter( outputFileParam.release() );
+
+  std::unique_ptr< QgsProcessingParameterAuthConfig > authConfigParam = std::make_unique < QgsProcessingParameterAuthConfig >(
+        QStringLiteral( "AUTH_CONFIG" ), tr( "Authentication" ), QVariant(), true );
+  authConfigParam->setHelp( tr( "An authentication configuration to pass" ) );
+  addParameter( authConfigParam.release() );
+
   std::unique_ptr< QgsProcessingParameterBoolean > failureParam = std::make_unique < QgsProcessingParameterBoolean >(
         QStringLiteral( "FAIL_ON_ERROR" ), tr( "Consider HTTP errors as failures" ), false );
   failureParam->setHelp( tr( "If set, the algorithm will fail on encountering a HTTP error" ) );
   addParameter( failureParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > writeToFileParam = std::make_unique < QgsProcessingParameterBoolean >(
-        QStringLiteral( "WRITE_TO_FILE" ), tr( "Write reply data to temp file" ), false );
-  writeToFileParam->setHelp( tr( "Write the reply data to a temporary binary file instead of passing back in a string" ) );
-  addParameter( writeToFileParam.release() );
-
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "STATUS_CODE" ), QObject::tr( "HTTP status code" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "ERROR_CODE" ), QObject::tr( "Network error code" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "ERROR_MESSAGE" ), QObject::tr( "Network error message" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "RESULT_DATA" ), QObject::tr( "Reply data or path to temporary file keeping the reply data" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "STATUS_CODE" ), QObject::tr( "HTTP status code" ) ) );
+  addOutput( new QgsProcessingOutputString( QStringLiteral( "RESULT_DATA" ), QObject::tr( "Reply data" ) ) );
 }
 
 QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -119,82 +120,68 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
     throw QgsProcessingException( tr( "No URL specified" ) );
   const Qgis::HttpMethod httpMethod = static_cast< Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
   const QString data = parameterAsString( parameters, QStringLiteral( "DATA" ), context );
+  const QString authCfg = parameterAsString( parameters, QStringLiteral( "AUTH_CONFIG" ), context );
+  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   const bool failOnError  = parameterAsBool( parameters, QStringLiteral( "FAIL_ON_ERROR" ), context );
-  const bool writeToFile = parameterAsBool( parameters, QStringLiteral( "WRITE_TO_FILE" ), context );
   const QUrl qurl = QUrl::fromUserInput( url );
 
   // Make Request
-  const QNetworkRequest request( qurl );
-  QNetworkReply *reply = nullptr;
-
-  QEventLoop loop;
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  QNetworkRequest request( qurl );
+  QgsBlockingNetworkRequest blockingRequest;
+  blockingRequest.setAuthCfg( authCfg );
+  QgsBlockingNetworkRequest::ErrorCode  errorCode = QgsBlockingNetworkRequest::NoError;
 
   switch ( httpMethod )
   {
     case Qgis::HttpMethod::Get:
     {
-      reply = nam->get( request );
+      errorCode = blockingRequest.get( request );
       break;
     }
     case Qgis::HttpMethod::Post:
     {
-      reply = nam->post( request, data.toUtf8() );
+      errorCode = blockingRequest.post( request, data.toUtf8() );
       break;
     }
   }
 
-  connect( reply, &QNetworkReply::finished, this, [&loop]() { loop.exit(); }, Qt::UniqueConnection );
-  connect( reply, &QNetworkReply::readyRead, this, [&loop]() { loop.exit(); }, Qt::UniqueConnection );
-  connect( nam, qOverload< QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, [&loop]() { loop.exit(); }, Qt::UniqueConnection );
-
-  loop.exec();
-
   // Handle reply
-
-  const int statusCode = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
-  const int errorCode = reply->error();
+  const int statusCode = blockingRequest.reply().attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
   QString errorMessage = QString();
-  QString resultData = QString();
+  QByteArray resultData = QByteArray();
 
-  if ( errorCode == QNetworkReply::NoError )
+  if ( errorCode == QgsBlockingNetworkRequest::NoError )
   {
     feedback->pushInfo( tr( "Request succeeded with code %1" ).arg( statusCode ) );
+    resultData = blockingRequest.reply().content();
 
-    if ( writeToFile )
+    if ( !outputFile.isEmpty() )
     {
-      QTemporaryDir tempDir;
-      tempDir.setAutoRemove( false );
-      tempDir.path();
-      resultData = tempDir.path() + QDir::separator() + QStringLiteral( "data.bin" );
-      QFile tempFile( resultData );
+      QFile tempFile( outputFile );
       tempFile.open( QIODevice::WriteOnly );
-      tempFile.write( reply->readAll() );
+      tempFile.write( resultData );
       tempFile.close();
 
-      feedback->pushInfo( tr( "Result data written to %1" ).arg( resultData ) );
-    }
-    else
-    {
-      resultData = reply->readAll();
+      feedback->pushInfo( tr( "Result data written to %1" ).arg( outputFile ) );
     }
   }
   else
   {
     feedback->pushInfo( tr( "Request failed with code %1" ).arg( statusCode ) );
-    errorMessage = reply->errorString();
+    errorMessage = blockingRequest.reply().errorString();
     if ( failOnError )
     {
-      throw QgsProcessingException( reply->errorString() );
+      throw QgsProcessingException( errorMessage );
     }
-    feedback->pushWarning( reply->errorString() );
+    feedback->pushWarning( errorMessage );
   }
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "STATUS_CODE" ), statusCode );
   outputs.insert( QStringLiteral( "ERROR_CODE" ), errorCode );
   outputs.insert( QStringLiteral( "ERROR_MESSAGE" ),  errorMessage );
-  outputs.insert( QStringLiteral( "RESULT_DATA" ), resultData );
+  outputs.insert( QStringLiteral( "RESULT_DATA" ), QString( resultData ) );
+  outputs.insert( QStringLiteral( "OUTPUT" ),  outputFile );
   return outputs;
 }
 
