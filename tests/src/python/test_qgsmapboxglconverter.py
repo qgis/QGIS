@@ -499,6 +499,14 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             '''CASE WHEN "is_route" IN (5, 10) THEN color_rgba(250,182,158,255) WHEN "is_route" IN (6, 7, 8) THEN color_rgba(250,243,158,255) ELSE CASE WHEN "class" IN ('motorway', 'trunk', 'motorway_construction', 'trunk_construction') THEN color_rgba(250,210,122,255) WHEN "class" IN ('rail', 'rail_construction', 'path', 'path_construction', 'footway', 'footway_construction', 'track', 'track_construction', 'trail', 'trail_construction') THEN CASE WHEN ("subclass" = 'covered_bridge') THEN color_rgba(255,255,255,255) ELSE color_rgba(238,238,240,255) END ELSE color_rgba(255,255,255,255) END END'''
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["step", ["zoom"], "", 16, ["case", ["has", "flstnrnen"], ["concat", ["get", "flstnrzae"], "/", ["get", "flstnrnen"]], ["get", "flstnrzae"]]],
+                conversion_context, True
+            ),
+            '''CASE  WHEN @vector_tile_zoom >= 16 THEN (CASE WHEN ("flstnrnen" IS NOT NULL) THEN concat("flstnrzae", '/', "flstnrnen") ELSE "flstnrzae" END) ELSE ('') END'''
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {

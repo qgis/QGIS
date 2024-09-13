@@ -2826,7 +2826,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
   const QString expression = parseExpression( json.value( 1 ).toList(), context );
   if ( expression.isEmpty() )
   {
-    context.pushWarning( QObject::tr( "%1: Could not interpret match list" ).arg( context.layerId() ) );
+    context.pushWarning( QObject::tr( "%1: Could not interpret step list" ).arg( context.layerId() ) );
     return QgsProperty();
   }
 
@@ -3262,7 +3262,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     {
       if ( i > 1 )
         concatString += QLatin1String( ", " );
-      concatString += parseExpression( expression.value( i ).toList(), context );
+      concatString += parseValue( expression.value( i ), context );
     }
     concatString += QLatin1Char( ')' );
     return concatString;
@@ -3270,6 +3270,32 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   else if ( op == QLatin1String( "length" ) )
   {
     return QStringLiteral( "length(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
+  }
+  else if ( op == QLatin1String( "step" ) )
+  {
+    const QString stepExpression = parseExpression( expression.value( 1 ).toList(), context );
+    if ( stepExpression.isEmpty() )
+    {
+      context.pushWarning( QObject::tr( "%1: Could not interpret step list" ).arg( context.layerId() ) );
+      return QString();
+    }
+
+    QString caseString = QStringLiteral( "CASE " );
+
+    for ( int i = expression.length() - 2; i > 0; i -= 2 )
+    {
+      const QString stepValue = parseValue( expression.value( i + 1 ), context, colorExpected );
+      if ( i > 1 )
+      {
+        const QString stepKey = QgsExpression::quotedValue( expression.value( i ) );
+        caseString += QStringLiteral( " WHEN %1 >= %2 THEN (%3) " ).arg( stepExpression, stepKey, stepValue );
+      }
+      else
+      {
+        caseString += QStringLiteral( "ELSE (%1) END" ).arg( stepValue );
+      }
+    }
+    return caseString;
   }
   else
   {
