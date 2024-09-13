@@ -719,34 +719,37 @@ Qgis.VectorLayerTypeFlag.baseClass = Qgis
 Qgis.VectorLayerTypeFlags.baseClass = Qgis
 VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
-Qgis.Never = Qgis.PythonMacroMode.Never
-Qgis.Never.is_monkey_patched = True
-Qgis.Never.__doc__ = "Macros are never run"
-Qgis.Ask = Qgis.PythonMacroMode.Ask
-Qgis.Ask.is_monkey_patched = True
-Qgis.Ask.__doc__ = "User is prompt before running"
-Qgis.SessionOnly = Qgis.PythonMacroMode.SessionOnly
-Qgis.SessionOnly.is_monkey_patched = True
-Qgis.SessionOnly.__doc__ = "Only during this session"
-Qgis.Always = Qgis.PythonMacroMode.Always
-Qgis.Always.is_monkey_patched = True
-Qgis.Always.__doc__ = "Macros are always run"
-Qgis.NotForThisSession = Qgis.PythonMacroMode.NotForThisSession
-Qgis.NotForThisSession.is_monkey_patched = True
-Qgis.NotForThisSession.__doc__ = "Macros will not be run for this session"
-Qgis.PythonMacroMode.__doc__ = """Authorisation to run Python Macros
+Qgis.PythonEmbeddedMode.Never.__doc__ = "Python embedded never run"
+Qgis.PythonEmbeddedMode.Ask.__doc__ = "User is prompt before running"
+Qgis.PythonEmbeddedMode.SessionOnly.__doc__ = "Only during this session"
+Qgis.PythonEmbeddedMode.Always.__doc__ = "Python embedded is always run"
+Qgis.PythonEmbeddedMode.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
+Qgis.PythonEmbeddedMode.__doc__ = """Authorisation to run Python Embedded in projects
 
-.. versionadded:: 3.10
+.. versionadded:: 3.40
 
-* ``Never``: Macros are never run
+* ``Never``: Python embedded never run
 * ``Ask``: User is prompt before running
 * ``SessionOnly``: Only during this session
-* ``Always``: Macros are always run
-* ``NotForThisSession``: Macros will not be run for this session
+* ``Always``: Python embedded is always run
+* ``NotForThisSession``: Python embedded will not be run for this session
 
 """
 # --
-Qgis.PythonMacroMode.baseClass = Qgis
+Qgis.PythonEmbeddedMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PythonEmbeddedType.Macro.__doc__ = ""
+Qgis.PythonEmbeddedType.ExpressionFunction.__doc__ = ""
+Qgis.PythonEmbeddedType.__doc__ = """Type of Python Embedded in projects
+
+.. versionadded:: 3.40
+
+* ``Macro``: 
+* ``ExpressionFunction``: 
+
+"""
+# --
+Qgis.PythonEmbeddedType.baseClass = Qgis
 QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 # monkey patching scoped based enum
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource

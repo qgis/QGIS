@@ -9552,7 +9552,6 @@ const QStringList &QgsExpression::BuiltinFunctions()
   return *sBuiltinFunctions();
 }
 
-
 QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()
   : QgsExpressionFunction( QStringLiteral( "array_foreach" ), QgsExpressionFunction::ParameterList()  // skip-keyword-check
                            << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) )

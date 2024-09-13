@@ -74,6 +74,7 @@
 #include "qgsrunnableprovidercreator.h"
 #include "qgssettingsregistrycore.h"
 #include "qgspluginlayer.h"
+#include "qgspythonrunner.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -1166,6 +1167,15 @@ void QgsProject::clear()
   ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
 
   emit aboutToBeCleared();
+
+  if ( !mIsBeingDeleted )
+  {
+    // Unregister expression functions stored in the project.
+    // If we clean on destruction we may end-up with a non-valid
+    // mPythonUtils, so be safe and only clean when not destroying.
+    // This should be called before calling mProperties.clearKeys().
+    cleanFunctionsFromProject();
+  }
 
   mProjectScope.reset();
   mFile.setFileName( QString() );
@@ -2283,6 +2293,11 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   {
     QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
   }
+
+  // Register expression functions stored in the project.
+  // They might be using project variables and might be
+  // in turn being used by other components (e.g., layouts).
+  loadFunctionsFromProject();
 
   QDomElement element = doc->documentElement().firstChildElement( QStringLiteral( "projectMetadata" ) );
 
@@ -5275,6 +5290,33 @@ void QgsProject::loadProjectFlags( const QDomDocument *doc )
   }
 
   setFlags( flags );
+}
+
+bool QgsProject::loadFunctionsFromProject( bool force )
+{
+  if ( QgsPythonRunner::isValid() )
+  {
+    const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
+
+    if ( force || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::SessionOnly || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always )
+    {
+      const QString projectFunctions = readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
+      if ( !projectFunctions.isEmpty() )
+      {
+        QgsPythonRunner::run( projectFunctions );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void QgsProject::cleanFunctionsFromProject()
+{
+  if ( QgsPythonRunner::isValid() )
+  {
+    QgsPythonRunner::run( "qgis.utils.clean_project_expression_functions()" );
+  }
 }
 
 /// @cond PRIVATE

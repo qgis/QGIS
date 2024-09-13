@@ -26,7 +26,7 @@ import sys
 import glob
 import traceback
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, qDebug
 from qgis.core import Qgis, QgsApplication, QgsMessageLog
 
 
@@ -49,6 +49,41 @@ def load_user_expressions(path):
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
             msg = QCoreApplication.translate("UserExpressions", "The user expression {0} is not valid").format(name)
             QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, Qgis.MessageLevel.Warning)
+
+
+def reload_user_expressions(path):
+    """
+    Reload all user expressions from the given path
+    """
+    # First unload expression modules, looping all
+    # py files and remove them from sys.modules
+    modules = glob.glob(path + "/*.py")
+    names = [os.path.basename(f)[:-3] for f in modules]
+    for name in names:
+        if name == "__init__":
+            continue
+
+        mod = "expressions.{0}".format(name)
+        if mod not in sys.modules:
+            continue
+
+        # try removing path
+        if hasattr(sys.modules[mod], '__path__'):
+            for path in sys.modules[mod].__path__:
+                try:
+                    sys.path.remove(path)
+                except ValueError:
+                    # Discard if path is not there
+                    pass
+
+        # try to remove the module from python
+        try:
+            del sys.modules[mod]
+        except:
+            qDebug("Error when removing module:\n%s" % traceback.format_exc())
+
+    # Finally, load again the users expressions from the given path
+    load_user_expressions(path)
 
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
@@ -87,6 +122,7 @@ try:
     expressions.load = load_user_expressions
     expressions.load(expressionspath)
     expressions.template = template
+    expressions.reload = reload_user_expressions
 except ImportError:
     # We get a import error and crash for some reason even if we make the expressions package
     # TODO Fix the crash on first load with no expressions folder

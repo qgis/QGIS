@@ -396,18 +396,29 @@ class CORE_EXPORT Qgis
     Q_FLAG( VectorLayerTypeFlags )
 
     /**
-     * Authorisation to run Python Macros
-     * \since QGIS 3.10
+     * Authorisation to run Python Embedded in projects
+     * \since QGIS 3.40
      */
-    enum class PythonMacroMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
-      {
-      Never = 0, //!< Macros are never run
+    enum class PythonEmbeddedMode : int
+    {
+      Never = 0, //!< Python embedded never run
       Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
-      Always = 3, //!< Macros are always run
-      NotForThisSession, //!< Macros will not be run for this session
+      Always = 3, //!< Python embedded is always run
+      NotForThisSession, //!< Python embedded will not be run for this session
     };
-    Q_ENUM( PythonMacroMode )
+    Q_ENUM( PythonEmbeddedMode )
+
+    /**
+     * Type of Python Embedded in projects
+     * \since QGIS 3.40
+     */
+    enum class PythonEmbeddedType : int
+    {
+      Macro = 0,
+      ExpressionFunction = 1,
+    };
+    Q_ENUM( PythonEmbeddedType )
 
     /**
      * Flags which control data provider construction.

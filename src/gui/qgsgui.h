@@ -18,6 +18,7 @@
 #ifndef QGSGUI_H
 #define QGSGUI_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgssettingstree.h"
 #include "qgis_sip.h"
@@ -294,15 +295,20 @@ class GUI_EXPORT QgsGui : public QObject
     static QScreen *findScreenAt( QPoint point );
 
     /**
-     * Returns TRUE if python macros are currently allowed to be run
-     * If the global option is to ask user, a modal dialog will be shown
+     * Returns TRUE if python embedded in a project is currently allowed to be loaded.
+     * If the global option is to ask user, a modal dialog will be shown for macros
+     * or a button to enable Python expressions will be shown in a message bar.
      * \param lambda a pointer to a lambda method. If specified, the dialog is not modal,
      * a message is shown with a button to enable macro.
      * The lambda will be run either if macros are currently allowed or if the user accepts the message.
      * The \a messageBar must be given in such case.
      * \param messageBar the message bar must be provided if a lambda method is used.
+     * \param embeddedType enum value to identify if macros or expression functions should be checked.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.40
      */
-    static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
+    static bool pythonEmbeddedInProjectAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr, Qgis::PythonEmbeddedType embeddedType = Qgis::PythonEmbeddedType::Macro ) SIP_SKIP;
 
     /**
      * Initializes callout widgets.

@@ -277,13 +277,19 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonMacroMode /BaseType=IntEnum/
-      {
+    enum class PythonEmbeddedMode /BaseType=IntEnum/
+    {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
+    };
+
+    enum class PythonEmbeddedType /BaseType=IntEnum/
+    {
+      Macro,
+      ExpressionFunction,
     };
 
     enum class DataProviderReadFlag /BaseType=IntFlag/
