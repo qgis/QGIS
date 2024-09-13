@@ -3246,6 +3246,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     concatString += QLatin1Char( ')' );
     return concatString;
   }
+  else if ( op == QLatin1String( "length" ) )
+  {
+    return QStringLiteral( "length(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
+  }
   else
   {
     context.pushWarning( QObject::tr( "%1: Skipping unsupported expression \"%2\"" ).arg( context.layerId(), op ) );
@@ -3510,7 +3514,28 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
         spriteProperty += QStringLiteral( "ELSE '%1' END" ).arg( spritePath );
         spriteSizeProperty += QStringLiteral( "ELSE %3 END" ).arg( spriteSize.width() );
         break;
+      }
+      else if ( method == QLatin1String( "case" ) )
+      {
+        spriteProperty = QStringLiteral( "CASE" );
+        spriteSizeProperty = QStringLiteral( "CASE" );
+        for ( int i = 1; i < json.length() - 2; i += 2 )
+        {
+          const QString caseExpression = parseExpression( json.value( i ).toList(), context );
+          const QString caseValue = json.value( i + 1 ).toString();
 
+          const QImage sprite = retrieveSprite( caseValue, context, spriteSize );
+          spritePath = prepareBase64( sprite );
+
+          spriteProperty += QStringLiteral( " WHEN %1 THEN '%2' " ).arg( caseExpression, spritePath );
+          spriteSizeProperty += QStringLiteral( " WHEN %1 THEN %2 " ).arg( caseExpression ).arg( spriteSize.width() );
+        }
+        const QImage sprite = retrieveSprite( json.last().toString(), context, spriteSize );
+        spritePath = prepareBase64( sprite );
+
+        spriteProperty += QStringLiteral( "ELSE '%1' END" ).arg( spritePath );
+        spriteSizeProperty += QStringLiteral( "ELSE %3 END" ).arg( spriteSize.width() );
+        break;
       }
       else
       {

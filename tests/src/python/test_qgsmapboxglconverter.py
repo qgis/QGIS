@@ -1524,6 +1524,35 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         sprite, size, sprite_property, sprite_size_property = QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(icon_image, context)
         self.assertEqual(sprite_property, "CASE WHEN @vector_tile_zoom >= 12 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAA9hAAAPYQGoP6dpAAACDUlEQVQ4jZ2VsaraYBTH/8mFTAfJ4NBBJBAHcdCMHTLkES7oA6Rv0D5BvU9gQRyKQ/MCgt3qpGBcdImLyRAhg4hgwIDHxSUd2s/eek24+ptCkvP7zjk5nEjIoFgsPhNRQ1VVi4gMAGBmL0mSyel08vb7/c9bcdL1DSIyqtXqDyHJgpm9IAg+MbOXKdQ0ra1p2lcA0HUdpmnCMAxUKhUAQBiG8DwPrutivV4DAKIoakdR9PLmRE3T2pZlpZZlpd1uNz0ej2kWx+Mx7Xa7qXi/VCp9flOmeDidTjNF10yn04tUtOgJAOr1+i9FUT40m020Wq281v1HuVwGM8P3fRQKhY/b7fa7LL6mruuwbfvdMoFt29B1HURkFIvFZ1mkapomiOhuIRHBNE1xbciqqloAYBi5U5KLiFVV1bpkKEbjEUQsETXkhy23kWQx6WEYPmwRsczsyUmSTADA87y8mFxEbJIkk0uGs9kMzHy3jJkxGo3+ZRjH8ZCZl2EYwnGcu4WO42C324GZl3EcD2UACILABoDBYADXdd8tc10Xg8EArx1PAHA+n3cAJFVVrfF4jNPphFqtBkVRMsvs9/vo9XoAgDAMv8RxPLwIgT8NFdLVaoXFYoHD4QBJkkBEOJ/P8H0fo9EInU4H8/n8IttsNt+EJ2vBOkTUyCuXmZdBENi5C/Y1f5eGcesXwMyeKPGa3yGWS8B8xv1iAAAAAElFTkSuQmCC'  WHEN @vector_tile_zoom >= 10 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA9hAAAPYQGoP6dpAAABs0lEQVQ4jY2TMW/iMBiG37iM5hQhDwyZUIYTQmruF+AtkTKU+yeMt9Dh/sDdDezlH9At3liQbksGJJYE3ZAhSBbKQaQiS8Rd6opSaHk3W8/7+vtsfxZORCn1GGN3tm1zSqkHAFVVJWVZzqSUj1VVJce8dbxwHGfouu6v01AjrfU2y7L7PM//vAvo9XpTxtgdAPi+jyAI4LouACBNU0RRBCEEAEBKOV0sFt/fnMw512EY6jiO9SXFcazDMNScc+04zvC1Z8655px/aD4O4Zzrfr//n1LqEcbYwJTted6l9l/leR5834dlWV8YYwNi2zYHgCAIPjUbGda2bU7MU5kLu0aGpZTekqtd52UR8zHSNL3aZdiqqhJSluUMAKIoujrAsGVZzoiUclrX9U4IgSRJPrECSZJACIG6rndFUTzcKKWKw+Hw1Gq1gvl8jm63i3a7fdE8Go2glEKWZT82m010AwDb7fYvpfRbo9H4KoTAer1Gs9kEpRRKKSyXS0wmE4zHYyilIKV8TNN0CJwZpk6n85MQ0jxXQV3Xu9VqdZ/n+W+zZ51CL+M8ODfORVE87Pf7f8f8M97/C1rlJ2QfAAAAAElFTkSuQmCC'  WHEN @vector_tile_zoom >= 8 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAA9hAAAPYQGoP6dpAAABEElEQVQokXWSMW7CQBBFnx1EtcVKNFOmcIkU9xQsN0gk99kbkJ4TcIvNARA5AtxgkFyafkW1xZZITpEYUdiv/l8z8/8UPCEiXkQ+jTE1QM5ZY4whxvg9aAqA2Wxml8vl0VrrGCGldGrb9uN+v6cCoK7rk7V2vVqtaJqGqqowxqCqhBC4XC6klE6qukFEvHOu3+12/RTb7bZ3zvUi4ksR8QBN04xtA4D3/nFjORxY1/WkoaoqAIwxb+WkapyizDkrgKpOqrquA/5iLmOMAeBwOEwaQggAxBjDS85ZrbWb2+32er1eWSwWGGOYz+eoKvv9foj13HXd13NxP9ba9diElNK5bdv3R3ED/6/hR14jDJpfqBeVnGzOJRAAAAAASUVORK5CYII='  WHEN @vector_tile_zoom >= 6 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAAv0lEQVQYlYXOIQqDYBiH8b/6IW8wOPiCAxFXTIZ1i97AbFsw7wbCbjHwAMZdwcU11wwG0aLtRcQgwlYXhP0O8PAoACCljG3bvhqGcRZCmMxctm17Y+ZSkVLGvu8/sKOqqkjzPO9ORG4QBMiyDEmSYBgG9H0PIjopYRh+AKAoCliWBQBomgZpmmLbNlb30j8UzTTNiIjccRzhOA7WdUWe5+i6DtM0vf5PLstSz/P81nX9KIQ4qKpKzPys6/rCzOUX/GBLMm760HoAAAAASUVORK5CYII=' ELSE 'base64:iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAAv0lEQVQYlYXOIQqDYBiH8b/6IW8wOPiCAxFXTIZ1i97AbFsw7wbCbjHwAMZdwcU11wwG0aLtRcQgwlYXhP0O8PAoACCljG3bvhqGcRZCmMxctm17Y+ZSkVLGvu8/sKOqqkjzPO9ORG4QBMiyDEmSYBgG9H0PIjopYRh+AKAoCliWBQBomgZpmmLbNlb30j8UzTTNiIjccRzhOA7WdUWe5+i6DtM0vf5PLstSz/P81nX9KIQ4qKpKzPys6/rCzOUX/GBLMm760HoAAAAASUVORK5CYII=' END")
 
+        # swisstopo - lightbasemap - lake_elevation
+        icon_image = [
+            "case",
+            [
+                "has",
+                "lake_depth"
+            ],
+            "arrow_line_blue",
+            [
+                "==",
+                [
+                    "length",
+                    [
+                        "to-string",
+                        [
+                            "get",
+                            "ele"
+                        ]
+                    ]
+                ],
+                3
+            ],
+            "line_blue_short",
+            "line_blue_long"
+        ]
+        sprite, size, sprite_property, sprite_size_property = QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(icon_image, context)
+        self.assertEqual(sprite_property, "CASE WHEN \"lake_depth\" IS NOT NULL THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAADAAAAAmCAYAAACCjRgBAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAA3UlEQVRYhe3WMQrCMBgF4Nfo7C0cnDt5Ar2LnsWpHsE72A6umTo5ZBBxcVEEIeggCHVxCKWtLUj/BN63tfzD/16gTYSW4iQv2s72SUkvQERERER/FCd54evNs0rwt1EGkMYA0hhAGgNIYwBpDCAtGi+S7WgynTUNWaPTw3o572upLtRlt1n9GmozI0VZozNrdFo3YI1OrdFZn0t1oYDmhn1uH/gGqDsF39sHnK9QVdO+tw84AcqnEEL7QOk/4DYeQvsAMHQf3FMIoX0AGJRfvB/36/O016/b+SixUFcfqsZi6d4Ghu0AAAAASUVORK5CYII='  WHEN length(to_string(\"ele\")) IS 3 THEN 'base64:iVBORw0KGgoAAAANSUhEUgAAACQAAAAECAYAAADmrJ2uAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAAGElEQVQokWM0nnL2P8MgAkwD7YBRQCoAANWHApf/BqmbAAAAAElFTkSuQmCC' ELSE 'base64:iVBORw0KGgoAAAANSUhEUgAAADAAAAAECAYAAADI6bw8AAAACXBIWXMAAA9hAAAPYQGoP6dpAAAAGElEQVQokWM0nnL2P8MQBkwD7YBRMNQBAMaFApc4aKj/AAAAAElFTkSuQmCC' END")
+        self.assertEqual(sprite_size_property, "CASE WHEN \"lake_depth\" IS NOT NULL THEN 24  WHEN length(to_string(\"ele\")) IS 3 THEN 18 ELSE 24 END")
+
 
 if __name__ == '__main__':
     unittest.main()
