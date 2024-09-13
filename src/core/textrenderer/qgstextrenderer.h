@@ -157,7 +157,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param document text document to draw
      * \param metrics precalculated text metrics
      * \param context destination render context
-     * \param horizontalAlignment horizontal alignment
+     * \param alignment horizontal alignment
      * \param rotation text rotation
      *
      * \since QGIS 3.40
