@@ -2678,10 +2678,12 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( useUpdate )
     it = attr_map.end();
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,1)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,3)
+  // UpdateFeature is available since 3.7.0, but was broken for GeoJSON up to 3.9.3
+  // see https://github.com/OSGeo/gdal/pull/10197
+  // and https://github.com/OSGeo/gdal/pull/10794
   const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature );
 #elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  // see https://github.com/OSGeo/gdal/pull/10197
   const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature )
                                 && mGDALDriverName != QLatin1String( "ODS" )
                                 && mGDALDriverName != QLatin1String( "XLSX" )
