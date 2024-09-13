@@ -6994,7 +6994,7 @@ class TestQgsGeometry(QgisTestCase):
                          ['PolyhedralSurface (((1 1, 1 2, 2 2, 5 5, 1 1)))'])
         self.assertEqual(coerce_to_wkt('Polygon Z((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2))',
                                        QgsWkbTypes.Type.PolyhedralSurfaceZ),
-                         ['PolyhedralSurfaceZ (((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2)))'])
+                         ['PolyhedralSurface Z (((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2)))'])
 
     def testTriangularWaves(self):
         """Test triangular waves"""
