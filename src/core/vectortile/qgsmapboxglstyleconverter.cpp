@@ -2749,7 +2749,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
   {
     QVariantList keys;
     QVariant variantKeys = json.value( i );
-    if ( variantKeys.canConvert< QVariantList >() )
+    if ( variantKeys.userType() == QMetaType::Type::QVariantList || variantKeys.userType() == QMetaType::Type::QStringList )
       keys = variantKeys.toList();
     else
       keys = {variantKeys};
@@ -3567,8 +3567,15 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
                                                     matchString ).arg( spriteSize.width() );
         }
 
-        const QImage sprite = retrieveSprite( json.constLast().toString(), context, spriteSize );
-        spritePath = prepareBase64( sprite );
+        if ( !json.constLast().toString().isEmpty() )
+        {
+          const QImage sprite = retrieveSprite( json.constLast().toString(), context, spriteSize );
+          spritePath = prepareBase64( sprite );
+        }
+        else
+        {
+          spritePath = QString();
+        }
 
         spriteProperty += QStringLiteral( " ELSE '%1' END" ).arg( spritePath );
         spriteSizeProperty += QStringLiteral( " ELSE %3 END" ).arg( spriteSize.width() );
