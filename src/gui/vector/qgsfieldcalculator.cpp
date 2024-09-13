@@ -353,11 +353,11 @@ void QgsFieldCalculator::calculate()
     mVectorLayer->endEditCommand();
     if ( mNewFieldGroupBox->isChecked() )
     {
-      pushMessage( tr( "Field %1 created successfully" ).arg( mVectorLayer->name() ) );
+      pushMessage( tr( "Field \"%1\" created successfully" ).arg( mOutputFieldNameLineEdit->text() ) );
     }
     else if ( mUpdateExistingGroupBox->isChecked() )
     {
-      pushMessage( tr( "Field %1 updated successfully" ).arg( mVectorLayer->name() ) )   ;
+      pushMessage( tr( "Field \"%1\" updated successfully" ).arg( mExistingFieldComboBox->currentText() ) )   ;
     }
   }
 }
@@ -575,7 +575,7 @@ void QgsFieldCalculator::setDialogButtonState()
   }
   else if ( !builder->isExpressionValid() )
   {
-    tooltip = tr( "The expression is invalid see (more info) for details" );
+    tooltip = tr( "The expression is invalid see (\"more info\") for details" );
     enableButtons = false;
   }
 
