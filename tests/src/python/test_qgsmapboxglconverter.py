@@ -225,6 +225,19 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(res.asExpression(), 'CASE WHEN "luminosity" IS -15 THEN \'#c8d2d5\' WHEN "luminosity" IS -14 THEN \'#cbd5d8\' WHEN "luminosity" IS -13 THEN \'#cfd7da\' WHEN "luminosity" IS -12 THEN \'#d2dadd\' WHEN "luminosity" IS -11 THEN \'#d5dde0\' WHEN "luminosity" IS -10 THEN \'#d9e0e2\' WHEN "luminosity" IS -9 THEN \'#dce3e5\' WHEN "luminosity" IS -8 THEN \'#e0e6e7\' WHEN "luminosity" IS -7 THEN \'#e3e8ea\' WHEN "luminosity" IS -6 THEN \'#e7ebed\' WHEN "luminosity" IS -5 THEN \'#eaeeef\' WHEN "luminosity" IS -4 THEN \'#eef1f2\' WHEN "luminosity" IS -3 THEN \'#f1f4f5\' WHEN "luminosity" IS -2 THEN \'#f5f7f7\' WHEN "luminosity" IS -1 THEN \'#f8f9fa\' ELSE \'#fcfcfc\' END')
         self.assertTrue(qgsDoubleNear(default_number, 0.0))
 
+        res, default_color, default_number = QgsMapBoxGlStyleConverter.parseMatchList([
+            "match",
+            [
+                "get",
+                "class"
+            ],
+            "scree",
+            "rgba(0, 0, 0, 1)",
+            "hsl(35, 86%, 38%)"
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
+        self.assertEqual(res.asExpression(), '''CASE WHEN "class" IS 'scree' THEN '#000000' ELSE '#b26e0e' END''')
+        self.assertTrue(qgsDoubleNear(default_number, 0.0))
+
     def testParseStepList(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         res, default_color, default_number = QgsMapBoxGlStyleConverter.parseStepList([
