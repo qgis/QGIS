@@ -642,7 +642,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             const QModelIndex index = model->index( row, 0 );
             const QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
-            const QString name = model->data( index, Qt::DisplayRole ).toString();
+            const QString name = model->data( index, static_cast< int >( QgsMapLayerStyleCategoriesModel::Role::NameRole ) ).toString();
             const QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
             const QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
             QAction *copyAction = new QAction( icon, name, copyStyleMenu );
@@ -681,7 +681,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                 {
                   const QModelIndex index = model->index( row, 0 );
                   const QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
-                  const QString name = model->data( index, Qt::DisplayRole ).toString();
+                  const QString name = model->data( index, static_cast< int >( QgsMapLayerStyleCategoriesModel::Role::NameRole ) ).toString();
                   const QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
                   const QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
                   QAction *pasteAction = new QAction( icon, name, pasteStyleMenu );

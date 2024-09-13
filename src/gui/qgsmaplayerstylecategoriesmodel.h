@@ -24,6 +24,8 @@
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgis_gui.h"
+#include <QItemDelegate>
+#include <QLabel>
 
 /**
  * \ingroup gui
@@ -37,6 +39,12 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     Q_OBJECT
 
   public:
+
+    //! Custom model roles
+    enum class Role : int
+    {
+      NameRole = Qt::UserRole + 1,
+    };
 
     /**
      * Constructor for QgsMapLayerStyleCategoriesModel, for the specified layer \a type.
@@ -65,6 +73,24 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     QList<QgsMapLayer::StyleCategory> mCategoryList;
     //! display All categories on first line
     bool mShowAllCategories = false;
+};
+
+/**
+* \ingroup gui
+* \class CategoryDisplayLabelDelegate
+* \brief A label delegate being able to display html encoded content
+* \since QGIS 3.40
+*/
+class GUI_EXPORT CategoryDisplayLabelDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    explicit CategoryDisplayLabelDelegate( QObject *parent = nullptr );
+    void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option,
+                      const QRect &rect, const QString &text ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option,
+                    const QModelIndex &index ) const override;
 };
 
 #endif // QGSMAPLAYERSTYLECATEGORIESMODEL_H

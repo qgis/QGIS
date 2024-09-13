@@ -25,7 +25,6 @@
 #include "qgsapplication.h"
 #include "qgsgui.h"
 
-
 QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
@@ -74,6 +73,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   const QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
+  mStyleCategoriesListView->setItemDelegate( new CategoryDisplayLabelDelegate( this ) );
 
   // load from file setup
   switch ( mLayer->type() )
