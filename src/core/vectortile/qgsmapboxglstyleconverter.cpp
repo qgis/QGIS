@@ -1848,73 +1848,58 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   if ( jsonLayout.contains( QStringLiteral( "icon-image" ) ) &&
        ( labelSettings.placement == Qgis::LabelPlacement::Horizontal || labelSettings.placement == Qgis::LabelPlacement::Curved ) )
   {
+    double sizeMultiplierValue = 1.0;
+    QgsProperty sizeMultiplierProperty;
+    if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
+    {
+      const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
+      switch ( jsonIconSize.userType() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::Double:
+          sizeMultiplierValue = jsonIconSize.toDouble();
+          break;
+
+        case QMetaType::Type::QVariantMap:
+          sizeMultiplierProperty = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &sizeMultiplierValue );
+          break;
+
+        case QMetaType::Type::QVariantList:
+        case QMetaType::Type::QStringList:
+          sizeMultiplierProperty = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
+          break;
+        default:
+          context.pushWarning( QObject::tr( "%1: Ske (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
+          break;
+      }
+    }
+
     QSize spriteSize;
     QString spriteProperty, spriteSizeProperty;
-    const QString sprite = retrieveSpriteAsBase64WithProperties( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty );
-    if ( !sprite.isEmpty() )
+    const QString sprite = retrieveSpriteAsBase64WithProperties( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty, sizeMultiplierValue, sizeMultiplierProperty.asExpression() );
+    if ( !sprite.isEmpty() || !spriteProperty.isEmpty() )
     {
-      double size = 1.0;
-      if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
-      {
-        QgsProperty property;
-        const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
-        switch ( jsonIconSize.userType() )
-        {
-          case QMetaType::Type::Int:
-          case QMetaType::Type::LongLong:
-          case QMetaType::Type::Double:
-          {
-            size = jsonIconSize.toDouble();
-            if ( !spriteSizeProperty.isEmpty() )
-            {
-              ddLabelProperties.setProperty( QgsPalLayerSettings::Property::ShapeSizeX,
-                                             QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,%2*@marker_size)" ).arg( spriteSizeProperty ).arg( size ) ) );
-            }
-            break;
-          }
-
-          case QMetaType::Type::QVariantMap:
-            property = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &size );
-            break;
-
-          case QMetaType::Type::QVariantList:
-          case QMetaType::Type::QStringList:
-          default:
-            context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
-            break;
-        }
-
-        if ( !property.expressionString().isEmpty() )
-        {
-          if ( !spriteSizeProperty.isEmpty() )
-          {
-            ddLabelProperties.setProperty( QgsPalLayerSettings::Property::ShapeSizeX,
-                                           QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,(%2)*@marker_size)" ).arg( spriteSizeProperty ).arg( property.expressionString() ) ) );
-          }
-          else
-          {
-            ddLabelProperties.setProperty( QgsPalLayerSettings::Property::ShapeSizeX,
-                                           QgsProperty::fromExpression( QStringLiteral( "(%2)*%1" ).arg( spriteSize.width() ).arg( property.expressionString() ) ) );
-          }
-        }
-      }
-
       QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );
       markerLayer->setPath( sprite );
       markerLayer->setSize( spriteSize.width() );
       markerLayer->setSizeUnit( context.targetUnit() );
 
+      QgsPropertyCollection markerDdProperties;
       if ( !spriteProperty.isEmpty() )
       {
-        QgsPropertyCollection markerDdProperties;
         markerDdProperties.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( spriteProperty ) );
-        markerLayer->setDataDefinedProperties( markerDdProperties );
       }
+      if ( !spriteSizeProperty.isEmpty() )
+      {
+        markerDdProperties.setProperty( QgsSymbolLayer::Property::Width, QgsProperty::fromExpression( spriteSizeProperty ) );
+      }
+      markerLayer->setDataDefinedProperties( markerDdProperties );
 
       QgsTextBackgroundSettings backgroundSettings;
       backgroundSettings.setEnabled( true );
       backgroundSettings.setType( QgsTextBackgroundSettings::ShapeMarkerSymbol );
-      backgroundSettings.setSize( spriteSize * size );
+      backgroundSettings.setSize( spriteSize );
       backgroundSettings.setSizeUnit( context.targetUnit() );
       backgroundSettings.setSizeType( QgsTextBackgroundSettings::SizeFixed );
       backgroundSettings.setMarkerSymbol( new QgsMarkerSymbol( QgsSymbolLayerList() << markerLayer ) );
@@ -2039,11 +2024,38 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       lineSymbol->setPlacements( Qgis::MarkerLinePlacement::CentralPoint );
     }
 
+    double sizeMultiplierValue = 1.0;
+    QgsProperty sizeMultiplierProperty;
+    if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
+    {
+      const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
+      switch ( jsonIconSize.userType() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::Double:
+          sizeMultiplierValue = jsonIconSize.toDouble();
+          break;
+
+        case QMetaType::Type::QVariantMap:
+          sizeMultiplierProperty = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &sizeMultiplierValue );
+          break;
+
+        case QMetaType::Type::QVariantList:
+        case QMetaType::Type::QStringList:
+          sizeMultiplierProperty = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
+          break;
+        default:
+          context.pushWarning( QObject::tr( "%1: Ske (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
+          break;
+      }
+    }
+
     QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );
     QSize spriteSize;
     QString spriteProperty, spriteSizeProperty;
-    const QString sprite = retrieveSpriteAsBase64WithProperties( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty );
-    if ( !sprite.isNull() )
+    const QString sprite = retrieveSpriteAsBase64WithProperties( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty, sizeMultiplierValue, sizeMultiplierProperty.asExpression() );
+    if ( !sprite.isEmpty() || !spriteProperty.isEmpty() )
     {
       markerLayer->setPath( sprite );
       markerLayer->setSize( spriteSize.width() );
@@ -2052,53 +2064,10 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       if ( !spriteProperty.isEmpty() )
       {
         markerDdProperties.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( spriteProperty ) );
+      }
+      if ( !spriteSizeProperty.isEmpty() )
+      {
         markerDdProperties.setProperty( QgsSymbolLayer::Property::Width, QgsProperty::fromExpression( spriteSizeProperty ) );
-      }
-    }
-
-    if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
-    {
-      const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
-      double size = 1.0;
-      QgsProperty property;
-      switch ( jsonIconSize.userType() )
-      {
-        case QMetaType::Type::Int:
-        case QMetaType::Type::LongLong:
-        case QMetaType::Type::Double:
-        {
-          size = jsonIconSize.toDouble();
-          if ( !spriteSizeProperty.isEmpty() )
-          {
-            markerDdProperties.setProperty( QgsSymbolLayer::Property::Width,
-                                            QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,%2*@marker_size)" ).arg( spriteSizeProperty ).arg( size ) ) );
-          }
-          break;
-        }
-
-        case QMetaType::Type::QVariantMap:
-          property = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &size );
-          break;
-
-        case QMetaType::Type::QVariantList:
-        case QMetaType::Type::QStringList:
-        default:
-          context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
-          break;
-      }
-      markerLayer->setSize( size * spriteSize.width() );
-      if ( !property.expressionString().isEmpty() )
-      {
-        if ( !spriteSizeProperty.isEmpty() )
-        {
-          markerDdProperties.setProperty( QgsSymbolLayer::Property::Width,
-                                          QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,(%2)*@marker_size)" ).arg( spriteSizeProperty ).arg( property.expressionString() ) ) );
-        }
-        else
-        {
-          markerDdProperties.setProperty( QgsSymbolLayer::Property::Width,
-                                          QgsProperty::fromExpression( QStringLiteral( "(%2)*%1" ).arg( spriteSize.width() ).arg( property.expressionString() ) ) );
-        }
       }
     }
 
@@ -2120,9 +2089,38 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
   {
     const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
 
+
+
+    double sizeMultiplierValue = 1.0;
+    QgsProperty sizeMultiplierProperty;
+    if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
+    {
+      const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
+      switch ( jsonIconSize.userType() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::Double:
+          sizeMultiplierValue = jsonIconSize.toDouble();
+          break;
+
+        case QMetaType::Type::QVariantMap:
+          sizeMultiplierProperty = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &sizeMultiplierValue );
+          break;
+
+        case QMetaType::Type::QVariantList:
+        case QMetaType::Type::QStringList:
+          sizeMultiplierProperty = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
+          break;
+        default:
+          context.pushWarning( QObject::tr( "%1: Ske (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
+          break;
+      }
+    }
+
     QSize spriteSize;
     QString spriteProperty, spriteSizeProperty;
-    const QString sprite = retrieveSpriteAsBase64WithProperties( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty );
+    const QString sprite = retrieveSpriteAsBase64WithProperties( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty, sizeMultiplierValue, sizeMultiplierProperty.asExpression() );
     if ( !sprite.isEmpty() || !spriteProperty.isEmpty() )
     {
       QgsRasterMarkerSymbolLayer *rasterMarker = new QgsRasterMarkerSymbolLayer( );
@@ -2134,53 +2132,10 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       if ( !spriteProperty.isEmpty() )
       {
         markerDdProperties.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( spriteProperty ) );
-        markerDdProperties.setProperty( QgsSymbolLayer::Property::Width, QgsProperty::fromExpression( spriteSizeProperty ) );
       }
-
-      if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
+      if ( !spriteSizeProperty.isEmpty() )
       {
-        const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
-        double size = 1.0;
-        QgsProperty property;
-        switch ( jsonIconSize.userType() )
-        {
-          case QMetaType::Type::Int:
-          case QMetaType::Type::LongLong:
-          case QMetaType::Type::Double:
-          {
-            size = jsonIconSize.toDouble();
-            if ( !spriteSizeProperty.isEmpty() )
-            {
-              markerDdProperties.setProperty( QgsSymbolLayer::Property::Width,
-                                              QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,%2*@marker_size)" ).arg( spriteSizeProperty ).arg( size ) ) );
-            }
-            break;
-          }
-
-          case QMetaType::Type::QVariantMap:
-            property = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &size );
-            break;
-
-          case QMetaType::Type::QVariantList:
-          case QMetaType::Type::QStringList:
-          default:
-            context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
-            break;
-        }
-        rasterMarker->setSize( size * spriteSize.width() );
-        if ( !property.expressionString().isEmpty() )
-        {
-          if ( !spriteSizeProperty.isEmpty() )
-          {
-            markerDdProperties.setProperty( QgsSymbolLayer::Property::Width,
-                                            QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,(%2)*@marker_size)" ).arg( spriteSizeProperty ).arg( property.expressionString() ) ) );
-          }
-          else
-          {
-            markerDdProperties.setProperty( QgsSymbolLayer::Property::Width,
-                                            QgsProperty::fromExpression( QStringLiteral( "(%2)*%1" ).arg( spriteSize.width() ).arg( property.expressionString() ) ) );
-          }
-        }
+        markerDdProperties.setProperty( QgsSymbolLayer::Property::Width, QgsProperty::fromExpression( spriteSizeProperty ) );
       }
 
       double rotation = 0.0;
@@ -3375,7 +3330,7 @@ QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBox
   return sprite;
 }
 
-QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty )
+QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty, double sizeMultiplier, const QString &sizeMultiplierExpression )
 {
   QString spritePath;
 
@@ -3395,6 +3350,16 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
     }
     return path;
   };
+
+  QString _multiplierExpression;
+  if ( !sizeMultiplierExpression.isEmpty() )
+  {
+    _multiplierExpression = QString( "*(%1)" ).arg( sizeMultiplierExpression );
+  }
+  else if ( sizeMultiplier != 1.0 )
+  {
+    _multiplierExpression = QString( "*%1" ).arg( sizeMultiplier );
+  }
 
   switch ( value.userType() )
   {
@@ -3427,13 +3392,16 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
             if ( spritePath.isEmpty() && !path.isEmpty() )
             {
               spritePath = path;
-              spriteSize = size;
+              spriteSize = size * sizeMultiplier;
             }
 
             spriteProperty += QStringLiteral( " WHEN \"%1\" = '%2' THEN '%3'" )
                               .arg( fieldName, fieldValue, path );
-            spriteSizeProperty += QStringLiteral( " WHEN \"%1\" = '%2' THEN %3" )
-                                  .arg( fieldName ).arg( fieldValue ).arg( size.width() );
+            spriteSizeProperty += QStringLiteral( " WHEN \"%1\" = '%2' THEN %3%4" )
+                                  .arg( fieldName )
+                                  .arg( fieldValue )
+                                  .arg( size.width() )
+                                  .arg( _multiplierExpression );
           }
         }
 
@@ -3445,7 +3413,12 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
         spriteProperty.clear();
         spriteSizeProperty.clear();
         const QImage sprite = retrieveSprite( spriteName, context, spriteSize );
+        if ( !sizeMultiplierExpression.isEmpty() )
+          spriteSizeProperty = QLatin1String( "%1*(%2)" ).arg( QString::number( spriteSize.width() ) ).arg( sizeMultiplierExpression );
+        else if ( sizeMultiplier != 1.0 )
+          spriteSize *= sizeMultiplier;
         spritePath = prepareBase64( sprite );
+
       }
       break;
     }
@@ -3466,9 +3439,11 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
       spriteProperty = QStringLiteral( "CASE WHEN @vector_tile_zoom < %1 THEN '%2'" )
                        .arg( stops.value( 0 ).toList().value( 0 ).toString() )
                        .arg( spritePath );
-      spriteSizeProperty = QStringLiteral( "CASE WHEN @vector_tile_zoom < %1 THEN %2" )
+
+      spriteSizeProperty = QStringLiteral( "CASE WHEN @vector_tile_zoom < %1 THEN %2%3" )
                            .arg( stops.value( 0 ).toList().value( 0 ).toString() )
-                           .arg( spriteSize.width() );
+                           .arg( spriteSize.width() )
+                           .arg( _multiplierExpression );
 
       for ( int i = 0; i < stops.size() - 1; ++i )
       {
@@ -3482,10 +3457,11 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
                                 stops.value( i + 1 ).toList().value( 0 ).toString(),
                                 path );
         spriteSizeProperty += QStringLiteral( " WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 "
-                                              "THEN %3" )
+                                              "THEN %3%4" )
                               .arg( stops.value( i ).toList().value( 0 ).toString(),
                                     stops.value( i + 1 ).toList().value( 0 ).toString() )
-                              .arg( size.width() );
+                              .arg( size.width() )
+                              .arg( _multiplierExpression );
       }
       sprite = retrieveSprite( stops.last().toList().value( 1 ).toString(), context, size );
       path = prepareBase64( sprite );
@@ -3495,9 +3471,10 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
                         .arg( stops.last().toList().value( 0 ).toString() )
                         .arg( path );
       spriteSizeProperty += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
-                                            "THEN %2 END" )
+                                            "THEN %2%3 END" )
                             .arg( stops.last().toList().value( 0 ).toString() )
-                            .arg( size.width() );
+                            .arg( size.width() )
+                            .arg( _multiplierExpression );
       break;
     }
 
@@ -3563,15 +3540,15 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
                                                 spritePath );
 
           spriteSizeProperty += QStringLiteral( " WHEN %1 IN (%2) "
-                                                "THEN %3" ).arg( attribute,
-                                                    matchString ).arg( spriteSize.width() );
+                                                "THEN %3%4" ).arg( attribute,
+                                                    matchString ).arg( spriteSize.width() ).arg( _multiplierExpression );
         }
 
         const QImage sprite = retrieveSprite( json.constLast().toString(), context, spriteSize );
         spritePath = prepareBase64( sprite );
 
         spriteProperty += QStringLiteral( " ELSE '%1' END" ).arg( spritePath );
-        spriteSizeProperty += QStringLiteral( " ELSE %3 END" ).arg( spriteSize.width() );
+        spriteSizeProperty += QStringLiteral( " ELSE %1%2 END" ).arg( spriteSize.width() ).arg( _multiplierExpression );
         break;
       }
       else if ( method == QLatin1String( "step" ) )
@@ -3594,14 +3571,14 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
           spritePath = prepareBase64( sprite );
 
           spriteProperty += QStringLiteral( " WHEN %1 >= %2 THEN '%3' " ).arg( expression, stepKey, spritePath );
-          spriteSizeProperty += QStringLiteral( " WHEN %1 >= %2 THEN %3 " ).arg( expression ).arg( stepKey ).arg( spriteSize.width() );
+          spriteSizeProperty += QStringLiteral( " WHEN %1 >= %2 THEN %3%4 " ).arg( expression ).arg( stepKey ).arg( spriteSize.width() ).arg( _multiplierExpression );
         }
 
         const QImage sprite = retrieveSprite( json.at( 2 ).toString(), context, spriteSize );
         spritePath = prepareBase64( sprite );
 
         spriteProperty += QStringLiteral( "ELSE '%1' END" ).arg( spritePath );
-        spriteSizeProperty += QStringLiteral( "ELSE %3 END" ).arg( spriteSize.width() );
+        spriteSizeProperty += QStringLiteral( "ELSE %1%2 END" ).arg( spriteSize.width() ).arg( _multiplierExpression );
         break;
       }
       else if ( method == QLatin1String( "case" ) )
@@ -3617,13 +3594,13 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties( const Q
           spritePath = prepareBase64( sprite );
 
           spriteProperty += QStringLiteral( " WHEN %1 THEN '%2' " ).arg( caseExpression, spritePath );
-          spriteSizeProperty += QStringLiteral( " WHEN %1 THEN %2 " ).arg( caseExpression ).arg( spriteSize.width() );
+          spriteSizeProperty += QStringLiteral( " WHEN %1 THEN %2%3 " ).arg( caseExpression ).arg( spriteSize.width() ).arg( _multiplierExpression );
         }
         const QImage sprite = retrieveSprite( json.last().toString(), context, spriteSize );
         spritePath = prepareBase64( sprite );
 
         spriteProperty += QStringLiteral( "ELSE '%1' END" ).arg( spritePath );
-        spriteSizeProperty += QStringLiteral( "ELSE %3 END" ).arg( spriteSize.width() );
+        spriteSizeProperty += QStringLiteral( "ELSE %1%2 END" ).arg( spriteSize.width() ).arg( _multiplierExpression );
         break;
       }
       else

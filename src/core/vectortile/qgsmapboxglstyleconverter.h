@@ -764,12 +764,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
      * prior to conversion.
      */
-    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
+    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, double sizeMultiplier = 1.0, const QString &sizeMultiplierExpression = QString() )
     {
       QSize spriteSize;
       QString spriteProperty;
       QString spriteSizeProperty;
-      return retrieveSpriteAsBase64WithProperties( value, context, spriteSize, spriteProperty, spriteSizeProperty );
+      return retrieveSpriteAsBase64WithProperties( value, context, spriteSize, spriteProperty, spriteSizeProperty, sizeMultiplier, sizeMultiplierExpression );
     }
 
     /**
@@ -780,7 +780,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \since QGIS 3.40
      */
-    static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize SIP_OUT, QString &spriteProperty SIP_OUT, QString &spriteSizeProperty SIP_OUT );
+    static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize SIP_OUT, QString &spriteProperty SIP_OUT, QString &spriteSizeProperty SIP_OUT, double sizeMultiplier = 1.0, const QString &sizeMultiplierExpression = QString() );
 
   private:
 
