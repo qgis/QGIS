@@ -1355,21 +1355,6 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
-      // FMEObjects Gateway
-      datasetOptions.clear();
-      layerOptions.clear();
-
-      driverMetadata.insert( QStringLiteral( "FMEObjects Gateway" ),
-                             QgsVectorFileWriter::MetaData(
-                               QStringLiteral( "FMEObjects Gateway" ),
-                               QObject::tr( "FMEObjects Gateway" ),
-                               QStringLiteral( "*.fdd" ),
-                               QStringLiteral( "fdd" ),
-                               datasetOptions,
-                               layerOptions
-                             )
-                           );
-
       // GeoJSON
       datasetOptions.clear();
       layerOptions.clear();
