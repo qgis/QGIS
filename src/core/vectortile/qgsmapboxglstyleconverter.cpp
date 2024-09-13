@@ -2807,8 +2807,9 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
 
         case PropertyType::Point:
         {
-          elseValue = QStringLiteral( "array(%1,%2)" ).arg( json.constLast().toList().value( 0 ).toDouble() * multiplier,
-                      json.constLast().toList().value( 0 ).toDouble() * multiplier );
+          elseValue = QStringLiteral( "array(%1,%2)" )
+                      .arg( json.constLast().toList().value( 0 ).toDouble() * multiplier )
+                      .arg( json.constLast().toList().value( 0 ).toDouble() * multiplier );
           break;
         }
 
