@@ -2659,7 +2659,7 @@ Emitted when selection was changed
 
     void allowCommitChanged();
 %Docstring
-Emitted whenever the :py:func:`~QgsVectorLayer.allowCommitChanged` property of this layer changes.
+Emitted whenever the :py:func:`~QgsVectorLayer.allowCommit` property of this layer changes.
 
 .. versionadded:: 3.4
 %End
