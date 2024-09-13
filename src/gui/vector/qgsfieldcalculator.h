@@ -90,7 +90,7 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     //! Idx of changed attribute
     int mAttributeId;
 
-    QgsMessageBar *msgBar = nullptr;
+    QgsMessageBar *mMsgBar = nullptr;
 
     friend class TestQgsFieldCalculator;
 };

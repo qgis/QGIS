@@ -164,9 +164,9 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   setWindowTitle( tr( "%1 — Field Calculator" ).arg( mVectorLayer->name() ) );
 
   // Init the message bar instance
-  msgBar = new QgsMessageBar( this );
-  msgBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-  this->vLayout->insertWidget( 0, msgBar );
+  mMsgBar = new QgsMessageBar( this );
+  mMsgBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  this->vLayout->insertWidget( 0, mMsgBar );
 
   setDialogButtonState();
 }
@@ -575,7 +575,7 @@ void QgsFieldCalculator::setDialogButtonState()
   }
   else if ( !builder->isExpressionValid() )
   {
-    tooltip = tr( "The expression is invalid see (\"more info\") for details" );
+    tooltip = tr( "The expression is invalid see \"(more info)\" for details" );
     enableButtons = false;
   }
 
@@ -625,5 +625,5 @@ QgsField QgsFieldCalculator::fieldDefinition()
 
 void QgsFieldCalculator::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
 {
-  msgBar->pushMessage( text, level, duration );
+  mMsgBar->pushMessage( text, level, duration );
 }
