@@ -351,7 +351,14 @@ void QgsFieldCalculator::calculate()
     }
 
     mVectorLayer->endEditCommand();
-    pushMessage( QStringLiteral( "All good, change is applied" ) );
+    if ( mNewFieldGroupBox->isChecked() )
+    {
+      pushMessage( tr( "Field %1 created succesfully" ).arg( mVectorLayer->name() ) );
+    }
+    else if ( mUpdateExistingGroupBox->isChecked() )
+    {
+      pushMessage( tr( "Field %1 updated succesfully" ).arg( mVectorLayer->name() ) )   ;
+    }
   }
 }
 
