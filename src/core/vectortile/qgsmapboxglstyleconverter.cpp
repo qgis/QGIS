@@ -2782,8 +2782,15 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
     {
       case PropertyType::Color:
       {
-        const QColor color = parseColor( value, context );
-        valueString = QgsExpression::quotedString( color.name() );
+        if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
+        {
+          valueString = parseMatchList( value.toList(), PropertyType::Color, context, multiplier, maxOpacity, defaultColor, defaultNumber ).asExpression();
+        }
+        else
+        {
+          const QColor color = parseColor( value, context );
+          valueString = QgsExpression::quotedString( color.name() );
+        }
         break;
       }
 
