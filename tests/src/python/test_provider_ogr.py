@@ -1271,16 +1271,19 @@ class PyQgsOGRProvider(QgisTestCase):
         fields = vl.fields()
         self.assertFalse(fields.field('stringf').constraints().domainName())
 
-        datasource = os.path.join(unitTestDataPath(), 'domains.gdb|layername=test')
-        vl = QgsVectorLayer(datasource, 'test', 'ogr')
-        self.assertTrue(vl.isValid())
-        fields = vl.fields()
-        self.assertEqual(fields.field('default_value').splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.DefaultValue)
-        self.assertEqual(fields.field('duplicate').splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.Duplicate)
-        self.assertEqual(fields.field('ratio').splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.GeometryRatio)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            src_file_name = os.path.join(unitTestDataPath(), 'domains.gdb')
+            dest_file_name = os.path.join(temp_dir, 'domains.gdb')
+            shutil.copytree(src_file_name, dest_file_name)
+            vl = QgsVectorLayer(dest_file_name + '|layername=test', 'test', 'ogr')
+            self.assertTrue(vl.isValid())
+            fields = vl.fields()
+            self.assertEqual(fields.field('default_value').splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.DefaultValue)
+            self.assertEqual(fields.field('duplicate').splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.Duplicate)
+            self.assertEqual(fields.field('ratio').splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.GeometryRatio)
 
     def testGdbLayerMetadata(self):
         """
