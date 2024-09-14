@@ -54,6 +54,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsactionmenu.h"
 #include "qgsdockwidget.h"
+#include "qgssettingsregistrycore.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -409,6 +410,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     }
     mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );
+
+    if ( QgsSettingsRegistryCore::settingsAutosizeAttributeTable->value() )
+    {
+      mMainView->tableView()->resizeColumnsToContents();
+    }
 
     connect( mActionToggleMultiEdit, &QAction::toggled, mMainView, &QgsDualView::setMultiEditEnabled );
     connect( mActionSearchForm, &QAction::toggled, mMainView, &QgsDualView::toggleSearchMode );
