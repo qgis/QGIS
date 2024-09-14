@@ -403,14 +403,14 @@ QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType, 
 
 int QgsFields::lookupField( const QString &fieldName ) const
 {
-  if ( fieldName.isEmpty() ) //shortcut
-    return -1;
-
   for ( int idx = 0; idx < count(); ++idx )
   {
     if ( d->fields[idx].field.name() == fieldName )
       return idx;
   }
+
+  if ( fieldName.isEmpty() )
+    return -1;
 
   for ( int idx = 0; idx < count(); ++idx )
   {
