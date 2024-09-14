@@ -54,6 +54,7 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
 
   private slots:
     void onAddProfile();
+    void onRemoveProfile();
 
   private:
     QgsUserProfileManager *mManager = nullptr;

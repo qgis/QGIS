@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>332</width>
-    <height>417</height>
+    <height>471</height>
    </rect>
   </property>
   <property name="palette">
@@ -83,10 +83,10 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="maximumSize">
-       <size>
+        <size>
          <width>100</width>
          <height>100</height>
-       </size>
+        </size>
        </property>
        <property name="text">
         <string/>
@@ -171,10 +171,33 @@
     </widget>
    </item>
    <item>
+    <widget class="QToolButton" name="mRemoveProfileButton">
+     <property name="text">
+      <string>Remove profile</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextBesideIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
-      </property>
+     </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>

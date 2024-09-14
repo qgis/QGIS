@@ -37,6 +37,9 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   // Add a new profile on button click
   connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
 
+  // Remove selected profile on button click
+  connect( mRemoveProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onRemoveProfile );
+
   const int iconSize = mManager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt();
   mProfileListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
@@ -102,6 +105,13 @@ void QgsUserProfileSelectionDialog::onAddProfile()
     QMessageBox::warning( this, tr( "New Profile" ), tr( "Cannot create folder '%1'" ).arg( profileName ) );
     return;
   }
+}
+
+void QgsUserProfileSelectionDialog::onRemoveProfile()
+{
+  QString selectedProfile = selectedProfileName();
+
+  QgsError error = mManager->deleteProfile( selectedProfile );
 }
 
 QgsUserProfileSelectionDialog::~QgsUserProfileSelectionDialog() {}
