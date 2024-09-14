@@ -164,7 +164,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
     if ( !noDataRangeList.isEmpty() )
     {
       const double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
-      leNoDataValue->setText( QLocale().toString( v ) );
+      leNoDataValue->setText( QLocale().toString( v, 'g', 20 ) );
     }
     else
     {
