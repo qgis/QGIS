@@ -19,7 +19,7 @@ __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
@@ -107,8 +107,8 @@ class HubDistanceLines(QgisAlgorithm):
         units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]
 
         fields = point_source.fields()
-        fields.append(QgsField('HubName', QVariant.String))
-        fields.append(QgsField('HubDist', QVariant.Double))
+        fields.append(QgsField('HubName', QMetaType.Type.QString))
+        fields.append(QgsField('HubDist', QMetaType.Type.Double))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Type.LineString, point_source.sourceCrs())

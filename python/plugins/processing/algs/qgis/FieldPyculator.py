@@ -21,7 +21,7 @@ __copyright__ = '(C) 2012, Victor Olaya & NextGIS'
 
 import sys
 
-from qgis.PyQt.QtCore import QMetaType, QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (QgsProcessingException,
                        QgsField,
                        QgsFields,
@@ -46,8 +46,6 @@ class FieldsPyculator(QgisAlgorithm):
     FORMULA = 'FORMULA'
     OUTPUT = 'OUTPUT'
     RESULT_VAR_NAME = 'value'
-
-    TYPES = [QVariant.LongLong, QVariant.Double, QVariant.String]
 
     def group(self):
         return self.tr('Vector table')
@@ -110,34 +108,34 @@ class FieldsPyculator(QgisAlgorithm):
 
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
 
-        field_type = QVariant.Invalid
-        field_sub_type = QVariant.Invalid
+        field_type = QMetaType.Type.UnknownType
+        field_sub_type = QMetaType.Type.UnknownType
         field_type_parameter = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
         if field_type_parameter == 0:  # Integer
-            field_type = QVariant.Int
+            field_type = QMetaType.Type.Int
         elif field_type_parameter == 1:  # Float
-            field_type = QVariant.Double
+            field_type = QMetaType.Type.Double
         elif field_type_parameter == 2:  # String
-            field_type = QVariant.String
+            field_type = QMetaType.Type.QString
         elif field_type_parameter == 3:  # Boolean
-            field_type = QVariant.Bool
+            field_type = QMetaType.Type.Bool
         elif field_type_parameter == 4:  # Date
-            field_type = QVariant.Date
+            field_type = QMetaType.Type.QDate
         elif field_type_parameter == 5:  # Time
-            field_type = QVariant.Time
+            field_type = QMetaType.Type.QTime
         elif field_type_parameter == 6:  # DateTime
-            field_type = QVariant.DateTime
+            field_type = QMetaType.Type.QDateTime
         elif field_type_parameter == 7:  # Binary
-            field_type = QVariant.ByteArray
+            field_type = QMetaType.Type.QByteArray
         elif field_type_parameter == 8:  # StringList
-            field_type = QVariant.StringList
-            field_sub_type = QVariant.String
+            field_type = QMetaType.Type.QStringList
+            field_sub_type = QMetaType.Type.QString
         elif field_type_parameter == 9:  # IntegerList
-            field_type = QVariant.List
-            field_sub_type = QVariant.Int
+            field_type = QMetaType.Type.QVariantList
+            field_sub_type = QMetaType.Type.Int
         elif field_type_parameter == 10:  # DoubleList
-            field_type = QVariant.List
-            field_sub_type = QVariant.Double
+            field_type = QMetaType.Type.QVariantList
+            field_sub_type = QMetaType.Type.Double
 
         width = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
         precision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)

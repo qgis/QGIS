@@ -22,7 +22,7 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 import os
 import random
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsField,
@@ -149,7 +149,7 @@ class RandomPointsPolygons(QgisAlgorithm):
             value = self.parameterAsDouble(parameters, self.VALUE, context)
 
         fields = QgsFields()
-        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
+        fields.append(QgsField('id', QMetaType.Type.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Type.Point, source.sourceCrs(),
