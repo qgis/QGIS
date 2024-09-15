@@ -19,7 +19,7 @@ __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (QgsField,
                        QgsProcessing,
                        QgsProcessingParameterField,
@@ -63,7 +63,7 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
     def outputFields(self, inputFields):
         self.field_idx = inputFields.lookupField(self.field_name)
         if self.field_idx >= 0:
-            inputFields[self.field_idx] = QgsField(self.field_name, QVariant.Double, '', 24, 15)
+            inputFields[self.field_idx] = QgsField(self.field_name, QMetaType.Type.Double, '', 24, 15)
         return inputFields
 
     def prepareAlgorithm(self, parameters, context, feedback):

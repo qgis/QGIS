@@ -23,7 +23,7 @@ import os
 import math
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (QgsApplication,
                        QgsField,
@@ -108,7 +108,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         field_index = -1
 
         fields = QgsFields()
-        fields.append(QgsField('id', QVariant.Int, '', 20))
+        fields.append(QgsField('id', QMetaType.Type.Int, '', 20))
 
         if use_field:
             # keep original field type, name and parameters
@@ -117,25 +117,25 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                 fields.append(source.fields()[field_index])
         if type == 0:
             # envelope
-            fields.append(QgsField('width', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('height', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('area', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('perimeter', QVariant.Double, '', 20, 6))
+            fields.append(QgsField('width', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('height', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('perimeter', QMetaType.Type.Double, '', 20, 6))
         elif type == 1:
             # oriented rect
-            fields.append(QgsField('width', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('height', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('angle', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('area', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('perimeter', QVariant.Double, '', 20, 6))
+            fields.append(QgsField('width', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('height', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('angle', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('perimeter', QMetaType.Type.Double, '', 20, 6))
         elif type == 2:
             # circle
-            fields.append(QgsField('radius', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('area', QVariant.Double, '', 20, 6))
+            fields.append(QgsField('radius', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
         elif type == 3:
             # convex hull
-            fields.append(QgsField('area', QVariant.Double, '', 20, 6))
-            fields.append(QgsField('perimeter', QVariant.Double, '', 20, 6))
+            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField('perimeter', QMetaType.Type.Double, '', 20, 6))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Type.Polygon, source.sourceCrs())

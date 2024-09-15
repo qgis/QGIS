@@ -39,7 +39,7 @@ from qgis.core import (QgsField,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink)
 
-from qgis.PyQt.QtCore import (QVariant)
+from qgis.PyQt.QtCore import QMetaType
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -104,7 +104,7 @@ class TopoColor(QgisAlgorithm):
         min_distance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
 
         fields = source.fields()
-        fields.append(QgsField('color_id', QVariant.Int))
+        fields.append(QgsField('color_id', QMetaType.Type.Int))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, source.wkbType(), source.sourceCrs())

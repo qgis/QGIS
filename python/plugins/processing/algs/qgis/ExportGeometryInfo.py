@@ -23,7 +23,7 @@ import os
 import math
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (NULL,
                        Qgis,
@@ -103,25 +103,25 @@ class ExportGeometryInfo(QgisAlgorithm):
 
         new_fields = QgsFields()
         if QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.GeometryType.PolygonGeometry:
-            new_fields.append(QgsField('area', QVariant.Double))
-            new_fields.append(QgsField('perimeter', QVariant.Double))
+            new_fields.append(QgsField('area', QMetaType.Type.Double))
+            new_fields.append(QgsField('perimeter', QMetaType.Type.Double))
         elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.GeometryType.LineGeometry:
-            new_fields.append(QgsField('length', QVariant.Double))
+            new_fields.append(QgsField('length', QMetaType.Type.Double))
             if not QgsWkbTypes.isMultiType(source.wkbType()):
-                new_fields.append(QgsField('straightdis', QVariant.Double))
-                new_fields.append(QgsField('sinuosity', QVariant.Double))
+                new_fields.append(QgsField('straightdis', QMetaType.Type.Double))
+                new_fields.append(QgsField('sinuosity', QMetaType.Type.Double))
         else:
             if QgsWkbTypes.isMultiType(source.wkbType()):
-                new_fields.append(QgsField('numparts', QVariant.Int))
+                new_fields.append(QgsField('numparts', QMetaType.Type.Int))
             else:
-                new_fields.append(QgsField('xcoord', QVariant.Double))
-                new_fields.append(QgsField('ycoord', QVariant.Double))
+                new_fields.append(QgsField('xcoord', QMetaType.Type.Double))
+                new_fields.append(QgsField('ycoord', QMetaType.Type.Double))
                 if QgsWkbTypes.hasZ(source.wkbType()):
                     self.export_z = True
-                    new_fields.append(QgsField('zcoord', QVariant.Double))
+                    new_fields.append(QgsField('zcoord', QMetaType.Type.Double))
                 if QgsWkbTypes.hasM(source.wkbType()):
                     self.export_m = True
-                    new_fields.append(QgsField('mvalue', QVariant.Double))
+                    new_fields.append(QgsField('mvalue', QMetaType.Type.Double))
 
         fields = QgsProcessingUtils.combineFields(fields, new_fields)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,

@@ -22,7 +22,7 @@ __copyright__ = '(C) 2015, Arnaud Morvan'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (Qgis,
                        QgsApplication,
@@ -134,13 +134,13 @@ class CheckValidity(QgisAlgorithm):
         valid_count = 0
 
         invalid_fields = source.fields()
-        invalid_fields.append(QgsField('_errors', QVariant.String, 'string', 255))
+        invalid_fields.append(QgsField('_errors', QMetaType.Type.QString, 'string', 255))
         (invalid_output_sink, invalid_output_dest_id) = self.parameterAsSink(parameters, self.INVALID_OUTPUT, context,
                                                                              invalid_fields, source.wkbType(), source.sourceCrs())
         invalid_count = 0
 
         error_fields = QgsFields()
-        error_fields.append(QgsField('message', QVariant.String, 'string', 255))
+        error_fields.append(QgsField('message', QMetaType.Type.QString, 'string', 255))
         (error_output_sink, error_output_dest_id) = self.parameterAsSink(parameters, self.ERROR_OUTPUT, context,
                                                                          error_fields, QgsWkbTypes.Type.Point, source.sourceCrs())
         error_count = 0
