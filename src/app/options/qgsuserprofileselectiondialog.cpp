@@ -44,7 +44,12 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   mProfileListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   // Fill the list of profiles
-  mProfileListWidget->clear();  // Clear bogus profiles in the Ui form
+  populateProfileList();
+}
+
+void QgsUserProfileSelectionDialog::populateProfileList()
+{
+  mProfileListWidget->clear();
   for ( auto profile : mManager->allProfiles() )
   {
     auto item = new QListWidgetItem( mManager->profileForName( profile )->icon(), profile );
@@ -111,7 +116,26 @@ void QgsUserProfileSelectionDialog::onRemoveProfile()
 {
   QString selectedProfile = selectedProfileName();
 
+  if ( selectedProfile == QStringLiteral( "default" ) )
+  {
+    QMessageBox::warning( this, tr( "Remove profile" ), QString( "Cannot delete default profile" ), QMessageBox::Ok );
+    return;
+  }
+
+  QMessageBox::StandardButton response = QMessageBox::warning( this, tr( "Remove profile" ), QString( "Are you sure you want to delete profile '%1'?" ).arg( selectedProfile ), QMessageBox::Ok | QMessageBox::Cancel );
+
+  if ( response == QMessageBox::Cancel )
+    return;
+
   QgsError error = mManager->deleteProfile( selectedProfile );
+  if ( error.isEmpty() )
+  {
+    populateProfileList();
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Remove profile" ), tr( "Profile '%1' could not be deleted!" ).arg( selectedProfile ) );
+  }
 }
 
 QgsUserProfileSelectionDialog::~QgsUserProfileSelectionDialog() {}

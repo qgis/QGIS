@@ -58,6 +58,7 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
 
   private:
     QgsUserProfileManager *mManager = nullptr;
+    void populateProfileList();
 
 
 };
