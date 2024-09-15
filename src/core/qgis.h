@@ -4633,6 +4633,45 @@ class CORE_EXPORT Qgis
       Centimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceCentimeters ), //!< Centimeters
       Millimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMillimeters ), //!< Millimeters
       Inches, //!< Inches \since QGIS 3.32
+      ChainsInternational, //!< International chains \since QGIS 3.40
+      ChainsBritishBenoit1895A, //!< British chains (Benoit 1895 A) \since QGIS 3.40
+      ChainsBritishBenoit1895B, //!< British chains (Benoit 1895 B) \since QGIS 3.40
+      ChainsBritishSears1922Truncated, //!< British chains (Sears 1922 truncated) \since QGIS 3.40
+      ChainsBritishSears1922, //!< British chains (Sears 1922) \since QGIS 3.40
+      ChainsClarkes, //!< Clarke's chains \since QGIS 3.40
+      ChainsUSSurvey, //!< US Survery chains \since QGIS 3.40
+      FeetBritish1865, //!< British feet (1865) \since QGIS 3.40
+      FeetBritish1936, //!< British feet (1936) \since QGIS 3.40
+      FeetBritishBenoit1895A, //!< British feet (Benoit 1895 A) \since QGIS 3.40
+      FeetBritishBenoit1895B, //!< British feet (Benoit 1895 B) \since QGIS 3.40
+      FeetBritishSears1922Truncated, //!< British feet (Sears 1922 truncated) \since QGIS 3.40
+      FeetBritishSears1922, //!< British feet (Sears 1922) \since QGIS 3.40
+      FeetClarkes, //!< Clarke's feet \since QGIS 3.40
+      FeetGoldCoast, //!< Gold Coast feet \since QGIS 3.40
+      FeetIndian, //!< Indian (geodetic) feet \since QGIS 3.40
+      FeetIndian1937, //!< Indian feet (1937) \since QGIS 3.40
+      FeetIndian1962, //!< Indian feet (1962) \since QGIS 3.40
+      FeetIndian1975, //!< Indian feet (1975) \since QGIS 3.40
+      FeetUSSurvey, //!< US Survery feet \since QGIS 3.40
+      LinksInternational, //!< International links \since QGIS 3.40
+      LinksBritishBenoit1895A, //!< British links (Benoit 1895 A) \since QGIS 3.40
+      LinksBritishBenoit1895B, //!< British links (Benoit 1895 B) \since QGIS 3.40
+      LinksBritishSears1922Truncated, //!< British links (Sears 1922 truncated) \since QGIS 3.40
+      LinksBritishSears1922, //!< British links (Sears 1922) \since QGIS 3.40
+      LinksClarkes, //!< Clarke's links \since QGIS 3.40
+      LinksUSSurvey, //!< US Survery links \since QGIS 3.40
+      YardsBritishBenoit1895A, //!< British yards (Benoit 1895 A) \since QGIS 3.40
+      YardsBritishBenoit1895B, //!< British yards (Benoit 1895 B) \since QGIS 3.40
+      YardsBritishSears1922Truncated, //!< British yards (Sears 1922 truncated) \since QGIS 3.40
+      YardsBritishSears1922, //!< British yards (Sears 1922) \since QGIS 3.40
+      YardsClarkes, //!< Clarke's yards \since QGIS 3.40
+      YardsIndian, //!< Indian yards \since QGIS 3.40
+      YardsIndian1937, //!< Indian yards (1937) \since QGIS 3.40
+      YardsIndian1962, //!< Indian yards (1962) \since QGIS 3.40
+      YardsIndian1975, //!< Indian yards (1975) \since QGIS 3.40
+      MilesUSSurvey, //!< US Survery miles \since QGIS 3.40
+      Fathom, //!< Fathoms \since QGIS 3.40
+      MetersGermanLegal, //!< German legal meter \since QGIS 3.40
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( DistanceUnknownUnit ), //!< Unknown distance unit
     };
     Q_ENUM( DistanceUnit )

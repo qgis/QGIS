@@ -8527,6 +8527,123 @@ QgsUnitTypes.DistanceMillimeters.__doc__ = "Millimeters"
 QgsUnitTypes.Inches = Qgis.DistanceUnit.Inches
 QgsUnitTypes.Inches.is_monkey_patched = True
 QgsUnitTypes.Inches.__doc__ = "Inches \n.. versionadded:: 3.32"
+QgsUnitTypes.ChainsInternational = Qgis.DistanceUnit.ChainsInternational
+QgsUnitTypes.ChainsInternational.is_monkey_patched = True
+QgsUnitTypes.ChainsInternational.__doc__ = "International chains \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishBenoit1895A = Qgis.DistanceUnit.ChainsBritishBenoit1895A
+QgsUnitTypes.ChainsBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishBenoit1895A.__doc__ = "British chains (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishBenoit1895B = Qgis.DistanceUnit.ChainsBritishBenoit1895B
+QgsUnitTypes.ChainsBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishBenoit1895B.__doc__ = "British chains (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishSears1922Truncated = Qgis.DistanceUnit.ChainsBritishSears1922Truncated
+QgsUnitTypes.ChainsBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishSears1922Truncated.__doc__ = "British chains (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishSears1922 = Qgis.DistanceUnit.ChainsBritishSears1922
+QgsUnitTypes.ChainsBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishSears1922.__doc__ = "British chains (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsClarkes = Qgis.DistanceUnit.ChainsClarkes
+QgsUnitTypes.ChainsClarkes.is_monkey_patched = True
+QgsUnitTypes.ChainsClarkes.__doc__ = "Clarke's chains \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsUSSurvey = Qgis.DistanceUnit.ChainsUSSurvey
+QgsUnitTypes.ChainsUSSurvey.is_monkey_patched = True
+QgsUnitTypes.ChainsUSSurvey.__doc__ = "US Survery chains \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritish1865 = Qgis.DistanceUnit.FeetBritish1865
+QgsUnitTypes.FeetBritish1865.is_monkey_patched = True
+QgsUnitTypes.FeetBritish1865.__doc__ = "British feet (1865) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritish1936 = Qgis.DistanceUnit.FeetBritish1936
+QgsUnitTypes.FeetBritish1936.is_monkey_patched = True
+QgsUnitTypes.FeetBritish1936.__doc__ = "British feet (1936) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishBenoit1895A = Qgis.DistanceUnit.FeetBritishBenoit1895A
+QgsUnitTypes.FeetBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.FeetBritishBenoit1895A.__doc__ = "British feet (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishBenoit1895B = Qgis.DistanceUnit.FeetBritishBenoit1895B
+QgsUnitTypes.FeetBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.FeetBritishBenoit1895B.__doc__ = "British feet (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishSears1922Truncated = Qgis.DistanceUnit.FeetBritishSears1922Truncated
+QgsUnitTypes.FeetBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.FeetBritishSears1922Truncated.__doc__ = "British feet (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishSears1922 = Qgis.DistanceUnit.FeetBritishSears1922
+QgsUnitTypes.FeetBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.FeetBritishSears1922.__doc__ = "British feet (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetClarkes = Qgis.DistanceUnit.FeetClarkes
+QgsUnitTypes.FeetClarkes.is_monkey_patched = True
+QgsUnitTypes.FeetClarkes.__doc__ = "Clarke's feet \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetGoldCoast = Qgis.DistanceUnit.FeetGoldCoast
+QgsUnitTypes.FeetGoldCoast.is_monkey_patched = True
+QgsUnitTypes.FeetGoldCoast.__doc__ = "Gold Coast feet \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian = Qgis.DistanceUnit.FeetIndian
+QgsUnitTypes.FeetIndian.is_monkey_patched = True
+QgsUnitTypes.FeetIndian.__doc__ = "Indian (geodetic) feet \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian1937 = Qgis.DistanceUnit.FeetIndian1937
+QgsUnitTypes.FeetIndian1937.is_monkey_patched = True
+QgsUnitTypes.FeetIndian1937.__doc__ = "Indian feet (1937) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian1962 = Qgis.DistanceUnit.FeetIndian1962
+QgsUnitTypes.FeetIndian1962.is_monkey_patched = True
+QgsUnitTypes.FeetIndian1962.__doc__ = "Indian feet (1962) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian1975 = Qgis.DistanceUnit.FeetIndian1975
+QgsUnitTypes.FeetIndian1975.is_monkey_patched = True
+QgsUnitTypes.FeetIndian1975.__doc__ = "Indian feet (1975) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetUSSurvey = Qgis.DistanceUnit.FeetUSSurvey
+QgsUnitTypes.FeetUSSurvey.is_monkey_patched = True
+QgsUnitTypes.FeetUSSurvey.__doc__ = "US Survery feet \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksInternational = Qgis.DistanceUnit.LinksInternational
+QgsUnitTypes.LinksInternational.is_monkey_patched = True
+QgsUnitTypes.LinksInternational.__doc__ = "International links \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishBenoit1895A = Qgis.DistanceUnit.LinksBritishBenoit1895A
+QgsUnitTypes.LinksBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.LinksBritishBenoit1895A.__doc__ = "British links (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishBenoit1895B = Qgis.DistanceUnit.LinksBritishBenoit1895B
+QgsUnitTypes.LinksBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.LinksBritishBenoit1895B.__doc__ = "British links (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishSears1922Truncated = Qgis.DistanceUnit.LinksBritishSears1922Truncated
+QgsUnitTypes.LinksBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.LinksBritishSears1922Truncated.__doc__ = "British links (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishSears1922 = Qgis.DistanceUnit.LinksBritishSears1922
+QgsUnitTypes.LinksBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.LinksBritishSears1922.__doc__ = "British links (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksClarkes = Qgis.DistanceUnit.LinksClarkes
+QgsUnitTypes.LinksClarkes.is_monkey_patched = True
+QgsUnitTypes.LinksClarkes.__doc__ = "Clarke's links \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksUSSurvey = Qgis.DistanceUnit.LinksUSSurvey
+QgsUnitTypes.LinksUSSurvey.is_monkey_patched = True
+QgsUnitTypes.LinksUSSurvey.__doc__ = "US Survery links \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishBenoit1895A = Qgis.DistanceUnit.YardsBritishBenoit1895A
+QgsUnitTypes.YardsBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.YardsBritishBenoit1895A.__doc__ = "British yards (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishBenoit1895B = Qgis.DistanceUnit.YardsBritishBenoit1895B
+QgsUnitTypes.YardsBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.YardsBritishBenoit1895B.__doc__ = "British yards (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishSears1922Truncated = Qgis.DistanceUnit.YardsBritishSears1922Truncated
+QgsUnitTypes.YardsBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.YardsBritishSears1922Truncated.__doc__ = "British yards (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishSears1922 = Qgis.DistanceUnit.YardsBritishSears1922
+QgsUnitTypes.YardsBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.YardsBritishSears1922.__doc__ = "British yards (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsClarkes = Qgis.DistanceUnit.YardsClarkes
+QgsUnitTypes.YardsClarkes.is_monkey_patched = True
+QgsUnitTypes.YardsClarkes.__doc__ = "Clarke's yards \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian = Qgis.DistanceUnit.YardsIndian
+QgsUnitTypes.YardsIndian.is_monkey_patched = True
+QgsUnitTypes.YardsIndian.__doc__ = "Indian yards \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian1937 = Qgis.DistanceUnit.YardsIndian1937
+QgsUnitTypes.YardsIndian1937.is_monkey_patched = True
+QgsUnitTypes.YardsIndian1937.__doc__ = "Indian yards (1937) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian1962 = Qgis.DistanceUnit.YardsIndian1962
+QgsUnitTypes.YardsIndian1962.is_monkey_patched = True
+QgsUnitTypes.YardsIndian1962.__doc__ = "Indian yards (1962) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian1975 = Qgis.DistanceUnit.YardsIndian1975
+QgsUnitTypes.YardsIndian1975.is_monkey_patched = True
+QgsUnitTypes.YardsIndian1975.__doc__ = "Indian yards (1975) \n.. versionadded:: 3.40"
+QgsUnitTypes.MilesUSSurvey = Qgis.DistanceUnit.MilesUSSurvey
+QgsUnitTypes.MilesUSSurvey.is_monkey_patched = True
+QgsUnitTypes.MilesUSSurvey.__doc__ = "US Survery miles \n.. versionadded:: 3.40"
+QgsUnitTypes.Fathom = Qgis.DistanceUnit.Fathom
+QgsUnitTypes.Fathom.is_monkey_patched = True
+QgsUnitTypes.Fathom.__doc__ = "Fathoms \n.. versionadded:: 3.40"
+QgsUnitTypes.MetersGermanLegal = Qgis.DistanceUnit.MetersGermanLegal
+QgsUnitTypes.MetersGermanLegal.is_monkey_patched = True
+QgsUnitTypes.MetersGermanLegal.__doc__ = "German legal meter \n.. versionadded:: 3.40"
 QgsUnitTypes.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnit.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnknownUnit.is_monkey_patched = True
@@ -8578,6 +8695,162 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 * ``Inches``: Inches
 
   .. versionadded:: 3.32
+
+* ``ChainsInternational``: International chains
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishBenoit1895A``: British chains (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishBenoit1895B``: British chains (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishSears1922Truncated``: British chains (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishSears1922``: British chains (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``ChainsClarkes``: Clarke's chains
+
+  .. versionadded:: 3.40
+
+* ``ChainsUSSurvey``: US Survery chains
+
+  .. versionadded:: 3.40
+
+* ``FeetBritish1865``: British feet (1865)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritish1936``: British feet (1936)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishBenoit1895A``: British feet (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishBenoit1895B``: British feet (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishSears1922Truncated``: British feet (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishSears1922``: British feet (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``FeetClarkes``: Clarke's feet
+
+  .. versionadded:: 3.40
+
+* ``FeetGoldCoast``: Gold Coast feet
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian``: Indian (geodetic) feet
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian1937``: Indian feet (1937)
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian1962``: Indian feet (1962)
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian1975``: Indian feet (1975)
+
+  .. versionadded:: 3.40
+
+* ``FeetUSSurvey``: US Survery feet
+
+  .. versionadded:: 3.40
+
+* ``LinksInternational``: International links
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishBenoit1895A``: British links (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishBenoit1895B``: British links (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishSears1922Truncated``: British links (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishSears1922``: British links (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``LinksClarkes``: Clarke's links
+
+  .. versionadded:: 3.40
+
+* ``LinksUSSurvey``: US Survery links
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishBenoit1895A``: British yards (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishBenoit1895B``: British yards (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishSears1922Truncated``: British yards (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishSears1922``: British yards (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``YardsClarkes``: Clarke's yards
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian``: Indian yards
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian1937``: Indian yards (1937)
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian1962``: Indian yards (1962)
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian1975``: Indian yards (1975)
+
+  .. versionadded:: 3.40
+
+* ``MilesUSSurvey``: US Survery miles
+
+  .. versionadded:: 3.40
+
+* ``Fathom``: Fathoms
+
+  .. versionadded:: 3.40
+
+* ``MetersGermanLegal``: German legal meter
+
+  .. versionadded:: 3.40
 
 * ``Unknown``: Unknown distance unit
 

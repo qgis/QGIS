@@ -60,7 +60,46 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.DistanceUnitType.Standard,
                     QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.DistanceUnitType.UnknownType,
                     QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.Inches: QgsUnitTypes.DistanceUnitType.Standard
+                    Qgis.DistanceUnit.Inches: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.ChainsInternational: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.ChainsBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.ChainsBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.ChainsBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.ChainsBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.ChainsClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.ChainsUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetBritish1865: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetBritish1936: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetGoldCoast: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetIndian: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetIndian1937: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetIndian1962: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetIndian1975: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.FeetUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.LinksInternational: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.LinksBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.LinksBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.LinksBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.LinksBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.LinksClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.LinksUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsIndian: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsIndian1937: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsIndian1962: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.YardsIndian1975: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.MilesUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.Fathom: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.MetersGermanLegal: QgsUnitTypes.DistanceUnitType.Standard,
                     }
 
         for t in list(expected.keys()):
@@ -78,7 +117,47 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.DistanceUnit.DistanceMillimeters,
                  QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
                  QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
-                 Qgis.DistanceUnit.Inches]
+                 Qgis.DistanceUnit.Inches,
+                 Qgis.DistanceUnit.ChainsInternational,
+                 Qgis.DistanceUnit.ChainsBritishBenoit1895A,
+                 Qgis.DistanceUnit.ChainsBritishBenoit1895B,
+                 Qgis.DistanceUnit.ChainsBritishSears1922Truncated,
+                 Qgis.DistanceUnit.ChainsBritishSears1922,
+                 Qgis.DistanceUnit.ChainsClarkes,
+                 Qgis.DistanceUnit.ChainsUSSurvey,
+                 Qgis.DistanceUnit.FeetBritish1865,
+                 Qgis.DistanceUnit.FeetBritish1936,
+                 Qgis.DistanceUnit.FeetBritishBenoit1895A,
+                 Qgis.DistanceUnit.FeetBritishBenoit1895B,
+                 Qgis.DistanceUnit.FeetBritishSears1922Truncated,
+                 Qgis.DistanceUnit.FeetBritishSears1922,
+                 Qgis.DistanceUnit.FeetClarkes,
+                 Qgis.DistanceUnit.FeetGoldCoast,
+                 Qgis.DistanceUnit.FeetIndian,
+                 Qgis.DistanceUnit.FeetIndian1937,
+                 Qgis.DistanceUnit.FeetIndian1962,
+                 Qgis.DistanceUnit.FeetIndian1975,
+                 Qgis.DistanceUnit.FeetUSSurvey,
+                 Qgis.DistanceUnit.LinksInternational,
+                 Qgis.DistanceUnit.LinksBritishBenoit1895A,
+                 Qgis.DistanceUnit.LinksBritishBenoit1895B,
+                 Qgis.DistanceUnit.LinksBritishSears1922Truncated,
+                 Qgis.DistanceUnit.LinksBritishSears1922,
+                 Qgis.DistanceUnit.LinksClarkes,
+                 Qgis.DistanceUnit.LinksUSSurvey,
+                 Qgis.DistanceUnit.YardsBritishBenoit1895A,
+                 Qgis.DistanceUnit.YardsBritishBenoit1895B,
+                 Qgis.DistanceUnit.YardsBritishSears1922Truncated,
+                 Qgis.DistanceUnit.YardsBritishSears1922,
+                 Qgis.DistanceUnit.YardsClarkes,
+                 Qgis.DistanceUnit.YardsIndian,
+                 Qgis.DistanceUnit.YardsIndian1937,
+                 Qgis.DistanceUnit.YardsIndian1962,
+                 Qgis.DistanceUnit.YardsIndian1975,
+                 Qgis.DistanceUnit.MilesUSSurvey,
+                 Qgis.DistanceUnit.Fathom,
+                 Qgis.DistanceUnit.MetersGermanLegal,
+                 ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeDistanceUnit(QgsUnitTypes.encodeUnit(u))
@@ -107,11 +186,51 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.DistanceUnit.DistanceMillimeters,
                  QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
                  QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
-                 Qgis.DistanceUnit.Inches]
+                 Qgis.DistanceUnit.Inches,
+                 Qgis.DistanceUnit.ChainsInternational,
+                 Qgis.DistanceUnit.ChainsBritishBenoit1895A,
+                 Qgis.DistanceUnit.ChainsBritishBenoit1895B,
+                 Qgis.DistanceUnit.ChainsBritishSears1922Truncated,
+                 Qgis.DistanceUnit.ChainsBritishSears1922,
+                 Qgis.DistanceUnit.ChainsClarkes,
+                 Qgis.DistanceUnit.ChainsUSSurvey,
+                 Qgis.DistanceUnit.FeetBritish1865,
+                 Qgis.DistanceUnit.FeetBritish1936,
+                 Qgis.DistanceUnit.FeetBritishBenoit1895A,
+                 Qgis.DistanceUnit.FeetBritishBenoit1895B,
+                 Qgis.DistanceUnit.FeetBritishSears1922Truncated,
+                 Qgis.DistanceUnit.FeetBritishSears1922,
+                 Qgis.DistanceUnit.FeetClarkes,
+                 Qgis.DistanceUnit.FeetGoldCoast,
+                 Qgis.DistanceUnit.FeetIndian,
+                 Qgis.DistanceUnit.FeetIndian1937,
+                 Qgis.DistanceUnit.FeetIndian1962,
+                 Qgis.DistanceUnit.FeetIndian1975,
+                 Qgis.DistanceUnit.FeetUSSurvey,
+                 Qgis.DistanceUnit.LinksInternational,
+                 Qgis.DistanceUnit.LinksBritishBenoit1895A,
+                 Qgis.DistanceUnit.LinksBritishBenoit1895B,
+                 Qgis.DistanceUnit.LinksBritishSears1922Truncated,
+                 Qgis.DistanceUnit.LinksBritishSears1922,
+                 Qgis.DistanceUnit.LinksClarkes,
+                 Qgis.DistanceUnit.LinksUSSurvey,
+                 Qgis.DistanceUnit.YardsBritishBenoit1895A,
+                 Qgis.DistanceUnit.YardsBritishBenoit1895B,
+                 Qgis.DistanceUnit.YardsBritishSears1922Truncated,
+                 Qgis.DistanceUnit.YardsBritishSears1922,
+                 Qgis.DistanceUnit.YardsClarkes,
+                 Qgis.DistanceUnit.YardsIndian,
+                 Qgis.DistanceUnit.YardsIndian1937,
+                 Qgis.DistanceUnit.YardsIndian1962,
+                 Qgis.DistanceUnit.YardsIndian1975,
+                 Qgis.DistanceUnit.MilesUSSurvey,
+                 Qgis.DistanceUnit.Fathom,
+                 Qgis.DistanceUnit.MetersGermanLegal,
+                 ]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToDistanceUnit(QgsUnitTypes.toString(u))
-            assert ok
+            self.assertTrue(ok, f'QgsUnitTypes.stringToDistanceUnit failed for {u.name}')
             self.assertEqual(res, u)
 
         # Test converting bad strings
@@ -408,7 +527,46 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 0.000539957,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 1000.0,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 100.0,
-                Qgis.DistanceUnit.Inches: 39.37007874015748
+                Qgis.DistanceUnit.Inches: 39.37007874015748,
+                Qgis.DistanceUnit.ChainsInternational: 1 / 20.1168,
+                Qgis.DistanceUnit.ChainsBritishBenoit1895A: 1 / 20.1167824,
+                Qgis.DistanceUnit.ChainsBritishBenoit1895B: 1 / 20.116782494376,
+                Qgis.DistanceUnit.ChainsBritishSears1922Truncated: 1 / 20.116756,
+                Qgis.DistanceUnit.ChainsBritishSears1922: 1 / 20.11676512155,
+                Qgis.DistanceUnit.ChainsClarkes: 1 / 20.1166195164,
+                Qgis.DistanceUnit.ChainsUSSurvey: 1 / 20.11684023368,
+                Qgis.DistanceUnit.FeetBritish1865: 1 / 0.30480083333333,
+                Qgis.DistanceUnit.FeetBritish1936: 1 / 0.3048007491,
+                Qgis.DistanceUnit.FeetBritishBenoit1895A: 1 / 0.30479973333333,
+                Qgis.DistanceUnit.FeetBritishBenoit1895B: 1 / 0.30479973476327,
+                Qgis.DistanceUnit.FeetBritishSears1922Truncated: 1 / 0.30479933333333,
+                Qgis.DistanceUnit.FeetBritishSears1922: 1 / 0.30479947153868,
+                Qgis.DistanceUnit.FeetClarkes: 1 / 0.3047972654,
+                Qgis.DistanceUnit.FeetGoldCoast: 1 / 0.30479971018151,
+                Qgis.DistanceUnit.FeetIndian: 1 / 0.30479951024815,
+                Qgis.DistanceUnit.FeetIndian1937: 1 / 0.30479841,
+                Qgis.DistanceUnit.FeetIndian1962: 1 / 0.3047996,
+                Qgis.DistanceUnit.FeetIndian1975: 1 / 0.3047995,
+                Qgis.DistanceUnit.FeetUSSurvey: 1 / 0.30480060960122,
+                Qgis.DistanceUnit.LinksInternational: 1 / 0.201168,
+                Qgis.DistanceUnit.LinksBritishBenoit1895A: 1 / 0.201167824,
+                Qgis.DistanceUnit.LinksBritishBenoit1895B: 1 / 0.20116782494376,
+                Qgis.DistanceUnit.LinksBritishSears1922Truncated: 1 / 0.20116756,
+                Qgis.DistanceUnit.LinksBritishSears1922: 1 / 0.20116765121553,
+                Qgis.DistanceUnit.LinksClarkes: 1 / 0.20116619516,
+                Qgis.DistanceUnit.LinksUSSurvey: 1 / 0.2011684023368,
+                Qgis.DistanceUnit.YardsBritishBenoit1895A: 1 / 0.9143992,
+                Qgis.DistanceUnit.YardsBritishBenoit1895B: 1 / 0.9143992042898,
+                Qgis.DistanceUnit.YardsBritishSears1922Truncated: 1 / 0.914398,
+                Qgis.DistanceUnit.YardsBritishSears1922: 1 / 0.91439841461603,
+                Qgis.DistanceUnit.YardsClarkes: 1 / 0.9143917962,
+                Qgis.DistanceUnit.YardsIndian: 1 / 0.91439853074444,
+                Qgis.DistanceUnit.YardsIndian1937: 1 / 0.91439523,
+                Qgis.DistanceUnit.YardsIndian1962: 1 / 0.9143988,
+                Qgis.DistanceUnit.YardsIndian1975: 1 / 0.9143985,
+                Qgis.DistanceUnit.MilesUSSurvey: 1 / 1609.3472186944,
+                Qgis.DistanceUnit.Fathom: 1 / 1.8288,
+                Qgis.DistanceUnit.MetersGermanLegal: 1 / 1.0000135965,
             },
             QgsUnitTypes.DistanceUnit.DistanceKilometers: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 1000.0,
@@ -518,6 +676,84 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 2.54,
                 Qgis.DistanceUnit.Inches: 1.0
             },
+            Qgis.DistanceUnit.ChainsInternational: {
+                Qgis.DistanceUnit.Meters: 20.1168},
+            Qgis.DistanceUnit.ChainsBritishBenoit1895A: {
+                Qgis.DistanceUnit.Meters: 20.1167824},
+            Qgis.DistanceUnit.ChainsBritishBenoit1895B: {
+                Qgis.DistanceUnit.Meters: 20.116782494376},
+            Qgis.DistanceUnit.ChainsBritishSears1922Truncated: {
+                Qgis.DistanceUnit.Meters: 20.116756},
+            Qgis.DistanceUnit.ChainsBritishSears1922: {
+                Qgis.DistanceUnit.Meters: 20.11676512155},
+            Qgis.DistanceUnit.ChainsClarkes: {
+                Qgis.DistanceUnit.Meters: 20.1166195164},
+            Qgis.DistanceUnit.ChainsUSSurvey: {
+                Qgis.DistanceUnit.Meters: 20.11684023368},
+            Qgis.DistanceUnit.FeetBritish1865: {
+                Qgis.DistanceUnit.Meters: 0.30480083333333},
+            Qgis.DistanceUnit.FeetBritish1936: {
+                Qgis.DistanceUnit.Meters: 0.3048007491},
+            Qgis.DistanceUnit.FeetBritishBenoit1895A: {
+                Qgis.DistanceUnit.Meters: 0.30479973333333},
+            Qgis.DistanceUnit.FeetBritishBenoit1895B: {
+                Qgis.DistanceUnit.Meters: 0.30479973476327},
+            Qgis.DistanceUnit.FeetBritishSears1922Truncated: {
+                Qgis.DistanceUnit.Meters: 0.30479933333333},
+            Qgis.DistanceUnit.FeetBritishSears1922: {
+                Qgis.DistanceUnit.Meters: 0.30479947153868},
+            Qgis.DistanceUnit.FeetClarkes: {
+                Qgis.DistanceUnit.Meters: 0.3047972654},
+            Qgis.DistanceUnit.FeetGoldCoast: {
+                Qgis.DistanceUnit.Meters: 0.30479971018151},
+            Qgis.DistanceUnit.FeetIndian: {
+                Qgis.DistanceUnit.Meters: 0.30479951024815},
+            Qgis.DistanceUnit.FeetIndian1937: {
+                Qgis.DistanceUnit.Meters: 0.30479841},
+            Qgis.DistanceUnit.FeetIndian1962: {
+                Qgis.DistanceUnit.Meters: 0.3047996},
+            Qgis.DistanceUnit.FeetIndian1975: {
+                Qgis.DistanceUnit.Meters: 0.3047995},
+            Qgis.DistanceUnit.FeetUSSurvey: {
+                Qgis.DistanceUnit.Meters: 0.30480060960122},
+            Qgis.DistanceUnit.LinksInternational: {
+                Qgis.DistanceUnit.Meters: 0.201168},
+            Qgis.DistanceUnit.LinksBritishBenoit1895A: {
+                Qgis.DistanceUnit.Meters: 0.201167824},
+            Qgis.DistanceUnit.LinksBritishBenoit1895B: {
+                Qgis.DistanceUnit.Meters: 0.20116782494376},
+            Qgis.DistanceUnit.LinksBritishSears1922Truncated: {
+                Qgis.DistanceUnit.Meters: 0.20116756},
+            Qgis.DistanceUnit.LinksBritishSears1922: {
+                Qgis.DistanceUnit.Meters: 0.20116765121553},
+            Qgis.DistanceUnit.LinksClarkes: {
+                Qgis.DistanceUnit.Meters: 0.20116619516},
+            Qgis.DistanceUnit.LinksUSSurvey: {
+                Qgis.DistanceUnit.Meters: 0.2011684023368},
+            Qgis.DistanceUnit.YardsBritishBenoit1895A: {
+                Qgis.DistanceUnit.Meters: 0.9143992},
+            Qgis.DistanceUnit.YardsBritishBenoit1895B: {
+                Qgis.DistanceUnit.Meters: 0.9143992042898},
+            Qgis.DistanceUnit.YardsBritishSears1922Truncated: {
+                Qgis.DistanceUnit.Meters: 0.914398},
+            Qgis.DistanceUnit.YardsBritishSears1922: {
+                Qgis.DistanceUnit.Meters: 0.91439841461603},
+            Qgis.DistanceUnit.YardsClarkes: {
+                Qgis.DistanceUnit.Meters: 0.9143917962},
+            Qgis.DistanceUnit.YardsIndian: {
+                Qgis.DistanceUnit.Meters: 0.91439853074444},
+            Qgis.DistanceUnit.YardsIndian1937: {
+                Qgis.DistanceUnit.Meters: 0.91439523},
+            Qgis.DistanceUnit.YardsIndian1962: {
+                Qgis.DistanceUnit.Meters: 0.9143988},
+            Qgis.DistanceUnit.YardsIndian1975: {
+                Qgis.DistanceUnit.Meters: 0.9143985},
+            Qgis.DistanceUnit.MilesUSSurvey: {
+                Qgis.DistanceUnit.Meters: 1609.3472186944},
+            Qgis.DistanceUnit.Fathom: {
+                Qgis.DistanceUnit.Meters: 1.8288},
+            Qgis.DistanceUnit.MetersGermanLegal: {
+                Qgis.DistanceUnit.Meters: 1.0000135965},
             QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 1.0,
                 QgsUnitTypes.DistanceUnit.DistanceKilometers: 1.0,
@@ -760,7 +996,46 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.AreaUnit.AreaSquareMillimeters,
                     QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.AreaUnit.AreaUnknownUnit,
                     QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles,
-                    Qgis.DistanceUnit.Inches: Qgis.AreaUnit.SquareInches
+                    Qgis.DistanceUnit.Inches: Qgis.AreaUnit.SquareInches,
+                    Qgis.DistanceUnit.ChainsInternational: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.ChainsBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.ChainsBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.ChainsBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.ChainsBritishSears1922: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.ChainsClarkes: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.ChainsUSSurvey: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetBritish1865: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetBritish1936: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetBritishSears1922: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetClarkes: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetGoldCoast: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetIndian: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetIndian1937: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetIndian1962: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetIndian1975: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.FeetUSSurvey: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.LinksInternational: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.LinksBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.LinksBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.LinksBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.LinksBritishSears1922: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.LinksClarkes: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.LinksUSSurvey: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsBritishSears1922: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsClarkes: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsIndian: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsIndian1937: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsIndian1962: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.YardsIndian1975: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.MilesUSSurvey: Qgis.AreaUnit.SquareMiles,
+                    Qgis.DistanceUnit.Fathom: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.MetersGermanLegal: Qgis.AreaUnit.SquareMeters,
                     }
 
         for t in list(expected.keys()):
@@ -1115,7 +1390,46 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
                     QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.VolumeUnit.VolumeUnknownUnit,
                     QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.Inches: QgsUnitTypes.VolumeUnit.VolumeCubicInch
+                    Qgis.DistanceUnit.Inches: QgsUnitTypes.VolumeUnit.VolumeCubicInch,
+                    Qgis.DistanceUnit.ChainsInternational: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.ChainsBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.ChainsBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.ChainsBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.ChainsBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.ChainsClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.ChainsUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetBritish1865: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetBritish1936: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetGoldCoast: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetIndian: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetIndian1937: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetIndian1962: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetIndian1975: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.FeetUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.LinksInternational: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.LinksBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.LinksBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.LinksBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.LinksBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.LinksClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.LinksUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.YardsBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsBritishSears1922: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsClarkes: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsIndian: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsIndian1937: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsIndian1962: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.YardsIndian1975: Qgis.VolumeUnit.VolumeCubicYards,
+                    Qgis.DistanceUnit.MilesUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.Fathom: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.MetersGermanLegal: Qgis.VolumeUnit.VolumeCubicMeters,
                     }
 
         for t in list(expected.keys()):
