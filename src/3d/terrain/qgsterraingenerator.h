@@ -57,11 +57,12 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
       Flat,           //!< The whole terrain is flat area
       Dem,            //!< Terrain is built from raster layer with digital elevation model
       Online,         //!< Terrain is built from downloaded tiles with digital elevation model
-      Mesh            //!< Terrain is built from mesh layer with z value on vertices
+      Mesh,           //!< Terrain is built from mesh layer with z value on vertices
+      QuantizedMesh,  //!< Terrain is built from quantized mesh tiles
     };
 
     //! Sets terrain entity for the generator (does not transfer ownership)
-    void setTerrain( QgsTerrainEntity *t ) { mTerrain = t; }
+    virtual void setTerrain( QgsTerrainEntity *t ) { mTerrain = t; }
 
     //! Makes a copy of the current instance
     virtual QgsTerrainGenerator *clone() const = 0 SIP_FACTORY;

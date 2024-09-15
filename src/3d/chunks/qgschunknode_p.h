@@ -279,7 +279,7 @@ class QgsChunkNode
     QgsChunkQueueJob *mUpdater;                //!< Object that does update of the chunk (not null <=> Updating state)
 
     QTime mEntityCreatedTime;
-    bool mHasData = true;   //!< Whether there are (will be) any data in this node (or any descentants) and so whether it makes sense to load this node
+    bool mHasData = true;   //!< Whether there are (will be) any data in this node and so whether it makes sense to load this node
 };
 
 /// @endcond

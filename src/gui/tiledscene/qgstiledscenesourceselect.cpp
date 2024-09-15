@@ -58,7 +58,11 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   QMenu *newMenu = new QMenu( btnNew );
 
   QAction *actionNew = new QAction( tr( "New Cesium 3D Tiles Connection…" ), this );
-  connect( actionNew, &QAction::triggered, this, &QgsTiledSceneSourceSelect::btnNewCesium3DTiles_clicked );
+  connect( actionNew, &QAction::triggered, this, [ this ]() { newConnection( "cesiumtiles" ); } );
+  newMenu->addAction( actionNew );
+
+  actionNew = new QAction( tr( "New Quantized Mesh Connection…" ), this );
+  connect( actionNew, &QAction::triggered, this, [ this ]() { newConnection( "quantizedmesh" ); } );
   newMenu->addAction( actionNew );
 
   btnNew->setMenu( newMenu );
@@ -81,22 +85,6 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   {
     emit enableButtons( !path.isEmpty() );
   } );
-}
-
-void QgsTiledSceneSourceSelect::btnNewCesium3DTiles_clicked()
-{
-  QgsTiledSceneConnectionDialog nc( this );
-  if ( nc.exec() )
-  {
-    QgsTiledSceneProviderConnection::Data connectionData = QgsTiledSceneProviderConnection::decodedUri( nc.connectionUri() );
-    connectionData.provider = QStringLiteral( "cesiumtiles" );
-
-    QgsTiledSceneProviderConnection::addConnection( nc.connectionName(), connectionData );
-    populateConnectionList();
-    QgsTiledSceneProviderConnection::setSelectedConnection( nc.connectionName() );
-    setConnectionListPosition();
-    emit connectionsChanged();
-  }
 }
 
 void QgsTiledSceneSourceSelect::btnEdit_clicked()
@@ -180,6 +168,23 @@ void QgsTiledSceneSourceSelect::addButtonClicked()
     emit addLayer( Qgis::LayerType::TiledScene, uri, QgsProviderUtils::suggestLayerNameFromFilePath( filePath ), providerKey );
   }
 }
+
+void QgsTiledSceneSourceSelect::newConnection( QString provider )
+{
+  QgsTiledSceneConnectionDialog nc( this );
+  if ( nc.exec() )
+  {
+    QgsTiledSceneProviderConnection::Data connectionData = QgsTiledSceneProviderConnection::decodedUri( nc.connectionUri() );
+    connectionData.provider = provider;
+
+    QgsTiledSceneProviderConnection::addConnection( nc.connectionName(), connectionData );
+    populateConnectionList();
+    QgsTiledSceneProviderConnection::setSelectedConnection( nc.connectionName() );
+    setConnectionListPosition();
+    emit connectionsChanged();
+  }
+}
+
 
 void QgsTiledSceneSourceSelect::populateConnectionList()
 {

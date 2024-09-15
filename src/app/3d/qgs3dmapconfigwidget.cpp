@@ -23,6 +23,7 @@
 #include "qgs3dutils.h"
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
+#include "qgsquantizedmeshterraingenerator.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
@@ -32,6 +33,8 @@
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgsambientocclusionsettingswidget.h"
 #include "qgs3dmapcanvas.h"
+#include "qgsterraingenerator.h"
+#include "qgstiledscenelayer.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )
@@ -98,6 +101,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QgsTerrainGenerator::Dem );
   cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
   cboTerrainType->addItem( tr( "Mesh" ), QgsTerrainGenerator::Mesh );
+  cboTerrainType->addItem( tr( "Quantized Mesh" ), QgsTerrainGenerator::QuantizedMesh );
 
   groupTerrain->setChecked( mMap->terrainRenderingEnabled() );
 
@@ -127,6 +131,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     mMeshSymbolWidget->setLayer( meshTerrain->meshLayer(), false );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
     spinTerrainScale->setValue( meshTerrain->symbol()->verticalScale() );
+  }
+  else if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::QuantizedMesh )
+  {
+    cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::QuantizedMesh ) );
+    auto qmTerrain = static_cast<QgsQuantizedMeshTerrainGenerator *>( terrainGen );
+    cboTerrainLayer->setFilters( Qgis::LayerFilter::TiledSceneLayer );
+    cboTerrainLayer->setLayer( qmTerrain->layer() );
   }
   else if ( terrainGen )
   {
@@ -340,6 +351,14 @@ void Qgs3DMapConfigWidget::apply()
       mMap->setTerrainGenerator( newTerrainGenerator );
     }
     break;
+    case QgsTerrainGenerator::QuantizedMesh:
+    {
+      auto layer = qobject_cast<QgsTiledSceneLayer *>( cboTerrainLayer->currentLayer() );
+      auto generator = new QgsQuantizedMeshTerrainGenerator;
+      generator->setLayer( layer );
+      mMap->setTerrainGenerator( generator );
+    }
+    break;
   }
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
@@ -394,14 +413,16 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
 {
   const QgsTerrainGenerator::Type genType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
-  labelTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
-  spinTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
-  labelTerrainScale->setVisible( genType != QgsTerrainGenerator::Flat );
-  spinTerrainScale->setVisible( genType != QgsTerrainGenerator::Flat );
-  labelTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
-  spinTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
-  labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
-  cboTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
+  labelTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh ) );
+  spinTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh ) );
+  labelTerrainScale->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::QuantizedMesh ) );
+  spinTerrainScale->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::QuantizedMesh ) );
+  terrainElevationOffsetSpinBox->setVisible( genType != QgsTerrainGenerator::QuantizedMesh );
+  labelterrainElevationOffset->setVisible( genType != QgsTerrainGenerator::QuantizedMesh );
+  labelTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh ) );
+  spinTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh ) );
+  labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh );
+  cboTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh || genType == QgsTerrainGenerator::QuantizedMesh );
   groupMeshTerrainShading->setVisible( genType == QgsTerrainGenerator::Mesh );
   groupTerrainShading->setVisible( genType != QgsTerrainGenerator::Mesh );
 
@@ -413,6 +434,10 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   else if ( cboTerrainType->currentData() == QgsTerrainGenerator::Mesh )
   {
     cboTerrainLayer->setFilters( Qgis::LayerFilter::MeshLayer );
+  }
+  else if ( cboTerrainType->currentData() == QgsTerrainGenerator::QuantizedMesh )
+  {
+    cboTerrainLayer->setFilters( Qgis::LayerFilter::TiledSceneLayer );
   }
 
   if ( cboTerrainLayer->currentLayer() != oldTerrainLayer )
@@ -470,6 +495,14 @@ void Qgs3DMapConfigWidget::validate()
       {
         valid = false;
         mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::MessageLevel::Critical );
+      }
+      break;
+
+    case QgsTerrainGenerator::QuantizedMesh:
+      if ( ! cboTerrainLayer->currentLayer() )
+      {
+        valid = false;
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a quantized mesh terrain" ), Qgis::MessageLevel::Critical );
       }
       break;
 

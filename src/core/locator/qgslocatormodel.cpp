@@ -55,7 +55,7 @@ void QgsLocatorModel::deferredClear()
 
 int QgsLocatorModel::rowCount( const QModelIndex & ) const
 {
-  return mResults.size();
+  return mResults.count();
 }
 
 int QgsLocatorModel::columnCount( const QModelIndex & ) const
@@ -74,19 +74,27 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     case Qt::DisplayRole:
     case Qt::EditRole:
     {
-      switch ( index.column() )
+      switch ( static_cast<Column>( index.column() ) )
       {
         case Name:
-          if ( !mResults.at( index.row() ).filter )
-            return mResults.at( index.row() ).result.displayString;
-          else if ( mResults.at( index.row() ).filter && mResults.at( index.row() ).groupSorting == 0 )
-            return mResults.at( index.row() ).filterTitle;
-          else
+        {
+          switch ( mResults.at( index.row() ).type )
           {
-            QString groupTitle = mResults.at( index.row() ).groupTitle;
-            groupTitle.prepend( "  " );
-            return groupTitle;
+            case EntryType::Filter:
+              return mResults.at( index.row() ).filterTitle;
+
+            case EntryType::Group:
+            {
+              QString groupTitle = mResults.at( index.row() ).groupTitle;
+              groupTitle.prepend( "  " );
+              return groupTitle;
+            }
+
+            case EntryType::Result:
+              return mResults.at( index.row() ).result.displayString;
           }
+        }
+
         case Description:
           if ( !mResults.at( index.row() ).filter )
             return mResults.at( index.row() ).result.description;
@@ -110,7 +118,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       break;
 
     case Qt::DecorationRole:
-      switch ( index.column() )
+      switch ( static_cast<Column>( index.column() ) )
       {
         case Name:
           if ( !mResults.at( index.row() ).filter )
@@ -134,8 +142,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
     case static_cast< int >( CustomRole::ResultType ):
-      // 0 for filter title, the group otherwise, 9999 if no group
-      return mResults.at( index.row() ).groupSorting;
+      return static_cast<int>( mResults.at( index.row() ).type );
 
     case static_cast< int >( CustomRole::ResultScore ):
       if ( mResults.at( index.row() ).filter )
@@ -155,11 +162,11 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       else
         return mResults.at( index.row() ).filterTitle;
 
-    case static_cast< int >( CustomRole::ResultFilterGroupSorting ):
-      if ( mResults.at( index.row() ).groupTitle.isEmpty() )
-        return 1;
-      else
-        return 0;
+    case static_cast< int >( CustomRole::ResultFilterGroupTitle ):
+      return mResults.at( index.row() ).groupTitle;
+
+    case static_cast< int >( CustomRole::ResultFilterGroupScore ):
+      return mResults.at( index.row() ).groupScore;
 
     case static_cast< int >( CustomRole::ResultActions ):
       return QVariant::fromValue( mResults.at( index.row() ).result.actions );
@@ -190,7 +197,9 @@ QHash<int, QByteArray> QgsLocatorModel::roleNames() const
   roles[static_cast< int >( CustomRole::ResultFilterPriority )] = "ResultFilterPriority";
   roles[static_cast< int >( CustomRole::ResultScore )] = "ResultScore";
   roles[static_cast< int >( CustomRole::ResultFilterName )] = "ResultFilterName";
-  roles[static_cast< int >( CustomRole::ResultFilterGroupSorting )] = "ResultFilterGroupSorting";
+  roles[static_cast< int >( CustomRole::ResultFilterGroupSorting )] = "ResultFilterGroupSorting"; // Deprecated
+  roles[static_cast< int >( CustomRole::ResultFilterGroupTitle )] = "ResultFilterGroupTitle";
+  roles[static_cast< int >( CustomRole::ResultFilterGroupScore )] = "ResultFilterGroupScore";
   roles[static_cast< int >( CustomRole::ResultActions )] = "ResultContextMenuActions";
   roles[Qt::DisplayRole] = "Text";
   return roles;
@@ -211,24 +220,30 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
     mFoundResultsFromFilterNames << result.filter->name();
 
   const bool addingGroup = !result.group.isEmpty() && ( !mFoundResultsFilterGroups.contains( result.filter )
-                           || !mFoundResultsFilterGroups.value( result.filter ).contains( result.group ) );
+                           || !mFoundResultsFilterGroups.value( result.filter ).contains( std::pair( result.group, result.groupScore ) ) );
   if ( addingGroup )
   {
     if ( !mFoundResultsFilterGroups.contains( result.filter ) )
-      mFoundResultsFilterGroups[result.filter] = QStringList();
-    mFoundResultsFilterGroups[result.filter] << result.group ;
+      mFoundResultsFilterGroups[result.filter] = QList<std::pair<QString, double>>();
+
+    mFoundResultsFilterGroups[result.filter] << std::pair( result.group, result.groupScore );
   }
+
   if ( mDeferredClear )
   {
     beginResetModel();
     mResults.clear();
   }
   else
+  {
     beginInsertRows( QModelIndex(), pos, pos + ( static_cast<int>( addingFilter ) + static_cast<int>( addingGroup ) ) );
+  }
 
+  const double groupScore = result.group.isEmpty() ? NoGroup : result.groupScore;
   if ( addingFilter )
   {
     Entry entry;
+    entry.type = EntryType::Filter;
     entry.filterTitle = result.filter->displayName();
     entry.filter = result.filter;
     mResults << entry;
@@ -236,18 +251,20 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   if ( addingGroup )
   {
     Entry entry;
+    entry.type = EntryType::Group;
     entry.filterTitle = result.filter->displayName();
     entry.groupTitle = result.group;
-    // the sorting of groups will be achieved by order of adding groups
-    // this could be customized by adding the extra info to QgsLocatorResult
-    entry.groupSorting = mFoundResultsFilterGroups[result.filter].count();
+    entry.groupScore = groupScore;
     entry.filter = result.filter;
     mResults << entry;
   }
   Entry entry;
+  entry.type = EntryType::Result;
+  entry.filter = result.filter;
+  entry.filterTitle = result.filter->displayName();
   entry.result = result;
-  // keep the group title empty to allow differecing group title from results
-  entry.groupSorting = result.group.isEmpty() ? NoGroup : mFoundResultsFilterGroups[result.filter].indexOf( result.group ) + 1;
+  entry.groupTitle = result.group;
+  entry.groupScore = groupScore;
   mResults << entry;
 
   if ( mDeferredClear )
@@ -332,40 +349,49 @@ QgsLocatorProxyModel::QgsLocatorProxyModel( QObject *parent )
 
 bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  // first go by filter priority
+  // sort by filter priority
   const int leftFilterPriority = sourceModel()->data( left, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterPriority ) ).toInt();
   const int rightFilterPriority  = sourceModel()->data( right, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterPriority ) ).toInt();
   if ( leftFilterPriority != rightFilterPriority )
     return leftFilterPriority < rightFilterPriority;
 
-  // then filter name
+  // sort by filter name
   QString leftFilter = sourceModel()->data( left, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterName ) ).toString();
   QString rightFilter = sourceModel()->data( right, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterName ) ).toString();
   if ( leftFilter != rightFilter )
     return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 
-  // then make sure filter title or group appears before filter's results
+  // make sure filter title appears before
   const int leftTypeRole = sourceModel()->data( left, static_cast< int >( QgsLocatorModel::CustomRole::ResultType ) ).toInt();
   const int rightTypeRole = sourceModel()->data( right, static_cast< int >( QgsLocatorModel::CustomRole::ResultType ) ).toInt();
+  if ( leftTypeRole != rightTypeRole && ( leftTypeRole == 0 || rightTypeRole == 0 ) )
+    return leftTypeRole < rightTypeRole;
+
+  // sort by group score
+  const double leftGroupScoreRole = sourceModel()->data( left, static_cast< double >( QgsLocatorModel::CustomRole::ResultFilterGroupScore ) ).toDouble();
+  const double rightGroupScoreRole = sourceModel()->data( right, static_cast< double >( QgsLocatorModel::CustomRole::ResultFilterGroupScore ) ).toDouble();
+  if ( leftGroupScoreRole != rightGroupScoreRole )
+    return leftGroupScoreRole > rightGroupScoreRole;
+
+  // sort by group name alphabetically
+  QString leftGroupTitle = sourceModel()->data( left, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterGroupTitle ) ).toString();
+  QString rightGroupTitle = sourceModel()->data( right, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterGroupTitle ) ).toString();
+  if ( leftGroupTitle != rightGroupTitle )
+    return QString::localeAwareCompare( leftGroupTitle, rightGroupTitle ) < 0;
+
+  // make sure group appears before filter's results
   if ( leftTypeRole != rightTypeRole )
     return leftTypeRole < rightTypeRole;
 
-  // make sure group title are above
-  const int leftGroupRole = sourceModel()->data( left, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterGroupSorting ) ).toInt();
-  const int rightGroupRole = sourceModel()->data( right, static_cast< int >( QgsLocatorModel::CustomRole::ResultFilterGroupSorting ) ).toInt();
-  if ( leftGroupRole != rightGroupRole )
-    return leftGroupRole < rightGroupRole;
-
-  // sort filter's results by score
+  // sort results by score
   const double leftScore = sourceModel()->data( left, static_cast< int >( QgsLocatorModel::CustomRole::ResultScore ) ).toDouble();
   const double rightScore = sourceModel()->data( right, static_cast< int >( QgsLocatorModel::CustomRole::ResultScore ) ).toDouble();
   if ( !qgsDoubleNear( leftScore, rightScore ) )
     return leftScore > rightScore;
 
-  // lastly sort filter's results by string
+  // sort results alphabetically
   leftFilter = sourceModel()->data( left, Qt::DisplayRole ).toString();
   rightFilter = sourceModel()->data( right, Qt::DisplayRole ).toString();
   return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 }
-
 

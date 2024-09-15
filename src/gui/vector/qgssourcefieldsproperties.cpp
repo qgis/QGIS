@@ -40,12 +40,14 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
   mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
+  mSaveLayerEditsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAllEdits.svg" ) ) );
 
   //button signals
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::toggleEditing );
   connect( mAddAttributeButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::addAttributeClicked );
   connect( mDeleteAttributeButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::deleteAttributeClicked );
   connect( mCalculateFieldButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::calculateFieldClicked );
+  connect( mSaveLayerEditsButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::saveLayerEditsClicked );
 
   //slots
   connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsSourceFieldsProperties::editingToggled );
@@ -381,6 +383,11 @@ void QgsSourceFieldsProperties::calculateFieldClicked()
   }
 }
 
+void QgsSourceFieldsProperties::saveLayerEditsClicked()
+{
+  mLayer->commitChanges( false );
+}
+
 void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 {
   if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
@@ -429,11 +436,14 @@ void QgsSourceFieldsProperties::updateButtons()
     mDeleteAttributeButton->setEnabled( cap & Qgis::VectorProviderCapability::DeleteAttributes );
     mAddAttributeButton->setEnabled( cap & Qgis::VectorProviderCapability::AddAttributes );
     mToggleEditingButton->setChecked( true );
+    mSaveLayerEditsButton->setEnabled( true );
+    mSaveLayerEditsButton->setChecked( true );
   }
   else
   {
     mToggleEditingButton->setChecked( false );
     mAddAttributeButton->setEnabled( false );
+    mSaveLayerEditsButton->setEnabled( false );
 
     // Enable delete button if items are selected
     mDeleteAttributeButton->setEnabled( !mFieldsList->selectedItems().isEmpty() );

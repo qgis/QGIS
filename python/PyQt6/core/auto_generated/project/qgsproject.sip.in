@@ -1657,6 +1657,9 @@ Sets the elevation shading renderer used for global map shading
 .. versionadded:: 3.30
 %End
 
+
+
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),

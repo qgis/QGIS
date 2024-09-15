@@ -1731,6 +1731,17 @@ void TestQgsCurvePolygon::testWKT()
   QVERIFY( !poly2.is3D() );
   QVERIFY( !poly2.isMeasure() );
   QCOMPARE( poly2.wkbType(), Qgis::WkbType::CurvePolygon );
+
+  // Test WKT export with empty interior ring
+  QgsCurvePolygon poly3;
+  QgsCircularString *ext2 = new QgsCircularString();
+  ext2->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 10, 0, 11, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 12, 3 )
+                   << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 13, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ) );
+  poly3.setExteriorRing( ext2 );
+  poly3.addInteriorRing( new QgsCircularString() );
+  wkt = poly3.asWkt();
+  QCOMPARE( wkt, QStringLiteral( "CurvePolygonZM (CircularStringZM (0 0 10 1, 10 0 11 2, 10 10 12 3, 0 10 13 4, 0 0 10 1))" ) );
 }
 
 void TestQgsCurvePolygon::testExport()

@@ -49,8 +49,21 @@ QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.baseClass = QgsAb
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities.baseClass = QgsAbstractDatabaseProviderConnection
 GeometryColumnCapabilities = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP seems to introduce the flags in module
 try:
-    QgsAbstractDatabaseProviderConnection.__attribute_docs__ = {'sql': 'The SQL expression that defines the SQL (query) layer', 'filter': 'Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability.Filters capability', 'layerName': 'Optional name for the new layer', 'primaryKeyColumns': 'List of primary key column names', 'geometryColumn': 'Name of the geometry column', 'disableSelectAtId': 'If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability.SelectAtId capability', 'geometryColumnName': 'Specifies the name of the geometry column to create the index for'}
-    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__attribute_docs__ = {'sql': 'The SQL expression that defines the SQL (query) layer', 'filter': 'Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability.Filters capability', 'layerName': 'Optional name for the new layer', 'primaryKeyColumns': 'List of primary key column names', 'geometryColumn': 'Name of the geometry column', 'disableSelectAtId': 'If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability.SelectAtId capability'}
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__doc__ = """The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
+
+.. seealso:: :py:func:`createSqlVectorLayer`
+
+.. versionadded:: 3.22"""
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__group__ = ['providers']
+except NameError:
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__attribute_docs__ = {'geometryColumnName': 'Specifies the name of the geometry column to create the index for'}
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__doc__ = """The SpatialIndexOptions contains extra options relating to spatial index creation.
+
+.. versionadded:: 3.14"""
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__group__ = ['providers']
 except NameError:
     pass
 try:
@@ -64,15 +77,6 @@ the whole result list.
 
 .. versionadded:: 3.18"""
     QgsAbstractDatabaseProviderConnection.QueryResult.__group__ = ['providers']
-except NameError:
-    pass
-try:
-    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__doc__ = """The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
-
-.. seealso:: :py:func:`createSqlVectorLayer`
-
-.. versionadded:: 3.22"""
-    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__group__ = ['providers']
 except NameError:
     pass
 try:
@@ -95,9 +99,6 @@ of geometry type and CRS for the table geometry column."""
 except NameError:
     pass
 try:
-    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__doc__ = """The SpatialIndexOptions contains extra options relating to spatial index creation.
-
-.. versionadded:: 3.14"""
-    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__group__ = ['providers']
+    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
 except NameError:
     pass

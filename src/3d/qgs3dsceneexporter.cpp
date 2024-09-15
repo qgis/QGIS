@@ -288,12 +288,13 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const  QString
       terrainTile = getFlatTerrainEntity( terrain, node );
       parseFlatTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
-    // TODO: implement other terrain types
     case QgsTerrainGenerator::Mesh:
       terrainTile = getMeshTerrainEntity( terrain, node );
       parseMeshTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
+    // TODO: implement other terrain types
     case QgsTerrainGenerator::Online:
+    case QgsTerrainGenerator::QuantizedMesh:
       break;
   }
   textureGenerator->setTextureSize( oldResolution );

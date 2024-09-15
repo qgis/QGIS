@@ -206,19 +206,22 @@ QString QgsPolygon::asWkt( int precision ) const
     }
     for ( const QgsCurve *curve : mInteriorRings )
     {
-      QString childWkt;
-      if ( ! qgsgeometry_cast<QgsLineString *>( curve ) )
+      if ( !curve->isEmpty() )
       {
-        std::unique_ptr<QgsLineString> line( curve->curveToLine() );
-        childWkt = line->asWkt( precision );
+        QString childWkt;
+        if ( ! qgsgeometry_cast<QgsLineString *>( curve ) )
+        {
+          std::unique_ptr<QgsLineString> line( curve->curveToLine() );
+          childWkt = line->asWkt( precision );
+        }
+        else
+        {
+          childWkt = curve->asWkt( precision );
+        }
+        // Type names of linear geometries are omitted
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+        wkt += childWkt + ',';
       }
-      else
-      {
-        childWkt = curve->asWkt( precision );
-      }
-      // Type names of linear geometries are omitted
-      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
-      wkt += childWkt + ',';
     }
     if ( wkt.endsWith( ',' ) )
     {

@@ -265,9 +265,23 @@ Returns the path to the settings directory in user's home dir
 Returns the path to the user qgis.db file.
 %End
 
-    static QString qgisAuthDatabaseFilePath();
+ static QString qgisAuthDatabaseFilePath() /Deprecated/;
 %Docstring
 Returns the path to the user authentication database file: qgis-auth.db.
+
+.. deprecated:: 3.30
+
+   Use :py:func:`~QgsApplication.qgisAuthDatabaseUri` instead.
+%End
+
+    static QString qgisAuthDatabaseUri();
+%Docstring
+Returns the URI to the user authentication database.
+The URI is be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
+where DATABASE is just the path to the file for SQLite databases. If DRIVER is omitted, PSQLITE is assumed.
+Optional SCHEMA can be specified as a query parameter.
+
+.. versionadded:: 3.40
 %End
 
     static QString splashPath();
@@ -884,6 +898,13 @@ Returns the application's authentication manager instance
    this can be ``None`` if called before initQgis
 
 .. seealso:: :py:func:`initQgis`
+%End
+
+    static QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry();
+%Docstring
+Returns the application's authentication configuration storage registry
+
+.. versionadded:: 3.40
 %End
 
     static QgsProcessingRegistry *processingRegistry();

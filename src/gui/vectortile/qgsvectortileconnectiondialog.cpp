@@ -17,17 +17,21 @@
 #include "qgsvectortileconnection.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
 
 #include <QMessageBox>
 #include <QPushButton>
 
 ///@cond PRIVATE
 
+
 QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
+
+  mEditUrl->setPlaceholderText( tr( "URL(s) can be determined from the style." ) );
 
   // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
@@ -41,6 +45,7 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
+  connect( mEditStyleUrl, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
 }
 
 void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QString &uri )
@@ -85,9 +90,10 @@ QString QgsVectorTileConnectionDialog::connectionName() const
 
 void QgsVectorTileConnectionDialog::updateOkButtonState()
 {
-  const bool enabled = !mEditName->text().isEmpty() && !mEditUrl->text().isEmpty();
+  const bool enabled = !mEditName->text().isEmpty() && ( !mEditUrl->text().isEmpty() || !mEditStyleUrl->text().isEmpty() );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
+
 
 void QgsVectorTileConnectionDialog::accept()
 {

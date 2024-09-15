@@ -376,7 +376,7 @@ void QgsVectorLayerSaveAsDialog::accept()
         // should not reach here, layer does not exist and cannot add new layer
         if ( QMessageBox::question( this,
                                     tr( "Save Vector Layer As" ),
-                                    tr( "The file already exists. Do you want to overwrite it?" ) ) == QMessageBox::NoButton )
+                                    tr( "The file already exists. Do you want to overwrite it?" ) ) != QMessageBox::Yes )
         {
           return;
         }

@@ -43,6 +43,15 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<FLAGS>, QComboBox, FLAGS>( parent )
     {}
 
+    void enableAutomaticUpdatePrivate() override
+    {
+      QObject::connect( &mModel, &QStandardItemModel::itemChanged, this, [ = ]( const QStandardItem * item )
+      {
+        Q_UNUSED( item )
+        setSettingFromWidget();
+      } );
+    }
+
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent );}
 
     virtual QString id() const override
@@ -144,10 +153,27 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<ENUM>, QComboBox, ENUM>( parent )
     {}
 
+    void enableAutomaticUpdatePrivate() override
+    {
+      QObject::connect( this->mEditor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+      {
+        Q_UNUSED( index );
+        ENUM value = this->mEditor->currentData().template value<ENUM>();
+        this->mSetting->setValue( value, this->mDynamicKeyPartList );
+      } );
+    }
+
     virtual QString id() const override
     {
       return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
     }
+
+    /**
+     * This will set the display strings so they can be readable and translatable.
+     * This must be called before calling createEditor or configureEditor.
+     * \since QGIS 3.40
+     */
+    void setDisplayStrings( const QMap<ENUM, QString> &displayStrings ) { mDisplayStrings = displayStrings; }
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsEnumEditorWidgetWrapper<ENUM>( parent );}
 
@@ -206,9 +232,13 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       const QMap<ENUM, QString> enumMap = qgsEnumMap<ENUM>();
       for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
       {
-        this->mEditor->addItem( it.value(), QVariant::fromValue( it.key() ) );
+        const QString displayString = mDisplayStrings.value( it.key(), it.value() );
+        this->mEditor->addItem( displayString, QVariant::fromValue( it.key() ) );
       }
     }
+
+  private:
+    QMap<ENUM, QString> mDisplayStrings;
 
 };
 

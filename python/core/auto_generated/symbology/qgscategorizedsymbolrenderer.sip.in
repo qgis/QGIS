@@ -158,6 +158,8 @@ can be added later by calling :py:func:`~QgsCategorizedSymbolRenderer.addCategor
 %End
     ~QgsCategorizedSymbolRenderer();
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;

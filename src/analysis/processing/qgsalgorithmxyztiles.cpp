@@ -189,7 +189,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *feedback )
 {
-  if ( mTotalTiles > 5000 )
+  if ( mTotalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
   {
     for ( QgsMapLayer *layer : std::as_const( mLayers ) )
     {

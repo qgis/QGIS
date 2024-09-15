@@ -1077,7 +1077,7 @@ void QgsMapCanvas::clearTemporalCache()
       {
         if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
         {
-          if ( vl->labelsEnabled() || vl->diagramsEnabled() )
+          if ( vl->labelsEnabled() || vl->diagramsEnabled() || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) ) )
             invalidateLabels = true;
         }
 
@@ -1126,7 +1126,7 @@ void QgsMapCanvas::clearElevationCache()
       {
         if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
         {
-          if ( vl->labelsEnabled() || vl->diagramsEnabled() )
+          if ( vl->labelsEnabled() || vl->diagramsEnabled() || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) ) )
             invalidateLabels = true;
         }
 

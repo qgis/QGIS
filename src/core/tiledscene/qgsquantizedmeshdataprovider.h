@@ -20,6 +20,8 @@
 
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgshttpheaders.h"
 #include "qgsprovidermetadata.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenedataprovider.h"
@@ -33,23 +35,70 @@
 
 ///@cond PRIVATE
 
+class CORE_EXPORT QgsQuantizedMeshMetadata
+{
+  public:
+
+    /**
+     * \warning Check \p error, object is incomplete if non-empty!
+     */
+    QgsQuantizedMeshMetadata( const QString &uri,
+                              const QgsCoordinateTransformContext &transformContext,
+                              QgsError &error );
+
+    bool containsTile( QgsTileXYZ tile ) const;
+    double geometricErrorAtZoom( int zoom ) const;
+
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+
+    QgsRectangle mExtent;
+    QgsTiledSceneBoundingVolume mBoundingVolume;
+    // Map of zoom level -> list of AABBs of available tiles (tile index ranges)
+    QVector<QVector<QgsTileRange>> mAvailableTiles;
+    QgsCoordinateReferenceSystem mCrs;
+    QString mTileScheme;
+    uint8_t mMinZoom;
+    uint8_t mMaxZoom;
+    std::vector<QString> mTileUrls;
+    QgsTileMatrix mTileMatrix;
+
+    // The Quantized Mesh TileJSON(-ish) metadata doesn't tell us, so choose something big enough for Earth
+    static const QgsDoubleRange dummyZRange;
+};
+
+class CORE_EXPORT QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
+{
+  public:
+    QgsQuantizedMeshIndex( QgsQuantizedMeshMetadata metadata,
+                           QgsCoordinateTransform wgs84ToCrs )
+      : mMetadata( metadata ), mWgs84ToCrs( wgs84ToCrs ) {}
+    QgsTiledSceneTile rootTile() const override;
+    long long parentTileId( long long id ) const override;
+    QVector< long long > childTileIds( long long id ) const override;
+    QgsTiledSceneTile getTile( long long id ) override;
+    QVector< long long > getTiles( const QgsTiledSceneRequest &request ) override;
+    Qgis::TileChildrenAvailability childAvailability( long long id ) const override;
+    bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) override;
+
+    // Tile ID coding scheme:
+    // From MSb, 2 bits zero, 1 bit one, 5 bits zoom, 28 bits X, 28 bits Y
+    static long long encodeTileId( QgsTileXYZ tile );
+    static QgsTileXYZ decodeTileId( long long id );
+
+    static constexpr long long ROOT_TILE_ID = std::numeric_limits<long long>::max();
+
+  protected:
+    QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) override;
+
+    QgsQuantizedMeshMetadata mMetadata;
+    QgsCoordinateTransform mWgs84ToCrs;
+};
+
 class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
 {
     Q_OBJECT
   public:
-    struct Metadata
-    {
-      QgsRectangle mExtent;
-      QgsTiledSceneBoundingVolume mBoundingVolume;
-      // Map of zoom level -> list of AABBs of available tiles (tile index ranges)
-      QVector<QVector<QgsTileRange>> mAvailableTiles;
-      QgsCoordinateReferenceSystem mCrs;
-      QString mTileScheme;
-      uint8_t mMinZoom;
-      uint8_t mMaxZoom;
-      std::vector<QString> mTileUrls;
-    };
-
     QgsQuantizedMeshDataProvider( const QString &uri,
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
@@ -65,11 +114,17 @@ class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
     QString name() const override;
     QString description() const override;
 
+    const QgsQuantizedMeshMetadata &quantizedMeshMetadata() const;
+
+    static constexpr const char *providerName = "quantizedmesh";
+    static constexpr const char *providerDescription = "Cesium Quantized Mesh tiles";
+
+
   private:
     QString mUri; // For clone()
     QgsDataProvider::ProviderOptions mProviderOptions; // For clone()
     bool mIsValid = false;
-    Metadata mMetadata;
+    std::optional<QgsQuantizedMeshMetadata> mMetadata; // Initialized in constructor
     std::optional<QgsTiledSceneIndex> mIndex;
 };
 

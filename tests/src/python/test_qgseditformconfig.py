@@ -133,7 +133,7 @@ class TestQgsEditFormConfig(QgisTestCase):
         pyUrl = 'http://localhost:' + \
             str(self.port) + '/qgis_local_server/layer_attribute_form.py'
 
-        QgsSettings().setEnumValue('qgis/enableMacros', Qgis.Always)
+        QgsSettings().setEnumValue('qgis/enablePythonEmbedded', Qgis.Always)
 
         config.setInitFilePath(pyUrl)
         config.setInitFunction('formOpen')

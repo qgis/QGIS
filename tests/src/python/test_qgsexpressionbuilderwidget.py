@@ -9,8 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QListView
+from qgis.PyQt.QtCore import Qt, QTemporaryDir
+from qgis.PyQt.QtWidgets import (
+    QListView,
+    QListWidget
+)
 from qgis.core import (
     QgsExpressionContext,
     QgsExpressionContextScope,
@@ -22,6 +25,10 @@ from qgis.core import (
 from qgis.gui import QgsExpressionBuilderWidget
 import unittest
 from qgis.testing import start_app, QgisTestCase
+from qgis.user import (
+    default_expression_template,
+    expressionspath
+)
 
 start_app()
 
@@ -71,7 +78,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
     def testFunctionPresent(self):
         """ check through widget model to ensure it is initially populated with functions """
         w = QgsExpressionBuilderWidget()
-        m = w.model()
+        m = w.expressionTree().model().sourceModel()
         # check that some standard expression functions are shown
         items = m.findItems('lower', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
@@ -83,7 +90,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
     def testVariables(self):
         """ check through widget model to ensure it is populated with variables """
         w = QgsExpressionBuilderWidget()
-        m = w.model()
+        m = w.expressionTree().model().sourceModel()
 
         s = QgsExpressionContextScope()
         s.setVariable('my_var1', 'x')
@@ -113,7 +120,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         p.addMapLayers([layer, layer2])
 
         w = QgsExpressionBuilderWidget()
-        m = w.model()
+        m = w.expressionTree().model().sourceModel()
 
         # check that layers are shown
         items = m.findItems('layer1', Qt.MatchFlag.MatchRecursive)
@@ -126,7 +133,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         layer3 = QgsVectorLayer("Point", "layer3", "memory")
         p2.addMapLayers([layer3])
         w.setProject(p2)
-        m = w.model()
+        m = w.expressionTree().model().sourceModel()
         items = m.findItems('layer1', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 0)
         items = m.findItems('layer2', Qt.MatchFlag.MatchRecursive)
@@ -157,7 +164,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         p.relationManager().addRelation(rel2)
 
         w = QgsExpressionBuilderWidget()
-        m = w.model()
+        m = w.expressionTree().model().sourceModel()
 
         # check that relations are shown
         items = m.findItems('Relation Number One', Qt.MatchFlag.MatchRecursive)
@@ -198,7 +205,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
     def testLayerVariables(self):
         """ check through widget model to ensure it is populated with layer variables """
         w = QgsExpressionBuilderWidget()
-        m = w.model()
+        m = w.expressionTree().model().sourceModel()
 
         p = QgsProject.instance()
         layer = QgsVectorLayer("Point", "layer1", "memory")
@@ -350,6 +357,53 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
                                  ("false", "false"),
                                  ("true", "true"),
                                  (None, None)])
+
+    def testProjectFunctions(self):
+        """
+        Test project functions in expression builder
+        """
+
+        # Test function editor lists project functions
+        project = QgsProject.instance()
+        w = QgsExpressionBuilderWidget()
+        functionFileList = w.findChild(QListWidget, 'cmbFileNames')
+        self.assertIsNotNone(functionFileList)
+        self.assertFalse(functionFileList.selectedItems())
+
+        template = default_expression_template
+        project.writeEntry("ExpressionFunctions", "/pythonCode", template)
+
+        w.updateFunctionFileList(expressionspath)
+        selected = functionFileList.selectedItems()
+        self.assertTrue(selected)
+        self.assertEqual(selected[0].data(Qt.ItemDataRole.UserRole), "project")
+        self.assertEqual(selected[0].text(), "[Project Functions]")
+
+        # Test save edited function to Project functions
+        code = """
+        from qgis.core import *
+        from qgis.gui import *
+
+        @qgsfunction(group='Custom', referenced_columns=[])
+        def my_sum_2(value1, value2):
+            return value1 + value2
+        """
+        w.loadFunctionCode(code)
+        w.saveProjectFunctionsEntry()
+        projectEntry, _ = project.readEntry("ExpressionFunctions", "/pythonCode")
+        self.assertEqual(code, projectEntry)
+
+        tmpDir = QTemporaryDir()
+        tmpFile = f"{tmpDir.path()}/project_functions.qgs"
+        self.assertTrue(project.write(tmpFile))
+        project.clear()
+
+        self.assertFalse(project.readEntry("ExpressionFunctions", "/pythonCode")[1])
+
+        project.read(tmpFile)
+        projectEntry, res = project.readEntry("ExpressionFunctions", "/pythonCode")
+        self.assertTrue(res)
+        self.assertEqual(code, projectEntry)
 
 
 if __name__ == '__main__':

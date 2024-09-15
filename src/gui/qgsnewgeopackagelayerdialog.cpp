@@ -237,6 +237,11 @@ void QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked()
     checkOk();
 
     mFieldNameEdit->clear();
+
+    if ( !mFieldNameEdit->hasFocus() )
+    {
+      mFieldNameEdit->setFocus();
+    }
   }
 }
 

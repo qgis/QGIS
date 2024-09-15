@@ -1,4 +1,73 @@
 # The following has been generated automatically from src/core/qgis.h
+# monkey patching scoped based enum
+Qgis.AuthConfigurationStorageCapability.ClearStorage.__doc__ = "Can clear all configurations from storage"
+Qgis.AuthConfigurationStorageCapability.ReadConfiguration.__doc__ = "Can read an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.UpdateConfiguration.__doc__ = "Can update an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can deleet an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.CreateConfiguration.__doc__ = "Can create a new authentication configuration"
+Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity.__doc__ = "Can read a certificate identity"
+Qgis.AuthConfigurationStorageCapability.UpdateCertificateIdentity.__doc__ = "Can update a certificate identity"
+Qgis.AuthConfigurationStorageCapability.DeleteCertificateIdentity.__doc__ = "Can delete a certificate identity"
+Qgis.AuthConfigurationStorageCapability.CreateCertificateIdentity.__doc__ = "Can create a new certificate identity"
+Qgis.AuthConfigurationStorageCapability.ReadSslCertificateCustomConfig.__doc__ = "Can read a SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.UpdateSslCertificateCustomConfig.__doc__ = "Can update a SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.DeleteSslCertificateCustomConfig.__doc__ = "Can delete a SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.CreateSslCertificateCustomConfig.__doc__ = "Can create a new SSL certificate custom config"
+Qgis.AuthConfigurationStorageCapability.ReadCertificateAuthority.__doc__ = "Can read a certificate authority"
+Qgis.AuthConfigurationStorageCapability.UpdateCertificateAuthority.__doc__ = "Can update a certificate authority"
+Qgis.AuthConfigurationStorageCapability.DeleteCertificateAuthority.__doc__ = "Can delete a certificate authority"
+Qgis.AuthConfigurationStorageCapability.CreateCertificateAuthority.__doc__ = "Can create a new certificate authority"
+Qgis.AuthConfigurationStorageCapability.ReadCertificateTrustPolicy.__doc__ = "Can read a certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.UpdateCertificateTrustPolicy.__doc__ = "Can update a certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.DeleteCertificateTrustPolicy.__doc__ = "Can delete a certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.CreateCertificateTrustPolicy.__doc__ = "Can create a new certificate trust policy"
+Qgis.AuthConfigurationStorageCapability.ReadMasterPassword.__doc__ = "Can read the master password"
+Qgis.AuthConfigurationStorageCapability.UpdateMasterPassword.__doc__ = "Can update the master password"
+Qgis.AuthConfigurationStorageCapability.DeleteMasterPassword.__doc__ = "Can delete the master password"
+Qgis.AuthConfigurationStorageCapability.CreateMasterPassword.__doc__ = "Can create a new master password"
+Qgis.AuthConfigurationStorageCapability.ReadSetting.__doc__ = "Can read the authentication settings"
+Qgis.AuthConfigurationStorageCapability.UpdateSetting.__doc__ = "Can update the authentication setting"
+Qgis.AuthConfigurationStorageCapability.DeleteSetting.__doc__ = "Can delete the authentication setting"
+Qgis.AuthConfigurationStorageCapability.CreateSetting.__doc__ = "Can create a new authentication setting"
+Qgis.AuthConfigurationStorageCapability.__doc__ = """Authentication configuration storage capabilities.
+
+.. versionadded:: 3.40
+
+* ``ClearStorage``: Can clear all configurations from storage
+* ``ReadConfiguration``: Can read an authentication configuration
+* ``UpdateConfiguration``: Can update an authentication configuration
+* ``DeleteConfiguration``: Can deleet an authentication configuration
+* ``CreateConfiguration``: Can create a new authentication configuration
+* ``ReadCertificateIdentity``: Can read a certificate identity
+* ``UpdateCertificateIdentity``: Can update a certificate identity
+* ``DeleteCertificateIdentity``: Can delete a certificate identity
+* ``CreateCertificateIdentity``: Can create a new certificate identity
+* ``ReadSslCertificateCustomConfig``: Can read a SSL certificate custom config
+* ``UpdateSslCertificateCustomConfig``: Can update a SSL certificate custom config
+* ``DeleteSslCertificateCustomConfig``: Can delete a SSL certificate custom config
+* ``CreateSslCertificateCustomConfig``: Can create a new SSL certificate custom config
+* ``ReadCertificateAuthority``: Can read a certificate authority
+* ``UpdateCertificateAuthority``: Can update a certificate authority
+* ``DeleteCertificateAuthority``: Can delete a certificate authority
+* ``CreateCertificateAuthority``: Can create a new certificate authority
+* ``ReadCertificateTrustPolicy``: Can read a certificate trust policy
+* ``UpdateCertificateTrustPolicy``: Can update a certificate trust policy
+* ``DeleteCertificateTrustPolicy``: Can delete a certificate trust policy
+* ``CreateCertificateTrustPolicy``: Can create a new certificate trust policy
+* ``ReadMasterPassword``: Can read the master password
+* ``UpdateMasterPassword``: Can update the master password
+* ``DeleteMasterPassword``: Can delete the master password
+* ``CreateMasterPassword``: Can create a new master password
+* ``ReadSetting``: Can read the authentication settings
+* ``UpdateSetting``: Can update the authentication setting
+* ``DeleteSetting``: Can delete the authentication setting
+* ``CreateSetting``: Can create a new authentication setting
+
+"""
+# --
+Qgis.AuthConfigurationStorageCapability.baseClass = Qgis
+Qgis.AuthConfigurationStorageCapabilities.baseClass = Qgis
+AuthConfigurationStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 Qgis.MessageLevel.baseClass = Qgis
 QgsMapLayer.LayerType = Qgis.LayerType
 # monkey patching scoped based enum
@@ -650,34 +719,37 @@ Qgis.VectorLayerTypeFlag.baseClass = Qgis
 Qgis.VectorLayerTypeFlags.baseClass = Qgis
 VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
-Qgis.Never = Qgis.PythonMacroMode.Never
-Qgis.Never.is_monkey_patched = True
-Qgis.Never.__doc__ = "Macros are never run"
-Qgis.Ask = Qgis.PythonMacroMode.Ask
-Qgis.Ask.is_monkey_patched = True
-Qgis.Ask.__doc__ = "User is prompt before running"
-Qgis.SessionOnly = Qgis.PythonMacroMode.SessionOnly
-Qgis.SessionOnly.is_monkey_patched = True
-Qgis.SessionOnly.__doc__ = "Only during this session"
-Qgis.Always = Qgis.PythonMacroMode.Always
-Qgis.Always.is_monkey_patched = True
-Qgis.Always.__doc__ = "Macros are always run"
-Qgis.NotForThisSession = Qgis.PythonMacroMode.NotForThisSession
-Qgis.NotForThisSession.is_monkey_patched = True
-Qgis.NotForThisSession.__doc__ = "Macros will not be run for this session"
-Qgis.PythonMacroMode.__doc__ = """Authorisation to run Python Macros
+Qgis.PythonEmbeddedMode.Never.__doc__ = "Python embedded never run"
+Qgis.PythonEmbeddedMode.Ask.__doc__ = "User is prompt before running"
+Qgis.PythonEmbeddedMode.SessionOnly.__doc__ = "Only during this session"
+Qgis.PythonEmbeddedMode.Always.__doc__ = "Python embedded is always run"
+Qgis.PythonEmbeddedMode.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
+Qgis.PythonEmbeddedMode.__doc__ = """Authorisation to run Python Embedded in projects
 
-.. versionadded:: 3.10
+.. versionadded:: 3.40
 
-* ``Never``: Macros are never run
+* ``Never``: Python embedded never run
 * ``Ask``: User is prompt before running
 * ``SessionOnly``: Only during this session
-* ``Always``: Macros are always run
-* ``NotForThisSession``: Macros will not be run for this session
+* ``Always``: Python embedded is always run
+* ``NotForThisSession``: Python embedded will not be run for this session
 
 """
 # --
-Qgis.PythonMacroMode.baseClass = Qgis
+Qgis.PythonEmbeddedMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PythonEmbeddedType.Macro.__doc__ = ""
+Qgis.PythonEmbeddedType.ExpressionFunction.__doc__ = ""
+Qgis.PythonEmbeddedType.__doc__ = """Type of Python Embedded in projects
+
+.. versionadded:: 3.40
+
+* ``Macro``: 
+* ``ExpressionFunction``: 
+
+"""
+# --
+Qgis.PythonEmbeddedType.baseClass = Qgis
 QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 # monkey patching scoped based enum
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
@@ -1346,12 +1418,30 @@ Qgis.SymbolRotationMode.__doc__ = """Modes for handling how symbol and text enti
 # --
 Qgis.SymbolRotationMode.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.FeatureRendererFlag.AffectsLabeling.__doc__ = "If present, indicates that the renderer will participate in the map labeling problem"
+Qgis.FeatureRendererFlag.__doc__ = """Flags controlling behavior of vector feature renderers.
+
+.. versionadded:: 3.40
+
+* ``AffectsLabeling``: If present, indicates that the renderer will participate in the map labeling problem
+
+"""
+# --
+Qgis.FeatureRendererFlag.baseClass = Qgis
+Qgis.FeatureRendererFlags.baseClass = Qgis
+FeatureRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__ = "If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results"
+Qgis.SymbolFlag.AffectsLabeling.__doc__ = "If present, indicates that the symbol will participate in the map labeling problem \n.. versionadded:: 3.40"
 Qgis.SymbolFlag.__doc__ = """Flags controlling behavior of symbols
 
 .. versionadded:: 3.20
 
 * ``RendererShouldUseSymbolLevels``: If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
+* ``AffectsLabeling``: If present, indicates that the symbol will participate in the map labeling problem
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -1378,6 +1468,7 @@ SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags i
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
 Qgis.SymbolLayerFlag.CanCalculateMaskGeometryPerFeature.__doc__ = "If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. \n.. versionadded:: 3.38"
+Qgis.SymbolLayerFlag.AffectsLabeling.__doc__ = "If present, indicates that the symbol layer will participate in the map labeling problem \n.. versionadded:: 3.40"
 Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 
 .. note::
@@ -1392,6 +1483,10 @@ Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 * ``CanCalculateMaskGeometryPerFeature``: If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes.
 
   .. versionadded:: 3.38
+
+* ``AffectsLabeling``: If present, indicates that the symbol layer will participate in the map labeling problem
+
+  .. versionadded:: 3.40
 
 
 """
@@ -3512,6 +3607,21 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
+Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
+Qgis.GeosCreationFlag.__doc__ = """Flags which control geos geometry creation behavior.
+
+.. versionadded:: 3.40
+
+* ``RejectOnInvalidSubGeometry``: Don't allow geometries with invalid sub-geometries to be created
+* ``SkipEmptyInteriorRings``: Skip any empty polygon interior ring
+
+"""
+# --
+Qgis.GeosCreationFlag.baseClass = Qgis
+Qgis.GeosCreationFlags.baseClass = Qgis
+GeosCreationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.CoverageValidityResult.Invalid.__doc__ = "Coverage is invalid. Invalidity includes polygons that overlap, that have gaps smaller than the gap width, or non-polygonal entries in the input collection."
 Qgis.CoverageValidityResult.Valid.__doc__ = "Coverage is valid"
 Qgis.CoverageValidityResult.Error.__doc__ = "An exception occurred while determining validity"
@@ -4653,12 +4763,17 @@ RenderContextFlags = Qgis  # dirty hack since SIP seems to introduce the flags i
 # monkey patching scoped based enum
 Qgis.MapLayerRendererFlag.RenderPartialOutputs.__doc__ = "The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents."
 Qgis.MapLayerRendererFlag.RenderPartialOutputOverPreviousCachedImage.__doc__ = "When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image."
+Qgis.MapLayerRendererFlag.AffectsLabeling.__doc__ = "The layer rendering will interact with the map labeling \n.. versionadded:: 3.40"
 Qgis.MapLayerRendererFlag.__doc__ = """Flags which control how map layer renderers behave.
 
 .. versionadded:: 3.34
 
 * ``RenderPartialOutputs``: The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents.
 * ``RenderPartialOutputOverPreviousCachedImage``: When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image.
+* ``AffectsLabeling``: The layer rendering will interact with the map labeling
+
+  .. versionadded:: 3.40
+
 
 """
 # --

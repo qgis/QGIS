@@ -71,8 +71,11 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
+    // Emit finished by default when texture is loaded.
+    // Subclasses can override this and emit finish later.
+    virtual void onTextureLoaded();
 
-  private slots:
+  protected slots:
     void onImageReady( int jobId, const QImage &image );
 
   private:

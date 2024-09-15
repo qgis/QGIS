@@ -80,7 +80,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     void showTrustedCertificateAuthorities();
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
+    void logMessage( const QString &message, const QString &authtag, Qgis::MessageLevel level );
 
   protected:
     //! Overridden show event of base widget

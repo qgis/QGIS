@@ -21,6 +21,7 @@
 #include "qgsmeshterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsquantizedmeshterraingenerator.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgslightsource.h"
@@ -261,6 +262,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     QgsMeshTerrainGenerator *meshTerrainGenerator = new QgsMeshTerrainGenerator;
     meshTerrainGenerator->setCrs( mCrs, mTransformContext );
     setTerrainGenerator( meshTerrainGenerator );
+  }
+  else if ( terrainGenType == QLatin1String( "quantizedmesh" ) )
+  {
+    QgsQuantizedMeshTerrainGenerator *qmTerrainGenerator = new QgsQuantizedMeshTerrainGenerator;
+    setTerrainGenerator( qmTerrainGenerator );
   }
   else // "flat"
   {

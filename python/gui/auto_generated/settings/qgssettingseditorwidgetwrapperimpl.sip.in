@@ -109,6 +109,9 @@ Constructor
 
     virtual bool setWidgetValue( const QString &value ) const;
 
+
+    virtual void enableAutomaticUpdatePrivate();
+
 };
 
 
@@ -144,6 +147,9 @@ Constructor
 
 
     virtual bool setWidgetValue( const bool &value ) const;
+
+
+    virtual void enableAutomaticUpdatePrivate();
 
 };
 
@@ -181,6 +187,9 @@ Constructor
 
     virtual bool setWidgetValue( const int &value ) const;
 
+
+    virtual void enableAutomaticUpdatePrivate();
+
 };
 
 
@@ -217,6 +226,9 @@ Constructor
 
 
     virtual bool setWidgetValue( const double &value ) const;
+
+
+    virtual void enableAutomaticUpdatePrivate();
 
 };
 
@@ -257,6 +269,9 @@ Constructor
 
 
     virtual void configureEditorPrivateImplementation();
+
+
+    virtual void enableAutomaticUpdatePrivate();
 
 };
 

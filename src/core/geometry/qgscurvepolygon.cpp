@@ -305,13 +305,16 @@ QString QgsCurvePolygon::asWkt( int precision ) const
     }
     for ( const QgsCurve *curve : mInteriorRings )
     {
-      QString childWkt = curve->asWkt( precision );
-      if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+      if ( !curve->isEmpty() )
       {
-        // Type names of linear geometries are omitted
-        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+        QString childWkt = curve->asWkt( precision );
+        if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+        {
+          // Type names of linear geometries are omitted
+          childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+        }
+        wkt += childWkt + ',';
       }
-      wkt += childWkt + ',';
     }
     if ( wkt.endsWith( ',' ) )
     {

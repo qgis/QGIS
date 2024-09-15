@@ -1128,7 +1128,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void eraseAuthenticationDatabase();
 
     //! Push authentication manager output to messagebar
-    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
+    void authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level );
 
     //! update default action of toolbutton
     void toolButtonActionTriggered( QAction * );
@@ -2759,6 +2759,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     friend class TestQgisAppPython;
     friend class TestQgisApp;
+    friend class TestQgsProjectExpressions;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };

@@ -100,6 +100,7 @@ set(QGIS_3D_SRCS
   terrain/qgsdemterraintileloader_p.cpp
   terrain/qgsflatterraingenerator.cpp
   terrain/qgsonlineterraingenerator.cpp
+  terrain/qgsquantizedmeshterraingenerator.cpp
   terrain/qgsterraindownloader.cpp
   terrain/qgsterrainentity_p.cpp
   terrain/qgsterraingenerator.cpp
@@ -185,6 +186,7 @@ set(QGIS_3D_HDRS
   terrain/qgsdemterraingenerator.h
   terrain/qgsflatterraingenerator.h
   terrain/qgsonlineterraingenerator.h
+  terrain/qgsquantizedmeshterraingenerator.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
   terrain/qgsterraintileloader_p.h

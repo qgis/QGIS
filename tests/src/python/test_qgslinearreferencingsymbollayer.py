@@ -16,7 +16,7 @@
 """
 import unittest
 
-from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtCore import QPointF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
@@ -30,7 +30,9 @@ from qgis.core import (
     QgsFontUtils,
     QgsBasicNumericFormat,
     QgsMarkerSymbol,
-    QgsFillSymbol
+    QgsFillSymbol,
+    QgsVectorLayer,
+    QgsSingleSymbolRenderer
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -72,6 +74,49 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
                 'distance_2d',
                 'distance_2d',
                 rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
+
+    def test_render_using_label_engine(self):
+        s = QgsLineSymbol.createSimple(
+            {'outline_color': '#ff0000', 'outline_width': '2'})
+
+        linear_ref = QgsLinearReferencingSymbolLayer()
+        linear_ref.setPlacement(
+            Qgis.LinearReferencingPlacement.IntervalCartesian2D)
+        linear_ref.setInterval(1)
+
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
+        text_format = QgsTextFormat.fromQFont(font)
+        text_format.setColor(QColor(255, 255, 255))
+        linear_ref.setTextFormat(text_format)
+
+        linear_ref.setLabelOffset(QPointF(3, -1))
+
+        s.appendSymbolLayer(linear_ref)
+
+        layer = QgsVectorLayer('LineString', 'test', 'memory')
+        feature = QgsFeature()
+        geom = QgsGeometry.fromWkt('MultiLineStringZM ((6 2 0.2 1.2, 9 2 0.7 0.2, 9 3 0.4 0, 11 5 0.8 0.4))')
+        feature.setGeometry(geom)
+        layer.dataProvider().addFeature(feature)
+        layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setDestinationCrs(layer.crs())
+        extent = geom.get().boundingBox()
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+        ms.setExtent(extent)
+        ms.setOutputSize(QSize(800, 800))
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                'labeling_engine',
+                'labeling_engine',
+                ms,
                 color_tolerance=2,
                 allowed_mismatch=20
             )

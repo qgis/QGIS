@@ -1,14 +1,8 @@
 # The following has been generated automatically from src/core/raster/qgspalettedrasterrenderer.h
 try:
-    QgsPalettedRasterRenderer.__attribute_docs__ = {'value': 'Value', 'color': 'Color to render value', 'label': 'Label for value'}
-    QgsPalettedRasterRenderer.create = staticmethod(QgsPalettedRasterRenderer.create)
-    QgsPalettedRasterRenderer.colorTableToClassData = staticmethod(QgsPalettedRasterRenderer.colorTableToClassData)
-    QgsPalettedRasterRenderer.rasterAttributeTableToClassData = staticmethod(QgsPalettedRasterRenderer.rasterAttributeTableToClassData)
-    QgsPalettedRasterRenderer.classDataFromString = staticmethod(QgsPalettedRasterRenderer.classDataFromString)
-    QgsPalettedRasterRenderer.classDataFromFile = staticmethod(QgsPalettedRasterRenderer.classDataFromFile)
-    QgsPalettedRasterRenderer.classDataToString = staticmethod(QgsPalettedRasterRenderer.classDataToString)
-    QgsPalettedRasterRenderer.classDataFromRaster = staticmethod(QgsPalettedRasterRenderer.classDataFromRaster)
-    QgsPalettedRasterRenderer.__group__ = ['raster']
+    QgsPalettedRasterRenderer.Class.__attribute_docs__ = {'value': 'Value', 'color': 'Color to render value', 'label': 'Label for value'}
+    QgsPalettedRasterRenderer.Class.__doc__ = """Properties of a single value class"""
+    QgsPalettedRasterRenderer.Class.__group__ = ['raster']
 except NameError:
     pass
 try:
@@ -17,7 +11,13 @@ try:
 except NameError:
     pass
 try:
-    QgsPalettedRasterRenderer.Class.__doc__ = """Properties of a single value class"""
-    QgsPalettedRasterRenderer.Class.__group__ = ['raster']
+    QgsPalettedRasterRenderer.create = staticmethod(QgsPalettedRasterRenderer.create)
+    QgsPalettedRasterRenderer.colorTableToClassData = staticmethod(QgsPalettedRasterRenderer.colorTableToClassData)
+    QgsPalettedRasterRenderer.rasterAttributeTableToClassData = staticmethod(QgsPalettedRasterRenderer.rasterAttributeTableToClassData)
+    QgsPalettedRasterRenderer.classDataFromString = staticmethod(QgsPalettedRasterRenderer.classDataFromString)
+    QgsPalettedRasterRenderer.classDataFromFile = staticmethod(QgsPalettedRasterRenderer.classDataFromFile)
+    QgsPalettedRasterRenderer.classDataToString = staticmethod(QgsPalettedRasterRenderer.classDataToString)
+    QgsPalettedRasterRenderer.classDataFromRaster = staticmethod(QgsPalettedRasterRenderer.classDataFromRaster)
+    QgsPalettedRasterRenderer.__group__ = ['raster']
 except NameError:
     pass

@@ -34,6 +34,8 @@ Constructor for QgsPointDisplacementRenderer.
 :param labelAttributeName: optional attribute name for labeling points
 %End
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+
     virtual QgsPointDisplacementRenderer *clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );

@@ -1,6 +1,11 @@
 # The following has been generated automatically from src/core/expression/qgsexpression.h
 try:
-    QgsExpression.__attribute_docs__ = {'errorType': 'The type of parser error that was found.', 'errorMsg': 'The message for the error at this location.', 'firstLine': "The first line that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'firstColumn': "The first column that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'lastLine': 'The last line that contained the error in the parser.', 'lastColumn': 'The last column that contained the error in the parser.'}
+    QgsExpression.ParserError.__attribute_docs__ = {'errorType': 'The type of parser error that was found.', 'errorMsg': 'The message for the error at this location.', 'firstLine': "The first line that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'firstColumn': "The first column that contained the error in the parser.\nDepending on the error sometimes this doesn't mean anything.", 'lastLine': 'The last line that contained the error in the parser.', 'lastColumn': 'The last column that contained the error in the parser.'}
+    QgsExpression.ParserError.__doc__ = """Details about any parser errors that were found when parsing the expression."""
+    QgsExpression.ParserError.__group__ = ['expression']
+except NameError:
+    pass
+try:
     QgsExpression.expressionToLayerFieldIndex = staticmethod(QgsExpression.expressionToLayerFieldIndex)
     QgsExpression.quoteFieldExpression = staticmethod(QgsExpression.quoteFieldExpression)
     QgsExpression.checkExpression = staticmethod(QgsExpression.checkExpression)
@@ -26,10 +31,5 @@ try:
     QgsExpression.isFieldEqualityExpression = staticmethod(QgsExpression.isFieldEqualityExpression)
     QgsExpression.attemptReduceToInClause = staticmethod(QgsExpression.attemptReduceToInClause)
     QgsExpression.__group__ = ['expression']
-except NameError:
-    pass
-try:
-    QgsExpression.ParserError.__doc__ = """Details about any parser errors that were found when parsing the expression."""
-    QgsExpression.ParserError.__group__ = ['expression']
 except NameError:
     pass

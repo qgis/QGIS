@@ -31,6 +31,7 @@ class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsAnnotationItemRegistry;
+class QgsAuthConfigurationStorageRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
 class QgsFieldFormatterRegistry;
@@ -334,8 +335,20 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the user qgis.db file.
     static QString qgisUserDatabaseFilePath();
 
-    //! Returns the path to the user authentication database file: qgis-auth.db.
-    static QString qgisAuthDatabaseFilePath();
+    /**
+     *  Returns the path to the user authentication database file: qgis-auth.db.
+     *  \deprecated QGIS 3.30. Use qgisAuthDatabaseUri() instead.
+     */
+    Q_DECL_DEPRECATED static QString qgisAuthDatabaseFilePath() SIP_DEPRECATED;
+
+    /**
+     * Returns the URI to the user authentication database.
+     * The URI is be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
+     * where DATABASE is just the path to the file for SQLite databases. If DRIVER is omitted, PSQLITE is assumed.
+     * Optional SCHEMA can be specified as a query parameter.
+     * \since QGIS 3.40
+     */
+    static QString qgisAuthDatabaseUri();
 
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
@@ -866,6 +879,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \see initQgis
      */
     static QgsAuthManager *authManager();
+
+    /**
+     * Returns the application's authentication configuration storage registry
+     * \since QGIS 3.40
+     */
+    static QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry();
 
     /**
      * Returns the application's processing registry, used for managing processing providers,

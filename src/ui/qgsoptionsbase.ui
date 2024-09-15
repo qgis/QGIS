@@ -122,7 +122,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>8</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -152,7 +152,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>903</height>
+                <height>1009</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -796,8 +796,11 @@
                    <layout class="QHBoxLayout" name="horizontalLayout_21">
                     <item>
                      <widget class="QLabel" name="label_33">
+                      <property name="toolTip">
+                       <string>Embedded Python code refers to macros and function expressions</string>
+                      </property>
                       <property name="text">
-                       <string>Enable macros</string>
+                       <string>Enable project's embedded Python code</string>
                       </property>
                      </widget>
                     </item>
@@ -968,8 +971,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>522</width>
-                <height>1054</height>
+                <width>578</width>
+                <height>1069</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1507,8 +1510,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>558</width>
-                <height>435</height>
+                <width>611</width>
+                <height>465</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1751,8 +1754,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>533</width>
-                <height>99</height>
+                <width>596</width>
+                <height>105</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1834,8 +1837,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>715</height>
+                <width>637</width>
+                <height>744</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2216,8 +2219,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>415</width>
-                <height>403</height>
+                <width>457</width>
+                <height>419</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2437,8 +2440,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>482</width>
-                <height>456</height>
+                <width>508</width>
+                <height>482</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2573,6 +2576,9 @@
                   </item>
                   <item row="0" column="1">
                    <widget class="QComboBox" name="cmbLegendDoubleClickAction">
+                    <property name="sizeAdjustPolicy">
+                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                    </property>
                     <item>
                      <property name="text">
                       <string>Open layer properties</string>
@@ -2588,9 +2594,6 @@
                       <string>Open layer styling dock</string>
                      </property>
                     </item>
-                    <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-                    </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -2820,8 +2823,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>578</width>
-                <height>869</height>
+                <width>622</width>
+                <height>923</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3483,9 +3486,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-256</y>
+                <y>0</y>
                 <width>843</width>
-                <height>971</height>
+                <height>1031</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4210,8 +4213,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>139</width>
-                <height>247</height>
+                <width>147</width>
+                <height>251</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4390,8 +4393,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>448</width>
-                <height>520</height>
+                <width>482</width>
+                <height>539</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4722,8 +4725,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>595</width>
-                <height>639</height>
+                <width>657</width>
+                <height>669</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4821,11 +4824,11 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    <layout class="QHBoxLayout" name="horizontalLayout_35">
                     <item>
                      <widget class="QLabel" name="lblUserAgent">
+                      <property name="toolTip">
+                       <string>This value will be prepended before the QGIS version and the OS, e.g. &quot;Mozilla/5.0 QGIS/33801/Ubuntu 22.04.4 LTS&quot;</string>
+                      </property>
                       <property name="text">
                        <string>User-Agent prefix</string>
-                      </property>
-                      <property name="toolTip">
-                       <string>This value will be prepended before the QGIS version and the OS, e.g. "Mozilla/5.0 QGIS/33801/Ubuntu 22.04.4 LTS"</string>
                       </property>
                      </widget>
                     </item>
@@ -5232,9 +5235,12 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <widget class="QTextBrowser" name="mGPUInfoTextBrowser">
                 <property name="html">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
