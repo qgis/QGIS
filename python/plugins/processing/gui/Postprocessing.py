@@ -103,9 +103,9 @@ def post_process_layer(output_name: str,
     if style:
         layer.loadNamedStyle(style)
 
-    try:
-        from qgis._3d import QgsPointCloudLayer3DRenderer
-        if layer.type() == Qgis.LayerType.PointCloud:
+    if layer.type() == Qgis.LayerType.PointCloud:
+        try:
+            from qgis._3d import QgsPointCloudLayer3DRenderer
             if layer.renderer3D() is None:
                 # If the layer has no 3D renderer and syncing 3D to 2D
                 # renderer is enabled, we create a renderer and set it up
@@ -114,14 +114,14 @@ def post_process_layer(output_name: str,
                     renderer_3d = QgsPointCloudLayer3DRenderer()
                     renderer_3d.convertFrom2DRenderer(layer.renderer())
                     layer.setRenderer3D(renderer_3d)
-    except ImportError:
-        QgsMessageLog.logMessage(
-            QCoreApplication.translate(
-                "Postprocessing",
-                "3D library is not available, "
-                "can't assign a 3d renderer to a layer."
+        except ImportError:
+            QgsMessageLog.logMessage(
+                QCoreApplication.translate(
+                    "Postprocessing",
+                    "3D library is not available, "
+                    "can't assign a 3d renderer to a layer."
+                )
             )
-        )
 
 
 def create_layer_tree_layer(layer: QgsMapLayer,
