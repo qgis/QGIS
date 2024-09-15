@@ -368,10 +368,11 @@ if(WITH_CORE)
   set (WITH_INTERNAL_NLOHMANN_JSON ON CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
   find_package(nlohmann_json REQUIRED)
 
-  find_package(Sqlite3)
-  if (NOT SQLITE3_FOUND)
-    message (SEND_ERROR "sqlite3 dependency was not found!")
-  endif()
+  # The following bypasses the FindSQLite3 module introduced in CMake 3.14
+  # On case insensitive platforms (e.g. Windows) this is because
+  # ./cmake/FindSqlite3.cmake comes first on the CMAKE_MODULE_PATH
+  # (otherwise it is because of the case: *Sqlite3* vs. *SQLite3*)
+  find_package(Sqlite3 REQUIRED)
 
   find_package(Protobuf CONFIG)
   find_package(Protobuf REQUIRED)

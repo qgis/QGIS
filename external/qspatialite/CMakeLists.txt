@@ -5,10 +5,7 @@ add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQT_PLUGIN)
 add_definitions(-DQT_SHARED)
 
-include_directories(SYSTEM
-	${SQLITE3_INCLUDE_DIR}
-	${${QT_VERSION_BASE}Sql_PRIVATE_INCLUDE_DIRS}
-)
+include_directories(SYSTEM ${${QT_VERSION_BASE}Sql_PRIVATE_INCLUDE_DIRS})
 
 set(QSQLSPATIALITE_SRC qsql_spatialite.cpp smain.cpp qsql_spatialite.h smain.h)
 
