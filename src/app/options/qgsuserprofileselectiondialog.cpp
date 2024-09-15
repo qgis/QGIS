@@ -122,9 +122,9 @@ void QgsUserProfileSelectionDialog::onRemoveProfile()
     return;
   }
 
-  QMessageBox::StandardButton response = QMessageBox::warning( this, tr( "Remove profile" ), QString( "Are you sure you want to delete profile '%1'?" ).arg( selectedProfile ), QMessageBox::Ok | QMessageBox::Cancel );
+  QMessageBox::StandardButton response = QMessageBox::warning( this, tr( "Remove profile" ), QString( "Are you sure you want to delete profile '%1'?" ).arg( selectedProfile ), QMessageBox::Yes | QMessageBox::No );
 
-  if ( response == QMessageBox::Cancel )
+  if ( response == QMessageBox::No )
     return;
 
   QgsError error = mManager->deleteProfile( selectedProfile );
