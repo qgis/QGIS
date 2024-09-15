@@ -1741,7 +1741,7 @@ void TestQgsCurvePolygon::testWKT()
   poly3.setExteriorRing( ext2 );
   poly3.addInteriorRing( new QgsCircularString() );
   wkt = poly3.asWkt();
-  QCOMPARE( wkt, QStringLiteral( "CurvePolygonZM (CircularStringZM (0 0 10 1, 10 0 11 2, 10 10 12 3, 0 10 13 4, 0 0 10 1))" ) );
+  QCOMPARE( wkt, QStringLiteral( "CurvePolygon ZM (CircularString ZM (0 0 10 1, 10 0 11 2, 10 10 12 3, 0 10 13 4, 0 0 10 1))" ) );
 }
 
 void TestQgsCurvePolygon::testExport()
