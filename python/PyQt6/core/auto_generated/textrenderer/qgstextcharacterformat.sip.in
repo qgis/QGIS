@@ -264,6 +264,62 @@ Sets whether the format has overline ``enabled``.
 .. seealso:: :py:func:`overline`
 %End
 
+    QString imagePath() const;
+%Docstring
+Returns the path to the image to render, if the format applies to a document image fragment.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`imageSize`
+
+.. seealso:: :py:func:`setImagePath`
+
+.. versionadded:: 3.40
+%End
+
+    void setImagePath( const QString &path );
+%Docstring
+Sets the ``path`` to the image to render, if the format applies to a document image fragment.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`setImageSize`
+
+.. seealso:: :py:func:`imagePath`
+
+.. versionadded:: 3.40
+%End
+
+    QSizeF imageSize() const;
+%Docstring
+Returns the image size, if the format applies to a document image fragment.
+
+The image size is always considered to be in :py:class:`Qgis`.RenderUnit.Points.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`imagePath`
+
+.. seealso:: :py:func:`setImageSize`
+
+.. versionadded:: 3.40
+%End
+
+    void setImageSize( const QSizeF &size );
+%Docstring
+Sets the image ``size``, if the format applies to a document image fragment.
+
+The image size is always considered to be in :py:class:`Qgis`.RenderUnit.Points.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`setImagePath`
+
+.. seealso:: :py:func:`imageSize`
+
+.. versionadded:: 3.40
+%End
+
     bool hasVerticalAlignmentSet() const;
 %Docstring
 Returns ``True`` if the format has an explicit vertical alignment set.

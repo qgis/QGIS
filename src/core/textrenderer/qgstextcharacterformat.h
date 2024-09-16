@@ -22,6 +22,7 @@
 
 #include <QFont>
 #include <QColor>
+#include <QSizeF>
 
 class QTextCharFormat;
 class QgsRenderContext;
@@ -254,6 +255,54 @@ class CORE_EXPORT QgsTextCharacterFormat
     void setOverline( BooleanValue enabled );
 
     /**
+     * Returns the path to the image to render, if the format applies to a document image fragment.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see imageSize()
+     * \see setImagePath()
+     *
+     * \since QGIS 3.40
+     */
+    QString imagePath() const;
+
+    /**
+     * Sets the \a path to the image to render, if the format applies to a document image fragment.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see setImageSize()
+     * \see imagePath()
+     *
+     * \since QGIS 3.40
+     */
+    void setImagePath( const QString &path );
+
+    /**
+     * Returns the image size, if the format applies to a document image fragment.
+     *
+     * The image size is always considered to be in Qgis::RenderUnit::Points.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see imagePath()
+     * \see setImageSize()
+     *
+     * \since QGIS 3.40
+     */
+    QSizeF imageSize() const;
+
+    /**
+     * Sets the image \a size, if the format applies to a document image fragment.
+     *
+     * The image size is always considered to be in Qgis::RenderUnit::Points.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see setImagePath()
+     * \see imageSize()
+     *
+     * \since QGIS 3.40
+     */
+    void setImageSize( const QSizeF &size );
+
+    /**
      * Returns TRUE if the format has an explicit vertical alignment set.
      *
      * If FALSE is returned then the vertical alignment will be inherited.
@@ -325,6 +374,9 @@ class CORE_EXPORT QgsTextCharacterFormat
 
     bool mHasVerticalAlignSet = false;
     Qgis::TextCharacterVerticalAlignment mVerticalAlign = Qgis::TextCharacterVerticalAlignment::Normal;
+
+    QString mImagePath;
+    QSizeF mImageSize;
 
     BooleanValue mStrikethrough = BooleanValue::NotSet;
     BooleanValue mUnderline = BooleanValue::NotSet;

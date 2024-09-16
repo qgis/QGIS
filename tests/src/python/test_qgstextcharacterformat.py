@@ -11,6 +11,7 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
+from qgis.PyQt.QtCore import QSizeF
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
@@ -63,6 +64,13 @@ class TestQgsTextCharacterFormat(QgisTestCase):
         self.assertTrue(format.hasVerticalAlignmentSet())
         format.setVerticalAlignment(Qgis.TextCharacterVerticalAlignment.SuperScript)
         self.assertEqual(format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.SuperScript)
+
+        self.assertFalse(format.imagePath())
+        self.assertEqual(format.imageSize(), QSizeF())
+        format.setImagePath('my.jpg')
+        format.setImageSize(QSizeF(40, 60))
+        self.assertEqual(format.imagePath(), 'my.jpg')
+        self.assertEqual(format.imageSize(), QSizeF(40, 60))
 
     def testUpdateFont(self):
         context = QgsRenderContext()
