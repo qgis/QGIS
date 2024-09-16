@@ -2309,11 +2309,11 @@ QgsClassificationStandardDeviation: src/core/classification/qgsclassificationsta
 QgsClipToMinMaxEnhancement.enhance: src/core/raster/qgscliptominmaxenhancement.h#L39
 QgsClipToMinMaxEnhancement.isValueInDisplayableRange: src/core/raster/qgscliptominmaxenhancement.h#L41
 QgsClipToMinMaxEnhancement: src/core/raster/qgscliptominmaxenhancement.h#L33
-QgsClipper.clipLineSegment: src/core/qgsclipper.h#L165
-QgsClipper.clippedLine: src/core/qgsclipper.h#L137
-QgsClipper.clippedLine: src/core/qgsclipper.h#L146
-QgsClipper.trimFeature: src/core/qgsclipper.h#L102
-QgsClipper.trimPolygon: src/core/qgsclipper.h#L114
+QgsClipper.clipLineSegment: src/core/qgsclipper.h#L161
+QgsClipper.clippedLine: src/core/qgsclipper.h#L133
+QgsClipper.clippedLine: src/core/qgsclipper.h#L142
+QgsClipper.trimFeature: src/core/qgsclipper.h#L100
+QgsClipper.trimPolygon: src/core/qgsclipper.h#L110
 QgsClipper: src/core/qgsclipper.h#L50
 QgsCodedFieldDomain.__repr__: src/core/vector/qgsfielddomain.h#L295
 QgsCodedFieldDomain.clone: src/core/vector/qgsfielddomain.h#L278
