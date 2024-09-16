@@ -114,6 +114,13 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
+     * Returns the fixed height of the fragment at the specified block and fragment index, or -1 if the fragment does not have a fixed height.
+     *
+     * \since QGIS 3.40
+     */
+    double fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
      * Returns the vertical orientation x offset for the specified block.
      */
     double verticalOrientationXOffset( int blockIndex ) const;
@@ -160,6 +167,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBaselineOffsetsAscentBased;
 
     QList< QList< double > > mFragmentHorizontalAdvance;
+    QList< QList< double > > mFragmentFixedHeights;
 
     QList< QList< double > > mFragmentVerticalOffsetsLabelMode;
     QList< QList< double > > mFragmentVerticalOffsetsPointMode;

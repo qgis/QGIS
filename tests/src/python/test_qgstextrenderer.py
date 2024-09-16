@@ -62,7 +62,7 @@ from qgis.core import (
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
-from utilities import getTestFont, svgSymbolsPath
+from utilities import getTestFont, svgSymbolsPath, unitTestDataPath
 
 start_app()
 
@@ -3999,6 +3999,78 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setAllowHtmlFormatting(True)
         assert self.checkRender(format, 'html_align_rect_center_base', None, text=[
             '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="left">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageAutoSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_autosize', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png">test</p>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageAutoWidth(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_autowidth', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png" height="80">test</p>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageAutoHeight(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_autoheight', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png" width="80">test</p>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_fixed_size', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png" width="80" height="200">test</p>'],
             rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
 
     def testHtmlSuperSubscript(self):
