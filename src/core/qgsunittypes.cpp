@@ -860,7 +860,7 @@ constexpr double distanceUnitToMeter( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::MetersGermanLegal:
       return 1.0000135965;
   }
-  BUILTIN_UNREACHABLE
+  return 1;
 }
 
 double QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit fromUnit, Qgis::DistanceUnit toUnit )
