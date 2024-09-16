@@ -692,33 +692,45 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
   mUnitsCombo->clear();
   if ( isArea )
   {
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareMeters ), static_cast< int >( Qgis::AreaUnit::SquareMeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareKilometers ), static_cast< int >( Qgis::AreaUnit::SquareKilometers ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareFeet ), static_cast< int >( Qgis::AreaUnit::SquareFeet ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareYards ), static_cast< int >( Qgis::AreaUnit::SquareYards ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareMiles ), static_cast< int >( Qgis::AreaUnit::SquareMiles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::Hectares ), static_cast< int >( Qgis::AreaUnit::Hectares ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::Acres ), static_cast< int >( Qgis::AreaUnit::Acres ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareCentimeters ), static_cast< int >( Qgis::AreaUnit::SquareCentimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareMillimeters ), static_cast< int >( Qgis::AreaUnit::SquareMillimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareNauticalMiles ), static_cast< int >( Qgis::AreaUnit::SquareNauticalMiles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareInches ), static_cast< int >( Qgis::AreaUnit::SquareInches ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareDegrees ), static_cast< int >( Qgis::AreaUnit::SquareDegrees ) );
+    for ( const Qgis::AreaUnit unit :
+          {
+            Qgis::AreaUnit::SquareMeters,
+            Qgis::AreaUnit::SquareKilometers,
+            Qgis::AreaUnit::SquareFeet,
+            Qgis::AreaUnit::SquareYards,
+            Qgis::AreaUnit::SquareMiles,
+            Qgis::AreaUnit::Hectares,
+            Qgis::AreaUnit::Acres,
+            Qgis::AreaUnit::SquareCentimeters,
+            Qgis::AreaUnit::SquareMillimeters,
+            Qgis::AreaUnit::SquareNauticalMiles,
+            Qgis::AreaUnit::SquareInches,
+            Qgis::AreaUnit::SquareDegrees,
+          } )
+    {
+      mUnitsCombo->addItem( QgsUnitTypes::toString( unit ), static_cast< int >( unit ) );
+    }
     mUnitsCombo->addItem( tr( "map units" ), static_cast< int >( Qgis::AreaUnit::Unknown ) );
   }
   else
   {
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Kilometers ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Feet ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Yards ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Miles ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::NauticalMiles ), static_cast< int >( Qgis::DistanceUnit::NauticalMiles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Centimeters ), static_cast< int >( Qgis::DistanceUnit::Centimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Millimeters ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Inches ), static_cast< int >( Qgis::DistanceUnit::Inches ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Degrees ), static_cast< int >( Qgis::DistanceUnit::Degrees ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::ChainsInternational ), static_cast< int >( Qgis::DistanceUnit::ChainsInternational ) );
+    for ( const Qgis::DistanceUnit unit :
+          {
+            Qgis::DistanceUnit::Meters,
+            Qgis::DistanceUnit::Kilometers,
+            Qgis::DistanceUnit::Feet,
+            Qgis::DistanceUnit::Yards,
+            Qgis::DistanceUnit::Miles,
+            Qgis::DistanceUnit::NauticalMiles,
+            Qgis::DistanceUnit::Centimeters,
+            Qgis::DistanceUnit::Millimeters,
+            Qgis::DistanceUnit::Inches,
+            Qgis::DistanceUnit::Degrees,
+            Qgis::DistanceUnit::ChainsInternational
+          } )
+    {
+      mUnitsCombo->addItem( QgsUnitTypes::toString( unit ), static_cast< int >( unit ) );
+    }
     mUnitsCombo->addItem( tr( "map units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
   }
 }
