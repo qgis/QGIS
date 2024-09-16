@@ -718,6 +718,7 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
     mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Millimeters ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
     mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Inches ), static_cast< int >( Qgis::DistanceUnit::Inches ) );
     mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Degrees ), static_cast< int >( Qgis::DistanceUnit::Degrees ) );
+    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::ChainsInternational ), static_cast< int >( Qgis::DistanceUnit::ChainsInternational ) );
     mUnitsCombo->addItem( tr( "map units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
   }
 }
