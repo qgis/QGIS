@@ -325,7 +325,7 @@ void TestQgsCoordinateReferenceSystem::verticalCrs()
   QVERIFY( crs.isValid() );
 
   QCOMPARE( crs.type(), Qgis::CrsType::Vertical );
-  QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::Feet );
+  QCOMPARE( crs.mapUnits(), Qgis::DistanceUnit::FeetUSSurvey );
 }
 
 void TestQgsCoordinateReferenceSystem::projectedCrs()
@@ -1621,7 +1621,7 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
   QCOMPARE( myCrs.mapUnits(), Qgis::DistanceUnit::Meters );
   debugPrint( myCrs );
   myCrs.createFromString( QStringLiteral( "EPSG:26812" ) );
-  QCOMPARE( myCrs.mapUnits(), Qgis::DistanceUnit::Feet );
+  QCOMPARE( myCrs.mapUnits(), Qgis::DistanceUnit::FeetUSSurvey );
   myCrs.createFromString( QStringLiteral( "EPSG:4619" ) );
   QCOMPARE( myCrs.mapUnits(), Qgis::DistanceUnit::Degrees );
 
