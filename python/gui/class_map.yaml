@@ -2736,9 +2736,9 @@ QgsFeatureSelectionModel.select: src/gui/attributetable/qgsfeatureselectionmodel
 QgsFeatureSelectionModel.selectFeatures: src/gui/attributetable/qgsfeatureselectionmodel.h#L105
 QgsFeatureSelectionModel.setFeatureSelectionManager: src/gui/attributetable/qgsfeatureselectionmodel.h#L107
 QgsFeatureSelectionModel: src/gui/attributetable/qgsfeatureselectionmodel.h#L31
-QgsFieldCalculator.accept: src/gui/vector/qgsfieldcalculator.h#L56
-QgsFieldCalculator.changedAttributeId: src/gui/vector/qgsfieldcalculator.h#L53
-QgsFieldCalculator: src/gui/vector/qgsfieldcalculator.h#L42
+QgsFieldCalculator.accept: src/gui/vector/qgsfieldcalculator.h#L57
+QgsFieldCalculator.changedAttributeId: src/gui/vector/qgsfieldcalculator.h#L54
+QgsFieldCalculator: src/gui/vector/qgsfieldcalculator.h#L43
 QgsFieldComboBox.QgsFieldComboBox: src/gui/qgsfieldcombobox.h#L49
 QgsFieldComboBox.allowEmptyFieldName: src/gui/qgsfieldcombobox.h#L67
 QgsFieldComboBox.currentField: src/gui/qgsfieldcombobox.h#L70
