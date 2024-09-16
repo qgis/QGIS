@@ -1902,8 +1902,6 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       d->mMapUnits = Qgis::DistanceUnit::ChainsClarkes;
     else if ( unitName.compare( QLatin1String( "Clarke's link" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksClarkes;
-    else if ( unitName.compare( QLatin1String( "Indian foot (1937)" ), Qt::CaseInsensitive ) == 0 )
-      d->mMapUnits = Qgis::DistanceUnit::FeetIndian1937;
     else if ( unitName.compare( QLatin1String( "kilometre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = Qgis::DistanceUnit::Kilometers;
     else if ( unitName.compare( QLatin1String( "centimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
@@ -1916,8 +1914,6 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       d->mMapUnits = Qgis::DistanceUnit::NauticalMiles;
     else if ( unitName.compare( QLatin1String( "yard" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Yards;
-    else if ( unitName.compare( QLatin1String( "Indian yard (1937)" ), Qt::CaseInsensitive ) == 0 )
-      d->mMapUnits = Qgis::DistanceUnit::YardsIndian1937;
     else if ( unitName.compare( QLatin1String( "fathom" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Fathom;
     else if ( unitName.compare( QLatin1String( "US survey chain" ), Qt::CaseInsensitive ) == 0 )
