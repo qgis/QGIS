@@ -14,6 +14,7 @@ from pprint import pprint
 
 from qgis.PyQt.QtCore import QLocale
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
     QgsGeometry,
@@ -675,7 +676,7 @@ class TestQgsDistanceArea(QgisTestCase):
         units = da.lengthUnits()
         print(f"measured {distance} in {QgsUnitTypes.toString(units)}")
         self.assertAlmostEqual(distance, 2.23606797, delta=0.000001)
-        self.assertEqual(units, QgsUnitTypes.DistanceUnit.DistanceFeet)
+        self.assertEqual(units, Qgis.DistanceUnit.FeetUSSurvey)
 
         # test converting the resultant length
         distance = da.convertLengthMeasurement(distance, QgsUnitTypes.DistanceUnit.DistanceMeters)
