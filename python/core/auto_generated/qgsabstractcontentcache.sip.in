@@ -92,6 +92,29 @@ Required because template based class (such as :py:class:`QgsAbstractContentCach
 Constructor for QgsAbstractContentCacheBase, with the specified ``parent`` object.
 %End
 
+    static bool parseBase64DataUrl( const QString &path, QString *mimeType /Out/ = 0, QString *data /Out/ = 0 );
+%Docstring
+Parses a ``path`` to determine if it represents a base 64 encoded HTML data URL, and if so, extracts the components
+of the URL.
+
+Data URLs are of the form ``data:[<mediatype>;]base64,<data>``.
+
+:param path: path to test
+
+:return: - ``True`` if ``path`` is a base 64 encoded data URL
+         - mimeType: the extracted mime type if the ``path`` is a data URL
+         - data: the extracted base64 data if the ``path`` is a data URL
+
+.. versionadded:: 3.40
+%End
+
+    static bool isBase64Data( const QString &path );
+%Docstring
+Returns ``True`` if ``path`` represents base64 encoded data.
+
+.. versionadded:: 3.40
+%End
+
   signals:
 
     void remoteContentFetched( const QString &url );
