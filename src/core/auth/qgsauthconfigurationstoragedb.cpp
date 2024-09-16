@@ -176,9 +176,9 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
     const QStringList keys = query->boundValueNames();
     const QVariantList values = query->boundValues();
     QMap<QString, QVariant> boundValues;
-    for ( const auto &key : std::as_const( keys ) )
+   for ( int i=0; i<keys.count(); i++)
     {
-      boundValues.insert( key, values.at( keys.indexOf( key ) ).toString() );
+      boundValues.insert( keys.at( i ), values.at( i ).toString() );
     }
     QMapIterator<QString, QVariant> it = QMapIterator<QString, QVariant>( boundValues );
 #endif
