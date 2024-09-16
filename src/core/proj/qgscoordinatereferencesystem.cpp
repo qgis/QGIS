@@ -1915,7 +1915,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     else if ( unitName.compare( QLatin1String( "yard" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Yards;
     else if ( unitName.compare( QLatin1String( "fathom" ), Qt::CaseInsensitive ) == 0 )
-      d->mMapUnits = Qgis::DistanceUnit::Fathom;
+      d->mMapUnits = Qgis::DistanceUnit::Fathoms;
     else if ( unitName.compare( QLatin1String( "US survey chain" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsUSSurvey;
     else if ( unitName.compare( QLatin1String( "chain" ), Qt::CaseInsensitive ) == 0 )

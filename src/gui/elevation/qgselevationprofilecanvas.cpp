@@ -150,7 +150,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         case Qgis::DistanceUnit::YardsIndian1962:
         case Qgis::DistanceUnit::YardsIndian1975:
         case Qgis::DistanceUnit::MilesUSSurvey:
-        case Qgis::DistanceUnit::Fathom:
+        case Qgis::DistanceUnit::Fathoms:
         case Qgis::DistanceUnit::MetersGermanLegal:
           return QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
 

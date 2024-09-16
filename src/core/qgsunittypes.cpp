@@ -120,7 +120,7 @@ Qgis::DistanceUnitType QgsUnitTypes::unitType( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::YardsIndian1962:
     case Qgis::DistanceUnit::YardsIndian1975:
     case Qgis::DistanceUnit::MilesUSSurvey:
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
     case Qgis::DistanceUnit::MetersGermanLegal:
       return Qgis::DistanceUnitType::Standard;
 
@@ -307,7 +307,7 @@ QString QgsUnitTypes::encodeUnit( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::MilesUSSurvey:
       return QStringLiteral( "miles us survey" );
 
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
       return QStringLiteral( "yards fathom" );
 
     case Qgis::DistanceUnit::MetersGermanLegal:
@@ -380,7 +380,7 @@ Qgis::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString &string, bool
           Qgis::DistanceUnit::YardsIndian1962,
           Qgis::DistanceUnit::YardsIndian1975,
           Qgis::DistanceUnit::MilesUSSurvey,
-          Qgis::DistanceUnit::Fathom,
+          Qgis::DistanceUnit::Fathoms,
           Qgis::DistanceUnit::MetersGermanLegal,
         } )
   {
@@ -541,7 +541,7 @@ QString QgsUnitTypes::toString( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::MilesUSSurvey:
       return QObject::tr( "miles (US survey)", "distance" );
 
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
       return QObject::tr( "fathoms", "distance" );
 
     case Qgis::DistanceUnit::MetersGermanLegal:
@@ -661,7 +661,7 @@ QString QgsUnitTypes::toAbbreviatedString( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::LinksUSSurvey:
       return QObject::tr( "lk", "distance" );
 
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
       return QObject::tr( "f", "distance" );
 
     case Qgis::DistanceUnit::MetersGermanLegal:
@@ -734,7 +734,7 @@ Qgis::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString &string, bo
           Qgis::DistanceUnit::YardsIndian1962,
           Qgis::DistanceUnit::YardsIndian1975,
           Qgis::DistanceUnit::MilesUSSurvey,
-          Qgis::DistanceUnit::Fathom,
+          Qgis::DistanceUnit::Fathoms,
           Qgis::DistanceUnit::MetersGermanLegal,
         } )
   {
@@ -853,7 +853,7 @@ constexpr double distanceUnitToMeter( Qgis::DistanceUnit unit )
       return 0.9143985;
     case Qgis::DistanceUnit::MilesUSSurvey:
       return 1609.3472186944;
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
       return 1.8288;
     case Qgis::DistanceUnit::Unknown:
       return 1;
@@ -1599,7 +1599,7 @@ Qgis::AreaUnit QgsUnitTypes::distanceToAreaUnit( Qgis::DistanceUnit distanceUnit
     case Qgis::DistanceUnit::YardsIndian1937:
     case Qgis::DistanceUnit::YardsIndian1962:
     case Qgis::DistanceUnit::YardsIndian1975:
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
       return Qgis::AreaUnit::SquareFeet;
 
     case Qgis::DistanceUnit::Yards:
@@ -2602,7 +2602,7 @@ Qgis::VolumeUnit QgsUnitTypes::distanceToVolumeUnit( Qgis::DistanceUnit distance
     case Qgis::DistanceUnit::LinksBritishSears1922:
     case Qgis::DistanceUnit::LinksClarkes:
     case Qgis::DistanceUnit::LinksUSSurvey:
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
       return Qgis::VolumeUnit::CubicFeet;
 
     case Qgis::DistanceUnit::Degrees:
