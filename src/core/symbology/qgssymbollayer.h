@@ -102,6 +102,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsLineburstSymbolLayer;
         else if ( sipCpp->layerType() == "LinearReferencing" )
           sipType = sipType_QgsLinearReferencingSymbolLayer;
+        else if ( sipCpp->layerType() == "FilledLine" )
+          sipType = sipType_QgsFilledLineSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
