@@ -487,6 +487,7 @@
 //
 // GDAL/OGR includes
 //
+#include <gdal.h>
 #include <ogr_api.h>
 #include <gdal_version.h>
 #include <proj.h>
@@ -8638,9 +8639,23 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     QgsVectorFileWriterTask *writerTask = new QgsVectorFileWriterTask( vlayer, vectorFilename, options );
 
     // when writer is successful:
-    connect( writerTask, &QgsVectorFileWriterTask::completed, this, [onSuccess, addToCanvas, encoding, vectorFilename]( const QString & newFilename, const QString & newLayer )
+    connect( writerTask, &QgsVectorFileWriterTask::completed, this, [onSuccess, addToCanvas, encoding, vectorFilename, format]( const QString & newFilename, const QString & newLayer )
     {
-      onSuccess( newFilename, addToCanvas, newLayer, encoding, vectorFilename );
+      QString layerName  = newLayer;
+#ifdef GDAL_DCAP_MULTIPLE_VECTOR_LAYERS
+      GDALDriverH hDriver = GDALGetDriverByName( format.toUtf8().constData() );
+      if ( hDriver )
+      {
+        // If the driver doesn't advertise supporting multiple vector layers,
+        // do not attempt to append the layer name to the connection URI
+        // This would for example break for the GeoJSONSeq driver.
+        if ( !GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) )
+        {
+          layerName.clear();
+        }
+      }
+#endif
+      onSuccess( newFilename, addToCanvas, layerName, encoding, vectorFilename );
     } );
 
     // when an error occurs:
