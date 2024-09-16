@@ -731,7 +731,7 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
     case Qgis::DistanceUnit::YardsIndian1962:
     case Qgis::DistanceUnit::YardsIndian1975:
     case Qgis::DistanceUnit::MilesUSSurvey:
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
     case Qgis::DistanceUnit::MetersGermanLegal:
       return ( meters * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mDistanceArea.sourceCrs().mapUnits() ) );
   }

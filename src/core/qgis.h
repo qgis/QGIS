@@ -4670,7 +4670,7 @@ class CORE_EXPORT Qgis
       YardsIndian1962, //!< Indian yards (1962) \since QGIS 3.40
       YardsIndian1975, //!< Indian yards (1975) \since QGIS 3.40
       MilesUSSurvey, //!< US Survery miles \since QGIS 3.40
-      Fathom, //!< Fathoms \since QGIS 3.40
+      Fathoms, //!< Fathoms \since QGIS 3.40
       MetersGermanLegal, //!< German legal meter \since QGIS 3.40
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( DistanceUnknownUnit ), //!< Unknown distance unit
     };

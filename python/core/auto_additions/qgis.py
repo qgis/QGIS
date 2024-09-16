@@ -8562,9 +8562,9 @@ QgsUnitTypes.YardsIndian1975.__doc__ = "Indian yards (1975) \n.. versionadded:: 
 QgsUnitTypes.MilesUSSurvey = Qgis.DistanceUnit.MilesUSSurvey
 QgsUnitTypes.MilesUSSurvey.is_monkey_patched = True
 QgsUnitTypes.MilesUSSurvey.__doc__ = "US Survery miles \n.. versionadded:: 3.40"
-QgsUnitTypes.Fathom = Qgis.DistanceUnit.Fathom
-QgsUnitTypes.Fathom.is_monkey_patched = True
-QgsUnitTypes.Fathom.__doc__ = "Fathoms \n.. versionadded:: 3.40"
+QgsUnitTypes.Fathoms = Qgis.DistanceUnit.Fathoms
+QgsUnitTypes.Fathoms.is_monkey_patched = True
+QgsUnitTypes.Fathoms.__doc__ = "Fathoms \n.. versionadded:: 3.40"
 QgsUnitTypes.MetersGermanLegal = Qgis.DistanceUnit.MetersGermanLegal
 QgsUnitTypes.MetersGermanLegal.is_monkey_patched = True
 QgsUnitTypes.MetersGermanLegal.__doc__ = "German legal meter \n.. versionadded:: 3.40"
@@ -8768,7 +8768,7 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 
   .. versionadded:: 3.40
 
-* ``Fathom``: Fathoms
+* ``Fathoms``: Fathoms
 
   .. versionadded:: 3.40
 

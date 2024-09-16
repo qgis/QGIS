@@ -98,7 +98,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                     Qgis.DistanceUnit.YardsIndian1962: QgsUnitTypes.DistanceUnitType.Standard,
                     Qgis.DistanceUnit.YardsIndian1975: QgsUnitTypes.DistanceUnitType.Standard,
                     Qgis.DistanceUnit.MilesUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.Fathom: QgsUnitTypes.DistanceUnitType.Standard,
+                    Qgis.DistanceUnit.Fathoms: QgsUnitTypes.DistanceUnitType.Standard,
                     Qgis.DistanceUnit.MetersGermanLegal: QgsUnitTypes.DistanceUnitType.Standard,
                     }
 
@@ -155,7 +155,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  Qgis.DistanceUnit.YardsIndian1962,
                  Qgis.DistanceUnit.YardsIndian1975,
                  Qgis.DistanceUnit.MilesUSSurvey,
-                 Qgis.DistanceUnit.Fathom,
+                 Qgis.DistanceUnit.Fathoms,
                  Qgis.DistanceUnit.MetersGermanLegal,
                  ]
 
@@ -224,7 +224,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  Qgis.DistanceUnit.YardsIndian1962,
                  Qgis.DistanceUnit.YardsIndian1975,
                  Qgis.DistanceUnit.MilesUSSurvey,
-                 Qgis.DistanceUnit.Fathom,
+                 Qgis.DistanceUnit.Fathoms,
                  Qgis.DistanceUnit.MetersGermanLegal,
                  ]
 
@@ -565,7 +565,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 Qgis.DistanceUnit.YardsIndian1962: 1 / 0.9143988,
                 Qgis.DistanceUnit.YardsIndian1975: 1 / 0.9143985,
                 Qgis.DistanceUnit.MilesUSSurvey: 1 / 1609.3472186944,
-                Qgis.DistanceUnit.Fathom: 1 / 1.8288,
+                Qgis.DistanceUnit.Fathoms: 1 / 1.8288,
                 Qgis.DistanceUnit.MetersGermanLegal: 1 / 1.0000135965,
             },
             QgsUnitTypes.DistanceUnit.DistanceKilometers: {
@@ -750,7 +750,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 Qgis.DistanceUnit.Meters: 0.9143985},
             Qgis.DistanceUnit.MilesUSSurvey: {
                 Qgis.DistanceUnit.Meters: 1609.3472186944},
-            Qgis.DistanceUnit.Fathom: {
+            Qgis.DistanceUnit.Fathoms: {
                 Qgis.DistanceUnit.Meters: 1.8288},
             Qgis.DistanceUnit.MetersGermanLegal: {
                 Qgis.DistanceUnit.Meters: 1.0000135965},
@@ -1034,7 +1034,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                     Qgis.DistanceUnit.YardsIndian1962: Qgis.AreaUnit.SquareFeet,
                     Qgis.DistanceUnit.YardsIndian1975: Qgis.AreaUnit.SquareFeet,
                     Qgis.DistanceUnit.MilesUSSurvey: Qgis.AreaUnit.SquareMiles,
-                    Qgis.DistanceUnit.Fathom: Qgis.AreaUnit.SquareFeet,
+                    Qgis.DistanceUnit.Fathoms: Qgis.AreaUnit.SquareFeet,
                     Qgis.DistanceUnit.MetersGermanLegal: Qgis.AreaUnit.SquareMeters,
                     }
 
@@ -1428,7 +1428,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                     Qgis.DistanceUnit.YardsIndian1962: Qgis.VolumeUnit.VolumeCubicYards,
                     Qgis.DistanceUnit.YardsIndian1975: Qgis.VolumeUnit.VolumeCubicYards,
                     Qgis.DistanceUnit.MilesUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.Fathom: Qgis.VolumeUnit.VolumeCubicFeet,
+                    Qgis.DistanceUnit.Fathoms: Qgis.VolumeUnit.VolumeCubicFeet,
                     Qgis.DistanceUnit.MetersGermanLegal: Qgis.VolumeUnit.VolumeCubicMeters,
                     }
 

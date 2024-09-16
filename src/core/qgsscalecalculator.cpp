@@ -142,7 +142,7 @@ void QgsScaleCalculator::calculateMetrics( const QgsRectangle &mapExtent, double
     case Qgis::DistanceUnit::YardsIndian1962:
     case Qgis::DistanceUnit::YardsIndian1975:
     case Qgis::DistanceUnit::MilesUSSurvey:
-    case Qgis::DistanceUnit::Fathom:
+    case Qgis::DistanceUnit::Fathoms:
     case Qgis::DistanceUnit::MetersGermanLegal:
       // convert to inches
       conversionFactor = QgsUnitTypes::fromUnitToUnitFactor( mMapUnits, Qgis::DistanceUnit::Inches );
