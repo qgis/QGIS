@@ -70,6 +70,16 @@ const QgsDataProviderElevationProperties *QgsDataProvider::elevationProperties()
   return nullptr;
 }
 
+bool QgsDataProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
+{
+  // NOP by default
+  Q_UNUSED( subset )
+  Q_UNUSED( updateFeatureCount )
+  return false;
+}
+
+bool QgsDataProvider::supportsSubsetString() const { return false; }
+
 void QgsDataProvider::reloadData()
 {
   // Because QgsVirtualLayerTask is not thread safe:
