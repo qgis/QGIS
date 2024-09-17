@@ -1342,7 +1342,7 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "GeoJSON - Newline Delimited" ),
                                QObject::tr( "GeoJSON - Newline Delimited" ),
                                QStringLiteral( "*.geojsonl *.geojsons *.json" ),
-                               QStringLiteral( "json" ),  // add json for now
+                               QStringLiteral( "geojsonl geojsons json" ),
                                datasetOptions,
                                layerOptions,
                                QStringLiteral( "UTF-8" )
