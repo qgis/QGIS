@@ -3549,11 +3549,12 @@ void QgisApp::refreshProfileMenu()
 
   mConfigMenu->addSeparator( );
 
-  QAction *openProfileSelectionDialog = mConfigMenu->addAction( tr( "Open Profile Selector" ) );
+  QAction *openProfileSelectionDialog = mConfigMenu->addAction( tr( "Open Profile Selector…" ) );
   openProfileSelectionDialog->setObjectName( "mActionOpenProfileSelector" );
-  connect( openProfileSelectionDialog, &QAction::triggered, this, [this]()
+  connect( openProfileSelectionDialog, &QAction::triggered, this, [this, activeName]()
   {
-    auto dlg = QgsUserProfileSelectionDialog( userProfileManager() );
+    auto dlg = QgsUserProfileSelectionDialog( userProfileManager(), activeName );
+
     if ( dlg.exec() == QDialog::Accepted )
     {
       userProfileManager()->loadUserProfile( dlg.selectedProfileName() );

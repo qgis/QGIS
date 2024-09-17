@@ -1099,7 +1099,7 @@ int main( int argc, char *argv[] )
             profileName = manager.allProfiles()[0];
             break;
           }
-          QgsUserProfileSelectionDialog dlg( &manager );
+          QgsUserProfileSelectionDialog dlg( &manager, QString() );
           if ( dlg.exec() == QDialog::Accepted )
           {
             profileName = dlg.selectedProfileName();

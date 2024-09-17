@@ -21,11 +21,12 @@
 #include "qgsapplication.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsnewnamedialog.h"
+#include "qnamespace.h"
 
 #include "qgsuserprofileselectiondialog.h"
 
-QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
-  : QDialog( parent ), mManager( manager )
+QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, const QString &activeProfile, QWidget *parent )
+  : QDialog( parent ), mManager( manager ), mActiveProfile( activeProfile )
 
 {
   setupUi( this );
@@ -53,6 +54,9 @@ void QgsUserProfileSelectionDialog::populateProfileList()
   for ( auto profile : mManager->allProfiles() )
   {
     auto item = new QListWidgetItem( mManager->profileForName( profile )->icon(), profile );
+    if ( profile == mActiveProfile )
+      item->setBackground( Qt::lightGray );
+
     mProfileListWidget->addItem( item );
 
     // If the profile is the last used one, select it
@@ -71,8 +75,8 @@ QString QgsUserProfileSelectionDialog::selectedProfileName() const
 
 void QgsUserProfileSelectionDialog::accept()
 {
-  // Accept only if an item is selected
-  if ( mProfileListWidget->currentItem() && mProfileListWidget->currentItem()->isSelected() )
+  // Accept only if an item is selected and not the already active profile
+  if ( mProfileListWidget->currentItem() != nullptr && mProfileListWidget->currentItem()->isSelected() && mProfileListWidget->currentItem()->text() != mActiveProfile )
   {
     QDialog::accept();
   }

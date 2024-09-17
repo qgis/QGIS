@@ -40,9 +40,10 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
     /**
      * Constructor for QgsUserProfileSelectionDialog.
      * \param manager QgsUserProfileManager manager that will be used to fill the list of profiles
+     * \param activeProfile QString current profile
      * \param parent parent widget
      */
-    explicit QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent = nullptr );
+    explicit QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, const QString &activeProfile, QWidget *parent = nullptr );
     virtual ~QgsUserProfileSelectionDialog();
 
 
@@ -58,6 +59,7 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
 
   private:
     QgsUserProfileManager *mManager = nullptr;
+    QString mActiveProfile;
     void populateProfileList();
 
 
