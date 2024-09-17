@@ -840,7 +840,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "source-layer": "landcover_pt",
             "minzoom": 14.0,
             "layout": {
-                "icon-size": [ "interpolate", [ "exponential", 1.6 ], [ "zoom" ], 14, 0.2, 18, 1 ],
+                "icon-size": ["interpolate", ["exponential", 1.6], ["zoom"], 14, 0.2, 18, 1],
                 "text-font": [],
                 "icon-image": "{foo}",
                 "visibility": "visible",
@@ -849,7 +849,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 "icon-ignore-placement": False,
                 "icon-rotation-alignment": "map"
             },
-            "paint": {"icon-opacity": {"stops": [ [ 14, 0.4 ], [ 18, 0.6 ] ]}}
+            "paint": {"icon-opacity": {"stops": [[14, 0.4], [18, 0.6]]}}
         }
         renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
         self.assertTrue(has_renderer)
