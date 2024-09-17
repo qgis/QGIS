@@ -831,6 +831,33 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         size = renderer.symbol().symbolLayers()[0].size()
         self.assertEqual(size, 4)
 
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
+        context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 2, "height": 2, "pixelRatio": 1}})
+        style = {
+            "id": "landcover_pt",
+            "type": "symbol",
+            "source": "base_v1.0.0",
+            "source-layer": "landcover_pt",
+            "minzoom": 14.0,
+            "layout": {
+                "icon-size": ["interpolate", [ "exponential", 1.6 ], [ "zoom" ], 14, 0.2, 18, 1],
+                "text-font": [],
+                "icon-image": "{foo}",
+                "visibility": "visible",
+                "icon-allow-overlap": False,
+                "icon-pitch-alignment": "map",
+                "icon-ignore-placement": False,
+                "icon-rotation-alignment": "map"
+            },
+            "paint": {"icon-opacity": {"stops": [[ 14, 0.4 ], [ 18, 0.6 ]]}}
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_renderer)
+        dd_properties = renderer.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyWidth).asExpression(),
+                         '''CASE WHEN "foo" = 'foo' THEN 2*((0.2) + ((1.6^(@vector_tile_zoom - 14) - 1) / (1.6^(18 - 14) - 1)) * ((1) - (0.2))) END''')
+
+
     def testScaledLabelShieldIcon(self):
         """ Test icon-size property for label shields that depends on a data attribute """
         context = QgsMapBoxGlStyleConversionContext()
