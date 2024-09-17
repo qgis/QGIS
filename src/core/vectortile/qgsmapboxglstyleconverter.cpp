@@ -1472,7 +1472,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         break;
     }
 
-    // from the specs halo should not be bigget than 1/4 of the text-size
+    // from the specs halo should not be larger than 1/4 of the text-size
     // https://docs.mapbox.com/style-spec/reference/layers/#paint-symbol-text-halo-width
     if ( bufferSize > 0 )
     {
