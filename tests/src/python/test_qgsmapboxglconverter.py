@@ -277,6 +277,31 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,10,15,0.1,0.3)) * 2.5 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN (scale_linear(@vector_tile_zoom,15,18,0.3,0.6)) * 2.5 WHEN @vector_tile_zoom > 18 THEN 1.5 END')
         self.assertEqual(default_number, 0.25)
 
+        # nested match list
+        res, default_color, default_number = QgsMapBoxGlStyleConverter.parseValueList([
+            "match",
+            ["get", "is_route"],
+            [5, 10],
+            "hsl(16,91%,80%)",
+            [6, 7, 8],
+            "hsl(55,91%,80%)",
+            [
+                "match",
+                ["get", "class"],
+                ["motorway", "trunk", "motorway_construction", "trunk_construction"],
+                "hsl(41,93%,73%)",
+                [
+                    "rail", "rail_construction", "path", "path_construction",
+                    "footway", "footway_construction", "track", "track_construction",
+                    "trail", "trail_construction"
+                ],
+                ["match", ["get", "subclass"], "covered_bridge", "rgb(255,255,255)", "rgb(238,238,240)"],
+                "rgba(255,255,255,1)"
+            ]
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
+        self.assertEqual(res.asExpression(),
+                         '''CASE WHEN "is_route" IN (5,10) THEN '#fab69e' WHEN "is_route" IN (6,7,8) THEN '#faf39e' ELSE CASE WHEN "class" IN ('motorway','trunk','motorway_construction','trunk_construction') THEN '#fad27a' WHEN "class" IN ('rail','rail_construction','path','path_construction','footway','footway_construction','track','track_construction','trail','trail_construction') THEN CASE WHEN "subclass" IS 'covered_bridge' THEN '#ffffff' ELSE '#eeeef0' END ELSE '#ffffff' END END''')
+
     def testInterpolateByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 1,
@@ -1070,6 +1095,72 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         dd_props = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         prop = dd_props.property(QgsSymbolLayer.Property.PropertyFile)
         self.assertTrue(prop.isActive())
+
+    def testParseLineOpactity(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "contour_line",
+            "type": "line",
+            "source": "base_v1.0.0",
+            "source-layer": "contour_line",
+            "minzoom": 11.0,
+            "layout": {"visibility": "visible"},
+            "paint": {
+                "line-blur": 0.25,
+                "line-color": ["match", ["get", "class"], "scree", "rgba(0, 0, 0, 1)", "hsl(35, 86%, 38%)"],
+                "line-width": [
+                    "interpolate",
+                    ["exponential", 1],
+                    ["zoom"],
+                    11,
+                    ["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 0.75, 0],
+                    12,
+                    ["case", ["==", ["%", ["to-number", ["get", "ele"]], 100], 0], 1, 0],
+                    14,
+                    [
+                        "case",
+                        ["==", ["%", ["to-number", ["get", "ele"]], 100], 0],
+                        1.5,
+                        ["case", ["==", ["%", ["to-number", ["get", "ele"]], 20], 0], 0.75, 0]
+                    ],
+                    15,
+                    [
+                        "case",
+                        ["==", ["%", ["to-number", ["get", "ele"]], 100], 0],
+                        2,
+                        ["case", ["==", ["%", ["to-number", ["get", "ele"]], 20], 0], 1, 0]
+                    ],
+                    18,
+                    [
+                        "case",
+                        ["==", ["%", ["to-number", ["get", "ele"]], 100], 0],
+                        3,
+                        ["case", ["==", ["%", ["to-number", ["get", "ele"]], 10], 0], 1.5, 0]
+                    ]
+                ],
+                "line-opacity": [
+                    "interpolate",
+                    ["exponential", 1],
+                    ["zoom"],
+                    11,
+                    ["match", ["get", "class"], "scree", 0.2, 0.3],
+                    16,
+                    ["match", ["get", "class"], "scree", 0.2, 0.3]
+                ]
+            },
+            "filter": ["all", ["!in", "class", "rock", "ice", "water"]]
+        }
+
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
+        symbol = rendererStyle.symbol()
+        dd_properties_layer = symbol.symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties_layer.property(QgsSymbolLayer.Property.StrokeColor).asExpression(),
+                         '''CASE WHEN "class" IS 'scree' THEN '#000000' ELSE '#b26e0e' END''')
+        dd_properties = symbol.dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbol.Property.Opacity).asExpression(),
+                         '''(CASE WHEN ("class" = 'scree') THEN 0.2 ELSE 0.3 END) * 100''')
 
     def testLabelWithLiteral(self):
         context = QgsMapBoxGlStyleConversionContext()
