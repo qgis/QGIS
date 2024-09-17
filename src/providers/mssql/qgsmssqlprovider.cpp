@@ -2056,6 +2056,21 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
   return true;
 }
 
+bool QgsMssqlProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsMssqlProvider::subsetStringDialect() const
+{
+  return tr( "SQL Server WHERE clause" );
+}
+
+QString QgsMssqlProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://learn.microsoft.com/en-us/sql/t-sql/queries/where-transact-sql?view=sql-server-ver16" );
+}
+
 QString  QgsMssqlProvider::description() const
 {
   return MSSQL_PROVIDER_DESCRIPTION;

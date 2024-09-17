@@ -53,7 +53,9 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
     QgsRectangle extent() const override;
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     QgsFields fields() const override;
     bool isValid() const override;
     Qgis::VectorProviderCapabilities capabilities() const override;

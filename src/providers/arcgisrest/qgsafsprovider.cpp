@@ -678,6 +678,21 @@ bool QgsAfsProvider::setSubsetString( const QString &subset, bool )
   return true;
 }
 
+bool QgsAfsProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsAfsProvider::subsetStringDialect() const
+{
+  return tr( "SQL 92 WHERE clause" );
+}
+
+QString QgsAfsProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service/#sql-92-where-clause" );
+}
+
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
 {
   mSharedData->mDataSource = QgsDataSourceUri( uri );

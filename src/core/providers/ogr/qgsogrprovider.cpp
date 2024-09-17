@@ -559,6 +559,46 @@ QString QgsOgrProvider::subsetString() const
   return mSubsetString;
 }
 
+bool QgsOgrProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsOgrProvider::subsetStringDialect() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( mOgrLayer )
+  {
+    if ( const char *pszSqlDialects = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_SUPPORTED_SQL_DIALECTS, nullptr ) )
+    {
+      const QStringList dialects = QString( pszSqlDialects ).split( ' ' );
+      // first dialect is default, which is what QGIS uses
+      return !dialects.empty() ? dialects.at( 0 ) : QString();
+    }
+  }
+#endif
+  return QString();
+}
+
+QString QgsOgrProvider::subsetStringHelpUrl() const
+{
+  const QString dialect = subsetStringDialect();
+  if ( dialect == QLatin1String( "NATIVE" ) && mOgrLayer )
+  {
+    const QString gdalDriverHelpTopic = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_HELPTOPIC, nullptr );  // e.g. "drivers/vector/ili.html"
+    return QStringLiteral( "https://gdal.org/en/latest/%1" ).arg( gdalDriverHelpTopic );
+  }
+  else if ( dialect == "OGRSQL" )
+  {
+    return QStringLiteral( "https://gdal.org/user/ogr_sql_dialect.html" );
+  }
+  else if ( dialect == "SQLITE" )
+  {
+    return QStringLiteral( "https://gdal.org/user/sql_sqlite_dialect.html" );
+  }
+  return QString();
+}
+
 uint QgsOgrProvider::subLayerCount() const
 {
   uint count = layerCount();

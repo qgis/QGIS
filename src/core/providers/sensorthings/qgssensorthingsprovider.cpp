@@ -229,6 +229,16 @@ bool QgsSensorThingsProvider::supportsSubsetString() const
   return true;
 }
 
+QString QgsSensorThingsProvider::subsetStringDialect() const
+{
+  return tr( "OGC SensorThings filter" );
+}
+
+QString QgsSensorThingsProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://docs.ogc.org/is/18-088/18-088.html#filter" );
+}
+
 QString QgsSensorThingsProvider::subsetString() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

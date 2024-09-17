@@ -544,6 +544,21 @@ bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatur
   return true;
 }
 
+QString QgsOapifProvider::subsetStringDialect() const
+{
+  return tr( "OGC API - Features filter" );
+}
+
+QString QgsOapifProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://portal.ogc.org/files/96288#cql-core" );
+}
+
+bool QgsOapifProvider::supportsSubsetString() const
+{
+  return true;
+}
+
 QgsOapifProvider::FilterTranslationState QgsOapifProvider::filterTranslatedState() const
 {
   return mShared->mFilterTranslationState;

@@ -69,7 +69,9 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
 
     /* Inherited from QgsDataProvider */
     QgsCoordinateReferenceSystem crs() const override;

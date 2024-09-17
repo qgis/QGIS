@@ -53,6 +53,8 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     Qgis::DataProviderFlags flags() const final;
     Qgis::VectorProviderCapabilities capabilities() const final;
     bool supportsSubsetString() const final;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     QString subsetString() const final;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) final;
     QgsCoordinateReferenceSystem crs() const final;

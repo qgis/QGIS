@@ -92,7 +92,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QString subsetString() const override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     Qgis::WkbType wkbType() const override;
     virtual size_t layerCount() const;
