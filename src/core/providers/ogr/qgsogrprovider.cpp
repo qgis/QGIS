@@ -573,7 +573,20 @@ QString QgsOgrProvider::subsetStringDialect() const
     {
       const QStringList dialects = QString( pszSqlDialects ).split( ' ' );
       // first dialect is default, which is what QGIS uses
-      return !dialects.empty() ? dialects.at( 0 ) : QString();
+      const QString defaultDialect = !dialects.isEmpty() ? dialects.at( 0 ) : QString();
+      if ( defaultDialect == QLatin1String( "NATIVE" ) )
+      {
+        return tr( "%1 query" ).arg( GDALGetDriverLongName( mOgrLayer->driver() ) );
+      }
+      else if ( defaultDialect == QLatin1String( "OGRSQL" ) )
+      {
+        return tr( "OGR SQL query" );
+      }
+      else if ( defaultDialect == QLatin1String( "SQLITE" ) )
+      {
+        return tr( "SQLite query" );
+      }
+      return defaultDialect;
     }
   }
 #endif
@@ -582,19 +595,29 @@ QString QgsOgrProvider::subsetStringDialect() const
 
 QString QgsOgrProvider::subsetStringHelpUrl() const
 {
-  const QString dialect = subsetStringDialect();
-  if ( dialect == QLatin1String( "NATIVE" ) && mOgrLayer )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( mOgrLayer )
   {
-    return QgsGdalUtils::gdalDocumentationUrlForDriver( mOgrLayer->driver() );
+    if ( const char *pszSqlDialects = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_SUPPORTED_SQL_DIALECTS, nullptr ) )
+    {
+      const QStringList dialects = QString( pszSqlDialects ).split( ' ' );
+      // first dialect is default, which is what QGIS uses
+      const QString defaultDialect = !dialects.isEmpty() ? dialects.at( 0 ) : QString();
+      if ( defaultDialect == QLatin1String( "NATIVE" ) )
+      {
+        return QgsGdalUtils::gdalDocumentationUrlForDriver( mOgrLayer->driver() );
+      }
+      else if ( defaultDialect == QLatin1String( "OGRSQL" ) )
+      {
+        return QStringLiteral( "https://gdal.org/user/ogr_sql_dialect.html" );
+      }
+      else if ( defaultDialect == QLatin1String( "SQLITE" ) )
+      {
+        return QStringLiteral( "https://gdal.org/user/sql_sqlite_dialect.html" );
+      }
+    }
   }
-  else if ( dialect == "OGRSQL" )
-  {
-    return QStringLiteral( "https://gdal.org/user/ogr_sql_dialect.html" );
-  }
-  else if ( dialect == "SQLITE" )
-  {
-    return QStringLiteral( "https://gdal.org/user/sql_sqlite_dialect.html" );
-  }
+#endif
   return QString();
 }
 
