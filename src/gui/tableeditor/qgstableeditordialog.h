@@ -26,6 +26,7 @@ class QgsDockWidget;
 class QgsPanelWidgetStack;
 class QgsTableEditorFormattingWidget;
 class QgsExpressionContextGenerator;
+class QgsMapLayer;
 
 /**
  * \ingroup gui
@@ -142,6 +143,18 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
+    /**
+     * Returns the (possibly NULL) layer associated with the expression editor.
+     * \since QGIS 3.30
+     */
+    QgsMapLayer *layer() const;
+
+    /**
+     * Sets the \a layer to be used for in the expression editor context.
+     * \since QGIS 3.30
+     */
+    void setLayer( QgsMapLayer *layer );
+
   signals:
 
     /**
@@ -165,6 +178,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     QgsPanelWidgetStack *mPropertiesStack = nullptr;
     QgsTableEditorFormattingWidget *mFormattingWidget = nullptr;
     bool mBlockSignals = false;
+    QgsMapLayer *mLayer = nullptr;
 
     void updateActionsFromSelection();
 };

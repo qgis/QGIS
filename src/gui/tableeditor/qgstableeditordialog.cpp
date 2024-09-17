@@ -152,6 +152,21 @@ void QgsTableEditorDialog::closeEvent( QCloseEvent * )
   settings.setValue( QStringLiteral( "LayoutDesigner/tableEditorState" ), saveState(), QgsSettings::App );
 }
 
+QgsMapLayer *QgsTableEditorDialog::layer() const
+{
+  return mLayer;
+}
+
+void QgsTableEditorDialog::setLayer( QgsMapLayer *layer )
+{
+  if ( layer != mLayer )
+  {
+    mLayer = layer;
+    mFormattingWidget->setLayer( layer );
+  }
+}
+
+
 bool QgsTableEditorDialog::setTableContentsFromClipboard()
 {
   if ( QApplication::clipboard()->text().isEmpty() )
