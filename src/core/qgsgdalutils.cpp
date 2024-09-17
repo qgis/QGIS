@@ -498,7 +498,9 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
     message += QStringLiteral( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
     message += QStringLiteral( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
     message += QStringLiteral( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
-    message += QStringLiteral( "  Help page:  http://www.gdal.org/%1\n\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_HELPTOPIC ) );
+    const QString helpUrl = gdalDocumentationUrlForDriver( myGdalDriver );
+    if ( !helpUrl.isEmpty() )
+      message += QStringLiteral( "  Help page:  %1\n\n" ).arg( helpUrl );
 
     // next get creation options
     // need to serialize xml to get newlines, should we make the basic xml prettier?
@@ -1039,6 +1041,17 @@ bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType 
 
   CPLPopErrorHandler();
   return static_cast< bool >( hDriver );
+}
+
+QString QgsGdalUtils::gdalDocumentationUrlForDriver( GDALDriverH hDriver )
+{
+  if ( hDriver )
+  {
+    const QString gdalDriverHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );  // e.g. "drivers/vector/ili.html"
+    if ( !gdalDriverHelpTopic.isEmpty() )
+      return QStringLiteral( "https://gdal.org/%1" ).arg( gdalDriverHelpTopic );
+  }
+  return QString();
 }
 
 bool QgsGdalUtils::applyVsiCredentialOptions( const QString &prefix, const QString &path, const QVariantMap &options )

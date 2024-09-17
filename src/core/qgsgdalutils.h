@@ -368,6 +368,13 @@ class CORE_EXPORT QgsGdalUtils
      */
     static bool vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type );
 
+    /**
+     * Returns the URL for the GDAL documentation for the specified \a driver.
+     *
+     * \since QGIS 3.40
+     */
+    static QString gdalDocumentationUrlForDriver( GDALDriverH hDriver );
+
     friend class TestQgsGdalUtils;
 };
 
