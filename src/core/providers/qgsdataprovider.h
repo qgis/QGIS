@@ -273,38 +273,74 @@ class CORE_EXPORT QgsDataProvider : public QObject
       // NOP by default
     }
 
+    /**
+     * Returns a user-friendly string describing the dialect which is supported for subset strings
+     * by the provider.
+     *
+     * \see subsetStringHelpUrl()
+     * \see supportsSubsetString()
+     * \see setSubsetString()
+     * \see subsetString()
+     *
+     * \since QGIS 3.40
+     */
+    virtual QString subsetStringDialect() const;
 
     /**
-     * Set the subset string used to create a subset of features in
-     * the layer. This may be a sql where clause or any other string
-     * that can be used by the data provider to create a subset.
-     * Must be implemented in the dataprovider.
+     * Returns a URL pointing to documentation describing the dialect which is supported for subset strings
+     * by the provider.
+     *
+     * \see subsetStringDialect()
+     * \see supportsSubsetString()
+     * \see setSubsetString()
+     * \see subsetString()
+     *
+     * \since QGIS 3.40
      */
-    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true )
-    {
-      // NOP by default
-      Q_UNUSED( subset )
-      Q_UNUSED( updateFeatureCount )
-      return false;
-    }
+    virtual QString subsetStringHelpUrl() const;
 
+    /**
+     * Set the \a subset string used to create a subset of features in
+     * the layer.
+     *
+     * This may be a SQL where clause, or any other string that can be used by the data provider to create a subset.
+     * See subsetStringDialect() and subsetStringHelpUrl() for additional metadata on the dialect supported
+     * by the subset string.
+     *
+     * Must be implemented in the data provider.
+     *
+     * \see subsetString()
+     * \see subsetStringDialect()
+     * \see subsetStringHelpUrl()
+     * \see supportsSubsetString()
+     */
+    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true );
 
     /**
      * Returns TRUE if the provider supports setting of subset strings.
+     *
+     * \see subsetString()
+     * \see setSubsetString()
     */
-    virtual bool supportsSubsetString() const { return false; }
+    virtual bool supportsSubsetString() const;
 
     /**
-     * Returns the subset definition string (typically sql) currently in
+     * Returns the subset definition string currently in
      * use by the layer and used by the provider to limit the feature set.
-     * Must be overridden in the dataprovider, otherwise returns a null
-     * QString.
+     *
+     * This may be a SQL where clause, or any other string that can be used by the data provider to create a subset.
+     * See subsetStringDialect() and subsetStringHelpUrl() for additional metadata on the dialect supported
+     * by the subset string.
+     *
+     * Must be overridden in the data provider, otherwise returns an empty
+     * string.
+     *
+     * \see setSubsetString()
+     * \see subsetStringDialect()
+     * \see subsetStringHelpUrl()
+     * \see supportsSubsetString()
      */
-    virtual QString subsetString() const
-    {
-      return QString();
-    }
-
+    virtual QString subsetString() const;
 
     /**
      * Sub-layers handled by this provider, in order from bottom to top

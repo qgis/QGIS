@@ -196,29 +196,87 @@ to determine what constitutes a valid layer.
 Update the extents of the layer. Not implemented by default.
 %End
 
+    virtual QString subsetStringDialect() const;
+%Docstring
+Returns a user-friendly string describing the dialect which is supported for subset strings
+by the provider.
+
+.. seealso:: :py:func:`subsetStringHelpUrl`
+
+.. seealso:: :py:func:`supportsSubsetString`
+
+.. seealso:: :py:func:`setSubsetString`
+
+.. seealso:: :py:func:`subsetString`
+
+.. versionadded:: 3.40
+%End
+
+    virtual QString subsetStringHelpUrl() const;
+%Docstring
+Returns a URL pointing to documentation describing the dialect which is supported for subset strings
+by the provider.
+
+.. seealso:: :py:func:`subsetStringDialect`
+
+.. seealso:: :py:func:`supportsSubsetString`
+
+.. seealso:: :py:func:`setSubsetString`
+
+.. seealso:: :py:func:`subsetString`
+
+.. versionadded:: 3.40
+%End
 
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true );
 %Docstring
-Set the subset string used to create a subset of features in
-the layer. This may be a sql where clause or any other string
-that can be used by the data provider to create a subset.
-Must be implemented in the dataprovider.
-%End
+Set the ``subset`` string used to create a subset of features in
+the layer.
 
+This may be a SQL where clause, or any other string that can be used by the data provider to create a subset.
+See :py:func:`~QgsDataProvider.subsetStringDialect` and :py:func:`~QgsDataProvider.subsetStringHelpUrl` for additional metadata on the dialect supported
+by the subset string.
+
+Must be implemented in the data provider.
+
+.. seealso:: :py:func:`subsetString`
+
+.. seealso:: :py:func:`subsetStringDialect`
+
+.. seealso:: :py:func:`subsetStringHelpUrl`
+
+.. seealso:: :py:func:`supportsSubsetString`
+%End
 
     virtual bool supportsSubsetString() const;
 %Docstring
 Returns ``True`` if the provider supports setting of subset strings.
+
+.. seealso:: :py:func:`subsetString`
+
+.. seealso:: :py:func:`setSubsetString`
 %End
 
     virtual QString subsetString() const;
 %Docstring
-Returns the subset definition string (typically sql) currently in
+Returns the subset definition string currently in
 use by the layer and used by the provider to limit the feature set.
-Must be overridden in the dataprovider, otherwise returns a null
-QString.
-%End
 
+This may be a SQL where clause, or any other string that can be used by the data provider to create a subset.
+See :py:func:`~QgsDataProvider.subsetStringDialect` and :py:func:`~QgsDataProvider.subsetStringHelpUrl` for additional metadata on the dialect supported
+by the subset string.
+
+Must be overridden in the data provider, otherwise returns an empty
+string.
+
+.. seealso:: :py:func:`setSubsetString`
+
+.. seealso:: :py:func:`subsetStringDialect`
+
+.. seealso:: :py:func:`subsetStringHelpUrl`
+
+.. seealso:: :py:func:`supportsSubsetString`
+%End
 
     virtual QStringList subLayers() const;
 %Docstring
