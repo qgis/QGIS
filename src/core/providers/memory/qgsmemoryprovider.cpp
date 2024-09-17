@@ -765,6 +765,22 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   return true;
 }
 
+bool QgsMemoryProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsMemoryProvider::subsetStringDialect() const
+{
+  return tr( "QGIS expression" );
+}
+
+QString QgsMemoryProvider::subsetStringHelpUrl() const
+{
+  // unfortunately we can't access QgsHelp here, that's a GUI class!
+  return QString();
+}
+
 bool QgsMemoryProvider::createSpatialIndex()
 {
   if ( !mSpatialIndex )

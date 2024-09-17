@@ -983,6 +983,20 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   return true;
 }
 
+QString QgsWFSProvider::subsetStringDialect() const
+{
+  return tr( "WFS query expression" );
+}
+
+QString QgsWFSProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://docs.ogc.org/is/09-025r2/09-025r2.html#83" );
+}
+
+bool QgsWFSProvider::supportsSubsetString() const
+{
+  return true;
+}
 
 QgsAbstractFeatureSource *QgsWFSProvider::featureSource() const
 {

@@ -85,7 +85,9 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     Qgis::WkbType wkbType() const override;
     //! Return the table schema condition
     static QString tableSchemaCondition( const QgsDataSourceUri &dsUri );

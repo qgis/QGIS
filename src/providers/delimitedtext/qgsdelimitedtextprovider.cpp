@@ -1308,6 +1308,22 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
   return valid;
 }
 
+bool QgsDelimitedTextProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsDelimitedTextProvider::subsetStringDialect() const
+{
+  return tr( "QGIS expression" );
+}
+
+QString QgsDelimitedTextProvider::subsetStringHelpUrl() const
+{
+  // unfortunately we can't access QgsHelp here, that's a GUI class!
+  return QString();
+}
+
 void QgsDelimitedTextProvider::setUriParameter( const QString &parameter, const QString &value )
 {
   QUrl url = QUrl::fromEncoded( dataSourceUri().toUtf8() );

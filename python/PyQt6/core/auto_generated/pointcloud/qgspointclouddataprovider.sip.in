@@ -252,6 +252,11 @@ Returns the object containing the statistics metadata extracted from the dataset
 %End
 
     virtual bool supportsSubsetString() const;
+
+    virtual QString subsetStringDialect() const;
+
+    virtual QString subsetStringHelpUrl() const;
+
     virtual QString subsetString() const;
 
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = false );

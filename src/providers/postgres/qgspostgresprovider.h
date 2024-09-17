@@ -180,7 +180,9 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     Qgis::VectorProviderCapabilities capabilities() const override;
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;

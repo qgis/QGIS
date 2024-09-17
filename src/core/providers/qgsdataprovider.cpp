@@ -70,6 +70,16 @@ const QgsDataProviderElevationProperties *QgsDataProvider::elevationProperties()
   return nullptr;
 }
 
+QString QgsDataProvider::subsetStringDialect() const
+{
+  return QString();
+}
+
+QString QgsDataProvider::subsetStringHelpUrl() const
+{
+  return QString();
+}
+
 bool QgsDataProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
   // NOP by default
@@ -78,7 +88,15 @@ bool QgsDataProvider::setSubsetString( const QString &subset, bool updateFeature
   return false;
 }
 
-bool QgsDataProvider::supportsSubsetString() const { return false; }
+bool QgsDataProvider::supportsSubsetString() const
+{
+  return false;
+}
+
+QString QgsDataProvider::subsetString() const
+{
+  return QString();
+}
 
 void QgsDataProvider::reloadData()
 {

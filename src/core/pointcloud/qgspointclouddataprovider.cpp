@@ -237,6 +237,22 @@ QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
   return QgsPointCloudStatistics();
 }
 
+bool QgsPointCloudDataProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsPointCloudDataProvider::subsetStringDialect() const
+{
+  return tr( "QGIS expression" );
+}
+
+QString QgsPointCloudDataProvider::subsetStringHelpUrl() const
+{
+  // unfortunately we can't access QgsHelp here, that's a GUI class!
+  return QString();
+}
+
 struct MapIndexedPointCloudNode
 {
   typedef QVector<QMap<QString, QVariant>> result_type;

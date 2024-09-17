@@ -3740,6 +3740,20 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateF
   return false;
 }
 
+bool QgsSpatiaLiteProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsSpatiaLiteProvider::subsetStringDialect() const
+{
+  return tr( "SpatiaLite WHERE clause" );
+}
+
+QString QgsSpatiaLiteProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://www.gaia-gis.it/gaia-sins/spatialite-sql-5.1.0.html" );
+}
 
 QgsRectangle QgsSpatiaLiteProvider::extent() const
 {
