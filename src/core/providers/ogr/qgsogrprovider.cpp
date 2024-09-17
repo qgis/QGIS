@@ -585,8 +585,7 @@ QString QgsOgrProvider::subsetStringHelpUrl() const
   const QString dialect = subsetStringDialect();
   if ( dialect == QLatin1String( "NATIVE" ) && mOgrLayer )
   {
-    const QString gdalDriverHelpTopic = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_HELPTOPIC, nullptr );  // e.g. "drivers/vector/ili.html"
-    return QStringLiteral( "https://gdal.org/en/latest/%1" ).arg( gdalDriverHelpTopic );
+    return QgsGdalUtils::gdalDocumentationUrlForDriver( mOgrLayer->driver() );
   }
   else if ( dialect == "OGRSQL" )
   {

@@ -876,10 +876,10 @@ void QgsOgrSourceSelect::fillOpenOptions()
   }
 
   // Set label to point to driver help page
-  const char *pszHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );
-  if ( pszHelpTopic )
+  const QString helpTopic = QgsGdalUtils::gdalDocumentationUrlForDriver( hDriver );
+  if ( !helpTopic.isEmpty() )
   {
-    mOpenOptionsLabel->setText( tr( "Consult <a href=\"https://gdal.org/%1\">%2 driver help page</a> for detailed explanations on options" ).arg( pszHelpTopic ).arg( GDALGetDriverShortName( hDriver ) ) );
+    mOpenOptionsLabel->setText( tr( "Consult <a href=\"%1\">%2 driver help page</a> for detailed explanations on options" ).arg( helpTopic ).arg( GDALGetDriverShortName( hDriver ) ) );
     mOpenOptionsLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
     mOpenOptionsLabel->setOpenExternalLinks( true );
     mOpenOptionsLabel->setVisible( true );
