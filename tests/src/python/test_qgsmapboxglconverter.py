@@ -760,9 +760,9 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         data = (
             (16, 3, 3, None),
             (16, 5, 4, None),
-            (12, ["get", "some_field_1"], None, 'min( 24/4, "some_field_1")'),
-            (["get", "some_field_2"], 4, None, 'min( "some_field_2"*2/4, 4)'),
-            (["get", "some_field_3"], ["get", "some_field_4"], None, 'min( "some_field_3"*2/4, "some_field_4")'),
+            (12, ["get", "some_field_1"], None, 'min(24/4, "some_field_1")'),
+            (["get", "some_field_2"], 4, None, f'min("some_field_2"*{BUFFER_SIZE_SCALE:.0f}/4, {BUFFER_SIZE_SCALE*4:.0f})'),
+            (["get", "some_field_3"], ["get", "some_field_4"], None, f'min("some_field_3"*{BUFFER_SIZE_SCALE:.0f}/4, "some_field_4")'),
         )
 
         for (text_size, halo_size, expected_size, expected_data_defined) in data:

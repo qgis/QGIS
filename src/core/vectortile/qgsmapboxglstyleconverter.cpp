@@ -1480,17 +1480,25 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       {
         bufferSize = std::min( bufferSize, textSize * BUFFER_SIZE_SCALE / 4 );
       }
-      else if ( textSize > 0 )
+      else if ( textSize > 0 && !bufferSizeDataDefined.isEmpty() )
       {
-        bufferSizeDataDefined = QStringLiteral( "min( %1/4, %2)" ).arg( textSize * BUFFER_SIZE_SCALE ).arg( bufferSizeDataDefined );
+        bufferSizeDataDefined = QStringLiteral( "min(%1/4, %2)" ).arg( textSize * BUFFER_SIZE_SCALE ).arg( bufferSizeDataDefined );
         ddLabelProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromExpression( bufferSizeDataDefined ) );
       }
-      else
+      else if ( !bufferSizeDataDefined.isEmpty() )
       {
-        bufferSizeDataDefined = QStringLiteral( "min( %1*%2/4, %2)" )
+        bufferSizeDataDefined = QStringLiteral( "min(%1*%2/4, %3)" )
                                 .arg( textSizeProperty.asExpression() )
                                 .arg( BUFFER_SIZE_SCALE )
-                                .arg( textSizeProperty.asExpression() );
+                                .arg( bufferSizeDataDefined );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromExpression( bufferSizeDataDefined ) );
+      }
+      else if ( bufferSizeDataDefined.isEmpty() )
+      {
+        bufferSizeDataDefined = QStringLiteral( "min(%1*%2/4, %3)" )
+                                .arg( textSizeProperty.asExpression() )
+                                .arg( BUFFER_SIZE_SCALE )
+                                .arg( bufferSize );
         ddLabelProperties.setProperty( QgsPalLayerSettings::Property::BufferSize, QgsProperty::fromExpression( bufferSizeDataDefined ) );
       }
     }
