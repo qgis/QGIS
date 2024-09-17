@@ -135,6 +135,12 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
     void setCellProperty( const QgsProperty &property );
 
     /**
+     * Set the layer to be used for in the expression editor context.
+     * \since QGIS 3.30
+     */
+    void setLayer( QgsMapLayer *layer );
+
+    /**
      * Register an expression context generator class that will be used to retrieve
      * an expression context for the widget when required.
      * \since QGIS 3.16

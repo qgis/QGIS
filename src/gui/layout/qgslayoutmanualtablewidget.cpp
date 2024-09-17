@@ -18,6 +18,7 @@
 #include "qgslayoutmanualtablewidget.h"
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
+#include "qgsprintlayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmanualtable.h"
@@ -185,6 +186,13 @@ void QgsLayoutManualTableWidget::setTableContents()
   else
   {
     mEditorDialog = new QgsTableEditorDialog( this );
+    if ( QgsPrintLayout *layout = qobject_cast< QgsPrintLayout * >( mTable->layout() ) )
+    {
+      if ( layout->atlas() && layout->atlas()->coverageLayer() && layout->atlas()->enabled() )
+      {
+        mEditorDialog->setLayer( layout->atlas()->coverageLayer() );
+      }
+    }
     mEditorDialog->registerExpressionContextGenerator( mTable );
     connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
 
