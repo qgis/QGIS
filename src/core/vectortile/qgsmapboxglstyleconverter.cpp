@@ -650,7 +650,8 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         if ( ddProperties.isActive( QgsSymbolLayer::Property::StrokeColor ) )
         {
           double defaultValue = 1.0;
-          lineOpacityProperty = parseValueList( jsonLineOpacity.toList(), PropertyType::Numeric, context, 100, 255, new QColor(), &defaultValue );
+          QColor invalidColor;
+          lineOpacityProperty = parseValueList( jsonLineOpacity.toList(), PropertyType::Numeric, context, 100, 255, &invalidColor, &defaultValue );
         }
         else
         {
