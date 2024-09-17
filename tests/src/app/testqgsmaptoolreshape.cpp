@@ -16,17 +16,15 @@
 #include "qgstest.h"
 
 #include "qgisapp.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapcanvassnappingutils.h"
 #include "qgssnappingconfig.h"
 #include "qgssnappingutils.h"
 #include "qgsmaptoolreshape.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
+#include "qgsmapcanvastracer.h"
 #include "testqgsmaptoolutils.h"
 
 
@@ -47,6 +45,7 @@ class TestQgsMapToolReshape: public QObject
     void testReshapeZ();
     void testTopologicalEditing();
     void reshapeWithBindingLine();
+    void testWithTracing();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -317,6 +316,38 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QCOMPARE( f1.geometry().asWkt(), QStringLiteral( "LineString (1 2, 2 1, 3 2, 3 3, 2 2)" ) );
 
   vl->rollBack();
+}
+
+void TestQgsMapToolReshape::testWithTracing()
+{
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerTopo );
+
+  std::unique_ptr<QgsMapCanvasTracer> tracer( new QgsMapCanvasTracer( mCanvas, nullptr ) );
+
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  QgsProject::instance()->setTopologicalEditing( true );
+  mCanvas->setCurrentLayer( mLayerTopo );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  // test with default Z value = 333
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
+
+  utils.mouseClick( 7, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 7, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 8, 5, Qt::RightButton );
+
+  QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), "Polygon ((0 0, 4 0, 4 4, 0 4))" );
+  QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), "Polygon ((7 0, 8 0, 8 4, 7 4, 4 4, 4 0, 7 0))" );
+
+  mLayerTopo->undoStack()->undo();
+
+  QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 4 0, 4 4, 0 4))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4))" ) );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
 }
 
 
