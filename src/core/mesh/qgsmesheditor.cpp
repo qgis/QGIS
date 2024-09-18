@@ -1124,7 +1124,7 @@ void QgsMeshLayerUndoCommandRemoveVerticesFillHoles::redo()
     if ( initialVertexCount == mVerticesToRemoveIndexes.count() )
       setObsolete( true );
 
-    if ( mRemainingVerticesPointer != nullptr )
+    if ( mRemainingVerticesPointer )
       *mRemainingVerticesPointer = mVerticesToRemoveIndexes;
 
     mRemainingVerticesPointer = nullptr;

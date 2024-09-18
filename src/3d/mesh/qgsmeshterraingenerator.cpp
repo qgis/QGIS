@@ -93,7 +93,7 @@ void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
     disconnect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
 
   mLayer = QgsMapLayerRef( layer );
-  mIsValid = layer != nullptr;
+  mIsValid = layer;
   updateTriangularMesh();
   if ( mIsValid )
   {

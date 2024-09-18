@@ -443,18 +443,18 @@ void QgsGdalSourceSelect::fillOpenOptions()
   const QString gdalUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
   GDALDriverH hDriver;
   hDriver = GDALIdentifyDriverEx( gdalUri.toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
-  if ( hDriver == nullptr )
+  if ( !hDriver )
     return;
 
   const char *pszOpenOptionList = GDALGetMetadataItem( hDriver, GDAL_DMD_OPENOPTIONLIST, nullptr );
-  if ( pszOpenOptionList == nullptr )
+  if ( !pszOpenOptionList )
     return;
 
   CPLXMLNode *psDoc = CPLParseXMLString( pszOpenOptionList );
-  if ( psDoc == nullptr )
+  if ( !psDoc )
     return;
   CPLXMLNode *psOpenOptionList = CPLGetXMLNode( psDoc, "=OpenOptionList" );
-  if ( psOpenOptionList == nullptr )
+  if ( !psOpenOptionList )
   {
     CPLDestroyXMLNode( psDoc );
     return;

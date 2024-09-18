@@ -315,7 +315,7 @@ QgsMapLayer *QgsWmsRenderContext::layer( const QString &nickname ) const
 
 bool QgsWmsRenderContext::isValidLayer( const QString &nickname ) const
 {
-  return layer( nickname ) != nullptr;
+  return layer( nickname );
 }
 
 QList<QgsMapLayer *> QgsWmsRenderContext::layersFromGroup( const QString &nickname ) const

@@ -742,7 +742,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
   if ( hDriver )
   {
-    const bool canReopen = GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr;
+    const bool canReopen = GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr );
     if ( mAddToCanvas->isEnabled() && !canReopen )
     {
       mAddToCanvasStateOnOpenCompatibleDriver = mAddToCanvas->isChecked();

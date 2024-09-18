@@ -1746,7 +1746,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
         dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
 
-        const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) != nullptr };
+        const bool isSchema { static_cast< bool >( qobject_cast<QgsDatabaseSchemaItem *>( item ) ) };
 
         if ( isSchema )
         {

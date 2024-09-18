@@ -694,7 +694,7 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
   // If the geom is a collection, we get the concerned part, otherwise, the part is just the whole geom
   QgsAbstractGeometry *part = nullptr;
   QgsGeometryCollection *owningCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
-  if ( owningCollection != nullptr )
+  if ( owningCollection )
     part = owningCollection->geometryN( id.part );
   else
     part = geom;
@@ -702,19 +702,19 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
   // If the part is a polygon, we get the concerned ring, otherwise, the ring is just the whole part
   QgsAbstractGeometry *ring = nullptr;
   QgsCurvePolygon *owningPolygon = qgsgeometry_cast<QgsCurvePolygon *>( part );
-  if ( owningPolygon != nullptr )
+  if ( owningPolygon )
     ring = ( id.ring == 0 ) ? owningPolygon->exteriorRing() : owningPolygon->interiorRing( id.ring - 1 );
   else
     ring = part;
 
   // If the ring is not a curve, we're probably on a point geometry
   QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( ring );
-  if ( curve == nullptr )
+  if ( !curve )
     return false;
 
   bool success = false;
   QgsCompoundCurve *cpdCurve  = qgsgeometry_cast<QgsCompoundCurve *>( curve );
-  if ( cpdCurve != nullptr )
+  if ( cpdCurve )
   {
     // If the geom is a already compound curve, we convert inplace, and we're done
     success = cpdCurve->toggleCircularAtVertex( id );
@@ -730,12 +730,12 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
     // In that case, we must also reassign the instances
     if ( success )
     {
-      if ( owningPolygon == nullptr && owningCollection == nullptr )
+      if ( !owningPolygon && !owningCollection )
       {
         // Standalone linestring
         reset( std::make_unique<QgsCompoundCurve>( *cpdCurve ) ); // <- REVIEW PLZ
       }
-      else if ( owningPolygon != nullptr )
+      else if ( owningPolygon )
       {
         // Replace the ring in the owning polygon
         if ( id.ring == 0 )
@@ -748,7 +748,7 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
           owningPolygon->addInteriorRing( cpdCurve.release() );
         }
       }
-      else if ( owningCollection != nullptr )
+      else if ( owningCollection )
       {
         // Replace the curve in the owning collection
         owningCollection->removeGeometry( id.part );

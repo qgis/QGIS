@@ -49,7 +49,7 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
     bool operator ==( const QTextureImageDataGenerator &other ) const override
     {
       const TerrainTextureImageDataGenerator *otherFunctor = functor_cast<TerrainTextureImageDataGenerator>( &other );
-      return otherFunctor != nullptr && otherFunctor->mVersion == mVersion &&
+      return otherFunctor && otherFunctor->mVersion == mVersion &&
              mExtent == otherFunctor->mExtent;
     }
 

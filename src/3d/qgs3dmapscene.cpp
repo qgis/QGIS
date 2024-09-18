@@ -880,7 +880,7 @@ void Qgs3DMapScene::updateSceneState()
 void Qgs3DMapScene::onSkyboxSettingsChanged()
 {
   QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
-  if ( mSkybox != nullptr )
+  if ( mSkybox )
   {
     mSkybox->deleteLater();
     mSkybox = nullptr;

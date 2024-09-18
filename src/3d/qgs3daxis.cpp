@@ -436,7 +436,7 @@ void Qgs3DAxis::setEnableAxis( bool show )
 
 void Qgs3DAxis::createAxisScene()
 {
-  if ( mAxisRoot == nullptr || mCubeRoot == nullptr )
+  if ( !mAxisRoot || !mCubeRoot )
   {
     mAxisRoot = new Qt3DCore::QEntity;
     mAxisRoot->setParent( mAxisSceneEntity );
@@ -512,7 +512,7 @@ void Qgs3DAxis::createKeyboardShortCut()
   if ( eng )
   {
     QWidget *mapCanvas = dynamic_cast<QWidget *>( eng->parent() );
-    if ( mapCanvas == nullptr )
+    if ( !mapCanvas )
     {
       QgsLogger::warning( "Qgs3DAxis: no canvas defined!" );
     }
@@ -706,7 +706,7 @@ void Qgs3DAxis::hideMenu()
 
 void Qgs3DAxis::displayMenuAt( const QPoint &sourcePos )
 {
-  if ( mMenu == nullptr )
+  if ( !mMenu )
   {
     createMenu();
   }

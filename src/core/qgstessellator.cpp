@@ -618,7 +618,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         return;
       }
       const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
-      if ( polygonSimplifiedData == nullptr || _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
+      if ( !polygonSimplifiedData || _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
       {
         // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
         // geometry in unprojected lat/lon coordinates

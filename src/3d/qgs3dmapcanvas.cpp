@@ -92,9 +92,9 @@ void Qgs3DMapCanvas::setRootEntity( Qt3DCore::QEntity *root )
 {
   if ( m_userRoot != root )
   {
-    if ( m_userRoot != nullptr )
+    if ( m_userRoot )
       m_userRoot->setParent( static_cast<Qt3DCore::QNode *>( nullptr ) );
-    if ( root != nullptr )
+    if ( root )
       root->setParent( m_root );
     m_userRoot = root;
   }

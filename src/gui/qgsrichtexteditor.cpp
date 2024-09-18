@@ -606,7 +606,7 @@ void QgsRichTextEditor::mergeFormatOnWordOrSelection( const QTextCharFormat &for
 void QgsRichTextEditor::slotCursorPositionChanged()
 {
   QTextList *l = mTextEdit->textCursor().currentList();
-  if ( mLastBlockList && ( l == mLastBlockList || ( l != nullptr && mLastBlockList != nullptr
+  if ( mLastBlockList && ( l == mLastBlockList || ( l && mLastBlockList
                            && l->format().style() == mLastBlockList->format().style() ) ) )
   {
     return;

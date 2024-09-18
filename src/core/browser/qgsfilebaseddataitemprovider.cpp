@@ -419,7 +419,7 @@ bool QgsFileDataCollectionItem::canAddVectorLayers() const
 
   // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
-  const bool isSingleTableDriver = GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) == nullptr;
+  const bool isSingleTableDriver = !GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr );
 #else
   const QFileInfo pathInfo( path() );
   const QString suffix = pathInfo.suffix().toLower();
