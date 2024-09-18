@@ -436,7 +436,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Creates a new Raster Attribute Table from a raster layer, the renderer must be Paletted or SingleBandPseudoColor, optionally reporting the raster band from which the attribute table was created.
      * \param rasterLayer raster layer
      * \param bandNumber band number
-     * \returns NULL in case of errors or unsupported renderer.
+     * \returns NULLPTR in case of errors or unsupported renderer.
      */
     static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber SIP_OUT = nullptr ) SIP_FACTORY;
 

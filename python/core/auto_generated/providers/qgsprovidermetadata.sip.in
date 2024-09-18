@@ -726,7 +726,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
     QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true ) throw( QgsProviderConnectionException );
 %Docstring
-Searches and returns a (possibly NULL) connection from the stored provider connections.
+Searches and returns a (possibly ``None``) connection from the stored provider connections.
 Ownership is not transferred.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 

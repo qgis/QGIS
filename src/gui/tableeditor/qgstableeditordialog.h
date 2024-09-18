@@ -145,7 +145,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
-     * Returns the (possibly NULL) layer associated with the expression editor context.
+     * Returns the (possibly NULLPTR) layer associated with the expression editor context.
      * \since QGIS 3.40
      */
     QgsMapLayer *layer() const;

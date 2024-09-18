@@ -128,7 +128,7 @@ an expression context for the editor when required.
 
     QgsMapLayer *layer() const;
 %Docstring
-Returns the (possibly NULL) layer associated with the expression editor context.
+Returns the (possibly ``None``) layer associated with the expression editor context.
 
 .. versionadded:: 3.40
 %End

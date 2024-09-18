@@ -736,7 +736,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     /**
-     * Returns the (possibly NULL) attribute table for the specified \a bandNumber.
+     * Returns the (possibly NULLPTR) attribute table for the specified \a bandNumber.
      *
      * \since QGIS 3.30
      */
@@ -744,7 +744,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Set the attribute table to \a attributeTable for the specified \a bandNumber,
-     * if the \a attributeTable is NULL any existing attribute table for the specified
+     * if the \a attributeTable is NULLPTR any existing attribute table for the specified
      * band will be removed.
      *
      * \note Ownership of the attribute table is transferred to the provider.
