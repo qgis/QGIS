@@ -18,6 +18,7 @@
 #include "qgslayoutmanualtablewidget.h"
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
+#include "qgslayoutreportcontext.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemwidget.h"
@@ -186,7 +187,7 @@ void QgsLayoutManualTableWidget::setTableContents()
   else
   {
     mEditorDialog = new QgsTableEditorDialog( this );
-    if ( QgsLayout * layout =mTable->layout() )
+    if ( QgsLayout *layout = mTable->layout() )
     {
       mEditorDialog->setLayer( layout->reportContext().layer() );
     }

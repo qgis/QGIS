@@ -19,6 +19,7 @@
 #include "qgstablecell.h"
 #include "ui_qgstableeditorbase.h"
 #include <QMainWindow>
+#include <QPointer>
 
 class QgsTableEditorWidget;
 class QgsMessageBar;
@@ -144,14 +145,14 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
-     * Returns the (possibly NULL) layer associated with the expression editor.
-     * \since QGIS 3.30
+     * Returns the (possibly NULL) layer associated with the expression editor context.
+     * \since QGIS 3.40
      */
     QgsMapLayer *layer() const;
 
     /**
-     * Sets the \a layer to be used for in the expression editor context.
-     * \since QGIS 3.30
+     * Sets the \a layer to be used associated with the expression editor context.
+     * \since QGIS 3.40
      */
     void setLayer( QgsMapLayer *layer );
 

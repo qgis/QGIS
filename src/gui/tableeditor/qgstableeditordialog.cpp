@@ -21,6 +21,7 @@
 #include "qgspanelwidgetstack.h"
 #include "qgstableeditorformattingwidget.h"
 #include "qgssettings.h"
+#include "qgsmaplayer.h"
 
 #include <QClipboard>
 #include <QMessageBox>
@@ -154,7 +155,7 @@ void QgsTableEditorDialog::closeEvent( QCloseEvent * )
 
 QgsMapLayer *QgsTableEditorDialog::layer() const
 {
-  return mLayer;
+  return mLayer.data();
 }
 
 void QgsTableEditorDialog::setLayer( QgsMapLayer *layer )
