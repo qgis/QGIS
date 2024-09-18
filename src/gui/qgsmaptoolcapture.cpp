@@ -317,7 +317,6 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   mSnappingMatches.append( QgsPointLocator::Match() );
 
   addCurve( new QgsLineString( mapPoints ) );
-  int pointBefore = mCaptureCurve.numPoints();
 
   resetRubberBand();
 
@@ -343,12 +342,13 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
         mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
       }
     }
-  }
 
-  // sync the snapping matches list
-  const int pointAfter = mCaptureCurve.numPoints();
-  for ( ; pointBefore < pointAfter; ++pointBefore )
-    mSnappingMatches.append( QgsPointLocator::Match() );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    mSnappingMatches = QVector( mCaptureCurve.numPoints(), QgsPointLocator::Match() ).toList();
+#else
+    mSnappingMatches.resize( mCaptureCurve.numPoints() );
+#endif
+  }
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
 
