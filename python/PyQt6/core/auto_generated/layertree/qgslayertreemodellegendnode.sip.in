@@ -661,6 +661,16 @@ Constructor for QgsWmsLegendNode.
     virtual void invalidateMapBasedData();
 
 
+    QImage getLegendGraphic( bool synchronous = false ) const;
+%Docstring
+Lazily initializes mImage
+
+:param synchronous: if ``True``, the image is fetched synchronously, otherwise asynchronously
+
+.. versionadded:: 3.40
+%End
+
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsWmsLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );

@@ -124,8 +124,36 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // init renderer
+    const qreal dpmm = mContext.dotsPerMm();
+
     QgsLegendSettings settings = legendSettings();
+
+    // adjust the size settings if there any WMS cascading layers to renderer
+    const auto layersToRender = mContext.layersToRender();
+    for ( const auto &layer : std::as_const( layersToRender ) )
+    {
+      // If it is a cascading WMS layer, get legend node image size
+      if ( layer->dataProvider()->name() == QStringLiteral( "wms" ) )
+      {
+        if ( QgsWmsLegendNode *layerNode = qobject_cast<QgsWmsLegendNode *>( model.findLegendNode( layer->id(), QString() ) ) )
+        {
+          const auto image { layerNode->getLegendGraphic( true ) };
+          if ( ! image.isNull() )
+          {
+            // Check that we are not exceeding the maximum size
+            if ( mContext.isValidWidthHeight( image.width(), image.height() ) )
+            {
+              const double w = image.width() / dpmm;
+              const double h = image.height() / dpmm;
+              const QSizeF newWmsSize { w, h };
+              settings.setWmsLegendSize( newWmsSize );
+            }
+          }
+        }
+      }
+    }
+
+    // init renderer
     QgsLegendRenderer renderer( &model, settings );
 
     // create context
@@ -146,7 +174,6 @@ namespace QgsWms
 
     // create image according to context
     std::unique_ptr<QImage> image;
-    const qreal dpmm = mContext.dotsPerMm();
     const QSizeF minSize = renderer.minimumSize( &context );
     const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
     if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )

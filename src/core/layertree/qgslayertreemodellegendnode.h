@@ -747,6 +747,14 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     void invalidateMapBasedData() override;
 
+    /**
+     *  Lazily initializes mImage
+     *  \param synchronous if TRUE, the image is fetched synchronously, otherwise asynchronously
+     *  \since QGIS 3.40
+     */
+    QImage getLegendGraphic( bool synchronous = false ) const;
+
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -763,8 +771,6 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
   private:
 
-    // Lazily initializes mImage
-    QImage getLegendGraphic( bool synchronous = false ) const;
 
     QImage renderMessage( const QString &msg ) const;
 
