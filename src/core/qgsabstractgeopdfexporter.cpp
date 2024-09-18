@@ -124,7 +124,8 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, destinationFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
 
   CPLPopErrorHandler();
-  const bool res = outputDataset.get();
+  // Keep explicit comparison to avoid confusing cppcheck
+  const bool res = outputDataset.get() != nullptr;
   if ( !res )
   {
     if ( creationErrors.size() == 1 )
