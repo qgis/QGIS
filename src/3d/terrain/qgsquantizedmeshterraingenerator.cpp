@@ -59,7 +59,7 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
     virtual void onTextureLoaded() override;
 
   private:
-    QgsTerrainTileEntity *mEntity = NULL;
+    QgsTerrainTileEntity *mEntity = nullptr;
     bool mMeshLoaded = false;
     bool mTextureLoaded = false;
     std::mutex mFinishedMutex;
@@ -323,15 +323,15 @@ QVector<QgsChunkNode *> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChu
 
 bool QgsQuantizedMeshTerrainGenerator::setLayer( QgsTiledSceneLayer *layer )
 {
-  if ( layer == NULL )
+  if ( !layer )
   {
     mIsValid = false;
     return false;
   }
 
   mLayerRef = layer;
-  const QgsQuantizedMeshDataProvider *provider = dynamic_cast<const QgsQuantizedMeshDataProvider *>( layer->dataProvider() );
-  if ( provider == NULL )
+  const QgsQuantizedMeshDataProvider *provider = qobject_cast<const QgsQuantizedMeshDataProvider *>( layer->dataProvider() );
+  if ( !provider )
   {
     QgsDebugError( "QgsQuantizedMeshTerrainGenerator provided with non-QM layer" );
     return false;
@@ -351,7 +351,8 @@ QgsTiledSceneLayer *QgsQuantizedMeshTerrainGenerator::layer() const
 }
 
 QgsQuantizedMeshTerrainGenerator::QgsQuantizedMeshTerrainGenerator( QgsMapLayerRef layerRef, const QgsQuantizedMeshMetadata &metadata )
-  : mLayerRef( layerRef ), mMetadata( metadata )
+  : mLayerRef( layerRef )
+  , mMetadata( metadata )
 {
 }
 
