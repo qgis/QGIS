@@ -1881,7 +1881,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
   if ( !errorMsg.isEmpty() )
     return false;
 
-  bool ret = hDS != nullptr;
+  bool ret = hDS;
   if ( feedback.isCanceled() && !ret )
   {
     QMutexLocker lock( &mutex );

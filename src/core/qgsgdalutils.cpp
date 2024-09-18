@@ -59,7 +59,7 @@ QgsGdalOption QgsGdalOption::fromXmlNode( const CPLXMLNode *node )
     {
       if ( psOption->eType != CXT_Element ||
            !EQUAL( psOption->pszValue, "Value" ) ||
-           psOption->psChild == nullptr )
+           !psOption->psChild )
       {
         continue;
       }
@@ -411,7 +411,7 @@ static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hD
 bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation )
 {
   char **papszOptions = nullptr;
-  if ( pszCoordinateOperation != nullptr )
+  if ( pszCoordinateOperation )
     papszOptions = CSLSetNameValue( papszOptions, "COORDINATE_OPERATION", pszCoordinateOperation );
 
   bool result = resampleSingleBandRasterStatic( hSrcDS, hDstDS, resampleAlg, papszOptions );
@@ -775,14 +775,14 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
       bool isMultiLayer = false;
       if ( QString( GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
       {
-        if ( GDALGetMetadataItem( driver, GDAL_DMD_SUBDATASETS, nullptr ) != nullptr )
+        if ( GDALGetMetadataItem( driver, GDAL_DMD_SUBDATASETS, nullptr ) )
         {
           isMultiLayer = true;
         }
       }
       if ( !isMultiLayer && QString( GDALGetMetadataItem( driver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
       {
-        if ( GDALGetMetadataItem( driver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) != nullptr )
+        if ( GDALGetMetadataItem( driver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) )
         {
           isMultiLayer = true;
         }

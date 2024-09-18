@@ -272,7 +272,7 @@ namespace QgsWfs
     else
     {
       QgsVectorLayer *layer = nullptr;
-      if ( project != nullptr )
+      if ( project )
       {
         layer = layerByTypeName( project, typeName );
       }

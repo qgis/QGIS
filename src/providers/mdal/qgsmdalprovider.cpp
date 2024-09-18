@@ -35,7 +35,7 @@ const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL
 
 bool QgsMdalProvider::isValid() const
 {
-  return mMeshH != nullptr;
+  return mMeshH;
 }
 
 QString QgsMdalProvider::name() const

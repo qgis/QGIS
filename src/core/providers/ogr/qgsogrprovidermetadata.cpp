@@ -1012,7 +1012,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
                                                errCause,
                                                // do not check timestamp beyond the first
                                                // layer
-                                               firstLayer == nullptr );
+                                               !firstLayer );
         if ( !layer )
           continue;
       }

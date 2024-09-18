@@ -181,7 +181,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   {
     for ( orderedLayersIterator = orderedLayers.constBegin(); orderedLayersIterator != orderedLayers.constEnd(); ++orderedLayersIterator )
     {
-      if ( ( *orderedLayersIterator )->editBuffer() == nullptr )
+      if ( !( *orderedLayersIterator )->editBuffer() )
       {
         commitErrors << tr( "ERROR: edit buffer of layer '%1' is not valid." ).arg( ( *orderedLayersIterator )->name() );
         success = false;

@@ -70,7 +70,7 @@ Q_GLOBAL_STATIC( QgsServerSettings, sSettings );
 QgsServer::QgsServer()
 {
   // QgsApplication must exist
-  if ( qobject_cast<QgsApplication *>( qApp ) == nullptr )
+  if ( !qobject_cast<QgsApplication *>( qApp ) )
   {
     qFatal( "A QgsApplication must exist before a QgsServer instance can be created." );
     abort();

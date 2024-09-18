@@ -3877,7 +3877,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
       bool nonSpatialFormat = false;
       if ( gdalDriver )
       {
-        nonSpatialFormat = GDALGetMetadataItem( gdalDriver, GDAL_DCAP_NONSPATIAL, nullptr ) != nullptr;
+        nonSpatialFormat = GDALGetMetadataItem( gdalDriver, GDAL_DCAP_NONSPATIAL, nullptr );
       }
 
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )

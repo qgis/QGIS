@@ -423,7 +423,7 @@ bool QgsGrass::init( void )
     {
 #ifdef Q_OS_WIN
       // avoid finding pager in current directory
-      bool skipCurrentDirectory = getenv( "NoDefaultCurrentDirectoryInExePath" ) != nullptr;
+      bool skipCurrentDirectory = getenv( "NoDefaultCurrentDirectoryInExePath" );
       if ( !skipCurrentDirectory )
         putEnv( QStringLiteral( "NoDefaultCurrentDirectoryInExePath" ), "1" );
 #endif

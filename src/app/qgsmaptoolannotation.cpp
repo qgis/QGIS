@@ -161,7 +161,7 @@ bool QgsMapToolAnnotation::populateContextMenuWithEvent( QMenu *menu, QgsMapMous
 {
   // Display context menu for right click (with edit and delete actions)
   QgsMapCanvasAnnotationItem *existingItem = itemAtPos( event->pos() );
-  if ( existingItem == nullptr )
+  if ( !existingItem )
   {
     return true;
   }

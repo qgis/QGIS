@@ -1872,7 +1872,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
   // because if it was, the newly created layer will not be added to the store and it would leak.
   const QString layerId { layerElem.namedItem( QStringLiteral( "id" ) ).toElement().text() };
   Q_ASSERT( ! layerId.isEmpty() );
-  const bool layerWasStored { layerStore()->mapLayer( layerId ) != nullptr };
+  const bool layerWasStored = layerStore()->mapLayer( layerId );
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = projectFlagsToLayerReadFlags( flags, mFlags );

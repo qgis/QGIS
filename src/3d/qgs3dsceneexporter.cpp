@@ -174,12 +174,13 @@ Qt3DQAttribute *findAttribute( Qt3DQGeometry *geometry, const QString &name, Qt3
 template<typename Component>
 Component *findTypedComponent( Qt3DCore::QEntity *entity )
 {
-  if ( entity == nullptr ) return nullptr;
+  if ( !entity )
+    return nullptr;
   QVector<Qt3DCore::QComponent *> components = entity->components();
   for ( Qt3DCore::QComponent *component : components )
   {
     Component *typedComponent = qobject_cast<Component *>( component );
-    if ( typedComponent != nullptr )
+    if ( typedComponent )
       return typedComponent;
   }
   return nullptr;
@@ -201,7 +202,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       if ( !parentEntity )
         continue;
       Qgs3DExportObject *object = processGeometryRenderer( renderer, layer->name() + QStringLiteral( "_" ) );
-      if ( object == nullptr )
+      if ( !object )
         continue;
       if ( mExportTextures )
         processEntityMaterial( parentEntity, object );
@@ -343,7 +344,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
 
   Qt3DQGeometry *geometry = mesh->geometry();
   Qt3DExtras::QPlaneGeometry *tileGeometry = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geometry );
-  if ( tileGeometry == nullptr )
+  if ( !tileGeometry )
   {
     QgsDebugError( "Qt3DExtras::QPlaneGeometry* is expected but something else was given" );
     return;
@@ -354,7 +355,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
 
   // Generate vertice data
   Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
-  if ( positionAttribute == nullptr )
+  if ( !positionAttribute )
   {
     QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( layerName ) );
     return;
@@ -369,7 +370,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
 
   // Generate index data
   Qt3DQAttribute *indexAttribute = tileGeometry->indexAttribute();
-  if ( indexAttribute == nullptr )
+  if ( !indexAttribute )
   {
     QgsDebugError( QString( "Cannot export '%1' - geometry has no index attribute!" ).arg( layerName ) );
     return;
@@ -401,7 +402,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   }
 
   Qt3DQAttribute *texCoordsAttribute = tileGeometry->texCoordAttribute();
-  if ( mExportTextures && texCoordsAttribute != nullptr )
+  if ( mExportTextures && texCoordsAttribute )
   {
     // Reuse vertex buffer data for texture coordinates
     const QVector<float> texCoords = getAttributeData<float>( texCoordsAttribute, verticesBytes );
@@ -420,7 +421,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
 
   Qt3DQGeometry *geometry = mesh->geometry();
   DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
-  if ( tileGeometry == nullptr )
+  if ( !tileGeometry )
   {
     QgsDebugError( "DemTerrainTileGeometry* is expected but something else was given" );
     return;
@@ -445,7 +446,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   object->setupFaces( indexBuffer );
 
   Qt3DQAttribute *normalsAttributes = tileGeometry->normalAttribute();
-  if ( mExportNormals && normalsAttributes != nullptr )
+  if ( mExportNormals && normalsAttributes )
   {
     const QByteArray normalsBytes = normalsAttributes->buffer()->data();
     const QVector<float> normalsBuffer = getAttributeData<float>( normalsAttributes, normalsBytes );
@@ -453,7 +454,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   }
 
   Qt3DQAttribute *texCoordsAttribute = tileGeometry->texCoordsAttribute();
-  if ( mExportTextures && texCoordsAttribute != nullptr )
+  if ( mExportTextures && texCoordsAttribute )
   {
     const QByteArray texCoordsBytes = texCoordsAttribute->buffer()->data();
     const QVector<float> texCoordsBuffer = getAttributeData<float>( texCoordsAttribute, texCoordsBytes );
@@ -474,7 +475,8 @@ void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity, const 
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
   {
     Qgs3DExportObject *obj = processGeometryRenderer( renderer, objectNamePrefix );
-    if ( obj == nullptr ) continue;
+    if ( !obj )
+      continue;
     mObjects << obj;
   }
 }
@@ -487,7 +489,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
   {
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
     Qt3DQAttribute *indexAttribute = findAttribute( geometry, QString(), Qt3DQAttribute::IndexAttribute );
-    if ( positionAttribute == nullptr || indexAttribute == nullptr )
+    if ( !positionAttribute || !indexAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
@@ -505,7 +507,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
     Qt3DQAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DQAttribute::VertexAttribute );
-    if ( instanceDataAttribute == nullptr )
+    if ( !instanceDataAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
       continue;
@@ -528,7 +530,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       object->setSmoothEdges( mSmoothEdges );
 
       Qt3DQAttribute *normalsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultNormalAttributeName(), Qt3DQAttribute::VertexAttribute );
-      if ( mExportNormals && normalsAttribute != nullptr )
+      if ( mExportNormals && normalsAttribute )
       {
         // Reuse vertex bytes
         const QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
@@ -619,11 +621,11 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   float scale = 1.0f;
   QVector3D translation( 0.0f, 0.0f, 0.0f );
   QObject *parent = geomRenderer->parent();
-  while ( parent != nullptr )
+  while ( parent )
   {
     Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( parent );
     Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( entity );
-    if ( transform != nullptr )
+    if ( transform )
     {
       scale *= transform->scale();
       translation += transform->translation();
@@ -640,7 +642,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   // === Extract position data
   positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-  if ( positionAttribute == nullptr )
+  if ( !positionAttribute )
   {
     QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );
     return nullptr;
@@ -676,7 +678,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   }
 
   // for tessellated polygons that don't have index attributes, build them from positionData
-  if ( indexAttribute == nullptr )
+  if ( !indexAttribute )
   {
     for ( uint i = 0; i < static_cast<uint>( positionData.size() / 3 ); ++i )
     {
@@ -723,7 +725,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   object->setupFaces( indexData );
 
   Qt3DQAttribute *normalsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultNormalAttributeName(), Qt3DQAttribute::VertexAttribute );
-  if ( mExportNormals && normalsAttribute != nullptr )
+  if ( mExportNormals && normalsAttribute )
   {
     // Reuse vertex bytes
     const QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
@@ -731,7 +733,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   }
 
   Qt3DQAttribute *texCoordsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultTextureCoordinateAttributeName(), Qt3DQAttribute::VertexAttribute );
-  if ( mExportTextures && texCoordsAttribute != nullptr )
+  if ( mExportTextures && texCoordsAttribute )
   {
     // Reuse vertex bytes
     const QVector<float> texCoordsData = getAttributeData<float>( texCoordsAttribute, vertexBytes );
@@ -751,7 +753,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     Qt3DQGeometry *geom = renderer->geometry();
     Qt3DQAttribute *positionAttribute = findAttribute( geom, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
     Qt3DQAttribute *indexAttribute = findAttribute( geom, QString(), Qt3DQAttribute::IndexAttribute );
-    if ( positionAttribute == nullptr || indexAttribute == nullptr )
+    if ( !positionAttribute || !indexAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
       continue;
@@ -784,10 +786,10 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
   {
     Qt3DQGeometry *geometry = qobject_cast<QgsBillboardGeometry *>( renderer->geometry() );
-    if ( geometry == nullptr )
+    if ( !geometry )
       continue;
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
-    if ( positionAttribute == nullptr )
+    if ( !positionAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );
       continue;
@@ -851,7 +853,8 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   QTextStream mtlOut( &mtlFile );
   for ( Qgs3DExportObject *obj : qAsConst( mObjects ) )
   {
-    if ( obj == nullptr ) continue;
+    if ( !obj )
+      continue;
     // Set object name
     const QString material = obj->saveMaterial( mtlOut, sceneFolderPath );
     out << "o " << obj->name() << "\n";

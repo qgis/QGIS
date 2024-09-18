@@ -64,7 +64,7 @@ QString QgsUserProfileSelectionDialog::selectedProfileName() const
 void QgsUserProfileSelectionDialog::accept()
 {
   // Accept only if an item is selected
-  if ( mProfileListWidget->currentItem() != nullptr && mProfileListWidget->currentItem()->isSelected() )
+  if ( mProfileListWidget->currentItem() && mProfileListWidget->currentItem()->isSelected() )
   {
     QDialog::accept();
   }

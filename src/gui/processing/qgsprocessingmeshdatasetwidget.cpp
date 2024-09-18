@@ -593,7 +593,7 @@ void QgsProcessingMeshDatasetTimeWidget::updateWidget()
   bool isStatic = !hasTemporalDataset();
   setEnabled( !isStatic );
 
-  if ( mCanvas != nullptr  && mCanvas->mapSettings().isTemporal() )
+  if ( mCanvas && mCanvas->mapSettings().isTemporal() )
   {
     whileBlocking( radioButtonCurrentCanvasTime )->setEnabled( true && mReferenceTime.isValid() );
     labelCurrentCanvasTime->setText( mCanvas->mapSettings().temporalRange().begin().toString( "yyyy-MM-dd HH:mm:ss" ) );
