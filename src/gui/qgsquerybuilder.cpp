@@ -93,7 +93,15 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   connect( layer, &QgsVectorLayer::subsetStringChanged, this, &QgsQueryBuilder::layerSubsetStringChanged );
   layerSubsetStringChanged();
 
-  lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
+  lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name() ).arg( layer->dataProvider()->name() ) );
+
+  const QString subsetStringDialect = layer->dataProvider()->subsetStringDialect();
+  if ( !subsetStringDialect.isEmpty() ) {
+    const QString subsetStringHelpUrl = layer->dataProvider()->subsetStringHelpUrl();
+    lblProviderFilterInfo->setOpenExternalLinks( true );
+    lblProviderFilterInfo->setText( tr( "Enter a <a href=\"%1\">%2</a> to filter the layer" ).arg( subsetStringHelpUrl ).arg( subsetStringDialect ) ) ;
+  }
+
   mTxtSql->setText( mOrigSubsetString );
 
   mFilterLineEdit->setShowSearchIcon( true );
