@@ -186,12 +186,9 @@ void QgsLayoutManualTableWidget::setTableContents()
   else
   {
     mEditorDialog = new QgsTableEditorDialog( this );
-    if ( QgsPrintLayout *layout = qobject_cast< QgsPrintLayout * >( mTable->layout() ) )
+    if ( QgsLayout * layout =mTable->layout() )
     {
-      if ( layout->atlas() && layout->atlas()->coverageLayer() && layout->atlas()->enabled() )
-      {
-        mEditorDialog->setLayer( layout->atlas()->coverageLayer() );
-      }
+      mEditorDialog->setLayer( layout->reportContext().layer() );
     }
     mEditorDialog->registerExpressionContextGenerator( mTable );
     connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
