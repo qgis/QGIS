@@ -178,7 +178,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     QgsPanelWidgetStack *mPropertiesStack = nullptr;
     QgsTableEditorFormattingWidget *mFormattingWidget = nullptr;
     bool mBlockSignals = false;
-    QgsMapLayer *mLayer = nullptr;
+    QPointer< QgsMapLayer > mLayer;
 
     void updateActionsFromSelection();
 };
