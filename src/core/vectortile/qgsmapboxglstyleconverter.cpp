@@ -621,6 +621,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   }
 
   double lineOpacity = -1.0;
+  QgsProperty lineOpacityProperty;
   if ( jsonPaint.contains( QStringLiteral( "line-opacity" ) ) )
   {
     const QVariant jsonLineOpacity = jsonPaint.value( QStringLiteral( "line-opacity" ) );
@@ -635,7 +636,8 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       case QMetaType::Type::QVariantMap:
         if ( ddProperties.isActive( QgsSymbolLayer::Property::StrokeColor ) )
         {
-          context.pushWarning( QObject::tr( "%1: Could not set opacity of layer, opacity already defined in stroke color" ).arg( context.layerId() ) );
+          double defaultValue = 1.0;
+          lineOpacityProperty = parseInterpolateByZoom( jsonLineOpacity.toMap(), context, 100, &defaultValue );
         }
         else
         {
@@ -647,7 +649,9 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       case QMetaType::Type::QStringList:
         if ( ddProperties.isActive( QgsSymbolLayer::Property::StrokeColor ) )
         {
-          context.pushWarning( QObject::tr( "%1: Could not set opacity of layer, opacity already defined in stroke color" ).arg( context.layerId() ) );
+          double defaultValue = 1.0;
+          QColor invalidColor;
+          lineOpacityProperty = parseValueList( jsonLineOpacity.toList(), PropertyType::Numeric, context, 100, 255, &invalidColor, &defaultValue );
         }
         else
         {
@@ -778,6 +782,12 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     {
       symbol->setOpacity( lineOpacity );
     }
+    if ( !lineOpacityProperty.asExpression().isEmpty() )
+    {
+      QgsPropertyCollection ddProperties;
+      ddProperties.setProperty( QgsSymbol::Property::Opacity, lineOpacityProperty );
+      symbol->setDataDefinedProperties( ddProperties );
+    }
     if ( lineWidth != -1 )
     {
       lineSymbol->setWidth( lineWidth );
@@ -800,6 +810,12 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     if ( lineOpacity != -1 )
     {
       symbol->setOpacity( lineOpacity );
+    }
+    if ( !lineOpacityProperty.asExpression().isEmpty() )
+    {
+      QgsPropertyCollection ddProperties;
+      ddProperties.setProperty( QgsSymbol::Property::Opacity, lineOpacityProperty );
+      symbol->setDataDefinedProperties( ddProperties );
     }
     if ( lineColor.isValid() )
     {
@@ -2799,8 +2815,15 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
     {
       case PropertyType::Color:
       {
-        const QColor color = parseColor( value, context );
-        valueString = QgsExpression::quotedString( color.name() );
+        if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
+        {
+          valueString = parseMatchList( value.toList(), PropertyType::Color, context, multiplier, maxOpacity, defaultColor, defaultNumber ).asExpression();
+        }
+        else
+        {
+          const QColor color = parseColor( value, context );
+          valueString = QgsExpression::quotedString( color.name() );
+        }
         break;
       }
 
