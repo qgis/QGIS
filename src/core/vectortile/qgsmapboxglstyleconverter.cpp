@@ -1911,6 +1911,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
           case QMetaType::Type::QVariantList:
           case QMetaType::Type::QStringList:
+            property = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
+            break;
           default:
             context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
             break;
@@ -2114,6 +2116,8 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
 
         case QMetaType::Type::QVariantList:
         case QMetaType::Type::QStringList:
+          property = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
+          break;
         default:
           context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
           break;
@@ -2195,6 +2199,8 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
 
           case QMetaType::Type::QVariantList:
           case QMetaType::Type::QStringList:
+            property = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
+            break;
           default:
             context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
             break;
