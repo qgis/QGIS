@@ -323,6 +323,10 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   // Curves de-approximation
   if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->value() )
   {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    int pointBefore = mCaptureCurve.numPoints();
+#endif
+
     // If the tool and the layer support curves
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
     if ( vlayer && capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
@@ -344,7 +348,14 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    mSnappingMatches = QVector( mCaptureCurve.numPoints(), QgsPointLocator::Match() ).toList();
+    // sync the snapping matches list
+    const int pointAfter = mCaptureCurve.numPoints();
+
+    for ( ; pointBefore < pointAfter; ++pointBefore )
+      mSnappingMatches.append( QgsPointLocator::Match() );
+
+    for ( ; pointBefore > pointAfter; --pointBefore )
+      mSnappingMatches.removeLast();
 #else
     mSnappingMatches.resize( mCaptureCurve.numPoints() );
 #endif
