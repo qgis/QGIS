@@ -929,7 +929,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QString authPasswordHelperKeyName() const;
 
     /**
-     * Returns the first ready storage with the given \a capability or NULL if none available.
+     * Returns the first ready storage with the given \a capability or NULLPTR if none available.
      */
     QgsAuthConfigurationStorage *firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
 

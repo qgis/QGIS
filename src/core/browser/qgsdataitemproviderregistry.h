@@ -54,7 +54,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
     QList<QgsDataItemProvider *> providers() const;
 
     /**
-     * Returns the (possibly NULL) data item provider named \a providerName
+     * Returns the (possibly NULLPTR) data item provider named \a providerName
      * \since QGIS 3.14
      */
     QgsDataItemProvider *provider( const QString &providerName ) const;

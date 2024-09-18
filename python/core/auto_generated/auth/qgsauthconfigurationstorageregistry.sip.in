@@ -94,7 +94,7 @@ Returns the first ready (and enabled) authentication configuration storage which
 
     QgsAuthConfigurationStorage *storage( const QString &id ) const;
 %Docstring
-Returns the storage with the specified ``id`` or NULL if not found in the registry.
+Returns the storage with the specified ``id`` or ``None`` if not found in the registry.
 
 :param id: The id of the storage to retrieve
 %End

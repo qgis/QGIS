@@ -738,7 +738,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Searches and returns a (possibly NULL) connection from the stored provider connections.
+     * Searches and returns a (possibly NULLPTR) connection from the stored provider connections.
      * Ownership is not transferred.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param name the connection name
