@@ -1039,13 +1039,13 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     /**
      * Returns an ordered list with the renderers of the stacked renderer object.
-     * If the stacked diagram orientation is vertical, the list is returned backwards.
+     * @param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
      */
-    QList< QgsDiagramRenderer * > renderers() const;
+    QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 
     /**
      * Adds a renderer to the stacked renderer object.
-     * \param renderer diagram renderer to be added to the stacked renderer
+     * @param renderer diagram renderer to be added to the stacked renderer
      * Renderers added first will render their diagrams first, i.e., more to
      * the left (horizontal mode) or more to the top (vertical mode).
      */
@@ -1056,11 +1056,6 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
      * @param index index of the disired renderer in the stacked renderer
      */
     const QgsDiagramRenderer *renderer( const int index ) const;
-
-    /**
-     * Returns the number of renderers that this stacked renderer is composed of.
-     */
-    int rendererCount() const;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;

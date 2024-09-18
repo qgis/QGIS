@@ -528,7 +528,7 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
 QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const
 {
   QgsDiagramSettings s;
-  if ( !diagramSettings( feature, c, s ) )
+  if ( !diagramSettings( feature, c, s ) || !s.enabled )
   {
     return QSizeF();
   }
@@ -845,16 +845,18 @@ QgsStackedDiagramRenderer *QgsStackedDiagramRenderer::clone() const
 QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const
 {
   QSizeF stackedSize( 0, 0 );
+  int enabledDiagramCount = 0;  // We'll add spacing only for enabled subDiagrams
 
   // Iterate renderers. For each renderer, get the diagram
   // size for the feature and add it to the total size
   // accounting for stacked diagram defined spacing
-  for ( int i = 0; i < mDiagramRenderers.count(); i++ )
+  for ( const auto &subRenderer : std::as_const( mDiagramRenderers ) )
   {
-    QSizeF size = mDiagramRenderers.at( i )->sizeMapUnits( feature, c );
+    QSizeF size = subRenderer->sizeMapUnits( feature, c );
 
     if ( size.isValid() )
     {
+      enabledDiagramCount++;
       switch ( mSettings.stackedDiagramMode )
       {
         case QgsDiagramSettings::Horizontal:
@@ -875,11 +877,11 @@ QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const
   switch ( mSettings.stackedDiagramMode )
   {
     case QgsDiagramSettings::Horizontal:
-      stackedSize.scale( stackedSize.width() + spacing * ( mDiagramRenderers.count() - 1 ), stackedSize.height(), Qt::IgnoreAspectRatio );
+      stackedSize.scale( stackedSize.width() + spacing * ( enabledDiagramCount - 1 ), stackedSize.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Vertical:
-      stackedSize.scale( stackedSize.width(), stackedSize.height() + spacing * ( mDiagramRenderers.count() - 1 ), Qt::IgnoreAspectRatio );
+      stackedSize.scale( stackedSize.width(), stackedSize.height() + spacing * ( enabledDiagramCount - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
   return stackedSize;
@@ -893,11 +895,15 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
   }
 
   QPointF newPos = pos; // Each subdiagram will have its own newPos
-  QList< QgsDiagramRenderer * > stackedRenderers = renderers();
-  for ( const auto &stackedRenderer : std::as_const( stackedRenderers ) )
+
+  // Get subrenderers sorted by mode (vertical diagrams are returned backwards)
+  const QList< QgsDiagramRenderer * > stackedRenderers = renderers( true );
+
+  for ( const auto &stackedRenderer : stackedRenderers )
   {
     if ( stackedRenderer->rendererName() == QStringLiteral( "Stacked" ) )
     {
+      // Nested stacked diagrams will use this recursion
       stackedRenderer->renderDiagram( feature, c, newPos, properties );
       continue;
     }
@@ -905,7 +911,12 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
     QgsDiagramSettings s;
     if ( !stackedRenderer->diagramSettings( feature, c, s ) )
     {
-      return;
+      continue;
+    }
+
+    if ( !s.enabled )
+    {
+      continue;
     }
 
     if ( properties.hasActiveProperties() )
@@ -963,26 +974,19 @@ QList<QString> QgsStackedDiagramRenderer::diagramAttributes() const
 QList< QgsLayerTreeModelLegendNode * > QgsStackedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
   QList< QgsLayerTreeModelLegendNode * > nodes;
-  for ( int i = 0; i < rendererCount(); i++ )
+  for ( const auto &renderer : std::as_const( mDiagramRenderers ) )
   {
-    nodes << mDiagramRenderers.at( i )->legendItems( nodeLayer );
+    nodes << renderer->legendItems( nodeLayer );
   }
 
   return nodes;
 }
 
-QList< QgsDiagramRenderer * > QgsStackedDiagramRenderer::renderers() const
+QList< QgsDiagramRenderer * > QgsStackedDiagramRenderer::renderers( bool sortByDiagramMode ) const
 {
   QList< QgsDiagramRenderer * > renderers;
 
-  if ( mSettings.stackedDiagramMode == QgsDiagramSettings::Horizontal )
-  {
-    for ( const auto &item : std::as_const( mDiagramRenderers ) )
-    {
-      renderers.append( item );
-    }
-  }
-  else
+  if ( sortByDiagramMode && mSettings.stackedDiagramMode == QgsDiagramSettings::Vertical )
   {
     // We draw vertical diagrams backwards, so
     // we return the subrenderers in reverse order
@@ -991,6 +995,10 @@ QList< QgsDiagramRenderer * > QgsStackedDiagramRenderer::renderers() const
     {
       renderers.append( *iter );
     }
+  }
+  else
+  {
+    renderers = mDiagramRenderers;
   }
   return renderers;
 }
@@ -1011,11 +1019,6 @@ const QgsDiagramRenderer *QgsStackedDiagramRenderer::renderer( const int index )
   }
 
   return nullptr;
-}
-
-int QgsStackedDiagramRenderer::rendererCount() const
-{
-  return mDiagramRenderers.count();
 }
 
 void QgsStackedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -1234,7 +1237,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsDiagramRenderer::legendItems( QgsLayer
 QList< QgsLayerTreeModelLegendNode * > QgsSingleCategoryDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
   QList< QgsLayerTreeModelLegendNode * > nodes;
-  if ( mShowAttributeLegend )
+  if ( mShowAttributeLegend && mSettings.enabled )
     nodes = mSettings.legendItems( nodeLayer );
 
   return nodes;
@@ -1243,6 +1246,11 @@ QList< QgsLayerTreeModelLegendNode * > QgsSingleCategoryDiagramRenderer::legendI
 QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
   QList< QgsLayerTreeModelLegendNode * > nodes;
+  if ( !mSettings.enabled )
+  {
+    return nodes;
+  }
+
   if ( mShowAttributeLegend )
     nodes = mSettings.legendItems( nodeLayer );
 

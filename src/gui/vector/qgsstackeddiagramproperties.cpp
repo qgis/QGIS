@@ -19,40 +19,37 @@
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgsstackedbardiagram.h"
+#include "diagram/qgsstackeddiagram.h"
 
-#include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgsdiagramproperties.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsproject.h"
-#include "qgsstackeddiagram.h"
 #include "qgsstackeddiagramproperties.h"
 #include "qgsvectorlayer.h"
+#include "qgshelp.h"
 
 QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas )
-  : QWidget{parent}
+  : QgsPanelWidget( parent )
+  , mLayer( layer )
   , mMapCanvas( canvas )
 {
-  mLayer = layer;
   if ( !layer )
   {
     return;
   }
 
   setupUi( this );
-  connect( mDiagramTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged );
-  connect( mEngineSettingsButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::mEngineSettingsButton_clicked );
+
+  connect( mSubDiagramsView, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsStackedDiagramProperties::* )( const QModelIndex & )>( &QgsStackedDiagramProperties::editSubDiagram ) );
+
   connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagram );
+  connect( mEditSubDiagramButton, &QAbstractButton::clicked, this, static_cast<void ( QgsStackedDiagramProperties::* )()>( &QgsStackedDiagramProperties::editSubDiagram ) );
   connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagram );
-  connect( mSubDiagramsTabWidget->tabBar(), &QTabBar::tabMoved, this, &QgsStackedDiagramProperties::mSubDiagramsTabWidget_tabMoved );
 
   // Initialize stacked diagram controls
-  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) );
-  mDiagramTypeComboBox->addItem( icon, tr( "No Diagrams" ), "None" );
-  mDiagramTypeComboBox->addItem( tr( "Single diagram" ), QgsDiagramLayerSettings::Single );
-  mDiagramTypeComboBox->addItem( tr( "Stacked diagrams" ), QgsDiagramLayerSettings::Stacked );
   mStackedDiagramModeComboBox->addItem( tr( "Horizontal" ), QgsDiagramSettings::Horizontal );
   mStackedDiagramModeComboBox->addItem( tr( "Vertical" ), QgsDiagramSettings::Vertical );
-  mRemoveSubDiagramButton->setEnabled( false );
 
   mStackedDiagramSpacingSpinBox->setClearValue( 0 );
   mStackedDiagramSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
@@ -62,37 +59,117 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
       Qgis::RenderUnit::Points,
       Qgis::RenderUnit::Inches } );
 
-  // Add default subdiagram tab
-  addSubDiagram();
+  connect( mStackedDiagramModeComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mStackedDiagramSpacingSpinBox, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mStackedDiagramSpacingUnitComboBox, &QgsUnitSelectionWidget::changed, this, &QgsStackedDiagramProperties::widgetChanged );
+
+  mModel = new QgsStackedDiagramPropertiesModel();
+  mSubDiagramsView->setModel( mModel );
+
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsStackedDiagramProperties::widgetChanged );
 
   syncToLayer();
 }
 
 void QgsStackedDiagramProperties::addSubDiagram()
 {
-  QgsDiagramProperties *gui = new QgsDiagramProperties( mLayer, this, mMapCanvas );
-  gui->layout()->setContentsMargins( 6, 6, 6, 6 );
-  connect( gui, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
+  // Create a single category renderer by default
+  std::unique_ptr< QgsDiagramRenderer > renderer;
+  std::unique_ptr< QgsSingleCategoryDiagramRenderer > dr = std::make_unique< QgsSingleCategoryDiagramRenderer >();
+  renderer = std::move( dr );
 
-  mSubDiagramsTabWidget->addTab( gui, tr( "Diagram %1" ).arg( mSubDiagramsTabWidget->count() + 1 ) );
+  QItemSelectionModel *sel = mSubDiagramsView->selectionModel();
+  const QModelIndex index = sel->currentIndex();
 
-  mRemoveSubDiagramButton->setEnabled( mSubDiagramsTabWidget->count() > 2 );
+  if ( index.isValid() )
+  {
+    // add after this subDiagram
+    const QModelIndex currentIndex = mSubDiagramsView->selectionModel()->currentIndex();
+    mModel->insertSubDiagram( currentIndex.row() + 1, renderer.release() );
+    const QModelIndex newIndex = mModel->index( currentIndex.row() + 1, 0 );
+    mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
+  }
+  else
+  {
+    // append to root
+    appendSubDiagram( renderer.release() );
+  }
+  editSubDiagram();
+}
+
+void QgsStackedDiagramProperties::appendSubDiagram( QgsDiagramRenderer *dr )
+{
+  const int rows = mModel->rowCount();
+  mModel->insertSubDiagram( rows, dr );
+  const QModelIndex newIndex = mModel->index( rows, 0 );
+  mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
+}
+
+void QgsStackedDiagramProperties::editSubDiagram()
+{
+  editSubDiagram( mSubDiagramsView->selectionModel()->currentIndex() );
+}
+
+void QgsStackedDiagramProperties::editSubDiagram( const QModelIndex &index )
+{
+  if ( !index.isValid() )
+    return;
+
+  QgsDiagramRenderer *renderer = mModel->subDiagramForIndex( index );
+  QgsDiagramLayerSettings dls = mModel->diagramLayerSettings();
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+
+  if ( panel && panel->dockMode() )
+  {
+    QgsDiagramProperties *widget = new QgsDiagramProperties( mLayer, this, mMapCanvas );
+    widget->setPanelTitle( tr( "Edit Sub Diagram" ) );
+    widget->layout()->setContentsMargins( 0, 0, 0, 0 );
+    widget->syncToRenderer( renderer );
+    widget->syncToSettings( &dls );
+    if ( !couldBeFirstSubDiagram( index ) )
+    {
+      widget->setAllowedToEditDiagramLayerSettings( false );
+    }
+
+    connect( widget, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsStackedDiagramProperties::subDiagramWidgetPanelAccepted );
+    connect( widget, &QgsDiagramProperties::widgetChanged, this, &QgsStackedDiagramProperties::liveUpdateSubDiagramFromPanel );
+    openPanel( widget );
+    return;
+  }
+
+  QgsStackedDiagramPropertiesDialog dlg( mLayer, this, mMapCanvas );
+  dlg.syncToRenderer( renderer );
+  dlg.syncToSettings( &dls );
+  if ( !couldBeFirstSubDiagram( index ) )
+  {
+    dlg.setAllowedToEditDiagramLayerSettings( false );
+  }
+
+  if ( dlg.exec() )
+  {
+    const QModelIndex index = mSubDiagramsView->selectionModel()->currentIndex();
+    if ( dlg.isAllowedToEditDiagramLayerSettings() )
+      mModel->updateDiagramLayerSettings( dlg.diagramLayerSettings() );
+
+    // This call will emit dataChanged, which in turns triggers widgetChanged()
+    mModel->updateSubDiagram( index, dlg.renderer() );
+  }
 }
 
 void QgsStackedDiagramProperties::removeSubDiagram()
 {
-  if ( mSubDiagramsTabWidget->count() > 2 )
+  const QItemSelection sel = mSubDiagramsView->selectionModel()->selection();
+  const auto constSel = sel;
+  for ( const QItemSelectionRange &range : constSel )
   {
-    const int index = mSubDiagramsTabWidget->currentIndex();
-    delete mSubDiagramsTabWidget->widget( index );
-
-    mRemoveSubDiagramButton->setEnabled( mSubDiagramsTabWidget->count() > 2 );
-
-    for ( int i = index; i < mSubDiagramsTabWidget->count(); i++ )
-    {
-      mSubDiagramsTabWidget->setTabText( i, tr( "Diagram %1" ).arg( i + 1 ) );
-    }
+    if ( range.isValid() )
+      mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
   }
+  // make sure that the selection is gone
+  mSubDiagramsView->selectionModel()->clear();
 }
 
 void QgsStackedDiagramProperties::syncToLayer()
@@ -101,222 +178,372 @@ void QgsStackedDiagramProperties::syncToLayer()
 
   if ( dr && dr->diagram() )
   {
-    if ( dr->rendererName() == QStringLiteral( "Stacked" ) )
+    const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
+    mStackedDiagramModeComboBox->setCurrentIndex( settingList.at( 0 ).stackedDiagramMode );
+    mStackedDiagramSpacingSpinBox->setValue( settingList.at( 0 ).stackedDiagramSpacing() );
+    mStackedDiagramSpacingUnitComboBox->setUnit( settingList.at( 0 ).stackedDiagramSpacingUnit() );
+
+    if ( dr->rendererName() == QLatin1String( "Stacked" ) )
     {
-      mDiagramTypeComboBox->blockSignals( true );
-      mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( QgsDiagramLayerSettings::Stacked ) );
-      mDiagramTypeComboBox->blockSignals( false );
-      //force a refresh of widget status to match diagram type
-      mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
-
-      const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
-      mStackedDiagramModeComboBox->setCurrentIndex( settingList.at( 0 ).stackedDiagramMode );
-      mStackedDiagramSpacingSpinBox->setValue( settingList.at( 0 ).stackedDiagramSpacing() );
-      mStackedDiagramSpacingUnitComboBox->setUnit( settingList.at( 0 ).stackedDiagramSpacingUnit() );
-
-      // Create/remove as many tabs as necessary
       const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
-      const int rendererCount = stackedDiagramRenderer->rendererCount();
-      while ( mSubDiagramsTabWidget->count() < rendererCount )
+      const auto renderers = stackedDiagramRenderer->renderers();
+      for ( const auto &renderer : renderers )
       {
-        addSubDiagram();
-      }
-      while ( mSubDiagramsTabWidget->count() > rendererCount )
-      {
-        mSubDiagramsTabWidget->setCurrentIndex( mSubDiagramsTabWidget->count() - 1 );
-        removeSubDiagram();
-      }
-
-      // Call subdiagrams' syncToLayer with the corresponding rendering object
-      for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
-      {
-        QgsDiagramProperties *diagramProperties = static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( i ) );
-        diagramProperties->syncToLayer( stackedDiagramRenderer->renderer( i ) );
+        appendSubDiagram( renderer );
       }
     }
-    else // Single diagram
+    else
     {
-      mDiagramTypeComboBox->blockSignals( true );
-      mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( QgsDiagramLayerSettings::Single ) );
-      mDiagramTypeComboBox->blockSignals( false );
-      //force a refresh of widget status to match diagram type
-      mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
-
-      // Delegate to single diagram's syncToLayer
-      // If the diagram name is unknown, the single diagram will choose a default one (pie)
-      static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->syncToLayer();
+      // Take this single renderer as the first stacked renderer
+      appendSubDiagram( dr->clone() );
     }
-  }
-  else // No Diagram
-  {
-    mDiagramTypeComboBox->blockSignals( true );
-    mDiagramTypeComboBox->setCurrentIndex( 0 );
-    mDiagramTypeComboBox->blockSignals( false );
-    //force a refresh of widget status to match diagram type
-    mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
 
-    // Delegate to first diagram's syncToLayer
-    // It will add required reasonable defaults
-    static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->syncToLayer();
-  }
-}
-
-void QgsStackedDiagramProperties::mSubDiagramsTabWidget_tabMoved( int from, int to )
-{
-  Q_UNUSED( from )
-  Q_UNUSED( to )
-  for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
-  {
-    mSubDiagramsTabWidget->setTabText( i, tr( "Diagram %1" ).arg( i + 1 ) );
+    const QgsDiagramLayerSettings *dls = mLayer->diagramLayerSettings();
+    mModel->updateDiagramLayerSettings( *dls );
   }
 }
 
 void QgsStackedDiagramProperties::apply()
 {
-  if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == "None" )
+  std::unique_ptr< QgsDiagramSettings> ds = std::make_unique< QgsDiagramSettings >();
+  ds->stackedDiagramMode = static_cast<QgsDiagramSettings::StackedDiagramMode>( mStackedDiagramModeComboBox->currentData().toInt() );
+  ds->setStackedDiagramSpacingUnit( mStackedDiagramSpacingUnitComboBox->unit() );
+  ds->setStackedDiagramSpacing( mStackedDiagramSpacingSpinBox->value() );
+
+  // Create diagram renderer for the StackedDiagram
+  QgsStackedDiagramRenderer *dr = new QgsStackedDiagramRenderer();
+  dr->setDiagram( new QgsStackedDiagram() );
+
+  // Get DiagramSettings from each subdiagram
+  const QList< QgsDiagramRenderer *> renderers = mModel->subRenderers();
+  for ( const auto &renderer : renderers )
   {
-    std::unique_ptr< QgsDiagramRenderer > renderer;
-    mLayer->setDiagramRenderer( renderer.release() );
-
-    QgsDiagramLayerSettings dls;
-    mLayer->setDiagramLayerSettings( dls );
-
-    // refresh
-    QgsProject::instance()->setDirty( true );
-    mLayer->triggerRepaint();
-  }
-  else if ( mDiagramTypeComboBox->currentData( Qt::UserRole ) == QgsDiagramLayerSettings::Single )
-  {
-    static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( 0 ) )->apply();
-  }
-  else // Stacked diagram
-  {
-    // Create diagram settings for the StackedDiagram
-    std::unique_ptr< QgsDiagramSettings> ds = std::make_unique< QgsDiagramSettings >();
-    ds->stackedDiagramMode = static_cast<QgsDiagramSettings::StackedDiagramMode>( mStackedDiagramModeComboBox->currentData().toInt() );
-    ds->setStackedDiagramSpacingUnit( mStackedDiagramSpacingUnitComboBox->unit() );
-    ds->setStackedDiagramSpacing( mStackedDiagramSpacingSpinBox->value() );
-
-    // Create diagram renderer for the StackedDiagram
-    QgsStackedDiagramRenderer *dr = new QgsStackedDiagramRenderer();
-    dr->setDiagram( new QgsStackedDiagram() );
-
-    // Get DiagramSettings from each subdiagram
-    for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+    const QList< QgsDiagramSettings > ds1 = renderer->diagramSettings();
+    if ( !ds1.isEmpty() )
     {
-      QgsDiagramProperties *diagramProperties = static_cast<QgsDiagramProperties *>( mSubDiagramsTabWidget->widget( i ) );
-      std::unique_ptr< QgsDiagramSettings > ds1 = diagramProperties->createDiagramSettings();
-      ds->categoryAttributes += ds1->categoryAttributes;
-      ds->categoryLabels += ds1->categoryLabels;
-      ds->categoryColors += ds1->categoryColors;
-
-      std::unique_ptr< QgsDiagramRenderer > dr1 = diagramProperties->createRendererBaseInfo( *ds1 );
-
-      std::unique_ptr< QgsDiagram > diagram;
-
-      if ( diagramProperties->mDiagramType == DIAGRAM_NAME_TEXT )
-      {
-        diagram = std::make_unique< QgsTextDiagram >();
-      }
-      else if ( diagramProperties->mDiagramType == DIAGRAM_NAME_PIE )
-      {
-        diagram = std::make_unique< QgsPieDiagram >();
-      }
-      else if ( diagramProperties->mDiagramType == DIAGRAM_NAME_STACKED_BAR )
-      {
-        diagram = std::make_unique< QgsStackedBarDiagram >();
-      }
-      else // DIAGRAM_NAME_HISTOGRAM
-      {
-        diagram = std::make_unique< QgsHistogramDiagram >();
-      }
-
-      dr1->setDiagram( diagram.release() );
-      dr->addRenderer( dr1.release() );
+      ds->categoryAttributes += ds1.at( 0 ).categoryAttributes;
+      ds->categoryLabels += ds1.at( 0 ).categoryLabels;
+      ds->categoryColors += ds1.at( 0 ).categoryColors;
     }
-
-    dr->setDiagramSettings( *ds );
-    mLayer->setDiagramRenderer( dr );
-
-    // Create DiagramLayerSettings from first diagram
-    QgsDiagramProperties *firstDiagramProperties = static_cast< QgsDiagramProperties * >( mSubDiagramsTabWidget->widget( 0 ) );
-    QgsDiagramLayerSettings dls = firstDiagramProperties->createDiagramLayerSettings();
-    mLayer->setDiagramLayerSettings( dls );
-
-    // refresh
-    QgsProject::instance()->setDirty( true );
-    mLayer->triggerRepaint();
+    dr->addRenderer( renderer );
   }
+
+  dr->setDiagramSettings( *ds );
+  mLayer->setDiagramRenderer( dr );
+
+  // Get DiagramLayerSettings from the model
+  QgsDiagramLayerSettings dls = mModel->diagramLayerSettings();
+  mLayer->setDiagramLayerSettings( dls );
+
+  // refresh
+  QgsProject::instance()->setDirty( true );
+  mLayer->triggerRepaint();
 }
 
-void QgsStackedDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
+bool QgsStackedDiagramProperties::couldBeFirstSubDiagram( const QModelIndex &index ) const
 {
-  if ( index == 0 ) // No diagram
+  if ( !index.isValid() )
+    return false;
+
+  if ( mModel->rowCount() == 1 )
+    return true;
+
+  // Is there any enabled subdiagram before our index.row()?
+  // If so, ours cannot be the first diagram.
+  const QList< QgsDiagramRenderer * > renderers = mModel->subRenderers();
+
+  for ( int i = 0; i < index.row(); i++ )
   {
-    mDiagramsFrame->setEnabled( false );
-    mStackedDiagramSettingsFrame->hide();
-
-    // Hide tabs other than the first one
-    for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
+    const auto &renderer = renderers.at( i );
+    const QList< QgsDiagramSettings > ds = renderer->diagramSettings();
+    if ( !ds.isEmpty() && ds.at( 0 ).enabled )
     {
-      if ( i < 1 )
-        continue;
-
-      mSubDiagramsTabWidget->setTabVisible( i, false );
+      // First enabled subdiagram found, and we know our row is after.
+      // Therefore, return false to disallow showing DLS settings for it.
+      return false;
     }
   }
-  else if ( index == 1 ) // Single
-  {
-    mDiagramsFrame->setEnabled( true );
-    mStackedDiagramSettingsFrame->hide();
-
-    // Hide tabs other than the first one
-    for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
-    {
-      if ( i < 1 )
-        continue;
-
-      mSubDiagramsTabWidget->setTabVisible( i, false );
-    }
-  }
-  else // Stacked
-  {
-    mDiagramsFrame->setEnabled( true );
-    mStackedDiagramSettingsFrame->show();
-
-    // Create the second tab or show all hidden tabs
-    if ( mSubDiagramsTabWidget->count() == 1 )
-    {
-      // Add second subdiagram tab
-      addSubDiagram();
-    }
-    else
-    {
-      for ( int i = 0; i < mSubDiagramsTabWidget->count(); i++ )
-      {
-        if ( i < 1 )
-          continue;
-
-        mSubDiagramsTabWidget->setTabVisible( i, true );
-      }
-    }
-  }
+  // Either our row is the first subdiagram enabled or it's disabled,
+  // but there are no enabled ones before. So, ours could be the first
+  // enabled one after being edited.
+  // Therefore, we should allow DLS settings on its corresponding widget.
+  return true;
 }
 
-void QgsStackedDiagramProperties::mEngineSettingsButton_clicked()
+void QgsStackedDiagramProperties::subDiagramWidgetPanelAccepted( QgsPanelWidget *panel )
 {
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( panel && panel->dockMode() )
+  QgsDiagramProperties *widget = qobject_cast<QgsDiagramProperties *>( panel );
+
+  std::unique_ptr< QgsDiagramRenderer > renderer = widget->createRenderer();
+
+  const QModelIndex index = mSubDiagramsView->selectionModel()->currentIndex();
+  if ( widget->isAllowedToEditDiagramLayerSettings() )
+    mModel->updateDiagramLayerSettings( widget->createDiagramLayerSettings() );
+
+  mModel->updateSubDiagram( index, renderer.release() );
+}
+
+void QgsStackedDiagramProperties::liveUpdateSubDiagramFromPanel()
+{
+  subDiagramWidgetPanelAccepted( qobject_cast<QgsPanelWidget *>( sender() ) );
+}
+
+////
+
+#include "qgsvscrollarea.h"
+
+QgsStackedDiagramPropertiesDialog::QgsStackedDiagramPropertiesDialog( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *mapCanvas )
+  : QDialog( parent )
+{
+
+#ifdef Q_OS_MAC
+  setWindowModality( Qt::WindowModal );
+#endif
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  layout->addWidget( scrollArea );
+
+  buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
+  mPropsWidget = new QgsDiagramProperties( layer, this, mapCanvas );
+  mPropsWidget->setDockMode( false );
+
+  scrollArea->setWidget( mPropsWidget );
+  layout->addWidget( buttonBox );
+  this->setWindowTitle( "Edit Sub Diagram" );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsStackedDiagramPropertiesDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStackedDiagramPropertiesDialog::showHelp );
+}
+
+void QgsStackedDiagramPropertiesDialog::syncToRenderer( const QgsDiagramRenderer *dr ) const
+{
+  mPropsWidget->syncToRenderer( dr );
+}
+
+void QgsStackedDiagramPropertiesDialog::syncToSettings( const QgsDiagramLayerSettings *dls ) const
+{
+  mPropsWidget->syncToSettings( dls );
+}
+
+void QgsStackedDiagramPropertiesDialog::accept()
+{
+  // Get renderer and diagram layer settings from widget
+  mRenderer = mPropsWidget->createRenderer();
+  mDiagramLayerSettings = mPropsWidget->createDiagramLayerSettings();
+  QDialog::accept();
+}
+
+QgsDiagramRenderer *QgsStackedDiagramPropertiesDialog::renderer()
+{
+  return mRenderer.release();
+}
+
+QgsDiagramLayerSettings QgsStackedDiagramPropertiesDialog::diagramLayerSettings() const
+{
+  return mDiagramLayerSettings;
+}
+
+void QgsStackedDiagramPropertiesDialog::setAllowedToEditDiagramLayerSettings( bool allowed ) const
+{
+  mPropsWidget->setAllowedToEditDiagramLayerSettings( allowed );
+}
+
+bool QgsStackedDiagramPropertiesDialog::isAllowedToEditDiagramLayerSettings() const
+{
+  return mPropsWidget->isAllowedToEditDiagramLayerSettings();
+}
+
+void QgsStackedDiagramPropertiesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
+}
+
+////
+
+QgsStackedDiagramPropertiesModel::QgsStackedDiagramPropertiesModel( QObject *parent )
+  : QAbstractTableModel( parent )
+{
+}
+
+Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
+{
+  const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | checkable;
+}
+
+QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() )
+    return QVariant();
+
+  QgsDiagramRenderer *dr = subDiagramForIndex( index );
+
+  if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
-    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( mMapCanvas );
-    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
-    panel->openPanel( widget );
+    switch ( index.column() )
+    {
+      case 1:
+        return ( !dr || !dr->diagram() ) ? tr( "(no diagram)" ) : dr->diagram()->diagramName();
+      case 2:
+        if ( !dr )
+        {
+          return tr( "(no renderer)" );
+        }
+        else
+        {
+          if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
+            return tr( "Fixed" );
+          else if ( dr->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
+            return tr( "Scaled" );
+          else
+            return tr( "Unknown" );
+        }
+      case 3:
+        if ( dr && dr->diagram() && !dr->diagramSettings().isEmpty() )
+        {
+          if ( DIAGRAM_NAME_HISTOGRAM == dr->diagram()->diagramName() || DIAGRAM_NAME_STACKED_BAR == dr->diagram()->diagramName() )
+          {
+            switch ( dr->diagramSettings().at( 0 ).diagramOrientation )
+            {
+              case QgsDiagramSettings::Left:
+                return tr( "Left" );
+              case QgsDiagramSettings::Right:
+                return tr( "Right" );
+              case QgsDiagramSettings::Up:
+                return tr( "Up" );
+              case QgsDiagramSettings::Down:
+                return tr( "Down" );
+            }
+          }
+        }
+        return QVariant();
+      case 0:
+      default:
+        return QVariant();
+    }
+  }
+  else if ( role == Qt::TextAlignmentRole )
+  {
+    return index.column() == 0 ? static_cast<Qt::Alignment::Int>( Qt::AlignCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
+  }
+  else if ( role == Qt::CheckStateRole )
+  {
+    if ( index.column() != 0 )
+      return QVariant();
+
+    return ( dr && !dr->diagramSettings().isEmpty() && dr->diagramSettings().at( 0 ).enabled ) ? Qt::Checked : Qt::Unchecked;
   }
   else
   {
-    QgsLabelEngineConfigDialog dialog( mMapCanvas, this );
-    dialog.exec();
-    // reactivate button's window
-    activateWindow();
+    return QVariant();
   }
+}
+
+QVariant QgsStackedDiagramPropertiesModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 4 )
+  {
+    QStringList lst;
+    lst << tr( "Enabled" ) << tr( "Diagram type" ) << tr( "Size" ) << tr( "Orientation" );
+    return lst[section];
+  }
+
+  return QVariant();
+}
+
+int QgsStackedDiagramPropertiesModel::rowCount( const QModelIndex & ) const
+{
+  return mRenderers.size();
+}
+
+int QgsStackedDiagramPropertiesModel::columnCount( const QModelIndex & ) const
+{
+  return 4;
+}
+
+bool QgsStackedDiagramPropertiesModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+  QgsDiagramRenderer *dr = subDiagramForIndex( index );
+
+  if ( role == Qt::CheckStateRole )
+  {
+    if ( dr && !dr->diagramSettings().isEmpty() )
+    {
+      QgsDiagramSettings ds = dr->diagramSettings().at( 0 );
+      ds.enabled = ( value.toInt() == Qt::Checked );
+
+      if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
+      {
+        QgsSingleCategoryDiagramRenderer *dsr = static_cast< QgsSingleCategoryDiagramRenderer * >( dr );
+        dsr->setDiagramSettings( ds );
+      }
+      else
+      {
+        QgsLinearlyInterpolatedDiagramRenderer *dlir = static_cast< QgsLinearlyInterpolatedDiagramRenderer * >( dr );
+        dlir->setDiagramSettings( ds );
+      }
+
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+  return false;
+}
+
+bool QgsStackedDiagramPropertiesModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+  if ( row < 0 || row >= mRenderers.size() )
+    return false;
+
+  beginRemoveRows( parent, row, row + count - 1 );
+  while ( count-- )
+    mRenderers.removeAt( row );
+  endRemoveRows();
+
+  return true;
+}
+
+QgsDiagramRenderer *QgsStackedDiagramPropertiesModel::subDiagramForIndex( const QModelIndex &index ) const
+{
+  if ( index.isValid() )
+    return mRenderers.at( index.row() );
+  return nullptr;
+}
+
+void QgsStackedDiagramPropertiesModel::insertSubDiagram( const int index, QgsDiagramRenderer *newSubDiagram )
+{
+  beginInsertRows( QModelIndex(), index, index );
+  mRenderers.insert( index, newSubDiagram );
+  endInsertRows();
+}
+
+void QgsStackedDiagramPropertiesModel::updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr )
+{
+  mRenderers.replace( index.row(), dr );
+  emit dataChanged( index, index );
+}
+
+QList< QgsDiagramRenderer *> QgsStackedDiagramPropertiesModel::subRenderers() const
+{
+  QList<QgsDiagramRenderer *> subRenderers;
+  subRenderers = mRenderers;
+  return subRenderers;
+}
+
+void QgsStackedDiagramPropertiesModel::updateDiagramLayerSettings( QgsDiagramLayerSettings dls )
+{
+  mDiagramLayerSettings = dls;
+}
+
+QgsDiagramLayerSettings QgsStackedDiagramPropertiesModel::diagramLayerSettings() const
+{
+  return mDiagramLayerSettings;
 }

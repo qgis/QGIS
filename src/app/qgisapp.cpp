@@ -8049,35 +8049,8 @@ void QgisApp::diagramProperties()
     return;
   }
 
-  QDialog dlg;
-  dlg.setWindowTitle( tr( "Layer Diagram Properties" ) );
-  QgsStackedDiagramProperties *gui = new QgsStackedDiagramProperties( vlayer, &dlg, mMapCanvas );
-  gui->layout()->setContentsMargins( 0, 0, 0, 0 );
-  QVBoxLayout *layout = new QVBoxLayout( &dlg );
-  layout->addWidget( gui );
-
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(
-    QDialogButtonBox::Help | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply,
-    Qt::Horizontal, &dlg );
-  layout->addWidget( buttonBox );
-
-  dlg.setLayout( layout );
-
-  connect( buttonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked,
-           &dlg, &QDialog::accept );
-  connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked,
-           &dlg, &QDialog::reject );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked,
-           gui, &QgsStackedDiagramProperties::apply );
-  connect( buttonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, gui, [ = ]
-  {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
-  } );
-
-  if ( dlg.exec() )
-    gui->apply();
-
-  activateDeactivateLayerRelatedActions( vlayer );
+  mapStyleDock( true );
+  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::VectorDiagram );
 }
 
 void QgisApp::createAnnotationLayer()

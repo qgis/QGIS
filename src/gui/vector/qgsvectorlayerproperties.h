@@ -33,7 +33,7 @@ class QgsMapLayer;
 class QgsAttributeActionDialog;
 class QgsVectorLayer;
 class QgsLabelingWidget;
-class QgsStackedDiagramProperties;
+class QgsDiagramWidget;
 class QgsSourceFieldsProperties;
 class QgsAttributesFormProperties;
 class QgsRendererPropertiesDialog;
@@ -172,7 +172,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     //! Actions dialog. If apply is pressed, the actions are stored for later use
     QgsAttributeActionDialog *mActionDialog = nullptr;
     //! Diagram dialog. If apply is pressed, options are applied to vector's diagrams
-    QgsStackedDiagramProperties *diagramPropertiesDialog = nullptr;
+    QgsDiagramWidget *diagramPropertiesDialog = nullptr;
     //! SourceFields dialog. If apply is pressed, options are applied to vector's diagrams
     QgsSourceFieldsProperties *mSourceFieldsPropertiesDialog = nullptr;
     //! AttributesForm dialog. If apply is pressed, options are applied to vector's diagrams

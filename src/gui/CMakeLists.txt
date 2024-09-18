@@ -35,6 +35,7 @@ set(QGIS_GUI_SRCS
   vector/qgsattributesforminitcode.cpp
   vector/qgsattributesformproperties.cpp
   vector/qgsdiagramproperties.cpp
+  vector/qgsdiagramwidget.cpp
   vector/qgsfieldcalculator.cpp
   vector/qgsjoindialog.cpp
   vector/qgssourcefieldsproperties.cpp
@@ -1497,6 +1498,7 @@ set(QGIS_GUI_HDRS
   vector/qgsattributesforminitcode.h
   vector/qgsattributesformproperties.h
   vector/qgsdiagramproperties.h
+  vector/qgsdiagramwidget.h
   vector/qgsfieldcalculator.h
   vector/qgsjoindialog.h
   vector/qgssourcefieldsproperties.h
