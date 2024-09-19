@@ -5519,7 +5519,6 @@ QString QgisApp::getVersionString()
   const QString compLabel = tr( "Compiled" );
   const QString runLabel = tr( "Running" );
 
-  versionString += QStringLiteral( "<tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Libraries" ) );
   versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td>" ).arg( tr( "QGIS version" ), Qgis::version() );
   versionString += QLatin1String( "</tr><tr>" );
   if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
@@ -5541,6 +5540,8 @@ QString QgisApp::getVersionString()
   }
   versionString += QLatin1String( "</tr><tr>" );
 
+  versionString += QStringLiteral( "<td colspan=\"2\">&nbsp;</td></tr><tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Libraries" ) );
+  versionString += QLatin1String( "</tr><tr>" );
   // Qt version
   const QString qtVersionCompiled{ QT_VERSION_STR };
   const QString qtVersionRunning{ qVersion() };
