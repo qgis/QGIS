@@ -105,6 +105,8 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   if ( !painter )
     return;
 
+  const QPointF oldPos = pos();
+
   ensureModelIsInitialized();
 
   if ( mFilterAskedForUpdate )
@@ -155,8 +157,6 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
-
-  const QPointF oldPos = pos();
 
   //adjust box if width or height is too small
   if ( mSizeToContents )
