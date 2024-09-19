@@ -139,67 +139,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Returns a string color name representation of a color interpretation.
      */
-    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
-    {
-      // Modified copy from GDAL
-      switch ( colorInterpretation )
-      {
-        case Qgis::RasterColorInterpretation::Undefined:
-          return QStringLiteral( "Undefined" );
-
-        case Qgis::RasterColorInterpretation::GrayIndex:
-          return QStringLiteral( "Gray" );
-
-        case Qgis::RasterColorInterpretation::PaletteIndex:
-          return QStringLiteral( "Palette" );
-
-        case Qgis::RasterColorInterpretation::RedBand:
-          return QStringLiteral( "Red" );
-
-        case Qgis::RasterColorInterpretation::GreenBand:
-          return QStringLiteral( "Green" );
-
-        case Qgis::RasterColorInterpretation::BlueBand:
-          return QStringLiteral( "Blue" );
-
-        case Qgis::RasterColorInterpretation::AlphaBand:
-          return QStringLiteral( "Alpha" );
-
-        case Qgis::RasterColorInterpretation::HueBand:
-          return QStringLiteral( "Hue" );
-
-        case Qgis::RasterColorInterpretation::SaturationBand:
-          return QStringLiteral( "Saturation" );
-
-        case Qgis::RasterColorInterpretation::LightnessBand:
-          return QStringLiteral( "Lightness" );
-
-        case Qgis::RasterColorInterpretation::CyanBand:
-          return QStringLiteral( "Cyan" );
-
-        case Qgis::RasterColorInterpretation::MagentaBand:
-          return QStringLiteral( "Magenta" );
-
-        case Qgis::RasterColorInterpretation::YellowBand:
-          return QStringLiteral( "Yellow" );
-
-        case Qgis::RasterColorInterpretation::BlackBand:
-          return QStringLiteral( "Black" );
-
-        case Qgis::RasterColorInterpretation::YCbCr_YBand:
-          return QStringLiteral( "YCbCr_Y" );
-
-        case Qgis::RasterColorInterpretation::YCbCr_CbBand:
-          return QStringLiteral( "YCbCr_Cb" );
-
-        case Qgis::RasterColorInterpretation::YCbCr_CrBand:
-          return QStringLiteral( "YCbCr_Cr" );
-
-        case Qgis::RasterColorInterpretation::ContinuousPalette:
-          return QStringLiteral( "Continuous Palette" );
-      }
-      return QString();
-    }
+    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const;
 
     //! Reload data (data could change)
     virtual bool reload() { return true; }

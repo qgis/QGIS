@@ -4341,26 +4341,48 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
+
     enum class RasterColorInterpretation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, ColorInterpretation ) : int
       {
       Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedColorInterpretation ) = 0, //!< Undefined
       GrayIndex = 1,          //!< Grayscale
       PaletteIndex = 2,       //!< Paletted (see associated color table)
-      RedBand = 3,            //!< Red band of RGBA image
-      GreenBand = 4,          //!< Green band of RGBA image
-      BlueBand = 5,           //!< Blue band of RGBA image
+      RedBand = 3,            //!< Red band of RGBA image, or red spectral band [0.62 - 0.69 um]
+      GreenBand = 4,          //!< Green band of RGBA image, or green spectral band [0.51 - 0.60 um]
+      BlueBand = 5,           //!< Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]
       AlphaBand = 6,          //!< Alpha (0=transparent, 255=opaque)
       HueBand = 7,            //!< Hue band of HLS image
       SaturationBand = 8,     //!< Saturation band of HLS image
       LightnessBand = 9,      //!< Lightness band of HLS image
       CyanBand = 10,          //!< Cyan band of CMYK image
       MagentaBand = 11,       //!< Magenta band of CMYK image
-      YellowBand = 12,        //!< Yellow band of CMYK image
+      YellowBand = 12,        //!< Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]
       BlackBand = 13,         //!< Black band of CMLY image
       YCbCr_YBand = 14,       //!< Y Luminance
       YCbCr_CbBand = 15,      //!< Cb Chroma
       YCbCr_CrBand = 16,      //!< Cr Chroma
-      ContinuousPalette = 17  //!< Continuous palette, QGIS addition, GRASS
+      ContinuousPalette = 17, //!< Continuous palette, QGIS addition, GRASS
+
+      // Note: values between PanBand and SAR_P_Band match additions done in
+      // GDAL 3.10, except that the numeric values of the constant don't match GDAL ones
+
+      PanBand = 18,           //!< Panchromatic band [0.40 - 1.00 um] \since QGIS 3.40
+      CoastalBand = 19,       //!< Coastal band [0.40 - 0.45 um] \since QGIS 3.40
+      RedEdgeBand = 20,       //!< Red-edge band [0.69 - 0.79 um] \since QGIS 3.40
+      NIRBand = 21,           //!< Near-InfraRed (NIR) band [0.75 - 1.40 um] \since QGIS 3.40
+      SWIRBand = 22,          //!< Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um] \since QGIS 3.40
+      MWIRBand = 23,          //!< Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um] \since QGIS 3.40
+      LWIRBand = 24,          //!< Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um] \since QGIS 3.40
+      TIRBand = 25,           //!< Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um] \since QGIS 3.40
+      OtherIRBand = 26,       //!< Other infrared band [0.75 - 1000 um] \since QGIS 3.40
+      SAR_Ka_Band = 27,       //!< Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz] \since QGIS 3.40
+      SAR_K_Band = 28,        //!< Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz] \since QGIS 3.40
+      SAR_Ku_Band = 30,       //!< Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz] \since QGIS 3.40
+      SAR_X_Band = 31,        //!< Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz] \since QGIS 3.40
+      SAR_C_Band = 32,        //!< Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz] \since QGIS 3.40
+      SAR_S_Band = 33,        //!< Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz] \since QGIS 3.40
+      SAR_L_Band = 34,        //!< Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz] \since QGIS 3.40
+      SAR_P_Band = 35,        //!< Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz] \since QGIS 3.40
     };
     Q_ENUM( RasterColorInterpretation )
 
