@@ -110,13 +110,13 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     return mCategories.testFlag( category ) ? Qt::Checked : Qt::Unchecked;
   }
 
-  QString htmlStylePattern = QStringLiteral( "<p><b>%1</b><br/>%2</p>" );
+  QString htmlStylePattern = QStringLiteral( "<p><b>%1</b><br/><span style='color:gray;'>%2</span></p>" );
   switch ( category )
   {
     case QgsMapLayer::StyleCategory::LayerConfiguration:
     {
       QString name = tr( "Layer Configuration" );
-      QString description = tr( "Identifiable, removable, searchable, display expression, read-only, hidden" );
+      QString description = tr( "The layers display expression and the datasource flags: identifiable, removable, searchable, read-only and hidden from the project settings" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -133,7 +133,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Symbology:
     {
       QString name = tr( "Symbology" );
-      QString description = tr( "Symbology" );
+      QString description = tr( "Everything from the symbology section" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -151,7 +151,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Symbology3D:
     {
       QString name = tr( "3D Symbology" );
-      QString description = tr( "3D Symbology" );
+      QString description = tr( "Everything from the 3D symbology section" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -169,7 +169,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Labeling:
     {
       QString name = tr( "Labels" );
-      QString description = tr( "Labels" );
+      QString description = tr( "Everything from the labels section" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -187,7 +187,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Fields:
     {
       QString name = tr( "Fields" );
-      QString description = tr( "Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields" );
+      QString description = tr( "Virtual fields, aliases, default value expressions and constraints from the form section and WMS/WFS exposure" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -205,7 +205,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Forms:
     {
       QString name = tr( "Attribute Form" );
-      QString description = tr( "Attribute form settings, widget configuration" );
+      QString description = tr( "Form layout and widget configuration (no constraints and default value expressions)" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -223,7 +223,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Actions:
     {
       QString name = tr( "Actions" );
-      QString description = tr( "Map layer actions" );
+      QString description = tr( "Everything from the actions section" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -241,7 +241,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::MapTips:
     {
       QString name = tr( "Map Tips" );
-      QString description = tr( "Map Tips" );
+      QString description = tr( "Map tips settings (no layer display expression)" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -259,7 +259,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Diagrams:
     {
       QString name = tr( "Diagrams" );
-      QString description = tr( "Diagrams" );
+      QString description = tr( "Everything from the diagram section" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -277,7 +277,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::AttributeTable:
     {
       QString name = tr( "Attribute Table Configuration" );
-      QString description = tr( "Choice and order of columns, conditional styling" );
+      QString description = tr( "Attribute table settings: choice and order of columns and conditional styling" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -295,7 +295,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Rendering:
     {
       QString name = tr( "Rendering" );
-      QString description = tr( "Scale visibility, simplify method, opacity" );
+      QString description = tr( "Everything from the rendering section: Scale visibility, simplify method, opacity, auto refresh etc." );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -313,7 +313,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::CustomProperties:
     {
       QString name = tr( "Custom Properties" );
-      QString description = tr( "Variables, custom properties (often used by plugins and custom python code)" );
+      QString description = tr( "Layer variables and embedded legend widgets as well as all the custom properties (often used by plugins and custom python code)" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -349,7 +349,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Relations:
     {
       QString name = tr( "Relations" );
-      QString description = tr( "Relations with other layers" );
+      QString description = tr( "The relations this layer has with other layers" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -367,7 +367,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Temporal:
     {
       QString name = tr( "Temporal Properties" );
-      QString description = tr( "Temporal Properties" );
+      QString description = tr( "Everything from the temporal section" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -385,7 +385,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Legend:
     {
       QString name = tr( "Legend Settings" );
-      QString description = tr( "Legend Settings" );
+      QString description = tr( "Legend settings (no embedded legend widgets)" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -403,7 +403,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Elevation:
     {
       QString name = tr( "Elevation Properties" );
-      QString description = tr( "Elevation Properties" );
+      QString description = tr( "Everything from the elevation section" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -421,7 +421,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::Notes:
     {
       QString name = tr( "Notes" );
-      QString description = tr( "Notes" );
+      QString description = tr( "The layer notes" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
@@ -439,7 +439,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::AllStyleCategories:
     {
       QString name = tr( "All Style Categories" );
-      QString description = tr( "All Style Categories" );
+      QString description = tr( "All style categories" );
       switch ( role )
       {
         case static_cast< int >( Role::NameRole ):
