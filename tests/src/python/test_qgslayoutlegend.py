@@ -1098,6 +1098,19 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
             )
         )
 
+        # re-render with filtering to trigger mapHitTest which ends up by calling adjustBoxSize().
+        # These last change the box size and therefore position (because our reference point is lower left)
+        # So check that the legend position is according to what we expect (change also marker size
+        # so we are sure that it's size and position have correcly been updated)
+        legend.setLegendFilterByMapEnabled(True)
+        marker_symbol.setSize(10)
+
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_reference_point_newsize', layout
+            )
+        )
+
         QgsProject.instance().clear()
 
     def test_rulebased_child_filter(self):
