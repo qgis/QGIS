@@ -79,8 +79,8 @@ void QgsHttpRequestAlgorithm::initAlgorithm( const QVariantMap & )
         QStringLiteral( "METHOD" ),
         QObject::tr( "Method" ),
         QStringList()
-        << QObject::tr( "GET" )
-        << QObject::tr( "POST" ),
+        << QStringLiteral( "GET" )
+        << QStringLiteral( "POST" ),
         false,
         0
       );
@@ -88,7 +88,7 @@ void QgsHttpRequestAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( methodParam.release() );
 
   std::unique_ptr< QgsProcessingParameterString > dataParam = std::make_unique < QgsProcessingParameterString >(
-        QStringLiteral( "DATA" ), tr( "Data" ), QVariant(), false, true );
+        QStringLiteral( "DATA" ), tr( "POST data" ), QVariant(), false, true );
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
   addParameter( dataParam.release() );
 
