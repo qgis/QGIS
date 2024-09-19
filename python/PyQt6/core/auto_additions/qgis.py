@@ -7696,13 +7696,13 @@ QgsRaster.PaletteIndex.is_monkey_patched = True
 QgsRaster.PaletteIndex.__doc__ = "Paletted (see associated color table)"
 QgsRaster.RedBand = Qgis.RasterColorInterpretation.RedBand
 QgsRaster.RedBand.is_monkey_patched = True
-QgsRaster.RedBand.__doc__ = "Red band of RGBA image"
+QgsRaster.RedBand.__doc__ = "Red band of RGBA image, or red spectral band [0.62 - 0.69 um]"
 QgsRaster.GreenBand = Qgis.RasterColorInterpretation.GreenBand
 QgsRaster.GreenBand.is_monkey_patched = True
-QgsRaster.GreenBand.__doc__ = "Green band of RGBA image"
+QgsRaster.GreenBand.__doc__ = "Green band of RGBA image, or green spectral band [0.51 - 0.60 um]"
 QgsRaster.BlueBand = Qgis.RasterColorInterpretation.BlueBand
 QgsRaster.BlueBand.is_monkey_patched = True
-QgsRaster.BlueBand.__doc__ = "Blue band of RGBA image"
+QgsRaster.BlueBand.__doc__ = "Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]"
 QgsRaster.AlphaBand = Qgis.RasterColorInterpretation.AlphaBand
 QgsRaster.AlphaBand.is_monkey_patched = True
 QgsRaster.AlphaBand.__doc__ = "Alpha (0=transparent, 255=opaque)"
@@ -7723,7 +7723,7 @@ QgsRaster.MagentaBand.is_monkey_patched = True
 QgsRaster.MagentaBand.__doc__ = "Magenta band of CMYK image"
 QgsRaster.YellowBand = Qgis.RasterColorInterpretation.YellowBand
 QgsRaster.YellowBand.is_monkey_patched = True
-QgsRaster.YellowBand.__doc__ = "Yellow band of CMYK image"
+QgsRaster.YellowBand.__doc__ = "Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]"
 QgsRaster.BlackBand = Qgis.RasterColorInterpretation.BlackBand
 QgsRaster.BlackBand.is_monkey_patched = True
 QgsRaster.BlackBand.__doc__ = "Black band of CMLY image"
@@ -7739,6 +7739,57 @@ QgsRaster.YCbCr_CrBand.__doc__ = "Cr Chroma"
 QgsRaster.ContinuousPalette = Qgis.RasterColorInterpretation.ContinuousPalette
 QgsRaster.ContinuousPalette.is_monkey_patched = True
 QgsRaster.ContinuousPalette.__doc__ = "Continuous palette, QGIS addition, GRASS"
+QgsRaster.PanBand = Qgis.RasterColorInterpretation.PanBand
+QgsRaster.PanBand.is_monkey_patched = True
+QgsRaster.PanBand.__doc__ = "Panchromatic band [0.40 - 1.00 um] \n.. versionadded:: 3.40"
+QgsRaster.CoastalBand = Qgis.RasterColorInterpretation.CoastalBand
+QgsRaster.CoastalBand.is_monkey_patched = True
+QgsRaster.CoastalBand.__doc__ = "Coastal band [0.40 - 0.45 um] \n.. versionadded:: 3.40"
+QgsRaster.RedEdgeBand = Qgis.RasterColorInterpretation.RedEdgeBand
+QgsRaster.RedEdgeBand.is_monkey_patched = True
+QgsRaster.RedEdgeBand.__doc__ = "Red-edge band [0.69 - 0.79 um] \n.. versionadded:: 3.40"
+QgsRaster.NIRBand = Qgis.RasterColorInterpretation.NIRBand
+QgsRaster.NIRBand.is_monkey_patched = True
+QgsRaster.NIRBand.__doc__ = "Near-InfraRed (NIR) band [0.75 - 1.40 um] \n.. versionadded:: 3.40"
+QgsRaster.SWIRBand = Qgis.RasterColorInterpretation.SWIRBand
+QgsRaster.SWIRBand.is_monkey_patched = True
+QgsRaster.SWIRBand.__doc__ = "Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um] \n.. versionadded:: 3.40"
+QgsRaster.MWIRBand = Qgis.RasterColorInterpretation.MWIRBand
+QgsRaster.MWIRBand.is_monkey_patched = True
+QgsRaster.MWIRBand.__doc__ = "Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um] \n.. versionadded:: 3.40"
+QgsRaster.LWIRBand = Qgis.RasterColorInterpretation.LWIRBand
+QgsRaster.LWIRBand.is_monkey_patched = True
+QgsRaster.LWIRBand.__doc__ = "Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um] \n.. versionadded:: 3.40"
+QgsRaster.TIRBand = Qgis.RasterColorInterpretation.TIRBand
+QgsRaster.TIRBand.is_monkey_patched = True
+QgsRaster.TIRBand.__doc__ = "Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um] \n.. versionadded:: 3.40"
+QgsRaster.OtherIRBand = Qgis.RasterColorInterpretation.OtherIRBand
+QgsRaster.OtherIRBand.is_monkey_patched = True
+QgsRaster.OtherIRBand.__doc__ = "Other infrared band [0.75 - 1000 um] \n.. versionadded:: 3.40"
+QgsRaster.SAR_Ka_Band = Qgis.RasterColorInterpretation.SAR_Ka_Band
+QgsRaster.SAR_Ka_Band.is_monkey_patched = True
+QgsRaster.SAR_Ka_Band.__doc__ = "Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_K_Band = Qgis.RasterColorInterpretation.SAR_K_Band
+QgsRaster.SAR_K_Band.is_monkey_patched = True
+QgsRaster.SAR_K_Band.__doc__ = "Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_Ku_Band = Qgis.RasterColorInterpretation.SAR_Ku_Band
+QgsRaster.SAR_Ku_Band.is_monkey_patched = True
+QgsRaster.SAR_Ku_Band.__doc__ = "Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_X_Band = Qgis.RasterColorInterpretation.SAR_X_Band
+QgsRaster.SAR_X_Band.is_monkey_patched = True
+QgsRaster.SAR_X_Band.__doc__ = "Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_C_Band = Qgis.RasterColorInterpretation.SAR_C_Band
+QgsRaster.SAR_C_Band.is_monkey_patched = True
+QgsRaster.SAR_C_Band.__doc__ = "Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_S_Band = Qgis.RasterColorInterpretation.SAR_S_Band
+QgsRaster.SAR_S_Band.is_monkey_patched = True
+QgsRaster.SAR_S_Band.__doc__ = "Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_L_Band = Qgis.RasterColorInterpretation.SAR_L_Band
+QgsRaster.SAR_L_Band.is_monkey_patched = True
+QgsRaster.SAR_L_Band.__doc__ = "Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_P_Band = Qgis.RasterColorInterpretation.SAR_P_Band
+QgsRaster.SAR_P_Band.is_monkey_patched = True
+QgsRaster.SAR_P_Band.__doc__ = "Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz] \n.. versionadded:: 3.40"
 Qgis.RasterColorInterpretation.__doc__ = """Raster color interpretation.
 
 This is a modified copy of the GDAL GDALColorInterp enum.
@@ -7755,21 +7806,89 @@ This is a modified copy of the GDAL GDALColorInterp enum.
 
 * ``GrayIndex``: Grayscale
 * ``PaletteIndex``: Paletted (see associated color table)
-* ``RedBand``: Red band of RGBA image
-* ``GreenBand``: Green band of RGBA image
-* ``BlueBand``: Blue band of RGBA image
+* ``RedBand``: Red band of RGBA image, or red spectral band [0.62 - 0.69 um]
+* ``GreenBand``: Green band of RGBA image, or green spectral band [0.51 - 0.60 um]
+* ``BlueBand``: Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]
 * ``AlphaBand``: Alpha (0=transparent, 255=opaque)
 * ``HueBand``: Hue band of HLS image
 * ``SaturationBand``: Saturation band of HLS image
 * ``LightnessBand``: Lightness band of HLS image
 * ``CyanBand``: Cyan band of CMYK image
 * ``MagentaBand``: Magenta band of CMYK image
-* ``YellowBand``: Yellow band of CMYK image
+* ``YellowBand``: Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]
 * ``BlackBand``: Black band of CMLY image
 * ``YCbCr_YBand``: Y Luminance
 * ``YCbCr_CbBand``: Cb Chroma
 * ``YCbCr_CrBand``: Cr Chroma
 * ``ContinuousPalette``: Continuous palette, QGIS addition, GRASS
+* ``PanBand``: Panchromatic band [0.40 - 1.00 um]
+
+  .. versionadded:: 3.40
+
+* ``CoastalBand``: Coastal band [0.40 - 0.45 um]
+
+  .. versionadded:: 3.40
+
+* ``RedEdgeBand``: Red-edge band [0.69 - 0.79 um]
+
+  .. versionadded:: 3.40
+
+* ``NIRBand``: Near-InfraRed (NIR) band [0.75 - 1.40 um]
+
+  .. versionadded:: 3.40
+
+* ``SWIRBand``: Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um]
+
+  .. versionadded:: 3.40
+
+* ``MWIRBand``: Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um]
+
+  .. versionadded:: 3.40
+
+* ``LWIRBand``: Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um]
+
+  .. versionadded:: 3.40
+
+* ``TIRBand``: Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um]
+
+  .. versionadded:: 3.40
+
+* ``OtherIRBand``: Other infrared band [0.75 - 1000 um]
+
+  .. versionadded:: 3.40
+
+* ``SAR_Ka_Band``: Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_K_Band``: Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_Ku_Band``: Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_X_Band``: Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_C_Band``: Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_S_Band``: Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_L_Band``: Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_P_Band``: Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz]
+
+  .. versionadded:: 3.40
+
 
 """
 # --
