@@ -5521,10 +5521,10 @@ QString QgisApp::getVersionString()
 
   versionString += QStringLiteral( "<tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Libraries" ) );
   versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td>" ).arg( tr( "QGIS version" ), Qgis::version() );
-
+  versionString += QLatin1String( "</tr><tr>" );
   if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
   {
-    versionString += tr( "QGIS code branch" );
+    versionString += QStringLiteral( "<td>%1</td>" ).arg( tr( "QGIS code branch" ) );
     if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
     {
       versionString += QLatin1String( "<td><a href=\"https://github.com/qgis/QGIS/tree/master\">master</a></td>" );
@@ -5537,7 +5537,6 @@ QString QgisApp::getVersionString()
   }
   else
   {
-    versionString += QLatin1String( "</tr><tr>" );
     versionString += QStringLiteral( "<td>%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%2\">%2</a></td>" ).arg( tr( "QGIS code revision" ), Qgis::devVersion() );
   }
   versionString += QLatin1String( "</tr><tr>" );
