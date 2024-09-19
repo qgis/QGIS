@@ -902,6 +902,10 @@ void TestQgsTaskManager::waitForFinished()
   QCOMPARE( finishedTask->waitForFinished(), true );
   QCOMPARE( finishedTask->status(), QgsTask::Complete );
 
+  // check we can call waitForFinished several times
+  QCOMPARE( finishedTask->waitForFinished(), true );
+  QCOMPARE( finishedTask->status(), QgsTask::Complete );
+
   timerThread->quit();
 
   ProgressReportingTask *failedTask = new ProgressReportingTask();
