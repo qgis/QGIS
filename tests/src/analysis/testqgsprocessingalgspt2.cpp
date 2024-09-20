@@ -98,6 +98,9 @@ class TestQgsProcessingAlgsPt2: public QgsTest
     void buffer();
     void splitWithLines();
 
+    void randomPointsInPolygonsFromField_data();
+    void randomPointsInPolygonsFromField();
+
   private:
 
     QString mPointLayerPath;
@@ -1889,6 +1892,64 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   QVERIFY( splitLayer->isValid() );
   QCOMPARE( splitLayer->wkbType(), Qgis::WkbType::MultiPolygon );
   QCOMPARE( splitLayer->featureCount(), 20 );
+}
+
+void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField_data()
+{
+  QTest::addColumn< QVariant >( "num_points" );
+  QTest::addColumn< int >( "expected" );
+
+  QTest::newRow( "5" ) << QVariant::fromValue<int>( 5 ) << 5;
+  QTest::newRow( "NULL" ) << QVariant() << 0;
+
+}
+
+void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
+{
+
+  QFETCH( QVariant, num_points );
+  QFETCH( int, expected );
+
+  // Create a polygon memory layer
+  QgsVectorLayer polygonLayer { QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "polygons_points" ), QStringLiteral( "memory" ) };
+  // Add an integer field num_points
+  QList<QgsField> fields;
+  fields.append( QgsField( QStringLiteral( "num_points" ), QMetaType::Type::Int ) );
+  polygonLayer.dataProvider()->addAttributes( fields );
+  polygonLayer.updateFields();
+  // Create a feature
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))" ) ) );
+  f.setAttributes( QgsAttributes() << num_points );
+
+  // Add the feature to the layer
+  polygonLayer.startEditing();
+  polygonLayer.addFeature( f );
+  polygonLayer.commitChanges();
+
+  // Run algorithm to generate random points in polygons from field num_points
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( &polygonLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+  parameters.insert( QStringLiteral( "POINTS_NUMBER" ), QgsProperty::fromExpression( QStringLiteral( "num_points" ) ) );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:randompointsinpolygons" ) ) );
+  QVERIFY( alg != nullptr );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::Point );
+  QCOMPARE( resultLayer->featureCount(), expected );
+
+
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

@@ -255,7 +255,18 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     // Get data defined parameters
     int numberPointsForThisFeature = mNumPoints;
     if ( mDynamicNumPoints )
-      numberPointsForThisFeature = mNumPointsProperty.valueAsInt( expressionContext, numberPointsForThisFeature );
+    {
+      bool ok;
+      const int numPointsFromProperty { mNumPointsProperty.valueAsInt( expressionContext, numberPointsForThisFeature, &ok ) };
+      if ( ok )
+      {
+        numberPointsForThisFeature = numPointsFromProperty;
+      }
+      else
+      {
+        numberPointsForThisFeature = 0;
+      }
+    }
     desiredNumberOfPoints += numberPointsForThisFeature;
     int maxAttemptsForThisFeature = mMaxAttempts;
     if ( mDynamicMaxAttempts )
