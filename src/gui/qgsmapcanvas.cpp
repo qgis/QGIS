@@ -3076,7 +3076,7 @@ void QgsMapCanvas::projectThemesChanged()
 
 }
 
-QgsMapTool *QgsMapCanvas::mapTool()
+QgsMapTool *QgsMapCanvas::mapTool() const
 {
   return mMapTool;
 }
