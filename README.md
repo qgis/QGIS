@@ -190,5 +190,6 @@ There are several channels where you can find help and support for QGIS:
 - [Other support channels](https://qgis.org/en/site/forusers/support.html)
 
 ## Get involved with the community
+[![Open in DevZero](https://assets.devzero.io/open-in-devzero.svg)](https://www.devzero.io/dashboard/recipes/new?repo-url=https://github.com/qgis/QGIS)
 
 [Contribution guidelines for this project](CONTRIBUTING.md)
