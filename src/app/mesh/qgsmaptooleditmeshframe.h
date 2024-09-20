@@ -166,7 +166,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void onZoomToSelected();
     void reindexMesh();
     void onUndoRedo();
-    void updateStatusBarMessage();
+    void updateStatusBarMessage() const;
 
   private:
 
