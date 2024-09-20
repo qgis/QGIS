@@ -16,10 +16,12 @@
 #include "qgsmaptooleditmeshframe.h"
 
 #include <QMessageBox>
+#include <QLocale>
 
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsstatusbar.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsdoublespinbox.h"
@@ -330,6 +332,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
     else if ( !mZValueWidget )
       createZValueWidget();
   } );
+
+  connect( this, &QgsMapToolEditMeshFrame::selectionChange, this, &QgsMapToolEditMeshFrame::updateStatusBarMessage );
 
   setAutoSnapEnabled( true );
 }
@@ -2840,4 +2844,41 @@ void QgsMapToolEditMeshFrame::showSelectByExpressionDialog()
   dialog->show();
   connect( dialog, &QgsMeshSelectByExpressionDialog::select, this, &QgsMapToolEditMeshFrame::selectByExpression );
   connect( dialog, &QgsMeshSelectByExpressionDialog::zoomToSelected, this, &QgsMapToolEditMeshFrame::onZoomToSelected );
+}
+
+void QgsMapToolEditMeshFrame::updateStatusBarMessage()
+{
+  if ( ! mSelectedVertices.isEmpty() )
+  {
+    QString message;
+    if ( mSelectedVertices.count() == 1 )
+    {
+      const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
+      int vertexId = mSelectedVertices.keys()[0];
+      QgsMeshVertex vertex = mesh.vertex( vertexId );
+
+      message = tr( "Selected mesh vertex ID: %1 at x: %2 y: %3." ).arg( vertexId ).arg( QLocale().toString( vertex.x(), 'f' ) ).arg( QLocale().toString( vertex.y(), 'f' ) );
+    }
+    else if ( mSelectedVertices.count() == 2 )
+    {
+      const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
+      int vertexId1 = mSelectedVertices.keys()[0];
+      int vertexId2 = mSelectedVertices.keys()[1];
+      QgsMeshVertex vertex1 = mesh.vertex( vertexId1 );
+      QgsMeshVertex vertex2 = mesh.vertex( vertexId2 );
+      double distance = vertex1.distance( vertex2 );
+
+      message = tr( "Selected mesh vertices IDs: %1 and %2 with distance %3." ).arg( vertexId1 ).arg( vertexId2 ).arg( QLocale().toString( distance, 'f' ) );
+    }
+    else if ( mSelectedVertices.count() > 2 )
+    {
+      message = tr( "Selected %1 mesh vertices." ).arg( mSelectedVertices.count() );
+    }
+
+    QgisApp::instance()->statusBarIface()->showMessage( message );
+  }
+  else
+  {
+    QgisApp::instance()->statusBarIface()->clearMessage();
+  }
 }
