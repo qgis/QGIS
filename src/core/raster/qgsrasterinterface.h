@@ -263,6 +263,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Returns the name of the color interpretation for the specified \a bandNumber.
+     * It is translated since QGIS 3.40
      *
      * \since QGIS 3.18
      */

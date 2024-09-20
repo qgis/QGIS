@@ -123,6 +123,7 @@ Returns data type for the band specified by number
     QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const;
 %Docstring
 Returns a string color name representation of a color interpretation.
+It is translated since QGIS 3.40
 %End
 
     virtual bool reload();
