@@ -2877,7 +2877,8 @@ void QgsMapToolEditMeshFrame::updateStatusBarMessage()
         distArea.setSourceCrs( mCurrentLayer->crs(), QgsProject::instance()->transformContext() );
         distArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
         distance = distArea.measureLine( QgsPointXY( vertex1 ), QgsPointXY( vertex2 ) );
-        formattedDistance = distArea.formatDistance( distance, 6, mCurrentLayer->crs().mapUnits() );
+        distance = distArea.convertLengthMeasurement( distance, QgsProject::instance()->distanceUnits() );
+        formattedDistance = distArea.formatDistance( distance, 6, QgsProject::instance()->distanceUnits() );
       }
       else
       {
