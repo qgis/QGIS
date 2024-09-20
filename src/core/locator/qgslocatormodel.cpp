@@ -191,7 +191,7 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
     return QAbstractTableModel::flags( index );
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
-  if ( mResults.at( index.row() ).type == QgsLocatorModel::EntryType::Filter )
+  if ( mResults.at( index.row() ).type != QgsLocatorModel::EntryType::Result )
   {
     flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   }
