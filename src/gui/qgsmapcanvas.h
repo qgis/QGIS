@@ -442,7 +442,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void unsetMapTool( QgsMapTool *mapTool );
 
     //! Returns the currently active tool
-    QgsMapTool *mapTool();
+    QgsMapTool *mapTool() const;
 
     /**
      * Sets the \a project linked to this canvas.
