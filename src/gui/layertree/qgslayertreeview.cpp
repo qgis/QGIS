@@ -177,6 +177,11 @@ void QgsLayerTreeView::setCurrentLayer( QgsMapLayer *layer )
   setCurrentIndex( node2index( nodeLayer ) );
 }
 
+void QgsLayerTreeView::setCurrentGroup( QgsLayerTreeGroup *group )
+{
+  setCurrentNode( group );
+}
+
 void QgsLayerTreeView::setLayerVisible( QgsMapLayer *layer, bool visible )
 {
   if ( !layer )
