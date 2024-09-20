@@ -42,8 +42,8 @@ bool QgsLocatorModelBridge::isRunning() const
 
 void QgsLocatorModelBridge::triggerResult( const QModelIndex &index, const int actionId )
 {
-  mLocator->clearPreviousResults();
   QgsLocatorResult result = mProxyModel->data( index, static_cast< int >( QgsLocatorModel::CustomRole::ResultData ) ).value< QgsLocatorResult >();
+  mLocator->clearPreviousResults();
   if ( result.filter )
   {
     if ( actionId >= 0 )
