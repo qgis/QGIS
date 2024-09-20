@@ -174,7 +174,7 @@ void QgsLayerTreeView::setCurrentLayer( QgsMapLayer *layer )
   if ( !nodeLayer )
     return;
 
-  setCurrentIndex( node2index( nodeLayer ) );
+  setCurrentNode( nodeLayer );
 }
 
 void QgsLayerTreeView::setCurrentGroup( QgsLayerTreeGroup *group )
