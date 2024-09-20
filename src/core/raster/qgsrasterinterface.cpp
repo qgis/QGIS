@@ -642,7 +642,7 @@ QString QgsRasterInterface::displayBandName( int bandNumber ) const
 {
   QString name = generateBandName( bandNumber );
   const QString colorInterp = colorInterpretationName( bandNumber );
-  if ( colorInterp != QLatin1String( "Undefined" ) )
+  if ( colorInterp != tr( "Undefined" ) )
   {
     name.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );
   }
