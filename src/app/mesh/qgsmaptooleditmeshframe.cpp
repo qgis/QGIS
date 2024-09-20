@@ -47,6 +47,7 @@
 #include "qgsmeshselectbyexpressiondialog.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsidentifymenu.h"
+#include "qgsdistancearea.h"
 
 
 //
@@ -2854,21 +2855,39 @@ void QgsMapToolEditMeshFrame::updateStatusBarMessage()
     if ( mSelectedVertices.count() == 1 )
     {
       const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
-      int vertexId = mSelectedVertices.keys()[0];
-      QgsMeshVertex vertex = mesh.vertex( vertexId );
+      const int vertexId = mSelectedVertices.firstKey();
+      const QgsMeshVertex vertex = mesh.vertex( vertexId );
 
-      message = tr( "Selected mesh vertex ID: %1 at x: %2 y: %3." ).arg( vertexId ).arg( QLocale().toString( vertex.x(), 'f' ) ).arg( QLocale().toString( vertex.y(), 'f' ) );
+      message = tr( "Selected mesh vertex ID: %1 at x: %2 y: %3 z: %4." ).arg( vertexId ).arg( QLocale().toString( vertex.x(), 'f' ) ).arg( QLocale().toString( vertex.y(), 'f' ) ).arg( QLocale().toString( vertex.z(), 'f' ) );
     }
     else if ( mSelectedVertices.count() == 2 )
     {
       const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
-      int vertexId1 = mSelectedVertices.keys()[0];
-      int vertexId2 = mSelectedVertices.keys()[1];
-      QgsMeshVertex vertex1 = mesh.vertex( vertexId1 );
-      QgsMeshVertex vertex2 = mesh.vertex( vertexId2 );
-      double distance = vertex1.distance( vertex2 );
+      const int vertexId1 = mSelectedVertices.firstKey();
+      const int vertexId2 = mSelectedVertices.lastKey();
+      const QgsMeshVertex vertex1 = mesh.vertex( vertexId1 );
+      const QgsMeshVertex vertex2 = mesh.vertex( vertexId2 );
 
-      message = tr( "Selected mesh vertices IDs: %1 and %2 with distance %3." ).arg( vertexId1 ).arg( vertexId2 ).arg( QLocale().toString( distance, 'f' ) );
+      QString formattedDistance;
+      double distance;
+      // if crs is valid calculate using QgsDistanceArea otherwise calculate just as distance
+      if ( mCurrentLayer->crs().isValid() )
+      {
+        QgsDistanceArea distArea = QgsDistanceArea();
+        distArea.setSourceCrs( mCurrentLayer->crs(), QgsProject::instance()->transformContext() );
+        distArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
+        distance = distArea.measureLine( QgsPointXY( vertex1 ), QgsPointXY( vertex2 ) );
+        formattedDistance = distArea.formatDistance( distance, 6, mCurrentLayer->crs().mapUnits() );
+      }
+      else
+      {
+        distance = vertex1.distance( vertex2 );
+        formattedDistance = QLocale().toString( distance, 'f' );
+      }
+
+      const double zDiff = vertex2.z() - vertex1.z();
+
+      message = tr( "Selected mesh vertices IDs: %1 and %2 with distance %3 and dZ %4." ).arg( vertexId1 ).arg( vertexId2 ).arg( formattedDistance ).arg( QLocale().toString( zDiff, 'f' ) );
     }
     else if ( mSelectedVertices.count() > 2 )
     {
