@@ -748,11 +748,10 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
     void invalidateMapBasedData() override;
 
     /**
-     *  Lazily initializes mImage
-     *  \param synchronous if TRUE, the image is fetched synchronously, otherwise asynchronously
+     *  Fetches the image from the server and returns it.
      *  \since QGIS 3.40
      */
-    QImage getLegendGraphic( bool synchronous = false ) const;
+    QImage getLegendGraphicBlocking( ) const;
 
 
 #ifdef SIP_RUN
@@ -771,6 +770,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
   private:
 
+    // Lazy loading of the image
+    QImage getLegendGraphic( bool synchronous = false ) const;
 
     QImage renderMessage( const QString &msg ) const;
 

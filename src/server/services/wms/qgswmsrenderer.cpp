@@ -137,7 +137,7 @@ namespace QgsWms
       {
         if ( QgsWmsLegendNode *layerNode = qobject_cast<QgsWmsLegendNode *>( model.findLegendNode( layer->id(), QString() ) ) )
         {
-          const auto image { layerNode->getLegendGraphic( true ) };
+          const auto image { layerNode->getLegendGraphicBlocking( ) };
           if ( ! image.isNull() )
           {
             // Check that we are not exceeding the maximum size

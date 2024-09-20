@@ -661,11 +661,9 @@ Constructor for QgsWmsLegendNode.
     virtual void invalidateMapBasedData();
 
 
-    QImage getLegendGraphic( bool synchronous = false ) const;
+    QImage getLegendGraphicBlocking( ) const;
 %Docstring
-Lazily initializes mImage
-
-:param synchronous: if ``True``, the image is fetched synchronously, otherwise asynchronously
+Fetches the image from the server and returns it.
 
 .. versionadded:: 3.40
 %End
