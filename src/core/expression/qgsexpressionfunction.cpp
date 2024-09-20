@@ -877,11 +877,11 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   parameters.filter = relation.getRelatedFeaturesFilter( f );
 
-  QString cacheKey = QStringLiteral( "relagg:%1:%2:%3:%4:%5" ).arg( vl->id(),
-                     QString::number( static_cast< int >( aggregate ) ),
-                     subExpression,
-                     parameters.filter,
-                     orderBy );
+  const QString cacheKey = QStringLiteral( "relagg:%1%:%2:%3:%4:%5:%6" ).arg( relationId, vl->id(),
+                           QString::number( static_cast< int >( aggregate ) ),
+                           subExpression,
+                           parameters.filter,
+                           orderBy );
   if ( context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
 
