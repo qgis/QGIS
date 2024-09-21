@@ -105,7 +105,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         }
 
         case Description:
-          if ( !entry.filter )
+          if ( entry.type == EntryType::Result )
             return entry.result.description;
           else
             return QVariant();
@@ -145,7 +145,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       break;
 
     case static_cast< int >( CustomRole::ResultData ):
-      if ( !entry.filter )
+      if ( entry.type == EntryType::Result )
         return QVariant::fromValue( entry.result );
       else
         return QVariant();
@@ -191,7 +191,7 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
     return QAbstractTableModel::flags( index );
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
-  if ( mResults.at( index.row() ).filter )
+  if ( mResults.at( index.row() ).type != QgsLocatorModel::EntryType::Result )
   {
     flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   }
