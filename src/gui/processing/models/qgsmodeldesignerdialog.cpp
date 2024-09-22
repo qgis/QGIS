@@ -305,6 +305,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
       beginUndoCommand( tr( "Change Model Group" ), GroupChanged );
       mModel->setGroup( group );
       endUndoCommand();
+      updateWindowTitle();
     }
   } );
 
@@ -824,7 +825,9 @@ void QgsModelDesignerDialog::updateWindowTitle()
 {
   QString title = tr( "Model Designer" );
   if ( !mModel->name().isEmpty() )
-    title = QStringLiteral( "%1 - %2" ).arg( title, mModel->name() );
+    title = mModel->group().isEmpty()
+            ? QStringLiteral( "%1: %2" ).arg( title, mModel->name() )
+            : QStringLiteral( "%1: %2 - %3" ).arg( title, mModel->group(), mModel->name() );
 
   if ( isDirty() )
     title.prepend( '*' );
