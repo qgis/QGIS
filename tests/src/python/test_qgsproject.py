@@ -32,6 +32,7 @@ from qgis.core import (
     QgsExpressionContextUtils,
     QgsFeature,
     QgsGeometry,
+    QgsLayerNotesUtils,
     QgsLabelingEngineSettings,
     QgsMapLayer,
     QgsProject,
@@ -1878,6 +1879,31 @@ class TestQgsProject(QgisTestCase):
         self.assertTrue(project2.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
         self.assertEqual(layers[1].dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
+
+    def testRasterLayerFlagDontResolveLayers(self):
+        """
+        Test that we can read layer notes from a raster layer when opening with FlagDontResolveLayers
+        """
+        tmpDir = QTemporaryDir()
+        tmpFile = f"{tmpDir.path()}/project.qgs"
+        copyfile(os.path.join(TEST_DATA_DIR, "landsat_4326.tif"), os.path.join(tmpDir.path(), "landsat_4326.tif"))
+
+        project = QgsProject()
+
+        l = QgsRasterLayer(os.path.join(tmpDir.path(), "landsat_4326.tif"), "landsat", "gdal")
+        self.assertTrue(l.isValid())
+        QgsLayerNotesUtils.setLayerNotes(l, 'my notes')
+        self.assertTrue(project.addMapLayers([l]))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        # Read the project with FlagDontResolveLayers
+        project = QgsProject()
+        self.assertTrue(project.read(tmpFile, QgsProject.FlagDontResolveLayers))
+        layers = list(project.mapLayers().values())
+        self.assertEqual(QgsLayerNotesUtils.layerNotes(layers[0]), "my notes")
+
+        del project
 
 
 if __name__ == '__main__':
