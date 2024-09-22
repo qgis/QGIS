@@ -2847,7 +2847,7 @@ void QgsMapToolEditMeshFrame::showSelectByExpressionDialog()
   connect( dialog, &QgsMeshSelectByExpressionDialog::zoomToSelected, this, &QgsMapToolEditMeshFrame::onZoomToSelected );
 }
 
-void QgsMapToolEditMeshFrame::updateStatusBarMessage()
+void QgsMapToolEditMeshFrame::updateStatusBarMessage() const
 {
   if ( ! mSelectedVertices.isEmpty() )
   {
