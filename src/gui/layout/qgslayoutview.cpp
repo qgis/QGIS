@@ -40,6 +40,7 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QMimeData>
+#include <QScrollBar>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -67,6 +68,9 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   connect( this, &QgsLayoutView::extentChanged, this, &QgsLayoutView::onExtentChanged );
   connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
   connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::extentChanged );
+
+  verticalScrollBar()->installEventFilter( this );
+  horizontalScrollBar()->installEventFilter( this );
 
   mScreenHelper = new QgsScreenHelper( this );
 }
@@ -1296,6 +1300,17 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   {
     scaleSafe( 1 / zoomFactor );
   }
+}
+
+
+bool QgsLayoutView::eventFilter( QObject *object, QEvent *event )
+{
+  if ( event->type() == QEvent::MouseButtonRelease )
+  {
+    emit extentChanged();
+  }
+  return QGraphicsView::eventFilter( object, event );
+
 }
 
 QGraphicsLineItem *QgsLayoutView::createSnapLine() const

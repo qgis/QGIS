@@ -293,6 +293,11 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
      */
     void setSectionLabel( const QString &label );
 
+    /**
+     * Event filter to handle mouse release on scroll bars
+     */
+    bool eventFilter( QObject *object, QEvent *event ) override;
+
   public slots:
 
     /**
