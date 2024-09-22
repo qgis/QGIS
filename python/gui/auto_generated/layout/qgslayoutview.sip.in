@@ -334,6 +334,22 @@ Zooms to the actual size of the layout.
 .. seealso:: :py:func:`zoomOut`
 %End
 
+    void zoomLast();
+%Docstring
+Zooms to the previous zoom level
+
+.. versionadded:: 3.42
+%End
+
+    void zoomNext();
+%Docstring
+Zooms to the next zoom level
+
+.. versionadded:: 3.42
+%End
+
+
+
     void emitZoomLevelChanged();
 
 
@@ -518,6 +534,11 @@ Emitted when the current ``tool`` is changed.
 Emitted whenever the zoom level of the view is changed.
 %End
 
+    void extentChanged();
+%Docstring
+Emitted whenever the extent of the displayed scene has changed
+%End
+
     void cursorPosChanged( QPointF layoutPoint );
 %Docstring
 Emitted when the mouse cursor coordinates change within the view.
@@ -552,6 +573,17 @@ item and should have its properties displayed in any designer windows.
 %Docstring
 Emitted in the destructor when the view is about to be deleted,
 but is still in a perfectly valid state.
+%End
+
+
+    void zoomLastStatusChanged( bool );
+%Docstring
+Emitted when zoom last status changed
+%End
+
+    void zoomNextStatusChanged( bool );
+%Docstring
+Emitted when zoom next status changed
 %End
 
   protected:

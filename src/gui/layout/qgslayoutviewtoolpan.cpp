@@ -85,6 +85,7 @@ void QgsLayoutViewToolPan::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
   }
 
   mIsPanning = false;
+  emit view()->extentChanged();
   view()->viewport()->setCursor( Qt::OpenHandCursor );
 }
 

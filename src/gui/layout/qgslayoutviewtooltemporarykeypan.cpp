@@ -38,6 +38,7 @@ void QgsLayoutViewToolTemporaryKeyPan::keyReleaseEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
   {
     view()->setTool( mPreviousViewTool );
+    emit view()->extentChanged();
   }
 }
 

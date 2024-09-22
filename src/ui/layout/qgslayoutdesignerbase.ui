@@ -116,6 +116,8 @@
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomActual"/>
    <addaction name="mActionZoomAll"/>
+   <addaction name="mActionZoomLast"/>
+   <addaction name="mActionZoomNext"/>
    <addaction name="mActionRefreshView"/>
   </widget>
   <widget class="QToolBar" name="mActionsToolbar">
@@ -1589,6 +1591,30 @@
   <action name="mActionPageProperties">
    <property name="text">
     <string>Page Properties…</string>
+   </property>
+  </action>
+  <action name="mActionZoomLast">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomLast.svg</normaloff>:/images/themes/default/mActionZoomLast.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Last</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Left</string>
+   </property>
+  </action>
+  <action name="mActionZoomNext">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomNext.svg</normaloff>:/images/themes/default/mActionZoomNext.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Next</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Right</string>
    </property>
   </action>
  </widget>
