@@ -86,7 +86,8 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   QgsSetRequestInitiatorClass( requestData,
                                QStringLiteral( "QgsQuantizedMeshDataProvider" ) );
   QgsBlockingNetworkRequest request;
-  request.setAuthCfg( mAuthCfg );
+  if ( !mAuthCfg.isEmpty() )
+    request.setAuthCfg( mAuthCfg );
   auto respCode = request.get( requestData );
   if ( respCode != QgsBlockingNetworkRequest::ErrorCode::NoError )
   {
@@ -413,7 +414,8 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
   requestData.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   requestData.setRawHeader( "Accept", "application/vnd.quantized-mesh,application/octet-stream;q=0.9" );
   mMetadata.mHeaders.updateNetworkRequest( requestData );
-  QgsApplication::authManager()->updateNetworkRequest( requestData, mMetadata.mAuthCfg );
+  if ( !mMetadata.mAuthCfg.isEmpty() )
+    QgsApplication::authManager()->updateNetworkRequest( requestData, mMetadata.mAuthCfg );
   QgsSetRequestInitiatorClass( requestData,
                                QStringLiteral( "QgsQuantizedMeshIndex" ) );
 
