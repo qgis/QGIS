@@ -252,14 +252,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     void setCurrentLayer( QgsMapLayer *layer );
 
-    /** 
-     * Sets the currently selected \a group
-     * 
-     * If \a group is NULLPTR then all nodes will be deselected.
-     * \since QGIS 3.40
-     */
-    void setCurrentGroup( QgsLayerTreeGroup *group);
-
     //! Gets current node. May be NULLPTR
     QgsLayerTreeNode *currentNode() const;
     //! Gets current group node. If a layer is current node, the function will return parent group. May be NULLPTR.

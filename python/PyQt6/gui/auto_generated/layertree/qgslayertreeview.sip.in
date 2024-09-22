@@ -139,7 +139,7 @@ for mapping the view indexes through the view's proxy model to the source model.
 
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 %Docstring
-Returns proxy model index for a given node. If the node does not belong to the layer tree, the result is undefined
+Returns proxy model index for a given node. If the node does not belong to the layer tree, the result is undefined   
 
 Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
@@ -150,7 +150,7 @@ for mapping the view indexes through the view's proxy model to the source model.
 
     QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
 %Docstring
-Returns source model index for a given node. If the node does not belong to the layer tree, the result is undefined
+Returns source model index for a given node. If the node does not belong to the layer tree, the result is undefined  
 
 .. versionadded:: 3.18
 %End
@@ -233,15 +233,6 @@ Sets the currently selected ``layer``.
 If ``layer`` is ``None`` then all layers will be deselected.
 
 .. seealso:: :py:func:`currentLayer`
-%End
-
-    void setCurrentGroup( QgsLayerTreeGroup *group);
-%Docstring
-Sets the currently selected ``group``
-
-If ``group`` is ``None`` then all nodes will be deselected.
-
-.. versionadded:: 3.40
 %End
 
     QgsLayerTreeNode *currentNode() const;
@@ -381,7 +372,7 @@ Returns if valid layers should be hidden (i.e. only invalid layers are shown).
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring
-Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
+Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model  
 %End
 
     void expandAllNodes();
