@@ -307,14 +307,15 @@ QVector<QgsChunkNode *> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChu
       continue;
 
     QgsTileMatrix zoomedTileMatrix = QgsTileMatrix::fromTileMatrix( tile.zoomLevel(), mMetadata->mTileMatrix );
-    QgsRectangle extent2d = mTileCrsToMapCrs.transform( zoomedTileMatrix.tileExtent( tile ) );
+    QgsRectangle extent2d = zoomedTileMatrix.tileExtent( tile );
     if ( !extent2d.intersects( mMapExtent ) )
       continue; // Don't render terrain inside layer extent, but outside map extent
     Q_ASSERT( mTerrain );
+    QgsRectangle mapExtent2d = mTileCrsToMapCrs.transform( extent2d );
     QgsVector3D corner1 = mTerrain->mapSettings()->mapToWorldCoordinates(
-    {extent2d.xMinimum(), extent2d.yMinimum(), mMetadata->dummyZRange.lower()} );
+    {mapExtent2d.xMinimum(), mapExtent2d.yMinimum(), mMetadata->dummyZRange.lower()} );
     QgsVector3D corner2 = mTerrain->mapSettings()->mapToWorldCoordinates(
-    {extent2d.xMaximum(), extent2d.yMaximum(), mMetadata->dummyZRange.upper()} );
+    {mapExtent2d.xMaximum(), mapExtent2d.yMaximum(), mMetadata->dummyZRange.upper()} );
     children.push_back(
       new QgsChunkNode(
         childId,
