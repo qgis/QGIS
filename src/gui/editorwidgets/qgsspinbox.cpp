@@ -221,7 +221,7 @@ QValidator::State QgsSpinBox::validate( QString &input, int &pos ) const
 void QgsSpinBox::stepBy( int steps )
 {
   const bool wasNull = mShowClearButton && value() == clearValue();
-  if ( wasNull && minimum() < 0 && maximum() > 0 )
+  if ( wasNull && minimum() < 0 && maximum() > 0 && !( specialValueText().isEmpty() || specialValueText() == SPECIAL_TEXT_WHEN_EMPTY ) )
   {
     // value is currently null, and range allows both positive and negative numbers
     // in this case we DON'T do the default step, as that would add one step to the NULL value,

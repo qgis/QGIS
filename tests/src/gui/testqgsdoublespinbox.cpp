@@ -181,6 +181,25 @@ void TestQgsDoubleSpinBox::step()
   QCOMPARE( spin.value(), -1000 );
   spin.stepBy( -1 );
   QCOMPARE( spin.value(), -1 );
+
+  // with clear value, but no special value text. In this case we should NOT reset to 0 when incrementing up from the clear value
+  spin.setSpecialValueText( QString() );
+  spin.setClearValue( -1000 );
+  spin.setValue( 0 );
+  spin.stepBy( 1 );
+  QCOMPARE( spin.value(), 1 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), 0 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), -1 );
+  spin.clear();
+  QCOMPARE( spin.value(), -1000 );
+  spin.stepBy( 1 );
+  QCOMPARE( spin.value(), -999 );
+  spin.clear();
+  QCOMPARE( spin.value(), -1000 );
+  spin.stepBy( -1 );
+  QCOMPARE( spin.value(), -1000 );
 }
 
 QGSTEST_MAIN( TestQgsDoubleSpinBox )
