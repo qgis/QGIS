@@ -1008,6 +1008,8 @@
         <file>themes/default/mIconCloud.svg</file>
         <file>themes/default/mActionTextInsideRect.svg</file>
         <file>themes/default/mIconLabelingRules.svg</file>
+        <file>themes/default/propertyicons/sourcefieldsandforms.svg</file>
+        <file>themes/default/propertyicons/layerconfiguration.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

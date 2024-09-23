@@ -126,7 +126,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/system.svg" ) );
+          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/layerconfiguration.svg" ) );
       }
       break;
     }
@@ -198,7 +198,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields.svg" ) );
+          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/sourcefieldsandforms.svg" ) );
       }
       break;
     }
@@ -432,7 +432,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QIcon(); // TODO
+          return QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorNotes.svg" ) );
       }
       break;
     }
