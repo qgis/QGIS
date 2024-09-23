@@ -173,9 +173,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mRemoveProfileButton">
+      <widget class="QToolButton" name="mDeleteProfileButton">
        <property name="text">
-        <string>Remove profile</string>
+        <string>Delete profile</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">

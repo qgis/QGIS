@@ -3553,7 +3553,7 @@ void QgisApp::refreshProfileMenu()
   openProfileSelectionDialog->setObjectName( "mActionOpenProfileSelector" );
   connect( openProfileSelectionDialog, &QAction::triggered, this, [this, activeName]()
   {
-    auto dlg = QgsUserProfileSelectionDialog( userProfileManager(), activeName );
+    QgsUserProfileSelectionDialog dlg = QgsUserProfileSelectionDialog( userProfileManager(), activeName );
 
     if ( dlg.exec() == QDialog::Accepted )
     {
