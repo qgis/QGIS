@@ -661,6 +661,14 @@ Constructor for QgsWmsLegendNode.
     virtual void invalidateMapBasedData();
 
 
+    QImage getLegendGraphicBlocking( ) const;
+%Docstring
+Fetches the image from the server and returns it.
+
+.. versionadded:: 3.40
+%End
+
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsWmsLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
