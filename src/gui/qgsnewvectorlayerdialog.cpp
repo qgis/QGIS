@@ -35,6 +35,20 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+namespace
+{
+  // ESRI shapefile field width specification is taken from here
+  // https://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=Geoprocessing%20considerations%20for%20shapefile%20output
+
+  constexpr int ESRI_SHPF_TEXT_MAX_WIDTH_INCLUSIVE = 254;
+  constexpr int ESRI_SHPF_SHORT_INTEGER_MAX_WIDTH_INCLUSIVE = 4;
+  // constexpr int ESRI_SHPF_LONG_INTEGER_MAX_WIDTH_INCLUSIVE = 9;
+  // constexpr int ESRI_SHPF_FLOAT_MAX_WIDTH_INCLUSIVE = 13;
+  constexpr int ESRI_SHPF_DOUBLE_MAX_WIDTH_INCLUSIVE = 13;
+  constexpr int ESRI_SHPF_DATE_MAX_WIDTH_INCLUSIVE = 8;
+  constexpr int ESRI_SHPF_MAX_FIELD_NUM = 255;
+}
+
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
@@ -57,9 +71,6 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), "Real" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDate ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "Date" );
 
-  mWidth->setValidator( new QIntValidator( 1, 255, this ) );
-  mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
-
   const Qgis::WkbType geomTypes[] =
   {
     Qgis::WkbType::NoGeometry,
@@ -76,6 +87,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
 
+  // (?) Create ENUM for formats?
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
 #if 0
   // Disabled until provider properly supports editing the created file formats
@@ -94,6 +106,16 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mFileFormatComboBox->setCurrentIndex( 0 );
 
+  mPrecision->setMinimum( 1 );
+  mPrecision->setClearValue( 6 );
+  mPrecision->setMaximum( 15 );
+  mPrecision->setExpressionsEnabled( false );
+
+  mWidth->setMinimum( 1 );
+  mWidth->setExpressionsEnabled( false );
+
+  mTypeBox->setCurrentIndex( 0 );
+
   mFileEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
 
   // Use default encoding if none supplied
@@ -109,7 +131,8 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   }
   mFileEncoding->setCurrentIndex( encindex );
 
-  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QString() ) );
+  QString firstItemLength = QString::number( ESRI_SHPF_SHORT_INTEGER_MAX_WIDTH_INCLUSIVE );
+  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << firstItemLength << QString() ) );
   connect( mNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::nameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewVectorLayerDialog::selectionChanged );
   connect( mGeometryTypeBox, static_cast<void( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
@@ -150,36 +173,9 @@ void QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged( int index
 void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
 {
   // FIXME: sync with providers/ogr/qgsogrprovider.cpp
-  switch ( index )
-  {
-    case 0: // Text data
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
-        mWidth->setText( QStringLiteral( "80" ) );
-      mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 255, this ) );
-      break;
 
-    case 1: // Whole number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
-        mWidth->setText( QStringLiteral( "10" ) );
-      mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 10, this ) );
-      break;
-
-    case 2: // Decimal number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 20 )
-        mWidth->setText( QStringLiteral( "20" ) );
-      if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 15 )
-        mPrecision->setText( QStringLiteral( "6" ) );
-
-      mPrecision->setEnabled( true );
-      mWidth->setValidator( new QIntValidator( 1, 20, this ) );
-      break;
-
-    default:
-      QgsDebugError( QStringLiteral( "unexpected index" ) );
-      break;
-  }
+  if ( mFileFormatComboBox->currentText() == tr( "ESRI Shapefile" ) )
+    mTypeBox_currentIndexChanged_formatShapeESRI( index );
 }
 
 Qgis::WkbType QgsNewVectorLayerDialog::selectedType() const
@@ -289,6 +285,44 @@ void QgsNewVectorLayerDialog::moveFieldsDown()
   mAttributeView->setCurrentIndex( mAttributeView->model()->index( currentRow + 1, 0 ) );
 }
 
+void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged_formatShapeESRI( int index )
+{
+  switch ( index )
+  {
+    case 0: // Text data
+      mWidth->setMaximum( ESRI_SHPF_TEXT_MAX_WIDTH_INCLUSIVE );
+      mWidth->setClearValue( 80 );
+
+      mPrecision->setEnabled( false );
+      break;
+
+    case 1: // Whole number
+      mWidth->setMaximum( ESRI_SHPF_SHORT_INTEGER_MAX_WIDTH_INCLUSIVE );
+      mWidth->setClearValueMode( QgsSpinBox::ClearValueMode::MaximumValue );
+
+      mPrecision->setEnabled( false );
+      break;
+
+    case 2: // Decimal number
+      mWidth->setMaximum( ESRI_SHPF_DOUBLE_MAX_WIDTH_INCLUSIVE );
+      mWidth->setClearValueMode( QgsSpinBox::ClearValueMode::MaximumValue );
+
+      mPrecision->setEnabled( true );
+      break;
+
+    case 3: // Date
+      mWidth->setMaximum( ESRI_SHPF_DATE_MAX_WIDTH_INCLUSIVE );
+      mWidth->setClearValueMode( QgsSpinBox::ClearValueMode::MaximumValue );
+
+      mPrecision->setEnabled( false );
+      break;
+
+    default:
+      QgsDebugError( QStringLiteral( "unexpected index (ESRI format)" ) );
+      break;
+  }
+}
+
 QString QgsNewVectorLayerDialog::filename() const
 {
   return mFileName->filePath();
@@ -301,7 +335,10 @@ void QgsNewVectorLayerDialog::setFilename( const QString &filename )
 
 void QgsNewVectorLayerDialog::checkOk()
 {
-  const bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 && mGeometryTypeBox->currentIndex() != -1 );
+  bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 && mGeometryTypeBox->currentIndex() != -1 );
+  if ( mFileFormatComboBox->currentText() == tr( "ESRI Shapefile" ) )
+    ok = ok && ( mAttributeView->topLevelItemCount() < ESRI_SHPF_MAX_FIELD_NUM ) ;
+
   mOkButton->setEnabled( ok );
 }
 
