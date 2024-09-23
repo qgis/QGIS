@@ -277,6 +277,12 @@ Sets a section ``label``, to display above the first page shown in the
 view.
 %End
 
+    virtual bool eventFilter( QObject *object, QEvent *event );
+
+%Docstring
+Event filter to handle mouse release on scroll bars
+%End
+
   public slots:
 
     void zoomFull();
