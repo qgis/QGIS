@@ -2870,17 +2870,25 @@ void QgsMapToolEditMeshFrame::updateStatusBarMessage() const
 
       QString formattedDistance;
       double distance;
+      bool distanceIsValid = false;
+
       // if crs is valid calculate using QgsDistanceArea otherwise calculate just as distance
       if ( mCurrentLayer->crs().isValid() )
       {
         QgsDistanceArea distArea = QgsDistanceArea();
         distArea.setSourceCrs( mCurrentLayer->crs(), QgsProject::instance()->transformContext() );
         distArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
-        distance = distArea.measureLine( QgsPointXY( vertex1 ), QgsPointXY( vertex2 ) );
-        distance = distArea.convertLengthMeasurement( distance, QgsProject::instance()->distanceUnits() );
-        formattedDistance = distArea.formatDistance( distance, 6, QgsProject::instance()->distanceUnits() );
+        try
+        {
+          distance = distArea.measureLine( QgsPointXY( vertex1 ), QgsPointXY( vertex2 ) );
+          distance = distArea.convertLengthMeasurement( distance, QgsProject::instance()->distanceUnits() );
+          formattedDistance = distArea.formatDistance( distance, 6, QgsProject::instance()->distanceUnits() );
+          distanceIsValid = true;
+        }
+        catch ( QgsCsException & ) {}
       }
-      else
+
+      if ( ! distanceIsValid )
       {
         distance = vertex1.distance( vertex2 );
         formattedDistance = QLocale().toString( distance, 'f' );
