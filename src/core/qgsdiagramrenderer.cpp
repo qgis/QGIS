@@ -533,6 +533,20 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRen
     return QSizeF();
   }
 
+  if ( s.scaleBasedVisibility )
+  {
+    double maxScale = s.maximumScale;
+    if ( maxScale > 0 && c.rendererScale() < maxScale )
+    {
+      return QSizeF();
+    }
+    double minScale = s.minimumScale;
+    if ( minScale > 0 && c.rendererScale() > minScale )
+    {
+      return QSizeF();
+    }
+  }
+
   QSizeF size = diagramSize( feature, c );
   if ( size.isValid() )
   {
@@ -872,17 +886,20 @@ QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const
     }
   }
 
-  const double spacing = c.convertToMapUnits( mSettings.stackedDiagramSpacing(), mSettings.stackedDiagramSpacingUnit(), mSettings.stackedDiagramSpacingMapUnitScale() );
-
-  switch ( mSettings.stackedDiagramMode )
+  if ( stackedSize.isValid() )
   {
-    case QgsDiagramSettings::Horizontal:
-      stackedSize.scale( stackedSize.width() + spacing * ( enabledDiagramCount - 1 ), stackedSize.height(), Qt::IgnoreAspectRatio );
-      break;
+    const double spacing = c.convertToMapUnits( mSettings.stackedDiagramSpacing(), mSettings.stackedDiagramSpacingUnit(), mSettings.stackedDiagramSpacingMapUnitScale() );
 
-    case QgsDiagramSettings::Vertical:
-      stackedSize.scale( stackedSize.width(), stackedSize.height() + spacing * ( enabledDiagramCount - 1 ), Qt::IgnoreAspectRatio );
-      break;
+    switch ( mSettings.stackedDiagramMode )
+    {
+      case QgsDiagramSettings::Horizontal:
+        stackedSize.scale( stackedSize.width() + spacing * ( enabledDiagramCount - 1 ), stackedSize.height(), Qt::IgnoreAspectRatio );
+        break;
+
+      case QgsDiagramSettings::Vertical:
+        stackedSize.scale( stackedSize.width(), stackedSize.height() + spacing * ( enabledDiagramCount - 1 ), Qt::IgnoreAspectRatio );
+        break;
+    }
   }
   return stackedSize;
 }
@@ -917,6 +934,20 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
     if ( !s.enabled )
     {
       continue;
+    }
+
+    if ( s.scaleBasedVisibility )
+    {
+      double maxScale = s.maximumScale;
+      if ( maxScale > 0 && c.rendererScale() < maxScale )
+      {
+        continue;
+      }
+      double minScale = s.minimumScale;
+      if ( minScale > 0 && c.rendererScale() > minScale )
+      {
+        continue;
+      }
     }
 
     if ( properties.hasActiveProperties() )
