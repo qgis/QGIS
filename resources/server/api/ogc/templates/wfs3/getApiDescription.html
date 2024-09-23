@@ -104,7 +104,7 @@
                <div class="card">
                {% for schema_name, schema_model in components.schemas %}
                    <div class="card-header" id="heading_{{ schema_name }}">
-                       <a name="{{ schema_name }}" />
+                       <a name="{{ schema_name }}"></a>
                        <h5 class="mb-0">
                            <button class="model-toggle btn btn-link" data-toggle="collapse"
                                data-target="#collapse_{{ schema_name }}"
@@ -121,7 +121,7 @@
                        <div class="card-body">
                          <dl class="row">
                              <dt class="col-sm-3">Type</dt>
-                             <dd class="col-sm-9">{{ schema_model.type }}</dt>
+                             <dd class="col-sm-9">{{ schema_model.type }}</dd>
                              <dt class="col-sm-3">Properties</dt>
                              <dd class="col-sm-9">
                                <table class="table table-sm">
@@ -162,7 +162,7 @@
                                  {% endfor %}
                                  </tbody>
                                </table>
-                             </dt>
+                             </dd>
                              <dt class="col-sm-3">Required</dt>
                              <dd class="col-sm-9">
                                <ul>
