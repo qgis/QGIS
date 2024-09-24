@@ -86,7 +86,10 @@ class GUI_EXPORT CategoryDisplayLabelDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
+    //! constructor
     explicit CategoryDisplayLabelDelegate( QObject *parent = nullptr );
+
+  protected:
     void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option,
                       const QRect &rect, const QString &text ) const override;
     QSize sizeHint( const QStyleOptionViewItem &option,
