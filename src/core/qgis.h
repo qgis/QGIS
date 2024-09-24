@@ -400,7 +400,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.40
      */
     enum class PythonEmbeddedMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
-    {
+      {
       Never = 0, //!< Python embedded never run
       Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
