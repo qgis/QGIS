@@ -325,6 +325,21 @@ respectively.
     static const QMetaObject staticMetaObject;
 
   public:
+    class ParsingParameters
+{
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+      public:
+        ParsingParameters( double multiplier = 1.0, int maxOpacity = 255 );
+
+        static ParsingParameters fromMultiplier( double multiplier );
+        static ParsingParameters fromMaxOpacity( int maxOpacity );
+
+        double multiplier;
+        int maxOpacity;
+    };
 
     QgsMapBoxGlStyleConverter();
 %Docstring
@@ -661,8 +676,8 @@ Parses a list of interpolation stops containing label values.
 :return: converted expression
 %End
 
-    static QgsProperty parseValueList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                       int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseValueList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, const ParsingParameters &params = QgsMapBoxGlStyleConverter::ParsingParameters(),
+                                       QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
 %Docstring
 Parses and converts a value list (e.g. an interpolate list).
 
@@ -672,8 +687,8 @@ Parses and converts a value list (e.g. an interpolate list).
 %End
 
 
-    static QgsProperty parseMatchList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                       int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseMatchList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, const ParsingParameters &params = QgsMapBoxGlStyleConverter::ParsingParameters(),
+                                       QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
 %Docstring
 Parses and converts a match function value list.
 
@@ -682,8 +697,8 @@ Parses and converts a match function value list.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                      int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, const ParsingParameters &params = QgsMapBoxGlStyleConverter::ParsingParameters(),
+                                      QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
 %Docstring
 Parses and converts a match function value list.
 
@@ -692,8 +707,7 @@ Parses and converts a match function value list.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-        int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, const ParsingParameters &params = QgsMapBoxGlStyleConverter::ParsingParameters(), QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
 %Docstring
 Interpolates a list which starts with the interpolate function.
 

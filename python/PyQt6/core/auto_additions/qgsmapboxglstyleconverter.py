@@ -21,6 +21,12 @@ QgsMapBoxGlStyleConverter.PropertyType.__doc__ = """Property types, for interpol
 # --
 QgsMapBoxGlStyleConverter.PropertyType.baseClass = QgsMapBoxGlStyleConverter
 try:
+    QgsMapBoxGlStyleConverter.ParsingParameters.fromMultiplier = staticmethod(QgsMapBoxGlStyleConverter.ParsingParameters.fromMultiplier)
+    QgsMapBoxGlStyleConverter.ParsingParameters.fromMaxOpacity = staticmethod(QgsMapBoxGlStyleConverter.ParsingParameters.fromMaxOpacity)
+    QgsMapBoxGlStyleConverter.ParsingParameters.__group__ = ['vectortile']
+except NameError:
+    pass
+try:
     QgsMapBoxGlStyleConverter.parseFillLayer = staticmethod(QgsMapBoxGlStyleConverter.parseFillLayer)
     QgsMapBoxGlStyleConverter.parseLineLayer = staticmethod(QgsMapBoxGlStyleConverter.parseLineLayer)
     QgsMapBoxGlStyleConverter.parseCircleLayer = staticmethod(QgsMapBoxGlStyleConverter.parseCircleLayer)

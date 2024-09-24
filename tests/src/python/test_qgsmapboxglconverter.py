@@ -166,7 +166,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             ["Water Transport"],
             "#d8e6f3",
             "#e7e7e7"
-        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters(2.5, 200))
         self.assertEqual(res.asExpression(),
                          'CASE WHEN "type" IN (\'Air Transport\',\'Airport\') THEN \'#e6e6e6\' WHEN "type" IS \'Education\' THEN \'#f7eaca\' WHEN "type" IS \'Medical Care\' THEN \'#f3d8e7\' WHEN "type" IS \'Road Transport\' THEN \'#f7f3ca\' WHEN "type" IS \'Water Transport\' THEN \'#d8e6f3\' ELSE \'#e7e7e7\' END')
         self.assertEqual(default_color.name(), '#e7e7e7')
@@ -179,7 +179,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             ["Index"],
             0.5,
             0.2
-        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters(2.5, 200))
         self.assertEqual(res.asExpression(),
                          'CASE WHEN "type" IS \'Normal\' THEN 0.625 WHEN "type" IS \'Index\' THEN 1.25 ELSE 0.5 END')
         self.assertEqual(default_number, 0.5)
@@ -221,7 +221,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             -1,
             "rgb(248,249,250)",
             "rgb(252, 252, 252)"
-        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters(2.5, 200))
         self.assertEqual(res.asExpression(), 'CASE WHEN "luminosity" IS -15 THEN \'#c8d2d5\' WHEN "luminosity" IS -14 THEN \'#cbd5d8\' WHEN "luminosity" IS -13 THEN \'#cfd7da\' WHEN "luminosity" IS -12 THEN \'#d2dadd\' WHEN "luminosity" IS -11 THEN \'#d5dde0\' WHEN "luminosity" IS -10 THEN \'#d9e0e2\' WHEN "luminosity" IS -9 THEN \'#dce3e5\' WHEN "luminosity" IS -8 THEN \'#e0e6e7\' WHEN "luminosity" IS -7 THEN \'#e3e8ea\' WHEN "luminosity" IS -6 THEN \'#e7ebed\' WHEN "luminosity" IS -5 THEN \'#eaeeef\' WHEN "luminosity" IS -4 THEN \'#eef1f2\' WHEN "luminosity" IS -3 THEN \'#f1f4f5\' WHEN "luminosity" IS -2 THEN \'#f5f7f7\' WHEN "luminosity" IS -1 THEN \'#f8f9fa\' ELSE \'#fcfcfc\' END')
         self.assertTrue(qgsDoubleNear(default_number, 0.0))
 
@@ -234,7 +234,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "scree",
             "rgba(0, 0, 0, 1)",
             "hsl(35, 86%, 38%)"
-        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters(2.5, 200))
         self.assertEqual(res.asExpression(), '''CASE WHEN "class" IS 'scree' THEN '#000000' ELSE '#b26e0e' END''')
         self.assertTrue(qgsDoubleNear(default_number, 0.0))
 
@@ -251,7 +251,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             11, ["case", [">", 28, ["get", "rank"]], 1, 0],
             12, 1,
             13, 0
-        ], QgsMapBoxGlStyleConverter.PropertyType.Opacity, conversion_context, 100, 255)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Opacity, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters.fromMultiplier(100))
         self.assertEqual(res.asExpression(), 'CASE  WHEN @vector_tile_zoom >= 13 THEN (0)  WHEN @vector_tile_zoom >= 12 THEN (255)  WHEN @vector_tile_zoom >= 11 THEN (CASE WHEN ("28" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 10 THEN (CASE WHEN ("18" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 9 THEN (CASE WHEN ("15" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 8 THEN (CASE WHEN ("14" > "rank") THEN 1 ELSE 0 END)  WHEN @vector_tile_zoom >= 7 THEN (CASE WHEN "capital" IN (2,4) THEN 255 ELSE 0 END) ELSE (0) END')
 
     def testParseValueList(self):
@@ -270,7 +270,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             ["Water Transport"],
             "#d8e6f3",
             "#e7e7e7"
-        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters(2.5, 200))
         self.assertEqual(res.asExpression(),
                          'CASE WHEN "type" IN (\'Air Transport\',\'Airport\') THEN \'#e6e6e6\' WHEN "type" IS \'Education\' THEN \'#f7eaca\' WHEN "type" IS \'Medical Care\' THEN \'#f3d8e7\' WHEN "type" IS \'Road Transport\' THEN \'#f7f3ca\' WHEN "type" IS \'Water Transport\' THEN \'#d8e6f3\' ELSE \'#e7e7e7\' END')
         self.assertEqual(default_color.name(), '#e7e7e7')
@@ -285,7 +285,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             0.3,
             18,
             0.6
-        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters(2.5, 200))
         self.assertEqual(res.asExpression(),
                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,10,15,0.1,0.3)) * 2.5 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN (scale_linear(@vector_tile_zoom,15,18,0.3,0.6)) * 2.5 WHEN @vector_tile_zoom > 18 THEN 1.5 END')
         self.assertEqual(default_number, 0.25)
@@ -397,7 +397,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             0.3,
             18,
             0.6
-        ], QgsMapBoxGlStyleConverter.PropertyType.Opacity, conversion_context, 2)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Opacity, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters.fromMultiplier(2))
         self.assertEqual(prop.expressionString(),
                          "CASE WHEN @vector_tile_zoom < 10 THEN set_color_part(@symbol_color, 'alpha', 25.5) WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom < 15 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,10,15,25.5,76.5)) WHEN @vector_tile_zoom >= 15 AND @vector_tile_zoom < 18 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,15,18,76.5,153)) WHEN @vector_tile_zoom >= 18 THEN set_color_part(@symbol_color, 'alpha', 153) END")
 
@@ -411,7 +411,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             0.3,
             18,
             0.6
-        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters.fromMultiplier(2))
         self.assertEqual(prop.expressionString(),
                          "CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,10,15,0.1,0.3)) * 2 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN (scale_linear(@vector_tile_zoom,15,18,0.3,0.6)) * 2 WHEN @vector_tile_zoom > 18 THEN 1.2 END")
         self.assertEqual(default_val, 0.2)
@@ -430,7 +430,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             ["match", ["get", "class"], ["ice", "glacier"], 0.2, 0.3],
             14,
             ["match", ["get", "class"], ["ice", "glacier"], 0, 0.3]
-        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters.fromMultiplier(2))
         self.assertEqual(prop.expressionString(),
                          'CASE WHEN @vector_tile_zoom >= 5 AND @vector_tile_zoom <= 6 THEN ((0) + ((1.5^(@vector_tile_zoom - 5) - 1) / (1.5^(6 - 5) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.3 ELSE 0 END) - (0))) * 2 WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 10 THEN ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.3 ELSE 0 END) + ((1.5^(@vector_tile_zoom - 6) - 1) / (1.5^(10 - 6) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0 END) - (CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.3 ELSE 0 END))) * 2 WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0 END) + ((1.5^(@vector_tile_zoom - 10) - 1) / (1.5^(11 - 10) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0.3 END) - (CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0 END))) * 2 WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 14 THEN ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0.3 END) + ((1.5^(@vector_tile_zoom - 11) - 1) / (1.5^(14 - 11) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0 ELSE 0.3 END) - (CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0.3 END))) * 2 WHEN @vector_tile_zoom > 14 THEN ( ( CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0 ELSE 0.3 END ) * 2 ) END')
 
@@ -454,7 +454,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 "case", ["==", ["%", ["to-number", ["get", "ele"]], 10], 0], 1, 0
             ]
             ]
-        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 0.264583)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, QgsMapBoxGlStyleConverter.ParsingParameters.fromMultiplier(0.264583))
         self.assertEqual(prop.expressionString(), 'CASE WHEN @vector_tile_zoom >= 12 AND @vector_tile_zoom <= 13 THEN (CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END) * 0.264583 WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,13,14,CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END)) * 0.264583 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 14.5 THEN (scale_linear(@vector_tile_zoom,14,14.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 14.5 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14.5,15,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16.5 THEN (scale_linear(@vector_tile_zoom,15,16.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 16.5 THEN ( ( CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END ) * 0.264583 ) END')
 
     def testParseExpression(self):
