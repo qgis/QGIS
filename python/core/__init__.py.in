@@ -98,6 +98,8 @@ QgsProviderMetadata = PyProviderMetadata
 
 # monkey patch deprecated enum values to maintain API
 # TODO - remove for QGIS 4.0
+Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
+
 QgsMarkerLineSymbolLayer.Interval = Qgis.MarkerLinePlacement.Interval
 QgsMarkerLineSymbolLayer.Vertex = Qgis.MarkerLinePlacement.Vertex
 QgsMarkerLineSymbolLayer.LastVertex = Qgis.MarkerLinePlacement.LastVertex
