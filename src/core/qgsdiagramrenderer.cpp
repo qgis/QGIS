@@ -1015,21 +1015,13 @@ QList< QgsLayerTreeModelLegendNode * > QgsStackedDiagramRenderer::legendItems( Q
 
 QList< QgsDiagramRenderer * > QgsStackedDiagramRenderer::renderers( bool sortByDiagramMode ) const
 {
-  QList< QgsDiagramRenderer * > renderers;
+  QList< QgsDiagramRenderer * > renderers = mDiagramRenderers;
 
   if ( sortByDiagramMode && mSettings.stackedDiagramMode == QgsDiagramSettings::Vertical )
   {
     // We draw vertical diagrams backwards, so
     // we return the subrenderers in reverse order
-    QList< QgsDiagramRenderer * >::const_reverse_iterator iter = mDiagramRenderers.rbegin();
-    for ( ; iter != mDiagramRenderers.rend(); ++iter )
-    {
-      renderers.append( *iter );
-    }
-  }
-  else
-  {
-    renderers = mDiagramRenderers;
+    std::reverse( renderers.begin(), renderers.end() );
   }
   return renderers;
 }
