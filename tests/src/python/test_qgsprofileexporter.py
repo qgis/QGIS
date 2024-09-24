@@ -68,8 +68,8 @@ class TestQgsProfileExporter(QgisTestCase):
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0][0], rl.id())
         self.assertEqual(features[0].geometry().constGet().numPoints(), 1394)
-        self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
     def testExportTaskDxf(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
@@ -113,8 +113,8 @@ class TestQgsProfileExporter(QgisTestCase):
 
             self.assertEqual(len(features), 1)
             self.assertEqual(features[0].geometry().constGet().numPoints(), 1394)
-            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
     def testExportTaskDxfMultiLayer(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
@@ -173,13 +173,13 @@ class TestQgsProfileExporter(QgisTestCase):
 
             self.assertEqual(len(features), 1)
             self.assertEqual(features[0].geometry().constGet().numPoints(), 1394)
-            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
             features = [f for f in point_output.getFeatures()]
 
             self.assertEqual(len(features), 1)
-            self.assertEqual(features[0].geometry().asWkt(-1), 'PointZ (-347360 6633160 40)')
+            self.assertEqual(features[0].geometry().asWkt(-1), 'Point Z (-347360 6633160 40)')
 
     def testExportTaskShp(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
@@ -223,8 +223,8 @@ class TestQgsProfileExporter(QgisTestCase):
 
             self.assertEqual(len(features), 1)
             self.assertEqual(features[0].geometry().constGet()[0].numPoints(), 1394)
-            self.assertEqual(features[0].geometry().constGet()[0].pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-            self.assertEqual(features[0].geometry().constGet()[0].pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+            self.assertEqual(features[0].geometry().constGet()[0].pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+            self.assertEqual(features[0].geometry().constGet()[0].pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
     def testExportTaskShpMultiLayer(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
@@ -239,7 +239,7 @@ class TestQgsProfileExporter(QgisTestCase):
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
 
         feature = QgsFeature(vl.fields())
-        feature.setGeometry(QgsGeometry.fromWkt('LineStringZ (-347860.62472087447531521 6632536.37540269736200571 30, -347016.72474283445626497 6633588.82537531014531851 40)'))
+        feature.setGeometry(QgsGeometry.fromWkt('LineString Z (-347860.62472087447531521 6632536.37540269736200571 30, -347016.72474283445626497 6633588.82537531014531851 40)'))
         self.assertTrue(vl.dataProvider().addFeature(feature))
 
         curve = QgsLineString()
@@ -290,13 +290,13 @@ class TestQgsProfileExporter(QgisTestCase):
 
             self.assertEqual(len(features), 1)
             self.assertEqual(features[0].geometry().constGet()[0].numPoints(), 1394)
-            self.assertEqual(features[0].geometry().constGet()[0].pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-            self.assertEqual(features[0].geometry().constGet()[0].pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+            self.assertEqual(features[0].geometry().constGet()[0].pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+            self.assertEqual(features[0].geometry().constGet()[0].pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
             features = [f for f in point_output.getFeatures()]
 
             self.assertEqual(len(features), 1)
-            self.assertEqual(features[0].geometry().asWkt(-1), 'PointZ (-347360 6633160 40)')
+            self.assertEqual(features[0].geometry().asWkt(-1), 'Point Z (-347360 6633160 40)')
 
     def testExportTaskGpkg(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
@@ -340,8 +340,8 @@ class TestQgsProfileExporter(QgisTestCase):
 
             self.assertEqual(len(features), 1)
             self.assertEqual(features[0].geometry().constGet().numPoints(), 1394)
-            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
     def testExportTaskGpkgMultiLayer(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'), 'DTM')
@@ -356,7 +356,7 @@ class TestQgsProfileExporter(QgisTestCase):
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
 
         feature = QgsFeature(vl.fields())
-        feature.setGeometry(QgsGeometry.fromWkt('LineStringZ (-347860.62472087447531521 6632536.37540269736200571 30, -347016.72474283445626497 6633588.82537531014531851 40)'))
+        feature.setGeometry(QgsGeometry.fromWkt('LineString Z (-347860.62472087447531521 6632536.37540269736200571 30, -347016.72474283445626497 6633588.82537531014531851 40)'))
         self.assertTrue(vl.dataProvider().addFeature(feature))
 
         curve = QgsLineString()
@@ -403,13 +403,13 @@ class TestQgsProfileExporter(QgisTestCase):
 
             self.assertEqual(len(features), 1)
             self.assertEqual(features[0].geometry().constGet().numPoints(), 1394)
-            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'PointZ (-345800 6631600 100)')
+            self.assertEqual(features[0].geometry().constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+            self.assertEqual(features[0].geometry().constGet().pointN(1393).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
             features = [f for f in point_output.getFeatures()]
 
             self.assertEqual(len(features), 1)
-            self.assertEqual(features[0].geometry().asWkt(-1), 'PointZ (-347360 6633160 40)')
+            self.assertEqual(features[0].geometry().asWkt(-1), 'Point Z (-347360 6633160 40)')
 
 
 if __name__ == '__main__':

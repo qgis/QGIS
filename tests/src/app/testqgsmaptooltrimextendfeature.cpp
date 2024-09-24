@@ -465,7 +465,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       */
       const QgsFeature f = vlLineZ->getFeature( 1 );
 
-      const QString wkt = "LineStringZ (3 5 5, 1.5 6.5 150)";
+      const QString wkt = "LineString Z (3 5 5, 1.5 6.5 150)";
       QCOMPARE( f.geometry().asWkt(), wkt );
 
       vlLineZ->rollBack();

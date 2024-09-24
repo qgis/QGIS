@@ -365,7 +365,7 @@ void TestQgsMultiPolygon::addGeometryInitialDimension()
   QVERIFY( mp.is3D() );
   QVERIFY( !mp.isMeasure() );
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPolygonZ );
-  QCOMPARE( mp.wktTypeStr(), QString( "MultiPolygonZ" ) );
+  QCOMPARE( mp.wktTypeStr(), QString( "MultiPolygon Z" ) );
   QCOMPARE( mp.geometryType(), QString( "MultiPolygon" ) );
   QCOMPARE( *( static_cast< const QgsPolygon * >( mp.geometryN( 0 ) ) ), part );
 
@@ -382,7 +382,7 @@ void TestQgsMultiPolygon::addGeometryInitialDimension()
   QVERIFY( !mp.is3D() );
   QVERIFY( mp.isMeasure() );
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPolygonM );
-  QCOMPARE( mp.wktTypeStr(), QString( "MultiPolygonM" ) );
+  QCOMPARE( mp.wktTypeStr(), QString( "MultiPolygon M" ) );
   QCOMPARE( *( static_cast< const QgsPolygon * >( mp.geometryN( 0 ) ) ), part );
 
   mp.clear();
@@ -398,7 +398,7 @@ void TestQgsMultiPolygon::addGeometryInitialDimension()
   QVERIFY( mp.is3D() );
   QVERIFY( mp.isMeasure() );
   QCOMPARE( mp.wkbType(), Qgis::WkbType::MultiPolygonZM );
-  QCOMPARE( mp.wktTypeStr(), QString( "MultiPolygonZM" ) );
+  QCOMPARE( mp.wktTypeStr(), QString( "MultiPolygon ZM" ) );
   QCOMPARE( *( static_cast< const QgsPolygon * >( mp.geometryN( 0 ) ) ), part );
 }
 
@@ -767,13 +767,13 @@ void TestQgsMultiPolygon::removeDuplicateNodes()
 {
   QgsMultiPolygon mp;
 
-  QVERIFY( mp.fromWkt( QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) ) );
+  QVERIFY( mp.fromWkt( QStringLiteral( "MultiPolygon Z (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) ) );
   QCOMPARE( mp.numGeometries(), 2 );
 
   // First call should remove all duplicate nodes (one per part)
   QVERIFY( mp.removeDuplicateNodes( 0.001, false ) );
   QVERIFY( !mp.removeDuplicateNodes( 0.001, false ) );
-  QCOMPARE( mp.asWkt(), QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) );
+  QCOMPARE( mp.asWkt(), QStringLiteral( "MultiPolygon Z (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) );
 }
 
 void TestQgsMultiPolygon::vertexIterator()

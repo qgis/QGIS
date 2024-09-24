@@ -1389,11 +1389,11 @@ void TestQgsGeometryCollection::geometryCollection()
   swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   swapCollect.addGeometry( swapLine.clone() );
   swapCollect.swapXy();
-  QCOMPARE( swapCollect.asWkt(), QStringLiteral( "GeometryCollection (LineStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24))" ) );
+  QCOMPARE( swapCollect.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24))" ) );
   swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   swapCollect.addGeometry( swapLine.clone() );
   swapCollect.swapXy();
-  QCOMPARE( swapCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24),LineStringZM (2 11 5 6, 1.99 11.01 15 16, 2.01 11.02 25 26))" ) );
+  QCOMPARE( swapCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),LineString ZM (2 11 5 6, 1.99 11.01 15 16, 2.01 11.02 25 26))" ) );
 
   // filter vertices
   QgsGeometryCollection filterCollect;
@@ -1406,11 +1406,11 @@ void TestQgsGeometryCollection::geometryCollection()
   filterLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   filterCollect.addGeometry( filterLine.clone() );
   filterCollect.filterVertices( filter );
-  QCOMPARE( filterCollect.asWkt(), QStringLiteral( "GeometryCollection (LineStringZM (11 12 13 14, 111 12 23 24))" ) );
+  QCOMPARE( filterCollect.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24))" ) );
   filterLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   filterCollect.addGeometry( filterLine.clone() );
   filterCollect.filterVertices( filter );
-  QCOMPARE( filterCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineStringZM (11 12 13 14, 111 12 23 24),LineStringZM (11 2 5 6, 11.02 2.01 25 26))" ) );
+  QCOMPARE( filterCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24),LineString ZM (11 2 5 6, 11.02 2.01 25 26))" ) );
 
   // transform vertices
   QgsGeometryCollection transformCollect;
@@ -1423,11 +1423,11 @@ void TestQgsGeometryCollection::geometryCollection()
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   transformCollect.addGeometry( transformLine.clone() );
   transformCollect.transformVertices( transform );
-  QCOMPARE( transformCollect.asWkt(), QStringLiteral( "GeometryCollection (LineStringZM (3 5 7 9, 13 15 17 19, 113 15 27 29))" ) );
+  QCOMPARE( transformCollect.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (3 5 7 9, 13 15 17 19, 113 15 27 29))" ) );
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   transformCollect.addGeometry( transformLine.clone() );
   transformCollect.transformVertices( transform );
-  QCOMPARE( transformCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineStringZM (5 8 11 14, 15 18 21 24, 115 18 31 34),LineStringZM (13 5 9 11, 3.01 4.99 19 21, 13.02 5.01 29 31))" ) );
+  QCOMPARE( transformCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (5 8 11 14, 15 18 21 24, 115 18 31 34),LineString ZM (13 5 9 11, 3.01 4.99 19 21, 13.02 5.01 29 31))" ) );
 
   // transform using class
   TestTransformer transformer;
@@ -1436,11 +1436,11 @@ void TestQgsGeometryCollection::geometryCollection()
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   transformCollect2.addGeometry( transformLine.clone() );
   QVERIFY( transformCollect2.transform( &transformer ) );
-  QCOMPARE( transformCollect2.asWkt(), QStringLiteral( "GeometryCollection (LineStringZM (3 16 8 3, 33 26 18 13, 333 26 28 23))" ) );
+  QCOMPARE( transformCollect2.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (3 16 8 3, 33 26 18 13, 333 26 28 23))" ) );
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   transformCollect2.addGeometry( transformLine.clone() );
   QVERIFY( transformCollect2.transform( &transformer ) );
-  QCOMPARE( transformCollect2.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineStringZM (9 30 13 2, 99 40 23 12, 999 40 33 22),LineStringZM (33 16 10 5, 3.03 15.99 20 15, 33.06 16.01 30 25))" ) );
+  QCOMPARE( transformCollect2.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (9 30 13 2, 99 40 23 12, 999 40 33 22),LineString ZM (33 16 10 5, 3.03 15.99 20 15, 33.06 16.01 30 25))" ) );
 
   TestFailTransformer failTransformer;
   QVERIFY( !transformCollect2.transform( &failTransformer ) );
