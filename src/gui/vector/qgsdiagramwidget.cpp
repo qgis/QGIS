@@ -177,6 +177,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
       else if ( mode == ModeStackedBar )
         singleWidget->setDiagramType( DIAGRAM_NAME_STACKED_BAR );
 
+      connect( singleWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
       connect( singleWidget, &QgsDiagramProperties::widgetChanged, this, &QgsDiagramWidget::widgetChanged );
       connect( singleWidget, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsDiagramWidget::auxiliaryFieldCreated );
 
@@ -191,6 +192,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
       stackedWidget->setDockMode( dockMode() );
       connect( stackedWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
       connect( stackedWidget, &QgsStackedDiagramProperties::widgetChanged, this, &QgsDiagramWidget::widgetChanged );
+
       mWidget = stackedWidget;
       mStackedWidget->addWidget( mWidget );
       mStackedWidget->setCurrentWidget( mWidget );
