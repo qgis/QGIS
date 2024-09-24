@@ -331,10 +331,10 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
 
         features = [f for f in vl.getFeatures()]
         self.assertEqual(features[0].geometry().asWkt(), 'Point (1 2)')
-        self.assertEqual(features[1].geometry().asWkt(), 'PointZ (1 2 3)')
-        self.assertEqual(features[2].geometry().asWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
+        self.assertEqual(features[1].geometry().asWkt(), 'Point Z (1 2 3)')
+        self.assertEqual(features[2].geometry().asWkt(), 'MultiPoint Z ((1 2 3),(4 5 6))')
         self.assertEqual(features[3].geometry().asWkt(), 'MultiPoint ((1 2),(3 4))')
-        self.assertEqual(features[4].geometry().asWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
+        self.assertEqual(features[4].geometry().asWkt(), 'MultiPoint Z ((1 2 3),(4 5 6))')
         self.assertEqual(features[5].geometry().asWkt(), 'Point (1 2)')
         self.assertEqual(features[6].geometry().asWkt(), 'Point (3 4)')
         self.assertEqual(features[7].geometry().asWkt(), 'Point (5 6)')
@@ -359,7 +359,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(points_z.isValid())
 
         fid += 1
-        self.check_geom(points_z, fid, 'PointZ (1 2 3)')
+        self.check_geom(points_z, fid, 'Point Z (1 2 3)')
 
         multipoints = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiPoint table="QGIS"."EDIT_POINTS_DATA" (GEOM) sql=',
