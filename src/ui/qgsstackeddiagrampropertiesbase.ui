@@ -37,6 +37,9 @@
      <attribute name="headerMinimumSectionSize">
       <number>57</number>
      </attribute>
+     <attribute name="headerDefaultSectionSize">
+      <number>110</number>
+     </attribute>
     </widget>
    </item>
    <item>

@@ -166,6 +166,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
       QgsDiagramProperties *singleWidget = new QgsDiagramProperties( mLayer, this, mMapCanvas );
       singleWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
       singleWidget->setDockMode( dockMode() );
+      singleWidget->syncToLayer();
 
       if ( mode == ModePie )
         singleWidget->setDiagramType( DIAGRAM_NAME_PIE );

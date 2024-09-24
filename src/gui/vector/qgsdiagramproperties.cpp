@@ -264,8 +264,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDlsLabel_1->hide();
   mDlsLabel_2->hide();
 
-  //force a refresh of widget status to match diagram type
-  mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+  insertDefaults();
+  mPaintEffectWidget->setPaintEffect( mPaintEffect.get() );
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::Property::BackgroundColor );
@@ -307,7 +307,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   widgets << mDiagramUnitComboBox;
   widgets << mFixedSizeRadio;
   widgets << mIncreaseMinimumSizeSpinBox;
-  widgets << mIncreaseSmallDiagramsCheck;
+  widgets << mIncreaseSmallDiagramsGroupBox;
   widgets << mLabelPlacementComboBox;
   widgets << mMaxValueSpinBox;
   widgets << mPenWidthSpinBox;
@@ -363,6 +363,52 @@ void QgsDiagramProperties::setDiagramType( const QString diagramType )
   mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
 }
 
+void QgsDiagramProperties::insertDefaults()
+{
+  mFixedSizeRadio->setChecked( true );
+  mDiagramUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
+  mDiagramLineUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
+  mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
+  mDiagramSizeSpinBox->setEnabled( true );
+  mDiagramSizeSpinBox->setValue( 15 );
+  mLinearScaleFrame->setEnabled( false );
+  mBarWidthSpinBox->setValue( 5 );
+  mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
+  mShowAllCheckBox->setChecked( true );
+  mCheckBoxAttributeLegend->setChecked( true );
+
+  switch ( mLayer->geometryType() )
+  {
+    case Qgis::GeometryType::Point:
+      radAroundPoint->setChecked( true );
+      break;
+
+    case Qgis::GeometryType::Line:
+      radAroundLine->setChecked( true );
+      chkLineAbove->setChecked( true );
+      chkLineBelow->setChecked( false );
+      chkLineOn->setChecked( false );
+      chkLineOrientationDependent->setChecked( false );
+      break;
+
+    case Qgis::GeometryType::Polygon:
+      radOverCentroid->setChecked( true );
+      mDiagramDistanceLabel->setEnabled( false );
+      mDiagramDistanceSpinBox->setEnabled( false );
+      mDistanceDDBtn->setEnabled( false );
+      break;
+
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
+      break;
+  }
+  mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
+  mDiagramPenColorButton->setColor( QColor( 0, 0, 0, 255 ) );
+  //force a refresh of widget status to match diagram type
+  mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+}
+
 void QgsDiagramProperties::syncToLayer()
 {
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
@@ -378,50 +424,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
 
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
-    mFixedSizeRadio->setChecked( true );
-    mDiagramUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
-    mDiagramLineUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
-    mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
-    mDiagramSizeSpinBox->setEnabled( true );
-    mDiagramSizeSpinBox->setValue( 15 );
-    mLinearScaleFrame->setEnabled( false );
-    mIncreaseMinimumSizeSpinBox->setEnabled( false );
-    mIncreaseMinimumSizeLabel->setEnabled( false );
-    mBarWidthSpinBox->setValue( 5 );
-    mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
-    mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
-    mShowAllCheckBox->setChecked( true );
-    mCheckBoxAttributeLegend->setChecked( true );
-
-    switch ( mLayer->geometryType() )
-    {
-      case Qgis::GeometryType::Point:
-        radAroundPoint->setChecked( true );
-        break;
-
-      case Qgis::GeometryType::Line:
-        radAroundLine->setChecked( true );
-        chkLineAbove->setChecked( true );
-        chkLineBelow->setChecked( false );
-        chkLineOn->setChecked( false );
-        chkLineOrientationDependent->setChecked( false );
-        break;
-
-      case Qgis::GeometryType::Polygon:
-        radOverCentroid->setChecked( true );
-        mDiagramDistanceLabel->setEnabled( false );
-        mDiagramDistanceSpinBox->setEnabled( false );
-        mDistanceDDBtn->setEnabled( false );
-        break;
-
-      case Qgis::GeometryType::Unknown:
-      case Qgis::GeometryType::Null:
-        break;
-    }
-    mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
-    //force a refresh of widget status to match diagram type
-    mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
-
+    insertDefaults();
   }
   else // already a diagram renderer present
   {
@@ -502,10 +505,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
       if ( settingList.at( 0 ).axisLineSymbol() )
         mAxisLineStyleButton->setSymbol( settingList.at( 0 ).axisLineSymbol()->clone() );
 
-      mIncreaseSmallDiagramsCheck->setChecked( settingList.at( 0 ).minimumSize != 0 );
-      mIncreaseMinimumSizeSpinBox->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
-      mIncreaseMinimumSizeLabel->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
-
+      mIncreaseSmallDiagramsGroupBox->setChecked( settingList.at( 0 ).minimumSize != 0 );
       mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).minimumSize );
 
       if ( settingList.at( 0 ).scaleByArea )
@@ -562,16 +562,10 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
       mDiagramType = dr->diagram()->diagramName();
 
       mDiagramTypeComboBox->blockSignals( true );
-      mDiagramTypeComboBox->setCurrentIndex( settingList.at( 0 ).enabled ? mDiagramTypeComboBox->findData( mDiagramType ) : 0 );
+      mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( mDiagramType ) );
       mDiagramTypeComboBox->blockSignals( false );
       //force a refresh of widget status to match diagram type
       mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
-      if ( mDiagramTypeComboBox->currentIndex() == -1 )
-      {
-        QMessageBox::warning( this, tr( "Diagram Properties" ),
-                              tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( mDiagramType ), QMessageBox::Ok );
-        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( DIAGRAM_NAME_PIE ) );
-      }
     }
   }
   mPaintEffectWidget->setPaintEffect( mPaintEffect.get() );
@@ -906,7 +900,7 @@ std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings(
   ds->labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->currentData().toInt() );
   ds->scaleByArea = ( mDiagramType == DIAGRAM_NAME_STACKED_BAR ) ? false : mScaleDependencyComboBox->currentData().toBool();
 
-  if ( mIncreaseSmallDiagramsCheck->isChecked() )
+  if ( mIncreaseSmallDiagramsGroupBox->isChecked() )
   {
     ds->minimumSize = mIncreaseMinimumSizeSpinBox->value();
   }

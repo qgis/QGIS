@@ -584,7 +584,7 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-298</y>
+                   <y>0</y>
                    <width>632</width>
                    <height>671</height>
                   </rect>
@@ -1287,36 +1287,44 @@
                            <number>0</number>
                           </property>
                           <item>
-                           <widget class="QCheckBox" name="mIncreaseSmallDiagramsCheck">
-                            <property name="text">
+                           <widget class="QgsCollapsibleGroupBox" name="mIncreaseSmallDiagramsGroupBox">
+                            <property name="title">
                              <string>Increase size of small diagrams</string>
                             </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="mIncreaseMinimumSizeLabel">
-                            <property name="text">
-                             <string>Minimum size</string>
+                            <property name="checkable">
+                             <bool>true</bool>
                             </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QgsDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
+                            <property name="checked">
+                             <bool>true</bool>
                             </property>
-                            <property name="decimals">
-                             <number>6</number>
-                            </property>
-                            <property name="maximum">
-                             <double>100000.000000000000000</double>
-                            </property>
-                            <property name="singleStep">
-                             <double>0.200000000000000</double>
-                            </property>
+                            <layout class="QHBoxLayout" name="horizontalLayout_2">
+                             <item>
+                              <widget class="QLabel" name="mIncreaseMinimumSizeLabel">
+                               <property name="text">
+                                <string>Minimum size</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QgsDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="decimals">
+                                <number>6</number>
+                               </property>
+                               <property name="maximum">
+                                <double>100000.000000000000000</double>
+                               </property>
+                               <property name="singleStep">
+                                <double>0.200000000000000</double>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
                            </widget>
                           </item>
                          </layout>
@@ -1443,8 +1451,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>632</width>
-                   <height>447</height>
+                   <width>286</width>
+                   <height>481</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12" rowstretch="0,0,0,0,0,0,0,0,0,0,0,1">
@@ -2044,8 +2052,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>646</width>
-                   <height>373</height>
+                   <width>106</width>
+                   <height>165</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1">
@@ -2263,8 +2271,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>646</width>
-                   <height>373</height>
+                   <width>336</width>
+                   <height>80</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1">
@@ -2443,7 +2451,7 @@
   <tabstop>mFindMaximumValueButton</tabstop>
   <tabstop>mSizeSpinBox</tabstop>
   <tabstop>mScaleDependencyComboBox</tabstop>
-  <tabstop>mIncreaseSmallDiagramsCheck</tabstop>
+  <tabstop>mIncreaseSmallDiagramsGroupBox</tabstop>
   <tabstop>mIncreaseMinimumSizeSpinBox</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>radAroundPoint</tabstop>
@@ -2539,38 +2547,6 @@
     <hint type="destinationlabel">
      <x>364</x>
      <y>286</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mIncreaseSmallDiagramsCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mIncreaseMinimumSizeLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>296</x>
-     <y>330</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>395</x>
-     <y>332</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mIncreaseSmallDiagramsCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mIncreaseMinimumSizeSpinBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>296</x>
-     <y>330</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>680</x>
-     <y>332</y>
     </hint>
    </hints>
   </connection>

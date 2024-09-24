@@ -199,6 +199,11 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
      */
     QgsDiagramLayerSettings createDiagramLayerSettings();
 
+    /**
+     * Insert reasonable defaults to have an initial diagram widget status.
+     */
+    void insertDefaults();
+
     friend class QgsStackedDiagramProperties;
     friend class QgsStackedDiagramPropertiesDialog;
 };
