@@ -278,7 +278,7 @@ The development version
 
 
     enum class PythonEmbeddedMode
-    {
+      {
       Never,
       Ask,
       SessionOnly,
