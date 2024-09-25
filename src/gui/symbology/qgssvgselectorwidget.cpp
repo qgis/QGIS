@@ -288,8 +288,8 @@ QVariant QgsSvgSelectorListModel::data( const QModelIndex &index, int role ) con
 
   if ( role == Qt::DecorationRole ) // icon
   {
-    QPixmap *pixmap = nullptr;
-    if ( !QPixmapCache::find( entry, pixmap ) || !pixmap )
+    QPixmap pixmap;
+    if ( !QPixmapCache::find( entry, &pixmap ) )
     {
       QPixmap newPixmap = createPreview( entry );
       QPixmapCache::insert( entry, newPixmap );
@@ -297,7 +297,7 @@ QVariant QgsSvgSelectorListModel::data( const QModelIndex &index, int role ) con
     }
     else
     {
-      return *pixmap;
+      return pixmap;
     }
   }
   else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
@@ -771,5 +771,3 @@ void QgsSvgParameterValueDelegate::updateEditorGeometry( QWidget *editor, const 
 }
 
 ///@endcond
-
-
