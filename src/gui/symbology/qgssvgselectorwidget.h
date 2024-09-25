@@ -345,6 +345,7 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
      */
     void addSvgs( const QStringList &svgs );
 
+    friend class TestQgsSvgSelectorWidget;
 };
 
 
