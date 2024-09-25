@@ -429,7 +429,7 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    QgsDebugError( QStringLiteral( "Request failed: %1" ).arg( uri ) );
+    QgsDebugError( QStringLiteral( "Request failed (%1): %2" ).arg( uri ).arg( reply->errorString() ) );
     return {};
   }
   return reply->data();
