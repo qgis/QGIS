@@ -74,6 +74,7 @@ set(TESTS
   testqgsexternalresourcewidgetwrapper.cpp
   testqgsquerybuilder.cpp
   testqgsqueryresultwidget.cpp
+  testqgssvgselectorwidget.cpp
 )
 
 foreach(TESTSRC ${TESTS})
