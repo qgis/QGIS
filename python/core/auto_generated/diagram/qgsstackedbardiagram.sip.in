@@ -10,7 +10,6 @@
 
 
 
-
 class QgsStackedBarDiagram: QgsDiagram /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -24,6 +23,8 @@ A stacked bar chart diagram.
 #include "qgsstackedbardiagram.h"
 %End
   public:
+    static const QString DIAGRAM_NAME_STACKED_BAR;
+
     QgsStackedBarDiagram();
 
     virtual QgsStackedBarDiagram *clone() const /Factory/;

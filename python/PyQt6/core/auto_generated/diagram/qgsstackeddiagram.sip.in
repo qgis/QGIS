@@ -10,7 +10,6 @@
 
 
 
-
 class QgsStackedDiagram : QgsDiagram /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -23,6 +22,7 @@ A diagram composed of several subdiagrams, located side by side.
 #include "qgsstackeddiagram.h"
 %End
   public:
+    static const QString DIAGRAM_NAME_STACKED;
 
     QgsStackedDiagram();
 

@@ -607,23 +607,23 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   Q_UNUSED( context )
   mDiagram.reset();
   const QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
-  if ( diagramType == QLatin1String( "Pie" ) )
+  if ( diagramType == QgsPieDiagram::DIAGRAM_NAME_PIE )
   {
     mDiagram.reset( new QgsPieDiagram() );
   }
-  else if ( diagramType == QLatin1String( "Text" ) )
+  else if ( diagramType == QgsTextDiagram::DIAGRAM_NAME_TEXT )
   {
     mDiagram.reset( new QgsTextDiagram() );
   }
-  else if ( diagramType == QLatin1String( "Histogram" ) )
+  else if ( diagramType == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM )
   {
     mDiagram.reset( new QgsHistogramDiagram() );
   }
-  else if ( diagramType == QLatin1String( "StackedBar" ) )
+  else if ( diagramType == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
   {
     mDiagram.reset( new QgsStackedBarDiagram() );
   }
-  else if ( diagramType == QLatin1String( "Stacked" ) )
+  else if ( diagramType == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
   {
     mDiagram.reset( new QgsStackedDiagram() );
   }

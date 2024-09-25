@@ -183,7 +183,7 @@ void QgsStackedDiagramProperties::syncToLayer()
     mStackedDiagramSpacingSpinBox->setValue( settingList.at( 0 ).stackedDiagramSpacing() );
     mStackedDiagramSpacingUnitComboBox->setUnit( settingList.at( 0 ).stackedDiagramSpacingUnit() );
 
-    if ( dr->rendererName() == QLatin1String( "Stacked" ) )
+    if ( dr->rendererName() == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
     {
       const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
       const auto renderers = stackedDiagramRenderer->renderers();
@@ -406,7 +406,7 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
       case 3:
         if ( dr && dr->diagram() && !dr->diagramSettings().isEmpty() )
         {
-          if ( DIAGRAM_NAME_HISTOGRAM == dr->diagram()->diagramName() || DIAGRAM_NAME_STACKED_BAR == dr->diagram()->diagramName() )
+          if ( QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM == dr->diagram()->diagramName() || QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR == dr->diagram()->diagramName() )
           {
             switch ( dr->diagramSettings().at( 0 ).diagramOrientation )
             {

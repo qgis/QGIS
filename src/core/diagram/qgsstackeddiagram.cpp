@@ -16,6 +16,8 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 
+const QString QgsStackedDiagram::DIAGRAM_NAME_STACKED = QStringLiteral( "Stacked" );
+
 QgsStackedDiagram::QgsStackedDiagram()
 {
 }
@@ -59,7 +61,7 @@ double QgsStackedDiagram::legendSize( double value, const QgsDiagramSettings &s,
 
 QString QgsStackedDiagram::diagramName() const
 {
-  return DIAGRAM_NAME_STACKED;
+  return QgsStackedDiagram::DIAGRAM_NAME_STACKED;
 }
 
 QSizeF QgsStackedDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

@@ -16,8 +16,6 @@
 #ifndef QGSSTACKEDDIAGRAM_H
 #define QGSSTACKEDDIAGRAM_H
 
-#define DIAGRAM_NAME_STACKED "Stacked"
-
 #include "qgsdiagram.h"
 
 class QgsFeature;
@@ -37,6 +35,7 @@ class QgsRenderContext;
 class CORE_EXPORT QgsStackedDiagram : public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
+    static const QString DIAGRAM_NAME_STACKED;
 
     QgsStackedDiagram();
 

@@ -21,6 +21,8 @@
 
 #include <QPainter>
 
+const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = QStringLiteral( "Histogram" );
+
 QgsHistogramDiagram::QgsHistogramDiagram()
 {
   mCategoryBrush.setStyle( Qt::SolidPattern );
@@ -112,7 +114,7 @@ double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings &
 
 QString QgsHistogramDiagram::diagramName() const
 {
-  return DIAGRAM_NAME_HISTOGRAM;
+  return QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM;
 }
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

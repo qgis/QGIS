@@ -19,6 +19,7 @@
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgsstackedbardiagram.h"
+#include "diagram/qgsstackeddiagram.h"
 
 #include "qgsdiagramwidget.h"
 #include "qgsvectorlayer.h"
@@ -106,26 +107,26 @@ void QgsDiagramWidget::syncToOwnLayer()
   // pick the right mode from the layer
   if ( dr && dr->diagram() )
   {
-    if ( dr->rendererName() == QStringLiteral( "Stacked" ) )
+    if ( dr->rendererName() == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
     {
       mDiagramTypeComboBox->setCurrentIndex( ModeStacked );
     }
     else // Single diagram
     {
       const QString diagramName = dr->diagram()->diagramName();
-      if ( diagramName == DIAGRAM_NAME_PIE )
+      if ( diagramName == QgsPieDiagram::DIAGRAM_NAME_PIE )
       {
         mDiagramTypeComboBox->setCurrentIndex( ModePie ) ;
       }
-      else if ( diagramName == DIAGRAM_NAME_TEXT )
+      else if ( diagramName == QgsTextDiagram::DIAGRAM_NAME_TEXT )
       {
         mDiagramTypeComboBox->setCurrentIndex( ModeText ) ;
       }
-      else if ( diagramName == DIAGRAM_NAME_STACKED_BAR )
+      else if ( diagramName == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
       {
         mDiagramTypeComboBox->setCurrentIndex( ModeStackedBar ) ;
       }
-      else // diagramName == DIAGRAM_NAME_HISTOGRAM
+      else // diagramName == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM
       {
         // Play safe and set to histogram by default if the diagram name is unknown
         mDiagramTypeComboBox->setCurrentIndex( ModeHistogram );
@@ -169,13 +170,13 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
       singleWidget->syncToLayer();
 
       if ( mode == ModePie )
-        singleWidget->setDiagramType( DIAGRAM_NAME_PIE );
+        singleWidget->setDiagramType( QgsPieDiagram::DIAGRAM_NAME_PIE );
       else if ( mode == ModeText )
-        singleWidget->setDiagramType( DIAGRAM_NAME_TEXT );
+        singleWidget->setDiagramType( QgsTextDiagram::DIAGRAM_NAME_TEXT );
       else if ( mode == ModeHistogram )
-        singleWidget->setDiagramType( DIAGRAM_NAME_HISTOGRAM );
+        singleWidget->setDiagramType( QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM );
       else if ( mode == ModeStackedBar )
-        singleWidget->setDiagramType( DIAGRAM_NAME_STACKED_BAR );
+        singleWidget->setDiagramType( QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR );
 
       connect( singleWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
       connect( singleWidget, &QgsDiagramProperties::widgetChanged, this, &QgsDiagramWidget::widgetChanged );

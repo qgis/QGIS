@@ -16,8 +16,6 @@
 #ifndef QGSSTACKEDBARDIAGRAM_H
 #define QGSSTACKEDBARDIAGRAM_H
 
-#define DIAGRAM_NAME_STACKED_BAR "StackedBar"
-
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsdiagram.h"
@@ -43,6 +41,8 @@ class QgsRenderContext;
 class CORE_EXPORT QgsStackedBarDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
+    static const QString DIAGRAM_NAME_STACKED_BAR;
+
     QgsStackedBarDiagram();
 
     QgsStackedBarDiagram *clone() const override SIP_FACTORY;
