@@ -699,48 +699,64 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       {
         const QVariantList dashSource = jsonLineDashArray.toList();
 
-        QVector< double > rawDashVectorSizes;
-        rawDashVectorSizes.reserve( dashSource.size() );
-        for ( const QVariant &v : dashSource )
+        if ( dashSource.at( 0 ).userType() == QMetaType::Type::QString )
         {
-          rawDashVectorSizes << v.toDouble();
-        }
-
-        // handle non-compliant dash vector patterns
-        if ( rawDashVectorSizes.size() == 1 )
-        {
-          // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
-          rawDashVectorSizes.clear();
-        }
-        else if ( rawDashVectorSizes.size() % 2 == 1 )
-        {
-          // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
-          // MapBox seems to add the extra dash element to the first dash size
-          rawDashVectorSizes[0] = rawDashVectorSizes[0] + rawDashVectorSizes[rawDashVectorSizes.size() - 1];
-          rawDashVectorSizes.resize( rawDashVectorSizes.size() - 1 );
-        }
-
-        if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
-        {
-          QStringList dashArrayStringParts;
-          dashArrayStringParts.reserve( rawDashVectorSizes.size() );
-          for ( double v : std::as_const( rawDashVectorSizes ) )
+          QgsProperty property = parseValueList( dashSource, PropertyType::NumericArray, context, 1, 255, nullptr, nullptr );
+          if ( !lineWidthProperty.asExpression().isEmpty() )
           {
-            dashArrayStringParts << qgsDoubleToString( v );
+            property = QgsProperty::fromExpression( QStringLiteral( "array_to_string(array_foreach(%1,@element * (%2)), ';')" ) // skip-keyword-check
+                                                    .arg( property.asExpression(), lineWidthProperty.asExpression() ) );
+          }
+          else
+          {
+            property = QgsProperty::fromExpression( QStringLiteral( "array_to_string(%1, ';')" ).arg( property.asExpression() ) );
+          }
+          ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, property );
+        }
+        else
+        {
+          QVector< double > rawDashVectorSizes;
+          rawDashVectorSizes.reserve( dashSource.size() );
+          for ( const QVariant &v : dashSource )
+          {
+            rawDashVectorSizes << v.toDouble();
           }
 
-          QString arrayExpression = QStringLiteral( "array_to_string(array_foreach(array(%1),@element * (%2)), ';')" ) // skip-keyword-check
-                                    .arg( dashArrayStringParts.join( ',' ),
-                                          lineWidthProperty.asExpression() );
-          ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
-        }
+          // handle non-compliant dash vector patterns
+          if ( rawDashVectorSizes.size() == 1 )
+          {
+            // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
+            rawDashVectorSizes.clear();
+          }
+          else if ( rawDashVectorSizes.size() % 2 == 1 )
+          {
+            // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
+            // MapBox seems to add the extra dash element to the first dash size
+            rawDashVectorSizes[0] = rawDashVectorSizes[0] + rawDashVectorSizes[rawDashVectorSizes.size() - 1];
+            rawDashVectorSizes.resize( rawDashVectorSizes.size() - 1 );
+          }
 
-        // dash vector sizes for QGIS symbols must be multiplied by the target line width
-        for ( double v : std::as_const( rawDashVectorSizes ) )
-        {
-          dashVector << v *lineWidth;
-        }
+          if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
+          {
+            QStringList dashArrayStringParts;
+            dashArrayStringParts.reserve( rawDashVectorSizes.size() );
+            for ( double v : std::as_const( rawDashVectorSizes ) )
+            {
+              dashArrayStringParts << qgsDoubleToString( v );
+            }
 
+            QString arrayExpression = QStringLiteral( "array_to_string(array_foreach(array(%1),@element * (%2)), ';')" ) // skip-keyword-check
+                                      .arg( dashArrayStringParts.join( ',' ),
+                                            lineWidthProperty.asExpression() );
+            ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
+          }
+
+          // dash vector sizes for QGIS symbols must be multiplied by the target line width
+          for ( double v : std::as_const( rawDashVectorSizes ) )
+          {
+            dashVector << v *lineWidth;
+          }
+        }
         break;
       }
 
@@ -2853,6 +2869,19 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
                       value.toList().value( 0 ).toDouble() * multiplier );
         break;
       }
+
+      case PropertyType::NumericArray:
+      {
+        if ( value.toList().count() == 2 && value.toList().first().toString() == QLatin1String( "literal" ) )
+        {
+          valueString = QStringLiteral( "array(%1)" ).arg( value.toList().at( 1 ).toStringList().join( ',' ) );
+        }
+        else
+        {
+          valueString = QStringLiteral( "array(%1)" ).arg( value.toStringList().join( ',' ) );
+        }
+        break;
+      }
     }
 
     if ( matchString.count() == 1 )
@@ -2915,6 +2944,19 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
           break;
         }
 
+        case PropertyType::NumericArray:
+        {
+          if ( json.constLast().toList().count() == 2 && json.constLast().toList().first().toString() == QLatin1String( "literal" ) )
+          {
+            elseValue = QStringLiteral( "array(%1)" ).arg( json.constLast().toList().at( 1 ).toStringList().join( ',' ) );
+          }
+          else
+          {
+            elseValue = QStringLiteral( "array(%1)" ).arg( json.constLast().toStringList().join( ',' ) );
+          }
+          break;
+        }
+
       }
       break;
     }
@@ -2941,7 +2983,9 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
     const QVariant stepValue = json.value( i + 1 );
 
     QString valueString;
-    if ( stepValue.canConvert<QVariantList>() && ( stepValue.toList().count() != 2 || type != PropertyType::Point ) )
+    if ( stepValue.canConvert<QVariantList>()
+         && ( stepValue.toList().count() != 2 || type != PropertyType::Point )
+         && type != PropertyType::NumericArray )
     {
       valueString = parseValueList( stepValue.toList(), type, context, multiplier, maxOpacity, defaultColor, defaultNumber ).expressionString();
     }
@@ -2976,6 +3020,19 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
                           stepValue.toList().value( 0 ).toDouble() * multiplier ).arg(
                           stepValue.toList().value( 0 ).toDouble() * multiplier
                         );
+          break;
+        }
+
+        case PropertyType::NumericArray:
+        {
+          if ( stepValue.toList().count() == 2 && stepValue.toList().first().toString() == QLatin1String( "literal" ) )
+          {
+            valueString = QStringLiteral( "array(%1)" ).arg( stepValue.toList().at( 1 ).toStringList().join( ',' ) );
+          }
+          else
+          {
+            valueString = QStringLiteral( "array(%1)" ).arg( stepValue.toStringList().join( ',' ) );
+          }
           break;
         }
       }
@@ -3048,6 +3105,11 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
 
     case PropertyType::Point:
       return parseInterpolatePointByZoom( props, context, multiplier );
+
+    case PropertyType::NumericArray:
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported numeric array in interpolate" ).arg( context.layerId() ) );
+      return QgsProperty();
+
   }
   return QgsProperty();
 }

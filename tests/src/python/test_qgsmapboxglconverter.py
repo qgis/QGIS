@@ -1175,6 +1175,51 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertFalse(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).isActive())
 
+    def testParseLineDashArrayLiteral(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "tunnel_public_transport",
+            "type": "line",
+            "source": "base_v1.0.0",
+            "source-layer": "transportation",
+            "minzoom": 8.0,
+            "layout": {"line-cap": "butt", "line-join": "miter", "visibility": "visible"},
+            "paint": {
+                "line-blur": 0.4,
+                "line-color": "hsl(0,80%,60%)",
+                "line-width": [
+                    "interpolate", ["linear"], ["zoom"], 8, 0.5, 10, 1.2, 12, ["match", ["get", "class"], ["rail"], ["match", ["get", "subclass"], ["rail", "narrow_gauge", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 0.25, 1], 1], 1], 14, ["match", ["get", "class"], ["rail", "rail_construction"], ["match", ["get", "subclass"], ["rail", "narrow_gauge", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 0.25, 1.5], 1.5], 1.5], 18,
+                    ["match", ["get", "class"], ["rail", "rail_construction"], ["match", ["get", "subclass"], ["rail", "narrow_gauge", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 1, 2], 1.5], 1.5]
+                ],
+                "line-opacity": [
+                    "interpolate", ["linear"], ["zoom"], 8, 0, 8.5, ["match", ["get", "class"], ["rail"], 1, 0], 13, ["match", ["get", "subclass"], ["rail", "subway", "funicular", "narrow_gauge", "rack_rail"], ["match", ["get", "is_route"], 99, 1, 0], 0], 14,
+                    ["match", ["get", "class"], ["rail_construction", "transit_construction"], 0.8, ["match", ["get", "subclass"], ["rail", "narrow_gauge", "funicular", "subway", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 0, 1], 0]], 14.5, ["match", ["get", "class"], ["rail_construction", "transit_construction"], 0.8, 1]
+                ],
+                "line-dasharray": ["step", ["zoom"], ["literal", [3, 1.875]], 14, ["literal", [4, 2.5]], 15, ["literal", [5, 3.125]], 16, ["literal", [6, 3.75]]]
+            },
+            "filter": ["all", ["==", ["get", "brunnel"], "tunnel"], ["in", ["get", "class"], ["literal", ["cable_car", "gondola", "rail", "rail_construction", "transit", "transit_construction"]]], ["==", ["geometry-type"], "LineString"]]
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertFalse(rendererStyle.symbol()[0].useCustomDashPattern())
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.CustomDash).asExpression(),
+                         '''array_to_string(array_foreach(CASE  WHEN @vector_tile_zoom >= 16 THEN (array(6,3.75))  WHEN @vector_tile_zoom >= 15 THEN (array(5,3.125))  WHEN @vector_tile_zoom >= 14 THEN (array(4,2.5)) ELSE (array(3,1.875)) END,@element * (CASE WHEN @vector_tile_zoom >= 8 AND @vector_tile_zoom <= 10 THEN scale_linear(@vector_tile_zoom,8,10,0.5,1.2) WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 12 THEN scale_linear(@vector_tile_zoom,10,12,1.2,CASE WHEN "class" = 'rail' THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1 END ELSE 1 END ELSE 1 END) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 14 THEN scale_linear(@vector_tile_zoom,12,14,CASE WHEN "class" = 'rail' THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1 END ELSE 1 END ELSE 1 END,CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1.5 END ELSE 1.5 END ELSE 1.5 END) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,14,18,CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1.5 END ELSE 1.5 END ELSE 1.5 END,CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 1 ELSE 2 END ELSE 1.5 END ELSE 1.5 END) WHEN @vector_tile_zoom > 18 THEN ( ( CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 1 ELSE 2 END ELSE 1.5 END ELSE 1.5 END ) * 1 ) END)), ';')''')
+        self.assertTrue(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).isActive())
+
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style["paint"].pop("line-width")
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertFalse(rendererStyle.symbol()[0].useCustomDashPattern())
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(), '')
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.CustomDash).asExpression(),
+                         '''array_to_string(CASE  WHEN @vector_tile_zoom >= 16 THEN (array(6,3.75))  WHEN @vector_tile_zoom >= 15 THEN (array(5,3.125))  WHEN @vector_tile_zoom >= 14 THEN (array(4,2.5)) ELSE (array(3,1.875)) END, ';')''')
+        self.assertTrue(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).isActive())
+
     def testParseLineNoWidth(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         style = {
