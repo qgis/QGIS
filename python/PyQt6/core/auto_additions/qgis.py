@@ -727,12 +727,23 @@ Qgis.VectorLayerTypeFlag.baseClass = Qgis
 Qgis.VectorLayerTypeFlags = lambda flags=0: Qgis.VectorLayerTypeFlag(flags)
 Qgis.VectorLayerTypeFlags.baseClass = Qgis
 VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
 # monkey patching scoped based enum
-Qgis.PythonEmbeddedMode.Never.__doc__ = "Python embedded never run"
-Qgis.PythonEmbeddedMode.Ask.__doc__ = "User is prompt before running"
-Qgis.PythonEmbeddedMode.SessionOnly.__doc__ = "Only during this session"
-Qgis.PythonEmbeddedMode.Always.__doc__ = "Python embedded is always run"
-Qgis.PythonEmbeddedMode.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
+Qgis.Never = Qgis.PythonEmbeddedMode.Never
+Qgis.Never.is_monkey_patched = True
+Qgis.Never.__doc__ = "Python embedded never run"
+Qgis.Ask = Qgis.PythonEmbeddedMode.Ask
+Qgis.Ask.is_monkey_patched = True
+Qgis.Ask.__doc__ = "User is prompt before running"
+Qgis.SessionOnly = Qgis.PythonEmbeddedMode.SessionOnly
+Qgis.SessionOnly.is_monkey_patched = True
+Qgis.SessionOnly.__doc__ = "Only during this session"
+Qgis.Always = Qgis.PythonEmbeddedMode.Always
+Qgis.Always.is_monkey_patched = True
+Qgis.Always.__doc__ = "Python embedded is always run"
+Qgis.NotForThisSession = Qgis.PythonEmbeddedMode.NotForThisSession
+Qgis.NotForThisSession.is_monkey_patched = True
+Qgis.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
 Qgis.PythonEmbeddedMode.__doc__ = """Authorisation to run Python Embedded in projects
 
 .. versionadded:: 3.40
