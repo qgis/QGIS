@@ -19,6 +19,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmesh3dentity_p.h"
+#include "qgsmeshlayerutils.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgsproject.h"
 #include "qgsquantizedmeshdataprovider.h"
@@ -243,13 +244,33 @@ void QgsQuantizedMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float 
 }
 float QgsQuantizedMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
 {
-  // TODO: This is the interesting part! We can read the height from the best
-  // currently loaded tile, or fetch the most precise tile for the coordinates
-  // given, but both have downsides.
-  Q_UNUSED( x );
-  Q_UNUSED( y );
-  Q_UNUSED( context );
-  return 0;
+  // We fetch the most detailed tile containing the given point and then interpolate.
+  QgsTileMatrix zoomedMatrix = QgsTileMatrix::fromTileMatrix( mMetadata->mMaxZoom, mMetadata->mTileMatrix );
+  QgsPointXY point = QgsCoordinateTransform( context.crs(), mMetadata->mCrs, context.transformContext() ).transform( QgsPointXY( x, y ) );
+  QPointF tileCoords = zoomedMatrix.mapToTileCoordinates( point );
+  QgsTileXYZ tileXyz( floor( tileCoords.x() ), floor( tileCoords.y() ), mMetadata->mMaxZoom );
+  if ( !mMetadata->containsTile( tileXyz ) )
+  {
+    // This doesn't deal with a possible dataset where the whole extent doesn't
+    // have full coverage at maxZoom, but has coverage at a lower zoom level.
+    QgsDebugError( QStringLiteral( "Quantized Mesh layer doesn't contain max-zoom tile for %1, %2" ).arg( x ).arg( y ) );
+    return 0;
+  }
+  // TODO: Make heightAt asynchronous?
+  QgsTiledSceneIndex index = mIndex; // Copy to get rid of const
+  QgsTiledSceneTile sceneTile = index.getTile( QgsQuantizedMeshIndex::encodeTileId( tileXyz ) );
+  QString uri = sceneTile.resources().value( QStringLiteral( "content" ) ).toString();
+  Q_ASSERT( !uri.isEmpty() );
+
+  uri = sceneTile.baseUrl().resolved( uri ).toString();
+  QByteArray content = index.retrieveContent( uri );
+  QgsQuantizedMeshTile qmTile( content );
+  qmTile.removeDegenerateTriangles();
+  QgsMesh mesh = qmTile.toMesh( zoomedMatrix.tileExtent( tileXyz ) );
+  QgsTriangularMesh triMesh;
+  triMesh.update( &mesh );
+
+  return QgsMeshLayerUtils::interpolateZForPoint( triMesh, point.x(), point.y() );
 }
 
 void QgsQuantizedMeshTerrainGenerator::writeXml( QDomElement &elem ) const

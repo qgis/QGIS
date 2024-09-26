@@ -88,7 +88,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! Returns height range of the root chunk in world coordinates
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const;
 
-    //! Returns height at (x,y) in terrain's CRS
+    //! Returns height at (x,y) in map's CRS
     virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const;
 
     //! Write terrain generator's configuration to XML
