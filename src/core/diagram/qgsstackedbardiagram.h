@@ -41,7 +41,7 @@ class QgsRenderContext;
 class CORE_EXPORT QgsStackedBarDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
-    static const QString DIAGRAM_NAME_STACKED_BAR;
+    static const QString DIAGRAM_NAME_STACKED_BAR SIP_SKIP;
 
     QgsStackedBarDiagram();
 

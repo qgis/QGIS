@@ -36,7 +36,7 @@ class QgsRenderContext;
 class CORE_EXPORT QgsTextDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
-    static const QString DIAGRAM_NAME_TEXT;
+    static const QString DIAGRAM_NAME_TEXT SIP_SKIP;
 
     enum Shape
     {

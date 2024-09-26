@@ -18,7 +18,6 @@ A pie chart diagram.
 #include "qgspiediagram.h"
 %End
   public:
-    static const QString DIAGRAM_NAME_PIE;
 
     QgsPieDiagram();
 

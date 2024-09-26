@@ -18,7 +18,6 @@ A text based diagram.
 #include "qgstextdiagram.h"
 %End
   public:
-    static const QString DIAGRAM_NAME_TEXT;
 
     enum Shape /BaseType=IntEnum/
     {

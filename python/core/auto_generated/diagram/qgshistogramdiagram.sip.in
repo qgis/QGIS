@@ -20,7 +20,6 @@ A histogram style diagram.
 #include "qgshistogramdiagram.h"
 %End
   public:
-    static const QString DIAGRAM_NAME_HISTOGRAM;
 
     QgsHistogramDiagram();
 

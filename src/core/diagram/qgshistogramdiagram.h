@@ -38,7 +38,7 @@ class QgsRenderContext;
 class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
-    static const QString DIAGRAM_NAME_HISTOGRAM;
+    static const QString DIAGRAM_NAME_HISTOGRAM SIP_SKIP;
 
     QgsHistogramDiagram();
 
