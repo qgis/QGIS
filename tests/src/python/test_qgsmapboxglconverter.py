@@ -385,6 +385,16 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                                                                                  conversion_context).expressionString(),
                          "set_color_part(@symbol_color, 'alpha', 25.5)")
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 2,
+                                                                                  'stops': [
+                                                                                      10, 0,
+                                                                                      11, ["match", ["get", "class"], ["path"], ["match", ["get", "is_route"], 11, 1, 0], 0],
+                                                                                      12, ["match", ["get", "class"], ["path"], ["match", ["get", "is_route"], 11, 1, ["match", ["get", "sac_scale"], ["hiking", "mountain_hiking", "alpine_hiking"], 1, 0]], 0],
+                                                                                      13, ["match", ["get", "class"], ["path"], 1, 0.5]]
+                                                                                  }, 255,
+                                                                                 conversion_context).expressionString(),
+                         '''CASE WHEN @vector_tile_zoom <  THEN set_color_part(@symbol_color, 'alpha', 0) WHEN @vector_tile_zoom >=  AND @vector_tile_zoom <  THEN set_color_part(@symbol_color, 'alpha', () * 255) WHEN @vector_tile_zoom >=  AND @vector_tile_zoom <  THEN set_color_part(@symbol_color, 'alpha', () * 255) WHEN @vector_tile_zoom >=  AND @vector_tile_zoom < match THEN set_color_part(@symbol_color, 'alpha', (() * 255) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(0 - 0) - 1)) * ((("class") * 255) - (() * 255))) WHEN @vector_tile_zoom >= match AND @vector_tile_zoom <  THEN set_color_part(@symbol_color, 'alpha', (("class") * 255) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(0 - 0) - 1)) * ((() * 255) - (("class") * 255))) WHEN @vector_tile_zoom >=  AND @vector_tile_zoom < match THEN set_color_part(@symbol_color, 'alpha', (() * 255) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(0 - 0) - 1)) * ((("class") * 255) - (() * 255))) WHEN @vector_tile_zoom >= match AND @vector_tile_zoom <  THEN set_color_part(@symbol_color, 'alpha', (("class") * 255) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(0 - 0) - 1)) * ((() * 255) - (("class") * 255))) WHEN @vector_tile_zoom >=  AND @vector_tile_zoom < match THEN set_color_part(@symbol_color, 'alpha', (() * 255) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(0 - 0) - 1)) * ((("class") * 255) - (() * 255))) WHEN @vector_tile_zoom >= match THEN set_color_part(@symbol_color, 'alpha', ("class") * 255) END''')
+
     def testInterpolateListByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         prop, default_color, default_val = QgsMapBoxGlStyleConverter.parseInterpolateListByZoom([

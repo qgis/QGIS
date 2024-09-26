@@ -2432,10 +2432,12 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
   QString scaleExpression;
   if ( stops.size() <= 2 )
   {
-    scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
-                      stops.last().toList().value( 0 ).toDouble(),
-                      stops.value( 0 ).toList().value( 1 ),
-                      stops.last().toList().value( 1 ), base, multiplier, &context );
+    scaleExpression = interpolateExpression(
+                        stops.value( 0 ).toList().value( 0 ).toDouble(), // zoomMin
+                        stops.last().toList().value( 0 ).toDouble(), // zoomMax
+                        stops.value( 0 ).toList().value( 1 ), // valueMin
+                        stops.last().toList().value( 1 ), // valueMax
+                        base, multiplier, &context );
   }
   else
   {
@@ -2506,10 +2508,16 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                             base, 1, &context ) );
   }
 
+
+  bool numeric = false;
+  const QVariant vv = stops.last().toList().value( 1 );
+  double dv = vv.toDouble( &numeric );
+
   caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
-                                "THEN set_color_part(@symbol_color, 'alpha', %2) END" )
-                .arg( stops.last().toList().value( 0 ).toString() )
-                .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
+                                "THEN set_color_part(@symbol_color, 'alpha', %2) END" ).arg(
+                  stops.last().toList().value( 0 ).toString(),
+                  numeric ? QString::number( dv * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( vv, context ) ).arg( maxOpacity )
+                );
   return caseString;
 }
 
