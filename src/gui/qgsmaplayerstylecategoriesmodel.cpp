@@ -500,6 +500,7 @@ void CategoryDisplayLabelDelegate::drawDisplay( QPainter *painter, const QStyleO
   label.setEnabled( option.state & QStyle::State_Enabled );
   label.setAttribute( Qt::WA_TranslucentBackground );
   label.setMargin( 3 );
+  label.setWordWrap( true );
   painter->save();
   painter->translate( rect.topLeft() );
   label.resize( rect.size() );
@@ -513,6 +514,8 @@ QSize CategoryDisplayLabelDelegate::sizeHint( const QStyleOptionViewItem &option
   QLabel label;
   QString display = index.model()->data( index, Qt::DisplayRole ).toString();
   label.setText( display );
+  label.setWordWrap( true );
+  label.setFixedWidth( option.widget->size().width() );
   label.setMargin( 3 );
   return label.sizeHint();
 }

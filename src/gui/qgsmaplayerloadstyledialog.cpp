@@ -73,6 +73,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   const QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
+  mStyleCategoriesListView->setWordWrap( true );
   mStyleCategoriesListView->setItemDelegate( new CategoryDisplayLabelDelegate( this ) );
 
   // load from file setup
