@@ -269,7 +269,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns a list of registered map layers with a specified layer type.
      *
      * \note not available in Python bindings
-     * \since QGIS 3.30
+     * \since QGIS 3.40
      */
     template <typename T>
     QVector<T> layers() const;
