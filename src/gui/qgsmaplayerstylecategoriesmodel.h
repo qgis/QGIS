@@ -16,9 +16,6 @@
 #ifndef QGSMAPLAYERSTYLECATEGORIESMODEL_H
 #define QGSMAPLAYERSTYLECATEGORIESMODEL_H
 
-// We don't want to expose this in the public API
-#define SIP_NO_FILE
-
 #include <QAbstractListModel>
 
 #include "qgis.h"
@@ -30,8 +27,6 @@
 /**
  * \ingroup gui
  * \brief Model for layer style categories
- *
- * \note This class is not a part of public API
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
@@ -77,17 +72,17 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
 
 /**
 * \ingroup gui
-* \class CategoryDisplayLabelDelegate
+* \class QgsCategoryDisplayLabelDelegate
 * \brief A label delegate being able to display html encoded content
 * \since QGIS 3.40
 */
-class GUI_EXPORT CategoryDisplayLabelDelegate : public QItemDelegate
+class GUI_EXPORT QgsCategoryDisplayLabelDelegate : public QItemDelegate
 {
     Q_OBJECT
 
   public:
     //! constructor
-    explicit CategoryDisplayLabelDelegate( QObject *parent = nullptr );
+    explicit QgsCategoryDisplayLabelDelegate( QObject *parent = nullptr );
 
   protected:
     void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option,

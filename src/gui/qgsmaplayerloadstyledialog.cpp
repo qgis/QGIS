@@ -74,7 +74,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
   mStyleCategoriesListView->setWordWrap( true );
-  mStyleCategoriesListView->setItemDelegate( new CategoryDisplayLabelDelegate( this ) );
+  mStyleCategoriesListView->setItemDelegate( new QgsCategoryDisplayLabelDelegate( this ) );
 
   // load from file setup
   switch ( mLayer->type() )

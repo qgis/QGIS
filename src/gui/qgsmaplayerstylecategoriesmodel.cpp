@@ -488,12 +488,12 @@ Qt::ItemFlags QgsMapLayerStyleCategoriesModel::flags( const QModelIndex & ) cons
   return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
 }
 
-CategoryDisplayLabelDelegate::CategoryDisplayLabelDelegate( QObject *parent )
+QgsCategoryDisplayLabelDelegate::QgsCategoryDisplayLabelDelegate( QObject *parent )
   : QItemDelegate( parent )
 {
 }
 
-void CategoryDisplayLabelDelegate::drawDisplay( QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text ) const
+void QgsCategoryDisplayLabelDelegate::drawDisplay( QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text ) const
 {
   QLabel label;
   label.setText( text );
@@ -508,7 +508,7 @@ void CategoryDisplayLabelDelegate::drawDisplay( QPainter *painter, const QStyleO
   painter->restore();
 }
 
-QSize CategoryDisplayLabelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize QgsCategoryDisplayLabelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option )
   QLabel label;
