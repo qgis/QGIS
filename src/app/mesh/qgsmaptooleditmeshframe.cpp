@@ -45,7 +45,9 @@
 #include "qgsmeshselectbyexpressiondialog.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsidentifymenu.h"
-
+#include "qgsprojectelevationproperties.h"
+#include "qgscoordinatetransform.h"
+#include "qgsterrainprovider.h"
 
 //
 // QgsZValueWidget
@@ -2049,6 +2051,30 @@ void QgsMapToolEditMeshFrame::selectContainedByGeometry( const QgsGeometry &geom
   }
 
   setSelectedVertices( selectedVertices.values(), behavior );
+}
+
+void QgsMapToolEditMeshFrame::applyZValueFromProjectTerrainOnSelectedVertices()
+{
+  if ( !mZValueWidget )
+    return;
+
+  if ( mSelectedVertices.isEmpty() )
+    return;
+
+  const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
+  const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
+
+  QList<double> zValues;
+  zValues.reserve( mSelectedVertices.count() );
+
+  for ( QMap<int, SelectedVertexData>::iterator it = mSelectedVertices.begin(); it != mSelectedVertices.end(); ++it )
+  {
+    const QgsPoint vertex = mapVertex( it.key() );
+    const QgsPointXY point = transformation.transform( vertex.x(), vertex.y() );
+    zValues.append( terrainProvider->heightAt( point.x(), point.y() ) );
+  }
+
+  mCurrentEditor->changeZValues( mSelectedVertices.keys(), zValues );
 }
 
 void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()

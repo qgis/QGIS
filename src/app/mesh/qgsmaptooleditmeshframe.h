@@ -235,6 +235,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void selectTouchedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void selectContainedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void applyZValueOnSelectedVertices();
+    void applyZValueFromProjectTerrainOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
     void moveSelection( const QgsPointXY &destinationPoint );
