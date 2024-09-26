@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsterraintileloader_p.cpp
+  qgsterraintileloader.cpp
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsterraintileloader_p.h"
+#include "qgsterraintileloader.h"
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgsphongtexturedmaterial.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"

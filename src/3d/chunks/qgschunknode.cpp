@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunknode_p.cpp
+  qgschunknode.cpp
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 
-#include "qgschunkedentity_p.h"  // for ChunkLoader destructor
+#include "qgschunkedentity.h"  // for ChunkLoader destructor
 #include "qgschunklist_p.h"
-#include "qgschunkloader_p.h"
+#include "qgschunkloader.h"
 #include <Qt3DCore/QEntity>
 
 ///@cond PRIVATE

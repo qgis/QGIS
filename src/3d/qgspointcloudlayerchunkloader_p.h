@@ -27,8 +27,8 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader_p.h"
-#include "qgschunkedentity_p.h"
+#include "qgschunkloader.h"
+#include "qgschunkedentity.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloud3dsymbol_p.h"
 #include "qgspointcloudlayer3drenderer.h"

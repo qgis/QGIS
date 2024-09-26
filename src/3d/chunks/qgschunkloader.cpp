@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunkloader_p.cpp
+  qgschunkloader.cpp
   --------------------------------------
   Date                 : October 2020
   Copyright            : (C) 2020 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgschunkloader_p.h"
-#include "qgschunknode_p.h"
+#include "qgschunkloader.h"
+#include "qgschunknode.h"
 
 #include <QVector>
 ///@cond PRIVATE

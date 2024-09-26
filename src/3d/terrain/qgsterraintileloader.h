@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsterraintileloader_p.h
+  qgsterraintileloader.h
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTERRAINTILELOADER_P_H
-#define QGSTERRAINTILELOADER_P_H
+#ifndef QGSTERRAINTILELOADER_H
+#define QGSTERRAINTILELOADER_H
 
 /// @cond PRIVATE
 
@@ -29,12 +29,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgschunkloader_p.h"
+#include "qgschunkloader.h"
 
 #include <QImage>
 #include "qgsrectangle.h"
-
-#define SIP_NO_FILE
 
 class QgsPhongMaterialSettings;
 class QgsTerrainEntity;
@@ -89,4 +87,4 @@ class QgsTerrainTileLoader : public QgsChunkLoader
 
 /// @endcond
 
-#endif // QGSTERRAINTILELOADER_P_H
+#endif // QGSTERRAINTILELOADER_H

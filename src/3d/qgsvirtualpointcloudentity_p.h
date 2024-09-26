@@ -29,8 +29,8 @@
 //
 
 #include "qgscoordinatetransform.h"
-#include "qgschunkedentity_p.h"
-#include "qgs3dmapsceneentity_p.h"
+#include "qgschunkedentity.h"
+#include "qgs3dmapsceneentity.h"
 #include "qgs3drendercontext.h"
 
 class QgsAABB;

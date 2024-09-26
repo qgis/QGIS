@@ -15,10 +15,10 @@
 
 #pragma once
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaplayerref.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgstiledsceneindex.h"

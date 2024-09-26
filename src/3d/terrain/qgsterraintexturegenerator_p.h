@@ -37,7 +37,7 @@ class QgsRasterLayer;
 #include <QObject>
 #include <QSize>
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgsrectangle.h"
 
 class Qgs3DMapSettings;

@@ -36,7 +36,7 @@
 
 #include "qgsmapsettings.h"
 #include "qgs3dmapscene.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgswindow3dengine.h"

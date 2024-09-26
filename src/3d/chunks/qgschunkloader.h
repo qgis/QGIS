@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunkloader_p.h
+  qgschunkloader.h
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCHUNKLOADER_P_H
-#define QGSCHUNKLOADER_P_H
+#ifndef QGSCHUNKLOADER_H
+#define QGSCHUNKLOADER_H
 
 ///@cond PRIVATE
 
@@ -27,7 +27,7 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkqueuejob_p.h"
+#include "qgschunkqueuejob.h"
 
 #define SIP_NO_FILE
 
@@ -142,4 +142,4 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
 
 /// @endcond
 
-#endif // QGSCHUNKLOADER_P_H
+#endif // QGSCHUNKLOADER_H

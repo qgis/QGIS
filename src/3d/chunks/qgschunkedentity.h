@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunkedentity_p.h
+  qgschunkedentity.h
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCHUNKEDENTITY_P_H
-#define QGSCHUNKEDENTITY_P_H
+#ifndef QGSCHUNKEDENTITY_H
+#define QGSCHUNKEDENTITY_H
 
 ///@cond PRIVATE
 
@@ -27,7 +27,7 @@
 // version without notice, or even be removed.
 //
 
-#include "qgs3dmapsceneentity_p.h"
+#include "qgs3dmapsceneentity.h"
 #include <numeric>
 
 #define SIP_NO_FILE
@@ -52,7 +52,7 @@ namespace QgsRayCastingUtils
 
 #include <QTime>
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 
 
 /**
@@ -171,4 +171,4 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
 
 /// @endcond
 
-#endif // QGSCHUNKEDENTITY_P_H
+#endif // QGSCHUNKEDENTITY_H

@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsmeshterraingenerator.h"
+#include "qgsmeshterraintileloader_p.h"
 
 #include <Qt3DRender/QMaterial>
 
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgsmeshlayerutils.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"

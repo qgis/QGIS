@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsterrainentity_p.h
+  qgsterrainentity.h
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTERRAINENTITY_P_H
-#define QGSTERRAINENTITY_P_H
+#ifndef QGSTERRAINENTITY_H
+#define QGSTERRAINENTITY_H
 
 ///@cond PRIVATE
 
@@ -29,8 +29,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgschunkedentity_p.h"
-#include "qgschunkqueuejob_p.h"
+#include "qgschunkedentity.h"
+#include "qgschunkqueuejob.h"
 
 #include <memory>
 
@@ -111,4 +111,4 @@ class TerrainMapUpdateJob : public QgsChunkQueueJob
 
 /// @endcond
 
-#endif // QGSTERRAINENTITY_P_H
+#endif // QGSTERRAINENTITY_H
