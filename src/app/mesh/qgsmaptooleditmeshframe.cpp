@@ -2870,7 +2870,6 @@ void QgsMapToolEditMeshFrame::updateStatusBarMessage() const
 
       QString formattedDistance;
       double distance;
-      bool distanceIsValid = false;
 
       // if crs is valid calculate using QgsDistanceArea otherwise calculate just as distance
       if ( mCurrentLayer->crs().isValid() )
@@ -2883,12 +2882,11 @@ void QgsMapToolEditMeshFrame::updateStatusBarMessage() const
           distance = distArea.measureLine( QgsPointXY( vertex1 ), QgsPointXY( vertex2 ) );
           distance = distArea.convertLengthMeasurement( distance, QgsProject::instance()->distanceUnits() );
           formattedDistance = distArea.formatDistance( distance, 6, QgsProject::instance()->distanceUnits() );
-          distanceIsValid = true;
         }
         catch ( QgsCsException & ) {}
       }
 
-      if ( ! distanceIsValid )
+      if ( formattedDistance.isEmpty() )
       {
         distance = vertex1.distance( vertex2 );
         formattedDistance = QLocale().toString( distance, 'f' );
