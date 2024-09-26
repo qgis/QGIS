@@ -37,6 +37,7 @@ if TYPE_CHECKING:
 
 class writeOut(QObject):
     ERROR_COLOR = "#e31a1c"
+    ERROR_STYLE_INDEX = 16
 
     def __init__(self, shellOut, out=None, style=None):
         """
@@ -61,13 +62,14 @@ class writeOut(QObject):
         if self.style == "_traceback":
             # Show errors in red
             stderrColor = QColor(QgsSettings().value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 0o01, stderrColor)
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 0o01, True)
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 0o01, True)
-            pos = self.sO.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
-            self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, self.ERROR_STYLE_INDEX, stderrColor)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, self.ERROR_STYLE_INDEX, True)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, self.ERROR_STYLE_INDEX, True)
+            pos = self.sO.linearPosition()
+            self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 0)
             self.sO.append(m)
-            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 0o01)
+            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), self.ERROR_STYLE_INDEX)
+
         else:
             self.sO.append(m)
 
