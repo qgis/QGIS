@@ -2097,7 +2097,17 @@ void QgsMapToolEditMeshFrame::applyZValueFromProjectTerrainOnSelectedVertices()
   for ( QMap<int, SelectedVertexData>::iterator it = mSelectedVertices.begin(); it != mSelectedVertices.end(); ++it )
   {
     const QgsPoint vertex = mapVertex( it.key() );
-    const QgsPointXY point = transformation.transform( vertex.x(), vertex.y() );
+    QgsPointXY point;
+
+    try
+    {
+      point = transformation.transform( vertex.x(), vertex.y() );
+    }
+    catch ( const QgsCsException & )
+    {
+      point = QgsPointXY( vertex.x(), vertex.y() );
+    }
+
     zValues.append( terrainProvider->heightAt( point.x(), point.y() ) );
   }
 
