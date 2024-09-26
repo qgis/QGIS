@@ -1427,7 +1427,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "layout": {
                 "visibility": "visible",
                 "text-field": "{substance}",
-                "text-rotate": ["get","direction"]
+                "text-rotate": ["get", "direction"]
             },
             "paint": {
                 "text-color": "rgba(47, 47, 47, 1)",

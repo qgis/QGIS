@@ -1686,8 +1686,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     const QVariant jsonTextRotate = jsonLayout.value( QStringLiteral( "text-rotate" ) );
     switch ( jsonTextRotate.userType() )
     {
-    case QMetaType::Type::Double:
-    case QMetaType::Type::Int:
+      case QMetaType::Type::Double:
+      case QMetaType::Type::Int:
       {
         labelSettings.angleOffset = jsonTextRotate.toDouble();
         break;
@@ -1696,7 +1696,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
       {
-        const QgsProperty property = parseValueList(jsonTextRotate.toList(), PropertyType::Numeric, context );
+        const QgsProperty property = parseValueList( jsonTextRotate.toList(), PropertyType::Numeric, context );
         ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, property );
         break;
       }
