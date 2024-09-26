@@ -125,7 +125,7 @@ void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
 void QgsDemTerrainGenerator::updateGenerator()
 {
   QgsRasterLayer *dem = layer();
-  if ( dem )
+  if ( dem && mCrs.isValid() )
   {
     mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
     delete mHeightMapGenerator;
