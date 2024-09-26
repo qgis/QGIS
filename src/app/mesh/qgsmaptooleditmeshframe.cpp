@@ -893,6 +893,10 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         {
           addVertex( mFirstClickPoint, e->mapPointMatch() );
           mCadDockWidget->setPoints( QList<QgsPointXY>() << mFirstClickPoint << mFirstClickPoint );
+
+          // after addition select the vertex for easier editing of Z value
+          mCurrentVertexIndex = closeVertex( mapPoint );
+          select( mapPoint, e->modifiers(), tolerance );
         }
         else if ( mNewFaceMarker->isVisible() &&
                   mapPoint.distance( mNewFaceMarker->center() ) < tolerance
