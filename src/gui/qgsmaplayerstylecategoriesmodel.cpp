@@ -432,7 +432,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorNotes.svg" ) );
+          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/notes.svg" ) );
       }
       break;
     }
