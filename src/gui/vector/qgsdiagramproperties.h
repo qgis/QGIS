@@ -167,9 +167,8 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     /**
      * Convenience function to chain widgets' change value signal to another signal.
      * @param widgets List of widgets.
-     * @param signal Signal to be triggered by each widget's change value signal.
      */
-    void connectValueChanged( const QList<QWidget *> &widgets, const char *signal );
+    void connectValueChanged( const QList<QWidget *> &widgets );
 
     /**
      * Creates a QgsDiagram object from the GUI settings.
