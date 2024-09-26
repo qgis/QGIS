@@ -36,6 +36,8 @@ class QgsSnapIndicator;
 class QgsMeshTransformCoordinatesDockWidget;
 class QComboBox;
 class QCheckBox;
+class QPushButton;
+class QCheckBox;
 class QgsUnitSelectionWidget;
 class QgsMapToolSelectionHandler;
 
@@ -58,6 +60,9 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     //! Sets the current value \a z of the widget
     void setZValue( double z );
 
+    //! Should \a z value be extract from project elevation setting
+    bool getZFromProjectElevation();
+
     /**
      *  Sets the current value of the widget and set it as the default one,
      *  that is the value that is retrieve if the z value spin box is cleared
@@ -66,8 +71,15 @@ class APP_EXPORT QgsZValueWidget : public QWidget
 
     QWidget *keyboardEntryWidget() const;
 
+  signals:
+    void applyZValuesFromProjectElevation();
+
   private:
+    void getZValuesFromProjectElevation_pressed();
+
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
+    QPushButton *mGetZValuesButton = nullptr;
+    QCheckBox *mGetZValuesFromProjectElevationByDefaultCheckBox = nullptr;
 };
 
 class QgsMeshEditForceByLineAction : public QWidgetAction
