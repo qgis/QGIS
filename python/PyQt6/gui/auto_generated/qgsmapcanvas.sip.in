@@ -464,6 +464,7 @@ all their child layers.
 .. seealso:: :py:func:`setLayers`
 %End
 
+
     void freeze( bool frozen = true );
 %Docstring
 Freeze/thaw the map canvas. This is used to prevent the canvas from

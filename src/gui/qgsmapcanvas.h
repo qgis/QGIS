@@ -507,6 +507,17 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 
+#ifndef SIP_RUN
+    /**
+     * Returns a list of registered map layers with a specified layer type.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    template <typename T>
+    QVector<T> layers() const {return mapSettings().layers<T>();}
+#endif
+
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
