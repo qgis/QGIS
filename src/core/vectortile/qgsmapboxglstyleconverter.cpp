@@ -1681,6 +1681,32 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
+  if ( jsonLayout.contains( QStringLiteral( "text-rotate" ) ) )
+  {
+    const QVariant jsonTextRotate = jsonLayout.value( QStringLiteral( "text-rotate" ) );
+    switch ( jsonTextRotate.userType() )
+    {
+      case QMetaType::Type::Double:
+      case QMetaType::Type::Int:
+      {
+        labelSettings.angleOffset = jsonTextRotate.toDouble();
+        break;
+      }
+
+      case QMetaType::Type::QVariantList:
+      case QMetaType::Type::QStringList:
+      {
+        const QgsProperty property = parseValueList( jsonTextRotate.toList(), PropertyType::Numeric, context );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, property );
+        break;
+      }
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-rotate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextRotate.userType() ) ) ) );
+        break;
+    }
+  }
+
   if ( jsonLayout.contains( QStringLiteral( "text-transform" ) ) )
   {
     const QString textTransform = jsonLayout.value( QStringLiteral( "text-transform" ) ).toString();
@@ -2432,10 +2458,12 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
   QString scaleExpression;
   if ( stops.size() <= 2 )
   {
-    scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
-                      stops.last().toList().value( 0 ).toDouble(),
-                      stops.value( 0 ).toList().value( 1 ),
-                      stops.last().toList().value( 1 ), base, multiplier, &context );
+    scaleExpression = interpolateExpression(
+                        stops.value( 0 ).toList().value( 0 ).toDouble(), // zoomMin
+                        stops.last().toList().value( 0 ).toDouble(), // zoomMax
+                        stops.value( 0 ).toList().value( 1 ), // valueMin
+                        stops.last().toList().value( 1 ), // valueMax
+                        base, multiplier, &context );
   }
   else
   {
@@ -2469,10 +2497,11 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
     double top = 0.0;
     const bool numeric = numericArgumentsOnly( bv, tv, bottom, top );
     scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
-                      .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
-                            stops.last().toList().value( 0 ).toDouble(),
-                            numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
-                            numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ), base, 1, &context ) );
+                      .arg( interpolateExpression(
+                              stops.value( 0 ).toList().value( 0 ).toDouble(),
+                              stops.last().toList().value( 0 ).toDouble(),
+                              numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
+                              numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ), base, 1, &context ) );
   }
   else
   {
@@ -2499,17 +2528,24 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                                   "THEN set_color_part(@symbol_color, 'alpha', %3)" )
                   .arg( stops.value( i ).toList().value( 0 ).toString(),
                         stops.value( i + 1 ).toList().value( 0 ).toString(),
-                        interpolateExpression( stops.value( i ).toList().value( 0 ).toDouble(),
-                            stops.value( i + 1 ).toList().value( 0 ).toDouble(),
-                            numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
-                            numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ),
-                            base, 1, &context ) );
+                        interpolateExpression(
+                          stops.value( i ).toList().value( 0 ).toDouble(),
+                          stops.value( i + 1 ).toList().value( 0 ).toDouble(),
+                          numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
+                          numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ),
+                          base, 1, &context ) );
   }
 
+
+  bool numeric = false;
+  const QVariant vv = stops.last().toList().value( 1 );
+  double dv = vv.toDouble( &numeric );
+
   caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
-                                "THEN set_color_part(@symbol_color, 'alpha', %2) END" )
-                .arg( stops.last().toList().value( 0 ).toString() )
-                .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
+                                "THEN set_color_part(@symbol_color, 'alpha', %2) END" ).arg(
+                  stops.last().toList().value( 0 ).toString(),
+                  numeric ? QString::number( dv * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( vv, context ) ).arg( maxOpacity )
+                );
   return caseString;
 }
 
@@ -3183,23 +3219,11 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
   {
     if ( base == 1 )
     {
-      expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin )
-                   .arg( zoomMax )
-                   .arg( minValueExpr )
-                   .arg( maxValueExpr );
+      expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin ).arg( zoomMax ).arg( minValueExpr ).arg( maxValueExpr );
     }
     else
     {
-      // use formula to scale value exponentially as scale_exp expression function
-      // gives wrong resutls, see https://github.com/qgis/QGIS/pull/53164
-      QString ratioExpr = QStringLiteral( "(%1^(@vector_tile_zoom - %2) - 1) / (%1^(%3 - %2) - 1)" ).arg( base ).arg( zoomMin ).arg( zoomMax );
-      expression = QStringLiteral( "(%1) + (%2) * ((%3) - (%1))" ).arg( minValueExpr ).arg( ratioExpr ).arg( maxValueExpr );
-      // can be uncommented when scale_exponential expression function gets to the old LTR
-      //expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
-      //             .arg( zoomMax )
-      //             .arg( minValueExpr )
-      //             .arg( maxValueExpr )
-      //             .arg( base );
+      expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin ).arg( zoomMax ).arg( minValueExpr ).arg( maxValueExpr ).arg( base );
     }
   }
 
