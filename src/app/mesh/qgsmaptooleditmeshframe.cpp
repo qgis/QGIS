@@ -218,8 +218,13 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   mSelectionHandler = std::make_unique<QgsMapToolSelectionHandler>( canvas, QgsMapToolSelectionHandler::SelectPolygon );
 
+  mActionSelectIsolatedVertices = new QAction(QgsApplication::getThemeIcon( QStringLiteral("/mActionMeshSelectIsolatedVertices.svg")), tr("Select Isolated Vertices"), this);
+  mActionSelectAllVertices = new QAction( QgsApplication::getThemeIcon( QStringLiteral("/mActionMeshSelectAll.svg")), tr("Select All Vertices"), this);
+
   mSelectActions << mActionSelectByPolygon
-                 << mActionSelectByExpression;
+                 << mActionSelectByExpression
+                 << mActionSelectIsolatedVertices
+                 << mActionSelectAllVertices;
 
   mActionTransformCoordinates = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshTransformByExpression.svg" ) ), tr( "Transform Vertices Coordinates" ), this );
   mActionTransformCoordinates->setCheckable( true );
@@ -268,6 +273,25 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
     else
       mSelectionBand->reset( Qgis::GeometryType::Polygon );
   } );
+
+  connect( mActionSelectIsolatedVertices, &QAction::triggered, this, [this]
+  {
+    onEditingStarted();
+    setSelectedVertices(mCurrentEditor->freeVerticesIndexes(), Qgis::SelectBehavior::SetSelection);
+  });
+
+  connect( mActionSelectAllVertices, &QAction::triggered, this, [this]
+  {
+      onEditingStarted();
+
+      QList<int> verticesIndexes;
+      verticesIndexes.reserve(mCurrentLayer->meshVertexCount());
+      for (int i = 0; i < mCurrentLayer->meshVertexCount(); i++){
+        verticesIndexes.append(i);
+      }
+
+      setSelectedVertices(verticesIndexes, Qgis::SelectBehavior::SetSelection);
+  });
 
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
   connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
@@ -365,7 +389,9 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
       << mActionSelectByExpression
       << mActionTransformCoordinates
       << mActionForceByLines
-      << mActionReindexMesh;
+      << mActionReindexMesh
+      << mActionSelectIsolatedVertices
+      << mActionSelectAllVertices;
 
   for ( QAction *action : std::as_const( actions ) )
     action->setEnabled( enable );
