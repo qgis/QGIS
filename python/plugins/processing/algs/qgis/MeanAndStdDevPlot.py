@@ -54,7 +54,9 @@ class MeanAndStdDevPlot(QgisAlgorithm):
                                                       self.tr('Category name field'), parentLayerParameterName=self.INPUT,
                                                       type=QgsProcessingParameterField.DataType.Any))
         self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
-                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
+                                                      self.tr('Value field'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Plot'), self.tr('HTML files (*.html)')))
 
