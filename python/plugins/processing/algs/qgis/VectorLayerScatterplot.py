@@ -23,7 +23,10 @@ import warnings
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFileDestination)
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean)
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -35,6 +38,11 @@ class VectorLayerScatterplot(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     XFIELD = 'XFIELD'
     YFIELD = 'YFIELD'
+    TITLE = 'TITLE'
+    XAXIS_TITLE = "XAXIS_TITLE"
+    YAXIS_TITLE = "YAXIS_TITLE"
+    XAXIS_LOG = "XAXIS_LOG"
+    YAXIS_LOG = "YAXIS_LOG"
 
     def group(self):
         return self.tr('Plots')
@@ -56,6 +64,33 @@ class VectorLayerScatterplot(QgisAlgorithm):
                                                       self.tr('Y attribute'),
                                                       parentLayerParameterName=self.INPUT,
                                                       type=QgsProcessingParameterField.DataType.Numeric))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.TITLE,
+            self.tr('Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.XAXIS_TITLE,
+            self.tr('Xaxis Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.YAXIS_TITLE,
+            self.tr('Yaxis Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.XAXIS_LOG,
+            self.tr('Xaxis logarithmic'),
+            defaultValue=False,
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.YAXIS_LOG,
+            self.tr('Yaxis logarithmic'),
+            defaultValue=False,
+            optional=True))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Scatterplot'), self.tr('HTML files (*.html)')))
 
@@ -83,12 +118,34 @@ class VectorLayerScatterplot(QgisAlgorithm):
         xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
         yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
 
+        title = self.parameterAsString(parameters, self.TITLE, context)
+        xaxis_title = self.parameterAsString(parameters, self.XAXIS_TITLE, context)
+        yaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
+        xaxis_log = self.parameterAsBool(parameters, self.XAXIS_LOG, context)
+        yaxis_log = self.parameterAsBool(parameters, self.YAXIS_LOG, context)
+
+        if title.strip() == "": title = None
+        if xaxis_title.strip() == "": xaxis_title = None
+        if yaxis_title.strip() == "": yaxis_title = None
+
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
         values = vector.values(source, xfieldname, yfieldname)
         data = [go.Scatter(x=values[xfieldname],
                            y=values[yfieldname],
                            mode='markers')]
-        plt.offline.plot(data, filename=output, auto_open=False)
+        fig = go.Figure(
+            data=data,
+            layout_title_text=title,
+            layout_xaxis_title=xaxis_title,
+            layout_yaxis_title=yaxis_title)
+
+        if xaxis_log:
+            fig.update_xaxes(type="log")
+
+        if yaxis_log:
+            fig.update_yaxes(type="log")
+
+        fig.write_html(output)
 
         return {self.OUTPUT: output}
