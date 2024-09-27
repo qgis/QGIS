@@ -6382,8 +6382,8 @@ QgsRelationWidgetWrapper.widgetConfig: src/gui/editorwidgets/qgsrelationwidgetwr
 QgsRelationWidgetWrapper.widgetValueChanged: src/gui/editorwidgets/qgsrelationwidgetwrapper.h#L198
 QgsRelationWidgetWrapper: src/gui/editorwidgets/qgsrelationwidgetwrapper.h#L32
 QgsRendererPropertiesDialog.apply: src/gui/symbology/qgsrendererpropertiesdialog.h#L108
-QgsRendererPropertiesDialog.connectValueChanged: src/gui/symbology/qgsrendererpropertiesdialog.h#L145
-QgsRendererPropertiesDialog.keyPressEvent: src/gui/symbology/qgsrendererpropertiesdialog.h#L148
+QgsRendererPropertiesDialog.connectValueChanged: src/gui/symbology/qgsrendererpropertiesdialog.h#L144
+QgsRendererPropertiesDialog.keyPressEvent: src/gui/symbology/qgsrendererpropertiesdialog.h#L147
 QgsRendererPropertiesDialog.layerVariablesChanged: src/gui/symbology/qgsrendererpropertiesdialog.h#L87
 QgsRendererPropertiesDialog.onOK: src/gui/symbology/qgsrendererpropertiesdialog.h#L111
 QgsRendererPropertiesDialog.openPanel: src/gui/symbology/qgsrendererpropertiesdialog.h#L123
