@@ -218,8 +218,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   mSelectionHandler = std::make_unique<QgsMapToolSelectionHandler>( canvas, QgsMapToolSelectionHandler::SelectPolygon );
 
-  mActionSelectIsolatedVertices = new QAction(QgsApplication::getThemeIcon( QStringLiteral("/mActionMeshSelectIsolatedVertices.svg")), tr("Select Isolated Vertices"), this);
-  mActionSelectAllVertices = new QAction( QgsApplication::getThemeIcon( QStringLiteral("/mActionMeshSelectAll.svg")), tr("Select All Vertices"), this);
+  mActionSelectIsolatedVertices = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectIsolatedVertices.svg" ) ), tr( "Select Isolated Vertices" ), this );
+  mActionSelectAllVertices = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectAll.svg" ) ), tr( "Select All Vertices" ), this );
 
   mSelectActions << mActionSelectByPolygon
                  << mActionSelectByExpression
@@ -277,21 +277,22 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   connect( mActionSelectIsolatedVertices, &QAction::triggered, this, [this]
   {
     onEditingStarted();
-    setSelectedVertices(mCurrentEditor->freeVerticesIndexes(), Qgis::SelectBehavior::SetSelection);
-  });
+    setSelectedVertices( mCurrentEditor->freeVerticesIndexes(), Qgis::SelectBehavior::SetSelection );
+  } );
 
   connect( mActionSelectAllVertices, &QAction::triggered, this, [this]
   {
-      onEditingStarted();
+    onEditingStarted();
 
-      QList<int> verticesIndexes;
-      verticesIndexes.reserve(mCurrentLayer->meshVertexCount());
-      for (int i = 0; i < mCurrentLayer->meshVertexCount(); i++){
-        verticesIndexes.append(i);
-      }
+    QList<int> verticesIndexes;
+    verticesIndexes.reserve( mCurrentLayer->meshVertexCount() );
+    for ( int i = 0; i < mCurrentLayer->meshVertexCount(); i++ )
+    {
+      verticesIndexes.append( i );
+    }
 
-      setSelectedVertices(verticesIndexes, Qgis::SelectBehavior::SetSelection);
-  });
+    setSelectedVertices( verticesIndexes, Qgis::SelectBehavior::SetSelection );
+  } );
 
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
   connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
