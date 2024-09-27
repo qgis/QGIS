@@ -60,8 +60,8 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     //! Sets the current value \a z of the widget
     void setZValue( double z );
 
-    //! Should \a z value be extract from project elevation setting
-    bool getZFromProjectElevation();
+    //! Should z value be extract from project elevation setting
+    bool getZFromProjectElevationEnabled();
 
     /**
      *  Sets the current value of the widget and set it as the default one,
@@ -75,8 +75,6 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     void applyZValuesFromProjectElevation();
 
   private:
-    void getZValuesFromProjectElevation_pressed();
-
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
     QPushButton *mGetZValuesButton = nullptr;
     QCheckBox *mGetZValuesFromProjectElevationByDefaultCheckBox = nullptr;

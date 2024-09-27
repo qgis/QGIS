@@ -94,12 +94,7 @@ QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidg
   mainLayout->addWidget( mGetZValuesButton );
   mainLayout->addWidget( mGetZValuesFromProjectElevationByDefaultCheckBox );
 
-  connect( mGetZValuesButton, &QPushButton::pressed, this, &QgsZValueWidget::getZValuesFromProjectElevation_pressed );
-}
-
-void QgsZValueWidget::getZValuesFromProjectElevation_pressed()
-{
-  emit applyZValuesFromProjectElevation();
+  connect( mGetZValuesButton, &QPushButton::pressed, this, &QgsZValueWidget::applyZValuesFromProjectElevation );
 }
 
 bool QgsZValueWidget::getZFromProjectElevationEnabled()
@@ -2091,27 +2086,35 @@ void QgsMapToolEditMeshFrame::applyZValueFromProjectTerrainOnSelectedVertices()
   const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
   const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
 
-  QList<double> zValues;
-  zValues.reserve( mSelectedVertices.count() );
+  QMap<int, double> zValues;
+  QgsPointXY point;
+  bool vertexTransformed = false;
+  double elevation;
 
   for ( QMap<int, SelectedVertexData>::iterator it = mSelectedVertices.begin(); it != mSelectedVertices.end(); ++it )
   {
     const QgsPoint vertex = mapVertex( it.key() );
-    QgsPointXY point;
+    vertexTransformed = false;
 
     try
     {
       point = transformation.transform( vertex.x(), vertex.y() );
+      vertexTransformed = true;
     }
     catch ( const QgsCsException & )
-    {
-      point = QgsPointXY( vertex.x(), vertex.y() );
-    }
+    {}
 
-    zValues.append( terrainProvider->heightAt( point.x(), point.y() ) );
+    if (vertexTransformed)
+    {
+        elevation  = terrainProvider->heightAt( point.x(), point.y() );
+        if ( !std::isnan(elevation))
+        {
+            zValues.insert(it.key(), elevation);
+        }
+    }
   }
 
-  mCurrentEditor->changeZValues( mSelectedVertices.keys(), zValues );
+  mCurrentEditor->changeZValues( zValues.keys(), zValues.values() );
 }
 
 void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()
@@ -2791,9 +2794,21 @@ void QgsMapToolEditMeshFrame::addVertex(
     {
       const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
       const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
-      const QgsPointXY point = transformation.transform( effectivePoint.x(), effectivePoint.y() );
 
-      zValue = terrainProvider->heightAt( point.x(), point.y() );
+      zValue = std::numeric_limits<double>::quiet_NaN();
+
+      try{
+        const QgsPointXY point = transformation.transform( effectivePoint.x(), effectivePoint.y() );
+        zValue = terrainProvider->heightAt( point.x(), point.y() );
+      }
+      catch ( const QgsCsException & )
+      {}
+
+      // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
+      if ( std::isnan(zValue))
+      {
+        zValue = currentZValue();
+      }
     }
     else
     {
