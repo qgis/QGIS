@@ -283,14 +283,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   connect( mActionSelectAllVertices, &QAction::triggered, this, [this]
   {
     onEditingStarted();
-
-    QList<int> verticesIndexes;
-    verticesIndexes.reserve( mCurrentLayer->meshVertexCount() );
-    for ( int i = 0; i < mCurrentLayer->meshVertexCount(); i++ )
-    {
-      verticesIndexes.append( i );
-    }
-
+    QList<int> verticesIndexes = mCurrentLayer->selectVerticesByExpression( QgsExpression( "true" ) );
     setSelectedVertices( verticesIndexes, Qgis::SelectBehavior::SetSelection );
   } );
 
