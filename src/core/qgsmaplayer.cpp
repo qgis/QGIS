@@ -3393,7 +3393,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
 
           if ( ensemble.accuracy() > 0 )
           {
-            accuracyString = tr( "Based on %1, which has a limited accuracy of <b>at best %n meter(s)</b>.", nullptr, ensemble.accuracy() ).arg( id );
+            accuracyString = tr( "Based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
           }
           else
           {
