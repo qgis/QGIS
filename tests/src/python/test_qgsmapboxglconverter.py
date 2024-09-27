@@ -1405,6 +1405,41 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertFalse(labeling_style.labelSettings().isExpression)
         self.assertEqual(labeling_style.labelSettings().fieldName, 'substance')
 
+    def testLabelRotation(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance}",
+                "text-rotate": 123
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling_style.labelSettings().angleOffset, 123)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance}",
+                "text-rotate": ["get", "direction"]
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        ls = labeling_style.labelSettings()
+        ddp = ls.dataDefinedProperties()
+        self.assertEqual(ddp.property(QgsPalLayerSettings.Property.LabelRotation).asExpression(), '"direction"')
+
     def test_parse_zoom_levels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
