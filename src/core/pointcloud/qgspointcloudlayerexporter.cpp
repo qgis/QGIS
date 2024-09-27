@@ -587,7 +587,7 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[ QStringLiteral( "NumberOfReturns" ) ].toInt() );
   mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[ QStringLiteral( "ScanDirectionFlag" ) ].toInt() );
   mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[ QStringLiteral( "EdgeOfFlightLine" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ QStringLiteral( "ScanAngleRank" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ QStringLiteral( "ScanAngleRank" ) ].toFloat() );
   mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[ QStringLiteral( "UserData" ) ].toInt() );
   mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[ QStringLiteral( "PointSourceId" ) ].toInt() );
 

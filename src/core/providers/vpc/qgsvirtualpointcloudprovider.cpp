@@ -437,7 +437,7 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
   if ( names.contains( QLatin1String( "Classification" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar ) );
   if ( names.contains( QLatin1String( "ScanAngleRank" ) ) )
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ScanAngleRank" ), QgsPointCloudAttribute::Short ) );
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ScanAngleRank" ), QgsPointCloudAttribute::Float ) );
   if ( names.contains( QLatin1String( "UserData" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "UserData" ), QgsPointCloudAttribute::Char ) );
   if ( names.contains( QLatin1String( "PointSourceId" ) ) )
