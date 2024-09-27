@@ -36,8 +36,9 @@ if TYPE_CHECKING:
 
 
 class writeOut(QObject):
-    ERROR_COLOR = "#e31a1c"
+    # QsciLexerPython uses style codes up to 15 (Decorator style). We use 16 for error messages
     ERROR_STYLE_INDEX = 16
+    ERROR_COLOR = "#e31a1c"
 
     def __init__(self, shellOut, out=None, style=None):
         """
