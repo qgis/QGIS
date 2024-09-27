@@ -385,6 +385,18 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                                                                                  conversion_context).expressionString(),
                          "set_color_part(@symbol_color, 'alpha', 25.5)")
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 2,
+                                                                                  'stops': [
+                                                                                      [10, 0],
+                                                                                      [11, ["match", ["get", "class"], ["path"], 0.5, 0]],
+                                                                                      [13, ["match", ["get", "class"], ["path"], 1, 0.5]]]
+                                                                                  }, 255,
+                                                                                 conversion_context).expressionString(),
+                         ('''CASE WHEN @vector_tile_zoom < 10 THEN set_color_part(@symbol_color, 'alpha', 0) '''
+                          '''WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom < 11 THEN set_color_part(@symbol_color, 'alpha', ((0) * 255) + ((2^(@vector_tile_zoom - 10) - 1) / (2^(11 - 10) - 1)) * (((CASE WHEN "class" = 'path' THEN 0.5 ELSE 0 END) * 255) - ((0) * 255))) '''
+                          '''WHEN @vector_tile_zoom >= 11 AND @vector_tile_zoom < 13 THEN set_color_part(@symbol_color, 'alpha', ((CASE WHEN "class" = 'path' THEN 0.5 ELSE 0 END) * 255) + ((2^(@vector_tile_zoom - 11) - 1) / (2^(13 - 11) - 1)) * (((CASE WHEN "class" = 'path' THEN 1 ELSE 0.5 END) * 255) - ((CASE WHEN "class" = 'path' THEN 0.5 ELSE 0 END) * 255))) '''
+                          '''WHEN @vector_tile_zoom >= 13 THEN set_color_part(@symbol_color, 'alpha', (CASE WHEN "class" = 'path' THEN 1 ELSE 0.5 END) * 255) END'''))
+
     def testInterpolateListByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         prop, default_color, default_val = QgsMapBoxGlStyleConverter.parseInterpolateListByZoom([
