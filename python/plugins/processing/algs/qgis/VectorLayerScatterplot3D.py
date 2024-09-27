@@ -23,7 +23,9 @@ import warnings
 from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsProcessingParameterString)
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from processing.tools import vector
@@ -37,6 +39,10 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
     XFIELD = 'XFIELD'
     YFIELD = 'YFIELD'
     ZFIELD = 'ZFIELD'
+    TITLE = 'TITLE'
+    XAXIS_TITLE = "XAXIS_TITLE"
+    YAXIS_TITLE = "YAXIS_TITLE"
+    ZAXIS_TITLE = "ZAXIS_TITLE"
 
     def group(self):
         return self.tr('Plots')
@@ -62,6 +68,26 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
                                                       self.tr('Z attribute'),
                                                       parentLayerParameterName=self.INPUT,
                                                       type=QgsProcessingParameterField.DataType.Numeric))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.TITLE,
+            self.tr('Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.XAXIS_TITLE,
+            self.tr('Xaxis Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.YAXIS_TITLE,
+            self.tr('Yaxis Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.ZAXIS_TITLE,
+            self.tr('Zaxis Title'),
+            optional=True))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Histogram'), self.tr('HTML files (*.html)')))
 
@@ -90,6 +116,16 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
         yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
         zfieldname = self.parameterAsString(parameters, self.ZFIELD, context)
 
+        title = self.parameterAsString(parameters, self.TITLE, context)
+        xaxis_title = self.parameterAsString(parameters, self.XAXIS_TITLE, context)
+        yaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
+        zaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
+
+        if title.strip() == "": title = None
+        if xaxis_title.strip() == "": xaxis_title = None
+        if yaxis_title.strip() == "": xaxis_title = None
+        if zaxis_title.strip() == "": xaxis_title = None
+
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
         values = vector.values(source, xfieldname, yfieldname, zfieldname)
@@ -100,6 +136,14 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
                 z=values[zfieldname],
                 mode='markers')]
 
-        plt.offline.plot(data, filename=output, auto_open=False)
+
+        fig = go.Figure(
+            data=data,
+            layout_title_text=title,
+            layout_scene_xaxis_title=xaxis_title,
+            layout_scene_yaxis_title=yaxis_title,
+            layout_scene_zaxis_title=zaxis_title)
+
+        fig.write_html(output)
 
         return {self.OUTPUT: output}
