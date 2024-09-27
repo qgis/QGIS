@@ -102,7 +102,7 @@ void QgsZValueWidget::getZValuesFromProjectElevation_pressed()
   emit applyZValuesFromProjectElevation();
 }
 
-bool QgsZValueWidget::getZFromProjectElevation()
+bool QgsZValueWidget::getZFromProjectElevationEnabled()
 {
   return mGetZValuesFromProjectElevationByDefaultCheckBox->isChecked();
 }
@@ -2787,7 +2787,7 @@ void QgsMapToolEditMeshFrame::addVertex(
   }
   else
   {
-    if ( mZValueWidget->getZFromProjectElevation() )
+    if ( mZValueWidget->getZFromProjectElevationEnabled() )
     {
       const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
       const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
