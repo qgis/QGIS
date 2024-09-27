@@ -10,7 +10,6 @@
 
 
 
-
 class QgsHistogramDiagram: QgsDiagram /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -21,6 +20,7 @@ A histogram style diagram.
 #include "qgshistogramdiagram.h"
 %End
   public:
+
     QgsHistogramDiagram();
 
     virtual QgsHistogramDiagram *clone() const /Factory/;

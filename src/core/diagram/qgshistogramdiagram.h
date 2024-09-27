@@ -16,8 +16,6 @@
 #ifndef QGSHISTOGRAMDIAGRAM_H
 #define QGSHISTOGRAMDIAGRAM_H
 
-#define DIAGRAM_NAME_HISTOGRAM "Histogram"
-
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsdiagram.h"
@@ -40,6 +38,8 @@ class QgsRenderContext;
 class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
+    static const QString DIAGRAM_NAME_HISTOGRAM SIP_SKIP;
+
     QgsHistogramDiagram();
 
     QgsHistogramDiagram *clone() const override SIP_FACTORY;

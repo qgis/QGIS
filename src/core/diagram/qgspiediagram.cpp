@@ -19,6 +19,7 @@
 
 #include <QPainter>
 
+const QString QgsPieDiagram::DIAGRAM_NAME_PIE = QStringLiteral( "Pie" );
 
 QgsPieDiagram::QgsPieDiagram()
 {
@@ -69,7 +70,7 @@ double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, con
 
 QString QgsPieDiagram::diagramName() const
 {
-  return DIAGRAM_NAME_PIE;
+  return QgsPieDiagram::DIAGRAM_NAME_PIE;
 }
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

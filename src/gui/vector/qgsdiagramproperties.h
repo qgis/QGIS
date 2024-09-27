@@ -36,13 +36,16 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsDiagramProperties
+ *
+ * \note This class is not a part of public API
  */
-class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDiagramPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
     QgsDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas );
+    ~QgsDiagramProperties() override;
 
     /**
      * Updates the widget to reflect the layer's current diagram settings.
@@ -51,10 +54,49 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
      */
     void syncToLayer();
 
-    ~QgsDiagramProperties() override;
+    /**
+     * Updates the widget to reflect the diagram renderer.
+     * \param dr Diagram renderer where settings are taken from.
+     *
+     * \since QGIS 3.40
+     */
+    void syncToRenderer( const QgsDiagramRenderer *dr );
+
+    /**
+     * Updates the widget to reflect the diagram layer settings.
+     * \param dls Diagram Layer Settings to update the widget.
+     *
+     * \since QGIS 3.40
+     */
+    void syncToSettings( const QgsDiagramLayerSettings *dls );
 
     //! Adds an attribute from the list of available attributes to the assigned attributes with a random color.
     void addAttribute( QTreeWidgetItem *item );
+
+    /**
+     * Sets the widget in dock mode.
+     * \param dockMode TRUE for dock mode.
+     */
+    void setDockMode( bool dockMode ) override;
+
+    /**
+     * Defines the widget's diagram type and lets it know it should hide the type comboBox.
+     * @param diagramType Type of diagram to be set
+     */
+    void setDiagramType( const QString diagramType );
+
+    /**
+     * Sets whether the widget should show diagram layer settings.
+     * Used by stacked diagrams, which disable editing of DLS for sub diagrams
+     * other than the first one.
+     * @param allowed Whether this widget should be allowed to edit diagram layer settings.
+    */
+    void setAllowedToEditDiagramLayerSettings( bool allowed );
+
+    /**
+     * Returns whether this widget is allowed to edit diagram layer settings.
+     */
+    bool isAllowedToEditDiagramLayerSettings() const;
 
   signals:
 
@@ -68,7 +110,6 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void mFindMaximumValueButton_clicked();
     void mRemoveCategoryPushButton_clicked();
     void mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void mEngineSettingsButton_clicked();
     void showAddAttributeExpressionDialog();
     void mDiagramStackedWidget_currentChanged( int index );
     void updatePlacementWidgets();
@@ -119,7 +160,51 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     QgsExpressionContext createExpressionContext() const override;
 
+    bool mAllowedToEditDls = true;
+
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key );
+
+    /**
+     * Convenience function to chain widgets' change value signal to another signal.
+     * @param widgets List of widgets.
+     */
+    void connectValueChanged( const QList<QWidget *> &widgets );
+
+    /**
+     * Creates a QgsDiagram object from the GUI settings.
+     *
+     * \since QGIS 3.40
+     */
+    std::unique_ptr< QgsDiagram > createDiagramObject();
+
+    /**
+     * Creates a QgsDiagramSettings object from the GUI settings.
+     *
+     * \since QGIS 3.40
+     */
+    std::unique_ptr<QgsDiagramSettings> createDiagramSettings();
+
+    /**
+     * Creates a QgsDiagramRenderer object from the GUI settings.
+     *
+     * \since QGIS 3.40
+     */
+    std::unique_ptr<QgsDiagramRenderer> createRenderer();
+
+    /**
+     * Creates a QgsDiagramLayerSettings object from the GUI settings.
+     *
+     * \since QGIS 3.40
+     */
+    QgsDiagramLayerSettings createDiagramLayerSettings();
+
+    /**
+     * Insert reasonable defaults to have an initial diagram widget status.
+     */
+    void insertDefaults();
+
+    friend class QgsStackedDiagramProperties;
+    friend class QgsStackedDiagramPropertiesDialog;
 };
 
 
