@@ -2104,13 +2104,13 @@ void QgsMapToolEditMeshFrame::applyZValueFromProjectTerrainOnSelectedVertices()
     catch ( const QgsCsException & )
     {}
 
-    if (vertexTransformed)
+    if ( vertexTransformed )
     {
-        elevation  = terrainProvider->heightAt( point.x(), point.y() );
-        if ( !std::isnan(elevation))
-        {
-            zValues.insert(it.key(), elevation);
-        }
+      elevation  = terrainProvider->heightAt( point.x(), point.y() );
+      if ( !std::isnan( elevation ) )
+      {
+        zValues.insert( it.key(), elevation );
+      }
     }
   }
 
@@ -2797,7 +2797,8 @@ void QgsMapToolEditMeshFrame::addVertex(
 
       zValue = std::numeric_limits<double>::quiet_NaN();
 
-      try{
+      try
+      {
         const QgsPointXY point = transformation.transform( effectivePoint.x(), effectivePoint.y() );
         zValue = terrainProvider->heightAt( point.x(), point.y() );
       }
@@ -2805,7 +2806,7 @@ void QgsMapToolEditMeshFrame::addVertex(
       {}
 
       // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
-      if ( std::isnan(zValue))
+      if ( std::isnan( zValue ) )
       {
         zValue = currentZValue();
       }
