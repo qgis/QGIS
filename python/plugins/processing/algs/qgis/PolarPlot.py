@@ -52,7 +52,9 @@ class PolarPlot(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
                                                       self.tr('Category name field'), parentLayerParameterName=self.INPUT))  # FIXME unused?
         self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
-                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
+                                                      self.tr('Value field'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
 
