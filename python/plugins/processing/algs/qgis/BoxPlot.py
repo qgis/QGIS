@@ -26,7 +26,8 @@ from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFileDestination,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingParameterString)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -39,6 +40,9 @@ class BoxPlot(QgisAlgorithm):
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
     MSD = 'MSD'
+    TITLE = 'TITLE'
+    XAXIS_TITLE = "XAXIS_TITLE"
+    YAXIS_TITLE = "YAXIS_TITLE"
 
     def group(self):
         return self.tr('Plots')
@@ -69,6 +73,21 @@ class BoxPlot(QgisAlgorithm):
             self.tr('Additional Statistic Lines'),
             options=msd, defaultValue=0))
 
+        self.addParameter(QgsProcessingParameterString(
+            self.TITLE,
+            self.tr('Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.XAXIS_TITLE,
+            self.tr('Xaxis Title'),
+            optional=True))
+
+        self.addParameter(QgsProcessingParameterString(
+            self.YAXIS_TITLE,
+            self.tr('Yaxis Title'),
+            optional=True))
+
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Box plot'), self.tr('HTML files (*.html)')))
 
     def name(self):
@@ -95,6 +114,14 @@ class BoxPlot(QgisAlgorithm):
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
+        title = self.parameterAsString(parameters, self.TITLE, context)
+        xaxis_title = self.parameterAsString(parameters, self.XAXIS_TITLE, context)
+        yaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
+
+        if title.strip() == "": title = None
+        if xaxis_title.strip() == "": xaxis_title = None
+        if yaxis_title.strip() == "": xaxis_title = None
+
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
         values = vector.values(source, valuefieldname)
@@ -115,6 +142,12 @@ class BoxPlot(QgisAlgorithm):
                 y=values[valuefieldname],
                 boxmean=msd)]
 
-        plt.offline.plot(data, filename=output, auto_open=False)
+        fig = go.Figure(
+            data=data,
+            layout_title_text=title,
+            layout_xaxis_title=xaxis_title,
+            layout_yaxis_title=yaxis_title)
+
+        fig.write_html(output)
 
         return {self.OUTPUT: output}
