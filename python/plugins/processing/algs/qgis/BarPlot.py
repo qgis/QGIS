@@ -106,9 +106,12 @@ class BarPlot(QgisAlgorithm):
         xaxis_title = self.parameterAsString(parameters, self.XAXIS_TITLE, context)
         yaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
 
-        if title.strip() == "": title = None
-        if xaxis_title.strip() == "": xaxis_title = None
-        if yaxis_title.strip() == "": yaxis_title = None
+        if title.strip() == "":
+            title = None
+        if xaxis_title.strip() == "":
+            xaxis_title = namefieldname
+        if yaxis_title.strip() == "":
+            yaxis_title = valuefieldname
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 

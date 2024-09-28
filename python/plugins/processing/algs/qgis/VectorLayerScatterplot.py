@@ -124,9 +124,12 @@ class VectorLayerScatterplot(QgisAlgorithm):
         xaxis_log = self.parameterAsBool(parameters, self.XAXIS_LOG, context)
         yaxis_log = self.parameterAsBool(parameters, self.YAXIS_LOG, context)
 
-        if title.strip() == "": title = None
-        if xaxis_title.strip() == "": xaxis_title = None
-        if yaxis_title.strip() == "": yaxis_title = None
+        if title.strip() == "":
+            title = None
+        if xaxis_title.strip() == "":
+            xaxis_title = xfieldname
+        if yaxis_title.strip() == "":
+            yaxis_title = yfieldname
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
