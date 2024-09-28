@@ -121,10 +121,14 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
         yaxis_title = self.parameterAsString(parameters, self.YAXIS_TITLE, context)
         zaxis_title = self.parameterAsString(parameters, self.ZAXIS_TITLE, context)
 
-        if title.strip() == "": title = None
-        if xaxis_title.strip() == "": xaxis_title = None
-        if yaxis_title.strip() == "": yaxis_title = None
-        if zaxis_title.strip() == "": zaxis_title = None
+        if title.strip() == "":
+            title = None
+        if xaxis_title.strip() == "":
+            xaxis_title = xfieldname
+        if yaxis_title.strip() == "":
+            yaxis_title = yfieldname
+        if zaxis_title.strip() == "":
+            zaxis_title = zfieldname
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
