@@ -34,7 +34,8 @@
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
   const QString driverShortName = GDALGetDriverShortName( driver );
-  if ( driverShortName == QLatin1String( "SQLite" ) )
+  if ( driverShortName == QLatin1String( "SQLite" ) ||
+       driverShortName == QLatin1String( "PDF" ) )
   {
     // it supports Create() but only for vector side
     return false;
