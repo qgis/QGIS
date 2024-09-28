@@ -89,6 +89,7 @@
 #include <QUuid>
 #include <QRegularExpression>
 #include <QThreadPool>
+#include <QPalette>
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -1262,14 +1263,23 @@ void QgsProject::clear()
   const bool defaultRelativePaths = mSettings.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true ).toBool();
   setFilePathStorage( defaultRelativePaths ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute );
 
-  int red = mSettings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
-  int green = mSettings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
-  int blue = mSettings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
-  setBackgroundColor( QColor( red, green, blue ) );
+  if ( mSettings.value( QStringLiteral( "qgis/default_canvas_theme_color" ), true ).toBool() )
+  {
+    QPalette pal = qApp->palette();
+    QColor canvasColor = pal.color( QPalette::Base );
+    setBackgroundColor( canvasColor );
+  }
+  else
+  {
+    int red = mSettings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+    int green = mSettings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+    int blue = mSettings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+    setBackgroundColor( QColor( red, green, blue ) );
+  }
 
-  red = mSettings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
-  green = mSettings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
-  blue = mSettings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
+  int red = mSettings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
+  int green = mSettings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
+  int blue = mSettings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
   const int alpha = mSettings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
   setSelectionColor( QColor( red, green, blue, alpha ) );
 
