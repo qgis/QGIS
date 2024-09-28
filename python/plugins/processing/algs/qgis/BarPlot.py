@@ -108,7 +108,7 @@ class BarPlot(QgisAlgorithm):
 
         if title.strip() == "": title = None
         if xaxis_title.strip() == "": xaxis_title = None
-        if yaxis_title.strip() == "": xaxis_title = None
+        if yaxis_title.strip() == "": yaxis_title = None
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
