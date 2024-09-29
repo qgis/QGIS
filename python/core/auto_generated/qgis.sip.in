@@ -2775,6 +2775,13 @@ The development version
       Unknown,
     };
 
+    enum class ScaleCalculationMethod
+    {
+      HorizontalTop,
+      HorizontalMiddle,
+      HorizontalBottom,
+      HorizontalAverage,
+    };
 
     enum class ScaleBarAlignment
       {
