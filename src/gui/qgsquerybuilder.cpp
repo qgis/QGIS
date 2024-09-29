@@ -98,7 +98,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   
   if ( QgsDataProvider *provider = layer->dataProvider() )
   {
-    lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), provider()>name() ) );
+    lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), provider->name() ) );
     subsetStringDialect = provider->subsetStringDialect();
     subsetStringHelpUrl = provider->subsetStringHelpUrl();    
   }
