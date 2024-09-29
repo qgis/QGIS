@@ -9620,6 +9620,23 @@ Qgis.PictureFormat.__doc__ = """Picture formats.
 """
 # --
 Qgis.PictureFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ScaleCalculationMethod.HorizontalTop.__doc__ = "Calculate horizontally, across top of map"
+Qgis.ScaleCalculationMethod.HorizontalMiddle.__doc__ = "Calculate horizontally, across midle of map"
+Qgis.ScaleCalculationMethod.HorizontalBottom.__doc__ = "Calculate horizontally, across bottom of map"
+Qgis.ScaleCalculationMethod.HorizontalAverage.__doc__ = "Calculate horizontally, using the average of the top, middle and bottom scales"
+Qgis.ScaleCalculationMethod.__doc__ = """Scale calculation logic.
+
+.. versionadded:: 3.40
+
+* ``HorizontalTop``: Calculate horizontally, across top of map
+* ``HorizontalMiddle``: Calculate horizontally, across midle of map
+* ``HorizontalBottom``: Calculate horizontally, across bottom of map
+* ``HorizontalAverage``: Calculate horizontally, using the average of the top, middle and bottom scales
+
+"""
+# --
+Qgis.ScaleCalculationMethod.baseClass = Qgis
 QgsScaleBarSettings.Alignment = Qgis.ScaleBarAlignment
 # monkey patching scoped based enum
 QgsScaleBarSettings.AlignLeft = Qgis.ScaleBarAlignment.Left

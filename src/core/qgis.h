@@ -4897,6 +4897,19 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( PictureFormat )
 
+    /**
+     * Scale calculation logic.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleCalculationMethod : int
+    {
+      HorizontalTop = 0, //!< Calculate horizontally, across top of map
+      HorizontalMiddle, //!< Calculate horizontally, across midle of map
+      HorizontalBottom, //!< Calculate horizontally, across bottom of map
+      HorizontalAverage, //!< Calculate horizontally, using the average of the top, middle and bottom scales
+    };
+    Q_ENUM( ScaleCalculationMethod )
 
     /**
      * Scalebar alignment.
