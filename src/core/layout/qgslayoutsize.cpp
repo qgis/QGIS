@@ -66,8 +66,13 @@ QgsLayoutSize QgsLayoutSize::decodeSize( const QString &string )
   {
     return QgsLayoutSize();
   }
-  return QgsLayoutSize( parts[0].toDouble(), parts[1].toDouble(), QgsUnitTypes::decodeLayoutUnit( parts[2] ) );
 
+  const double width = parts[0].toDouble();
+  const double height = parts[1].toDouble();
+  if ( std::isnan( width ) || std::isnan( height ) )
+    return QgsLayoutSize();
+
+  return QgsLayoutSize( width, height, QgsUnitTypes::decodeLayoutUnit( parts[2] ) );
 }
 
 bool QgsLayoutSize::operator==( const QgsLayoutSize &other ) const
