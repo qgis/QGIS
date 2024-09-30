@@ -380,6 +380,12 @@ void TestQgsLayoutUnits::sizeEncodeDecode()
   //test with bad string
   result = QgsLayoutSize::decodeSize( QStringLiteral( "1,2" ) );
   QCOMPARE( result, QgsLayoutSize() );
+
+  //test with nan values
+  result = QgsLayoutSize::decodeSize( QStringLiteral( "nan,2,mm" ) );
+  QCOMPARE( result, QgsLayoutSize() );
+  result = QgsLayoutSize::decodeSize( QStringLiteral( "2,nan,mm" ) );
+  QCOMPARE( result, QgsLayoutSize() );
 }
 
 void TestQgsLayoutUnits::createPoint()
@@ -519,6 +525,14 @@ void TestQgsLayoutUnits::pointEncodeDecode()
 
   //test with bad string
   result = QgsLayoutPoint::decodePoint( QStringLiteral( "1,2" ) );
+  QCOMPARE( result, QgsLayoutPoint() );
+
+  //test with nan values
+  result = QgsLayoutPoint::decodePoint( QStringLiteral( "nan,2,mm" ) );
+  QCOMPARE( result, QgsLayoutPoint() );
+  result = QgsLayoutPoint::decodePoint( QStringLiteral( "2,nan,mm" ) );
+  QCOMPARE( result, QgsLayoutPoint() );
+  result = QgsLayoutPoint::decodePoint( QStringLiteral( "9.99999e+06,1e+07,mm" ) );
   QCOMPARE( result, QgsLayoutPoint() );
 }
 
