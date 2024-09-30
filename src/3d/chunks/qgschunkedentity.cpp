@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunkedentity_p.cpp
+  qgschunkedentity.cpp
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgschunkedentity_p.h"
+#include "qgschunkedentity.h"
 
 #include <QElapsedTimer>
 #include <QVector4D>
@@ -21,8 +21,8 @@
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
-#include "qgschunkloader_p.h"
-#include "qgschunknode_p.h"
+#include "qgschunkloader.h"
+#include "qgschunknode.h"
 
 #include "qgseventtracing.h"
 

@@ -19,7 +19,7 @@
 #include "qgis_3d.h"
 
 #include "qgstilingscheme.h"
-#include "qgschunkloader_p.h"
+#include "qgschunkloader.h"
 
 class QgsAABB;
 class Qgs3DMapSettings;

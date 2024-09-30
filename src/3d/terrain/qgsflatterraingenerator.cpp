@@ -19,8 +19,8 @@
 #include <Qt3DCore/QTransform>
 
 #include "qgs3dmapsettings.h"
-#include "qgschunknode_p.h"
-#include "qgsterrainentity_p.h"
+#include "qgschunknode.h"
+#include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
 #include "qgs3dutils.h"
 /// @cond PRIVATE

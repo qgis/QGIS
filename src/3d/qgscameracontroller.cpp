@@ -17,7 +17,7 @@
 #include "qgsvector3d.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgis.h"
 #include "qgs3dutils.h"
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunknode_p.h
+  qgschunknode.h
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCHUNKNODE_P_H
-#define QGSCHUNKNODE_P_H
+#ifndef QGSCHUNKNODE_H
+#define QGSCHUNKNODE_H
 
 ///@cond PRIVATE
 

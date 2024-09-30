@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsterrainentity_p.cpp
+  qgsterrainentity.cpp
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 
 #include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
 #include "qgsraycastingutils_p.h"

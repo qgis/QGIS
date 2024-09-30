@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmapsceneentity_p.h
+  qgs3dmapsceneentity.h
   --------------------------------------
   Date                 : May 2023
   Copyright            : (C) 2023 by Stefanos Natsis
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPSCENEENTITY_P_H
-#define QGS3DMAPSCENEENTITY_P_H
+#ifndef QGS3DMAPSCENEENTITY_H
+#define QGS3DMAPSCENEENTITY_H
 
 ///@cond PRIVATE
 
@@ -116,4 +116,4 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
 
 /// @endcond
 
-#endif // QGS3DMAPSCENEENTITY_P_H
+#endif // QGS3DMAPSCENEENTITY_H

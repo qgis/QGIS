@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunkqueuejob_p.h
+  qgschunkqueuejob.h
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCHUNKQUEUEJOB_P_H
-#define QGSCHUNKQUEUEJOB_P_H
+#ifndef QGSCHUNKQUEUEJOB_H
+#define QGSCHUNKQUEUEJOB_H
 
 ///@cond PRIVATE
 
@@ -101,4 +101,4 @@ class QgsChunkQueueJobFactory
 
 /// @endcond
 
-#endif // QGSCHUNKQUEUEJOB_P_H
+#endif // QGSCHUNKQUEUEJOB_H

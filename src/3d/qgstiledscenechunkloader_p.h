@@ -28,9 +28,9 @@
 //
 
 #include "qgscoordinatetransform.h"
-#include "qgschunkedentity_p.h"
-#include "qgschunkloader_p.h"
-#include "qgschunknode_p.h"
+#include "qgschunkedentity.h"
+#include "qgschunkloader.h"
+#include "qgschunknode.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenetile.h"
 #include "qgs3drendercontext.h"

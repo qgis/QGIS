@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgschunkqueuejob_p.cpp
+  qgschunkqueuejob.cpp
   --------------------------------------
   Date                 : July 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgschunkqueuejob_p.h"
+#include "qgschunkqueuejob.h"
 
 ///@cond PRIVATE
 

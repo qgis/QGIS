@@ -15,7 +15,7 @@
 
 #include "qgstilingscheme.h"
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgsrectangle.h"
 
 QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs )
