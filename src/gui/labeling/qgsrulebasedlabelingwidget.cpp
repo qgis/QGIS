@@ -33,7 +33,7 @@
 
 const double ICON_PADDING_FACTOR = 0.16;
 
-static QgsExpressionContext _createExpressionContext( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer )
+QgsExpressionContext QgsLabelingRulePropsWidget::createExpressionContext( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer )
 {
   QgsExpressionContext context;
   if ( mapCanvas )
@@ -738,7 +738,7 @@ void QgsLabelingRulePropsWidget::testFilter()
     return;
   }
 
-  QgsExpressionContext context( _createExpressionContext( mMapCanvas, mLayer ) );
+  QgsExpressionContext context( createExpressionContext( mMapCanvas, mLayer ) );
 
   if ( !filter.prepare( &context ) )
   {
@@ -771,7 +771,7 @@ void QgsLabelingRulePropsWidget::testFilter()
 
 void QgsLabelingRulePropsWidget::buildExpression()
 {
-  const QgsExpressionContext context( _createExpressionContext( mMapCanvas, mLayer ) );
+  const QgsExpressionContext context( createExpressionContext( mMapCanvas, mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 
