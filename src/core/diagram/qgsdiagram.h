@@ -48,9 +48,9 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
       sipType = sipType_QgsHistogramDiagram;
     else if ( sipCpp->diagramName() == QLatin1String( "Text" ) )
       sipType = sipType_QgsTextDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "StackedBar" ) )
-      sipType = sipType_QgsStackedBarDiagram;
     else if ( sipCpp->diagramName() == QLatin1String( "Stacked" ) )
+      sipType = sipType_QgsStackedBarDiagram;
+    else if ( sipCpp->diagramName() == QLatin1String( "StackedDiagram" ) )
       sipType = sipType_QgsStackedDiagram;
     else
       sipType = NULL;
