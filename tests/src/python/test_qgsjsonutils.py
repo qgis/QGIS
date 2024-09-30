@@ -726,11 +726,12 @@ class TestQgsJsonUtils(QgisTestCase):
         # with field formatter
         setup = QgsEditorWidgetSetup('ValueMap', {"map": {"apples": 123, "bananas": 124}})
         child.setEditorWidgetSetup(1, setup)
+        parent.setEditorWidgetSetup(1, QgsEditorWidgetSetup('ValueMap', {"map": {"sixty-seven": 67}}))
         expected = """{
   "geometry": null,
   "id": 432,
   "properties": {
-    "fldint": 67,
+    "fldint": "sixty-seven",
     "fldtxt": "test1",
     "foreignkey": 123,
     "relation one": [
@@ -749,6 +750,36 @@ class TestQgsJsonUtils(QgisTestCase):
   "type": "Feature"
 }"""
         self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
+
+        # Use raw values
+        self.assertTrue(exporter.useFieldFormatters())
+        exporter.setUseFieldFormatters(False)
+        self.assertFalse(exporter.useFieldFormatters())
+        expected = """{
+  "geometry": null,
+  "id": 432,
+  "properties": {
+    "fldint": 67,
+    "fldtxt": "test1",
+    "foreignkey": 123,
+    "relation one": [
+      {
+        "x": "foo",
+        "y": 123,
+        "z": 321
+      },
+      {
+        "x": "bar",
+        "y": 123,
+        "z": 654
+      }
+    ]
+  },
+  "type": "Feature"
+}"""
+        self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
+        exporter.setUseFieldFormatters(True)
+        parent.setEditorWidgetSetup(1, QgsEditorWidgetSetup())
 
         # test excluding related attributes
         exporter.setIncludeRelated(False)

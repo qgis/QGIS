@@ -49,6 +49,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 
     //! Sets CRS of the terrain
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+    QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
     //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
     void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }

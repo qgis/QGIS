@@ -154,6 +154,16 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
     return;
   }
 
+  if ( vlayer->isSpatial() )
+  {
+    setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+  }
+  else
+  {
+    setCursor( QCursor( Qt::ArrowCursor ) );
+    mCanvas->mapTool()->clean();
+  }
+
   switch ( vlayer->geometryType() )
   {
     case Qgis::GeometryType::Point:
@@ -487,8 +497,8 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
 
   const QgsPointXY point = e->mapPoint();
-
-  mSnapIndicator->setMatch( e->mapPointMatch() );
+  if ( canvas()->currentLayer() && canvas()->currentLayer()->isSpatial() )
+    mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
   {

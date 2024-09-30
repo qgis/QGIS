@@ -222,6 +222,24 @@ take precedence over attributes included via :py:func:`~QgsJsonExporter.attribut
 .. seealso:: :py:func:`attributes`
 %End
 
+    void setUseFieldFormatters( bool useFieldFormatters );
+%Docstring
+Sets whether field formatters (of type KeyValue, List, ValueRelation,
+ValueMap) are used to export raw values as displayed
+values. The default is true.
+
+.. versionadded:: 3.40
+%End
+
+    bool useFieldFormatters() const;
+%Docstring
+Returned whether field formatters (of type KeyValue, List, ValueRelation,
+ValueMap) are used to export raw values as displayed
+values.
+
+.. versionadded:: 3.40
+%End
+
     QString exportFeature( const QgsFeature &feature,
                            const QVariantMap &extraProperties = QVariantMap(),
                            const QVariant &id = QVariant(),

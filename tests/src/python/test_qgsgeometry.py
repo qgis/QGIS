@@ -55,6 +55,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 import unittest
+import numpy
 from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt, unitTestDataPath, writeShape
@@ -7984,6 +7985,57 @@ class TestQgsGeometry(QgisTestCase):
             o.asWkt(2),
             "MultiPolygon (((41.96 29.61, 41.96 30.39, 42 30, 41.96 29.61)),((41.66 31.11, 41.85 30.77, 41.96 30.39, 41.66 31.11)),((41.66 28.89, 41.96 29.61, 41.85 29.23, 41.66 28.89)),((41.41 31.41, 41.96 30.39, 41.96 29.61, 41.41 31.41)),((41.41 31.41, 41.66 31.11, 41.96 30.39, 41.41 31.41)),((41.41 28.59, 41.96 29.61, 41.66 28.89, 41.41 28.59)),((41.41 28.59, 41.41 31.41, 41.96 29.61, 41.41 28.59)),((40.39 31.96, 41.11 31.66, 41.41 31.41, 40.39 31.96)),((40.39 31.96, 40.77 31.85, 41.11 31.66, 40.39 31.96)),((40.39 28.04, 41.41 28.59, 41.11 28.34, 40.39 28.04)),((40.39 28.04, 41.11 28.34, 40.77 28.15, 40.39 28.04)),((39.61 31.96, 40.39 31.96, 41.41 31.41, 39.61 31.96)),((39.61 31.96, 40 32, 40.39 31.96, 39.61 31.96)),((39.61 28.04, 40.39 28.04, 40 28, 39.61 28.04)),((38.89 31.66, 39.23 31.85, 39.61 31.96, 38.89 31.66)),((38.89 28.34, 39.61 28.04, 39.23 28.15, 38.89 28.34)),((38.59 31.41, 41.41 31.41, 41.41 28.59, 38.59 31.41)),((38.59 31.41, 39.61 31.96, 41.41 31.41, 38.59 31.41)),((38.59 31.41, 38.89 31.66, 39.61 31.96, 38.59 31.41)),((38.59 28.59, 41.41 28.59, 40.39 28.04, 38.59 28.59)),((38.59 28.59, 40.39 28.04, 39.61 28.04, 38.59 28.59)),((38.59 28.59, 39.61 28.04, 38.89 28.34, 38.59 28.59)),((38.59 28.59, 38.59 31.41, 41.41 28.59, 38.59 28.59)),((38.04 30.39, 38.59 31.41, 38.59 28.59, 38.04 30.39)),((38.04 30.39, 38.34 31.11, 38.59 31.41, 38.04 30.39)),((38.04 30.39, 38.15 30.77, 38.34 31.11, 38.04 30.39)),((38.04 29.61, 38.59 28.59, 38.34 28.89, 38.04 29.61)),((38.04 29.61, 38.34 28.89, 38.15 29.23, 38.04 29.61)),((38.04 29.61, 38.04 30.39, 38.59 28.59, 38.04 29.61)),((38 30, 38.04 30.39, 38.04 29.61, 38 30)))"
         )
+
+    def testAsNumpy(self):
+        # Test POINT
+        geom_point = QgsGeometry.fromWkt("POINT (1 2)")
+        array_point = geom_point.as_numpy()
+        self.assertTrue(isinstance(array_point, numpy.ndarray))
+        self.assertEqual(array_point.shape, (2,))
+        self.assertTrue(numpy.allclose(array_point, [1, 2]))
+
+        # Test LINESTRING
+        geom_linestring = QgsGeometry.fromWkt("LINESTRING (0 0, 1 1, 1 2)")
+        array_linestring = geom_linestring.as_numpy()
+        self.assertTrue(isinstance(array_linestring, numpy.ndarray))
+        self.assertEqual(array_linestring.shape, (3, 2))
+        self.assertTrue(numpy.allclose(array_linestring, [[0, 0], [1, 1], [1, 2]]))
+
+        # Test POLYGON
+        geom_polygon = QgsGeometry.fromWkt("POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))")
+        array_polygon = geom_polygon.as_numpy()
+        self.assertTrue(isinstance(array_polygon, numpy.ndarray))
+        self.assertEqual(len(array_polygon), 1)
+        self.assertTrue(numpy.allclose(array_polygon[0], [[0, 0], [4, 0], [4, 4], [0, 4], [0, 0]]))
+
+        # Test MULTIPOINT
+        geom_multipoint = QgsGeometry.fromWkt("MULTIPOINT ((1 2), (3 4))")
+        array_multipoint = geom_multipoint.as_numpy()
+        self.assertTrue(isinstance(array_multipoint, list))
+        self.assertEqual(len(array_multipoint), 2)
+        self.assertTrue(isinstance(array_multipoint[0], numpy.ndarray))
+        self.assertTrue(numpy.allclose(array_multipoint[0], [1, 2]))
+        self.assertTrue(numpy.allclose(array_multipoint[1], [3, 4]))
+
+        # Test MULTILINESTRING
+        geom_multilinestring = QgsGeometry.fromWkt("MULTILINESTRING ((0 0, 1 1, 1 2), (2 2, 3 3))")
+        array_multilinestring = geom_multilinestring.as_numpy()
+        self.assertTrue(isinstance(array_multilinestring, list))
+        self.assertEqual(len(array_multilinestring), 2)
+        self.assertTrue(numpy.allclose(array_multilinestring[0], [[0, 0], [1, 1], [1, 2]]))
+        self.assertTrue(numpy.allclose(array_multilinestring[1], [[2, 2], [3, 3]]))
+
+        # Test MULTIPOLYGON
+        geom_multipolygon = QgsGeometry.fromWkt(
+            "MULTIPOLYGON (((0 0, 4 0, 4 4, 0 4, 0 0)), ((10 10, 14 10, 14 14, 10 14, 10 10)))"
+        )
+        array_multipolygon = geom_multipolygon.as_numpy()
+        self.assertTrue(isinstance(array_multipolygon, list))
+        self.assertEqual(len(array_multipolygon), 2)
+        self.assertEqual(len(array_multipolygon[0]), 1)  # First polygon has 1 ring
+        self.assertTrue(numpy.allclose(array_multipolygon[0][0], [[0, 0], [4, 0], [4, 4], [0, 4], [0, 0]]))
+        self.assertEqual(len(array_multipolygon[1]), 1)  # Second polygon has 1 ring
+        self.assertTrue(numpy.allclose(array_multipolygon[1][0], [[10, 10], [14, 10], [14, 14], [10, 14], [10, 10]]))
 
 
 if __name__ == '__main__':

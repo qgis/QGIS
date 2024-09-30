@@ -101,6 +101,13 @@ to the fragment at the specified index within that block.
 .. versionadded:: 3.30
 %End
 
+    double fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the fixed height of the fragment at the specified block and fragment index, or -1 if the fragment does not have a fixed height.
+
+.. versionadded:: 3.40
+%End
+
     double verticalOrientationXOffset( int blockIndex ) const;
 %Docstring
 Returns the vertical orientation x offset for the specified block.

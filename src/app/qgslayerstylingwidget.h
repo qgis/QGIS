@@ -34,6 +34,7 @@
 
 class QgsLabelingWidget;
 class QgsMaskingWidget;
+class QgsDiagramWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRendererPropertiesDialog;
@@ -101,6 +102,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       History,
       Symbology3D,
       RasterAttributeTables, //!< Raster attribute tables, since QGIS 3.30
+      VectorDiagram, //!< Vector diagram, since QGIS 3.40
     };
 
     QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
@@ -175,6 +177,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
 #endif
+    QgsDiagramWidget *mDiagramWidget = nullptr;
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
     QgsPanelWidget *mRasterAttributeTableDisabledWidget = nullptr;

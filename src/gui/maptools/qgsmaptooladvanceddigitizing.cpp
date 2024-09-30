@@ -177,11 +177,17 @@ void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
       mSnapToGridCanvasItem->setPrecision( layer->geometryOptions()->geometryPrecision() );
       mSnapToGridCanvasItem->setCrs( layer->crs() );
     }
-
-    if ( !layer )
+    if ( !layer || !layer->isSpatial() )
+    {
+      mCadDockWidget->clear();
+      mCadDockWidget->disable();
       mSnapToGridCanvasItem->setEnabled( false );
+    }
     else
+    {
+      mCadDockWidget->enable();
       mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
+    }
   }
 }
 

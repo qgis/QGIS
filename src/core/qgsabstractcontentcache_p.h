@@ -20,6 +20,7 @@
 
 #include "qgsabstractcontentcache.h"
 #include "qgssetrequestinitiator_p.h"
+#include <QRegularExpression>
 
 template<class T>
 QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent, bool blocking ) const
@@ -43,6 +44,15 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
   {
     const QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
     return QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
+  }
+  else
+  {
+    // maybe a HTML data URL
+    QString base64String;
+    if ( parseBase64DataUrl( path, nullptr, &base64String ) )
+    {
+      return QByteArray::fromBase64( base64String.toLocal8Bit(), QByteArray::OmitTrailingEquals );
+    }
   }
 
   // maybe it's a url...

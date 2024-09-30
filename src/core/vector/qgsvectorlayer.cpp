@@ -2926,6 +2926,12 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
         mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
         mDiagramRenderer->readXml( linearDiagramElem, context );
       }
+      QDomElement stackedDiagramElem = node.firstChildElement( QStringLiteral( "StackedDiagramRenderer" ) );
+      if ( !stackedDiagramElem.isNull() )
+      {
+        mDiagramRenderer = new QgsStackedDiagramRenderer();
+        mDiagramRenderer->readXml( stackedDiagramElem, context );
+      }
 
       if ( mDiagramRenderer )
       {
