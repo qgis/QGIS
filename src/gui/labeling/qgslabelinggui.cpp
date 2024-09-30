@@ -41,11 +41,16 @@
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mCanvas )
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+  {
+    expContext = mCanvas->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr );
+  }
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );

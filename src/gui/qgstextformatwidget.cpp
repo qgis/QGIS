@@ -2124,11 +2124,17 @@ QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
     return *lExpressionContext;
 
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+  {
+    expContext = mMapCanvas->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
