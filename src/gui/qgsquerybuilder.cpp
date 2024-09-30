@@ -95,18 +95,18 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
   QString subsetStringDialect;
   QString subsetStringHelpUrl;
-  
+
   if ( QgsDataProvider *provider = layer->dataProvider() )
   {
     lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), provider->name() ) );
     subsetStringDialect = provider->subsetStringDialect();
-    subsetStringHelpUrl = provider->subsetStringHelpUrl();    
+    subsetStringHelpUrl = provider->subsetStringHelpUrl();
   }
   else
   {
     lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), layer->providerType() ) );
   }
-  
+
   if ( !subsetStringDialect.isEmpty() && !subsetStringHelpUrl.isEmpty() )
   {
     lblProviderFilterInfo->setOpenExternalLinks( true );
@@ -114,7 +114,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   }
   else if ( !subsetStringDialect.isEmpty() )
   {
-    lblProviderFilterInfo->setText( tr( "Enter a %1 to filter the layer" ).arg( subsetStringDialect ) ) ;  
+    lblProviderFilterInfo->setText( tr( "Enter a %1 to filter the layer" ).arg( subsetStringDialect ) ) ;
   }
   else
   {
