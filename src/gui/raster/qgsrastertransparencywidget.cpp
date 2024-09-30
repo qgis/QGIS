@@ -82,22 +82,17 @@ void QgsRasterTransparencyWidget::setContext( const QgsSymbolWidgetContext &cont
 QgsExpressionContext QgsRasterTransparencyWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( QgsMapCanvas *canvas = mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( canvas->mapSettings() )
-               << new QgsExpressionContextScope( canvas->expressionContextScope() );
-    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( canvas->temporalController() ) )
-    {
-      expContext << generator->createExpressionContextScope();
-    }
+    expContext = canvas->createExpressionContext();
   }
   else
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( mRasterLayer )
