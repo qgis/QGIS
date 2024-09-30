@@ -140,7 +140,6 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
                 z=values[zfieldname],
                 mode='markers')]
 
-
         fig = go.Figure(
             data=data,
             layout_title_text=title,
