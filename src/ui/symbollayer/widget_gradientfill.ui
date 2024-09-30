@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,1,0">
    <item row="3" column="3">
     <widget class="QgsPropertyOverrideButton" name="mGradientTypeDDBtn">
      <property name="text">
