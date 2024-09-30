@@ -48,7 +48,7 @@ QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas,
   mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) ), tr( "Text Diagram" ), ModeText );
   mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) ), tr( "Histogram" ), ModeHistogram );
   mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) ), tr( "Stacked Bars" ), ModeStackedBar );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) ), tr( "Stacked Diagram" ), ModeStacked );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-diagram.svg" ) ), tr( "Stacked Diagram" ), ModeStacked );
 
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsDiagramWidget::showEngineConfigDialog );
 
