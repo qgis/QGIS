@@ -49,11 +49,18 @@
 QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
-             << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-             << QgsExpressionContextUtils::layerScope( mLayer );
+  if ( mMapCanvas )
+  {
+    expContext = mMapCanvas->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
@@ -960,12 +967,7 @@ void QgsDiagramProperties::apply()
 
 QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpression )
 {
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr )
-          << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-          << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context = createExpressionContext();
 
   QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression Based Attribute" ) );
