@@ -2258,18 +2258,27 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
 
-    // compute layers we have to add topological point on (modified ones + snapped one)
-    QSet<QgsVectorLayer *> targetLayers( edits.keyBegin(), edits.keyEnd() );
-    if ( mapPointMatch->layer() )
-      targetLayers << mapPointMatch->layer();
+    const QList<QgsMapLayer *> targetLayers = canvas()->layers( true );
 
     for ( auto itLayerEdits = edits.begin(); itLayerEdits != edits.end(); ++itLayerEdits )
     {
-      for ( QgsVectorLayer *targetLayer : targetLayers )
+      for ( QgsMapLayer *targetLayer : targetLayers )
       {
-        // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)
-        if ( targetLayer->crs() != itLayerEdits.key()->crs() )
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( targetLayer );
+
+        if ( !vectorLayer || !vectorLayer->isEditable() )
           continue;
+
+        if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
+          continue;
+
+        // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)
+        if ( vectorLayer->crs() != itLayerEdits.key()->crs() )
+          continue;
+
+        vectorLayer->beginEditCommand( tr( "Topological points added by 'Vertex Tool'" ) );
+
+        bool topoPointsAdded = false;
 
         for ( auto itFeatEdit = itLayerEdits->begin(); itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
         {
@@ -2278,9 +2287,17 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
             if ( !point.is3D() )
               point.addZValue( defaultZValue() );
 
-            targetLayer->addTopologicalPoints( point );
+            int res = vectorLayer->addTopologicalPoints( point );
+
+            if ( res == 0 )
+              topoPointsAdded = true;
           }
         }
+
+        if ( topoPointsAdded )
+          vectorLayer->endEditCommand();
+        else
+          vectorLayer->destroyEditCommand();
       }
     }
   }
