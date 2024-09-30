@@ -16,7 +16,7 @@
   <property name="windowTitle">
    <string notr="true">Linear Referencing Symbol Layer</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,1" columnstretch="1,2">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,1" columnstretch="0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
