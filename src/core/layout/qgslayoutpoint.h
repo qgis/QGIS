@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsconfig.h"
 #include <QPointF>
 
 /**
@@ -75,7 +76,14 @@ class CORE_EXPORT QgsLayoutPoint
      * \see x()
      * \see setY()
     */
-    void setX( const double x ) { mX = x; }
+    void setX( const double x )
+    {
+#ifdef QGISDEBUG
+      if ( std::isnan( x ) )
+        qWarning( "Layout point with NaN coordinates created" );
+#endif
+      mX = x;
+    }
 
     /**
      * Returns y coordinate of point.
@@ -89,7 +97,14 @@ class CORE_EXPORT QgsLayoutPoint
      * \see y()
      * \see setX()
     */
-    void setY( const double y ) { mY = y; }
+    void setY( const double y )
+    {
+#ifdef QGISDEBUG
+      if ( std::isnan( y ) )
+        qWarning( "Layout point with NaN coordinates created" );
+#endif
+      mY = y;
+    }
 
     /**
      * Returns the units for the point.
