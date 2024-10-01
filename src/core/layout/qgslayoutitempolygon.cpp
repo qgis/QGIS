@@ -136,18 +136,23 @@ QgsFillSymbol *QgsLayoutItemPolygon::symbol()
 
 void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
+  QgsRenderContext renderContext = context.renderContext();
+  // symbol clipping messes with geometry generators used in the symbol for this item, and has no
+  // valid use here. See https://github.com/qgis/QGIS/issues/58909
+  renderContext.setFlag( Qgis::RenderContextFlag::DisableSymbolClippingToExtent );
+
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  const double scale = context.renderContext().convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double scale = renderContext.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
   const QTransform t = QTransform::fromScale( scale, scale );
 
   const QVector<QPolygonF> rings; //empty
   QPainterPath polygonPath;
   polygonPath.addPolygon( mPolygon );
 
-  mPolygonStyleSymbol->startRender( context.renderContext() );
+  mPolygonStyleSymbol->startRender( renderContext );
   mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings,
-                                      nullptr, context.renderContext() );
-  mPolygonStyleSymbol->stopRender( context.renderContext() );
+                                      nullptr, renderContext );
+  mPolygonStyleSymbol->stopRender( renderContext );
 }
 
 void QgsLayoutItemPolygon::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )

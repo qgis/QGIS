@@ -22,7 +22,11 @@ from qgis.core import (
     QgsLayoutItemRenderContext,
     QgsLayoutUtils,
     QgsProject,
-    QgsReadWriteContext
+    QgsReadWriteContext,
+    QgsLayoutItemMap,
+    QgsRectangle,
+    Qgis,
+    QgsGeometryGeneratorSymbolLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -372,6 +376,51 @@ class TestQgsLayoutPolygon(QgisTestCase, LayoutItemTestCase):
         shape.draw(QgsLayoutItemRenderContext(rc))
         p.end()
         self.assertEqual(len(spy), 5)
+
+    def test_generator(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        p = QPolygonF()
+        p.append(QPointF(0.0, 0.0))
+        p.append(QPointF(100.0, 10.0))
+        p.append(QPointF(200.0, 100.0))
+        shape = QgsLayoutItemPolygon(p, layout)
+        layout.addLayoutItem(shape)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(0, 0, 10, 10))
+        map.zoomToExtent(QgsRectangle(1, 1, 2, 2))
+        layout.addLayoutItem(map)
+
+        props = {}
+        props["color"] = "green"
+        props["style"] = "solid"
+        props["style_border"] = "solid"
+        props["color_border"] = "red"
+        props["width_border"] = "6.0"
+        props["joinstyle"] = "miter"
+
+        sub_symbol = QgsFillSymbol.createSimple(props)
+
+        line_symbol = QgsFillSymbol()
+        generator = QgsGeometryGeneratorSymbolLayer.create({
+            'geometryModifier': "geom_from_wkt('POLYGON((10 10,287 10,287 200,10 200,10 10))')",
+            'SymbolType': 'Fill',
+        })
+        generator.setUnits(Qgis.RenderUnit.Millimeters)
+        generator.setSubSymbol(sub_symbol)
+
+        line_symbol.changeSymbolLayer(0, generator)
+        shape.setSymbol(line_symbol)
+
+        self.assertTrue(
+            self.render_layout_check(
+                'polygon_generator',
+                layout
+            )
+        )
 
 
 if __name__ == '__main__':

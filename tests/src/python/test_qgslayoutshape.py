@@ -21,6 +21,10 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsUnitTypes,
+    QgsLayoutItemMap,
+    Qgis,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsRectangle
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -36,6 +40,10 @@ class TestQgsLayoutShape(QgisTestCase, LayoutItemTestCase):
     def setUpClass(cls):
         super(TestQgsLayoutShape, cls).setUpClass()
         cls.item_class = QgsLayoutItemShape
+
+    @classmethod
+    def control_path_prefix(cls):
+        return "layout_shape"
 
     def testClipPath(self):
         pr = QgsProject()
@@ -100,6 +108,49 @@ class TestQgsLayoutShape(QgisTestCase, LayoutItemTestCase):
 
         # bounding rect for item should include stroke
         self.assertEqual(shape2.boundingRect(), QRectF(-20.0, -20.0, 140.0, 240.0))
+
+    def test_generator(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        shape = QgsLayoutItemShape(layout)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
+        shape.attemptSetSceneRect(QRectF(0, 0, 100, 200))
+        layout.addLayoutItem(shape)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(0, 0, 10, 10))
+        map.zoomToExtent(QgsRectangle(1, 1, 2, 2))
+        layout.addLayoutItem(map)
+
+        props = {}
+        props["color"] = "green"
+        props["style"] = "solid"
+        props["style_border"] = "solid"
+        props["color_border"] = "red"
+        props["width_border"] = "6.0"
+        props["joinstyle"] = "miter"
+
+        sub_symbol = QgsFillSymbol.createSimple(props)
+
+        line_symbol = QgsFillSymbol()
+        generator = QgsGeometryGeneratorSymbolLayer.create({
+            'geometryModifier': "geom_from_wkt('POLYGON((10 10,287 10,287 200,10 200,10 10))')",
+            'SymbolType': 'Fill',
+        })
+        generator.setUnits(Qgis.RenderUnit.Millimeters)
+        generator.setSubSymbol(sub_symbol)
+
+        line_symbol.changeSymbolLayer(0, generator)
+        shape.setSymbol(line_symbol)
+
+        self.assertTrue(
+            self.render_layout_check(
+                'layoutshape_generator',
+                layout
+            )
+        )
 
 
 if __name__ == '__main__':
