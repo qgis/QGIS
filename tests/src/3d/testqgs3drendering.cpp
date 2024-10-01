@@ -82,6 +82,7 @@ class TestQgs3DRendering : public QgsTest
     void testExtrudedPolygonsDataDefinedPhong();
     void testExtrudedPolygonsDataDefinedPhongClipping();
     void testExtrudedPolygonsDataDefinedGooch();
+    void testExtrudedPolygonsDataDefinedGoochClipping();
     void testExtrudedPolygonsGoochShading();
     void testExtrudedPolygonsMetalRoughShading();
     void testPolygonsEdges();
@@ -757,6 +758,69 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGooch()
   delete scene;
   delete mapSettings;
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch", "polygon3d_extrusion_data_defined_gooch", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  QgsPropertyCollection propertyColection;
+  QgsProperty diffuseColor;
+  QgsProperty warmColor;
+  QgsProperty coolColor;
+  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
+  warmColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
+  coolColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Warm, warmColor );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Cool, coolColor );
+  QgsGoochMaterialSettings materialSettings;
+  materialSettings.setDataDefinedProperties( propertyColection );
+  materialSettings.setAlpha( 0.2f );
+  materialSettings.setBeta( 0.6f );
+  materialSettings.setShininess( 2 );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  mapSettings->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, 0, 0.5, 150.0 )
+                                         << QVector4D( -0.866025, 0, -0.5, 150.0 )
+                                         << QVector4D( 0.5, 0, -0.866025, 305.0 )
+                                         << QVector4D( -0.5, 0, 0.866025, 205.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete mapSettings;
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch_clipping", "polygon3d_extrusion_data_defined_gooch_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsGoochShading()
