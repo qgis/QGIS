@@ -116,9 +116,10 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  multi_source])
 
             self.assertEqual(
-                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
-                                        'CONVERT_ALL_LAYERS': True,
-                                        'OUTPUT': outdir + '/check.gpkg'}, context, feedback),
+                alg.getConsoleCommands(
+                    {'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                     'CONVERT_ALL_LAYERS': True,
+                     'OUTPUT': outdir + '/check.gpkg'}, context, feedback),
                 ['ogr2ogr',
                  '-f "GPKG" -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y ' + outdir + '/check.gpkg ' +
                  source])
@@ -370,9 +371,10 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-explodecollections -f "ESRI Shapefile"'])
 
             self.assertEqual(
-                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
-                                        'DISTANCE': 5,
-                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                alg.getConsoleCommands(
+                    {'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                     'DISTANCE': 5,
+                     'OUTPUT': outdir + '/check.shp'}, context, feedback),
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
@@ -589,10 +591,11 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  'GROUP BY """my_field"""" "my opts" -f "ESRI Shapefile"'])
 
             self.assertEqual(
-                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
-                                        'FIELD': 'my_field',
-                                        'OPTIONS': 'my opts',
-                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                alg.getConsoleCommands(
+                    {'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                     'FIELD': 'my_field',
+                     'OPTIONS': 'my opts',
+                     'OUTPUT': outdir + '/check.shp'}, context, feedback),
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
@@ -614,6 +617,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         source = os.path.join(testDataPath, 'polys.gml')
+        source_line = os.path.join(testDataPath, 'multilines.gml')
         source_with_space = os.path.join(testDataPath, 'filename with spaces.gml')
         alg = OgrToPostGis()
         alg.initAlgorithm()
@@ -623,14 +627,14 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source_with_space}, context, feedback),
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 "' + source_with_space + '" filename_with_spaces '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.filename_with_spaces -nlt PROMOTE_TO_MULTI'])
+                                                  '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.filename_with_spaces -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -638,7 +642,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=google.com port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -646,7 +650,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=3333 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -654,7 +658,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public user=kevin_bacon" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -662,7 +666,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 dbname=secret_stuff active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -670,7 +674,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 password=passw0rd active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -678,7 +682,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=desktop" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln desktop.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln desktop.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -686,7 +690,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.out_table -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.out_table -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -694,7 +698,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -702,7 +706,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=new_fid -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=new_fid -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -711,7 +715,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=objectid -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=objectid -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -720,7 +724,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=new_id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=new_id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -728,7 +732,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=my_geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=my_geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -736,7 +740,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=3 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -744,7 +748,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -simplify 5 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -simplify 5 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -752,7 +756,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -segmentize 4 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -segmentize 4 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -760,7 +764,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -spat 1.0 2.0 3.0 4.0 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -spat 1.0 2.0 3.0 4.0 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -768,7 +772,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 -select "f1,f2" '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -776,7 +780,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -where "0=1" -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -where "0=1" -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -784,7 +788,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -gt 2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -gt 2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -792,15 +796,16 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
+                                    'OVERWRITE': False,
                                     'APPEND': True}, context, feedback),
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-append -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-append -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -808,7 +813,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-addfields -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-addfields -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -816,7 +821,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-lco LAUNDER=NO -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-lco LAUNDER=NO -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -824,7 +829,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-lco SPATIAL_INDEX=OFF -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-lco SPATIAL_INDEX=OFF -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -832,7 +837,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -skipfailures -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -skipfailures -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -840,7 +845,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -848,7 +853,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI -lco PRECISION=NO'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI -lco PRECISION=NO'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -856,7 +861,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI blah'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI blah'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -864,15 +869,24 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES --config SHAPE_ENCODING blah -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
+                                    'PROMOTETOMULTI': False,
                                     'GTYPE': 4}, context, feedback),
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -nlt LINESTRING -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -nlt LINESTRING -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source_line,
+                                    'GTYPE': 15}, context, feedback),
+            ['ogr2ogr',
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-lco DIM=2 ' + source_line + ' multilines '
+                                           '-overwrite -nlt CONVERT_TO_LINEAR -lco GEOMETRY_NAME=geom -lco FID=id -nln public.multilines -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -880,7 +894,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -888,7 +902,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
         custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
         self.assertEqual(
@@ -897,7 +911,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -905,7 +919,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -913,7 +927,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
         custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
         self.assertEqual(
@@ -922,7 +936,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -930,7 +944,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -938,7 +952,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
         custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
         self.assertEqual(
@@ -947,7 +961,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
@@ -955,7 +969,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source + '|credential:X=Y|credential:Z=A',
@@ -963,7 +977,7 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
              '-lco DIM=2 ' + source + ' polys2 '
-             '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI --config X Y --config Z A'])
+                                      '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI --config X Y --config Z A'])
 
     def testOffsetCurve(self):
         context = QgsProcessingContext()
@@ -985,9 +999,10 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
-                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
-                                        'DISTANCE': 5,
-                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                alg.getConsoleCommands(
+                    {'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                     'DISTANCE': 5,
+                     'OUTPUT': outdir + '/check.shp'}, context, feedback),
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
@@ -1057,10 +1072,11 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  'FROM """polys2""" GROUP BY """total population"""" -f "ESRI Shapefile"'])
 
             self.assertEqual(
-                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
-                                        'DISTANCE': 5,
-                                        'FIELD': 'total population',
-                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                alg.getConsoleCommands(
+                    {'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                     'DISTANCE': 5,
+                     'FIELD': 'total population',
+                     'OUTPUT': outdir + '/check.shp'}, context, feedback),
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
@@ -1098,9 +1114,10 @@ class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-f "ESRI Shapefile"'])
 
             self.assertEqual(
-                alg.getConsoleCommands({'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
-                                        'DISTANCE': 0.2,
-                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                alg.getConsoleCommands(
+                    {'INPUT': source + '|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y',
+                     'DISTANCE': 0.2,
+                     'OUTPUT': outdir + '/check.shp'}, context, feedback),
                 ['ogr2ogr',
                  outdir + '/check.shp ' +
                  source + ' ' +
