@@ -87,6 +87,7 @@ class TestQgs3DRendering : public QgsTest
     void testExtrudedPolygonsMetalRoughShading();
     void testPolygonsEdges();
     void testLineRendering();
+    void testLineRenderingClipping();
     void testLineRenderingCurved();
     void testLineRenderingDataDefinedColors();
     void testBufferedLineRendering();
@@ -1025,6 +1026,59 @@ void TestQgs3DRendering::testLineRendering()
   delete map;
   delete layerLines;
   QGSVERIFYIMAGECHECK( "line_rendering_2", "line_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testLineRenderingClipping()
+{
+  const QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+
+  QgsVectorLayer *layerLines = new QgsVectorLayer( "LineString?crs=EPSG:27700", "lines", "memory" );
+
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setRenderAsSimpleLines( true );
+  lineSymbol->setWidth( 10 );
+  QgsSimpleLineMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
+  layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  QVector<QgsPoint> pts;
+  pts << QgsPoint( 0, 0, 10 ) << QgsPoint( 0, 1000, 10 ) << QgsPoint( 1000, 1000, 10 ) << QgsPoint( 1000, 0, 10 );
+  pts << QgsPoint( 1000, 0, 500 ) << QgsPoint( 1000, 1000, 500 ) << QgsPoint( 0, 1000, 500 ) << QgsPoint( 0, 0, 500 );
+  QgsFeature f1( layerLines->fields() );
+  f1.setGeometry( QgsGeometry( new QgsLineString( pts ) ) );
+  QgsFeatureList flist;
+  flist << f1;
+  layerLines->dataProvider()->addFeatures( flist );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << layerLines );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, 0, 0.5, 300.0 )
+                                         << QVector4D( -0.866025, 0, -0.5, 300.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "line_rendering_clipping", "line_rendering_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testLineRenderingCurved()
