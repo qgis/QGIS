@@ -172,4 +172,4 @@ def log_message(message, level):
     """helper function to emit logging messages"""
 
     message_translated = QCoreApplication.translate('MetaSearch', message)
-    LOGGER.logMessage(message_translated, 'MetaSearch', getattr(Qgis, level))
+    LOGGER.logMessage(message_translated, 'MetaSearch', getattr(Qgis, level, 'Info'))
