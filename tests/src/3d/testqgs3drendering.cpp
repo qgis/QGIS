@@ -80,6 +80,7 @@ class TestQgs3DRendering : public QgsTest
     void testPhongShading();
     void testExtrudedPolygonsTexturedPhong();
     void testExtrudedPolygonsDataDefinedPhong();
+    void testExtrudedPolygonsDataDefinedPhongClipping();
     void testExtrudedPolygonsDataDefinedGooch();
     void testExtrudedPolygonsGoochShading();
     void testExtrudedPolygonsMetalRoughShading();
@@ -639,6 +640,67 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhong()
   delete scene;
   delete map;
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong", "polygon3d_extrusion_data_defined_phong", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
+{
+  QgsPropertyCollection propertyColection;
+  QgsProperty diffuseColor;
+  QgsProperty ambientColor;
+  QgsProperty specularColor;
+  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
+  ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
+  specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, ambientColor );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Specular, specularColor );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setDataDefinedProperties( propertyColection );
+  materialSettings.setAmbient( Qt::red );
+  materialSettings.setShininess( 1 );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, 0, 0.5, 150.0 )
+                                         << QVector4D( -0.866025, 0, -0.5, 150.0 )
+                                         << QVector4D( 0.5, 0, -0.866025, 305.0 )
+                                         << QVector4D( -0.5, 0, 0.866025, 205.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong_clipping", "polygon3d_extrusion_data_defined_phong_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGooch()
