@@ -1530,6 +1530,7 @@ The development version
       SkipSymbolRendering,
       RecordProfile,
       AlwaysUseGlobalMasks,
+      DisableSymbolClippingToExtent,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
