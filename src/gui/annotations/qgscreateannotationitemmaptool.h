@@ -113,7 +113,7 @@ class GUI_EXPORT QgsCreateAnnotationItemMapToolInterface
     /**
      * Returns the handler object for the map tool.
      */
-    virtual QgsCreateAnnotationItemMapToolHandler *handler() = 0;
+    virtual QgsCreateAnnotationItemMapToolHandler *handler() const = 0;
 
     /**
      * Returns a reference to the associated map tool.
