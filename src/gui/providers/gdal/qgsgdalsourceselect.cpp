@@ -443,18 +443,18 @@ void QgsGdalSourceSelect::fillOpenOptions()
   const QString gdalUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
   GDALDriverH hDriver;
   hDriver = GDALIdentifyDriverEx( gdalUri.toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
-  if ( hDriver == nullptr )
+  if ( !hDriver )
     return;
 
   const char *pszOpenOptionList = GDALGetMetadataItem( hDriver, GDAL_DMD_OPENOPTIONLIST, nullptr );
-  if ( pszOpenOptionList == nullptr )
+  if ( !pszOpenOptionList )
     return;
 
   CPLXMLNode *psDoc = CPLParseXMLString( pszOpenOptionList );
-  if ( psDoc == nullptr )
+  if ( !psDoc )
     return;
   CPLXMLNode *psOpenOptionList = CPLGetXMLNode( psDoc, "=OpenOptionList" );
-  if ( psOpenOptionList == nullptr )
+  if ( !psOpenOptionList )
   {
     CPLDestroyXMLNode( psDoc );
     return;
@@ -500,10 +500,10 @@ void QgsGdalSourceSelect::fillOpenOptions()
   }
 
   // Set label to point to driver help page
-  const char *pszHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );
-  if ( pszHelpTopic )
+  const QString helpTopic = QgsGdalUtils::gdalDocumentationUrlForDriver( hDriver );
+  if ( !helpTopic.isEmpty() )
   {
-    mOpenOptionsLabel->setText( tr( "Consult <a href=\"https://gdal.org/%1\">%2 driver help page</a> for detailed explanations on options" ).arg( pszHelpTopic ).arg( GDALGetDriverShortName( hDriver ) ) );
+    mOpenOptionsLabel->setText( tr( "Consult <a href=\"%1\">%2 driver help page</a> for detailed explanations on options" ).arg( helpTopic ).arg( GDALGetDriverShortName( hDriver ) ) );
     mOpenOptionsLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
     mOpenOptionsLabel->setOpenExternalLinks( true );
     mOpenOptionsLabel->setVisible( true );

@@ -418,7 +418,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
     mCapabilities |= Capability::Spatial;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
-  mSingleTableDataset = GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) == nullptr;
+  mSingleTableDataset = !GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr );
 #else
   {
     const QVariantMap uriParts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );

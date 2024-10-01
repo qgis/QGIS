@@ -922,6 +922,21 @@ QgsPostgresConn *QgsPostgresRasterProvider::connectionRW()
   return mConnectionRW;
 }
 
+bool QgsPostgresRasterProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsPostgresRasterProvider::subsetStringDialect() const
+{
+  return tr( "PostgreSQL WHERE clause" );
+}
+
+QString QgsPostgresRasterProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://www.postgresql.org/docs/current/sql-expressions.html" );
+}
+
 QString QgsPostgresRasterProvider::subsetString() const
 {
   return mSqlWhereClause;

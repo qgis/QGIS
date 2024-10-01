@@ -53,7 +53,7 @@ void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
 
 bool QgsWmsRenderContext::addLayerToRender( QgsMapLayer *layer )
 {
-  bool allowed = checkLayerReadPermissions( layer );
+  const bool allowed = checkLayerReadPermissions( layer );
   if ( allowed )
   {
     mLayersToRender.append( layer );
@@ -315,7 +315,7 @@ QgsMapLayer *QgsWmsRenderContext::layer( const QString &nickname ) const
 
 bool QgsWmsRenderContext::isValidLayer( const QString &nickname ) const
 {
-  return layer( nickname ) != nullptr;
+  return layer( nickname );
 }
 
 QList<QgsMapLayer *> QgsWmsRenderContext::layersFromGroup( const QString &nickname ) const

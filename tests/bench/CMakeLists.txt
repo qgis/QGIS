@@ -19,13 +19,9 @@ include_directories(
 
   ${CMAKE_BINARY_DIR}
 )
-include_directories(SYSTEM
-  ${SQLITE3_INCLUDE_DIR}
-)
 
 target_link_libraries(qgis_bench
   qgis_core
-  ${SQLITE3_LIBRARY}
   ${QT_VERSION_BASE}::Core
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Svg

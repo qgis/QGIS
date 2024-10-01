@@ -22,6 +22,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgscolorutils.h"
 
 #include <QDir>
 #include <QRegularExpression>
@@ -206,7 +207,7 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
   for ( QStringList::iterator it = colorStrings.begin();
         it != colorStrings.end(); ++it )
   {
-    const QColor color = QgsSymbolLayerUtils::decodeColor( *it );
+    const QColor color = QgsColorUtils::colorFromString( *it );
     QString label;
     if ( colorLabels.length() > colorIndex )
     {

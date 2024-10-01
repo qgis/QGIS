@@ -138,7 +138,7 @@ class QgsDataItem;
 class QgsTileScaleWidget;
 class QgsLabelingWidget;
 class QgsLayerStylingWidget;
-class QgsDiagramProperties;
+class QgsStackedDiagramProperties;
 class QgsLocatorWidget;
 class QgsNominatimGeocoder;
 class QgsDataSourceManagerDialog;
@@ -2759,6 +2759,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     friend class TestQgisAppPython;
     friend class TestQgisApp;
+    friend class TestQgsProjectExpressions;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };

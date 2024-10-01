@@ -37,7 +37,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessing,
                        QgsProcessingFeatureSource,
                        NULL)
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from collections import defaultdict
@@ -123,44 +123,44 @@ class StatisticsByCategories(QgisAlgorithm):
 
         if value_field is None:
             field_type = 'none'
-            fields.append(QgsField('count', QVariant.Int))
+            fields.append(QgsField('count', QMetaType.Type.Int))
         elif value_field.isNumeric():
             field_type = 'numeric'
-            fields.append(QgsField('count', QVariant.Int))
-            fields.append(QgsField('unique', QVariant.Int))
-            fields.append(QgsField('min', QVariant.Double))
-            fields.append(QgsField('max', QVariant.Double))
-            fields.append(QgsField('range', QVariant.Double))
-            fields.append(QgsField('sum', QVariant.Double))
-            fields.append(QgsField('mean', QVariant.Double))
-            fields.append(QgsField('median', QVariant.Double))
-            fields.append(QgsField('stddev', QVariant.Double))
-            fields.append(QgsField('minority', QVariant.Double))
-            fields.append(QgsField('majority', QVariant.Double))
-            fields.append(QgsField('q1', QVariant.Double))
-            fields.append(QgsField('q3', QVariant.Double))
-            fields.append(QgsField('iqr', QVariant.Double))
-        elif value_field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
+            fields.append(QgsField('count', QMetaType.Type.Int))
+            fields.append(QgsField('unique', QMetaType.Type.Int))
+            fields.append(QgsField('min', QMetaType.Type.Double))
+            fields.append(QgsField('max', QMetaType.Type.Double))
+            fields.append(QgsField('range', QMetaType.Type.Double))
+            fields.append(QgsField('sum', QMetaType.Type.Double))
+            fields.append(QgsField('mean', QMetaType.Type.Double))
+            fields.append(QgsField('median', QMetaType.Type.Double))
+            fields.append(QgsField('stddev', QMetaType.Type.Double))
+            fields.append(QgsField('minority', QMetaType.Type.Double))
+            fields.append(QgsField('majority', QMetaType.Type.Double))
+            fields.append(QgsField('q1', QMetaType.Type.Double))
+            fields.append(QgsField('q3', QMetaType.Type.Double))
+            fields.append(QgsField('iqr', QMetaType.Type.Double))
+        elif value_field.type() in (QMetaType.Type.QDate, QMetaType.QTime, QMetaType.QDateTime):
             field_type = 'datetime'
-            fields.append(QgsField('count', QVariant.Int))
-            fields.append(QgsField('unique', QVariant.Int))
-            fields.append(QgsField('empty', QVariant.Int))
-            fields.append(QgsField('filled', QVariant.Int))
+            fields.append(QgsField('count', QMetaType.Type.Int))
+            fields.append(QgsField('unique', QMetaType.Type.Int))
+            fields.append(QgsField('empty', QMetaType.Type.Int))
+            fields.append(QgsField('filled', QMetaType.Type.Int))
             # keep same data type for these fields
             addField('min')
             addField('max')
         else:
             field_type = 'string'
-            fields.append(QgsField('count', QVariant.Int))
-            fields.append(QgsField('unique', QVariant.Int))
-            fields.append(QgsField('empty', QVariant.Int))
-            fields.append(QgsField('filled', QVariant.Int))
+            fields.append(QgsField('count', QMetaType.Type.Int))
+            fields.append(QgsField('unique', QMetaType.Type.Int))
+            fields.append(QgsField('empty', QMetaType.Type.Int))
+            fields.append(QgsField('filled', QMetaType.Type.Int))
             # keep same data type for these fields
             addField('min')
             addField('max')
-            fields.append(QgsField('min_length', QVariant.Int))
-            fields.append(QgsField('max_length', QVariant.Int))
-            fields.append(QgsField('mean_length', QVariant.Double))
+            fields.append(QgsField('min_length', QMetaType.Type.Int))
+            fields.append(QgsField('max_length', QMetaType.Type.Int))
+            fields.append(QgsField('mean_length', QMetaType.Type.Double))
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
         if value_field is not None:

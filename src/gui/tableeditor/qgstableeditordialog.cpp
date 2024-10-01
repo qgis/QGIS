@@ -21,6 +21,7 @@
 #include "qgspanelwidgetstack.h"
 #include "qgstableeditorformattingwidget.h"
 #include "qgssettings.h"
+#include "qgsmaplayer.h"
 
 #include <QClipboard>
 #include <QMessageBox>
@@ -151,6 +152,21 @@ void QgsTableEditorDialog::closeEvent( QCloseEvent * )
   // store the toolbar/dock widget settings using Qt settings API
   settings.setValue( QStringLiteral( "LayoutDesigner/tableEditorState" ), saveState(), QgsSettings::App );
 }
+
+QgsMapLayer *QgsTableEditorDialog::layer() const
+{
+  return mLayer.data();
+}
+
+void QgsTableEditorDialog::setLayer( QgsMapLayer *layer )
+{
+  if ( layer != mLayer )
+  {
+    mLayer = layer;
+    mFormattingWidget->setLayer( layer );
+  }
+}
+
 
 bool QgsTableEditorDialog::setTableContentsFromClipboard()
 {

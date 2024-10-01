@@ -325,9 +325,11 @@ void TestQgs3DRendering::testDemTerrain()
   map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
+  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   demTerrain->setLayer( mLayerDtm );
   map->setTerrainGenerator( demTerrain );
   map->setTerrainVerticalScale( 3 );
+  QVERIFY( demTerrain->isValid() );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -358,9 +360,11 @@ void TestQgs3DRendering::testTerrainShading()
   // no terrain layers set!
 
   QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
+  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   demTerrain->setLayer( mLayerDtm );
   map->setTerrainGenerator( demTerrain );
   map->setTerrainVerticalScale( 3 );
+  QVERIFY( demTerrain->isValid() );
 
   QgsPhongMaterialSettings terrainMaterial;
   terrainMaterial.setAmbient( QColor( 0, 0, 0 ) );
@@ -1452,9 +1456,11 @@ void TestQgs3DRendering::testFilteredDemTerrain()
   map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
+  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   demTerrain->setLayer( mLayerDtm );
   map->setTerrainGenerator( demTerrain );
   map->setTerrainVerticalScale( 3 );
+  QVERIFY( demTerrain->isValid() );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -1550,9 +1556,11 @@ void TestQgs3DRendering::testAmbientOcclusion()
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
   QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
+  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   demTerrain->setLayer( layerDtm );
   mapSettings.setTerrainGenerator( demTerrain );
   mapSettings.setTerrainVerticalScale( 3 );
+  QVERIFY( demTerrain->isValid() );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
@@ -1615,9 +1623,11 @@ void TestQgs3DRendering::testDepthBuffer()
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
   QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
+  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   demTerrain->setLayer( layerDtm );
   mapSettings.setTerrainGenerator( demTerrain );
   mapSettings.setTerrainVerticalScale( 3 );
+  QVERIFY( demTerrain->isValid() );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -1943,10 +1953,12 @@ void TestQgs3DRendering::test3DSceneExporterBig()
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator();
+  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
+  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   demTerrain->setLayer( layerDtm );
   mapSettings.setTerrainGenerator( demTerrain );
   mapSettings.setTerrainVerticalScale( 3 );
+  QVERIFY( demTerrain->isValid() );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );

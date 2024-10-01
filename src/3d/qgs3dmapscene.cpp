@@ -48,8 +48,8 @@
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
 #include "qgscameracontroller.h"
-#include "qgschunkedentity_p.h"
-#include "qgschunknode_p.h"
+#include "qgschunkedentity.h"
+#include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
@@ -58,7 +58,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgssourcecache.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
@@ -880,7 +880,7 @@ void Qgs3DMapScene::updateSceneState()
 void Qgs3DMapScene::onSkyboxSettingsChanged()
 {
   QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
-  if ( mSkybox != nullptr )
+  if ( mSkybox )
   {
     mSkybox->deleteLater();
     mSkybox = nullptr;

@@ -269,7 +269,6 @@
 #include "qgsgpstoolbar.h"
 #include "qgsgpscanvasbridge.h"
 #include "qgsguivectorlayertools.h"
-#include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
 #include "qgslayertreefiltersettings.h"
@@ -384,6 +383,7 @@
 #include "qgselevationshadingrenderersettingswidget.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssnappingwidget.h"
+#include "qgsstackeddiagramproperties.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
 #include "qgsstatusbarcoordinateswidget.h"
@@ -487,6 +487,7 @@
 //
 // GDAL/OGR includes
 //
+#include <gdal.h>
 #include <ogr_api.h>
 #include <gdal_version.h>
 #include <proj.h>
@@ -2892,17 +2893,17 @@ void QgisApp::readSettings()
   readRecentProjects();
 
   // this is a new session, reset enable macros value  when they are set for session
-  Qgis::PythonMacroMode macroMode = settings.enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
-  switch ( macroMode )
+  Qgis::PythonEmbeddedMode pythonEmbeddedMode = settings.enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
+  switch ( pythonEmbeddedMode )
   {
-    case Qgis::PythonMacroMode::NotForThisSession:
-    case Qgis::PythonMacroMode::SessionOnly:
-      settings.setEnumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+    case Qgis::PythonEmbeddedMode::NotForThisSession:
+    case Qgis::PythonEmbeddedMode::SessionOnly:
+      settings.setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
       break;
 
-    case Qgis::PythonMacroMode::Always:
-    case Qgis::PythonMacroMode::Never:
-    case Qgis::PythonMacroMode::Ask:
+    case Qgis::PythonEmbeddedMode::Always:
+    case Qgis::PythonEmbeddedMode::Never:
+    case Qgis::PythonEmbeddedMode::Ask:
       break;
   }
 }
@@ -5518,12 +5519,11 @@ QString QgisApp::getVersionString()
   const QString compLabel = tr( "Compiled" );
   const QString runLabel = tr( "Running" );
 
-  versionString += QStringLiteral( "<tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Libraries" ) );
   versionString += QStringLiteral( "<tr><td>%1</td><td>%2</td>" ).arg( tr( "QGIS version" ), Qgis::version() );
-
+  versionString += QLatin1String( "</tr><tr>" );
   if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
   {
-    versionString += tr( "QGIS code branch" );
+    versionString += QStringLiteral( "<td>%1</td>" ).arg( tr( "QGIS code branch" ) );
     if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
     {
       versionString += QLatin1String( "<td><a href=\"https://github.com/qgis/QGIS/tree/master\">master</a></td>" );
@@ -5536,11 +5536,12 @@ QString QgisApp::getVersionString()
   }
   else
   {
-    versionString += QLatin1String( "</tr><tr>" );
     versionString += QStringLiteral( "<td>%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%2\">%2</a></td>" ).arg( tr( "QGIS code revision" ), Qgis::devVersion() );
   }
   versionString += QLatin1String( "</tr><tr>" );
 
+  versionString += QStringLiteral( "<td colspan=\"2\">&nbsp;</td></tr><tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Libraries" ) );
+  versionString += QLatin1String( "</tr><tr>" );
   // Qt version
   const QString qtVersionCompiled{ QT_VERSION_STR };
   const QString qtVersionRunning{ qVersion() };
@@ -6022,7 +6023,7 @@ void QgisApp::fileOpenAfterLaunch()
   }
 
   // Is this a storage based project?
-  const bool projectIsFromStorage { QgsApplication::projectStorageRegistry()->projectStorageFromUri( projPath ) != nullptr };
+  const bool projectIsFromStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( projPath );
 
   if ( !projectIsFromStorage &&
        !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
@@ -6572,13 +6573,20 @@ bool QgisApp::addProject( const QString &projectFile )
     QgsSettings settings;
 
 #ifdef WITH_BINDINGS
-    // does the project have any macros?
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
+      // does the project have any macros?
       if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
       {
         auto lambda = []() {QgisApp::instance()->enableProjectMacros();};
-        QgsGui::pythonMacroAllowed( lambda, mInfoBar );
+        QgsGui::pythonEmbeddedInProjectAllowed( lambda, mInfoBar, Qgis::PythonEmbeddedType::Macro );
+      }
+
+      // does the project have expression functions?
+      const QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
+      if ( !projectFunctions.isEmpty() )
+      {
+        QgsGui::pythonEmbeddedInProjectAllowed( nullptr, mInfoBar, Qgis::PythonEmbeddedType::ExpressionFunction );
       }
     }
 #endif
@@ -8041,35 +8049,8 @@ void QgisApp::diagramProperties()
     return;
   }
 
-  QDialog dlg;
-  dlg.setWindowTitle( tr( "Layer Diagram Properties" ) );
-  QgsDiagramProperties *gui = new QgsDiagramProperties( vlayer, &dlg, mMapCanvas );
-  gui->layout()->setContentsMargins( 0, 0, 0, 0 );
-  QVBoxLayout *layout = new QVBoxLayout( &dlg );
-  layout->addWidget( gui );
-
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(
-    QDialogButtonBox::Help | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply,
-    Qt::Horizontal, &dlg );
-  layout->addWidget( buttonBox );
-
-  dlg.setLayout( layout );
-
-  connect( buttonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked,
-           &dlg, &QDialog::accept );
-  connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked,
-           &dlg, &QDialog::reject );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked,
-           gui, &QgsDiagramProperties::apply );
-  connect( buttonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, gui, [ = ]
-  {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
-  } );
-
-  if ( dlg.exec() )
-    gui->apply();
-
-  activateDeactivateLayerRelatedActions( vlayer );
+  mapStyleDock( true );
+  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::VectorDiagram );
 }
 
 void QgisApp::createAnnotationLayer()
@@ -8631,9 +8612,23 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     QgsVectorFileWriterTask *writerTask = new QgsVectorFileWriterTask( vlayer, vectorFilename, options );
 
     // when writer is successful:
-    connect( writerTask, &QgsVectorFileWriterTask::completed, this, [onSuccess, addToCanvas, encoding, vectorFilename]( const QString & newFilename, const QString & newLayer )
+    connect( writerTask, &QgsVectorFileWriterTask::completed, this, [onSuccess, addToCanvas, encoding, vectorFilename, format]( const QString & newFilename, const QString & newLayer )
     {
-      onSuccess( newFilename, addToCanvas, newLayer, encoding, vectorFilename );
+      QString layerName  = newLayer;
+#ifdef GDAL_DCAP_MULTIPLE_VECTOR_LAYERS
+      GDALDriverH hDriver = GDALGetDriverByName( format.toUtf8().constData() );
+      if ( hDriver )
+      {
+        // If the driver doesn't advertise supporting multiple vector layers,
+        // do not attempt to append the layer name to the connection URI
+        // This would for example break for the GeoJSONSeq driver.
+        if ( !GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) )
+        {
+          layerName.clear();
+        }
+      }
+#endif
+      onSuccess( newFilename, addToCanvas, layerName, encoding, vectorFilename );
     } );
 
     // when an error occurs:
@@ -13859,7 +13854,6 @@ void QgisApp::closeProject()
   {
     QgsPythonRunner::run( QStringLiteral( "qgis.utils.unloadProjectMacros();" ) );
   }
-
   mPythonMacrosEnabled = false;
 
   mLegendExpressionFilterButton->setExpressionText( QString() );
@@ -15263,6 +15257,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsVectorDataProvider *dprovider = vlayer->dataProvider();
       QString addFeatureText;
+      bool addFeatureCheckable = true;
 
       bool isEditable = vlayer->isEditable();
       bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
@@ -15449,6 +15444,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         {
           mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
           addFeatureText = tr( "Add Record" );
+          addFeatureCheckable = false;
           mActionAddRing->setEnabled( false );
           mActionFillRing->setEnabled( false );
           mActionReshapeFeatures->setEnabled( false );
@@ -15462,6 +15458,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionOpenFieldCalc->setEnabled( true );
         mActionAddFeature->setText( addFeatureText );
         mActionAddFeature->setToolTip( addFeatureText );
+        mActionAddFeature->setCheckable( addFeatureCheckable );
+        mActionAddFeature->setChecked( addFeatureCheckable && mMapCanvas->mapTool() == mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
         QgsGui::shortcutsManager()->unregisterAction( mActionAddFeature );
         if ( !mActionAddFeature->text().isEmpty() ) // The text will be empty on unknown geometry type -> in this case do not create a shortcut
           QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut().toString() );

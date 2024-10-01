@@ -118,7 +118,7 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
   {
     mMeshProjectComboBox->setEnabled( true );
     mSourceMeshFromFile.reset();
-    mSourceMeshFrameReady = mMeshProjectComboBox->currentLayer() != nullptr;
+    mSourceMeshFrameReady = mMeshProjectComboBox->currentLayer();
     mProjectionSelectionWidget->setEnabled( false );
   }
   else if ( mMeshFileRadioButton->isChecked() )
@@ -135,7 +135,7 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
 
       mProjectionSelectionWidget->setEnabled( false );
 
-      mSourceMeshFrameReady = mSourceMeshFromFile != nullptr;
+      mSourceMeshFrameReady = static_cast< bool >( mSourceMeshFromFile );
 
       QgsApplication::restoreOverrideCursor();
     }

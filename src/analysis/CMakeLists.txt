@@ -245,6 +245,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmurlopener.cpp
+  processing/qgsalgorithmhttprequest.cpp
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmvirtualrastercalculator.cpp
   processing/qgsalgorithmvoronoipolygons.cpp
@@ -376,6 +377,7 @@ set(QGIS_ANALYSIS_HDRS
   processing/qgsprojectstylealgorithms.h
   processing/qgsreclassifyutils.h
   processing/qgsalgorithmurlopener.h
+  processing/qgsalgorithmhttprequest.h
 
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
@@ -471,7 +473,6 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
 endif()
 
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
-include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
 

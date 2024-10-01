@@ -559,6 +559,68 @@ QString QgsOgrProvider::subsetString() const
   return mSubsetString;
 }
 
+bool QgsOgrProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsOgrProvider::subsetStringDialect() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( mOgrLayer )
+  {
+    if ( const char *pszSqlDialects = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_SUPPORTED_SQL_DIALECTS, nullptr ) )
+    {
+      const QStringList dialects = QString( pszSqlDialects ).split( ' ' );
+      // first dialect is default, which is what QGIS uses
+      const QString defaultDialect = !dialects.isEmpty() ? dialects.at( 0 ) : QString();
+      if ( defaultDialect == QLatin1String( "NATIVE" ) )
+      {
+        return tr( "%1 query" ).arg( GDALGetDriverLongName( mOgrLayer->driver() ) );
+      }
+      else if ( defaultDialect == QLatin1String( "OGRSQL" ) )
+      {
+        return tr( "OGR SQL query" );
+      }
+      else if ( defaultDialect == QLatin1String( "SQLITE" ) )
+      {
+        return tr( "SQLite query" );
+      }
+      return defaultDialect;
+    }
+  }
+#endif
+  return QString();
+}
+
+QString QgsOgrProvider::subsetStringHelpUrl() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( mOgrLayer )
+  {
+    if ( const char *pszSqlDialects = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_SUPPORTED_SQL_DIALECTS, nullptr ) )
+    {
+      const QStringList dialects = QString( pszSqlDialects ).split( ' ' );
+      // first dialect is default, which is what QGIS uses
+      const QString defaultDialect = !dialects.isEmpty() ? dialects.at( 0 ) : QString();
+      if ( defaultDialect == QLatin1String( "NATIVE" ) )
+      {
+        return QgsGdalUtils::gdalDocumentationUrlForDriver( mOgrLayer->driver() );
+      }
+      else if ( defaultDialect == QLatin1String( "OGRSQL" ) )
+      {
+        return QStringLiteral( "https://gdal.org/user/ogr_sql_dialect.html" );
+      }
+      else if ( defaultDialect == QLatin1String( "SQLITE" ) )
+      {
+        return QStringLiteral( "https://gdal.org/user/sql_sqlite_dialect.html" );
+      }
+    }
+  }
+#endif
+  return QString();
+}
+
 uint QgsOgrProvider::subLayerCount() const
 {
   uint count = layerCount();
@@ -645,12 +707,12 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
                                    errCause,
                                    // do not check timestamp beyond the first
                                    // layer
-                                   firstLayer == nullptr );
+                                   !firstLayer );
       if ( !layer )
         continue;
 
       mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), nullptr, mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
-      if ( firstLayer == nullptr )
+      if ( !firstLayer )
       {
         firstLayer = std::move( layer );
       }
@@ -2211,6 +2273,15 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     }
   }
 
+  // We at least want to syncToDisc() for OpenFileGDB, because its AddField
+  // implementation doesn't update immediately system tables.
+  // We exclude GeoJSON because leaveUpdateMode() has specific behavior for it.
+  if ( mGDALDriverName != QLatin1String( "GeoJSON" ) && !syncToDisc() )
+
+  {
+    returnvalue = false;
+  }
+
   // Backup existing fields. We need them to 'restore' field type, length, precision
   QgsFields oldFields = mAttributeFields;
 
@@ -2291,6 +2362,15 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
       res = false;
     }
   }
+
+  // We at least want to syncToDisc() for OpenFileGDB, because its DeleteField
+  // implementation doesn't update immediately system tables.
+  // We exclude GeoJSON because leaveUpdateMode() has specific behavior for it.
+  if ( mGDALDriverName != QLatin1String( "GeoJSON" ) && !syncToDisc() )
+  {
+    res = false;
+  }
+
   loadFields();
 
   if ( mTransaction )
@@ -2345,6 +2425,15 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
       result = false;
     }
   }
+
+  // We at least want to syncToDisc() for OpenFileGDB, because its AlterFieldDefn
+  // implementation doesn't update immediately system tables.
+  // We exclude GeoJSON because leaveUpdateMode() has specific behavior for it.
+  if ( mGDALDriverName != QLatin1String( "GeoJSON" ) && !syncToDisc() )
+  {
+    result = false;
+  }
+
   loadFields();
 
   if ( mTransaction )
@@ -2356,7 +2445,7 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
 bool QgsOgrProvider::startTransaction()
 {
   bool inTransaction = false;
-  if ( mTransaction == nullptr && mOgrLayer->TestCapability( OLCTransactions ) )
+  if ( !mTransaction && mOgrLayer->TestCapability( OLCTransactions ) )
   {
     // A transaction might already be active, so be robust on failed
     // StartTransaction.
@@ -2651,10 +2740,12 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( useUpdate )
     it = attr_map.end();
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,1)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,3)
+  // UpdateFeature is available since 3.7.0, but was broken for GeoJSON up to 3.9.3
+  // see https://github.com/OSGeo/gdal/pull/10197
+  // and https://github.com/OSGeo/gdal/pull/10794
   const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature );
 #elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  // see https://github.com/OSGeo/gdal/pull/10197
   const bool useUpdateFeature = mOgrLayer->TestCapability( OLCUpdateFeature )
                                 && mGDALDriverName != QLatin1String( "ODS" )
                                 && mGDALDriverName != QLatin1String( "XLSX" )
@@ -3536,10 +3627,10 @@ void QgsOgrProvider::computeCapabilities()
     }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-    if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES_READ, nullptr ) != nullptr )
+    if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES_READ, nullptr ) )
 #else
     // GDAL KML driver doesn't support reading feature style, skip metadata check until GDAL can separate reading/writing capability
-    if ( mGDALDriverName != QLatin1String( "KML" ) && GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) != nullptr )
+    if ( mGDALDriverName != QLatin1String( "KML" ) && GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) )
 #endif
     {
       ability |= Qgis::VectorProviderCapability::FeatureSymbology;
@@ -3708,7 +3799,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
     {
       gdal::ogr_feature_unique_ptr f;
       f.reset( l->GetNextFeature() );
-      supportsILIKE = f != nullptr;
+      supportsILIKE = static_cast< bool>( f );
     }
   }
 

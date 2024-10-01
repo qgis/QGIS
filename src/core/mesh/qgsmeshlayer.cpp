@@ -2094,7 +2094,7 @@ bool QgsMeshLayer::isEditable() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mMeshEditor != nullptr;
+  return mMeshEditor;
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )

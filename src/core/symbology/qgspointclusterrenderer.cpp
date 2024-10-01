@@ -42,6 +42,16 @@ QgsPointClusterRenderer::QgsPointClusterRenderer()
   mClusterSymbol->insertSymbolLayer( 1, fm );
 }
 
+Qgis::FeatureRendererFlags QgsPointClusterRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  if ( mClusterSymbol && mClusterSymbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+  if ( mRenderer && mRenderer->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+  return res;
+}
+
 QgsPointClusterRenderer *QgsPointClusterRenderer::clone() const
 {
   QgsPointClusterRenderer *r = new QgsPointClusterRenderer();

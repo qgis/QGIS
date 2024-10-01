@@ -529,6 +529,21 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updat
   return true;
 }
 
+bool QgsVirtualLayerProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsVirtualLayerProvider::subsetStringDialect() const
+{
+  return tr( "QGIS expression" );
+}
+
+QString QgsVirtualLayerProvider::subsetStringHelpUrl() const
+{
+  // unfortunately we can't access QgsHelp here, that's a GUI class!
+  return QString();
+}
 
 Qgis::WkbType QgsVirtualLayerProvider::wkbType() const
 {

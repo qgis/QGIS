@@ -238,14 +238,33 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
   {
     QVector<QgsPointXY> tmpPoints = mTool->points();
     tmpPoints.append( point );
-    const double area = mDa.measurePolygon( tmpPoints );
+    double area = 0;
+    try
+    {
+      area = mDa.measurePolygon( tmpPoints );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+    }
+
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && !mTool->points().empty() )
   {
     const QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
-    double d = mDa.measureLine( p1, p2 );
+    double d = 0;
+    try
+    {
+      d = mDa.measureLine( p1, p2 );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    }
     editTotal->setText( formatDistance( mTotal + d, mConvertToDisplayUnits ) );
     d = convertLength( d, mDistanceUnits );
 
@@ -265,7 +284,17 @@ void QgsMeasureDialog::addPoint()
   const int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
-    const double area = mDa.measurePolygon( mTool->points() );
+    double area = 0;
+    try
+    {
+      area = mDa.measurePolygon( mTool->points() );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+    }
+
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && numPoints >= 1 )
@@ -292,7 +321,16 @@ void QgsMeasureDialog::addPoint()
     }
     if ( numPoints > 1 )
     {
-      mTotal = mDa.measureLine( mTool->points() );
+      try
+      {
+        mTotal = mDa.measureLine( mTool->points() );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      }
+
       editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
     }
   }
@@ -308,7 +346,16 @@ void QgsMeasureDialog::removeLastPoint()
       QVector<QgsPointXY> tmpPoints = mTool->points();
       if ( !mTool->done() )
         tmpPoints.append( mLastMousePoint );
-      const double area = mDa.measurePolygon( tmpPoints );
+      double area = 0;
+      try
+      {
+        area = mDa.measurePolygon( tmpPoints );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+      }
       editTotal->setText( formatArea( area ) );
     }
     else
@@ -321,14 +368,31 @@ void QgsMeasureDialog::removeLastPoint()
     //remove final row
     delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
 
-    mTotal = mDa.measureLine( mTool->points() );
+    try
+    {
+      mTotal = mDa.measureLine( mTool->points() );
+    }
+    catch ( QgsCsException & )
+    {
+      // TODO report errors to user
+      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    }
 
     if ( !mTool->done() )
     {
       // need to add the distance for the temporary mouse cursor point
       const QVector< QgsPointXY > tmpPoints = mTool->points();
       const QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) );
-      double d = mDa.measureLine( p1, mLastMousePoint );
+      double d = 0;
+      try
+      {
+        d = mDa.measureLine( p1, mLastMousePoint );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      }
 
       d = convertLength( d, mDistanceUnits );
 
@@ -628,7 +692,15 @@ void QgsMeasureDialog::updateUi()
     double area = 0.0;
     if ( mTool->points().size() > 1 )
     {
-      area = mDa.measurePolygon( mTool->points() );
+      try
+      {
+        area = mDa.measurePolygon( mTool->points() );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+      }
     }
     mTable->hide(); // Hide the table, only show summary
     mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Expanding );
@@ -654,7 +726,16 @@ void QgsMeasureDialog::updateUi()
       if ( !firstPoint )
       {
         double d = -1;
-        d = mDa.measureLine( previousPoint, point );
+        try
+        {
+          d = mDa.measureLine( previousPoint, point );
+        }
+        catch ( QgsCsException & )
+        {
+          // TODO report errors to user
+          QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        }
+
         if ( mConvertToDisplayUnits )
         {
           if ( mDistanceUnits == Qgis::DistanceUnit::Unknown && mMapDistanceUnits != Qgis::DistanceUnit::Unknown )
@@ -692,32 +773,45 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
   mUnitsCombo->clear();
   if ( isArea )
   {
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareMeters ), static_cast< int >( Qgis::AreaUnit::SquareMeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareKilometers ), static_cast< int >( Qgis::AreaUnit::SquareKilometers ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareFeet ), static_cast< int >( Qgis::AreaUnit::SquareFeet ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareYards ), static_cast< int >( Qgis::AreaUnit::SquareYards ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareMiles ), static_cast< int >( Qgis::AreaUnit::SquareMiles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::Hectares ), static_cast< int >( Qgis::AreaUnit::Hectares ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::Acres ), static_cast< int >( Qgis::AreaUnit::Acres ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareCentimeters ), static_cast< int >( Qgis::AreaUnit::SquareCentimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareMillimeters ), static_cast< int >( Qgis::AreaUnit::SquareMillimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareNauticalMiles ), static_cast< int >( Qgis::AreaUnit::SquareNauticalMiles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareInches ), static_cast< int >( Qgis::AreaUnit::SquareInches ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::AreaUnit::SquareDegrees ), static_cast< int >( Qgis::AreaUnit::SquareDegrees ) );
+    for ( const Qgis::AreaUnit unit :
+          {
+            Qgis::AreaUnit::SquareMeters,
+            Qgis::AreaUnit::SquareKilometers,
+            Qgis::AreaUnit::SquareFeet,
+            Qgis::AreaUnit::SquareYards,
+            Qgis::AreaUnit::SquareMiles,
+            Qgis::AreaUnit::Hectares,
+            Qgis::AreaUnit::Acres,
+            Qgis::AreaUnit::SquareCentimeters,
+            Qgis::AreaUnit::SquareMillimeters,
+            Qgis::AreaUnit::SquareNauticalMiles,
+            Qgis::AreaUnit::SquareInches,
+            Qgis::AreaUnit::SquareDegrees,
+          } )
+    {
+      mUnitsCombo->addItem( QgsUnitTypes::toString( unit ), static_cast< int >( unit ) );
+    }
     mUnitsCombo->addItem( tr( "map units" ), static_cast< int >( Qgis::AreaUnit::Unknown ) );
   }
   else
   {
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Kilometers ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Feet ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Yards ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Miles ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::NauticalMiles ), static_cast< int >( Qgis::DistanceUnit::NauticalMiles ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Centimeters ), static_cast< int >( Qgis::DistanceUnit::Centimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Millimeters ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Inches ), static_cast< int >( Qgis::DistanceUnit::Inches ) );
-    mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Degrees ), static_cast< int >( Qgis::DistanceUnit::Degrees ) );
+    for ( const Qgis::DistanceUnit unit :
+          {
+            Qgis::DistanceUnit::Meters,
+            Qgis::DistanceUnit::Kilometers,
+            Qgis::DistanceUnit::Feet,
+            Qgis::DistanceUnit::Yards,
+            Qgis::DistanceUnit::Miles,
+            Qgis::DistanceUnit::NauticalMiles,
+            Qgis::DistanceUnit::Centimeters,
+            Qgis::DistanceUnit::Millimeters,
+            Qgis::DistanceUnit::Inches,
+            Qgis::DistanceUnit::Degrees,
+            Qgis::DistanceUnit::ChainsInternational
+          } )
+    {
+      mUnitsCombo->addItem( QgsUnitTypes::toString( unit ), static_cast< int >( unit ) );
+    }
     mUnitsCombo->addItem( tr( "map units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
   }
 }

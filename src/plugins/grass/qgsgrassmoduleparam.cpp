@@ -1117,7 +1117,7 @@ void QgsGrassModuleVectorField::updateFields()
     QString current = comboBox->currentText();
     comboBox->clear();
 
-    if ( mLayerInput == nullptr )
+    if ( !mLayerInput )
     {
       continue;
     }

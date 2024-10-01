@@ -26,7 +26,7 @@ import os.path
 import math
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (QgsApplication,
                        QgsExpression,
@@ -108,7 +108,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         field_index = -1
 
         fields = QgsFields()
-        fields.append(QgsField('id', QVariant.Int, '', 20))
+        fields.append(QgsField('id', QMetaType.Type.Int, '', 20))
 
         current = 0
 

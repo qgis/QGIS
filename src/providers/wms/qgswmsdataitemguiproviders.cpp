@@ -31,7 +31,7 @@
 
 static QWidget *_paramWidget( QgsDataItem *root )
 {
-  if ( qobject_cast<QgsWMSRootItem *>( root ) != nullptr )
+  if ( qobject_cast<QgsWMSRootItem *>( root ) )
   {
     return new QgsWMSSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   }

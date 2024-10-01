@@ -259,7 +259,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void updateFont( const QFont &font );
-    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+    void connectValueChanged( const QList<QWidget *> &widgets );
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
 

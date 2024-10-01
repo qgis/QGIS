@@ -92,7 +92,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
     QgsAuthConfigurationStorage *firstReadyStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
 
     /**
-     * Returns the storage with the specified \a id or NULL if not found in the registry.
+     * Returns the storage with the specified \a id or NULLPTR if not found in the registry.
      * \param id The id of the storage to retrieve
      */
     QgsAuthConfigurationStorage *storage( const QString &id ) const;

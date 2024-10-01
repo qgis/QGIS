@@ -24,7 +24,13 @@ QgsLocatorModel.ResultFilterNameRole.__doc__ = "Associated filter name which cre
 QgsLocatorModel.ResultFilterGroupSortingRole = QgsLocatorModel.CustomRole.ResultFilterGroupSorting
 QgsLocatorModel.Role.ResultFilterGroupSortingRole = QgsLocatorModel.CustomRole.ResultFilterGroupSorting
 QgsLocatorModel.ResultFilterGroupSortingRole.is_monkey_patched = True
-QgsLocatorModel.ResultFilterGroupSortingRole.__doc__ = "Group results within the same filter results"
+QgsLocatorModel.ResultFilterGroupSortingRole.__doc__ = "Custom value for sorting \n.. deprecated:: 3.40. No longer used."
+QgsLocatorModel.ResultFilterGroupTitle = QgsLocatorModel.CustomRole.ResultFilterGroupTitle
+QgsLocatorModel.ResultFilterGroupTitle.is_monkey_patched = True
+QgsLocatorModel.ResultFilterGroupTitle.__doc__ = "Group title"
+QgsLocatorModel.ResultFilterGroupScore = QgsLocatorModel.CustomRole.ResultFilterGroupScore
+QgsLocatorModel.ResultFilterGroupScore.is_monkey_patched = True
+QgsLocatorModel.ResultFilterGroupScore.__doc__ = "Group score"
 QgsLocatorModel.ResultActionsRole = QgsLocatorModel.CustomRole.ResultActions
 QgsLocatorModel.Role.ResultActionsRole = QgsLocatorModel.CustomRole.ResultActions
 QgsLocatorModel.ResultActionsRole.is_monkey_patched = True
@@ -57,10 +63,15 @@ QgsLocatorModel.CustomRole.__doc__ = """Custom model roles.
 
   Available as ``QgsLocatorModel.ResultFilterNameRole`` in older QGIS releases.
 
-* ``ResultFilterGroupSorting``: Group results within the same filter results
+* ``ResultFilterGroupSorting``: Custom value for sorting
+
+  .. deprecated:: 3.40. No longer used.
+
 
   Available as ``QgsLocatorModel.ResultFilterGroupSortingRole`` in older QGIS releases.
 
+* ``ResultFilterGroupTitle``: Group title
+* ``ResultFilterGroupScore``: Group score
 * ``ResultActions``: The actions to be shown for the given result in a context menu
 
   Available as ``QgsLocatorModel.ResultActionsRole`` in older QGIS releases.

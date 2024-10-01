@@ -262,6 +262,13 @@ E.g. if you only want to deal with visible features:
          skip_the_curren_feature()
 %End
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+%Docstring
+Returns flags associated with the renderer.
+
+.. versionadded:: 3.40
+%End
+
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 %Docstring
 Returns list of symbols used by the renderer.

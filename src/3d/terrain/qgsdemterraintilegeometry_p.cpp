@@ -240,7 +240,7 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
     bool operator ==( const Qt3DQAbstractFunctor &other ) const
     {
       const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
-      if ( otherFunctor != nullptr )
+      if ( otherFunctor )
         return ( otherFunctor->mResolution == mResolution &&
                  otherFunctor->mSide == mSide &&
                  otherFunctor->mVertScale == mVertScale &&
@@ -277,7 +277,7 @@ class PlaneIndexBufferFunctor: public Qt3DQAbstractFunctor
     bool operator ==( const Qt3DQAbstractFunctor &other ) const
     {
       const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>( &other );
-      if ( otherFunctor != nullptr )
+      if ( otherFunctor )
         return ( otherFunctor->mResolution == mResolution );
       return false;
     }

@@ -954,6 +954,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const Q
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
+  QgsExpression::registerFunction( new GetNamedProjectColorObject( nullptr ) );
   QgsExpression::registerFunction( new GetSensorData( ) );
   QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
   QgsExpression::registerFunction( new GetLayoutMapLayerCredits( nullptr ) );
@@ -1231,9 +1232,17 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
           QgsGeometry geom = QgsMeshUtils::toGeometry( nativeMesh.face( faceIndex ), nativeMesh.vertices );
           if ( calc )
           {
-            double area = calc->measureArea( geom );
-            area = calc->convertAreaMeasurement( area, parent->areaUnits() );
-            return QVariant( area );
+            try
+            {
+              double area = calc->measureArea( geom );
+              area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+              return QVariant( area );
+            }
+            catch ( QgsCsException & )
+            {
+              parent->setEvalErrorString( QObject::tr( "An error occurred while calculating area" ) );
+              return QVariant();
+            }
           }
           else
           {
@@ -1422,4 +1431,3 @@ QgsScopedExpressionFunction *LoadLayerFunction::clone() const
   return new LoadLayerFunction();
 }
 ///@endcond
-

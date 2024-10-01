@@ -276,7 +276,7 @@ void TestQgsDistanceArea::measureUnits()
   double result = calc.measureLine( p1, p2 );
   units = calc.lengthUnits();
   //no OTF, result will be in CRS unit (feet)
-  QCOMPARE( units, Qgis::DistanceUnit::Feet );
+  QCOMPARE( units, Qgis::DistanceUnit::FeetUSSurvey );
   QGSCOMPARENEAR( result, 7637.7952755903825, 0.001 );
 
   calc.setEllipsoid( QStringLiteral( "WGS84" ) );

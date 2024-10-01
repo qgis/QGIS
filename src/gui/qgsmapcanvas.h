@@ -442,7 +442,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void unsetMapTool( QgsMapTool *mapTool );
 
     //! Returns the currently active tool
-    QgsMapTool *mapTool();
+    QgsMapTool *mapTool() const;
 
     /**
      * Sets the \a project linked to this canvas.
@@ -506,6 +506,17 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \see setLayers()
      */
     QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
+
+#ifndef SIP_RUN
+    /**
+     * Returns a list of registered map layers with a specified layer type.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    template <typename T>
+    QVector<T> layers() const {return mapSettings().layers<T>();}
+#endif
 
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from

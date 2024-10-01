@@ -747,6 +747,13 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     void invalidateMapBasedData() override;
 
+    /**
+     *  Fetches the image from the server and returns it.
+     *  \since QGIS 3.40
+     */
+    QImage getLegendGraphicBlocking( ) const;
+
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -763,7 +770,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
   private:
 
-    // Lazily initializes mImage
+    // Lazy loading of the image
     QImage getLegendGraphic( bool synchronous = false ) const;
 
     QImage renderMessage( const QString &msg ) const;

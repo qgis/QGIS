@@ -100,7 +100,7 @@ QString QgsFgUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity
   {
     for ( const auto *param : params )
     {
-      if ( strstr( param->value().typeName(), "QAbstractTexture*" ) != nullptr )
+      if ( strstr( param->value().typeName(), "QAbstractTexture*" ) )
       {
         const Qt3DRender::QAbstractTexture *tex = param->value().value<Qt3DRender::QAbstractTexture *>();
         fl += formatField( param->name(), formatIdName( context, tex ) );
@@ -164,7 +164,7 @@ QStringList QgsFgUtils::dumpSG( FgDumpContext context, const Qt3DCore::QNode *no
 {
   QStringList reply;
   const auto *entity = qobject_cast<const Qt3DCore::QEntity *>( node );
-  if ( entity != nullptr )
+  if ( entity )
   {
     QString res = dumpSGEntity( context, entity, level );
     reply += res.rightJustified( res.length() + level * 2, ' ' );
@@ -307,7 +307,7 @@ QStringList QgsFgUtils::dumpFG( FgDumpContext context, const Qt3DCore::QNode *no
   for ( auto *child : children )
   {
     auto *childFGNode = qobject_cast<Qt3DCore::QNode *>( child );
-    if ( childFGNode != nullptr )
+    if ( childFGNode )
       reply += dumpFG( context, childFGNode, level + inc );
   }
 

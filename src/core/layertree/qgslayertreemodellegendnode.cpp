@@ -1462,6 +1462,11 @@ void QgsWmsLegendNode::invalidateMapBasedData()
   emit dataChanged();
 }
 
+QImage QgsWmsLegendNode::getLegendGraphicBlocking() const
+{
+  return getLegendGraphic( true );
+}
+
 // -------------------------------------------------------------------------
 
 QgsDataDefinedSizeLegendNode::QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent )

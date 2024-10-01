@@ -2523,6 +2523,22 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   return true;
 }
 
+bool QgsOracleProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsOracleProvider::subsetStringDialect() const
+{
+  return tr( "Oracle SQL WHERE clause" );
+}
+
+QString QgsOracleProvider::subsetStringHelpUrl() const
+{
+  // TODO find the "correct" link...
+  return QString();
+}
+
 QList<QgsVectorLayer *> QgsOracleProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &owner, const QString &tableName )
 {
   QList<QgsVectorLayer *> result;

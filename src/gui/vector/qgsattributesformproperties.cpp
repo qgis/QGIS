@@ -615,8 +615,6 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
 
   if ( layout == Qgis::AttributeFormLayout::DragAndDrop )
     storeAttributeWidgetEdit();
-  storeAttributeTypeDialog();
-  storeAttributeContainerEdit();
 
   clearAttributeTypeFrame();
 

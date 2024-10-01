@@ -22,6 +22,7 @@
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -62,10 +63,13 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void mOutputFieldNameLineEdit_textChanged( const QString &text );
     void mOutputFieldTypeComboBox_activated( int index );
 
-    //! Sets the OK button enabled / disabled
-    void setOkButtonState();
+    //! Sets the dialog buttons (Ok and Apply) enabled / disabled
+    void setDialogButtonState();
     void setPrecisionMinMax();
     void showHelp();
+    void calculate();
+    //! show the given message in the Plugin Manager internal message bar
+    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 
   private:
     //! default constructor forbidden
@@ -85,6 +89,8 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 
     //! Idx of changed attribute
     int mAttributeId;
+
+    QgsMessageBar *mMsgBar = nullptr;
 
     friend class TestQgsFieldCalculator;
 };

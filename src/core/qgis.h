@@ -396,18 +396,29 @@ class CORE_EXPORT Qgis
     Q_FLAG( VectorLayerTypeFlags )
 
     /**
-     * Authorisation to run Python Macros
-     * \since QGIS 3.10
+     * Authorisation to run Python Embedded in projects
+     * \since QGIS 3.40
      */
-    enum class PythonMacroMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
+    enum class PythonEmbeddedMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
       {
-      Never = 0, //!< Macros are never run
+      Never = 0, //!< Python embedded never run
       Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
-      Always = 3, //!< Macros are always run
-      NotForThisSession, //!< Macros will not be run for this session
+      Always = 3, //!< Python embedded is always run
+      NotForThisSession, //!< Python embedded will not be run for this session
     };
-    Q_ENUM( PythonMacroMode )
+    Q_ENUM( PythonEmbeddedMode )
+
+    /**
+     * Type of Python Embedded in projects
+     * \since QGIS 3.40
+     */
+    enum class PythonEmbeddedType : int
+    {
+      Macro = 0,
+      ExpressionFunction = 1,
+    };
+    Q_ENUM( PythonEmbeddedType )
 
     /**
      * Flags which control data provider construction.
@@ -743,6 +754,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolRotationMode )
 
     /**
+     * \brief Flags controlling behavior of vector feature renderers.
+     *
+     * \since QGIS 3.40
+     */
+    enum class FeatureRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      AffectsLabeling = 1 << 0, //!< If present, indicates that the renderer will participate in the map labeling problem
+    };
+    Q_ENUM( FeatureRendererFlag )
+
+    /**
+     * \brief Flags controlling behavior of vector feature renderers.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( FeatureRendererFlags, FeatureRendererFlag )
+    Q_FLAG( FeatureRendererFlags )
+
+    /**
      * \brief Flags controlling behavior of symbols
      *
      * \since QGIS 3.20
@@ -750,6 +780,7 @@ class CORE_EXPORT Qgis
     enum class SymbolFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
+      AffectsLabeling = 1 << 1, //!< If present, indicates that the symbol will participate in the map labeling problem \since QGIS 3.40
     };
     Q_ENUM( SymbolFlag )
     //! Symbol flags
@@ -783,6 +814,7 @@ class CORE_EXPORT Qgis
     {
       DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
       CanCalculateMaskGeometryPerFeature = 1 << 1, //!< If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. \since QGIS 3.38
+      AffectsLabeling = 1 << 2, //!< If present, indicates that the symbol layer will participate in the map labeling problem \since QGIS 3.40
     };
     Q_ENUM( SymbolLayerFlag )
     //! Symbol layer flags
@@ -2568,6 +2600,7 @@ class CORE_EXPORT Qgis
     {
       RenderPartialOutputs = 1 << 0,  //!< The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents.
       RenderPartialOutputOverPreviousCachedImage = 1 << 1,//!< When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image.
+      AffectsLabeling = 1 << 2, //!< The layer rendering will interact with the map labeling \since QGIS 3.40
     };
     Q_ENUM( MapLayerRendererFlag )
 
@@ -4308,26 +4341,48 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
+
     enum class RasterColorInterpretation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, ColorInterpretation ) : int
       {
       Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedColorInterpretation ) = 0, //!< Undefined
       GrayIndex = 1,          //!< Grayscale
       PaletteIndex = 2,       //!< Paletted (see associated color table)
-      RedBand = 3,            //!< Red band of RGBA image
-      GreenBand = 4,          //!< Green band of RGBA image
-      BlueBand = 5,           //!< Blue band of RGBA image
+      RedBand = 3,            //!< Red band of RGBA image, or red spectral band [0.62 - 0.69 um]
+      GreenBand = 4,          //!< Green band of RGBA image, or green spectral band [0.51 - 0.60 um]
+      BlueBand = 5,           //!< Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]
       AlphaBand = 6,          //!< Alpha (0=transparent, 255=opaque)
       HueBand = 7,            //!< Hue band of HLS image
       SaturationBand = 8,     //!< Saturation band of HLS image
       LightnessBand = 9,      //!< Lightness band of HLS image
       CyanBand = 10,          //!< Cyan band of CMYK image
       MagentaBand = 11,       //!< Magenta band of CMYK image
-      YellowBand = 12,        //!< Yellow band of CMYK image
+      YellowBand = 12,        //!< Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]
       BlackBand = 13,         //!< Black band of CMLY image
       YCbCr_YBand = 14,       //!< Y Luminance
       YCbCr_CbBand = 15,      //!< Cb Chroma
       YCbCr_CrBand = 16,      //!< Cr Chroma
-      ContinuousPalette = 17  //!< Continuous palette, QGIS addition, GRASS
+      ContinuousPalette = 17, //!< Continuous palette, QGIS addition, GRASS
+
+      // Note: values between PanBand and SAR_P_Band match additions done in
+      // GDAL 3.10, except that the numeric values of the constant don't match GDAL ones
+
+      PanBand = 18,           //!< Panchromatic band [0.40 - 1.00 um] \since QGIS 3.40
+      CoastalBand = 19,       //!< Coastal band [0.40 - 0.45 um] \since QGIS 3.40
+      RedEdgeBand = 20,       //!< Red-edge band [0.69 - 0.79 um] \since QGIS 3.40
+      NIRBand = 21,           //!< Near-InfraRed (NIR) band [0.75 - 1.40 um] \since QGIS 3.40
+      SWIRBand = 22,          //!< Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um] \since QGIS 3.40
+      MWIRBand = 23,          //!< Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um] \since QGIS 3.40
+      LWIRBand = 24,          //!< Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um] \since QGIS 3.40
+      TIRBand = 25,           //!< Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um] \since QGIS 3.40
+      OtherIRBand = 26,       //!< Other infrared band [0.75 - 1000 um] \since QGIS 3.40
+      SAR_Ka_Band = 27,       //!< Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz] \since QGIS 3.40
+      SAR_K_Band = 28,        //!< Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz] \since QGIS 3.40
+      SAR_Ku_Band = 30,       //!< Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz] \since QGIS 3.40
+      SAR_X_Band = 31,        //!< Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz] \since QGIS 3.40
+      SAR_C_Band = 32,        //!< Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz] \since QGIS 3.40
+      SAR_S_Band = 33,        //!< Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz] \since QGIS 3.40
+      SAR_L_Band = 34,        //!< Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz] \since QGIS 3.40
+      SAR_P_Band = 35,        //!< Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz] \since QGIS 3.40
     };
     Q_ENUM( RasterColorInterpretation )
 
@@ -4600,6 +4655,45 @@ class CORE_EXPORT Qgis
       Centimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceCentimeters ), //!< Centimeters
       Millimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMillimeters ), //!< Millimeters
       Inches, //!< Inches \since QGIS 3.32
+      ChainsInternational, //!< International chains \since QGIS 3.40
+      ChainsBritishBenoit1895A, //!< British chains (Benoit 1895 A) \since QGIS 3.40
+      ChainsBritishBenoit1895B, //!< British chains (Benoit 1895 B) \since QGIS 3.40
+      ChainsBritishSears1922Truncated, //!< British chains (Sears 1922 truncated) \since QGIS 3.40
+      ChainsBritishSears1922, //!< British chains (Sears 1922) \since QGIS 3.40
+      ChainsClarkes, //!< Clarke's chains \since QGIS 3.40
+      ChainsUSSurvey, //!< US Survery chains \since QGIS 3.40
+      FeetBritish1865, //!< British feet (1865) \since QGIS 3.40
+      FeetBritish1936, //!< British feet (1936) \since QGIS 3.40
+      FeetBritishBenoit1895A, //!< British feet (Benoit 1895 A) \since QGIS 3.40
+      FeetBritishBenoit1895B, //!< British feet (Benoit 1895 B) \since QGIS 3.40
+      FeetBritishSears1922Truncated, //!< British feet (Sears 1922 truncated) \since QGIS 3.40
+      FeetBritishSears1922, //!< British feet (Sears 1922) \since QGIS 3.40
+      FeetClarkes, //!< Clarke's feet \since QGIS 3.40
+      FeetGoldCoast, //!< Gold Coast feet \since QGIS 3.40
+      FeetIndian, //!< Indian (geodetic) feet \since QGIS 3.40
+      FeetIndian1937, //!< Indian feet (1937) \since QGIS 3.40
+      FeetIndian1962, //!< Indian feet (1962) \since QGIS 3.40
+      FeetIndian1975, //!< Indian feet (1975) \since QGIS 3.40
+      FeetUSSurvey, //!< US Survery feet \since QGIS 3.40
+      LinksInternational, //!< International links \since QGIS 3.40
+      LinksBritishBenoit1895A, //!< British links (Benoit 1895 A) \since QGIS 3.40
+      LinksBritishBenoit1895B, //!< British links (Benoit 1895 B) \since QGIS 3.40
+      LinksBritishSears1922Truncated, //!< British links (Sears 1922 truncated) \since QGIS 3.40
+      LinksBritishSears1922, //!< British links (Sears 1922) \since QGIS 3.40
+      LinksClarkes, //!< Clarke's links \since QGIS 3.40
+      LinksUSSurvey, //!< US Survery links \since QGIS 3.40
+      YardsBritishBenoit1895A, //!< British yards (Benoit 1895 A) \since QGIS 3.40
+      YardsBritishBenoit1895B, //!< British yards (Benoit 1895 B) \since QGIS 3.40
+      YardsBritishSears1922Truncated, //!< British yards (Sears 1922 truncated) \since QGIS 3.40
+      YardsBritishSears1922, //!< British yards (Sears 1922) \since QGIS 3.40
+      YardsClarkes, //!< Clarke's yards \since QGIS 3.40
+      YardsIndian, //!< Indian yards \since QGIS 3.40
+      YardsIndian1937, //!< Indian yards (1937) \since QGIS 3.40
+      YardsIndian1962, //!< Indian yards (1962) \since QGIS 3.40
+      YardsIndian1975, //!< Indian yards (1975) \since QGIS 3.40
+      MilesUSSurvey, //!< US Survery miles \since QGIS 3.40
+      Fathoms, //!< Fathoms \since QGIS 3.40
+      MetersGermanLegal, //!< German legal meter \since QGIS 3.40
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( DistanceUnknownUnit ), //!< Unknown distance unit
     };
     Q_ENUM( DistanceUnit )
@@ -5592,6 +5686,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )

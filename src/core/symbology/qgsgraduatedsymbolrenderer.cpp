@@ -71,6 +71,21 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
   mRanges.clear(); // should delete all the symbols
 }
 
+Qgis::FeatureRendererFlags QgsGraduatedSymbolRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  auto catIt = mRanges.constBegin();
+  for ( ; catIt != mRanges.constEnd(); ++catIt )
+  {
+    if ( QgsSymbol *catSymbol = catIt->symbol() )
+    {
+      if ( catSymbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+        res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+    }
+  }
+
+  return res;
+}
 
 const QgsRendererRange *QgsGraduatedSymbolRenderer::rangeForValue( double value ) const
 {

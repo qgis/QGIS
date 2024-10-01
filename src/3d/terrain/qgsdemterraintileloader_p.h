@@ -34,10 +34,10 @@
 #include <QElapsedTimer>
 #include <QMutex>
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
-#include "qgsterraintileloader_p.h"
+#include "qgsterraintileloader.h"
 #include "qgstilingscheme.h"
 
 class QgsRasterDataProvider;

@@ -388,7 +388,7 @@ that this map tool won't be used any more.
 You don't have to call it manually, :py:class:`QgsMapTool` takes care of it.
 %End
 
-    QgsMapTool *mapTool();
+    QgsMapTool *mapTool() const;
 %Docstring
 Returns the currently active tool
 %End
@@ -463,6 +463,7 @@ all their child layers.
 
 .. seealso:: :py:func:`setLayers`
 %End
+
 
     void freeze( bool frozen = true );
 %Docstring

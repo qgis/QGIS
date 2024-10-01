@@ -74,6 +74,7 @@
 #include "qgsrunnableprovidercreator.h"
 #include "qgssettingsregistrycore.h"
 #include "qgspluginlayer.h"
+#include "qgspythonrunner.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -1167,6 +1168,15 @@ void QgsProject::clear()
 
   emit aboutToBeCleared();
 
+  if ( !mIsBeingDeleted )
+  {
+    // Unregister expression functions stored in the project.
+    // If we clean on destruction we may end-up with a non-valid
+    // mPythonUtils, so be safe and only clean when not destroying.
+    // This should be called before calling mProperties.clearKeys().
+    cleanFunctionsFromProject();
+  }
+
   mProjectScope.reset();
   mFile.setFileName( QString() );
   mProperties.clearKeys();
@@ -1862,7 +1872,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem,
   // because if it was, the newly created layer will not be added to the store and it would leak.
   const QString layerId { layerElem.namedItem( QStringLiteral( "id" ) ).toElement().text() };
   Q_ASSERT( ! layerId.isEmpty() );
-  const bool layerWasStored { layerStore()->mapLayer( layerId ) != nullptr };
+  const bool layerWasStored = layerStore()->mapLayer( layerId );
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = projectFlagsToLayerReadFlags( flags, mFlags );
@@ -2283,6 +2293,11 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   {
     QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
   }
+
+  // Register expression functions stored in the project.
+  // They might be using project variables and might be
+  // in turn being used by other components (e.g., layouts).
+  loadFunctionsFromProject();
 
   QDomElement element = doc->documentElement().firstChildElement( QStringLiteral( "projectMetadata" ) );
 
@@ -2921,6 +2936,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layers" ), layers, true ) );
 
   mProjectScope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( this ) );
+  mProjectScope->addFunction( QStringLiteral( "project_color_object" ), new GetNamedProjectColorObject( this ) );
 
   return createExpressionContextScope();
 }
@@ -5277,12 +5293,38 @@ void QgsProject::loadProjectFlags( const QDomDocument *doc )
   setFlags( flags );
 }
 
-/// @cond PRIVATE
-GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
-  : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+bool QgsProject::loadFunctionsFromProject( bool force )
 {
-  if ( !project )
-    return;
+  if ( QgsPythonRunner::isValid() )
+  {
+    const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
+
+    if ( force || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::SessionOnly || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always )
+    {
+      const QString projectFunctions = readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
+      if ( !projectFunctions.isEmpty() )
+      {
+        QgsPythonRunner::run( projectFunctions );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void QgsProject::cleanFunctionsFromProject()
+{
+  if ( QgsPythonRunner::isValid() )
+  {
+    QgsPythonRunner::run( "qgis.utils.clean_project_expression_functions()" );
+  }
+}
+
+/// @cond PRIVATE
+
+QHash< QString, QColor > loadColorsFromProject( const QgsProject *project )
+{
+  QHash< QString, QColor > colors;
 
   //build up color list from project. Do this in advance for speed
   QStringList colorStrings = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
@@ -5300,9 +5342,21 @@ GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
       label = colorLabels.at( colorIndex );
     }
 
-    mColors.insert( label.toLower(), color );
+    colors.insert( label.toLower(), color );
     colorIndex++;
   }
+
+  return colors;
+}
+
+
+GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+{
+  if ( !project )
+    return;
+
+  mColors = loadColorsFromProject( project );
 }
 
 GetNamedProjectColor::GetNamedProjectColor( const QHash<QString, QColor> &colors )
@@ -5325,6 +5379,37 @@ QVariant GetNamedProjectColor::func( const QVariantList &values, const QgsExpres
 QgsScopedExpressionFunction *GetNamedProjectColor::clone() const
 {
   return new GetNamedProjectColor( mColors );
+}
+
+GetNamedProjectColorObject::GetNamedProjectColorObject( const QgsProject *project )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color_object" ), 1, QStringLiteral( "Color" ) )
+{
+  if ( !project )
+    return;
+
+  mColors = loadColorsFromProject( project );
+}
+
+GetNamedProjectColorObject::GetNamedProjectColorObject( const QHash<QString, QColor> &colors )
+  : QgsScopedExpressionFunction( QStringLiteral( "project_color_object" ), 1, QStringLiteral( "Color" ) )
+  , mColors( colors )
+{
+}
+
+QVariant GetNamedProjectColorObject::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  const QString colorName = values.at( 0 ).toString().toLower();
+  if ( mColors.contains( colorName ) )
+  {
+    return mColors.value( colorName );
+  }
+  else
+    return QVariant();
+}
+
+QgsScopedExpressionFunction *GetNamedProjectColorObject::clone() const
+{
+  return new GetNamedProjectColorObject( mColors );
 }
 
 // ----------------

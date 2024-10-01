@@ -376,8 +376,22 @@ class CORE_EXPORT QgsLabelingEngine
      */
     QStringList participatingLayerIds() const;
 
-    //! Add provider of label features. Takes ownership of the provider
-    void addProvider( QgsAbstractLabelProvider *provider );
+    /**
+     * Adds a \a provider of label features.
+     *
+     * Takes ownership of the provider.
+     *
+     * Returns a generated string uniqueuly identifying the provider, which can be used with the providerById()
+     * method to retrieve the provider at a later stage.
+     */
+    QString addProvider( QgsAbstractLabelProvider *provider );
+
+    /**
+     * Returns the provider with matching \a id, where \a id corresponds to the value returned by the addProvider() call.
+     *
+     * Returns NULLPTR if no matching provider is found.
+     */
+    QgsAbstractLabelProvider *providerById( const QString &id );
 
     //! Remove provider if the provider's initialization failed. Provider instance is deleted.
     void removeProvider( QgsAbstractLabelProvider *provider );
@@ -443,6 +457,7 @@ class CORE_EXPORT QgsLabelingEngine
 
     //! List of providers (the are owned by the labeling engine)
     QList<QgsAbstractLabelProvider *> mProviders;
+    QHash<QString, QgsAbstractLabelProvider *> mProvidersById;
     QList<QgsAbstractLabelProvider *> mSubProviders;
 
     //!< List of labeling engine rules (owned by the labeling engine)

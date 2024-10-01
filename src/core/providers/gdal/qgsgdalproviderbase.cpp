@@ -199,44 +199,57 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
   return Qgis::DataType::UnknownDataType;
 }
 
+#define MAP_GCI_TO_QGIS(x) \
+  case GCI_##x: return Qgis::RasterColorInterpretation::x;
+
 Qgis::RasterColorInterpretation QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
 {
   switch ( gdalColorInterpretation )
   {
-    case GCI_GrayIndex:
-      return Qgis::RasterColorInterpretation::GrayIndex;
-    case GCI_PaletteIndex:
-      return Qgis::RasterColorInterpretation::PaletteIndex;
-    case GCI_RedBand:
-      return Qgis::RasterColorInterpretation::RedBand;
-    case GCI_GreenBand:
-      return Qgis::RasterColorInterpretation::GreenBand;
-    case GCI_BlueBand:
-      return Qgis::RasterColorInterpretation::BlueBand;
-    case GCI_AlphaBand:
-      return Qgis::RasterColorInterpretation::AlphaBand;
-    case GCI_HueBand:
-      return Qgis::RasterColorInterpretation::HueBand;
-    case GCI_SaturationBand:
-      return Qgis::RasterColorInterpretation::SaturationBand;
-    case GCI_LightnessBand:
-      return Qgis::RasterColorInterpretation::LightnessBand;
-    case GCI_CyanBand:
-      return Qgis::RasterColorInterpretation::CyanBand;
-    case GCI_MagentaBand:
-      return Qgis::RasterColorInterpretation::MagentaBand;
-    case GCI_YellowBand:
-      return Qgis::RasterColorInterpretation::YellowBand;
-    case GCI_BlackBand:
-      return Qgis::RasterColorInterpretation::BlackBand;
-    case GCI_YCbCr_YBand:
-      return Qgis::RasterColorInterpretation::YCbCr_YBand;
-    case GCI_YCbCr_CbBand:
-      return Qgis::RasterColorInterpretation::YCbCr_CbBand;
-    case GCI_YCbCr_CrBand:
-      return Qgis::RasterColorInterpretation::YCbCr_CrBand;
-    case GCI_Undefined:
-      return Qgis::RasterColorInterpretation::Undefined;
+      MAP_GCI_TO_QGIS( Undefined )
+      MAP_GCI_TO_QGIS( GrayIndex )
+      MAP_GCI_TO_QGIS( PaletteIndex )
+      MAP_GCI_TO_QGIS( RedBand )
+      MAP_GCI_TO_QGIS( GreenBand )
+      MAP_GCI_TO_QGIS( BlueBand )
+      MAP_GCI_TO_QGIS( AlphaBand )
+      MAP_GCI_TO_QGIS( HueBand )
+      MAP_GCI_TO_QGIS( SaturationBand )
+      MAP_GCI_TO_QGIS( LightnessBand )
+      MAP_GCI_TO_QGIS( CyanBand )
+      MAP_GCI_TO_QGIS( MagentaBand )
+      MAP_GCI_TO_QGIS( YellowBand )
+      MAP_GCI_TO_QGIS( BlackBand )
+      MAP_GCI_TO_QGIS( YCbCr_YBand )
+      MAP_GCI_TO_QGIS( YCbCr_CbBand )
+      MAP_GCI_TO_QGIS( YCbCr_CrBand )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,10,0)
+      MAP_GCI_TO_QGIS( PanBand )
+      MAP_GCI_TO_QGIS( CoastalBand )
+      MAP_GCI_TO_QGIS( RedEdgeBand )
+      MAP_GCI_TO_QGIS( NIRBand )
+      MAP_GCI_TO_QGIS( SWIRBand )
+      MAP_GCI_TO_QGIS( MWIRBand )
+      MAP_GCI_TO_QGIS( LWIRBand )
+      MAP_GCI_TO_QGIS( TIRBand )
+      MAP_GCI_TO_QGIS( OtherIRBand )
+      MAP_GCI_TO_QGIS( SAR_Ka_Band )
+      MAP_GCI_TO_QGIS( SAR_K_Band )
+      MAP_GCI_TO_QGIS( SAR_Ku_Band )
+      MAP_GCI_TO_QGIS( SAR_X_Band )
+      MAP_GCI_TO_QGIS( SAR_C_Band )
+      MAP_GCI_TO_QGIS( SAR_S_Band )
+      MAP_GCI_TO_QGIS( SAR_L_Band )
+      MAP_GCI_TO_QGIS( SAR_P_Band )
+    case GCI_IR_Reserved_1:
+    case GCI_IR_Reserved_2:
+    case GCI_IR_Reserved_3:
+    case GCI_IR_Reserved_4:
+    case GCI_SAR_Reserved_1:
+    //case GCI_SAR_Reserved_2:
+    case GCI_Max: // same as GCI_SAR_Reserved_2
+      break;
+#endif
   }
   return Qgis::RasterColorInterpretation::Undefined;
 }

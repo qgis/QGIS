@@ -1434,7 +1434,7 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 {
   QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
 
-  if ( mCurrentLayer == meshLayer && mCurrentEditor != nullptr )
+  if ( mCurrentLayer == meshLayer && mCurrentEditor )
   {
     activate();
     updateFreeVertices();

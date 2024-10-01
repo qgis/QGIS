@@ -119,16 +119,24 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
 
   result = widget.parseUserInput( QStringLiteral( "120.123" ), Qgis::CadConstraintType::Distance, ok );
-  QCOMPARE( result,  120.123 );
+  QCOMPARE( result, 120.123 );
   QVERIFY( ok );
 
   result = widget.parseUserInput( QStringLiteral( "120.123 NM" ), Qgis::CadConstraintType::Distance, ok );
-  QCOMPARE( result,  120.123 );
+  QCOMPARE( result, 120.123 );
   QVERIFY( ok );
 
   result = widget.parseUserInput( QStringLiteral( "120.123NM" ), Qgis::CadConstraintType::Distance, ok );
   QCOMPARE( result,  120.123 );
   QVERIFY( ok );
+
+  // Set a CRS using feet as units
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
+  widget.mMapCanvas->mapSettings().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3739" ) ) );
+  result = widget.parseUserInput( QStringLiteral( "100" ), Qgis::CadConstraintType::Distance, ok );
+  QCOMPARE( result, 100.0 * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::FeetUSSurvey ) );
+  QVERIFY( ok );
+
 
 }
 

@@ -104,6 +104,16 @@ class CORE_EXPORT QgsDiagramLayerSettings
     // *INDENT-ON*
 
     /**
+     * Diagram type
+     * \since QGIS 3.40
+     */
+    enum DiagramType
+    {
+      Single,
+      Stacked
+    };
+
+    /**
      * Returns the diagram property definitions.
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -378,6 +388,16 @@ class CORE_EXPORT QgsDiagramSettings
       Counterclockwise, //!< Counter-clockwise orientation
     };
 
+    /**
+     * Orientation of the stacked diagrams
+     * \since QGIS 3.40
+     */
+    enum StackedDiagramMode
+    {
+      Horizontal,
+      Vertical
+    };
+
     QgsDiagramSettings();
     ~QgsDiagramSettings();
     QgsDiagramSettings( const QgsDiagramSettings &other );
@@ -416,6 +436,7 @@ class CORE_EXPORT QgsDiagramSettings
     double penWidth = 0.0;
     LabelPlacementMethod labelPlacementMethod = QgsDiagramSettings::Height;
     DiagramOrientation diagramOrientation = QgsDiagramSettings::Up;
+    StackedDiagramMode stackedDiagramMode = QgsDiagramSettings::Horizontal;
     double barWidth = 5.0;
 
     //! Opacity, from 0 (transparent) to 1.0 (opaque)
@@ -515,6 +536,72 @@ class CORE_EXPORT QgsDiagramSettings
     const QgsMapUnitScale &spacingMapUnitScale() const { return mSpacingMapUnitScale; }
 
     /**
+     * Returns the spacing between subdiagrams in a stacked diagram.
+     *
+     * Spacing units can be retrieved by calling stackedDiagramSpacingUnit().
+     *
+     * \see setStackedDiagramSpacing()
+     * \see stackedDiagramSpacingUnit()
+     * \see stackedDiagramSpacingMapUnitScale()
+     *
+     * \since QGIS 3.40
+     */
+    double stackedDiagramSpacing() const { return mStackedDiagramSpacing; }
+
+    /**
+     * Sets the \a spacing between subdiagrams in a stacked diagram.
+     *
+     * Spacing units are set via setStackedDiagramSpacingUnit().
+     *
+     * \see stackedDiagramSpacing()
+     * \see setStackedDiagramSpacingUnit()
+     * \see setStackedDiagramSpacingMapUnitScale()
+     *
+     * \since QGIS 3.40
+     */
+    void setStackedDiagramSpacing( double spacing ) { mStackedDiagramSpacing = spacing; }
+
+    /**
+     * Sets the \a unit for the spacing between subdiagrams in a stacked diagram.
+     * \see stackedDiagramSpacingUnit()
+     * \see setStackedDiagramSpacing()
+     * \see setStackedDiagramSpacingMapUnitScale()
+     *
+     * \since QGIS 3.40
+    */
+    void setStackedDiagramSpacingUnit( Qgis::RenderUnit unit ) { mStackedDiagramSpacingUnit = unit; }
+
+    /**
+     * Returns the units for the spacing between subdiagrams in a stacked diagram.
+     * \see setStackedDiagramSpacingUnit()
+     * \see stackedDiagramSpacing()
+     * \see stackedDiagramSpacingMapUnitScale()
+     *
+     * \since QGIS 3.40
+    */
+    Qgis::RenderUnit stackedDiagramSpacingUnit() const { return mStackedDiagramSpacingUnit; }
+
+    /**
+     * Sets the map unit \a scale for the spacing between subdiagrams in a stacked diagram.
+     * \see stackedDiagramSpacingMapUnitScale()
+     * \see setStackedDiagramSpacing()
+     * \see setStackedDiagramSpacingUnit()
+     *
+     * \since QGIS 3.40
+    */
+    void setStackedDiagramSpacingMapUnitScale( const QgsMapUnitScale &scale ) { mStackedDiagramSpacingMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the spacing between subdiagrams in a stacked diagram.
+     * \see setStackedDiagramSpacingMapUnitScale();
+     * \see stackedDiagramSpacing()
+     * \see stackedDiagramSpacingUnit()
+     *
+     * \since QGIS 3.40
+    */
+    const QgsMapUnitScale &stackedDiagramSpacingMapUnitScale() const { return mStackedDiagramSpacingMapUnitScale; }
+
+    /**
      * Returns the chart's angular direction.
      *
      * \see setDirection()
@@ -608,6 +695,11 @@ class CORE_EXPORT QgsDiagramSettings
     double mSpacing = 0;
     Qgis::RenderUnit mSpacingUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSpacingMapUnitScale;
+
+    double mStackedDiagramSpacing = 0;
+    Qgis::RenderUnit mStackedDiagramSpacingUnit = Qgis::RenderUnit::Millimeters;
+    QgsMapUnitScale mStackedDiagramSpacingMapUnitScale;
+
     Direction mDirection = Counterclockwise;
 
     bool mShowAxis = false;
@@ -652,6 +744,8 @@ class CORE_EXPORT QgsDiagramRenderer
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
     else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
+    else if ( sipCpp->rendererName() == QLatin1String( "Stacked" ) )
+      sipType = sipType_QgsStackedDiagramRenderer;
     else
       sipType = NULL;
     SIP_END
@@ -684,7 +778,7 @@ class CORE_EXPORT QgsDiagramRenderer
     /**
      * Renders the diagram for a specified feature at a specific position in the passed render context.
      */
-    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
+    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
 
     void setDiagram( QgsDiagram *d SIP_TRANSFER );
     QgsDiagram *diagram() const { return mDiagram.get(); }
@@ -737,8 +831,12 @@ class CORE_EXPORT QgsDiagramRenderer
      */
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const = 0;
 
-    //! Returns size of the diagram (in painter units) or an invalid size in case of error
-    virtual QSizeF diagramSize( const QgsFeature &features, const QgsRenderContext &c ) const = 0;
+    /**
+     * Returns size of the diagram (in painter units) or an invalid size in case of error
+     * \param feature the feature
+     * \param c render context
+     */
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const = 0;
 
     //! Converts size from mm to map units
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;
@@ -765,6 +863,8 @@ class CORE_EXPORT QgsDiagramRenderer
 
     //! Whether to show an attribute legend for the diagrams
     bool mShowAttributeLegend = true;
+
+    friend class QgsStackedDiagramRenderer;
 };
 
 /**
@@ -885,5 +985,86 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     //! Stores more settings about how legend for varying size of symbols should be rendered
     QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
 };
+
+/**
+ * \ingroup core
+ * \class QgsStackedDiagramRenderer
+ * Renders diagrams using mixed diagram render types. The size of
+ * the rendered diagram is given by a combination of subrenderers.
+ *
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
+{
+  public:
+    QgsStackedDiagramRenderer() = default;
+
+    QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
+
+    //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
+    virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
+
+    /**
+     * Renders the diagram for a specified feature at a specific position in the
+     * passed render context, taking all renderers and their own diagrams into account.
+     * Diagram rendering is delegated to renderer's diagram.
+     */
+    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
+
+    //! Returns list with all diagram settings in the renderer
+    QList<QgsDiagramSettings> diagramSettings() const override;
+
+    void setDiagramSettings( const QgsDiagramSettings &s ) { mSettings = s; }
+
+    QList<QString> diagramAttributes() const override;
+
+    QString rendererName() const override { return QStringLiteral( "Stacked" ); }
+
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Reads stacked renderers state from a DOM element.
+     * \see _writeXmlSubRenderers()
+     */
+    void _readXmlSubRenderers( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    /**
+     * Writes stacked renderers state to a DOM element.
+     * \see _readXmlSubRenderers()
+     */
+    void _writeXmlSubRenderers( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
+
+    /**
+     * Returns an ordered list with the renderers of the stacked renderer object.
+     * @param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
+     */
+    QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
+
+    /**
+     * Adds a renderer to the stacked renderer object.
+     * @param renderer diagram renderer to be added to the stacked renderer
+     * Renderers added first will render their diagrams first, i.e., more to
+     * the left (horizontal mode) or more to the top (vertical mode).
+     */
+    void addRenderer( QgsDiagramRenderer *renderer );
+
+    /**
+     * Returns the renderer at the given \a index.
+     * @param index index of the disired renderer in the stacked renderer
+     */
+    const QgsDiagramRenderer *renderer( const int index ) const;
+
+  protected:
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
+    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
+
+  private:
+    QgsDiagramSettings mSettings;
+    QList< QgsDiagramRenderer * > mDiagramRenderers;
+};
+
 
 #endif // QGSDIAGRAMRENDERER_H

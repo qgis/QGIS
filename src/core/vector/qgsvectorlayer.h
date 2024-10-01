@@ -2556,7 +2556,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
     /**
-     * Emitted whenever the allowCommitChanged() property of this layer changes.
+     * Emitted whenever the allowCommit() property of this layer changes.
      *
      * \since QGIS 3.4
      */

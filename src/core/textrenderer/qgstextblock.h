@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextfragment.h"
+#include "qgstextblockformat.h"
 #include "qgsstringutils.h"
 #include <QVector>
 
@@ -90,6 +91,24 @@ class CORE_EXPORT QgsTextBlock
     int size() const;
 
     /**
+     * Returns the block formatting for the fragment.
+     *
+     * \see setBlockFormat()
+     *
+     * \since QGIS 3.40
+     */
+    const QgsTextBlockFormat &blockFormat() const { return mBlockFormat; }
+
+    /**
+     * Sets the block \a format for the fragment.
+     *
+     * \see blockFormat()
+     *
+     * \since QGIS 3.40
+     */
+    void setBlockFormat( const QgsTextBlockFormat &format );
+
+    /**
      * Applies a \a capitalization style to the block's text.
      *
      * \since QGIS 3.16
@@ -154,7 +173,7 @@ class CORE_EXPORT QgsTextBlock
   private:
 
     QVector< QgsTextFragment > mFragments;
-
+    QgsTextBlockFormat mBlockFormat;
 };
 
 #endif // QGSTEXTBLOCK_H

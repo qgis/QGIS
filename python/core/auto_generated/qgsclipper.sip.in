@@ -51,8 +51,6 @@ magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
       ZMin,
     };
 
-%If (!ARM) // Not available on ARM sip bindings because of qreal issues
-
     static void trimFeature( QVector<double> &x,
                              QVector<double> &y,
                              bool shapeOpen );
@@ -65,8 +63,6 @@ an open shape (linestring).
 .. note::
 
    not available in Python bindings on android
-%End
-
 %End
 
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );

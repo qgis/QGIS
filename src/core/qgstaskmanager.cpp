@@ -170,6 +170,7 @@ bool QgsTask::waitForFinished( int timeout )
 {
   // We wait the task to be started
   mNotStartedMutex.acquire();
+  mNotStartedMutex.release();
 
   bool rv = true;
   if ( mOverallStatus == Complete || mOverallStatus == Terminated )

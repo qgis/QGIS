@@ -2356,7 +2356,7 @@ void QgsAttributeForm::initPython()
     // If we have a function code, run it
     if ( !initCode.isEmpty() )
     {
-      if ( QgsGui::pythonMacroAllowed() )
+      if ( QgsGui::pythonEmbeddedInProjectAllowed( nullptr, nullptr, Qgis::PythonEmbeddedType::Macro ) )
         QgsPythonRunner::run( initCode );
       else
         mMessageBar->pushMessage( QString(),

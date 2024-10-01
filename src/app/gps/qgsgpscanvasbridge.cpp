@@ -325,8 +325,17 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         QgsDistanceArea da1;
         da1.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
         da1.setEllipsoid( QgsProject::instance()->ellipsoid() );
-        const double totalLength = da1.measureLine( mCanvas->mapSettings().extent().center(), QgsPointXY( mCanvas->mapSettings().extent().xMaximum(),
-                                   mCanvas->mapSettings().extent().yMaximum() ) );
+        double totalLength = 0;
+        try
+        {
+          totalLength = da1.measureLine( mCanvas->mapSettings().extent().center(), QgsPointXY( mCanvas->mapSettings().extent().xMaximum(),
+                                         mCanvas->mapSettings().extent().yMaximum() ) );
+        }
+        catch ( QgsCsException & )
+        {
+          // TODO report errors to user
+          QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        }
 
         QgsDistanceArea da;
         da.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
@@ -432,10 +441,10 @@ void QgsGpsCanvasBridge::updateGpsDistanceStatusMessage( bool forceDisplay )
     mLastForcedStatusUpdate.restart();
   }
 
-  const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
-                          QgsProject::instance()->distanceUnits() );
   try
   {
+    const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
+                            QgsProject::instance()->distanceUnits() );
     const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
     const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
     const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );

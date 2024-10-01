@@ -155,7 +155,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
-  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointZ (1.1 2.2 3)" ) );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "Point Z (1.1 2.2 3)" ) );
   OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
 
@@ -163,7 +163,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
-  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointM (1.1 2.2 3)" ) );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "Point M (1.1 2.2 3)" ) );
   OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
 
@@ -171,7 +171,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
-  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointZM (1.1 2.2 3 4)" ) );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "Point ZM (1.1 2.2 3 4)" ) );
   OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
 
@@ -187,7 +187,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
-  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointZ ((1.1 2.2 3),(3.3 4.4 4))" ) );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPoint Z ((1.1 2.2 3),(3.3 4.4 4))" ) );
   OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
 
@@ -195,7 +195,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
-  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointM ((1.1 2.2 3),(3.3 4.4 4))" ) );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPoint M ((1.1 2.2 3),(3.3 4.4 4))" ) );
   OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
 
@@ -203,7 +203,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
-  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointZM ((1.1 2.2 3 4),(3.3 4.4 4 5))" ) );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPoint ZM ((1.1 2.2 3 4),(3.3 4.4 4 5))" ) );
   OGR_G_DestroyGeometry( ogrGeom );
 }
 
@@ -213,22 +213,22 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
   QTest::addColumn<int>( "type" );
 
   QTest::newRow( "point" ) << QStringLiteral( "Point (1.1 2.2)" ) << static_cast< int >( Qgis::WkbType::Point );
-  QTest::newRow( "pointz" ) << QStringLiteral( "PointZ (1.1 2.2 3.3)" ) <<  static_cast< int >( Qgis::WkbType::PointZ );
-  QTest::newRow( "pointm" ) << QStringLiteral( "PointM (1.1 2.2 3.3)" ) <<  static_cast< int >( Qgis::WkbType::PointM );
-  QTest::newRow( "pointzm" ) << QStringLiteral( "PointZM (1.1 2.2 3.3 4.4)" ) <<  static_cast< int >( Qgis::WkbType::PointZM );
+  QTest::newRow( "pointz" ) << QStringLiteral( "Point Z (1.1 2.2 3.3)" ) <<  static_cast< int >( Qgis::WkbType::PointZ );
+  QTest::newRow( "pointm" ) << QStringLiteral( "Point M (1.1 2.2 3.3)" ) <<  static_cast< int >( Qgis::WkbType::PointM );
+  QTest::newRow( "pointzm" ) << QStringLiteral( "Point ZM (1.1 2.2 3.3 4.4)" ) <<  static_cast< int >( Qgis::WkbType::PointZM );
   QTest::newRow( "point25d" ) << QStringLiteral( "Point25D (1.1 2.2 3.3)" ) <<  static_cast< int >( Qgis::WkbType::PointZ );
 
   QTest::newRow( "linestring" ) << QStringLiteral( "LineString (1.1 2.2, 3.3 4.4)" ) << static_cast< int >( Qgis::WkbType::LineString );
-  QTest::newRow( "linestringz" ) << QStringLiteral( "LineStringZ (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( Qgis::WkbType::LineStringZ );
-  QTest::newRow( "linestringm" ) << QStringLiteral( "LineStringM (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( Qgis::WkbType::LineStringM );
-  QTest::newRow( "linestringzm" ) << QStringLiteral( "LineStringZM (1.1 2.2 3.3 4.4, 5.5 6.6 7.7 8.8)" ) <<  static_cast< int >( Qgis::WkbType::LineStringZM );
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LineString Z (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( Qgis::WkbType::LineStringZ );
+  QTest::newRow( "linestringm" ) << QStringLiteral( "LineString M (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( Qgis::WkbType::LineStringM );
+  QTest::newRow( "linestringzm" ) << QStringLiteral( "LineString ZM (1.1 2.2 3.3 4.4, 5.5 6.6 7.7 8.8)" ) <<  static_cast< int >( Qgis::WkbType::LineStringZM );
   QTest::newRow( "linestring25d" ) << QStringLiteral( "LineString25D (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( Qgis::WkbType::LineStringZ );
 
   QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4))" ) << static_cast< int >( Qgis::WkbType::MultiLineString );
   QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4),(5 5, 6 6))" ) << static_cast< int >( Qgis::WkbType::MultiLineString );
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringZ ((1.1 2.2 3, 3.3 4.4 6),(5 5 3, 6 6 1))" ) << static_cast< int >( Qgis::WkbType::MultiLineStringZ );
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringM ((1.1 2.2 4, 3.3 4.4 7),(5 5 4, 6 6 2))" ) << static_cast< int >( Qgis::WkbType::MultiLineStringM );
-  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineStringZM ((1.1 2.2 4 5, 3.3 4.4 8 9),(5 5 7 1, 6 6 2 3))" ) << static_cast< int >( Qgis::WkbType::MultiLineStringZM );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString Z ((1.1 2.2 3, 3.3 4.4 6),(5 5 3, 6 6 1))" ) << static_cast< int >( Qgis::WkbType::MultiLineStringZ );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString M ((1.1 2.2 4, 3.3 4.4 7),(5 5 4, 6 6 2))" ) << static_cast< int >( Qgis::WkbType::MultiLineStringM );
+  QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ZM ((1.1 2.2 4 5, 3.3 4.4 8 9),(5 5 7 1, 6 6 2 3))" ) << static_cast< int >( Qgis::WkbType::MultiLineStringZM );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
@@ -251,7 +251,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
   OGR_G_DestroyGeometry( ogrGeom );
 
   // bit of trickiness here - QGIS wkt conversion changes 25D -> Z, so account for that
-  wkt.replace( QLatin1String( "25D" ), QLatin1String( "Z" ) );
+  wkt.replace( QLatin1String( "25D" ), QLatin1String( " Z" ) );
   QCOMPARE( geom.asWkt( 3 ), wkt );
 }
 

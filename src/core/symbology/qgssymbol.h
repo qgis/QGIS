@@ -664,7 +664,7 @@ class CORE_EXPORT QgsSymbol
      * \see setFlags()
      * \since QGIS 3.20
      */
-    Qgis::SymbolFlags flags() const { return mSymbolFlags; }
+    Qgis::SymbolFlags flags() const;
 
     /**
      * Sets whether features drawn by the symbol should be clipped to the render context's

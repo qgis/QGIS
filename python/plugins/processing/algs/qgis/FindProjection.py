@@ -36,7 +36,7 @@ from qgis.core import (QgsGeometry,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterDefinition)
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -97,7 +97,7 @@ class FindProjection(QgisAlgorithm):
         target_geom = QgsGeometry.fromRect(extent)
 
         fields = QgsFields()
-        fields.append(QgsField('auth_id', QVariant.String, '', 20))
+        fields.append(QgsField('auth_id', QMetaType.Type.QString, '', 20))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Type.NoGeometry, QgsCoordinateReferenceSystem())

@@ -107,7 +107,16 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
 
   if ( pointDistanceThreshold >= 0 )
   {
-    const double distanceEndPointToNetwork = mBuilder->distanceArea()->measureLine( endPoint, snappedEndPoint );
+    double distanceEndPointToNetwork = 0;
+    try
+    {
+      distanceEndPointToNetwork = mBuilder->distanceArea()->measureLine( endPoint, snappedEndPoint );
+    }
+    catch ( QgsCsException & )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+    }
+
     if ( distanceEndPointToNetwork > pointDistanceThreshold )
     {
       throw QgsProcessingException( QObject::tr( "End point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distanceEndPointToNetwork ).arg( pointDistanceThreshold ) );
@@ -143,7 +152,16 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
 
     if ( pointDistanceThreshold >= 0 )
     {
-      const double distancePointToNetwork = mBuilder->distanceArea()->measureLine( originalPoint, snappedPoint );
+      double distancePointToNetwork = 0;
+      try
+      {
+        distancePointToNetwork = mBuilder->distanceArea()->measureLine( originalPoint, snappedPoint );
+      }
+      catch ( QgsCsException & )
+      {
+        throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+      }
+
       if ( distancePointToNetwork > pointDistanceThreshold )
       {
         feedback->pushWarning( QObject::tr( "Point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distancePointToNetwork ).arg( pointDistanceThreshold ) );

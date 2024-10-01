@@ -211,10 +211,15 @@ double QgsAbstractGeometry::area() const
 QString QgsAbstractGeometry::wktTypeStr() const
 {
   QString wkt = geometryType();
+  QString suffix;
   if ( is3D() )
-    wkt += 'Z';
+    suffix += 'Z';
   if ( isMeasure() )
-    wkt += 'M';
+    suffix += 'M';
+  if ( !suffix.isEmpty() )
+  {
+    wkt += ' ' + suffix;
+  }
   return wkt;
 }
 

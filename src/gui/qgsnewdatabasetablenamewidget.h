@@ -50,7 +50,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
     /**
      * Constructs a new QgsNewDatabaseTableNameWidget
      *
-     * \param browserModel an existing browser model (typically from app), if NULL an instance will be created
+     * \param browserModel an existing browser model (typically from app), if NULLPTR an instance will be created
      * \param providersFilter optional white list of data provider keys that should be
      *        shown in the widget, if not specified all providers data items with database
      *        capabilities will be shown
@@ -196,7 +196,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameDialog: public QDialog
     /**
      * Constructs a new QgsNewDatabaseTableNameDialog
      *
-     * \param browserModel an existing browser model (typically from app), if NULL an instance will be created
+     * \param browserModel an existing browser model (typically from app), if NULLPTR an instance will be created
      * \param providersFilter optional white list of data provider keys that should be
      *        shown in the widget, if not specified all providers data items with database
      *        capabilities will be shown

@@ -219,7 +219,7 @@ void QgsMapTip::resizeAndMoveToolTip()
     cursorOffset = static_cast< int >( std::ceil( scale * 32 ) );
   }
 
-  if ( mMapCanvas == nullptr )
+  if ( !mMapCanvas )
   {
     mWebView->move( mPosition );
     mWebView->show();

@@ -614,6 +614,10 @@ def get_class_enums(item):
     matched_classes = {item}.union(all_subclasses(item))
 
     for key, value in item.__dict__.items():
+
+        if key == 'baseClass':
+            continue
+
         if inspect.isclass(value) and type(value).__name__ == 'EnumType':
             for ekey, evalue in value.__dict__.items():
                 for matched_class in matched_classes:

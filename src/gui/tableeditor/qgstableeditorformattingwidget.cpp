@@ -223,6 +223,11 @@ void QgsTableEditorFormattingWidget::setCellProperty( const QgsProperty &propert
   mBlockSignals--;
 }
 
+void QgsTableEditorFormattingWidget::setLayer( QgsMapLayer *layer )
+{
+  mExpressionEdit->setLayer( layer );
+}
+
 void QgsTableEditorFormattingWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
   mContextGenerator = generator;

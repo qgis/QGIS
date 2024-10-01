@@ -2457,7 +2457,7 @@ void TestQgsProcessing::createFeatureSink()
   QgsFeatureIterator it = layer->getFeatures();
   QVERIFY( it.nextFeature( f ) );
   QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val" ) );
-  QCOMPARE( f.geometry().asWkt( 1 ), QStringLiteral( "PointZ (1 2 3)" ) );
+  QCOMPARE( f.geometry().asWkt( 1 ), QStringLiteral( "Point Z (1 2 3)" ) );
   QVERIFY( it.nextFeature( f ) );
   QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val2" ) );
   QGSCOMPARENEAR( f.geometry().asPoint().x(), -10199761, 10 );

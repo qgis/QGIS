@@ -18,6 +18,8 @@
 #include "qgslayoutmanualtablewidget.h"
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
+#include "qgslayoutreportcontext.h"
+#include "qgsprintlayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmanualtable.h"
@@ -185,6 +187,10 @@ void QgsLayoutManualTableWidget::setTableContents()
   else
   {
     mEditorDialog = new QgsTableEditorDialog( this );
+    if ( QgsLayout *layout = mTable->layout() )
+    {
+      mEditorDialog->setLayer( layout->reportContext().layer() );
+    }
     mEditorDialog->registerExpressionContextGenerator( mTable );
     connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
 

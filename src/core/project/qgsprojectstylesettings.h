@@ -60,7 +60,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     /**
      * Returns the project default symbol for a given type.
      * \param symbolType the symbol type
-     * \returns a symbol pointer or NULL if there is no default set
+     * \returns a symbol pointer or NULLPTR if there is no default set
      * \note the symbol ownership is transferred to the caller
      */
     QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const SIP_FACTORY;
@@ -68,21 +68,21 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     /**
      * Sets the project default symbol for a given type.
      * \param symbolType the symbol type
-     * \param symbol the symbol pointer, set to NULL to clear default
+     * \param symbol the symbol pointer, set to NULLPTR to clear default
      * \note the symbol ownership is not transferred
      */
     void setDefaultSymbol( Qgis::SymbolType symbolType, QgsSymbol *symbol );
 
     /**
      * Returns the project default color ramp.
-     * \returns a color ramp pointer or NULL if there is no default set
+     * \returns a color ramp pointer or NULLPTR if there is no default set
      * \note the color ramp ownership is transferred to the caller
      */
     QgsColorRamp *defaultColorRamp() const SIP_FACTORY;
 
     /**
      * Sets the project default color ramp.
-     * \param colorRamp the color ramp, set to NULL to clear default
+     * \param colorRamp the color ramp, set to NULLPTR to clear default
      * \note the color ramp ownership is not transferred
      */
     void setDefaultColorRamp( QgsColorRamp *colorRamp );

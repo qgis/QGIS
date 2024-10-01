@@ -19,7 +19,7 @@ __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (QgsExpression,
                        QgsVectorLayer,
                        QgsProcessing,
@@ -124,13 +124,13 @@ class SelectByAttribute(QgisAlgorithm):
 
         fields = layer.fields()
 
-        idx = layer.fields().lookupField(fieldName)
+        idx = fields.lookupField(fieldName)
         if idx < 0:
             raise QgsProcessingException(self.tr("Field '{}' was not found in layer").format(fieldName))
 
         fieldType = fields[idx].type()
 
-        if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
+        if fieldType != QMetaType.Type.QString and operator in self.STRING_OPERATORS:
             op = ''.join('"%s", ' % o for o in self.STRING_OPERATORS)
             raise QgsProcessingException(
                 self.tr('Operators {0} can be used only with string fields.').format(op))

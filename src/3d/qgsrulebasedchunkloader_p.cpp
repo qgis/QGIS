@@ -21,7 +21,7 @@
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsraycastingutils_p.h"
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgseventtracing.h"
 
 #include "qgsvectorlayer.h"

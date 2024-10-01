@@ -15,8 +15,6 @@
 #ifndef QGSTEXTDIAGRAM_H
 #define QGSTEXTDIAGRAM_H
 
-#define DIAGRAM_NAME_TEXT "Text"
-
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsdiagram.h"
@@ -38,6 +36,8 @@ class QgsRenderContext;
 class CORE_EXPORT QgsTextDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
+    static const QString DIAGRAM_NAME_TEXT SIP_SKIP;
+
     enum Shape
     {
       Circle = 0,

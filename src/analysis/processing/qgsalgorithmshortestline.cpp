@@ -155,7 +155,16 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
       }
 
       const QgsGeometry shortestLine = sourceGeom.shortestLine( destinationGeom );
-      double dist = da.measureLength( shortestLine );
+      double dist = 0;
+      try
+      {
+        dist = da.measureLength( shortestLine );
+      }
+      catch ( QgsCsException & )
+      {
+        throw QgsProcessingException( QObject::tr( "An error occurred while calculating shortest line length" ) );
+      }
+
       QgsFeature f;
       QgsAttributes attrs = sourceFeature.attributes();
       attrs << destinationAttributeCache.value( id ) << dist;

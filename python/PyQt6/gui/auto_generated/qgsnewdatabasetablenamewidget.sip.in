@@ -39,7 +39,7 @@ getters.
 %Docstring
 Constructs a new QgsNewDatabaseTableNameWidget
 
-:param browserModel: an existing browser model (typically from app), if NULL an instance will be created
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
 :param providersFilter: optional white list of data provider keys that should be
                         shown in the widget, if not specified all providers data items with database
                         capabilities will be shown
@@ -164,7 +164,7 @@ getters.
 %Docstring
 Constructs a new QgsNewDatabaseTableNameDialog
 
-:param browserModel: an existing browser model (typically from app), if NULL an instance will be created
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
 :param providersFilter: optional white list of data provider keys that should be
                         shown in the widget, if not specified all providers data items with database
                         capabilities will be shown

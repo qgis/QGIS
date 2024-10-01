@@ -3811,9 +3811,21 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
   return true;
 }
 
-/**
- * Returns the feature count
- */
+bool QgsPostgresProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsPostgresProvider::subsetStringDialect() const
+{
+  return tr( "PostgreSQL WHERE clause" );
+}
+
+QString QgsPostgresProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://www.postgresql.org/docs/current/sql-expressions.html" );
+}
+
 long long QgsPostgresProvider::featureCount() const
 {
   long long featuresCounted = mShared->featuresCounted();

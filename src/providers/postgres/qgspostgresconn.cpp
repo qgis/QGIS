@@ -2066,7 +2066,7 @@ void QgsPostgresConn::deduceEndian()
     // PQgetResult() must be called repeatedly until it returns a null pointer
     resOID = PQgetResult();
 
-    if ( resOID.result() == nullptr )
+    if ( !resOID.result() )
       break;
 
 #ifdef QGISDEBUG

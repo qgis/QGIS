@@ -39,7 +39,7 @@ Returns the list of available providers.
 
     QgsDataItemProvider *provider( const QString &providerName ) const;
 %Docstring
-Returns the (possibly NULL) data item provider named ``providerName``
+Returns the (possibly ``None``) data item provider named ``providerName``
 
 .. versionadded:: 3.14
 %End

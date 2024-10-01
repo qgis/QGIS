@@ -132,7 +132,8 @@ bool QgsLine3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::
     for ( Qt3DRender::QGeometryRenderer *r : renderers )
     {
       Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );
-      if ( object == nullptr ) continue;
+      if ( !object )
+        continue;
       object->setupMaterial( materialSettings() );
       exporter->mObjects.push_back( object );
     }

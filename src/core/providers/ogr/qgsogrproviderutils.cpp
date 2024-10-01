@@ -1031,8 +1031,8 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     // to indicate that we should not enable WAL.
     // And NOLOCK=ON will be set in read-only attempts.
     // Only enable it when enterUpdateMode() has been executed.
-    if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) == nullptr &&
-         CSLFetchNameValue( papszOpenOptions, "NOLOCK" ) == nullptr )
+    if ( !CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) &&
+         !CSLFetchNameValue( papszOpenOptions, "NOLOCK" ) )
     {
       // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
       // mode so as to avoid readers blocking writer(s), and vice-versa.
@@ -1052,7 +1052,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
   }
 
-  if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) != nullptr )
+  if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) )
   {
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL", nullptr );
   }
@@ -1280,10 +1280,10 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
                               "PRAGMA journal_mode",
                               nullptr, nullptr );
           CPLPopErrorHandler();
-          if ( hSqlLyr != nullptr )
+          if ( hSqlLyr )
           {
             gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hSqlLyr ) );
-            if ( hFeat != nullptr )
+            if ( hFeat )
             {
               const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
               QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
@@ -3218,7 +3218,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   OGRErr err = OGRERR_UNSUPPORTED_OPERATION;
   const char *geomCol = OGR_L_GetGeometryColumn( hLayer );
-  if ( geomCol != NULL && strlen( geomCol ) > 0 )
+  if ( geomCol && strlen( geomCol ) > 0 )
   {
     QgsDebugMsgLevel( QStringLiteral( "WITH geomCol: %1" ).arg( geomCol ), 3 );
 

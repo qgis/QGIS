@@ -17,7 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgspointcloudlayer3drenderer.h"
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgslogger.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudrequest.h"

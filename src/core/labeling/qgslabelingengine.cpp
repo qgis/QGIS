@@ -33,6 +33,8 @@
 #include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
 
+#include <QUuid>
+
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
 {
@@ -209,10 +211,18 @@ QStringList QgsLabelingEngine::participatingLayerIds() const
   return layers;
 }
 
-void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
+QString QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
 {
   provider->setEngine( this );
   mProviders << provider;
+  const QString id = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  mProvidersById.insert( id, provider );
+  return id;
+}
+
+QgsAbstractLabelProvider *QgsLabelingEngine::providerById( const QString &id )
+{
+  return mProvidersById.value( id );
 }
 
 void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider *provider )
@@ -220,6 +230,7 @@ void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider *provider )
   int idx = mProviders.indexOf( provider );
   if ( idx >= 0 )
   {
+    mProvidersById.remove( mProvidersById.key( provider ) );
     delete mProviders.takeAt( idx );
   }
 }

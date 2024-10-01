@@ -21,7 +21,7 @@
 #include "qgsraycastingutils_p.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"

@@ -35,9 +35,11 @@ set(QGIS_GUI_SRCS
   vector/qgsattributesforminitcode.cpp
   vector/qgsattributesformproperties.cpp
   vector/qgsdiagramproperties.cpp
+  vector/qgsdiagramwidget.cpp
   vector/qgsfieldcalculator.cpp
   vector/qgsjoindialog.cpp
   vector/qgssourcefieldsproperties.cpp
+  vector/qgsstackeddiagramproperties.cpp
   vector/qgsvectorlayerlegendwidget.cpp
   vector/qgsvectorlayerproperties.cpp
   vector/qgswmsdimensiondialog.cpp
@@ -590,6 +592,7 @@ set(QGIS_GUI_SRCS
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
   qgserrordialog.cpp
+  qgsexpressionaddfunctionfiledialog.cpp
   qgsexpressionbuilderdialog.cpp
   qgsexpressionbuilderwidget.cpp
   qgsexpressionfinder.cpp
@@ -854,6 +857,7 @@ set(QGIS_GUI_HDRS
   qgsdoublevalidator.h
   qgsencodingfiledialog.h
   qgserrordialog.h
+  qgsexpressionaddfunctionfiledialog.h
   qgsexpressionbuilderdialog.h
   qgsexpressionstoredialog.h
   qgsexpressionbuilderwidget.h
@@ -1494,9 +1498,11 @@ set(QGIS_GUI_HDRS
   vector/qgsattributesforminitcode.h
   vector/qgsattributesformproperties.h
   vector/qgsdiagramproperties.h
+  vector/qgsdiagramwidget.h
   vector/qgsfieldcalculator.h
   vector/qgsjoindialog.h
   vector/qgssourcefieldsproperties.h
+  vector/qgsstackeddiagramproperties.h
   vector/qgsvectorlayerlegendwidget.h
   vector/qgsvectorlayerproperties.h
   vector/qgswmsdimensiondialog.h

@@ -63,8 +63,8 @@ class TestQgsMeshLayerProfileGenerator(QgisTestCase):
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].layerIdentifier, ml.id())
         self.assertEqual(features[0].geometry.constGet().numPoints(), 102)
-        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[0].geometry.constGet().pointN(101).asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(101).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
         features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
         self.assertEqual(len(features), 1)
@@ -78,8 +78,8 @@ class TestQgsMeshLayerProfileGenerator(QgisTestCase):
         self.assertEqual(features[0].layerIdentifier, ml.id())
         self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 0)
         self.assertAlmostEqual(features[0].attributes['elevation'], 153.0, 0)
-        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'Point Z (-345800 6631600 100)')
         self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 0)
         self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 0)
 
@@ -114,8 +114,8 @@ class TestQgsMeshLayerProfileGenerator(QgisTestCase):
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].layerIdentifier, ml.id())
         self.assertEqual(features[0].geometry.constGet().numPoints(), 216)
-        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[0].geometry.constGet().pointN(215).asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.constGet().pointN(0).asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[0].geometry.constGet().pointN(215).asWkt(-2), 'Point Z (-345800 6631600 100)')
 
         features = r.asFeatures(Qgis.ProfileExportType.Profile2D)
         self.assertEqual(len(features), 1)
@@ -129,8 +129,8 @@ class TestQgsMeshLayerProfileGenerator(QgisTestCase):
         self.assertEqual(features[0].layerIdentifier, ml.id())
         self.assertAlmostEqual(features[0].attributes['distance'], 0.0, 0)
         self.assertAlmostEqual(features[0].attributes['elevation'], 152.87, 0)
-        self.assertEqual(features[0].geometry.asWkt(-2), 'PointZ (-348100 6633700 200)')
-        self.assertEqual(features[-1].geometry.asWkt(-2), 'PointZ (-345800 6631600 100)')
+        self.assertEqual(features[0].geometry.asWkt(-2), 'Point Z (-348100 6633700 200)')
+        self.assertEqual(features[-1].geometry.asWkt(-2), 'Point Z (-345800 6631600 100)')
         self.assertAlmostEqual(features[-1].attributes['distance'], 3393.263, 0)
         self.assertAlmostEqual(features[-1].attributes['elevation'], 98.780, 0)
 

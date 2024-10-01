@@ -398,6 +398,19 @@ void TestQgsAttributeTable::testSelectedOnTop()
   QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
   QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
 
+  dlg->mMainView->setSelectedOnTop( false );
+  dlg->mMainView->tableView()->sortByColumn( 1, Qt::DescendingOrder );
+
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+
+  tempLayer->selectByIds( QgsFeatureIds() << 2 );
+  dlg->mMainView->setSelectedOnTop( true );
+
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
 }
 
 void TestQgsAttributeTable::testSortByDisplayExpression()

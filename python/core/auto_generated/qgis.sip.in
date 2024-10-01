@@ -277,13 +277,19 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonMacroMode
+    enum class PythonEmbeddedMode
       {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
+    };
+
+    enum class PythonEmbeddedType
+    {
+      Macro,
+      ExpressionFunction,
     };
 
     enum class DataProviderReadFlag
@@ -477,9 +483,18 @@ The development version
       IgnoreMapRotation,
     };
 
+    enum class FeatureRendererFlag
+    {
+      AffectsLabeling,
+    };
+
+    typedef QFlags<Qgis::FeatureRendererFlag> FeatureRendererFlags;
+
+
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
+      AffectsLabeling,
     };
     typedef QFlags<Qgis::SymbolFlag> SymbolFlags;
 
@@ -495,6 +510,7 @@ The development version
     {
       DisableFeatureClipping,
       CanCalculateMaskGeometryPerFeature,
+      AffectsLabeling,
     };
     typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
 
@@ -1522,6 +1538,7 @@ The development version
     {
       RenderPartialOutputs,
       RenderPartialOutputOverPreviousCachedImage,
+      AffectsLabeling,
     };
 
     typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
@@ -2415,6 +2432,7 @@ The development version
       Superseded,
     };
 
+
     enum class RasterColorInterpretation
       {
       Undefined,
@@ -2434,7 +2452,28 @@ The development version
       YCbCr_YBand,
       YCbCr_CbBand,
       YCbCr_CrBand,
-      ContinuousPalette
+      ContinuousPalette,
+
+      // Note: values between PanBand and SAR_P_Band match additions done in
+      // GDAL 3.10, except that the numeric values of the constant don't match GDAL ones
+
+      PanBand,
+      CoastalBand,
+      RedEdgeBand,
+      NIRBand,
+      SWIRBand,
+      MWIRBand,
+      LWIRBand,
+      TIRBand,
+      OtherIRBand,
+      SAR_Ka_Band,
+      SAR_K_Band,
+      SAR_Ku_Band,
+      SAR_X_Band,
+      SAR_C_Band,
+      SAR_S_Band,
+      SAR_L_Band,
+      SAR_P_Band,
     };
 
     enum class RasterLayerType
@@ -2589,6 +2628,45 @@ The development version
       Centimeters,
       Millimeters,
       Inches,
+      ChainsInternational,
+      ChainsBritishBenoit1895A,
+      ChainsBritishBenoit1895B,
+      ChainsBritishSears1922Truncated,
+      ChainsBritishSears1922,
+      ChainsClarkes,
+      ChainsUSSurvey,
+      FeetBritish1865,
+      FeetBritish1936,
+      FeetBritishBenoit1895A,
+      FeetBritishBenoit1895B,
+      FeetBritishSears1922Truncated,
+      FeetBritishSears1922,
+      FeetClarkes,
+      FeetGoldCoast,
+      FeetIndian,
+      FeetIndian1937,
+      FeetIndian1962,
+      FeetIndian1975,
+      FeetUSSurvey,
+      LinksInternational,
+      LinksBritishBenoit1895A,
+      LinksBritishBenoit1895B,
+      LinksBritishSears1922Truncated,
+      LinksBritishSears1922,
+      LinksClarkes,
+      LinksUSSurvey,
+      YardsBritishBenoit1895A,
+      YardsBritishBenoit1895B,
+      YardsBritishSears1922Truncated,
+      YardsBritishSears1922,
+      YardsClarkes,
+      YardsIndian,
+      YardsIndian1937,
+      YardsIndian1962,
+      YardsIndian1975,
+      MilesUSSurvey,
+      Fathoms,
+      MetersGermanLegal,
       Unknown,
     };
 
@@ -3220,6 +3298,8 @@ QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCap
 QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
 
 QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
+
+QFlags<Qgis::FeatureRendererFlag> operator|(Qgis::FeatureRendererFlag f1, QFlags<Qgis::FeatureRendererFlag> f2);
 
 QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
 

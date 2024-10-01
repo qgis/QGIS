@@ -368,7 +368,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   if ( projector )
   {
     // Force provider resampling if reprojection is needed
-    if ( mDataProvider != nullptr &&
+    if ( mDataProvider &&
          ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) &&
          rasterViewPort->mSrcCRS != rasterViewPort->mDestCRS &&
          oldResamplingState != Qgis::RasterResamplingStage::Provider )

@@ -727,35 +727,49 @@ Qgis.VectorLayerTypeFlag.baseClass = Qgis
 Qgis.VectorLayerTypeFlags = lambda flags=0: Qgis.VectorLayerTypeFlag(flags)
 Qgis.VectorLayerTypeFlags.baseClass = Qgis
 VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
 # monkey patching scoped based enum
-Qgis.Never = Qgis.PythonMacroMode.Never
+Qgis.Never = Qgis.PythonEmbeddedMode.Never
 Qgis.Never.is_monkey_patched = True
-Qgis.Never.__doc__ = "Macros are never run"
-Qgis.Ask = Qgis.PythonMacroMode.Ask
+Qgis.Never.__doc__ = "Python embedded never run"
+Qgis.Ask = Qgis.PythonEmbeddedMode.Ask
 Qgis.Ask.is_monkey_patched = True
 Qgis.Ask.__doc__ = "User is prompt before running"
-Qgis.SessionOnly = Qgis.PythonMacroMode.SessionOnly
+Qgis.SessionOnly = Qgis.PythonEmbeddedMode.SessionOnly
 Qgis.SessionOnly.is_monkey_patched = True
 Qgis.SessionOnly.__doc__ = "Only during this session"
-Qgis.Always = Qgis.PythonMacroMode.Always
+Qgis.Always = Qgis.PythonEmbeddedMode.Always
 Qgis.Always.is_monkey_patched = True
-Qgis.Always.__doc__ = "Macros are always run"
-Qgis.NotForThisSession = Qgis.PythonMacroMode.NotForThisSession
+Qgis.Always.__doc__ = "Python embedded is always run"
+Qgis.NotForThisSession = Qgis.PythonEmbeddedMode.NotForThisSession
 Qgis.NotForThisSession.is_monkey_patched = True
-Qgis.NotForThisSession.__doc__ = "Macros will not be run for this session"
-Qgis.PythonMacroMode.__doc__ = """Authorisation to run Python Macros
+Qgis.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
+Qgis.PythonEmbeddedMode.__doc__ = """Authorisation to run Python Embedded in projects
 
-.. versionadded:: 3.10
+.. versionadded:: 3.40
 
-* ``Never``: Macros are never run
+* ``Never``: Python embedded never run
 * ``Ask``: User is prompt before running
 * ``SessionOnly``: Only during this session
-* ``Always``: Macros are always run
-* ``NotForThisSession``: Macros will not be run for this session
+* ``Always``: Python embedded is always run
+* ``NotForThisSession``: Python embedded will not be run for this session
 
 """
 # --
-Qgis.PythonMacroMode.baseClass = Qgis
+Qgis.PythonEmbeddedMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PythonEmbeddedType.Macro.__doc__ = ""
+Qgis.PythonEmbeddedType.ExpressionFunction.__doc__ = ""
+Qgis.PythonEmbeddedType.__doc__ = """Type of Python Embedded in projects
+
+.. versionadded:: 3.40
+
+* ``Macro``: 
+* ``ExpressionFunction``: 
+
+"""
+# --
+Qgis.PythonEmbeddedType.baseClass = Qgis
 QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 # monkey patching scoped based enum
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
@@ -1432,12 +1446,31 @@ Qgis.SymbolRotationMode.__doc__ = """Modes for handling how symbol and text enti
 # --
 Qgis.SymbolRotationMode.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.FeatureRendererFlag.AffectsLabeling.__doc__ = "If present, indicates that the renderer will participate in the map labeling problem"
+Qgis.FeatureRendererFlag.__doc__ = """Flags controlling behavior of vector feature renderers.
+
+.. versionadded:: 3.40
+
+* ``AffectsLabeling``: If present, indicates that the renderer will participate in the map labeling problem
+
+"""
+# --
+Qgis.FeatureRendererFlag.baseClass = Qgis
+Qgis.FeatureRendererFlags = lambda flags=0: Qgis.FeatureRendererFlag(flags)
+Qgis.FeatureRendererFlags.baseClass = Qgis
+FeatureRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__ = "If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results"
+Qgis.SymbolFlag.AffectsLabeling.__doc__ = "If present, indicates that the symbol will participate in the map labeling problem \n.. versionadded:: 3.40"
 Qgis.SymbolFlag.__doc__ = """Flags controlling behavior of symbols
 
 .. versionadded:: 3.20
 
 * ``RendererShouldUseSymbolLevels``: If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
+* ``AffectsLabeling``: If present, indicates that the symbol will participate in the map labeling problem
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -1466,6 +1499,7 @@ SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags i
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
 Qgis.SymbolLayerFlag.CanCalculateMaskGeometryPerFeature.__doc__ = "If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. \n.. versionadded:: 3.38"
+Qgis.SymbolLayerFlag.AffectsLabeling.__doc__ = "If present, indicates that the symbol layer will participate in the map labeling problem \n.. versionadded:: 3.40"
 Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 
 .. note::
@@ -1480,6 +1514,10 @@ Qgis.SymbolLayerFlag.__doc__ = """Flags controlling behavior of symbol layers
 * ``CanCalculateMaskGeometryPerFeature``: If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes.
 
   .. versionadded:: 3.38
+
+* ``AffectsLabeling``: If present, indicates that the symbol layer will participate in the map labeling problem
+
+  .. versionadded:: 3.40
 
 
 """
@@ -4785,12 +4823,17 @@ RenderContextFlags = Qgis  # dirty hack since SIP seems to introduce the flags i
 # monkey patching scoped based enum
 Qgis.MapLayerRendererFlag.RenderPartialOutputs.__doc__ = "The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents."
 Qgis.MapLayerRendererFlag.RenderPartialOutputOverPreviousCachedImage.__doc__ = "When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image."
+Qgis.MapLayerRendererFlag.AffectsLabeling.__doc__ = "The layer rendering will interact with the map labeling \n.. versionadded:: 3.40"
 Qgis.MapLayerRendererFlag.__doc__ = """Flags which control how map layer renderers behave.
 
 .. versionadded:: 3.34
 
 * ``RenderPartialOutputs``: The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents.
 * ``RenderPartialOutputOverPreviousCachedImage``: When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image.
+* ``AffectsLabeling``: The layer rendering will interact with the map labeling
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -7664,13 +7707,13 @@ QgsRaster.PaletteIndex.is_monkey_patched = True
 QgsRaster.PaletteIndex.__doc__ = "Paletted (see associated color table)"
 QgsRaster.RedBand = Qgis.RasterColorInterpretation.RedBand
 QgsRaster.RedBand.is_monkey_patched = True
-QgsRaster.RedBand.__doc__ = "Red band of RGBA image"
+QgsRaster.RedBand.__doc__ = "Red band of RGBA image, or red spectral band [0.62 - 0.69 um]"
 QgsRaster.GreenBand = Qgis.RasterColorInterpretation.GreenBand
 QgsRaster.GreenBand.is_monkey_patched = True
-QgsRaster.GreenBand.__doc__ = "Green band of RGBA image"
+QgsRaster.GreenBand.__doc__ = "Green band of RGBA image, or green spectral band [0.51 - 0.60 um]"
 QgsRaster.BlueBand = Qgis.RasterColorInterpretation.BlueBand
 QgsRaster.BlueBand.is_monkey_patched = True
-QgsRaster.BlueBand.__doc__ = "Blue band of RGBA image"
+QgsRaster.BlueBand.__doc__ = "Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]"
 QgsRaster.AlphaBand = Qgis.RasterColorInterpretation.AlphaBand
 QgsRaster.AlphaBand.is_monkey_patched = True
 QgsRaster.AlphaBand.__doc__ = "Alpha (0=transparent, 255=opaque)"
@@ -7691,7 +7734,7 @@ QgsRaster.MagentaBand.is_monkey_patched = True
 QgsRaster.MagentaBand.__doc__ = "Magenta band of CMYK image"
 QgsRaster.YellowBand = Qgis.RasterColorInterpretation.YellowBand
 QgsRaster.YellowBand.is_monkey_patched = True
-QgsRaster.YellowBand.__doc__ = "Yellow band of CMYK image"
+QgsRaster.YellowBand.__doc__ = "Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]"
 QgsRaster.BlackBand = Qgis.RasterColorInterpretation.BlackBand
 QgsRaster.BlackBand.is_monkey_patched = True
 QgsRaster.BlackBand.__doc__ = "Black band of CMLY image"
@@ -7707,6 +7750,57 @@ QgsRaster.YCbCr_CrBand.__doc__ = "Cr Chroma"
 QgsRaster.ContinuousPalette = Qgis.RasterColorInterpretation.ContinuousPalette
 QgsRaster.ContinuousPalette.is_monkey_patched = True
 QgsRaster.ContinuousPalette.__doc__ = "Continuous palette, QGIS addition, GRASS"
+QgsRaster.PanBand = Qgis.RasterColorInterpretation.PanBand
+QgsRaster.PanBand.is_monkey_patched = True
+QgsRaster.PanBand.__doc__ = "Panchromatic band [0.40 - 1.00 um] \n.. versionadded:: 3.40"
+QgsRaster.CoastalBand = Qgis.RasterColorInterpretation.CoastalBand
+QgsRaster.CoastalBand.is_monkey_patched = True
+QgsRaster.CoastalBand.__doc__ = "Coastal band [0.40 - 0.45 um] \n.. versionadded:: 3.40"
+QgsRaster.RedEdgeBand = Qgis.RasterColorInterpretation.RedEdgeBand
+QgsRaster.RedEdgeBand.is_monkey_patched = True
+QgsRaster.RedEdgeBand.__doc__ = "Red-edge band [0.69 - 0.79 um] \n.. versionadded:: 3.40"
+QgsRaster.NIRBand = Qgis.RasterColorInterpretation.NIRBand
+QgsRaster.NIRBand.is_monkey_patched = True
+QgsRaster.NIRBand.__doc__ = "Near-InfraRed (NIR) band [0.75 - 1.40 um] \n.. versionadded:: 3.40"
+QgsRaster.SWIRBand = Qgis.RasterColorInterpretation.SWIRBand
+QgsRaster.SWIRBand.is_monkey_patched = True
+QgsRaster.SWIRBand.__doc__ = "Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um] \n.. versionadded:: 3.40"
+QgsRaster.MWIRBand = Qgis.RasterColorInterpretation.MWIRBand
+QgsRaster.MWIRBand.is_monkey_patched = True
+QgsRaster.MWIRBand.__doc__ = "Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um] \n.. versionadded:: 3.40"
+QgsRaster.LWIRBand = Qgis.RasterColorInterpretation.LWIRBand
+QgsRaster.LWIRBand.is_monkey_patched = True
+QgsRaster.LWIRBand.__doc__ = "Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um] \n.. versionadded:: 3.40"
+QgsRaster.TIRBand = Qgis.RasterColorInterpretation.TIRBand
+QgsRaster.TIRBand.is_monkey_patched = True
+QgsRaster.TIRBand.__doc__ = "Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um] \n.. versionadded:: 3.40"
+QgsRaster.OtherIRBand = Qgis.RasterColorInterpretation.OtherIRBand
+QgsRaster.OtherIRBand.is_monkey_patched = True
+QgsRaster.OtherIRBand.__doc__ = "Other infrared band [0.75 - 1000 um] \n.. versionadded:: 3.40"
+QgsRaster.SAR_Ka_Band = Qgis.RasterColorInterpretation.SAR_Ka_Band
+QgsRaster.SAR_Ka_Band.is_monkey_patched = True
+QgsRaster.SAR_Ka_Band.__doc__ = "Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_K_Band = Qgis.RasterColorInterpretation.SAR_K_Band
+QgsRaster.SAR_K_Band.is_monkey_patched = True
+QgsRaster.SAR_K_Band.__doc__ = "Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_Ku_Band = Qgis.RasterColorInterpretation.SAR_Ku_Band
+QgsRaster.SAR_Ku_Band.is_monkey_patched = True
+QgsRaster.SAR_Ku_Band.__doc__ = "Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_X_Band = Qgis.RasterColorInterpretation.SAR_X_Band
+QgsRaster.SAR_X_Band.is_monkey_patched = True
+QgsRaster.SAR_X_Band.__doc__ = "Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_C_Band = Qgis.RasterColorInterpretation.SAR_C_Band
+QgsRaster.SAR_C_Band.is_monkey_patched = True
+QgsRaster.SAR_C_Band.__doc__ = "Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_S_Band = Qgis.RasterColorInterpretation.SAR_S_Band
+QgsRaster.SAR_S_Band.is_monkey_patched = True
+QgsRaster.SAR_S_Band.__doc__ = "Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_L_Band = Qgis.RasterColorInterpretation.SAR_L_Band
+QgsRaster.SAR_L_Band.is_monkey_patched = True
+QgsRaster.SAR_L_Band.__doc__ = "Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz] \n.. versionadded:: 3.40"
+QgsRaster.SAR_P_Band = Qgis.RasterColorInterpretation.SAR_P_Band
+QgsRaster.SAR_P_Band.is_monkey_patched = True
+QgsRaster.SAR_P_Band.__doc__ = "Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz] \n.. versionadded:: 3.40"
 Qgis.RasterColorInterpretation.__doc__ = """Raster color interpretation.
 
 This is a modified copy of the GDAL GDALColorInterp enum.
@@ -7723,21 +7817,89 @@ This is a modified copy of the GDAL GDALColorInterp enum.
 
 * ``GrayIndex``: Grayscale
 * ``PaletteIndex``: Paletted (see associated color table)
-* ``RedBand``: Red band of RGBA image
-* ``GreenBand``: Green band of RGBA image
-* ``BlueBand``: Blue band of RGBA image
+* ``RedBand``: Red band of RGBA image, or red spectral band [0.62 - 0.69 um]
+* ``GreenBand``: Green band of RGBA image, or green spectral band [0.51 - 0.60 um]
+* ``BlueBand``: Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]
 * ``AlphaBand``: Alpha (0=transparent, 255=opaque)
 * ``HueBand``: Hue band of HLS image
 * ``SaturationBand``: Saturation band of HLS image
 * ``LightnessBand``: Lightness band of HLS image
 * ``CyanBand``: Cyan band of CMYK image
 * ``MagentaBand``: Magenta band of CMYK image
-* ``YellowBand``: Yellow band of CMYK image
+* ``YellowBand``: Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]
 * ``BlackBand``: Black band of CMLY image
 * ``YCbCr_YBand``: Y Luminance
 * ``YCbCr_CbBand``: Cb Chroma
 * ``YCbCr_CrBand``: Cr Chroma
 * ``ContinuousPalette``: Continuous palette, QGIS addition, GRASS
+* ``PanBand``: Panchromatic band [0.40 - 1.00 um]
+
+  .. versionadded:: 3.40
+
+* ``CoastalBand``: Coastal band [0.40 - 0.45 um]
+
+  .. versionadded:: 3.40
+
+* ``RedEdgeBand``: Red-edge band [0.69 - 0.79 um]
+
+  .. versionadded:: 3.40
+
+* ``NIRBand``: Near-InfraRed (NIR) band [0.75 - 1.40 um]
+
+  .. versionadded:: 3.40
+
+* ``SWIRBand``: Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um]
+
+  .. versionadded:: 3.40
+
+* ``MWIRBand``: Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um]
+
+  .. versionadded:: 3.40
+
+* ``LWIRBand``: Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um]
+
+  .. versionadded:: 3.40
+
+* ``TIRBand``: Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um]
+
+  .. versionadded:: 3.40
+
+* ``OtherIRBand``: Other infrared band [0.75 - 1000 um]
+
+  .. versionadded:: 3.40
+
+* ``SAR_Ka_Band``: Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_K_Band``: Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_Ku_Band``: Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_X_Band``: Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_C_Band``: Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_S_Band``: Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_L_Band``: Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz]
+
+  .. versionadded:: 3.40
+
+* ``SAR_P_Band``: Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz]
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -8495,6 +8657,123 @@ QgsUnitTypes.DistanceMillimeters.__doc__ = "Millimeters"
 QgsUnitTypes.Inches = Qgis.DistanceUnit.Inches
 QgsUnitTypes.Inches.is_monkey_patched = True
 QgsUnitTypes.Inches.__doc__ = "Inches \n.. versionadded:: 3.32"
+QgsUnitTypes.ChainsInternational = Qgis.DistanceUnit.ChainsInternational
+QgsUnitTypes.ChainsInternational.is_monkey_patched = True
+QgsUnitTypes.ChainsInternational.__doc__ = "International chains \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishBenoit1895A = Qgis.DistanceUnit.ChainsBritishBenoit1895A
+QgsUnitTypes.ChainsBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishBenoit1895A.__doc__ = "British chains (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishBenoit1895B = Qgis.DistanceUnit.ChainsBritishBenoit1895B
+QgsUnitTypes.ChainsBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishBenoit1895B.__doc__ = "British chains (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishSears1922Truncated = Qgis.DistanceUnit.ChainsBritishSears1922Truncated
+QgsUnitTypes.ChainsBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishSears1922Truncated.__doc__ = "British chains (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsBritishSears1922 = Qgis.DistanceUnit.ChainsBritishSears1922
+QgsUnitTypes.ChainsBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.ChainsBritishSears1922.__doc__ = "British chains (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsClarkes = Qgis.DistanceUnit.ChainsClarkes
+QgsUnitTypes.ChainsClarkes.is_monkey_patched = True
+QgsUnitTypes.ChainsClarkes.__doc__ = "Clarke's chains \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsUSSurvey = Qgis.DistanceUnit.ChainsUSSurvey
+QgsUnitTypes.ChainsUSSurvey.is_monkey_patched = True
+QgsUnitTypes.ChainsUSSurvey.__doc__ = "US Survery chains \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritish1865 = Qgis.DistanceUnit.FeetBritish1865
+QgsUnitTypes.FeetBritish1865.is_monkey_patched = True
+QgsUnitTypes.FeetBritish1865.__doc__ = "British feet (1865) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritish1936 = Qgis.DistanceUnit.FeetBritish1936
+QgsUnitTypes.FeetBritish1936.is_monkey_patched = True
+QgsUnitTypes.FeetBritish1936.__doc__ = "British feet (1936) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishBenoit1895A = Qgis.DistanceUnit.FeetBritishBenoit1895A
+QgsUnitTypes.FeetBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.FeetBritishBenoit1895A.__doc__ = "British feet (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishBenoit1895B = Qgis.DistanceUnit.FeetBritishBenoit1895B
+QgsUnitTypes.FeetBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.FeetBritishBenoit1895B.__doc__ = "British feet (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishSears1922Truncated = Qgis.DistanceUnit.FeetBritishSears1922Truncated
+QgsUnitTypes.FeetBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.FeetBritishSears1922Truncated.__doc__ = "British feet (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetBritishSears1922 = Qgis.DistanceUnit.FeetBritishSears1922
+QgsUnitTypes.FeetBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.FeetBritishSears1922.__doc__ = "British feet (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetClarkes = Qgis.DistanceUnit.FeetClarkes
+QgsUnitTypes.FeetClarkes.is_monkey_patched = True
+QgsUnitTypes.FeetClarkes.__doc__ = "Clarke's feet \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetGoldCoast = Qgis.DistanceUnit.FeetGoldCoast
+QgsUnitTypes.FeetGoldCoast.is_monkey_patched = True
+QgsUnitTypes.FeetGoldCoast.__doc__ = "Gold Coast feet \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian = Qgis.DistanceUnit.FeetIndian
+QgsUnitTypes.FeetIndian.is_monkey_patched = True
+QgsUnitTypes.FeetIndian.__doc__ = "Indian (geodetic) feet \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian1937 = Qgis.DistanceUnit.FeetIndian1937
+QgsUnitTypes.FeetIndian1937.is_monkey_patched = True
+QgsUnitTypes.FeetIndian1937.__doc__ = "Indian feet (1937) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian1962 = Qgis.DistanceUnit.FeetIndian1962
+QgsUnitTypes.FeetIndian1962.is_monkey_patched = True
+QgsUnitTypes.FeetIndian1962.__doc__ = "Indian feet (1962) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetIndian1975 = Qgis.DistanceUnit.FeetIndian1975
+QgsUnitTypes.FeetIndian1975.is_monkey_patched = True
+QgsUnitTypes.FeetIndian1975.__doc__ = "Indian feet (1975) \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetUSSurvey = Qgis.DistanceUnit.FeetUSSurvey
+QgsUnitTypes.FeetUSSurvey.is_monkey_patched = True
+QgsUnitTypes.FeetUSSurvey.__doc__ = "US Survery feet \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksInternational = Qgis.DistanceUnit.LinksInternational
+QgsUnitTypes.LinksInternational.is_monkey_patched = True
+QgsUnitTypes.LinksInternational.__doc__ = "International links \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishBenoit1895A = Qgis.DistanceUnit.LinksBritishBenoit1895A
+QgsUnitTypes.LinksBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.LinksBritishBenoit1895A.__doc__ = "British links (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishBenoit1895B = Qgis.DistanceUnit.LinksBritishBenoit1895B
+QgsUnitTypes.LinksBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.LinksBritishBenoit1895B.__doc__ = "British links (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishSears1922Truncated = Qgis.DistanceUnit.LinksBritishSears1922Truncated
+QgsUnitTypes.LinksBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.LinksBritishSears1922Truncated.__doc__ = "British links (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksBritishSears1922 = Qgis.DistanceUnit.LinksBritishSears1922
+QgsUnitTypes.LinksBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.LinksBritishSears1922.__doc__ = "British links (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksClarkes = Qgis.DistanceUnit.LinksClarkes
+QgsUnitTypes.LinksClarkes.is_monkey_patched = True
+QgsUnitTypes.LinksClarkes.__doc__ = "Clarke's links \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksUSSurvey = Qgis.DistanceUnit.LinksUSSurvey
+QgsUnitTypes.LinksUSSurvey.is_monkey_patched = True
+QgsUnitTypes.LinksUSSurvey.__doc__ = "US Survery links \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishBenoit1895A = Qgis.DistanceUnit.YardsBritishBenoit1895A
+QgsUnitTypes.YardsBritishBenoit1895A.is_monkey_patched = True
+QgsUnitTypes.YardsBritishBenoit1895A.__doc__ = "British yards (Benoit 1895 A) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishBenoit1895B = Qgis.DistanceUnit.YardsBritishBenoit1895B
+QgsUnitTypes.YardsBritishBenoit1895B.is_monkey_patched = True
+QgsUnitTypes.YardsBritishBenoit1895B.__doc__ = "British yards (Benoit 1895 B) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishSears1922Truncated = Qgis.DistanceUnit.YardsBritishSears1922Truncated
+QgsUnitTypes.YardsBritishSears1922Truncated.is_monkey_patched = True
+QgsUnitTypes.YardsBritishSears1922Truncated.__doc__ = "British yards (Sears 1922 truncated) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsBritishSears1922 = Qgis.DistanceUnit.YardsBritishSears1922
+QgsUnitTypes.YardsBritishSears1922.is_monkey_patched = True
+QgsUnitTypes.YardsBritishSears1922.__doc__ = "British yards (Sears 1922) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsClarkes = Qgis.DistanceUnit.YardsClarkes
+QgsUnitTypes.YardsClarkes.is_monkey_patched = True
+QgsUnitTypes.YardsClarkes.__doc__ = "Clarke's yards \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian = Qgis.DistanceUnit.YardsIndian
+QgsUnitTypes.YardsIndian.is_monkey_patched = True
+QgsUnitTypes.YardsIndian.__doc__ = "Indian yards \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian1937 = Qgis.DistanceUnit.YardsIndian1937
+QgsUnitTypes.YardsIndian1937.is_monkey_patched = True
+QgsUnitTypes.YardsIndian1937.__doc__ = "Indian yards (1937) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian1962 = Qgis.DistanceUnit.YardsIndian1962
+QgsUnitTypes.YardsIndian1962.is_monkey_patched = True
+QgsUnitTypes.YardsIndian1962.__doc__ = "Indian yards (1962) \n.. versionadded:: 3.40"
+QgsUnitTypes.YardsIndian1975 = Qgis.DistanceUnit.YardsIndian1975
+QgsUnitTypes.YardsIndian1975.is_monkey_patched = True
+QgsUnitTypes.YardsIndian1975.__doc__ = "Indian yards (1975) \n.. versionadded:: 3.40"
+QgsUnitTypes.MilesUSSurvey = Qgis.DistanceUnit.MilesUSSurvey
+QgsUnitTypes.MilesUSSurvey.is_monkey_patched = True
+QgsUnitTypes.MilesUSSurvey.__doc__ = "US Survery miles \n.. versionadded:: 3.40"
+QgsUnitTypes.Fathoms = Qgis.DistanceUnit.Fathoms
+QgsUnitTypes.Fathoms.is_monkey_patched = True
+QgsUnitTypes.Fathoms.__doc__ = "Fathoms \n.. versionadded:: 3.40"
+QgsUnitTypes.MetersGermanLegal = Qgis.DistanceUnit.MetersGermanLegal
+QgsUnitTypes.MetersGermanLegal.is_monkey_patched = True
+QgsUnitTypes.MetersGermanLegal.__doc__ = "German legal meter \n.. versionadded:: 3.40"
 QgsUnitTypes.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnit.DistanceUnknownUnit = Qgis.DistanceUnit.Unknown
 QgsUnitTypes.DistanceUnknownUnit.is_monkey_patched = True
@@ -8546,6 +8825,162 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 * ``Inches``: Inches
 
   .. versionadded:: 3.32
+
+* ``ChainsInternational``: International chains
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishBenoit1895A``: British chains (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishBenoit1895B``: British chains (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishSears1922Truncated``: British chains (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``ChainsBritishSears1922``: British chains (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``ChainsClarkes``: Clarke's chains
+
+  .. versionadded:: 3.40
+
+* ``ChainsUSSurvey``: US Survery chains
+
+  .. versionadded:: 3.40
+
+* ``FeetBritish1865``: British feet (1865)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritish1936``: British feet (1936)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishBenoit1895A``: British feet (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishBenoit1895B``: British feet (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishSears1922Truncated``: British feet (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``FeetBritishSears1922``: British feet (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``FeetClarkes``: Clarke's feet
+
+  .. versionadded:: 3.40
+
+* ``FeetGoldCoast``: Gold Coast feet
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian``: Indian (geodetic) feet
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian1937``: Indian feet (1937)
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian1962``: Indian feet (1962)
+
+  .. versionadded:: 3.40
+
+* ``FeetIndian1975``: Indian feet (1975)
+
+  .. versionadded:: 3.40
+
+* ``FeetUSSurvey``: US Survery feet
+
+  .. versionadded:: 3.40
+
+* ``LinksInternational``: International links
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishBenoit1895A``: British links (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishBenoit1895B``: British links (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishSears1922Truncated``: British links (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``LinksBritishSears1922``: British links (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``LinksClarkes``: Clarke's links
+
+  .. versionadded:: 3.40
+
+* ``LinksUSSurvey``: US Survery links
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishBenoit1895A``: British yards (Benoit 1895 A)
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishBenoit1895B``: British yards (Benoit 1895 B)
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishSears1922Truncated``: British yards (Sears 1922 truncated)
+
+  .. versionadded:: 3.40
+
+* ``YardsBritishSears1922``: British yards (Sears 1922)
+
+  .. versionadded:: 3.40
+
+* ``YardsClarkes``: Clarke's yards
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian``: Indian yards
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian1937``: Indian yards (1937)
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian1962``: Indian yards (1962)
+
+  .. versionadded:: 3.40
+
+* ``YardsIndian1975``: Indian yards (1975)
+
+  .. versionadded:: 3.40
+
+* ``MilesUSSurvey``: US Survery miles
+
+  .. versionadded:: 3.40
+
+* ``Fathoms``: Fathoms
+
+  .. versionadded:: 3.40
+
+* ``MetersGermanLegal``: German legal meter
+
+  .. versionadded:: 3.40
 
 * ``Unknown``: Unknown distance unit
 

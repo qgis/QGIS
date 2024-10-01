@@ -225,6 +225,22 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
   }
 }
 
+Qgis::FeatureRendererFlags QgsCategorizedSymbolRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  QgsCategoryList::const_iterator catIt = mCategories.constBegin();
+  for ( ; catIt != mCategories.constEnd(); ++catIt )
+  {
+    if ( QgsSymbol *catSymbol = catIt->symbol() )
+    {
+      if ( catSymbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+        res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+    }
+  }
+
+  return res;
+}
+
 QgsCategorizedSymbolRenderer::~QgsCategorizedSymbolRenderer() = default;
 
 void QgsCategorizedSymbolRenderer::rebuildHash()

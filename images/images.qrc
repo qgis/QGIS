@@ -1011,6 +1011,7 @@
         <file>themes/default/propertyicons/sourcefieldsandforms.svg</file>
         <file>themes/default/propertyicons/layerconfiguration.svg</file>
         <file>themes/default/propertyicons/notes.svg</file>
+        <file>themes/default/stacked-diagram.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

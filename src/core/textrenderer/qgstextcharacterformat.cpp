@@ -65,6 +65,12 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
     if ( !families.isEmpty() )
       mFontFamily = families.at( 0 );
   }
+  if ( format.isImageFormat() )
+  {
+    const QTextImageFormat imageFormat = format.toImageFormat();
+    mImagePath = imageFormat.name();
+    mImageSize = QSizeF( imageFormat.width(), imageFormat.height() );
+  }
 }
 
 void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
@@ -166,6 +172,26 @@ QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::overline() const
 void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue enabled )
 {
   mOverline = enabled;
+}
+
+QString QgsTextCharacterFormat::imagePath() const
+{
+  return mImagePath;
+}
+
+void QgsTextCharacterFormat::setImagePath( const QString &path )
+{
+  mImagePath = path;
+}
+
+QSizeF QgsTextCharacterFormat::imageSize() const
+{
+  return mImageSize;
+}
+
+void QgsTextCharacterFormat::setImageSize( const QSizeF &size )
+{
+  mImageSize = size;
 }
 
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderContext &context, const double scaleFactor ) const

@@ -27,7 +27,7 @@
 #include "qgsgeometry.h"
 #include "qgsdistancearea.h"
 #include "qgswkbtypes.h"
-
+#include "qgslogger.h"
 #include <QString>
 #include <QtAlgorithms>
 
@@ -381,7 +381,17 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
             if ( !isFirstPoint && arcPt1 != arcPt2 )
             {
-              double distance = builder->distanceArea()->measureLine( arcPt1, arcPt2 );
+              double distance = 0;
+              try
+              {
+                distance = builder->distanceArea()->measureLine( arcPt1, arcPt2 );
+              }
+              catch ( QgsCsException & )
+              {
+                // TODO report errors to user
+                QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+              }
+
               QVector< QVariant > prop;
               prop.reserve( mStrategies.size() );
               for ( QgsNetworkStrategy *strategy : mStrategies )
