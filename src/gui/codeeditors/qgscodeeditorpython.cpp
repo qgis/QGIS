@@ -236,17 +236,6 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   bool autoSurround = settings.value( QStringLiteral( "/pythonConsole/autoSurround" ), true ).toBool();
   bool autoInsertImport = settings.value( QStringLiteral( "/pythonConsole/autoInsertImport" ), false ).toBool();
 
-  // Update calltips when cursor position changes with left and right keys
-  if ( event->key() == Qt::Key_Left  ||
-       event->key() == Qt::Key_Right ||
-       event->key() == Qt::Key_Up ||
-       event->key() == Qt::Key_Down )
-  {
-    QgsCodeEditor::keyPressEvent( event );
-    callTip();
-    return;
-  }
-
   // Get entered text and cursor position
   const QString eText = event->text();
   int line, column;
@@ -322,14 +311,13 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
           setSelection( line, column - 1, line, column + 1 );
           removeSelectedText();
           event->accept();
+          // Update calltips (cursor position has changed)
+          callTip();
         }
         else
         {
           QgsCodeEditor::keyPressEvent( event );
         }
-
-        // Update calltips (cursor position has changed)
-        callTip();
         return;
       }
 
