@@ -159,6 +159,9 @@ void TestQgsSQLiteExpressionCompiler::testPlusWithStrings_data()
   QTest::newRow( "plus with mixed literal 3" ) << QStringLiteral( "1.234 + 1.234" ) << true << QStringLiteral( "(1.234 + 1.234)" );
   QTest::newRow( "plus with mixed literal 4" ) << QStringLiteral( "1.234 + 'a'" ) << false << QString();
   QTest::newRow( "plus with mixed literal 5" ) << QStringLiteral( "\"Z\" + 1234" ) << true << QStringLiteral( "(\"Z\" + 1234)" );
+  QTest::newRow( "plus with mixed literal 6" ) << QStringLiteral( "\"Z\" = 1234" ) << true << QStringLiteral( "(\"Z\" = 1234)" );
+  QTest::newRow( "plus with mixed literal 7" ) << QStringLiteral( "\"Z\" = ( 1 + 2 ) / 3" ) << true << QStringLiteral( "(\"Z\" = ((1 + 2) / CAST((3) AS REAL)))" );
+  QTest::newRow( "plus with mixed literal 8" ) << QStringLiteral( "Z = 1000/11+10" ) << true << QStringLiteral( "(\"Z\" = ((1000 / CAST((11) AS REAL)) + 10))" );
 }
 
 void TestQgsSQLiteExpressionCompiler::testPlusWithStrings()

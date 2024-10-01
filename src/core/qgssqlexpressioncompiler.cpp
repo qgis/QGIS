@@ -94,20 +94,39 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
     return staticRes;
 
   // This is just to identify the most simple cases where nodes are numeric
-  auto nodeIsNumeric = [this]( const QgsExpressionNode * node )
+  std::function<bool( const QgsExpressionNode * )> nodeIsNumeric;
+  nodeIsNumeric = [this, &nodeIsNumeric]( const QgsExpressionNode * node )
   {
-    if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
+    const QgsExpressionNode::NodeType nodeType { node->nodeType() };
+
+    switch ( nodeType )
     {
-      const QgsExpressionNodeColumnRef *col = static_cast<const QgsExpressionNodeColumnRef *>( node );
-      const int idx = mFields.indexFromName( col->name() );
-      return idx >= 0 && mFields[idx].isNumeric();
+      case QgsExpressionNode::ntColumnRef:
+      {
+        const QgsExpressionNodeColumnRef *col = static_cast<const QgsExpressionNodeColumnRef *>( node );
+        const int idx = mFields.indexFromName( col->name() );
+        return idx >= 0 && mFields[idx].isNumeric();
+      }
+      case QgsExpressionNode::ntLiteral:
+      {
+        const QgsExpressionNodeLiteral *lit = static_cast<const QgsExpressionNodeLiteral *>( node );
+        return lit->value().type() == QVariant::Double || lit->value().type() == QVariant::Int;
+      }
+      case QgsExpressionNode::ntBinaryOperator:
+      {
+        const QgsExpressionNodeBinaryOperator *op = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+        return nodeIsNumeric( op->opLeft() ) && nodeIsNumeric( op->opRight() );
+      }
+      case QgsExpressionNode::ntUnaryOperator:
+      {
+        const QgsExpressionNodeUnaryOperator *op = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+        return nodeIsNumeric( op->operand() );
+      }
+
+      default:
+        return false;
     }
-    else if ( node->nodeType() == QgsExpressionNode::ntLiteral )
-    {
-      const QgsExpressionNodeLiteral *lit = static_cast<const QgsExpressionNodeLiteral *>( node );
-      return lit->value().type() == QVariant::Double || lit->value().type() == QVariant::Int;
-    }
-    return false;
+
   };
 
   switch ( node->nodeType() )
