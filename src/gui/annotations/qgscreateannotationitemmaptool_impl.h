@@ -41,7 +41,7 @@ class GUI_EXPORT QgsMapToolCaptureAnnotationItem: public QgsMapToolCapture, publ
   public:
     //! Constructor
     QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
-    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsCreateAnnotationItemMapToolHandler *handler() const override;
     QgsMapTool *mapTool() override;
     QgsMapLayer *layer() const override;
     QgsMapToolCapture::Capabilities capabilities() const override;
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitiz
     ~QgsCreatePointTextItemMapTool() override;
 
     void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
-    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsCreateAnnotationItemMapToolHandler *handler() const override;
     QgsMapTool *mapTool() override;
 
   private:
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsCreateRectangleTextItemMapTool: public QgsMapToolAdvancedDig
     void cadCanvasMoveEvent( QgsMapMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsCreateAnnotationItemMapToolHandler *handler() const override;
     QgsMapTool *mapTool() override;
 
   private:
@@ -195,7 +195,7 @@ class GUI_EXPORT QgsCreatePictureItemMapTool: public QgsMapToolAdvancedDigitizin
     void cadCanvasMoveEvent( QgsMapMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsCreateAnnotationItemMapToolHandler *handler() const override;
     QgsMapTool *mapTool() override;
 
   private:
