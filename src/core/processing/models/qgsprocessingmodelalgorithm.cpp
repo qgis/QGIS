@@ -45,6 +45,23 @@ void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
 {
 }
 
+Qgis::ProcessingAlgorithmFlags QgsProcessingModelAlgorithm::flags() const
+{
+  Qgis::ProcessingAlgorithmFlags res = QgsProcessingAlgorithm::flags();
+
+  // don't force algorithm attachment here, that's potentially too expensive
+  QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( childIt->algorithm() && childIt->algorithm()->flags().testFlag( Qgis::ProcessingAlgorithmFlag::SecurityRisk ) )
+    {
+      // security risk flag propagates from child algorithms to model
+      res |= Qgis::ProcessingAlgorithmFlag::SecurityRisk;
+    }
+  }
+  return res;
+}
+
 QString QgsProcessingModelAlgorithm::name() const
 {
   return mModelName;
