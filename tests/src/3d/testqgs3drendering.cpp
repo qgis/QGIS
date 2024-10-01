@@ -76,6 +76,7 @@ class TestQgs3DRendering : public QgsTest
     void testTerrainShading();
     void testEpsg4978LineRendering();
     void testExtrudedPolygons();
+    void testExtrudedPolygonsClipping();
     void testPhongShading();
     void testExtrudedPolygonsTexturedPhong();
     void testExtrudedPolygonsDataDefinedPhong();
@@ -443,6 +444,45 @@ void TestQgs3DRendering::testExtrudedPolygons()
   delete map;
 
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_opacity", "polygon3d_extrusion_opacity", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsClipping()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( {defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, 0, 0.5, 150.0 )
+                                         << QVector4D( -0.866025, 0, -0.5, 150.0 )
+                                         << QVector4D( 0.5, 0, -0.866025, 305.0 )
+                                         << QVector4D( -0.5, 0, 0.866025, 205.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_clipping", "polygon3d_extrusion_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testPhongShading()
