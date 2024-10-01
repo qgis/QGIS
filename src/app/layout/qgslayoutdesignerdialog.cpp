@@ -373,6 +373,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mHorizontalRuler->setContextMenu( rulerMenu );
   mVerticalRuler->setContextMenu( rulerMenu );
 
+  connect( mLayoutMenu, &QMenu::aboutToShow, this, &QgsLayoutDesignerDialog::layoutMenuAboutToShow );
   connect( mActionRefreshView, &QAction::triggered, this, &QgsLayoutDesignerDialog::refreshLayout );
   connect( mActionSaveProject, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveProject );
   connect( mActionNewLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::newLayout );
@@ -1924,9 +1925,10 @@ void QgsLayoutDesignerDialog::addPages()
 
 void QgsLayoutDesignerDialog::showPageProperties()
 {
-  QgsLayoutItemPage *page = mLayout->pageCollection()->page( 0 );
+  if ( !mLayout )
+    return;
 
-  if ( page )
+  if ( QgsLayoutItemPage *page = mLayout->pageCollection()->page( mView->currentPage() ) )
   {
     showItemOptions( page, true );
   }
@@ -5136,5 +5138,17 @@ void QgsLayoutDesignerDialog::onItemDestroyed( QObject *item )
   {
     if ( widget->layoutObject() == item )
       delete mItemPropertiesStack->takeMainPanel();
+  }
+}
+
+void QgsLayoutDesignerDialog::layoutMenuAboutToShow()
+{
+  if ( mLayout && mLayout->pageCollection()->pageCount() > 1 )
+  {
+    mActionPageProperties->setText( tr( "Page %1 Properties…" ).arg( mView->currentPage() + 1 ) );
+  }
+  else
+  {
+    mActionPageProperties->setText( tr( "Page Properties…" ) );
   }
 }
