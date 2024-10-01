@@ -427,6 +427,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void onMapPreviewRefreshed();
     void onItemAdded( QgsLayoutItem *item );
     void onItemDestroyed( QObject *item );
+    void layoutMenuAboutToShow();
 
   private:
 
