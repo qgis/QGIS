@@ -21,6 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
+#include "qgstexturematerial.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -42,7 +43,6 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
-#include <Qt3DExtras/QTextureMaterial>
 
 #include <QFile>
 #include <QFileInfo>
@@ -357,7 +357,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
     // We should be using PBR material unless unlit material is requested using KHR_materials_unlit
     // GLTF extension, but in various datasets that extension is not used (even though it should have been).
     // In the future we may want to have a switch whether to use unlit material or PBR material...
-    Qt3DExtras::QTextureMaterial *mat = new Qt3DExtras::QTextureMaterial;
+    QgsTextureMaterial *mat = new QgsTextureMaterial;
     mat->setTexture( texture );
     return mat;
   }
