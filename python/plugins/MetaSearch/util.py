@@ -168,7 +168,7 @@ def clean_ows_url(url):
     return url.toString()
 
 
-def log_message(message, level):
+def log_message(message, level='Info'):
     """helper function to emit logging messages"""
 
     message_translated = QCoreApplication.translate('MetaSearch', message)
