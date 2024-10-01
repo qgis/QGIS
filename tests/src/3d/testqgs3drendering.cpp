@@ -91,6 +91,7 @@ class TestQgs3DRendering : public QgsTest
     void testLineRenderingCurved();
     void testLineRenderingDataDefinedColors();
     void testBufferedLineRendering();
+    void testBufferedLineRenderingClipping();
     void testBufferedLineRenderingWidth();
     void testMapTheme();
     void testRuleBasedRenderer();
@@ -1239,6 +1240,65 @@ void TestQgs3DRendering::testBufferedLineRendering()
   delete layerLines;
 
   QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testBufferedLineRenderingClipping()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  QgsVectorLayer *layerLines = new QgsVectorLayer( testDataPath( "/3d/lines.shp" ), "lines", "ogr" );
+  QVERIFY( layerLines->isValid() );
+
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setWidth( 10 );
+  lineSymbol->setExtrusionHeight( 30 );
+  QgsPhongMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
+  layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << layerLines );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 300, 0, 250 ), 500, 45, 0 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( -0.866025, 0, -0.5, 432.0 )
+                                         << QVector4D( 0.5, 0, -0.866025, 125.0 );
+
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "buffered_lines_clipping", "buffered_lines_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  delete scene;
+  delete map;
+  delete layerLines;
 }
 
 void TestQgs3DRendering::testBufferedLineRenderingWidth()
