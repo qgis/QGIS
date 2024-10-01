@@ -547,6 +547,20 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.wrappers = []
 
     def load(self):
+        if self.alg.flags() & Qgis.ProcessingAlgorithmFlag.SecurityRisk:
+            message_box = QMessageBox()
+            message_box.setWindowTitle(self.tr("Security warning"))
+            message_box.setText(
+                self.tr(
+                    "This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks. Only continue if you trust the source of the file. Continue?"))
+            message_box.setIcon(QMessageBox.Icon.Warning)
+            message_box.addButton(QMessageBox.StandardButton.Yes)
+            message_box.addButton(QMessageBox.StandardButton.No)
+            message_box.setDefaultButton(QMessageBox.StandardButton.No)
+            message_box.exec()
+            if message_box.result() != QMessageBox.StandardButton.Yes:
+                return
+
         settings = QgsSettings()
         last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
         filters = ';;'.join([self.tr('Batch Processing files (*.batch)'),
