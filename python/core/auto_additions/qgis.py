@@ -6171,6 +6171,9 @@ QgsProcessingAlgorithm.FlagRequiresProject = Qgis.ProcessingAlgorithmFlag.Requir
 QgsProcessingAlgorithm.Flag.FlagRequiresProject = Qgis.ProcessingAlgorithmFlag.RequiresProject
 QgsProcessingAlgorithm.FlagRequiresProject.is_monkey_patched = True
 QgsProcessingAlgorithm.FlagRequiresProject.__doc__ = "The algorithm requires that a valid QgsProject is available from the processing context in order to execute"
+QgsProcessingAlgorithm.SecurityRisk = Qgis.ProcessingAlgorithmFlag.SecurityRisk
+QgsProcessingAlgorithm.SecurityRisk.is_monkey_patched = True
+QgsProcessingAlgorithm.SecurityRisk.__doc__ = "The algorithm represents a potential security risk if executed with untrusted inputs. \n.. versionadded:: 3.40"
 QgsProcessingAlgorithm.FlagDeprecated = Qgis.ProcessingAlgorithmFlag.Deprecated
 QgsProcessingAlgorithm.Flag.FlagDeprecated = Qgis.ProcessingAlgorithmFlag.Deprecated
 QgsProcessingAlgorithm.FlagDeprecated.is_monkey_patched = True
@@ -6238,6 +6241,10 @@ Qgis.ProcessingAlgorithmFlag.__doc__ = """Flags indicating how and when an algor
 * ``RequiresProject``: The algorithm requires that a valid QgsProject is available from the processing context in order to execute
 
   Available as ``QgsProcessingAlgorithm.FlagRequiresProject`` in older QGIS releases.
+
+* ``SecurityRisk``: The algorithm represents a potential security risk if executed with untrusted inputs.
+
+  .. versionadded:: 3.40
 
 * ``Deprecated``: Algorithm is deprecated
 
