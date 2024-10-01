@@ -32,6 +32,8 @@ Constructor for QgsProcessingModelAlgorithm.
     virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );  //#spellok
 
 
+    virtual Qgis::ProcessingAlgorithmFlags flags() const;
+
     virtual QString name() const;
 
     virtual QString displayName() const;
