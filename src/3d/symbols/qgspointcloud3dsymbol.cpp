@@ -597,4 +597,3 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *m
   Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", static_cast< int >( colorRampType ) );
   mat->addParameter( colorRampTypeParameter );
 }
-
