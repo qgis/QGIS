@@ -2585,6 +2585,7 @@ class CORE_EXPORT Qgis
       SkipSymbolRendering      = 0x40000, //!< Disable symbol rendering while still drawing labels if enabled \since QGIS 3.24
       RecordProfile            = 0x80000, //!< Enable run-time profiling while rendering \since QGIS 3.34
       AlwaysUseGlobalMasks     = 0x100000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
+      DisableSymbolClippingToExtent = 0x200000, //!< Force symbol clipping to map extent to be disabled in all situations. This will result in slower rendering, and should only be used in situations where the feature clipping is always undesirable. \since QGIS 3.40
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
