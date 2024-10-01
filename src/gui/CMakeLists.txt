@@ -1062,6 +1062,7 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
   annotations/qgscreateannotationitemmaptool.h
+  annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
