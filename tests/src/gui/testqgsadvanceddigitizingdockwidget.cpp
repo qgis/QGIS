@@ -134,7 +134,7 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
   widget.mMapCanvas->mapSettings().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3739" ) ) );
   result = widget.parseUserInput( QStringLiteral( "100" ), Qgis::CadConstraintType::Distance, ok );
-  QCOMPARE( result, 100.0 * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::FeetUSSurvey ) );
+  QCOMPARE( result, 100.0 * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::Feet ) );
   QVERIFY( ok );
 
 
