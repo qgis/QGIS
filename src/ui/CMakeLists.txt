@@ -19,6 +19,7 @@ file(GLOB GEOREFERENCER_UIS "${CMAKE_CURRENT_SOURCE_DIR}/georeferencer/*.ui")
 file(GLOB ANNOTATION_UIS "${CMAKE_CURRENT_SOURCE_DIR}/annotations/*.ui")
 file(GLOB SENSOR_UIS "${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.ui")
 file(GLOB TILED_SCENE_UIS "${CMAKE_CURRENT_SOURCE_DIR}/tiledscene/*.ui")
+file(GLOB STAC_UIS "${CMAKE_CURRENT_SOURCE_DIR}/stac/*.ui")
 
 if (BUILD_WITH_QT6)
   QT6_WRAP_UI(QGIS_UIS_H
@@ -42,6 +43,7 @@ if (BUILD_WITH_QT6)
     ${ANNOTATION_UIS}
     ${SENSOR_UIS}
     ${TILED_SCENE_UIS}
+    ${STAC_UIS}
   )
 else()
   QT5_WRAP_UI(QGIS_UIS_H
@@ -65,6 +67,7 @@ else()
     ${ANNOTATION_UIS}
     ${SENSOR_UIS}
     ${TILED_SCENE_UIS}
+    ${STAC_UIS}
   )
 endif()
 

@@ -505,6 +505,11 @@ set(QGIS_GUI_SRCS
   settings/qgssettingstreemodel.cpp
   settings/qgssettingstreewidget.cpp
 
+  stac/qgsstacconnectiondialog.cpp
+  stac/qgsstacdataitemguiprovider.cpp
+  stac/qgsstacdownloadassetsdialog.cpp
+  stac/qgsstacobjectdetailsdialog.cpp
+
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
@@ -1560,6 +1565,11 @@ set(QGIS_GUI_HDRS
   settings/qgssettingstreemodel.h
   settings/qgssettingstreewidget.h
 
+  stac/qgsstacconnectiondialog.h
+  stac/qgsstacdataitemguiprovider.h
+  stac/qgsstacdownloadassetsdialog.h
+  stac/qgsstacobjectdetailsdialog.h
+
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
@@ -1720,6 +1730,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
+  ${CMAKE_SOURCE_DIR}/src/gui/stac
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector

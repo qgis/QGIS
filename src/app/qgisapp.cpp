@@ -233,6 +233,8 @@
 #include "qgscustomlayerorderwidget.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemguiproviderregistry.h"
+#include "qgsstacdataitems.h"
+#include "qgsstacdataitemguiprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdoublespinbox.h"
@@ -1442,6 +1444,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsFieldDomainItemGuiProvider() );
   QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsRelationshipItemGuiProvider() );
   QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsDatabaseItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsStacDataItemGuiProvider() );
 
   QShortcut *showBrowserDock = new QShortcut( QKeySequence( tr( "Ctrl+2" ) ), this );
   connect( showBrowserDock, &QShortcut::activated, mBrowserWidget, &QgsDockWidget::toggleUserVisible );
@@ -1647,6 +1650,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 #endif
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStacDataItemProvider() );
 
   // now when all data item providers are registered, customize both browsers
   QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget );
