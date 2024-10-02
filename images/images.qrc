@@ -1009,6 +1009,7 @@
         <file>themes/default/mActionTextInsideRect.svg</file>
         <file>themes/default/mIconLabelingRules.svg</file>
         <file>themes/default/stacked-diagram.svg</file>
+        <file>themes/default/mIconStac.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
