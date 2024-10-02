@@ -96,7 +96,7 @@ bool QgsMeshSurfaceToPolygonAlgorithm::prepareAlgorithm( const QVariantMap &para
 
   if ( feedback )
   {
-    feedback->setProgressText( QObject::tr( "Preparing data" ) );
+    feedback->pushInfo( QObject::tr( "Preparing data" ) );
   }
 
   return true;
@@ -110,7 +110,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     if ( feedback->isCanceled() )
       return QVariantMap();
     feedback->setProgress( 0 );
-    feedback->setProgressText( QObject::tr( "Creating output vector layer" ) );
+    feedback->pushInfo( QObject::tr( "Creating output vector layer" ) );
   }
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
@@ -181,7 +181,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
       return QVariantMap();
   }
 
-  feedback->setProgressText( QObject::tr( "Output vector layer created" ) );
+  feedback->pushInfo( QObject::tr( "Output vector layer created" ) );
 
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;
