@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsApplication
+from qgis.core import Qgis, QgsApplication
 from MetaSearch.dialogs.maindialog import MetaSearchDialog
 from MetaSearch.util import get_help_url, log_message, open_url, StaticContext
 
@@ -50,7 +50,9 @@ class MetaSearchPlugin:
         """startup"""
 
         # run
-        log_message('Initializing plugin', 'Info')
+        log_message(QCoreApplication.translate(
+            'MetaSearch', 'Initializing plugin'), Qgis.Info)
+
         run_icon = QIcon('{}/{}'.format(self.context.ppath, 'images/MetaSearch.svg'))
         self.action_run = QAction(run_icon, 'MetaSearch',
                                   self.iface.mainWindow())
@@ -81,7 +83,9 @@ class MetaSearchPlugin:
     def unload(self):
         """teardown"""
 
-        log_message('Unloading plugin', 'Info')
+        log_message(QCoreApplication.translate(
+            'MetaSearch', 'Unloading plugin'), Qgis.Info)
+
         # remove the plugin menu item and icon
         self.iface.removePluginWebMenu(self.web_menu, self.action_run)
         self.iface.removePluginWebMenu(self.web_menu, self.action_help)
@@ -90,7 +94,9 @@ class MetaSearchPlugin:
     def run(self):
         """open MetaSearch"""
 
-        log_message('Running plugin', 'Info')
+        log_message(QCoreApplication.translate(
+            'MetaSearch', 'Running plugin'), Qgis.Info)
+
         self.dialog.exec()
 
     def help(self):
