@@ -973,18 +973,19 @@ void TestQgsLayerTree::testRasterSymbolNode()
   const std::unique_ptr< QgsLayerTreeLayer > n = std::make_unique< QgsLayerTreeLayer >( rl.get() );
 
   // not checkable
-  QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ) );
+  QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ), QStringLiteral( "parentKey" ) );
   QVERIFY( !rasterNode.isCheckable() );
   QCOMPARE( rasterNode.ruleKey(), QStringLiteral( "key" ) );
   QCOMPARE( static_cast< int >( rasterNode.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
   QCOMPARE( rasterNode.data( Qt::DisplayRole ).toString(), QStringLiteral( "my node" ) );
   QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt(), static_cast< int >( QgsLayerTreeModelLegendNode::RasterSymbolLegend ) );
   QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(), QStringLiteral( "key" ) );
+  QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) ).toString(), QStringLiteral( "parentKey" ) );
   QCOMPARE( rasterNode.data( Qt::CheckStateRole ), QVariant() );
   QVERIFY( !rasterNode.setData( true, Qt::CheckStateRole ) );
 
   // checkable
-  const QgsRasterSymbolLegendNode rasterNode2( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, true, QStringLiteral( "key" ) );
+  const QgsRasterSymbolLegendNode rasterNode2( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, true, QStringLiteral( "key" ), QStringLiteral( "parentKey" ) );
   QVERIFY( rasterNode2.isCheckable() );
   QCOMPARE( static_cast< int >( rasterNode2.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable ) );
 }

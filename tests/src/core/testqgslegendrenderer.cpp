@@ -50,7 +50,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsheatmaprenderer.h"
-
+#include "qgsmeshlayer.h"
 class TestRasterRenderer : public QgsPalettedRasterRenderer
 {
   public:
@@ -135,6 +135,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testFilterByExpression();
     void testFilterByExpressionWithContext();
     void testDiagramAttributeLegend();
+    void testDiagramMeshLegend();
     void testDiagramSizeLegend();
     void testDataDefinedSizeCollapsed();
     void testDataDefinedSizeSeparated();
@@ -161,9 +162,9 @@ class TestQgsLegendRenderer : public QgsTest
     QgsRasterLayer *mRL = nullptr;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName, double symbolSpacing );
 
-    bool _verifyImage( const QImage &image, const QString &testName, int diff = 30 )
+    bool _verifyImage( const QImage &image, const QString &testName, int diff = 30, const QSize &sizeTolerance = QSize( 6, 10 ) )
     {
-      return QGSIMAGECHECK( testName, testName, image, QString(), diff, QSize( 6, 10 ) );
+      return QGSIMAGECHECK( testName, testName, image, QString(), diff, sizeTolerance );
     }
 
     static void setStandardTestFont( QgsLegendSettings &settings, const QString &style = QStringLiteral( "Roman" ) )
@@ -1448,6 +1449,79 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_diagram_attributes" ) ) );
 
   QgsProject::instance()->removeMapLayer( vl4 );
+}
+
+void TestQgsLegendRenderer::testDiagramMeshLegend()
+{
+  const QString uri_1( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water Level", "Depth" and "Velocity"
+
+  QTemporaryDir tempDir;
+  const QString uri( tempDir.filePath( QStringLiteral( "mesh.nc" ) ) );
+
+  QFile::copy( uri_1, uri );
+  QgsMeshLayer *layer = new QgsMeshLayer( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->datasetGroupCount(), 4 );
+
+  QgsProject::instance()->addMapLayer( layer );
+
+  int scalarIndex = 0;
+  int vectorIndex = -1;
+
+  QgsMeshRendererSettings rendererSettings = layer->rendererSettings();
+  rendererSettings.setActiveScalarDatasetGroup( scalarIndex );
+  rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
+  layer->setRendererSettings( rendererSettings );
+
+  std::unique_ptr< QgsLayerTree > root( std::make_unique<QgsLayerTree>() );
+  root->addLayer( layer );
+  std::unique_ptr<QgsLayerTreeModel> legendModel( std::make_unique<QgsLayerTreeModel>( root.get() ) );
+
+  QgsLegendSettings settings;
+
+  setStandardTestFont( settings );
+  QImage res = renderLegend( legendModel.get(), settings );
+
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_no_vector" ), 30, QSize( 8, 12 ) ) );
+
+  //red vector
+  QgsMeshLayer *layer2 = layer->clone();
+  QgsProject::instance()->removeMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer2 );
+
+  vectorIndex = 2;
+  rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
+  QgsMeshRendererVectorSettings vectorSettings = rendererSettings.vectorSettings( vectorIndex );
+  vectorSettings.setColor( Qt::red );
+  rendererSettings.setVectorSettings( vectorIndex, vectorSettings );
+  layer2->setRendererSettings( rendererSettings );
+
+  root = std::make_unique<QgsLayerTree>();
+  root->addLayer( layer2 );
+  legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
+
+  res = renderLegend( legendModel.get(), settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_red_vector" ), 30, QSize( 8, 13 ) ) );
+
+  //color ramp vector
+  QgsMeshLayer *layer3 = layer2->clone();
+  QgsProject::instance()->removeMapLayer( layer2 );
+  QgsProject::instance()->addMapLayer( layer3 );
+
+  const QgsColorRampShader fcn = rendererSettings.scalarSettings( vectorIndex ).colorRampShader();
+  vectorSettings.setColorRampShader( fcn );
+  vectorSettings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
+  rendererSettings.setVectorSettings( vectorIndex, vectorSettings );
+  layer3->setRendererSettings( rendererSettings );
+
+  root = std::make_unique<QgsLayerTree>();
+  root->addLayer( layer3 );
+  legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
+
+  res = renderLegend( legendModel.get(), settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_color_ramp_vector" ), 30, QSize( 8, 19 ) ) );
+
+  QgsProject::instance()->removeMapLayer( layer3 );
 }
 
 void TestQgsLegendRenderer::testDiagramSizeLegend()
