@@ -138,11 +138,11 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   for ( int i = 0; i < mNativeMesh.faceCount(); i++ )
   {
-      if ( feedback )
-      {
-        if ( feedback->isCanceled() )
-          return QVariantMap();
-      }
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+        return QVariantMap();
+    }
 
     const QgsMeshFace &face = mNativeMesh.face( i );
     QVector<QgsPoint> vertices( face.size() );
@@ -187,7 +187,6 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     if ( feedback->isCanceled() )
       return QVariantMap();
   }
-
 
 
   QVariantMap ret;
