@@ -93,6 +93,13 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     }
 
     mHandler->processNode( pc, pcNode, mContext );
+
+    if ( mContext.isCanceled() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
+      return;
+    }
+
     if ( mContext.symbol()->renderAsTriangles() )
       mHandler->triangulate( pc, pcNode, mContext, bbox );
   } );
