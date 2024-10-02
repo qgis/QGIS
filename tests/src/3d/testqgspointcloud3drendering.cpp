@@ -49,6 +49,7 @@ class TestQgsPointCloud3DRendering : public QgsTest
     void testDisableSync3DRendererTo2DRenderer();
 
     void testPointCloudSingleColor();
+    void testPointCloudSingleColorClipping();
     void testPointCloudAttributeByRamp();
     void testPointCloudClassification();
     void testPointCloudClassificationOverridePointSizes();
@@ -276,6 +277,57 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
   QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
+void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
+{
+  const QgsRectangle fullExtent = mLayer->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayer );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol();
+  symbol->setSingleColor( QColor( 255, 0, 0 ) );
+  symbol->setPointSize( 10 );
+
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+  renderer->setSymbol( symbol );
+  mLayer->setRenderer3D( renderer );
+
+  scene->cameraController()->resetView( 90 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, 0, 0.5, 1.0 )
+                                         << QVector4D( 0.5, 0, -0.866025, 0.5 );
+  scene->enableClipping( clipPlanesEquations );
+
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor_clipping", "pointcloud_3d_singlecolor_clipping", img, QString(), 80, QSize( 0, 0 ), 15 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img2, QString(), 80, QSize( 0, 0 ), 15 );
+}
 
 void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
 {
