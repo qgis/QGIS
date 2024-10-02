@@ -114,6 +114,24 @@ Returns the 3D map settings.
 .. versionadded:: 3.30
 %End
 
+    bool hasSceneUpdatesEnabled() const;
+%Docstring
+Returns whether updates of the 3D scene's entities are allowed.
+Normally, scene updates are enabled. But for debugging purposes,
+it may be useful to temporarily disable scene updates.
+
+.. versionadded:: 3.40
+%End
+
+    void setSceneUpdatesEnabled( bool enabled );
+%Docstring
+Sets whether updates of the 3D scene's entities are allowed.
+Normally, scene updates are enabled. But for debugging purposes,
+it may be useful to temporarily disable scene updates.
+
+.. versionadded:: 3.40
+%End
+
  static QMap< QString, Qgs3DMapScene * > openScenes() /Deprecated/;
 %Docstring
 Returns a map of 3D map scenes (by name) open in the QGIS application.

@@ -188,6 +188,24 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qgs3DMapSettings *mapSettings() const { return &mMap; }
 
     /**
+     * Returns whether updates of the 3D scene's entities are allowed.
+     * Normally, scene updates are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable scene updates.
+     *
+     * \since QGIS 3.40
+     */
+    bool hasSceneUpdatesEnabled() const { return mSceneUpdatesEnabled; }
+
+    /**
+     * Sets whether updates of the 3D scene's entities are allowed.
+     * Normally, scene updates are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable scene updates.
+     *
+     * \since QGIS 3.40
+     */
+    void setSceneUpdatesEnabled( bool enabled ) { mSceneUpdatesEnabled = enabled; }
+
+    /**
      * Returns a map of 3D map scenes (by name) open in the QGIS application.
      *
      * \note Only available from the QGIS desktop application.
@@ -301,6 +319,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     //! 3d axis visualization
     Qgs3DAxis *m3DAxis = nullptr;
+
+    bool mSceneUpdatesEnabled = true;
 
 };
 #endif // QGS3DMAPSCENE_H

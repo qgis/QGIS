@@ -322,6 +322,12 @@ void Qgs3DMapScene::onCameraChanged()
 
 void Qgs3DMapScene::updateScene( bool forceUpdate )
 {
+  if ( !mSceneUpdatesEnabled )
+  {
+    QgsDebugMsgLevel( "Scene update skipped", 2 );
+    return;
+  }
+
   if ( forceUpdate )
     QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
