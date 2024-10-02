@@ -297,10 +297,15 @@ bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
     return true;
   if ( qgsDoubleNear( mMaximumScale, 0.0 ) && qgsDoubleNear( mMinimumScale, 0.0 ) )
     return true;
-  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && mMaximumScale > scale )
+
+  // maxScale is inclusive ( (< && !=) --> < --> no render )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && ( scale < mMaximumScale && !qgsDoubleNear( scale, mMaximumScale, 1E-8 ) ) )
     return false;
-  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && mMinimumScale < scale )
+
+  // minScale is exclusive ( >= --> no render )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && ( scale > mMinimumScale || qgsDoubleNear( scale, mMinimumScale, 1E-8 ) ) )
     return false;
+
   return true;
 }
 
