@@ -138,6 +138,12 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   for ( int i = 0; i < mNativeMesh.faceCount(); i++ )
   {
+      if ( feedback )
+      {
+        if ( feedback->isCanceled() )
+          return QVariantMap();
+      }
+
     const QgsMeshFace &face = mNativeMesh.face( i );
     QVector<QgsPoint> vertices( face.size() );
     for ( int j = 0; j < face.size(); ++j )
@@ -177,11 +183,12 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   if ( feedback )
   {
+    feedback->pushInfo( QObject::tr( "Output vector layer created" ) );
     if ( feedback->isCanceled() )
       return QVariantMap();
   }
 
-  feedback->pushInfo( QObject::tr( "Output vector layer created" ) );
+
 
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;
