@@ -36,7 +36,7 @@ with warnings.catch_warnings():
     from jinja2 import Environment, FileSystemLoader
 
 from qgis.core import Qgis, QgsMessageLog, QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication, QUrl, QUrlQuery
+from qgis.PyQt.QtCore import QUrl, QUrlQuery
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
@@ -168,8 +168,7 @@ def clean_ows_url(url):
     return url.toString()
 
 
-def log_message(message, level='Info'):
+def log_message(message, level=Qgis.Info):
     """helper function to emit logging messages"""
 
-    message_translated = QCoreApplication.translate('MetaSearch', message)
-    LOGGER.logMessage(message_translated, 'MetaSearch', getattr(Qgis, level, 'Info'))
+    LOGGER.logMessage(message, 'MetaSearch', level)
