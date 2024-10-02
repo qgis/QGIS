@@ -362,6 +362,20 @@ set(QGIS_CORE_SRCS
   scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
+  stac/qgsstacasset.cpp
+  stac/qgsstaccatalog.cpp
+  stac/qgsstaccollection.cpp
+  stac/qgsstacconnection.cpp
+  stac/qgsstaccontroller.cpp
+  stac/qgsstacdataitems.cpp
+  stac/qgsstacextent.cpp
+  stac/qgsstacitemcollection.cpp
+  stac/qgsstacitem.cpp
+  stac/qgsstaclink.cpp
+  stac/qgsstacobject.cpp
+  stac/qgsstacparser.cpp
+  stac/qgsstacprovider.cpp
+
   textrenderer/qgsfontmanager.cpp
   textrenderer/qgstextbackgroundsettings.cpp
   textrenderer/qgstextblock.cpp
@@ -1945,6 +1959,20 @@ set(QGIS_CORE_HDRS
   scalebar/qgssteppedlinescalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
+  stac/qgsstacasset.h
+  stac/qgsstaccatalog.h
+  stac/qgsstaccollection.h
+  stac/qgsstacconnection.h
+  stac/qgsstaccontroller.h
+  stac/qgsstacdataitems.h
+  stac/qgsstacextent.h
+  stac/qgsstacitemcollection.h
+  stac/qgsstacitem.h
+  stac/qgsstaclink.h
+  stac/qgsstacobject.h
+  stac/qgsstacparser.h
+  stac/qgsstacprovider.h
+
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
@@ -2395,6 +2423,7 @@ target_include_directories(qgis_core PUBLIC
   scalebar
   settings
   sensor
+  stac
   symbology
   textrenderer
   tiledscene
