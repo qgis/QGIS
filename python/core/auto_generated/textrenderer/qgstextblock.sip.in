@@ -53,6 +53,13 @@ Converts the block to plain text.
 .. versionadded:: 3.16
 %End
 
+    void reserve( int count );
+%Docstring
+Reserves the specified ``count`` of fragments for optimised fragment appending.
+
+.. versionadded:: 3.40
+%End
+
     void append( const QgsTextFragment &fragment );
 %Docstring
 Appends a ``fragment`` to the block.

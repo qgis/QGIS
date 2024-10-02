@@ -66,6 +66,13 @@ class CORE_EXPORT QgsTextBlock
     QString toPlainText() const;
 
     /**
+     * Reserves the specified \a count of fragments for optimised fragment appending.
+     *
+     * \since QGIS 3.40
+     */
+    void reserve( int count );
+
+    /**
      * Appends a \a fragment to the block.
      */
     void append( const QgsTextFragment &fragment );

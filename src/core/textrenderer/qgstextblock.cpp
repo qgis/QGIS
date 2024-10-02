@@ -61,6 +61,11 @@ QString QgsTextBlock::toPlainText() const
   return res;
 }
 
+void QgsTextBlock::reserve( int count )
+{
+  mFragments.reserve( count );
+}
+
 void QgsTextBlock::append( const QgsTextFragment &fragment )
 {
   mFragments.append( fragment );

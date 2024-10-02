@@ -81,6 +81,7 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
 
   // DO NOT USE _format in the following code, always use lFormat!!
 
+#if 0
   QStringList textLines;
   for ( const QString &line : text )
   {
@@ -93,14 +94,19 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
       textLines.append( line );
     }
   }
+#endif
 
-  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  QgsTextDocumentRenderContext documentContext;
+  documentContext.setFlags( flags );
+  documentContext.setMaximumWidth( rect.width() );
+
+  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( text ) : QgsTextDocument::fromPlainText( text );
   document.applyCapitalization( lFormat.capitalization() );
 
   const double fontScale = calculateScaleFactorForFormat( context, lFormat );
-  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, lFormat, context, fontScale );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, lFormat, context, fontScale, documentContext );
 
-  drawDocument( rect, lFormat, document, metrics, context, alignment, vAlignment, rotation, mode, flags );
+  drawDocument( rect, lFormat, metrics.document(), metrics, context, alignment, vAlignment, rotation, mode, flags );
 }
 
 void QgsTextRenderer::drawDocument( const QRectF &rect, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment horizontalAlignment, Qgis::TextVerticalAlignment verticalAlignment, double rotation, Qgis::TextLayoutMode mode, Qgis::TextRendererFlags )
@@ -133,7 +139,7 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizo
   const double fontScale = calculateScaleFactorForFormat( context, lFormat );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, lFormat, context, fontScale );
 
-  drawDocument( point, lFormat, document, metrics, context, alignment, rotation );
+  drawDocument( point, lFormat, metrics.document(), metrics, context, alignment, rotation );
 }
 
 void QgsTextRenderer::drawDocument( QPointF point, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment alignment, double rotation )
@@ -201,7 +207,6 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
 
   QStringList graphemes;
   QVector< QgsTextCharacterFormat > graphemeFormats;
-  QVector< QgsTextDocument > graphemeDocuments;
   QVector< QgsTextDocumentMetrics > graphemeMetrics;
 
   for ( const QgsTextBlock &block : std::as_const( document ) )
@@ -217,7 +222,6 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
         QgsTextDocument document;
         document.append( QgsTextBlock( QgsTextFragment( grapheme, fragment.characterFormat() ) ) );
 
-        graphemeDocuments.append( document );
         graphemeMetrics.append( QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale ) );
       }
     }
@@ -352,7 +356,6 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
   {
     for ( const QgsTextRendererUtils::CurvedGraphemePlacement &grapheme : std::as_const( placement->graphemePlacement ) )
     {
-      const QgsTextDocument &document = graphemeDocuments.at( grapheme.graphemeIndex );
       const QgsTextDocumentMetrics &metrics = graphemeMetrics.at( grapheme.graphemeIndex );
       const QgsTextRenderer::Component &component = components[grapheme.graphemeIndex ];
 
@@ -360,7 +363,7 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
                         context,
                         format,
                         component,
-                        document,
+                        metrics.document(),
                         metrics,
                         Qgis::TextHorizontalAlignment::Left,
                         Qgis::TextVerticalAlignment::Top,
@@ -370,7 +373,6 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
 
   for ( const QgsTextRendererUtils::CurvedGraphemePlacement &grapheme : std::as_const( placement->graphemePlacement ) )
   {
-    const QgsTextDocument &document = graphemeDocuments.at( grapheme.graphemeIndex );
     const QgsTextDocumentMetrics &metrics = graphemeMetrics.at( grapheme.graphemeIndex );
     const QgsTextRenderer::Component &component = components[grapheme.graphemeIndex ];
 
@@ -378,7 +380,7 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
                       context,
                       format,
                       component,
-                      document,
+                      metrics.document(),
                       metrics,
                       Qgis::TextHorizontalAlignment::Left,
                       Qgis::TextVerticalAlignment::Top,
@@ -414,7 +416,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextH
   const double fontScale = calculateScaleFactorForFormat( context, format );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
-  drawPart( rect, rotation, alignment, Qgis::TextVerticalAlignment::Top, document, metrics, context, format, part, Qgis::TextLayoutMode::Rectangle );
+  drawPart( rect, rotation, alignment, Qgis::TextVerticalAlignment::Top, metrics.document(), metrics, context, format, part, Qgis::TextLayoutMode::Rectangle );
 }
 
 void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, Qgis::TextLayoutMode mode )
@@ -496,7 +498,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHoriz
   const double fontScale = calculateScaleFactorForFormat( context, format );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
-  drawPart( origin, rotation, alignment, document, metrics, context, format, part, Qgis::TextLayoutMode::Point );
+  drawPart( origin, rotation, alignment, metrics.document(), metrics, context, format, part, Qgis::TextLayoutMode::Point );
 }
 
 void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, Qgis::TextLayoutMode mode )
