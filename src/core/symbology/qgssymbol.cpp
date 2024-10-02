@@ -1560,7 +1560,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       break;
     }
   }
-  clippingEnabled &= !context.testFlag( Qgis::RenderContextFlag::DisableSymbolClippingToExtent ) 
+  clippingEnabled &= !context.testFlag( Qgis::RenderContextFlag::DisableSymbolClippingToExtent );
   if ( clippingEnabled && context.testFlag( Qgis::RenderContextFlag::RenderMapTile ) )
   {
     // If the "avoid artifacts between adjacent tiles" flag is set (RenderMapTile), then we'll force disable
