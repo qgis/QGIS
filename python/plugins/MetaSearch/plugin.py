@@ -50,8 +50,7 @@ class MetaSearchPlugin:
         """startup"""
 
         # run
-        log_message(QCoreApplication.translate(
-            'MetaSearch', 'Initializing plugin'), Qgis.Info)
+        log_message('Initializing plugin', Qgis.Info)
 
         run_icon = QIcon('{}/{}'.format(self.context.ppath, 'images/MetaSearch.svg'))
         self.action_run = QAction(run_icon, 'MetaSearch',
@@ -83,8 +82,7 @@ class MetaSearchPlugin:
     def unload(self):
         """teardown"""
 
-        log_message(QCoreApplication.translate(
-            'MetaSearch', 'Unloading plugin'), Qgis.Info)
+        log_message('Unloading plugin', Qgis.Info)
 
         # remove the plugin menu item and icon
         self.iface.removePluginWebMenu(self.web_menu, self.action_run)
@@ -94,8 +92,7 @@ class MetaSearchPlugin:
     def run(self):
         """open MetaSearch"""
 
-        log_message(QCoreApplication.translate(
-            'MetaSearch', 'Running plugin'), Qgis.Info)
+        log_message('Running plugin', Qgis.Info)
 
         self.dialog.exec()
 
