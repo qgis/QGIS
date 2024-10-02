@@ -98,6 +98,12 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStrokeWidth(root, 2, 11)
         self.assertStaticDisplacement(root, 18, 36)
 
+        # Check negative offset
+        symbol.setOffset(QPointF(-5, -10))
+        dom, root = self.symbolToSld(symbol)
+        # print("Simple marker unit mm: " + root.ownerDocument().toString())
+        self.assertStaticDisplacement(root, -18, -36)
+
     def testSimpleMarkerUnitPixels(self):
         symbol = QgsSimpleMarkerSymbolLayer(
             QgsSimpleMarkerSymbolLayerBase.Shape.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)

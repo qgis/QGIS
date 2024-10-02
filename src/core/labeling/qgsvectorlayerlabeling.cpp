@@ -348,7 +348,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       const QPointF anchor = quadOffsetToSldAnchor( settings.pointSettings().quadrant() );
       QgsSymbolLayerUtils::createAnchorPointElement( doc, pointPlacement, anchor );
       // displacement
-      if ( settings.xOffset > 0 || settings.yOffset > 0 )
+      if ( settings.xOffset != 0 || settings.yOffset != 0 )
       {
         const Qgis::RenderUnit offsetUnit =  settings.offsetUnits;
         const double dx = QgsSymbolLayerUtils::rescaleUom( settings.xOffset, offsetUnit, props );
