@@ -687,7 +687,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual([f.name() for f in l4.dataProvider().fields()], ['years'])
         self.assertEqual([f.type() for f in l4.dataProvider().fields()],
-                         [QMetaType.Double])
+                         [QMetaType.Type.Double])
         self.assertEqual([f.attributes() for f in l4.getFeatures()],
                          [[31557600.0]])
         self.assertEqual([f.geometry().asWkt() for f in l4.getFeatures()],
