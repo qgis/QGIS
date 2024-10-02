@@ -1,0 +1,277 @@
+{
+  "stac_version": "1.0.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/sat/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/view/v1.0.0/schema.json"
+  ],
+  "id": "sentinel-2",
+  "type": "Collection",
+  "title": "Sentinel-2 MSI: MultiSpectral Instrument, Level-2A",
+  "description": "The SENTINEL-2 mission is a land monitoring constellation of two satellites each equipped with a MSI (Multispectral Imager) instrument covering 13 spectral bands providing high resolution optical imagery (i.e., 10m, 20m, 60 m) every 10 days with one satellite and 5 days with two satellites",
+  "license": "proprietary",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -180,
+          -82.852377834669,
+          180,
+          82.819463367711
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2017-04-12T02:57:21.459000Z",
+          "2021-04-22T11:30:12.767000Z"
+        ]
+      ]
+    }
+  },
+  "links": [
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Example Catalog"
+    },
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Example Catalog"
+    },
+    {
+      "rel": "license",
+      "href": "https://scihub.copernicus.eu/twiki/pub/SciHubWebPortal/TermsConditions/Sentinel_Data_Terms_and_Conditions.pdf",
+      "title": "Legal notice on the use of Copernicus Sentinel Data and Service Information"
+    }
+  ],
+  "providers": [
+    {
+      "name": "European Union/ESA/Copernicus",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://sentinel.esa.int/web/sentinel/user-guides/sentinel-2-msi"
+    },
+    {
+      "name": "AWS",
+      "roles": [
+        "host"
+      ],
+      "url": "https://registry.opendata.aws/sentinel-2/"
+    },
+    {
+      "name": "jeobrowser",
+      "roles": [
+        "processor"
+      ],
+      "url": "https://github.com/jjrom/resto"
+    }
+  ],
+  "summaries": {
+    "datetime": {
+      "minimum": "2017-04-12T02:57:21Z",
+      "maximum": "2021-04-22T11:30:12Z"
+    },
+    "instruments": {
+      "type": "string",
+      "const": "msi",
+      "title": "Multispectral Intrument",
+      "count": 6613431
+    },
+    "resto:landcover": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "cultivated",
+          "title": "Cultivated",
+          "count": 490750
+        },
+        {
+          "const": "desert",
+          "title": "Desert",
+          "count": 543120
+        },
+        {
+          "const": "flooded",
+          "title": "Flooded",
+          "count": 5187
+        },
+        {
+          "const": "forest",
+          "title": "Forest",
+          "count": 767807
+        },
+        {
+          "const": "herbaceous",
+          "title": "Herbaceous",
+          "count": 674281
+        },
+        {
+          "const": "ice",
+          "title": "Ice",
+          "count": 231285
+        },
+        {
+          "const": "urban",
+          "title": "Urban",
+          "count": 1219
+        },
+        {
+          "const": "water",
+          "title": "Water",
+          "count": 2303314
+        }
+      ]
+    },
+    "resto:location": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "tropical",
+          "title": "Tropical",
+          "count": 1807474
+        },
+        {
+          "const": "southern",
+          "title": "Southern",
+          "count": 1671685
+        },
+        {
+          "const": "northern",
+          "title": "Northern",
+          "count": 4876669
+        },
+        {
+          "const": "equatorial",
+          "title": "Equatorial",
+          "count": 27302
+        },
+        {
+          "const": "coastal",
+          "title": "Coastal",
+          "count": 1495516
+        }
+      ]
+    },
+    "platform": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "sentinel-2b",
+          "title": "Sentinel 2B",
+          "count": 3495597
+        },
+        {
+          "const": "sentinel-2a",
+          "title": "Sentinel 2A",
+          "count": 3117831
+        }
+      ]
+    },
+    "resto:season": {
+      "type": "integer",
+      "oneOf": [
+        {
+          "const": 0,
+          "title": "Winter",
+          "count": 1621108
+        },
+        {
+          "const": 2,
+          "title": "Summer",
+          "count": 2279472
+        },
+        {
+          "const": 1,
+          "title": "Spring",
+          "count": 1577067
+        },
+        {
+          "const": 3,
+          "title": "Autumn",
+          "count": 1098015
+        }
+      ]
+    },
+    "eo:bands": [
+      {
+        "title": "B1",
+        "common_name": "coastal",
+        "center_wavelength": 4.439,
+        "gsd": 60
+      },
+      {
+        "title": "B2",
+        "common_name": "blue",
+        "center_wavelength": 4.966,
+        "gsd": 10
+      },
+      {
+        "title": "B3",
+        "common_name": "green",
+        "center_wavelength": 5.6,
+        "gsd": 10
+      },
+      {
+        "title": "B4",
+        "common_name": "red",
+        "center_wavelength": 6.645,
+        "gsd": 10
+      },
+      {
+        "title": "B5",
+        "center_wavelength": 7.039,
+        "gsd": 20
+      },
+      {
+        "title": "B6",
+        "center_wavelength": 7.402,
+        "gsd": 20
+      },
+      {
+        "title": "B7",
+        "center_wavelength": 7.825,
+        "gsd": 20
+      },
+      {
+        "title": "B8",
+        "common_name": "nir",
+        "center_wavelength": 8.351,
+        "gsd": 10
+      },
+      {
+        "title": "B8A",
+        "center_wavelength": 8.648,
+        "gsd": 20
+      },
+      {
+        "title": "B9",
+        "center_wavelength": 9.45,
+        "gsd": 60
+      },
+      {
+        "title": "B10",
+        "center_wavelength": 1.3735,
+        "gsd": 60
+      },
+      {
+        "title": "B11",
+        "common_name": "swir16",
+        "center_wavelength": 1.6137,
+        "gsd": 20
+      },
+      {
+        "title": "B12",
+        "common_name": "swir22",
+        "center_wavelength": 2.2024,
+        "gsd": 20
+      }
+    ]
+  }
+}

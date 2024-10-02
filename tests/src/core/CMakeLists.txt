@@ -182,6 +182,7 @@ set(TESTS
  testqgsspatialindexkdbush.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgssqliteutils.cpp
+ testqgsstac.cpp
  testqgsstackeddiagram.cpp
  testqgsrelation.cpp
  testqgsstatisticalsummary.cpp
