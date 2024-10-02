@@ -10,6 +10,58 @@
 
 
 
+class QgsTextDocumentRenderContext
+{
+%Docstring(signature="appended")
+
+Encapsulates the context in which a text document is to be rendered.
+
+.. warning::
+
+   This API is not considered stable and may change in future QGIS versions.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgstextdocumentmetrics.h"
+%End
+  public:
+
+    Qgis::TextRendererFlags flags() const;
+%Docstring
+Returns associated text renderer flags.
+
+.. seealso:: :py:func:`setFlags`
+%End
+
+    void setFlags( Qgis::TextRendererFlags flags );
+%Docstring
+Sets associated text renderer flags.
+
+.. seealso:: :py:func:`flags`
+%End
+
+    double maximumWidth() const;
+%Docstring
+Returns the maximum width (in painter units) for rendered text.
+
+This is used to control text wrapping, when the :py:class:`Qgis`.TextRendererFlag.WrapLines flag is set.
+
+.. seealso:: :py:func:`setMaximumWidth`
+%End
+
+    void setMaximumWidth( double width );
+%Docstring
+Sets the maximum width (in painter units) for rendered text.
+
+This is used to control text wrapping, when the :py:class:`Qgis`.TextRendererFlag.WrapLines flag is set.
+
+.. seealso:: :py:func:`maximumWidth`
+%End
+
+};
+
 class QgsTextDocumentMetrics
 {
 %Docstring(signature="appended")
@@ -28,7 +80,8 @@ Contains pre-calculated metrics of a :py:class:`QgsTextDocument`.
 %End
   public:
 
-    static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0 );
+    static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
+        const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext() );
 %Docstring
 Returns precalculated text metrics for a text ``document``, when rendered using the
 given base ``format`` and render ``context``.
@@ -37,6 +90,9 @@ The optional ``scaleFactor`` parameter can specify a font size scaling factor. I
 :py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually calculations
 based on the resultant font metrics. Failure to do so will result in poor quality text rendering
 at small font sizes.
+
+Since QGIS 3.40 the optional ``documentContext`` argument can be used to pass text renderer context to change the
+logistics of the calculated metrics.
 %End
 
     bool isNullFontSize() const;
@@ -44,6 +100,16 @@ at small font sizes.
 Returns ``True`` if the metrics could not be calculated because the text format has a null font size.
 
 .. versionadded:: 3.30
+%End
+
+    const QgsTextDocument &document() const;
+%Docstring
+Returns the document associated with the calculated metrics.
+
+Note that this may not exactly match the original document which was used in the call to :py:func:`~QgsTextDocumentMetrics.calculateMetrics`,
+as certain settings (such as text wrapping) require restructuring the document.
+
+.. versionadded:: 3.40
 %End
 
     QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;

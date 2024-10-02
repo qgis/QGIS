@@ -30,7 +30,8 @@
 constexpr double SUPERSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 0.5;
 constexpr double SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 1.0 / 6.0;
 
-QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor )
+
+QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor, const QgsTextDocumentRenderContext &documentContext )
 {
   QgsTextDocumentMetrics res;
 
@@ -68,9 +69,14 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   double outerYMinLabel = 0;
   double outerYMaxLabel = 0;
 
+  res.mDocument.reserve( blockSize );
+
   for ( int blockIndex = 0; blockIndex < blockSize; blockIndex++ )
   {
     const QgsTextBlock &block = document.at( blockIndex );
+    QgsTextBlock outputBlock;
+    outputBlock.setBlockFormat( block.blockFormat() );
+    outputBlock.reserve( block.size() );
 
     double blockWidth = 0;
     double blockXMax = 0;
@@ -289,6 +295,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
         isFirstNonTabFragment = false;
       }
+
+      outputBlock.append( fragment );
     }
 
     if ( blockIndex == 0 )
@@ -374,6 +382,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     res.mFragmentVerticalOffsetsRectMode << fragmentVerticalOffsets;
     res.mFragmentVerticalOffsetsPointMode << fragmentVerticalOffsets;
     res.mFragmentHorizontalAdvance << fragmentHorizontalAdvance;
+
+    res.mDocument.append( outputBlock );
 
     if ( blockIndex > 0 )
       lastLineLeading = maxBlockLeading;
