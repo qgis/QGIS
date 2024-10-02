@@ -2088,13 +2088,12 @@ void QgsMapToolEditMeshFrame::applyZValueFromProjectTerrainOnSelectedVertices()
 
   QMap<int, double> zValues;
   QgsPointXY point;
-  bool vertexTransformed = false;
+  bool vertexTransformed;
   double elevation;
 
   for ( QMap<int, SelectedVertexData>::iterator it = mSelectedVertices.begin(); it != mSelectedVertices.end(); ++it )
   {
     const QgsPoint vertex = mapVertex( it.key() );
-    vertexTransformed = false;
 
     try
     {
@@ -2102,7 +2101,9 @@ void QgsMapToolEditMeshFrame::applyZValueFromProjectTerrainOnSelectedVertices()
       vertexTransformed = true;
     }
     catch ( const QgsCsException & )
-    {}
+    {
+      vertexTransformed = false;
+    }
 
     if ( vertexTransformed )
     {
@@ -2795,15 +2796,15 @@ void QgsMapToolEditMeshFrame::addVertex(
       const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
       const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
 
-      zValue = std::numeric_limits<double>::quiet_NaN();
-
       try
       {
         const QgsPointXY point = transformation.transform( effectivePoint.x(), effectivePoint.y() );
         zValue = terrainProvider->heightAt( point.x(), point.y() );
       }
       catch ( const QgsCsException & )
-      {}
+      {
+        zValue = std::numeric_limits<double>::quiet_NaN();
+      }
 
       // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
       if ( std::isnan( zValue ) )
