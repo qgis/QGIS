@@ -4,7 +4,7 @@
 
 A [complete developer guide](https://docs.qgis.org/latest/en/docs/developers_guide/index.html) is also available to explain the development process, the unit testing system and more!
 
-You may also want to consult the build process for QGIS which is fully detailed in the [install guide](install.md).
+You may also want to consult the build process for QGIS which is fully detailed in the [install guide](INSTALL.md).
 
 ## Bug reporting and bug fixing
 
