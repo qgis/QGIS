@@ -132,6 +132,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void searchSelectedTextInPyQGISDocs();
 
     /**
+     * Searches the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
+     *
+     * \since QGIS 3.42
+     */
+    virtual void showApiDocumentation( const QString &item );
+
+    /**
      * Toggle comment for the selected text.
      *
      * \since QGIS 3.30
