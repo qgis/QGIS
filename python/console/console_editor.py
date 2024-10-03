@@ -123,6 +123,8 @@ class Editor(QgsCodeEditorPython):
         self.modificationChanged.connect(self.editor_tab.modified)
         self.modificationAttempted.connect(self.fileReadOnly)
 
+        self.helpRequested.connect(self.console_widget.shell.help)
+
     def set_code_editor_widget(self, widget: QgsCodeEditorWidget):
         self.code_editor_widget = widget
         self.code_editor_widget.loadedExternalChanges.connect(

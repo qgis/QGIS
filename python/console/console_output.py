@@ -171,6 +171,8 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.selectAllShortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         self.selectAllShortcut.activated.connect(self.selectAll)
 
+        self.helpRequested.connect(self.shell_editor.help)
+
     def on_app_exit(self):
         """
         Prepares the console for a graceful close
@@ -310,18 +312,6 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         cmd = self.selectedText()
         self.shell_editor.insertFromDropPaste(cmd)
         self.shell_editor.entered()
-
-    def keyPressEvent(self, e):
-        # empty text indicates possible shortcut key sequence so stay in output
-        txt = e.text()
-        if len(txt) and txt >= " ":
-            self.shell_editor.append(txt)
-            self.shell_editor.moveCursorToEnd()
-            self.shell_editor.setFocus()
-            e.ignore()
-        else:
-            # possible shortcut key sequence, accept it
-            e.accept()
 
     def widgetMessageBar(self, text: str):
         self.infoBar.pushMessage(text, Qgis.MessageLevel.Info)
