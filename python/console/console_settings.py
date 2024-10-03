@@ -217,8 +217,9 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         pythonSettingsTreeNode.childSetting("autopep8-level").setValue(self.autopep8Level.value())
         pythonSettingsTreeNode.childSetting("black-normalize-quotes").setValue(self.blackNormalizeQuotes.isChecked())
         pythonSettingsTreeNode.childSetting("max-line-length").setValue(self.maxLineLength.value())
-        pythonSettingsTreeNode.childSetting('external-editor').setValue(
-            self.externalEditor.text())
+        pythonSettingsTreeNode.childSetting('external-editor').setValue(self.externalEditor.text())
+        pythonSettingsTreeNode.childSetting('context-help-embedded').setValue(self.contextHelpBrowser.currentIndex() == 0)
+        pythonSettingsTreeNode.childSetting('context-help-pyqgis').setValue(self.contextHelpApi.currentIndex() == 0)
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -252,6 +253,8 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autopep8Level.setValue(pythonSettingsTreeNode.childSetting("autopep8-level").value())
         self.blackNormalizeQuotes.setChecked(pythonSettingsTreeNode.childSetting("black-normalize-quotes").value())
         self.maxLineLength.setValue(pythonSettingsTreeNode.childSetting("max-line-length").value())
+        self.contextHelpBrowser.setCurrentIndex(0 if pythonSettingsTreeNode.childSetting('context-help-embedded').value() else 1)
+        self.contextHelpApi.setCurrentIndex(0 if pythonSettingsTreeNode.childSetting('context-help-pyqgis').value() else 1)
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)

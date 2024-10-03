@@ -38,7 +38,8 @@ from qgis.PyQt.QtWidgets import QShortcut, QApplication
 from qgis.core import (
     QgsApplication,
     Qgis,
-    QgsProcessingUtils
+    QgsProcessingUtils,
+    QgsSettingsTree,
 )
 from qgis.gui import (
     QgsCodeEditorPython,
@@ -127,7 +128,7 @@ def _help(object=None, api="c++", embedded=True):
     if not obj_info:
         return
     obj_type, module, class_name = obj_info
-    iface.showApiDocumentation(obj_type, python= not api=="c++", module=module, object=class_name)
+    iface.showApiDocumentation(obj_type, python= not api=="c++", embedded=embedded, module=module, object=class_name)
 
 """,
     r"""
@@ -468,4 +469,10 @@ class ShellScintilla(QgsCodeEditorPython):
                 QgsProcessingUtils.stringToPythonLiteral(dirname)), False)
 
     def help(self, name):
-        self._interpreter.execCommandImpl(f'_help("{name}")', show_input=False)
+
+        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+
+        embedded = pythonSettingsTreeNode.childSetting('context-help-embedded').value()
+        api = "pyqgis" if pythonSettingsTreeNode.childSetting('context-help-pyqgis').value() else "c++"
+
+        self._interpreter.execCommandImpl(f'_help("{name}", api="{api}", embedded={embedded})', show_input=False)
