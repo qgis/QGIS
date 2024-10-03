@@ -1154,8 +1154,12 @@ bool QgsMapLayer::isInScaleRange( double scale ) const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return !mScaleBasedVisibility ||
-         ( ( mMinScale == 0 || mMinScale * Qgis::SCALE_PRECISION < scale )
-           && ( mMaxScale == 0 || scale < mMaxScale ) );
+         ( ( mMinScale == 0
+             // mMinScale (denominator!) is inclusive ( >= --> In range )
+             || ( scale > mMinScale || qgsDoubleNear( scale, mMinScale, 1E-8 ) ) )
+           && ( mMaxScale == 0
+                // mMaxScale (denominator!) is exclusive ( (< && !=) --> < --> In range )
+                || ( scale < mMaxScale && !qgsDoubleNear( scale, mMaxScale, 1E-8 ) ) ) );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
