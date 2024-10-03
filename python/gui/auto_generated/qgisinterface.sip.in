@@ -1492,9 +1492,14 @@ Unregister a previously registered tool factory from the development/debugging t
 .. versionadded:: 3.14
 %End
 
-    virtual void showApiDocumentation( const QString &api = QStringLiteral( "qgis" ), bool python = true, bool embedded = true, const QString &module = QString(), const QString &object = QString() ) = 0;
+    virtual void showApiDocumentation( const QString &api = QStringLiteral( "pyqgis" ), bool embedded = true, const QString &object = QString(), const QString &module = QString() ) = 0;
 %Docstring
-Show a page of the API documentation in the embedded Dev tool webview
+Show a page of the API documentation
+
+:param api: "pyqgis" or "qgis" or "qt" or "pyqgis-search"
+:param embedded: If ``True``, the documentation will be opened in the embedded devtools webview. Otherwise, use system web browser
+:param object: object to show in the documentation
+:param module: used only if api = "pyqgis"
 
 .. versionadded:: 3.42
 %End

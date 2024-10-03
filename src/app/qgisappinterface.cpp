@@ -641,9 +641,9 @@ void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *
   qgis->unregisterDevToolFactory( factory );
 }
 
-void QgisAppInterface::showApiDocumentation( const QString &api, bool python, bool embedded, const QString &module, const QString &object )
+void QgisAppInterface::showApiDocumentation( const QString &api, bool embedded, const QString &object, const QString &module )
 {
-  qgis->showApiDocumentation( api, python, embedded, module, object );
+  qgis->showApiDocumentation( api, embedded, object, module );
 }
 
 
