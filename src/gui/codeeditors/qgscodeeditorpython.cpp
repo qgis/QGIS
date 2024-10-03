@@ -75,6 +75,8 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
 
   QgsCodeEditorPython::initializeLexer();
 
+  connect( this, &QgsCodeEditorPython::helpRequested, this, &QgsCodeEditorPython::showApiDocumentation );
+
   updateCapabilities();
 }
 
@@ -523,8 +525,20 @@ void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
     QgsApplication::getThemeIcon( QStringLiteral( "console/iconHelpConsole.svg" ) ),
     tr( "Search Selection in PyQGIS Documentation" ),
     menu );
+
+  QString text = selectedText();
+  if ( text.isEmpty() )
+  {
+    text = wordAtPoint( mapFromGlobal( QCursor::pos() ) );
+  }
+  if ( text.isEmpty() )
+  {
+    return;
+  }
+
   pyQgisHelpAction->setEnabled( hasSelectedText() );
-  connect( pyQgisHelpAction, &QAction::triggered, this, &QgsCodeEditorPython::searchSelectedTextInPyQGISDocs );
+  pyQgisHelpAction->setShortcut( QStringLiteral( "F1" ) );
+  connect( pyQgisHelpAction, &QAction::triggered, this, [text, this] {showApiDocumentation( text );} );
 
   menu->addSeparator();
   menu->addAction( pyQgisHelpAction );
@@ -709,13 +723,42 @@ bool QgsCodeEditorPython::checkSyntax()
 
 void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
 {
-  if ( !hasSelectedText() )
-    return;
+  showApiDocumentation( selectedText() );
+}
 
-  QString text = selectedText();
-  text = text.replace( QLatin1String( ">>> " ), QString() ).replace( QLatin1String( "... " ), QString() ).trimmed(); // removing prompts
-  const QString version = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
-  QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( version, text ) ) );
+void QgsCodeEditorPython::showApiDocumentation( const QString &text )
+{
+  QString searchText = text;
+  searchText = searchText.replace( QLatin1String( ">>> " ), QString() ).replace( QLatin1String( "... " ), QString() ).trimmed(); // removing prompts
+  QRegularExpression qgisExpression( "^Qgs[A-Z][a-zA-Z]" );
+
+  QRegularExpression qtExpression( "^Q[A-Z][a-zA-Z]" );
+
+  bool pyQgis = QgsCodeEditorPython::settingContextHelpPyQgis->value();
+
+  const QString qgisVersion = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
+  const QString qtVersion = QString( qVersion() ).split( '.' ).mid( 0, 2 ).join( '.' );
+
+  QgsSettings settings;
+
+  if ( qgisExpression.match( searchText ).hasMatch() )
+  {
+    if ( !pyQgis )
+    {
+
+      QString baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ),
+                                        QString( "https://qgis.org/api/%1" ).arg( qgisVersion ) ).toString();
+      QDesktopServices::openUrl( QUrl( QString( "%1/class%2.html" ).arg( qgisVersion, searchText ) ) );
+      return;
+    }
+  }
+  else if ( qtExpression.match( searchText ).hasMatch() )
+  {
+    QString baseUrl = QString( "https://doc.qt.io/qt-%1" ).arg( qtVersion );
+    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://doc.qt.io/qt-5/%1.html" ).arg( searchText.toLower() ) ) );
+    return;
+  }
+  QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( qgisVersion, searchText ) ) );
 }
 
 void QgsCodeEditorPython::toggleComment()
