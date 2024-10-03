@@ -52,6 +52,8 @@ const QgsSettingsEntryBool *QgsCodeEditorPython::settingSortImports = new QgsSet
 const QgsSettingsEntryInteger *QgsCodeEditorPython::settingAutopep8Level = new QgsSettingsEntryInteger( QStringLiteral( "autopep8-level" ), sTreePythonCodeEditor, 1, QStringLiteral( "Autopep8 aggressive level" ) );
 const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = new QgsSettingsEntryBool( QStringLiteral( "black-normalize-quotes" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether quotes should be normalized when auto-formatting code using black" ) );
 const QgsSettingsEntryString *QgsCodeEditorPython::settingExternalPythonEditorCommand = new QgsSettingsEntryString( QStringLiteral( "external-editor" ), sTreePythonCodeEditor, QString(), QStringLiteral( "Command to launch an external Python code editor. Use the token <file> to insert the filename, <line> to insert line number, and <col> to insert the column number." ) );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingContextHelpEmbedded = new QgsSettingsEntryBool( QStringLiteral( "context-help-embedded" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether the context help should be displayed in an embedded webview in the devtools panel" ) );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingContextHelpPyQgis = new QgsSettingsEntryBool( QStringLiteral( "context-help-pyqgis" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether the context help should use the PyQGIS api instead of the C++ API" ) );
 ///@endcond PRIVATE
 
 
