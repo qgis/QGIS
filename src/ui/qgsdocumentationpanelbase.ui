@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Documentation</string>
+   <string>API Documentation</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../images/images.qrc">
@@ -20,23 +20,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QToolButton" name="mCppHomeButton">
-       <property name="toolTip">
-        <string>C++ API documentation</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/icons/qgis_icon.svg</normaloff>:/images/icons/qgis_icon.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QToolButton" name="mPythonHomeButton">
        <property name="toolTip">
@@ -55,13 +38,30 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mCppHomeButton">
+       <property name="toolTip">
+        <string>C++ API documentation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/icons/qgis_icon.svg</normaloff>:/images/icons/qgis_icon.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mQtHomeButton">
        <property name="toolTip">
         <string>Qt API Documentation</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/console/iconQtCoreConsole.svg</normaloff>:/images/themes/default/console/iconQtCoreConsole.svg</iconset>
+         <normaloff>:/images/themes/default/mIconQt.svg</normaloff>:/images/themes/default/mIconQt.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
