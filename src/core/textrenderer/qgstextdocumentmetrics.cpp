@@ -86,7 +86,7 @@ struct BlockMetrics
 };
 
 
-void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock outputBlock, BlockMetrics &metrics )
+void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics )
 {
   if ( metrics.isFirstBlock )
   {
@@ -173,6 +173,7 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
   res.mFragmentHorizontalAdvance << metrics.fragmentHorizontalAdvance;
 
   res.mDocument.append( outputBlock );
+  outputBlock.clear();
 
   if ( !metrics.isFirstBlock )
     documentMetrics.lastLineLeading = metrics.maxBlockLeading;
@@ -182,7 +183,7 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
 };
 
 
-void QgsTextDocumentMetrics::processFragment( const QgsRenderContext &context, double scaleFactor, const DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment )
+void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const QgsTextFormat &format, const QgsRenderContext &context, const QgsTextDocumentRenderContext &documentContext, double scaleFactor, DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment, QgsTextBlock &currentOutputBlock )
 {
   if ( fragment.isTab() )
   {
@@ -197,6 +198,7 @@ void QgsTextDocumentMetrics::processFragment( const QgsRenderContext &context, d
     thisBlockMetrics.fragmentHorizontalAdvance << fragmentWidth;
     thisBlockMetrics.fragmentFixedHeights << -1;
     thisBlockMetrics.fragmentFonts << QFont();
+    currentOutputBlock.append( fragment );
   }
   else
   {
@@ -210,6 +212,8 @@ void QgsTextDocumentMetrics::processFragment( const QgsRenderContext &context, d
 
     QFontMetricsF fm( updatedFont );
 
+    // first, just do what we need to calculate the fragment width. We need this upfront to determine if we need to split this fragment up into a new block
+    // in order to respect text wrapping
     if ( thisBlockMetrics.isFirstNonTabFragment )
       thisBlockMetrics.previousNonSuperSubScriptFont = updatedFont;
 
@@ -269,10 +273,33 @@ void QgsTextDocumentMetrics::processFragment( const QgsRenderContext &context, d
     {
       thisBlockMetrics.previousNonSuperSubScriptFont = updatedFont;
     }
-    thisBlockMetrics.fragmentVerticalOffsets << fragmentVerticalOffset;
+
+    auto updateCommonBlockMetrics = [ &fragmentVerticalOffset,
+                                      &fragmentYMaxAdjust,
+                                      &fragmentHeightForVerticallyOffsetText,
+                                      &updatedFont,
+                                      &fm,
+                                      scaleFactor]( BlockMetrics & thisBlockMetrics, double fragmentWidth, const QgsTextFragment & fragment )
+    {
+      thisBlockMetrics.fragmentVerticalOffsets << fragmentVerticalOffset;
+      thisBlockMetrics.blockYMaxAdjustLabel = std::max( thisBlockMetrics.blockYMaxAdjustLabel, fragmentYMaxAdjust );
+      thisBlockMetrics.blockHeightUsingAscentAccountingForVerticalOffset = std::max( std::max( thisBlockMetrics.maxBlockAscent, fragmentHeightForVerticallyOffsetText ), thisBlockMetrics.blockHeightUsingAscentAccountingForVerticalOffset );
+
+      thisBlockMetrics.fragmentHorizontalAdvance << fragmentWidth;
+
+      thisBlockMetrics.blockWidth += fragmentWidth;
+      thisBlockMetrics.blockXMax += fragmentWidth;
+
+      thisBlockMetrics.fragmentFonts << updatedFont;
+
+      const double verticalOrientationFragmentHeight = thisBlockMetrics.isFirstNonTabFragment ? ( fm.ascent() / scaleFactor * fragment.text().size() + ( fragment.text().size() - 1 ) * updatedFont.letterSpacing() / scaleFactor )
+          : ( fragment.text().size() * ( fm.ascent() / scaleFactor + updatedFont.letterSpacing() / scaleFactor ) );
+      thisBlockMetrics.blockHeightVerticalOrientation += verticalOrientationFragmentHeight;
+
+      thisBlockMetrics.isFirstNonTabFragment = false;
+    };
 
     // calculate width of fragment
-    double fragmentWidth = 0;
     if ( fragment.isImage() )
     {
       double imageHeight = 0;
@@ -308,7 +335,15 @@ void QgsTextDocumentMetrics::processFragment( const QgsRenderContext &context, d
         imageHeight = context.convertToPainterUnits( fragmentFormat.imageSize().height(), Qgis::RenderUnit::Points );
       }
 
-      fragmentWidth = imageWidth;
+      // do we need to move this image fragment to a new block to respect wrapping?
+      if ( documentContext.flags() & Qgis::TextRendererFlag::WrapLines && documentContext.maximumWidth() > 0
+           && ( thisBlockMetrics.blockXMax + imageWidth > documentContext.maximumWidth() )
+           && !currentOutputBlock.empty() )
+      {
+        // yep, need to wrap before the image
+        finalizeBlock( res, format, documentMetrics, currentOutputBlock, thisBlockMetrics );
+        thisBlockMetrics.isFirstBlock = false;
+      }
 
       // we consider the whole image as ascent, and descent as 0
       thisBlockMetrics.blockHeightUsingAscentDescent = std::max( thisBlockMetrics.blockHeightUsingAscentDescent, imageHeight + fm.descent() / scaleFactor );
@@ -321,47 +356,136 @@ void QgsTextDocumentMetrics::processFragment( const QgsRenderContext &context, d
       thisBlockMetrics.maxBlockMaxWidth = std::max( thisBlockMetrics.maxBlockMaxWidth, imageWidth );
       thisBlockMetrics.maxBlockFixedItemHeight = std::max( thisBlockMetrics.maxBlockFixedItemHeight, imageHeight );
       thisBlockMetrics.fragmentFixedHeights << imageHeight;
+      updateCommonBlockMetrics( thisBlockMetrics, imageWidth, fragment );
+      currentOutputBlock.append( fragment );
     }
     else
     {
-      fragmentWidth = fm.horizontalAdvance( fragment.text() ) / scaleFactor;
-
       const double fragmentHeightUsingAscentDescent = ( fm.ascent() + fm.descent() ) / scaleFactor;
       const double fragmentHeightUsingLineSpacing = fm.lineSpacing() / scaleFactor;
-      thisBlockMetrics.blockHeightUsingAscentDescent = std::max( thisBlockMetrics.blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
 
-      thisBlockMetrics.blockHeightUsingLineSpacing = std::max( thisBlockMetrics.blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
-      thisBlockMetrics.maxBlockAscent = std::max( thisBlockMetrics.maxBlockAscent, fm.ascent() / scaleFactor );
-      thisBlockMetrics.maxBlockAscentForTextFragments = std::max( thisBlockMetrics.maxBlockAscentForTextFragments, fm.ascent() / scaleFactor );
-
-      thisBlockMetrics.maxBlockCapHeight = std::max( thisBlockMetrics.maxBlockCapHeight, fm.capHeight() / scaleFactor );
-
-      thisBlockMetrics.maxBlockDescent = std::max( thisBlockMetrics.maxBlockDescent, fm.descent() / scaleFactor );
-      thisBlockMetrics.maxBlockMaxWidth = std::max( thisBlockMetrics.maxBlockMaxWidth, fm.maxWidth() / scaleFactor );
-
-      if ( ( fm.lineSpacing() / scaleFactor ) > thisBlockMetrics.maxLineSpacing )
+      auto finalizeTextFragment = [fragmentHeightUsingAscentDescent,
+                                   fragmentHeightUsingLineSpacing,
+                                   &fm,
+                                   scaleFactor,
+                                   &currentOutputBlock,
+                                   &updateCommonBlockMetrics
+                                  ]( BlockMetrics & thisBlockMetrics, const QgsTextFragment & fragment, double fragmentWidth )
       {
-        thisBlockMetrics.maxLineSpacing = fm.lineSpacing() / scaleFactor;
-        thisBlockMetrics.maxBlockLeading = fm.leading() / scaleFactor;
+        thisBlockMetrics.blockHeightUsingAscentDescent = std::max( thisBlockMetrics.blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
+
+        thisBlockMetrics.blockHeightUsingLineSpacing = std::max( thisBlockMetrics.blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
+        thisBlockMetrics.maxBlockAscent = std::max( thisBlockMetrics.maxBlockAscent, fm.ascent() / scaleFactor );
+        thisBlockMetrics.maxBlockAscentForTextFragments = std::max( thisBlockMetrics.maxBlockAscentForTextFragments, fm.ascent() / scaleFactor );
+
+        thisBlockMetrics.maxBlockCapHeight = std::max( thisBlockMetrics.maxBlockCapHeight, fm.capHeight() / scaleFactor );
+
+        thisBlockMetrics.maxBlockDescent = std::max( thisBlockMetrics.maxBlockDescent, fm.descent() / scaleFactor );
+        thisBlockMetrics.maxBlockMaxWidth = std::max( thisBlockMetrics.maxBlockMaxWidth, fm.maxWidth() / scaleFactor );
+
+        if ( ( fm.lineSpacing() / scaleFactor ) > thisBlockMetrics.maxLineSpacing )
+        {
+          thisBlockMetrics.maxLineSpacing = fm.lineSpacing() / scaleFactor;
+          thisBlockMetrics.maxBlockLeading = fm.leading() / scaleFactor;
+        }
+        thisBlockMetrics.fragmentFixedHeights << -1;
+        updateCommonBlockMetrics( thisBlockMetrics, fragmentWidth, fragment );
+        currentOutputBlock.append( fragment );
+      };
+
+      double fragmentWidth = fm.horizontalAdvance( fragment.text() ) / scaleFactor;
+
+      // do we need to split this fragment to respect wrapping?
+      if ( documentContext.flags() & Qgis::TextRendererFlag::WrapLines && documentContext.maximumWidth() > 0
+           && ( thisBlockMetrics.blockXMax + fragmentWidth > documentContext.maximumWidth() ) )
+      {
+        // yep, need to split the fragment!
+
+        //first step is to identify words which must be on their own line (too long to fit)
+        const QStringList words = fragment.text().split( ' ' );
+        QStringList linesToProcess;
+        QStringList wordsInCurrentLine;
+        double remainingWidthInCurrentLine = documentContext.maximumWidth() - thisBlockMetrics.blockXMax;
+        for ( const QString &word : words )
+        {
+          const double wordWidth = fm.horizontalAdvance( word ) / scaleFactor;
+          if ( wordWidth > remainingWidthInCurrentLine )
+          {
+            //too long to fit
+            if ( !wordsInCurrentLine.isEmpty() )
+              linesToProcess << wordsInCurrentLine.join( ' ' );
+            wordsInCurrentLine.clear();
+            linesToProcess << word;
+            remainingWidthInCurrentLine = documentContext.maximumWidth();
+          }
+          else
+          {
+            wordsInCurrentLine.append( word );
+          }
+        }
+        if ( !wordsInCurrentLine.isEmpty() )
+          linesToProcess << wordsInCurrentLine.join( ' ' );
+
+        remainingWidthInCurrentLine = documentContext.maximumWidth() - thisBlockMetrics.blockXMax;
+        for ( int lineIndex = 0; lineIndex < linesToProcess.size(); ++lineIndex )
+        {
+          QString remainingText = linesToProcess.at( lineIndex );
+          int lastPos = remainingText.lastIndexOf( ' ' );
+          while ( lastPos > -1 )
+          {
+            //check if remaining text is short enough to go in one line
+            if ( ( fm.horizontalAdvance( remainingText ) / scaleFactor ) <= remainingWidthInCurrentLine )
+            {
+              break;
+            }
+
+            const double widthTextToLastPos = fm.horizontalAdvance( remainingText.left( lastPos ) ) / scaleFactor;
+            if ( widthTextToLastPos <= remainingWidthInCurrentLine )
+            {
+              QgsTextFragment thisLineFragment;
+              thisLineFragment.setCharacterFormat( fragment.characterFormat() );
+              thisLineFragment.setText( remainingText.left( lastPos ) );
+              finalizeTextFragment( thisBlockMetrics, thisLineFragment, widthTextToLastPos );
+              // move to new block
+              finalizeBlock( res, format, documentMetrics, currentOutputBlock, thisBlockMetrics );
+              thisBlockMetrics.isFirstBlock = false;
+              remainingWidthInCurrentLine = documentContext.maximumWidth();
+              remainingText = remainingText.mid( lastPos + 1 );
+              lastPos = 0;
+            }
+            lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
+          }
+
+          // if too big, and block is not empty, then flush current block first
+          if ( ( fm.horizontalAdvance( remainingText ) / scaleFactor ) > remainingWidthInCurrentLine && !currentOutputBlock.empty() )
+          {
+            finalizeBlock( res, format, documentMetrics, currentOutputBlock, thisBlockMetrics );
+            thisBlockMetrics.isFirstBlock = false;
+            remainingWidthInCurrentLine = documentContext.maximumWidth();
+          }
+
+          QgsTextFragment thisLineFragment;
+          thisLineFragment.setCharacterFormat( fragment.characterFormat() );
+          thisLineFragment.setText( remainingText );
+          finalizeTextFragment( thisBlockMetrics, thisLineFragment, fm.horizontalAdvance( remainingText ) / scaleFactor );
+
+          if ( lineIndex < linesToProcess.size() - 1 )
+          {
+            // start new block if we aren't at the last line
+            finalizeBlock( res, format, documentMetrics, currentOutputBlock, thisBlockMetrics );
+            thisBlockMetrics.isFirstBlock = false;
+            remainingWidthInCurrentLine = documentContext.maximumWidth();
+          }
+
+          thisBlockMetrics.isFirstBlock = false;
+        }
       }
-      thisBlockMetrics.fragmentFixedHeights << -1;
+      else
+      {
+        // simple case, no wrapping
+        finalizeTextFragment( thisBlockMetrics, fragment, fragmentWidth );
+      }
     }
-
-    thisBlockMetrics.blockYMaxAdjustLabel = std::max( thisBlockMetrics.blockYMaxAdjustLabel, fragmentYMaxAdjust );
-    thisBlockMetrics.blockHeightUsingAscentAccountingForVerticalOffset = std::max( std::max( thisBlockMetrics.maxBlockAscent, fragmentHeightForVerticallyOffsetText ), thisBlockMetrics.blockHeightUsingAscentAccountingForVerticalOffset );
-
-    thisBlockMetrics.fragmentHorizontalAdvance << fragmentWidth;
-
-    thisBlockMetrics.blockWidth += fragmentWidth;
-    thisBlockMetrics.blockXMax += fragmentWidth;
-
-    thisBlockMetrics.fragmentFonts << updatedFont;
-
-    const double verticalOrientationFragmentHeight = thisBlockMetrics.isFirstNonTabFragment ? ( fm.ascent() / scaleFactor * fragment.text().size() + ( fragment.text().size() - 1 ) * updatedFont.letterSpacing() / scaleFactor )
-        : ( fragment.text().size() * ( fm.ascent() / scaleFactor + updatedFont.letterSpacing() / scaleFactor ) );
-    thisBlockMetrics.blockHeightVerticalOrientation += verticalOrientationFragmentHeight;
-
-    thisBlockMetrics.isFirstNonTabFragment = false;
   }
 }
 
@@ -386,8 +510,6 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   res.mDocument.reserve( documentMetrics.blockSize );
   res.mFragmentFonts.reserve( documentMetrics.blockSize );
 
-  BlockMetrics thisBlockMetrics;
-
   for ( int blockIndex = 0; blockIndex < documentMetrics.blockSize; blockIndex++ )
   {
     const QgsTextBlock &block = document.at( blockIndex );
@@ -397,22 +519,21 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
     const int fragmentSize = block.size();
 
+    BlockMetrics thisBlockMetrics;
     thisBlockMetrics.fragmentVerticalOffsets.reserve( fragmentSize );
     thisBlockMetrics.fragmentFonts.reserve( fragmentSize );
     thisBlockMetrics.fragmentHorizontalAdvance.reserve( fragmentSize );
     thisBlockMetrics.fragmentFixedHeights.reserve( fragmentSize );
 
+    thisBlockMetrics.isFirstBlock = blockIndex == 0;
+    thisBlockMetrics.isLastBlock = blockIndex == documentMetrics.blockSize - 1;
+
     for ( int fragmentIndex = 0; fragmentIndex < fragmentSize; ++fragmentIndex )
     {
       const QgsTextFragment &fragment = block.at( fragmentIndex );
-
-
-      processFragment( context, scaleFactor, documentMetrics, thisBlockMetrics, font, fragment );
-      outputBlock.append( fragment );
+      processFragment( res, format, context, documentContext, scaleFactor, documentMetrics, thisBlockMetrics, font, fragment, outputBlock );
     }
 
-    thisBlockMetrics.isFirstBlock = blockIndex == 0;
-    thisBlockMetrics.isLastBlock = blockIndex == documentMetrics.blockSize - 1;
     finalizeBlock( res, format, documentMetrics, outputBlock, thisBlockMetrics );
   }
 

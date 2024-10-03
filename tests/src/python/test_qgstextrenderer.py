@@ -3492,6 +3492,88 @@ class PyQgsTextRenderer(QgisTestCase):
                                 alignment=QgsTextRenderer.HAlignment.AlignJustify, rect=QRectF(100, 100, 200, 100),
                                 flags=Qgis.TextRendererFlag.WrapLines)
 
+    def testDrawTextRectWordWrapHtml1(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'html_rect_wrapped1', text=['some text <span style="font-size: 60pt">more text</span> and more'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 100, 300, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
+    def testDrawTextRectWordWrapHtml2(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'html_rect_wrapped2', text=['thiswordistoolong but <span style="font-size: 60pt">this is</span> not'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 100, 300, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
+    def testDrawTextRectWordWrapHtmlImage1(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'html_img_wrapping', text=[f'this img <img src="{unitTestDataPath()}/small_sample_image.png" width="80" height="50"> should wrap'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 130, 300, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
+    def testDrawTextRectWordWrapTab(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(5)
+        format.setTabStopDistance(5)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'tab_wrapping', text=['this\ttab\tshould\twrap'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 130, 350, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
     def testDrawTextRectMultilineBottomAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
