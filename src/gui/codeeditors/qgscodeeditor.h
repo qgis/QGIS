@@ -551,6 +551,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void persistentHistoryCleared();
 
+
+    /**
+     * Emitted whent the F1 key is pressed while hovering over a word
+     *
+     * \since QGIS 3.42
+     */
+    void helpRequested( QString word );
+
   protected:
 
     /**
