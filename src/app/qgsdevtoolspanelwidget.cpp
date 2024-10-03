@@ -51,9 +51,7 @@ QgsDevToolsPanelWidget::~QgsDevToolsPanelWidget() = default;
 
 void QgsDevToolsPanelWidget::addToolWidget( QgsDevToolWidget *widget )
 {
-  QgsPanelWidgetStack *toolStack = new QgsPanelWidgetStack();
-  toolStack->setMainPanel( widget );
-  mStackedWidget->addWidget( toolStack );
+  mStackedWidget->addWidget( widget );
 
   QListWidgetItem *item = new QListWidgetItem( widget->windowIcon(), QString() );
   item->setToolTip( widget->windowTitle() );
