@@ -12120,12 +12120,17 @@ void QgisApp::zoomToLayerScale()
   if ( layer && layer->hasScaleBasedVisibility() )
   {
     const double scale = mMapCanvas->scale();
-    if ( scale > layer->minimumScale() && layer->minimumScale() > 0 )
+
+    if ( layer->minimumScale() > 0
+         && ( scale > layer->minimumScale() || qgsDoubleNear( scale, layer->minimumScale(), 1E-8 ) ) )
     {
-      mMapCanvas->zoomScale( layer->minimumScale() * Qgis::SCALE_PRECISION );
+      // minimum is exclusive ( >= --> out of range ), decrease by 1 to be sure
+      mMapCanvas->zoomScale( layer->minimumScale() - 1 );
     }
-    else if ( scale <= layer->maximumScale() && layer->maximumScale() > 0 )
+    else if ( layer->maximumScale() > 0
+              && ( scale < layer->maximumScale() && !qgsDoubleNear( scale, layer->maximumScale(), 1E-8 ) ) )
     {
+      // maximum is inclusive ( (< && !=) --> < --> out of range), pass maximum
       mMapCanvas->zoomScale( layer->maximumScale() );
     }
   }
