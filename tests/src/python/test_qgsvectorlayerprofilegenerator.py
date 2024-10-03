@@ -2372,6 +2372,44 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             error_message = f'Expected: {expected}\nGot: {result}\n'
             self.assertTrue(compareWkt(expected, result, 0.1), error_message)
 
+    def testVerticalLineGenerationFeatureTolerance(self):
+        """
+        Test that a purely vertical line is correctly handled by the generator
+        """
+        vl = QgsVectorLayer("LineStringZ?crs=epsg:27700", "line", "memory")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:27700')
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setExtrusionEnabled(False)
+
+        vl_feature = QgsFeature()
+        vl_feature.setGeometry(QgsGeometry.fromWkt('LineStringZ(321777 129912 1, 321777 129912 -22, 321777 129912 1))'))
+        self.assertTrue(vl.dataProvider().addFeature(vl_feature))
+
+        # Do an intersection
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (-346120 6631840, -346550 6632030, -346440 6632140, -347830 6632930)')
+        req = QgsProfileRequest(curve)
+
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        req.setTolerance(10)
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        # Check the result
+        results = generator.takeResults().asGeometries()
+        self.assertEqual(len(results), 1)
+
+        result = results[0]
+        self.assertEqual(result.wkbType(), Qgis.WkbType.LineStringZ)
+        if Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 12:
+            expected_wkt = "LineStringZ (-347055.8 6632478.8 1, -347055.8 6632478.8 -22, -347055.8 6632478.8 1)"
+        else:
+            expected_wkt = "LineStringZ (-347054.8 6632479.6 1, -347054.8 6632479.6 -22, -347054.8 6632479.6 1)"
+        self.assertTrue(compareWkt(expected_wkt, result.asWkt(), 0.1),
+                        f'Expected: {expected_wkt}\nGot: {result.asWkt()}\n')
+
     def test_vertical_transformation_4978_to_4985(self):
         """
         Test vertical transformations are correctly handled during profile generation
