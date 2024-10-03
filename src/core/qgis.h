@@ -5568,8 +5568,10 @@ class CORE_EXPORT Qgis
      * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
+     *
+     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 4.0.
      */
-    static const double SCALE_PRECISION;
+    Q_DECL_DEPRECATED static const double SCALE_PRECISION;
 
     /**
      * Default Z coordinate value.
