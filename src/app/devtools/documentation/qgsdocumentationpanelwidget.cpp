@@ -31,6 +31,8 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
   connect( mCppHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qgis" ), false, true );} );
   connect( mPythonHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qgis" ), true, true );} );
   connect( mQtHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qt" ), false, true );} );
+  connect( mOpenUrlButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->openURL( mWebView->url().toString(), false );} );
+
 }
 
 void QgsDocumentationPanelWidget::showUrl( const QUrl &url )

@@ -195,8 +195,15 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
 
   if ( event->key() == Qt::Key_F1 )
   {
+
+    // Check if some text is selected
+    QString word = selectedText();
+
     // Check if mouse is hovering over a word
-    QString word = wordAtPoint( mapFromGlobal( QCursor::pos() ) );
+    if ( word.isEmpty() )
+    {
+      word = wordAtPoint( mapFromGlobal( QCursor::pos() ) );
+    }
 
     // Otherwise, check if there is a word at the current text cursor position
     if ( word.isEmpty() )
