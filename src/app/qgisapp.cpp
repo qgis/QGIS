@@ -12964,12 +12964,12 @@ void QgisApp::helpContents()
 
 void QgisApp::apiDocumentation()
 {
-  showApiDocumentation( "qgis", false, false );
+  showApiDocumentation( "qgis", false );
 }
 
 void QgisApp::pyQgisApiDocumentation()
 {
-  showApiDocumentation( "qgis", true, false );
+  showApiDocumentation( "pyqgis", false );
 }
 
 void QgisApp::reportaBug()
@@ -13114,46 +13114,46 @@ void QgisApp::unregisterDevToolFactory( QgsDevToolWidgetFactory *factory )
 }
 
 
-void QgisApp::showApiDocumentation( const QString &api, bool python, bool embedded, const QString &module, const QString &object )
+void QgisApp::showApiDocumentation( const QString &api, bool embedded, const QString &object, const QString &module )
 {
   bool useQgisDocDirectory = false;
   QString baseUrl;
+  QString version;
+
   if ( api == "qt" )
   {
-    const QStringList parts = QString( qVersion() ).split( "." );
-    baseUrl = QString( "https://doc.qt.io/qt-%1.%2/" ).arg( parts[0], parts[1] );
+    version = QString( qVersion() ).split( '.' ).mid( 0, 2 ).join( '.' );
+    baseUrl = QString( "https://doc.qt.io/qt-%1/" ).arg( version );
   }
-  else if ( api == "qgis" )
+  else if ( api.contains( "qgis" ) )
   {
-    // Get the current QGIS version
-    QString version;
     if ( Qgis::version().toLower().contains( QStringLiteral( "master" ) ) )
     {
       version = QStringLiteral( "master" );
     }
     else
     {
-      version = Qgis::version().left( 4 );
+      version = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
     }
 
-    if ( python )
+    if ( api.contains( "pyqgis" ) )
     {
       QgsSettings settings;
       baseUrl = settings.value( QStringLiteral( "qgis/PyQgisApiUrl" ),
-                                QString( "https://qgis.org/pyqgis/%1" ).arg( version ) ).toString();
+                                QString( "https://qgis.org/pyqgis/%1/" ).arg( version ) ).toString();
     }
     else
     {
       if ( QFileInfo::exists( QgsApplication::pkgDataPath() + "/doc/api/index.html" ) )
       {
         useQgisDocDirectory = true;
-        baseUrl = "api/index.html";
+        baseUrl = "api/";
       }
       else
       {
         QgsSettings settings;
         baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ),
-                                  QString( "https://qgis.org/api/%1" ).arg( version ) ).toString();
+                                  QString( "https://qgis.org/api/%1/" ).arg( version ) ).toString();
       }
     }
   }
@@ -13166,24 +13166,25 @@ void QgisApp::showApiDocumentation( const QString &api, bool python, bool embedd
   QString url;
   if ( object.isEmpty() )
   {
-    url = baseUrl;
+    url = baseUrl == "api/" ? baseUrl + "index.html" : baseUrl;
   }
   else
   {
-    if ( api == QStringLiteral( "qgis" ) )
+    if ( api == QStringLiteral( "pyqgis" ) )
     {
-      if ( python ) // pyQGIS
-      {
-        url = baseUrl + QString( "/%1/%2.html" ).arg( module, object );
-      }
-      else
-      {
-        url = baseUrl + QString( "/class%1.html" ).arg( object );
-      }
+      url = baseUrl + QString( "%1/%2.html" ).arg( module, object );
+    }
+    else if ( api == QStringLiteral( "pyqgis-search" ) )
+    {
+      url = baseUrl + QString( "search.html?q=%2" ).arg( object );
+    }
+    else if ( api == QStringLiteral( "qgis" ) )
+    {
+      url = baseUrl + QString( "class%1.html" ).arg( object );
     }
     else // Qt
     {
-      url = baseUrl + QString( "/%1.html" ).arg( object.toLower() );
+      url = baseUrl + QString( "%1.html" ).arg( object.toLower() );
     }
   }
 
@@ -13198,7 +13199,7 @@ void QgisApp::showApiDocumentation( const QString &api, bool python, bool embedd
   }
   else
   {
-    openURL( baseUrl, useQgisDocDirectory );
+    openURL( url, useQgisDocDirectory );
   }
 }
 

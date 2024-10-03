@@ -24,6 +24,7 @@ import os
 import re
 import sys
 import traceback
+from functools import partial
 from typing import (
     Optional,
     TYPE_CHECKING
@@ -33,8 +34,8 @@ from tempfile import NamedTemporaryFile
 
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QClipboard
-from qgis.PyQt.QtWidgets import QShortcut, QApplication
+from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QClipboard, QCursor
+from qgis.PyQt.QtWidgets import QShortcut, QApplication, QAction
 from qgis.core import (
     QgsApplication,
     Qgis,
@@ -104,31 +105,37 @@ def __parse_object(object=None):
         return 'qt', module, obj
 """,
     r"""
-def _help(object=None, api="c++", embedded=True):
+def _help(object=None, api="pyqgis", embedded=True, force_search=False):
     '''
     Link to the C++ or PyQGIS API documentation for the given object.
     If no object is given, the main PyQGIS API page is opened.
     If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
     '''
 
-    if object is None:
-        if api == "c++":
-            iface.showApiDocumentation(python=True)
-        else:
-            iface.showApiDocumentation()
-        return
+    if not object:
+        return iface.showApiDocumentation(api, embedded=embedded)
 
     if isinstance(object, str):
         try:
             object = eval(object)
         except (SyntaxError, NameError):
-            return
+            if embedded and not force_search:
+                return iface.showApiDocumentation(api, embedded=True)
+            else:
+                return iface.showApiDocumentation("pyqgis-search", object=object, embedded=False)
 
     obj_info = __parse_object(object)
     if not obj_info:
-        return
+        if force_search or isinstance(object, str) and not embedded:
+            return iface.showApiDocumentation("pyqgis-search", object=object, embedded=False)
+        else:
+            return iface.showApiDocumentation(api, embedded=embedded)
+
     obj_type, module, class_name = obj_info
-    iface.showApiDocumentation(obj_type, python= not api=="c++", embedded=embedded, module=module, object=class_name)
+    if obj_type == "qt":
+        api = "qt"
+
+    iface.showApiDocumentation(api, embedded=embedded, object=class_name, module=module)
 
 """,
     r"""
@@ -138,7 +145,7 @@ def _api(object=None):
     If no object is given, the main API page is opened.
     If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
     '''
-    return _help(object, api="c++")
+    return _help(object, api="qgis")
 """,
     r"""
 def _pyqgis(object=None):
@@ -231,9 +238,9 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
         if cmd == "?":
             self.shell.console_widget.shell_output.insertHelp()
         elif cmd == '_pyqgis':
-            webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
+            self.shell.showApi("pyqgis")
         elif cmd == '_api':
-            webbrowser.open("https://qgis.org/api/{}".format('' if version == 'master' else version))
+            self.shell.showApi("qgis")
         elif cmd == '_cookbook':
             webbrowser.open(
                 "https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
@@ -328,8 +335,6 @@ class ShellScintilla(QgsCodeEditorPython):
 
         self.sessionHistoryCleared.connect(self.on_session_history_cleared)
         self.persistentHistoryCleared.connect(self.on_persistent_history_cleared)
-
-        self.helpRequested.connect(self.help)
 
     def _setMinimumHeight(self):
         font = self.lexer().defaultFont(0)
@@ -468,11 +473,28 @@ class ShellScintilla(QgsCodeEditorPython):
             self._interpreter.execCommandImpl("sys.path.remove({0})".format(
                 QgsProcessingUtils.stringToPythonLiteral(dirname)), False)
 
-    def help(self, name):
+    def showApiDocumentation(self, text, force_search=False):
 
         pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
 
         embedded = pythonSettingsTreeNode.childSetting('context-help-embedded').value()
-        api = "pyqgis" if pythonSettingsTreeNode.childSetting('context-help-pyqgis').value() else "c++"
+        api = "pyqgis" if pythonSettingsTreeNode.childSetting('context-help-pyqgis').value() else "qgis"
 
-        self._interpreter.execCommandImpl(f'_help("{name}", api="{api}", embedded={embedded})', show_input=False)
+        self._interpreter.execCommandImpl(f'_help({repr(text)}, api="{api}", embedded={embedded}, force_search={force_search})', show_input=False)
+
+    def showApi(self, api):
+        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+        embedded = pythonSettingsTreeNode.childSetting('context-help-embedded').value()
+        self._interpreter.execCommandImpl(f'_help(api="{api}", embedded={embedded})', show_input=False)
+
+    def populateContextMenu(self, menu):
+
+        word = self.selectedText() or self.wordAtPoint(self.mapFromGlobal(QCursor.pos()))
+        if word:
+            context_help_action = QAction(
+                QgsApplication.getThemeIcon("mActionHelpContents.svg"),
+                QCoreApplication.translate("PythonConsole", "Context Help"),
+                menu)
+            context_help_action.triggered.connect(partial(self.showApiDocumentation, word, force_search=True))
+            context_help_action.setShortcut('F1')
+            menu.addAction(context_help_action)
