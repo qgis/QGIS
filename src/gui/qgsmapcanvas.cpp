@@ -408,6 +408,16 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer *> &layers )
   setLayersPrivate( layers );
 }
 
+void QgsMapCanvas::setFlags( Qgis::MapCanvasFlags flags )
+{
+  mFlags = flags;
+}
+
+Qgis::MapCanvasFlags QgsMapCanvas::flags() const
+{
+  return mFlags;
+}
+
 void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 {
   const QList<QgsMapLayer *> oldLayers = mSettings.layers();
@@ -825,7 +835,8 @@ void QgsMapCanvas::refreshMap()
   // render main annotation layer above all other layers
   QgsMapSettings renderSettings = mSettings;
   QList<QgsMapLayer *> allLayers = renderSettings.layers();
-  allLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  if ( mFlags & Qgis::MapCanvasFlag::ShowMainAnnotationLayer )
+    allLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
 
   renderSettings.setLayers( filterLayersForRender( allLayers ) );
 
@@ -3590,7 +3601,8 @@ void QgsMapCanvas::startPreviewJob( int number )
 
     previewLayers << layer;
   }
-  if ( QgsProject::instance()->mainAnnotationLayer()->dataProvider()->renderInPreview( context ) )
+  if ( ( mFlags & Qgis::MapCanvasFlag::ShowMainAnnotationLayer )
+       && QgsProject::instance()->mainAnnotationLayer()->dataProvider()->renderInPreview( context ) )
   {
     previewLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
   }

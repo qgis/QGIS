@@ -1856,6 +1856,14 @@ The development version
       Unknown,
     };
 
+    enum class MapCanvasFlag
+    {
+      ShowMainAnnotationLayer,
+    };
+
+    typedef QFlags<Qgis::MapCanvasFlag> MapCanvasFlags;
+
+
     enum class ViewSyncModeFlag
     {
       Sync3DTo2D,
@@ -3373,6 +3381,8 @@ QFlags<Qgis::VectorRenderingSimplificationFlag> operator|(Qgis::VectorRenderingS
 QFlags<Qgis::DataProviderReadFlag> operator|(Qgis::DataProviderReadFlag f1, QFlags<Qgis::DataProviderReadFlag> f2);
 
 QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability f1, QFlags<Qgis::VectorProviderCapability> f2);
+
+QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
 
 
 

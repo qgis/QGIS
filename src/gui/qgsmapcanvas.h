@@ -141,6 +141,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
+    /**
+     * Sets \a flags which control how the map canvas behaves.
+     *
+     * \see flags()
+     * \since QGIS 3.40
+     */
+    void setFlags( Qgis::MapCanvasFlags flags );
+
+    /**
+     * Returns flags which control how the map canvas behaves.
+     *
+     * \see setFlags()
+     * \since QGIS 3.40
+     */
+    Qgis::MapCanvasFlags flags() const;
+
     void setCurrentLayer( QgsMapLayer *layer );
 
     /**
@@ -1305,6 +1321,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     };
 
     QgsOverlayWidgetLayout *mLayout = nullptr;
+
+    Qgis::MapCanvasFlags mFlags;
 
     //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;
