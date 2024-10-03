@@ -27,15 +27,17 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
 {
   setupUi( this );
 
-
-  connect( mCppHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qgis" ), false, true );} );
-  connect( mPythonHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qgis" ), true, true );} );
-  connect( mQtHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qt" ), false, true );} );
+  connect( mPythonHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "pyqgis" ), true );} );
+  connect( mCppHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qgis" ), true );} );
+  connect( mQtHomeButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qt" ), true );} );
   connect( mOpenUrlButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->openURL( mWebView->url().toString(), false );} );
 
 }
 
 void QgsDocumentationPanelWidget::showUrl( const QUrl &url )
 {
-  mWebView->setUrl( url );
+  if ( mWebView->url() != url )
+  {
+    mWebView->load( url );
+  }
 }
