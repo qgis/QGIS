@@ -1069,6 +1069,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   startProfile( tr( "Creating map canvas" ) );
   mMapCanvas = new QgsMapCanvas( centralWidget );
   mMapCanvas->setObjectName( QStringLiteral( "theMapCanvas" ) );
+  mMapCanvas->setFlags( Qgis::MapCanvasFlag::ShowMainAnnotationLayer );
 
   // before anything, let's freeze canvas redraws
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -2091,6 +2092,7 @@ QgisApp::QgisApp()
 
   mInternalClipboard = new QgsClipboard;
   mMapCanvas = new QgsMapCanvas();
+  mMapCanvas->setFlags( Qgis::MapCanvasFlag::ShowMainAnnotationLayer );
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   QgsCanvasRefreshBlocker refreshBlocker;
   mLayerTreeView = new QgsLayerTreeView( this );

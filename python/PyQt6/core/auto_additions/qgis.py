@@ -5972,6 +5972,20 @@ Qgis.RendererUsage.__doc__ = """Usage of the renderer.
 # --
 Qgis.RendererUsage.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MapCanvasFlag.ShowMainAnnotationLayer.__doc__ = "The project's main annotation layer should be rendered in the canvas"
+Qgis.MapCanvasFlag.__doc__ = """Flags controlling behavior of map canvases.
+
+.. versionadded:: 3.40
+
+* ``ShowMainAnnotationLayer``: The project's main annotation layer should be rendered in the canvas
+
+"""
+# --
+Qgis.MapCanvasFlag.baseClass = Qgis
+Qgis.MapCanvasFlags = lambda flags=0: Qgis.MapCanvasFlag(flags)
+Qgis.MapCanvasFlags.baseClass = Qgis
+MapCanvasFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ = "Synchronize 3D view camera to the main map canvas extent"
 Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__ = "Update the 2D main canvas extent to include the viewed area from the 3D view"
 Qgis.ViewSyncModeFlag.__doc__ = """Synchronization of 2D map canvas and 3D view
