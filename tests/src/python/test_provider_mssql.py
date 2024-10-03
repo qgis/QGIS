@@ -980,6 +980,23 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         features = list(vl.getFeatures())
         self.assertEqual([f['test-field'] for f in features], [1])
 
+    def test_nvarchar_length(self):
+        """
+        Test that nvarchar length is correctly set
+        """
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.execSql('DROP TABLE IF EXISTS qgis_test.test_nvarchar_length')
+        conn.execSql('CREATE TABLE qgis_test.test_nvarchar_length (id integer PRIMARY KEY)')
+
+        uri = f'{self.dbconn} table="qgis_test"."test_nvarchar_length" sql='
+        vl = QgsVectorLayer(uri, '', 'mssql')
+
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().addAttributes([QgsField('name', QMetaType.Type.QString, 'nvarchar', 12)]))
+        self.assertEqual(vl.dataProvider().fields().at(1).length(), 12)
+
 
 if __name__ == '__main__':
     unittest.main()
