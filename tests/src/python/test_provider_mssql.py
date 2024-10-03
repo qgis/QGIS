@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import os
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant, QMetaType
 from qgis.core import (
     NULL,
     Qgis,
