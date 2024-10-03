@@ -20,6 +20,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from __future__ import annotations
 
 import sys
+from functools import partial
 from typing import TYPE_CHECKING
 
 from qgis.PyQt import sip
@@ -171,8 +172,6 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.selectAllShortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         self.selectAllShortcut.activated.connect(self.selectAll)
 
-        self.helpRequested.connect(self.shell_editor.help)
-
     def on_app_exit(self):
         """
         Prepares the console for a graceful close
@@ -241,11 +240,15 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         clearAction.triggered.connect(self.clearConsole)
         menu.addAction(clearAction)
 
-        pyQGISHelpAction = QAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-                                   QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
-                                   menu)
-        pyQGISHelpAction.triggered.connect(self.searchSelectedTextInPyQGISDocs)
-        menu.addAction(pyQGISHelpAction)
+        word = self.selectedText() or self.wordAtPoint(e.pos())
+        if word:
+            context_help_action = QAction(
+                QgsApplication.getThemeIcon("mActionHelpContents.svg"),
+                QCoreApplication.translate("PythonConsole", "Context Help"),
+                menu)
+            context_help_action.triggered.connect(partial(self.shell_editor.showApiDocumentation, word, force_search=True))
+            context_help_action.setShortcut('F1')
+            menu.addAction(context_help_action)
 
         menu.addSeparator()
         copyAction = QAction(
@@ -273,13 +276,11 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
-        pyQGISHelpAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         showEditorAction.setEnabled(True)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
-            pyQGISHelpAction.setEnabled(True)
         if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
@@ -315,3 +316,6 @@ class ShellOutputScintilla(QgsCodeEditorPython):
 
     def widgetMessageBar(self, text: str):
         self.infoBar.pushMessage(text, Qgis.MessageLevel.Info)
+
+    def showApiDocumentation(self, text):
+        self.shell_editor.showApiDocumentation(text)
