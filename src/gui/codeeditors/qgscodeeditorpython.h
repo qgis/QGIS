@@ -62,6 +62,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     static const QgsSettingsEntryInteger *settingAutopep8Level;
     static const QgsSettingsEntryBool *settingBlackNormalizeQuotes;
     static const QgsSettingsEntryString *settingExternalPythonEditorCommand;
+    static const QgsSettingsEntryBool *settingContextHelpEmbedded;
+    static const QgsSettingsEntryBool *settingContextHelpPyQgis;
 ///@endcond PRIVATE
 #endif
 
