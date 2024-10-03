@@ -2444,7 +2444,10 @@ void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseN
   {
     flags |= Qgis::DataProviderReadFlag::TrustDataSource;
   }
-  setDataSource( dataSource, baseName, provider, options, flags );
+  setDataSource( dataSource,
+                 baseName.isEmpty() ? mLayerName : baseName,
+                 provider.isEmpty() ? mProviderKey : provider,
+                 options, flags );
 }
 
 void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
