@@ -251,7 +251,8 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double mLastLineAscentOffset = 0;
     double mFirstLineCapHeight = 0;
 
-    static void finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock outputBlock, const BlockMetrics &metrics );
+    static void finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock outputBlock, BlockMetrics &metrics );
+    static void processFragment( const QgsRenderContext &context, double scaleFactor, const DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment );
 };
 
 #endif // QGSTEXTDOCUMENTMETRICS_H
