@@ -27,6 +27,8 @@
 
 class QgsRenderContext;
 class QgsTextFormat;
+struct DocumentMetrics;
+struct BlockMetrics;
 
 /**
  * \class QgsTextDocumentRenderContext
@@ -249,6 +251,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double mLastLineAscentOffset = 0;
     double mFirstLineCapHeight = 0;
 
+    static void finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock outputBlock, const BlockMetrics &metrics );
 };
 
 #endif // QGSTEXTDOCUMENTMETRICS_H
