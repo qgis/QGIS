@@ -103,24 +103,56 @@ def __parse_object(object=None):
         return 'qt', module, obj
 """,
     r"""
+def _help(object=None, api="c++"):
+    '''
+    Link to the C++ or PyQGIS API documentation for the given object.
+    If no object is given, the main PyQGIS API page is opened.
+    If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
+    '''
+    import webbrowser
+
+    if 'master' in Qgis.QGIS_VERSION.lower():
+        if api == "c++":
+            version = ''
+        else:
+            version = 'master'
+    else:
+        version = re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+
+    if object is None:
+        if api == "c++":
+            webbrowser.open(f"https://qgis.org/pyqgis/{version}")
+        else:
+            webbrowser.open(f"https://qgis.org/api/{version}")
+        return
+
+    if isinstance(object, str):
+        try:
+            object = eval(object)
+        except (SyntaxError, NameError):
+            return
+
+    obj_info = __parse_object(object)
+    if not obj_info:
+        return
+
+    if obj_info[0] == 'qgis':
+        if api == "c++":
+            webbrowser.open(f"https://api.qgis.org/api/{version}/class{obj_info[2]}.html")
+        else:
+            webbrowser.open(f"https://qgis.org/pyqgis/{version}/{obj_info[1]}/{obj_info[2]}.html")
+    elif obj_info[0] == 'qt':
+        qtversion = '.'.join(qVersion().split(".")[:2])
+        webbrowser.open(f"https://doc.qt.io/qt-{qtversion}/{obj_info[2].lower()}.html")
+""",
+    r"""
 def _api(object=None):
     '''
     Link to the QGIS API documentation for the given object.
     If no object is given, the main API page is opened.
     If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
     '''
-    import webbrowser
-    api = __parse_object(object)
-
-    version = '' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
-
-    if not api:
-        webbrowser.open(f"https://qgis.org/api/{version}")
-    elif api[0] == 'qgis':
-        webbrowser.open(f"https://api.qgis.org/api/{version}/class{api[2]}.html")
-    elif api[0] == 'qt':
-        qtversion = '.'.join(qVersion().split(".")[:2])
-        webbrowser.open(f"https://doc.qt.io/qt-{qtversion}/{api[2].lower()}.html")
+    return _help(object, api="c++")
 """,
     r"""
 def _pyqgis(object=None):
@@ -129,18 +161,7 @@ def _pyqgis(object=None):
     If no object is given, the main PyQGIS API page is opened.
     If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
     '''
-    import webbrowser
-    api = __parse_object(object)
-
-    version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
-
-    if not api:
-        webbrowser.open(f"https://qgis.org/pyqgis/{version}")
-    elif api[0] == 'qgis':
-        webbrowser.open(f"https://qgis.org/pyqgis/{version}/{api[1]}/{api[2]}.html")
-    elif api[0] == 'qt':
-        qtversion = '.'.join(qVersion().split(".")[:2])
-        webbrowser.open(f"https://doc.qt.io/qt-{qtversion}/{api[2].lower()}.html")
+    return _help(object, api="pyqgis")
 """
 ]
 
@@ -322,6 +343,8 @@ class ShellScintilla(QgsCodeEditorPython):
         self.sessionHistoryCleared.connect(self.on_session_history_cleared)
         self.persistentHistoryCleared.connect(self.on_persistent_history_cleared)
 
+        self.helpRequested.connect(self.help)
+
     def _setMinimumHeight(self):
         font = self.lexer().defaultFont(0)
         fm = QFontMetrics(font)
@@ -458,3 +481,6 @@ class ShellScintilla(QgsCodeEditorPython):
             self._interpreter.execCommandImpl("del __file__", False)
             self._interpreter.execCommandImpl("sys.path.remove({0})".format(
                 QgsProcessingUtils.stringToPythonLiteral(dirname)), False)
+
+    def help(self, name):
+        self._interpreter.execCommandImpl(f'_help("{name}")', show_input=False)
