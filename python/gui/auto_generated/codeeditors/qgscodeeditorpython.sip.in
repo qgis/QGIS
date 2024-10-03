@@ -96,6 +96,13 @@ Searches the selected text in the official PyQGIS online documentation.
 .. versionadded:: 3.16
 %End
 
+    virtual void showApiDocumentation( const QString &item );
+%Docstring
+Searches the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
+
+.. versionadded:: 3.42
+%End
+
     virtual void toggleComment();
 
 %Docstring
