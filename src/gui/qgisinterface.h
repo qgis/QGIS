@@ -1281,10 +1281,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 
     /**
-     * Show a page of the API documentation in the embedded Dev tool webview
+     * Show a page of the API documentation
+     * \param api "pyqgis" or "qgis" or "qt" or "pyqgis-search"
+     * \param embedded If TRUE, the documentation will be opened in the embedded devtools webview. Otherwise, use system web browser
+     * \param object object to show in the documentation
+     * \param module used only if api = "pyqgis"
      * \since QGIS 3.42
     */
-    virtual void showApiDocumentation( const QString &api = QStringLiteral( "qgis" ), bool python = true, bool embedded = true, const QString &module = QString(), const QString &object = QString() ) = 0;
+    virtual void showApiDocumentation( const QString &api = QStringLiteral( "pyqgis" ), bool embedded = true, const QString &object = QString(), const QString &module = QString() ) = 0;
 
     /**
      * Register a new application exit blocker, which can be used to prevent the QGIS application
