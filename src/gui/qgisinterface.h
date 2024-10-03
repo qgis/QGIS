@@ -1281,6 +1281,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 
     /**
+     * Show a page of the API documentation in the embedded Dev tool webview
+     * \since QGIS 3.42
+    */
+    virtual void showApiDocumentation( const QString &api = QStringLiteral( "qgis" ), bool python = true, bool embedded = true, const QString &module = QString(), const QString &object = QString() ) = 0;
+
+    /**
      * Register a new application exit blocker, which can be used to prevent the QGIS application
      * from exiting while a plugin or script has unsaved changes.
      *

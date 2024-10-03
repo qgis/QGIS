@@ -103,27 +103,18 @@ def __parse_object(object=None):
         return 'qt', module, obj
 """,
     r"""
-def _help(object=None, api="c++"):
+def _help(object=None, api="c++", embedded=True):
     '''
     Link to the C++ or PyQGIS API documentation for the given object.
     If no object is given, the main PyQGIS API page is opened.
     If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
     '''
-    import webbrowser
-
-    if 'master' in Qgis.QGIS_VERSION.lower():
-        if api == "c++":
-            version = ''
-        else:
-            version = 'master'
-    else:
-        version = re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
 
     if object is None:
         if api == "c++":
-            webbrowser.open(f"https://qgis.org/pyqgis/{version}")
+            iface.showApiDocumentation(python=True)
         else:
-            webbrowser.open(f"https://qgis.org/api/{version}")
+            iface.showApiDocumentation()
         return
 
     if isinstance(object, str):
@@ -135,15 +126,9 @@ def _help(object=None, api="c++"):
     obj_info = __parse_object(object)
     if not obj_info:
         return
+    obj_type, module, class_name = obj_info
+    iface.showApiDocumentation(obj_type, python= not api=="c++", module=module, object=class_name)
 
-    if obj_info[0] == 'qgis':
-        if api == "c++":
-            webbrowser.open(f"https://api.qgis.org/api/{version}/class{obj_info[2]}.html")
-        else:
-            webbrowser.open(f"https://qgis.org/pyqgis/{version}/{obj_info[1]}/{obj_info[2]}.html")
-    elif obj_info[0] == 'qt':
-        qtversion = '.'.join(qVersion().split(".")[:2])
-        webbrowser.open(f"https://doc.qt.io/qt-{qtversion}/{obj_info[2].lower()}.html")
 """,
     r"""
 def _api(object=None):
