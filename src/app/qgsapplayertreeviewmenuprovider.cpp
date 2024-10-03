@@ -465,7 +465,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // set layer scale visibility
         menu->addAction( tr( "Set Layer Scale &Visibility…" ), QgisApp::instance(), &QgisApp::setLayerScaleVisibility );
 
-        if ( !layer->isInScaleRange( mCanvas->scale() ) )
+        if ( !layer->isInScaleRange( mCanvas->scale() ) && ( layer->minimumScale() - layer->maximumScale() >= 1 ) )
+          // Only show if we can make sure there's a scale where layer is visible
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
         QMenu *menuSetCRS = new QMenu( tr( "Layer CRS" ), menu );
