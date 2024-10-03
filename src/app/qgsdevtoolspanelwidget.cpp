@@ -19,6 +19,7 @@
 #include "qgsdevtoolwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgssettingsentryimpl.h"
+#include "devtools/documentation/qgsdocumentationpanelwidget.h"
 
 const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab = new QgsSettingsEntryString( QStringLiteral( "last-active-tab" ), QgsDevToolsPanelWidget::sTreeDevTools, QString(), QStringLiteral( "Last visible tab in developer tools panel" ) );
 
@@ -30,6 +31,11 @@ QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFact
 
   mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
   mOptionsListWidget->setMaximumWidth( static_cast< int >( mOptionsListWidget->iconSize().width() * 1.18 ) );
+
+
+  // Add embedded documentation
+  mDocumentationPanel = new QgsDocumentationPanelWidget( this );
+  addToolWidget( mDocumentationPanel ) ;
 
   for ( QgsDevToolWidgetFactory *factory : factories )
     addToolFactory( factory );
@@ -43,6 +49,23 @@ QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFact
 }
 
 QgsDevToolsPanelWidget::~QgsDevToolsPanelWidget() = default;
+
+void QgsDevToolsPanelWidget::addToolWidget( QgsDevToolWidget *widget )
+{
+  QgsPanelWidgetStack *toolStack = new QgsPanelWidgetStack();
+  toolStack->setMainPanel( widget );
+  mStackedWidget->addWidget( toolStack );
+
+  QListWidgetItem *item = new QListWidgetItem( widget->windowIcon(), QString() );
+  item->setToolTip( widget->windowTitle() );
+  item->setData( Qt::UserRole, widget->windowTitle() );
+  mOptionsListWidget->addItem( item );
+  if ( mOptionsListWidget->count() == 1 )
+  {
+    setCurrentTool( 0 );
+  }
+}
+
 
 void QgsDevToolsPanelWidget::addToolFactory( QgsDevToolWidgetFactory *factory )
 {
@@ -103,4 +126,10 @@ void QgsDevToolsPanelWidget::setCurrentTool( int row )
 {
   whileBlocking( mOptionsListWidget )->setCurrentRow( row );
   mStackedWidget->setCurrentIndex( row );
+}
+
+void QgsDevToolsPanelWidget::showUrl( const QUrl &url )
+{
+  whileBlocking( mOptionsListWidget )->setCurrentRow( 0 );
+  mDocumentationPanel->showUrl( url );
 }

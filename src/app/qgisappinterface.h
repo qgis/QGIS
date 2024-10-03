@@ -157,6 +157,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
+    void showApiDocumentation( const QString &api, bool python, bool embedded, const QString &module, const QString &object ) override;
     void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
