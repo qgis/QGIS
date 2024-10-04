@@ -1014,7 +1014,13 @@ class PostGisDBConnector(DBConnector):
         self._commit()
 
     def createView(self, view, query):
-        sql = "CREATE VIEW %s AS %s" % (self.quoteId(view), query)
+        user_input = view
+        
+        if '.' in user_input: # To allow view creation into specified schema
+            schema, view_name = user_input.split('.')
+            sql = "CREATE VIEW %s AS %s" % (self.quoteId([schema, view_name]), query)
+        else: # No schema specified; uses public
+            sql = "CREATE VIEW %s AS %s" % (self.quoteId(view), query)
         self._execute_and_commit(sql)
 
     def createSpatialView(self, view, query):
