@@ -28,6 +28,8 @@
 #include "qgslinestring.h"
 #include "qgsgeometrycheckerutils.h"
 #include "qgsgeometryengine.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
 
 #include <QTextStream>
 
@@ -132,9 +134,12 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     feedback->setProgress( 0 );
   }
 
-  std::unique_ptr< QgsGeometryEngine > geomEngine;
-  QgsGeometry geom;
+  QgsGeometry lines;
+  QgsMeshFace face;
+  QMap<std::pair<int, int>, int> edges; // edge as key and count of edge occurence as value
+  std::pair<int, int> edge;
 
+  feedback->setProgressText( "Parsing mesh faces to extract edges." );
 
   for ( int i = 0; i < mNativeMesh.faceCount(); i++ )
   {
@@ -144,30 +149,105 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
         return QVariantMap();
     }
 
-    const QgsMeshFace &face = mNativeMesh.face( i );
-    QVector<QgsPoint> vertices( face.size() );
-    for ( int j = 0; j < face.size(); ++j )
-      vertices[j] = mNativeMesh.vertex( face.at( j ) );
+    face = mNativeMesh.face( i );
 
-    QgsPolygon *polygon = new QgsPolygon();
-    polygon->setExteriorRing( new QgsLineString( vertices ) );
+    for ( int j = 0; j < face.size(); j++ )
+    {
+      int indexEnd;
+      if ( j == face.size() - 1 )
+        indexEnd = 0;
+      else
+        indexEnd = j + 1;
+      int edgeFirstVertex = face.at( j );
+      int edgeSecondVertex = face.at( indexEnd );
 
-    if ( i == 0 )
-    {
-      geom = QgsGeometry( polygon );
-    }
-    else
-    {
-      std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geom.get(), 0 );
-      geom = QgsGeometry( geomEngine->combine( polygon ) );
+      // make vertex sorted to avoid have 1,2 and 2,1 as different keys
+      if ( edgeSecondVertex < edgeFirstVertex )
+        edge = std::make_pair( edgeSecondVertex, edgeFirstVertex );
+      else
+        edge = std::make_pair( edgeFirstVertex, edgeSecondVertex );
+
+      // if edge exist in map increase its count otherwise set count to 1
+      auto it = edges.find( edge );
+      if ( it != edges.end() )
+      {
+        int count = edges.take( edge ) + 1;
+        edges.insert( edge, count );
+      }
+      else
+      {
+        edges.insert( edge, 1 );
+      }
     }
 
     feedback->setProgress( 100 * i / mNativeMesh.faceCount() );
   }
 
+  feedback->setProgress( 0 );
+  feedback->setProgressText( "Parsing mesh edges." );
+
+  std::unique_ptr<QgsMultiLineString> multiLineString( new QgsMultiLineString() );
+
+  int i = 0;
+  for ( auto it = edges.begin(); it != edges.end(); it++ )
+  {
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+        return QVariantMap();
+    }
+
+    // only consider edges with count 1 which are on the edge of mesh surface
+    if ( it.value() == 1 )
+    {
+      std::unique_ptr<QgsLineString> line( new QgsLineString( mNativeMesh.vertex( it.key().first ), mNativeMesh.vertex( it.key().second ) ) );
+      multiLineString->addGeometry( line.release() );
+    }
+
+    feedback->setProgress( 100 * i / edges.size() );
+    i++;
+  }
+
+  feedback->setProgressText( "Creating final geometry." );
+
+  if ( feedback )
+  {
+    if ( feedback->isCanceled() )
+      return QVariantMap();
+  }
+
+  // merge lines
+  QgsGeometry mergedLines = QgsGeometry( multiLineString.release() );
+  mergedLines = mergedLines.mergeLines();
+  QgsAbstractGeometry *multiLinesAbstract = mergedLines.get();
+
+  // create resulting multipolygon
+  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique<QgsMultiPolygon>();
+
+  // for every part create polygon and add to resulting multipolygon
+  for ( int i = 0; i < mergedLines.get()->partCount(); i++ )
+  {
+    for ( auto pit = multiLinesAbstract->const_parts_begin(); pit != multiLinesAbstract->const_parts_end(); ++pit )
+    {
+      std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
+      polygon->setExteriorRing( qgsgeometry_cast< QgsLineString * >( *pit )->clone() );
+      multiPolygon->addGeometry( polygon.release() );
+    }
+
+  }
+
+  if ( feedback )
+  {
+    if ( feedback->isCanceled() )
+      return QVariantMap();
+  }
+
+  // create final geom and transform it
+  QgsGeometry resultGeom = QgsGeometry( multiPolygon.release() );
+
   try
   {
-    geom.transform( mTransform );
+    resultGeom.transform( mTransform );
   }
   catch ( QgsCsException & )
   {
@@ -176,7 +256,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   }
 
   QgsFeature feat;
-  feat.setGeometry( geom );
+  feat.setGeometry( resultGeom );
 
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
