@@ -1153,13 +1153,11 @@ bool QgsMapLayer::isInScaleRange( double scale ) const
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  return !mScaleBasedVisibility ||
-         ( ( mMinScale == 0
-             // mMinScale (denominator!) is inclusive ( >= --> In range )
-             || ( scale > mMinScale || qgsDoubleNear( scale, mMinScale, 1E-8 ) ) )
-           && ( mMaxScale == 0
-                // mMaxScale (denominator!) is exclusive ( (< && !=) --> < --> In range )
-                || ( scale < mMaxScale && !qgsDoubleNear( scale, mMaxScale, 1E-8 ) ) ) );
+  // mMinScale (denominator!) is inclusive ( >= --> In range )
+  // mMaxScale (denominator!) is exclusive ( < --> In range )
+  return !mScaleBasedVisibility
+         || ( ( mMinScale == 0 || !qgsLessThanMaximumScale( scale, mMinScale ) )
+              && ( mMaxScale == 0 || !qgsEqualToOrGreaterThanMinimumScale( scale, mMaxScale ) ) );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
