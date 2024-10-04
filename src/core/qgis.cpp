@@ -190,6 +190,17 @@ bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
   return ! qgsVariantLessThan( lhs, rhs );
 }
 
+bool qgsEqualToOrGreaterThanMinimumScale( const double scale, const double minScale )
+{
+  return scale > minScale || qgsDoubleNear( scale, minScale, 1E-8 );
+}
+
+bool qgsLessThanMaximumScale( const double scale, const double maxScale )
+{
+  return scale < maxScale && !qgsDoubleNear( scale, maxScale, 1E-8 );
+}
+
+
 QString qgsVsiPrefix( const QString &path )
 {
   return QgsGdalUtils::vsiPrefixForPath( path );

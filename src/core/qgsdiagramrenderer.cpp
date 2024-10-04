@@ -538,16 +538,16 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRen
     // Note: scale might be a non-round number, so compare with qgsDoubleNear
     const double rendererScale = c.rendererScale();
 
-    // maxScale is inclusive ( (< && !=) --> < --> no size )
+    // maxScale is inclusive ( < --> no size )
     double maxScale = s.maximumScale;
-    if ( maxScale > 0 && ( rendererScale < maxScale && !qgsDoubleNear( rendererScale, maxScale, 1E-8 ) ) )
+    if ( maxScale > 0 && qgsLessThanMaximumScale( rendererScale, maxScale ) )
     {
       return QSizeF();
     }
 
     // minScale is exclusive ( >= --> no size)
     double minScale = s.minimumScale;
-    if ( minScale > 0 && ( rendererScale > minScale || qgsDoubleNear( rendererScale, minScale, 1E-8 ) ) )
+    if ( minScale > 0 && qgsEqualToOrGreaterThanMinimumScale( rendererScale, minScale ) )
     {
       return QSizeF();
     }
@@ -947,16 +947,16 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
       // Note: scale might be a non-round number, so compare with qgsDoubleNear
       const double rendererScale = c.rendererScale();
 
-      // maxScale is inclusive ( (< && !=) --> < --> no diagram )
+      // maxScale is inclusive ( < --> no diagram )
       double maxScale = s.maximumScale;
-      if ( maxScale > 0 && ( rendererScale < maxScale && !qgsDoubleNear( rendererScale, maxScale, 1E-8 ) ) )
+      if ( maxScale > 0 && qgsLessThanMaximumScale( rendererScale, maxScale ) )
       {
         continue;
       }
 
       // minScale is exclusive ( >= --> no diagram)
       double minScale = s.minimumScale;
-      if ( minScale > 0 && ( rendererScale > minScale || qgsDoubleNear( rendererScale, minScale, 1E-8 ) ) )
+      if ( minScale > 0 && qgsEqualToOrGreaterThanMinimumScale( rendererScale, minScale ) )
       {
         continue;
       }
