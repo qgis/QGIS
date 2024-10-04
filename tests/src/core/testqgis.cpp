@@ -58,6 +58,10 @@ class TestQgis : public QgsTest
     void qVariantCompare();
     void testNanCompatibleEquals_data();
     void testNanCompatibleEquals();
+    void testMaximumScaleComparisons_data();
+    void testMaximumScaleComparisons();
+    void testMinimumScaleComparisons_data();
+    void testMinimumScaleComparisons();
     void testQgsAsConst();
     void testQgsRound();
     void testQgsVariantEqual();
@@ -347,6 +351,50 @@ void TestQgis::testNanCompatibleEquals()
 
   QCOMPARE( qgsNanCompatibleEquals( lhs, rhs ), expected );
   QCOMPARE( qgsNanCompatibleEquals( rhs, lhs ), expected );
+}
+
+void TestQgis::testMaximumScaleComparisons_data()
+{
+  QTest::addColumn<double>( "scale" );
+  QTest::addColumn<double>( "maxScale" );
+  QTest::addColumn<bool>( "expected" );
+
+  QTest::newRow( "same scales" ) << 2500.0 << 2500.0 << false;
+  QTest::newRow( "same scales, non-round below" ) << 2499.9999999966526 << 2500.0 << false;
+  QTest::newRow( "same scales, non-round above" ) << 2500.0000000027226 << 2500.0 << false;
+  QTest::newRow( "scale greater than max scale" ) << 3000.0 << 2500.0 << false;
+  QTest::newRow( "scale less than max scale" ) << 2000.0 << 2500.0 << true;
+}
+
+void TestQgis::testMaximumScaleComparisons()
+{
+  QFETCH( double, scale );
+  QFETCH( double, maxScale );
+  QFETCH( bool, expected );
+
+  QCOMPARE( qgsLessThanMaximumScale( scale, maxScale ), expected );
+}
+
+void TestQgis::testMinimumScaleComparisons_data()
+{
+  QTest::addColumn<double>( "scale" );
+  QTest::addColumn<double>( "minScale" );
+  QTest::addColumn<bool>( "expected" );
+
+  QTest::newRow( "same scales" ) << 5000.0 << 5000.0 << true;
+  QTest::newRow( "same scales, non-round below" ) << 4999.999999997278 << 5000.0 << true;
+  QTest::newRow( "same scales, non-round above" ) << 5000.000000003348 << 5000.0 << true;
+  QTest::newRow( "scale greater than min scale" ) << 10000.0 << 5000.0 << true;
+  QTest::newRow( "scale less than min scale" ) << 3000.0 << 5000.0 << false;
+}
+
+void TestQgis::testMinimumScaleComparisons()
+{
+  QFETCH( double, scale );
+  QFETCH( double, minScale );
+  QFETCH( bool, expected );
+
+  QCOMPARE( qgsEqualToOrGreaterThanMinimumScale( scale, minScale ), expected );
 }
 
 class ConstTester
