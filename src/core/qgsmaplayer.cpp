@@ -37,6 +37,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
+#include "qgsscaleutils.h"
 #include "qgssldexportcontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -1156,8 +1157,8 @@ bool QgsMapLayer::isInScaleRange( double scale ) const
   // mMinScale (denominator!) is inclusive ( >= --> In range )
   // mMaxScale (denominator!) is exclusive ( < --> In range )
   return !mScaleBasedVisibility
-         || ( ( mMinScale == 0 || !qgsLessThanMaximumScale( scale, mMinScale ) )
-              && ( mMaxScale == 0 || !qgsEqualToOrGreaterThanMinimumScale( scale, mMaxScale ) ) );
+         || ( ( mMinScale == 0 || !QgsScaleUtils::lessThanMaximumScale( scale, mMinScale ) )
+              && ( mMaxScale == 0 || !QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMaxScale ) ) );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const

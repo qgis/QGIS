@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabeling.h"
+#include "qgsscaleutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyleentityvisitor.h"
 
@@ -429,11 +430,11 @@ bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
     return true;
 
   // maxScale is inclusive ( < --> no label )
-  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && qgsLessThanMaximumScale( scale, mMaximumScale ) )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( scale, mMaximumScale ) )
     return false;
 
   // minScale is exclusive ( >= --> no label )
-  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && qgsEqualToOrGreaterThanMinimumScale( scale, mMinimumScale ) )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMinimumScale ) )
     return false;
   return true;
 }

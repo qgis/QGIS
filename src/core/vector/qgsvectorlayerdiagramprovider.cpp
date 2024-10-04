@@ -24,6 +24,7 @@
 #include "qgslabelingresults.h"
 #include "qgsrendercontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsscaleutils.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -199,14 +200,14 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
 
       // maxScale is inclusive ( < --> no diagram )
       double maxScale = settingList.at( 0 ).maximumScale;
-      if ( maxScale > 0 && qgsLessThanMaximumScale( rendererScale, maxScale ) )
+      if ( maxScale > 0 && QgsScaleUtils::lessThanMaximumScale( rendererScale, maxScale ) )
       {
         return nullptr;
       }
 
       // minScale is exclusive ( >= --> no diagram)
       double minScale = settingList.at( 0 ).minimumScale;
-      if ( minScale > 0 && qgsEqualToOrGreaterThanMinimumScale( rendererScale, minScale ) )
+      if ( minScale > 0 && QgsScaleUtils::equalToOrGreaterThanMinimumScale( rendererScale, minScale ) )
       {
         return nullptr;
       }

@@ -31,6 +31,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsunittypes.h"
+#include "qgsscaleutils.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -540,14 +541,14 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRen
 
     // maxScale is inclusive ( < --> no size )
     double maxScale = s.maximumScale;
-    if ( maxScale > 0 && qgsLessThanMaximumScale( rendererScale, maxScale ) )
+    if ( maxScale > 0 && QgsScaleUtils::lessThanMaximumScale( rendererScale, maxScale ) )
     {
       return QSizeF();
     }
 
     // minScale is exclusive ( >= --> no size)
     double minScale = s.minimumScale;
-    if ( minScale > 0 && qgsEqualToOrGreaterThanMinimumScale( rendererScale, minScale ) )
+    if ( minScale > 0 && QgsScaleUtils::equalToOrGreaterThanMinimumScale( rendererScale, minScale ) )
     {
       return QSizeF();
     }
@@ -949,14 +950,14 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
 
       // maxScale is inclusive ( < --> no diagram )
       double maxScale = s.maximumScale;
-      if ( maxScale > 0 && qgsLessThanMaximumScale( rendererScale, maxScale ) )
+      if ( maxScale > 0 && QgsScaleUtils::lessThanMaximumScale( rendererScale, maxScale ) )
       {
         continue;
       }
 
       // minScale is exclusive ( >= --> no diagram)
       double minScale = s.minimumScale;
-      if ( minScale > 0 && qgsEqualToOrGreaterThanMinimumScale( rendererScale, minScale ) )
+      if ( minScale > 0 && QgsScaleUtils::equalToOrGreaterThanMinimumScale( rendererScale, minScale ) )
       {
         continue;
       }

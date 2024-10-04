@@ -94,6 +94,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsvectortileutils.h"
+#include "qgsscaleutils.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -12131,12 +12132,12 @@ void QgisApp::zoomToLayerScale()
   {
     const double scale = mMapCanvas->scale();
 
-    if ( layer->minimumScale() > 0 && qgsEqualToOrGreaterThanMinimumScale( scale, layer->minimumScale() ) )
+    if ( layer->minimumScale() > 0 && QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, layer->minimumScale() ) )
     {
       // minimum is exclusive ( >= --> out of range ), decrease by 1 to be sure
       mMapCanvas->zoomScale( layer->minimumScale() - 1 );
     }
-    else if ( layer->maximumScale() > 0 && qgsLessThanMaximumScale( scale, layer->maximumScale() ) )
+    else if ( layer->maximumScale() > 0 && QgsScaleUtils::lessThanMaximumScale( scale, layer->maximumScale() ) )
     {
       // maximum is inclusive ( < --> out of range ), pass maximum
       mMapCanvas->zoomScale( layer->maximumScale() );
