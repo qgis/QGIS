@@ -6258,34 +6258,6 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
-/**
- * Returns whether the \a scale is equal to or greater than the \a minScale,
- * taking non-round numbers into account.
- *
- * \param scale The current scale to be compared.
- * \param minScale The minimum map scale (i.e. most "zoomed out" scale) at
- * which features, labels or diagrams will be visible. The scale value
- * indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
- * \see qgsLessThanMaximumScale()
- *
- * \since QGIS 3.40
- */
-CORE_EXPORT bool qgsEqualToOrGreaterThanMinimumScale( const double scale, const double minScale );
-
-/**
- * Returns whether the \a scale is less than the \a maxScale, taking non-round
- * numbers into account.
- *
- * \param scale The current scale to be compared.
- * \param maxScale The maximum map scale (i.e. most "zoomed in" scale) at which
- * features, labels or diagrams will be visible. The scale value indicates the
- * scale denominator, e.g. 1000.0 for a 1:1000 map.
- * \see qgsEqualToOrGreaterThanMinimumScale()
- *
- * \since QGIS 3.40
- */
-CORE_EXPORT bool qgsLessThanMaximumScale( const double scale, const double maxScale );
-
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 
 /**

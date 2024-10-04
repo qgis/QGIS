@@ -30,6 +30,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgspointdistancerenderer.h"
+#include "qgsscaleutils.h"
 
 #include <QSet>
 
@@ -299,11 +300,11 @@ bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
     return true;
 
   // maxScale is inclusive ( < --> no render )
-  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && qgsLessThanMaximumScale( scale, mMaximumScale ) )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( scale, mMaximumScale ) )
     return false;
 
   // minScale is exclusive ( >= --> no render )
-  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && qgsEqualToOrGreaterThanMinimumScale( scale, mMinimumScale ) )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMinimumScale ) )
     return false;
 
   return true;
