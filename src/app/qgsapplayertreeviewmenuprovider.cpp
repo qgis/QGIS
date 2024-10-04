@@ -1108,11 +1108,22 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol( const QString &layerId )
     return;
 
   QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< QgsSingleSymbolRenderer * >( layer->renderer() );
-  if ( !singleRenderer )
+  std::unique_ptr< QgsSymbol > newSymbol;
+  if ( singleRenderer && singleRenderer->symbol() )
+    newSymbol.reset( singleRenderer->symbol()->clone() );
+
+  const QgsSingleSymbolRenderer *embeddedRenderer = nullptr;
+  if ( !newSymbol && layer->renderer() && layer->renderer()->embeddedRenderer() )
+  {
+    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRenderer * >( layer->renderer()->embeddedRenderer() );
+    if ( embeddedRenderer && embeddedRenderer->symbol() )
+      newSymbol.reset( embeddedRenderer->symbol()->clone() );
+  }
+
+  if ( !newSymbol )
     return;
 
-  std::unique_ptr< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
-  QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), layer, mView->window() );
+  QgsSymbolSelectorDialog dlg( newSymbol.get(), QgsStyle::defaultStyle(), layer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
@@ -1120,7 +1131,17 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol( const QString &layerId )
   dlg.setContext( context );
   if ( dlg.exec() )
   {
-    singleRenderer->setSymbol( symbol.release() );
+    if ( singleRenderer )
+    {
+      singleRenderer->setSymbol( newSymbol.release() );
+    }
+    else if ( embeddedRenderer )
+    {
+      QgsSingleSymbolRenderer *newRenderer = embeddedRenderer->clone();
+      newRenderer->setSymbol( newSymbol.release() );
+      layer->renderer()->setEmbeddedRenderer( newRenderer );
+    }
+
     layer->triggerRepaint();
     mView->refreshLayerSymbology( layer->id() );
     layer->emitStyleChanged();
@@ -1134,11 +1155,16 @@ void QgsAppLayerTreeViewMenuProvider::copyVectorSymbol( const QString &layerId )
   if ( !layer )
     return;
 
-  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< QgsSingleSymbolRenderer * >( layer->renderer() );
-  if ( !singleRenderer )
-    return;
+  const QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer * >( layer->renderer() );
+  if ( !singleRenderer && layer->renderer() && layer->renderer()->embeddedRenderer() )
+  {
+    singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer * >( layer->renderer()->embeddedRenderer() );
+  }
 
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( singleRenderer->symbol() ) );
+  if ( singleRenderer )
+  {
+    QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( singleRenderer->symbol() ) );
+  }
 }
 
 void QgsAppLayerTreeViewMenuProvider::pasteVectorSymbol( const QString &layerId )
@@ -1148,17 +1174,35 @@ void QgsAppLayerTreeViewMenuProvider::pasteVectorSymbol( const QString &layerId 
     return;
 
   QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< QgsSingleSymbolRenderer * >( layer->renderer() );
-  if ( !singleRenderer )
-    return;
+  const QgsSymbol *originalSymbol = nullptr;
+  if ( singleRenderer )
+    originalSymbol = singleRenderer->symbol();
 
+  const QgsSingleSymbolRenderer *embeddedRenderer = nullptr;
+  if ( !singleRenderer && layer->renderer() && layer->renderer()->embeddedRenderer() )
+  {
+    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRenderer * >( layer->renderer()->embeddedRenderer() );
+    if ( embeddedRenderer )
+      originalSymbol = embeddedRenderer->symbol();
+  }
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( !tempSymbol )
     return;
 
-  if ( !singleRenderer->symbol() || singleRenderer->symbol()->type() != tempSymbol->type() )
+  if ( !originalSymbol || originalSymbol->type() != tempSymbol->type() )
     return;
 
-  singleRenderer->setSymbol( tempSymbol.release() );
+  if ( singleRenderer )
+  {
+    singleRenderer->setSymbol( tempSymbol.release() );
+  }
+  else if ( embeddedRenderer )
+  {
+    QgsSingleSymbolRenderer *newRenderer = embeddedRenderer->clone();
+    newRenderer->setSymbol( tempSymbol.release() );
+    layer->renderer()->setEmbeddedRenderer( newRenderer );
+  }
+
   layer->triggerRepaint();
   layer->emitStyleChanged();
   mView->refreshLayerSymbology( layer->id() );
