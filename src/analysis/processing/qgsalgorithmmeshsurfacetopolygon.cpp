@@ -17,17 +17,9 @@
 
 #include "qgsalgorithmmeshsurfacetopolygon.h"
 #include "qgsprocessingparametermeshdataset.h"
-#include "qgsmeshcontours.h"
-#include "qgsmeshdataset.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshlayertemporalproperties.h"
-#include "qgsmeshlayerinterpolator.h"
 #include "qgspolygon.h"
-#include "qgsrasterfilewriter.h"
 #include "qgslinestring.h"
-#include "qgsgeometrycheckerutils.h"
-#include "qgsgeometryengine.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 
