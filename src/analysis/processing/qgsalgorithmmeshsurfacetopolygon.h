@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmeshconvexhull.cpp
+                         qgsalgorithmmeshsurfacetopolygon.h
                          ---------------------------
     begin                : September 2024
     copyright            : (C) 2024 by Jan Caha
