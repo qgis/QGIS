@@ -78,10 +78,10 @@ To be re-implemented to implemeent type specific configuration (e.g. opacity for
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
 
-class QgsSettingsStringEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
+class QgsSettingsStringLineEditWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for string settings
+This class is a factory of editor for string settings with a line edit
 
 .. versionadded:: 3.32
 %End
@@ -91,7 +91,7 @@ This class is a factory of editor for string settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
 %End
   public:
-    QgsSettingsStringEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsStringLineEditWrapper( QObject *parent = 0 );
 %Docstring
 Constructor
 %End
@@ -115,12 +115,13 @@ Constructor
 };
 
 
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
 
-class QgsSettingsBoolEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
+class QgsSettingsBoolCheckBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for boolean settings
+This class is a factory of editor for boolean settings with a checkbox
 
 .. versionadded:: 3.32
 %End
@@ -130,7 +131,7 @@ This class is a factory of editor for boolean settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
 %End
   public:
-    QgsSettingsBoolEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsBoolCheckBoxWrapper( QObject *parent = 0 );
 %Docstring
 Constructor
 %End
@@ -156,10 +157,10 @@ Constructor
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
 
-class QgsSettingsIntegerEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
+class QgsSettingsIntegerSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for integer settings
+This class is a factory of editor for integer settings with a spin box
 
 .. versionadded:: 3.32
 %End
@@ -169,7 +170,7 @@ This class is a factory of editor for integer settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
 %End
   public:
-    QgsSettingsIntegerEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsIntegerSpinBoxWrapper( QObject *parent = 0 );
 %Docstring
 Constructor
 %End
@@ -196,10 +197,10 @@ Constructor
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
 
-class QgsSettingsDoubleEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
+class QgsSettingsDoubleSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for double settings
+This class is a factory of editor for double settings with a double spin box
 
 .. versionadded:: 3.32
 %End
@@ -209,7 +210,7 @@ This class is a factory of editor for double settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
 %End
   public:
-    QgsSettingsDoubleEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsDoubleSpinBoxWrapper( QObject *parent = 0 );
 %Docstring
 Constructor
 %End
@@ -236,10 +237,10 @@ Constructor
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
 
-class QgsSettingsColorEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
+class QgsSettingsColorButtonWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for color settings
+This class is a factory of editor for color settings with a color button
 
 .. versionadded:: 3.32
 %End
@@ -249,7 +250,7 @@ This class is a factory of editor for color settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
 %End
   public:
-    QgsSettingsColorEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsColorButtonWrapper( QObject *parent = 0 );
 %Docstring
 Constructor
 %End

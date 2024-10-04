@@ -4,22 +4,22 @@ try:
 except NameError:
     pass
 try:
-    QgsSettingsStringEditorWidgetWrapper.__group__ = ['settings']
+    QgsSettingsStringLineEditWrapper.__group__ = ['settings']
 except NameError:
     pass
 try:
-    QgsSettingsBoolEditorWidgetWrapper.__group__ = ['settings']
+    QgsSettingsBoolCheckBoxWrapper.__group__ = ['settings']
 except NameError:
     pass
 try:
-    QgsSettingsIntegerEditorWidgetWrapper.__group__ = ['settings']
+    QgsSettingsIntegerSpinBoxWrapper.__group__ = ['settings']
 except NameError:
     pass
 try:
-    QgsSettingsDoubleEditorWidgetWrapper.__group__ = ['settings']
+    QgsSettingsDoubleSpinBoxWrapper.__group__ = ['settings']
 except NameError:
     pass
 try:
-    QgsSettingsColorEditorWidgetWrapper.__group__ = ['settings']
+    QgsSettingsColorButtonWrapper.__group__ = ['settings']
 except NameError:
     pass
