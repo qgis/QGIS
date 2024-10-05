@@ -8615,7 +8615,7 @@ QgsUnitTypes.ChainsClarkes.is_monkey_patched = True
 QgsUnitTypes.ChainsClarkes.__doc__ = "Clarke's chains \n.. versionadded:: 3.40"
 QgsUnitTypes.ChainsUSSurvey = Qgis.DistanceUnit.ChainsUSSurvey
 QgsUnitTypes.ChainsUSSurvey.is_monkey_patched = True
-QgsUnitTypes.ChainsUSSurvey.__doc__ = "US Survery chains \n.. versionadded:: 3.40"
+QgsUnitTypes.ChainsUSSurvey.__doc__ = "US Survey chains \n.. versionadded:: 3.40"
 QgsUnitTypes.FeetBritish1865 = Qgis.DistanceUnit.FeetBritish1865
 QgsUnitTypes.FeetBritish1865.is_monkey_patched = True
 QgsUnitTypes.FeetBritish1865.__doc__ = "British feet (1865) \n.. versionadded:: 3.40"
@@ -8654,7 +8654,7 @@ QgsUnitTypes.FeetIndian1975.is_monkey_patched = True
 QgsUnitTypes.FeetIndian1975.__doc__ = "Indian feet (1975) \n.. versionadded:: 3.40"
 QgsUnitTypes.FeetUSSurvey = Qgis.DistanceUnit.FeetUSSurvey
 QgsUnitTypes.FeetUSSurvey.is_monkey_patched = True
-QgsUnitTypes.FeetUSSurvey.__doc__ = "US Survery feet \n.. versionadded:: 3.40"
+QgsUnitTypes.FeetUSSurvey.__doc__ = "US Survey feet \n.. versionadded:: 3.40"
 QgsUnitTypes.LinksInternational = Qgis.DistanceUnit.LinksInternational
 QgsUnitTypes.LinksInternational.is_monkey_patched = True
 QgsUnitTypes.LinksInternational.__doc__ = "International links \n.. versionadded:: 3.40"
@@ -8675,7 +8675,7 @@ QgsUnitTypes.LinksClarkes.is_monkey_patched = True
 QgsUnitTypes.LinksClarkes.__doc__ = "Clarke's links \n.. versionadded:: 3.40"
 QgsUnitTypes.LinksUSSurvey = Qgis.DistanceUnit.LinksUSSurvey
 QgsUnitTypes.LinksUSSurvey.is_monkey_patched = True
-QgsUnitTypes.LinksUSSurvey.__doc__ = "US Survery links \n.. versionadded:: 3.40"
+QgsUnitTypes.LinksUSSurvey.__doc__ = "US Survey links \n.. versionadded:: 3.40"
 QgsUnitTypes.YardsBritishBenoit1895A = Qgis.DistanceUnit.YardsBritishBenoit1895A
 QgsUnitTypes.YardsBritishBenoit1895A.is_monkey_patched = True
 QgsUnitTypes.YardsBritishBenoit1895A.__doc__ = "British yards (Benoit 1895 A) \n.. versionadded:: 3.40"
@@ -8705,7 +8705,7 @@ QgsUnitTypes.YardsIndian1975.is_monkey_patched = True
 QgsUnitTypes.YardsIndian1975.__doc__ = "Indian yards (1975) \n.. versionadded:: 3.40"
 QgsUnitTypes.MilesUSSurvey = Qgis.DistanceUnit.MilesUSSurvey
 QgsUnitTypes.MilesUSSurvey.is_monkey_patched = True
-QgsUnitTypes.MilesUSSurvey.__doc__ = "US Survery miles \n.. versionadded:: 3.40"
+QgsUnitTypes.MilesUSSurvey.__doc__ = "US Survey miles \n.. versionadded:: 3.40"
 QgsUnitTypes.Fathoms = Qgis.DistanceUnit.Fathoms
 QgsUnitTypes.Fathoms.is_monkey_patched = True
 QgsUnitTypes.Fathoms.__doc__ = "Fathoms \n.. versionadded:: 3.40"
@@ -8788,7 +8788,7 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 
   .. versionadded:: 3.40
 
-* ``ChainsUSSurvey``: US Survery chains
+* ``ChainsUSSurvey``: US Survey chains
 
   .. versionadded:: 3.40
 
@@ -8840,7 +8840,7 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 
   .. versionadded:: 3.40
 
-* ``FeetUSSurvey``: US Survery feet
+* ``FeetUSSurvey``: US Survey feet
 
   .. versionadded:: 3.40
 
@@ -8868,7 +8868,7 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 
   .. versionadded:: 3.40
 
-* ``LinksUSSurvey``: US Survery links
+* ``LinksUSSurvey``: US Survey links
 
   .. versionadded:: 3.40
 
@@ -8908,7 +8908,7 @@ Qgis.DistanceUnit.__doc__ = """Units of distance
 
   .. versionadded:: 3.40
 
-* ``MilesUSSurvey``: US Survery miles
+* ``MilesUSSurvey``: US Survey miles
 
   .. versionadded:: 3.40
 
