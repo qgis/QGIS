@@ -128,10 +128,11 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   QgsGeometry lines;
   QgsMeshFace face;
-  QMap<std::pair<int, int>, int> edges; // edge as key and count of edge occurence as value
+  QMap<std::pair<int, int>, int> edges; // edge as key and count of edge usage as value
   std::pair<int, int> edge;
 
-  feedback->setProgressText( "Parsing mesh faces to extract edges." );
+  if ( feedback )
+    feedback->setProgressText( "Parsing mesh faces to extract edges." );
 
   for ( int i = 0; i < mNativeMesh.faceCount(); i++ )
   {
@@ -172,12 +173,15 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
       }
     }
 
-    feedback->setProgress( 100 * i / mNativeMesh.faceCount() );
+    if ( feedback )
+      feedback->setProgress( 100 * i / mNativeMesh.faceCount() );
   }
 
-  feedback->setProgress( 0 );
-  feedback->setProgressText( "Parsing mesh edges." );
-
+  if ( feedback )
+  {
+    feedback->setProgress( 0 );
+    feedback->setProgressText( "Parsing mesh edges." );
+  }
   std::unique_ptr<QgsMultiLineString> multiLineString( new QgsMultiLineString() );
 
   int i = 0;
@@ -195,15 +199,16 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
       std::unique_ptr<QgsLineString> line( new QgsLineString( mNativeMesh.vertex( it.key().first ), mNativeMesh.vertex( it.key().second ) ) );
       multiLineString->addGeometry( line.release() );
     }
+    if ( feedback )
+      feedback->setProgress( 100 * i / edges.size() );
 
-    feedback->setProgress( 100 * i / edges.size() );
     i++;
   }
 
-  feedback->setProgressText( "Creating final geometry." );
 
   if ( feedback )
   {
+    feedback->setProgressText( "Creating final geometry." );
     if ( feedback->isCanceled() )
       return QVariantMap();
   }
@@ -221,6 +226,12 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   {
     for ( auto pit = multiLinesAbstract->const_parts_begin(); pit != multiLinesAbstract->const_parts_end(); ++pit )
     {
+      if ( feedback )
+      {
+        if ( feedback->isCanceled() )
+          return QVariantMap();
+      }
+
       std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
       polygon->setExteriorRing( qgsgeometry_cast< QgsLineString * >( *pit )->clone() );
       multiPolygon->addGeometry( polygon.release() );
@@ -259,7 +270,6 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     if ( feedback->isCanceled() )
       return QVariantMap();
   }
-
 
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;
