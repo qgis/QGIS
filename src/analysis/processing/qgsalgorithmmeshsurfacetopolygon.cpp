@@ -88,11 +88,6 @@ bool QgsMeshSurfaceToPolygonAlgorithm::prepareAlgorithm( const QVariantMap &para
 
   mNativeMesh = *meshLayer->nativeMesh();
 
-  if ( feedback )
-  {
-    feedback->pushInfo( QObject::tr( "Preparing data" ) );
-  }
-
   return true;
 }
 
@@ -182,6 +177,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     feedback->setProgress( 0 );
     feedback->setProgressText( "Parsing mesh edges." );
   }
+
   std::unique_ptr<QgsMultiLineString> multiLineString( new QgsMultiLineString() );
 
   int i = 0;
@@ -199,6 +195,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
       std::unique_ptr<QgsLineString> line( new QgsLineString( mNativeMesh.vertex( it.key().first ), mNativeMesh.vertex( it.key().second ) ) );
       multiLineString->addGeometry( line.release() );
     }
+
     if ( feedback )
       feedback->setProgress( 100 * i / edges.size() );
 
