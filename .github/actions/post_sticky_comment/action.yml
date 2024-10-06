@@ -1,8 +1,8 @@
 name: Post Sticky Comment
 description: Post a sticky comment
 inputs:
-  title:
-    description: Unique title
+  marker:
+    description: Unique marker
     required: true
     type: string
   body:
@@ -19,19 +19,21 @@ runs:
   steps:
     - name: Create metadata
       uses: actions/github-script@v7
+      env:
+        BODY: ${{ inputs.body }}
       with:
         script: |
           const fs = require('fs');
           
           try {
             // Get inputs from the GitHub Action
-            const title = JSON.parse(`"${{ inputs.title }}"`);  // Safely parsing as a string
-            const body = JSON.parse(`"${{ inputs.body }}"`);    // Safely parsing as a string
+            const marker = "${{ inputs.marker }}";
+            const body = process.env.BODY; // Transfer input via env variable as it's not possible to access it directly https://github.com/actions/github-script/issues/56#issuecomment-642188313
             const pr = ${{ inputs.pr }};
 
             // Create the content of the JSON file
             const content = JSON.stringify({
-              title: title,
+              marker: marker,
               body: body,
               pr_number: pr
             }, null, 2);

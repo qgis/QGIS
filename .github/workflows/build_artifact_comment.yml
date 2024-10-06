@@ -3,7 +3,8 @@ name: Write build artifact comments
 on:
   workflow_run:
     workflows: 
-      - 🪟 MingW64 Windows 64bit Build
+      - 🪟 Workflow A
+      - 🪟 Windows Qt6
     types:
       - completed
 
@@ -71,15 +72,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            function updateCommentSection(prComment, title, body) {
-              const sectionRegex = new RegExp(`(### ${title}\\n)([^##]*)`, 'm');
+            function updateCommentSection(prComment, marker, body) {
+              // Create a regular expression to match the section between start and end markers
+              const sectionRegex = new RegExp(`(<!-- ====startsection ${marker}-->\\n)([\\s\\S]*?)(<!-- ====endsection ${marker}-->)`, 'm');
               
-              // Check if the section with the title exists
+              // Check if the section with the marker exists
               if (sectionRegex.test(prComment)) {
-                return prComment.replace(sectionRegex, `$1${body}\n`);
+                // Replace the existing body text between the markers
+                return prComment.replace(sectionRegex, `$1${body}\n$3`);
               } else {
                 // If the section doesn't exist, append the new section to the end
-                return prComment.trim() + `\n\n### ${title}\n${body}\n`;
+                return prComment.trim() + `\n\n<!-- ====startsection ${marker}-->\n${body}\n<!-- ====endsection ${marker}-->\n`;
               }
             }
             const fs = require('fs');
@@ -103,7 +106,7 @@ jobs:
               issue_number: prNumber,
             });
 
-            const PREFIX = "## Build Bot";
+            const PREFIX = "<!-- !!## stickymarker ##!! -->";
 
             // Find the comment that starts with the specified PREFIX
             const comment = prComments.data?.find(c => c.body.startsWith(PREFIX));
@@ -112,7 +115,7 @@ jobs:
             if (!!comment) {
                 newPrComment = comment.body;
             } else {
-                newPrComment = PREFIX + "\n\n";
+                newPrComment = PREFIX + "\n";
             }
 
 
@@ -121,11 +124,11 @@ jobs:
                 try {
                     const data = JSON.parse(fs.readFileSync(file, 'utf8'));
 
-                    const title = data.title;
+                    const marker = data.marker;
                     const body = data.body;
                     console.debug(data);
 
-                    newPrComment = updateCommentSection(newPrComment, title, body);
+                    newPrComment = updateCommentSection(newPrComment, marker, body);
                 } catch (error) {
                     console.error(`Failed to process file ${file}: ${error.message}`);
                 }

@@ -120,8 +120,9 @@ jobs:
       - name: Schedule download comment
         uses: ./.github/actions/post_sticky_comment
         with:
-          title: 🪟 Windows builds
+          marker: mingw64
           body: |
+            ### 🪟 Windows builds
             Download [Windows builds of this PR for testing](${{ steps.artifact-win64.outputs.artifact-url }}).
             Debug symbols for this build are available [here](${{ steps.artifact-win64-debug.outputs.artifact-url }}).";
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
