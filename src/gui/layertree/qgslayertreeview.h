@@ -234,6 +234,16 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void setLayerVisible( QgsMapLayer *layer, bool visible );
 
     /**
+     * Sets the currently selected \a node.
+     *
+     * If \a node is NULLPTR then all nodes will be deselected.
+     *
+     * \see currentNode()
+     * \since QGIS 3.40
+     */
+    void setCurrentNode( QgsLayerTreeNode *node );
+
+    /**
      * Sets the currently selected \a layer.
      *
      * If \a layer is NULLPTR then all layers will be deselected.
