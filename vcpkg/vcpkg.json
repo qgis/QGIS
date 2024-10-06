@@ -1,0 +1,132 @@
+{
+  "vcpkg-configuration": {
+    "default-registry": {
+      "kind": "git",
+      "reference": "7adc2e4d49e8d0efc07a369079faa6bc3dbb90f3",
+      "baseline": "7adc2e4d49e8d0efc07a369079faa6bc3dbb90f3",
+      "repository": "https://github.com/microsoft/vcpkg"
+    },
+    "registries": [
+      {
+        "kind": "git",
+        "baseline": "6f244bbbd70800bc478cd19664f57fc96347fb3d",
+        "reference": "6f244bbbd70800bc478cd19664f57fc96347fb3d",
+        "repository": "https://github.com/open-vcpkg/python-registry",
+        "packages": [
+          "python3",
+          "py-*",
+          "gdal",
+          "swig",
+          "vcpkg-python-scripts"
+        ]
+      }
+    ],
+    "overlay-ports": [
+      "ports"
+    ],
+    "overlay-triplets": [
+      "triplets"
+    ]
+  },
+  "name": "qgis",
+  "version-string": "current",
+  "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
+  "homepage": "https://qgis.org",
+  "dependencies": [
+    {
+      "name": "exiv2",
+      "features": [
+        "xmp"
+      ]
+    },
+    "expat",
+    {
+      "name": "gdal",
+      "default-features": false,
+      "features": [
+        "poppler"
+      ]
+    },
+    "geos",
+    "gsl",
+    "jhasse-poly2tri",
+    "libpq",
+    "libspatialindex",
+    "libspatialite",
+    {
+      "name": "libtasn1",
+      "platform": "ios | osx"
+    },
+    "libxml2",
+    "libzip",
+    "pdal",
+    "proj",
+    "protobuf",
+    {
+      "default-features": false,
+      "name": "qca",
+      "features": [
+        "ossl"
+      ]
+    },
+    "qtbase",
+    "qtkeychain-qt6",
+    "qtlocation",
+    "qtsvg",
+    "qttools",
+    "zlib"
+  ],
+  "features": {
+    "3d": {
+      "description": "Determines whether QGIS 3D library should be built",
+      "dependencies": [
+        "qt3d"
+      ]
+    },
+    "bindings": {
+      "description": "Determines whether Python bindings should be built",
+      "dependencies": [
+        {
+          "name": "gdal",
+          "features": [
+            "python"
+          ]
+        },
+        "py-pip",
+        "py-pyqt6",
+        "py-qscintilla",
+        "py-pyyaml",
+        "py-psycopg2",
+        "py-qgis-requirements",
+        "python3"
+      ]
+    },
+    "gui": {
+      "description": "Determines whether the QGIS gui should be built",
+      "dependencies": [
+        "qscintilla",
+        "qtmultimedia",
+        "qwt"
+      ]
+    },
+    "opencl": {
+      "description": "Should OpenCL support be added",
+      "dependencies": [
+        "opencl"
+      ]
+    },
+    "quick": {
+      "description": "Build the QGIS quick components for mobile interfaces",
+      "dependencies": [
+        "qtdeclarative",
+        "qtquickcontrols2"
+      ]
+    },
+    "server": {
+      "description": "Determines whether QGIS server should be built",
+      "dependencies": [
+        "fastcgi"
+      ]
+    }
+  }
+}
