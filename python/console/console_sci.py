@@ -478,9 +478,8 @@ class ShellScintilla(QgsCodeEditorPython):
         pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
 
         embedded = pythonSettingsTreeNode.childSetting('context-help-embedded').value()
-        api = "pyqgis" if pythonSettingsTreeNode.childSetting('context-help-pyqgis').value() else "qgis"
 
-        self._interpreter.execCommandImpl(f'_help({repr(text)}, api="{api}", embedded={embedded}, force_search={force_search})', show_input=False)
+        self._interpreter.execCommandImpl(f'_help({repr(text)}, api="pyqgis", embedded={embedded}, force_search={force_search})', show_input=False)
 
     def showApi(self, api):
         pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
