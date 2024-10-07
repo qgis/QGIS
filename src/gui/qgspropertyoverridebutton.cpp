@@ -43,7 +43,7 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
   setFocusPolicy( Qt::StrongFocus );
 
   QString ss = QStringLiteral( "QgsPropertyOverrideButton { background: none; border: 1px solid rgba(0, 0, 0, 0%); } QgsPropertyOverrideButton:focus { border: 1px solid palette(highlight); }" );
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   ss += QLatin1String( "QgsPropertyOverrideButton::menu-indicator { width: 5px; }" );
 #endif
   setStyleSheet( ss );

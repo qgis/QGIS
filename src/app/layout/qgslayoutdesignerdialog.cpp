@@ -103,7 +103,7 @@
 #include <QPrintDialog>
 #endif
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
