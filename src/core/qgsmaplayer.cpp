@@ -241,13 +241,6 @@ QgsProviderMetadata *QgsMapLayer::providerMetadata() const
   return QgsProviderRegistry::instance()->providerMetadata( providerType() );
 }
 
-void QgsMapLayer::setShortName( const QString &shortName )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  mServerProperties->setShortName( shortName );
-}
-
 QString QgsMapLayer::shortName() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
