@@ -27,8 +27,7 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
 {
   setupUi( this );
 
-  connect( mPythonHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "pyqgis" ), true );} );
-  connect( mCppHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qgis" ), true );} );
+  connect( mPyQgisHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "pyqgis" ), true );} );
   connect( mQtHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( QStringLiteral( "qt" ), true );} );
   connect( mOpenUrlButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->openURL( mWebView->url().toString(), false );} );
 
