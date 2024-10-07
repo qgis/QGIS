@@ -124,6 +124,6 @@ jobs:
           body: |
             ### 🪟 Windows builds
             Download [Windows builds of this PR for testing](${{ steps.artifact-win64.outputs.artifact-url }}).
-            Debug symbols for this build are available [here](${{ steps.artifact-win64-debug.outputs.artifact-url }}).";
+            Debug symbols for this build are available [here](${{ steps.artifact-win64-debug.outputs.artifact-url }}).
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}
