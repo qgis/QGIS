@@ -27,12 +27,12 @@
 // String
 // *******
 
-QString QgsSettingsStringEditorWidgetWrapper::id() const
+QString QgsSettingsStringLineEditWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::String ) ) );
 }
 
-bool QgsSettingsStringEditorWidgetWrapper::setWidgetValue( const QString &value ) const
+bool QgsSettingsStringLineEditWrapper::setWidgetValue( const QString &value ) const
 {
   if ( mEditor )
   {
@@ -46,7 +46,7 @@ bool QgsSettingsStringEditorWidgetWrapper::setWidgetValue( const QString &value 
   return false;
 }
 
-void QgsSettingsStringEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+void QgsSettingsStringLineEditWrapper::enableAutomaticUpdatePrivate()
 {
   QObject::connect( this->mEditor, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
@@ -54,7 +54,7 @@ void QgsSettingsStringEditorWidgetWrapper::enableAutomaticUpdatePrivate()
   } );
 }
 
-bool QgsSettingsStringEditorWidgetWrapper::setSettingFromWidget() const
+bool QgsSettingsStringLineEditWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -68,7 +68,7 @@ bool QgsSettingsStringEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-QString QgsSettingsStringEditorWidgetWrapper::valueFromWidget() const
+QString QgsSettingsStringLineEditWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
@@ -85,12 +85,12 @@ QString QgsSettingsStringEditorWidgetWrapper::valueFromWidget() const
 // Boolean
 // *******
 
-QString QgsSettingsBoolEditorWidgetWrapper::id() const
+QString QgsSettingsBoolCheckBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Bool ) ) );
 }
 
-bool QgsSettingsBoolEditorWidgetWrapper::setWidgetValue( const bool &value ) const
+bool QgsSettingsBoolCheckBoxWrapper::setWidgetValue( const bool &value ) const
 {
   if ( mEditor )
   {
@@ -104,7 +104,7 @@ bool QgsSettingsBoolEditorWidgetWrapper::setWidgetValue( const bool &value ) con
   return false;
 }
 
-void QgsSettingsBoolEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+void QgsSettingsBoolCheckBoxWrapper::enableAutomaticUpdatePrivate()
 {
   QObject::connect( this->mEditor, &QCheckBox::clicked, this, [ = ]( bool checked )
   {
@@ -112,7 +112,7 @@ void QgsSettingsBoolEditorWidgetWrapper::enableAutomaticUpdatePrivate()
   } );
 }
 
-bool QgsSettingsBoolEditorWidgetWrapper::setSettingFromWidget() const
+bool QgsSettingsBoolCheckBoxWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -126,7 +126,7 @@ bool QgsSettingsBoolEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-bool QgsSettingsBoolEditorWidgetWrapper::valueFromWidget() const
+bool QgsSettingsBoolCheckBoxWrapper::valueFromWidget() const
 {
 
   if ( mEditor )
@@ -145,12 +145,12 @@ bool QgsSettingsBoolEditorWidgetWrapper::valueFromWidget() const
 // Integer
 // *******
 
-QString QgsSettingsIntegerEditorWidgetWrapper::id() const
+QString QgsSettingsIntegerSpinBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Integer ) ) );
 }
 
-bool QgsSettingsIntegerEditorWidgetWrapper::setWidgetValue( const int &value ) const
+bool QgsSettingsIntegerSpinBoxWrapper::setWidgetValue( const int &value ) const
 {
   if ( mEditor )
   {
@@ -164,7 +164,7 @@ bool QgsSettingsIntegerEditorWidgetWrapper::setWidgetValue( const int &value ) c
   return false;
 }
 
-void QgsSettingsIntegerEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+void QgsSettingsIntegerSpinBoxWrapper::enableAutomaticUpdatePrivate()
 {
   QObject::connect( this->mEditor, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int value )
   {
@@ -172,7 +172,7 @@ void QgsSettingsIntegerEditorWidgetWrapper::enableAutomaticUpdatePrivate()
   } );
 }
 
-bool QgsSettingsIntegerEditorWidgetWrapper::setSettingFromWidget() const
+bool QgsSettingsIntegerSpinBoxWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -186,7 +186,7 @@ bool QgsSettingsIntegerEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-int QgsSettingsIntegerEditorWidgetWrapper::valueFromWidget() const
+int QgsSettingsIntegerSpinBoxWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
@@ -205,12 +205,12 @@ int QgsSettingsIntegerEditorWidgetWrapper::valueFromWidget() const
 // Double
 // *******
 
-QString QgsSettingsDoubleEditorWidgetWrapper::id() const
+QString QgsSettingsDoubleSpinBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Double ) ) );
 }
 
-bool QgsSettingsDoubleEditorWidgetWrapper::setWidgetValue( const double &value ) const
+bool QgsSettingsDoubleSpinBoxWrapper::setWidgetValue( const double &value ) const
 {
   if ( mEditor )
   {
@@ -224,7 +224,7 @@ bool QgsSettingsDoubleEditorWidgetWrapper::setWidgetValue( const double &value )
   return false;
 }
 
-void QgsSettingsDoubleEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+void QgsSettingsDoubleSpinBoxWrapper::enableAutomaticUpdatePrivate()
 {
   QObject::connect( this->mEditor, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
@@ -232,7 +232,7 @@ void QgsSettingsDoubleEditorWidgetWrapper::enableAutomaticUpdatePrivate()
   } );
 }
 
-bool QgsSettingsDoubleEditorWidgetWrapper::setSettingFromWidget() const
+bool QgsSettingsDoubleSpinBoxWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -246,7 +246,7 @@ bool QgsSettingsDoubleEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-double QgsSettingsDoubleEditorWidgetWrapper::valueFromWidget() const
+double QgsSettingsDoubleSpinBoxWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
@@ -263,12 +263,12 @@ double QgsSettingsDoubleEditorWidgetWrapper::valueFromWidget() const
 // Color
 // *******
 
-QString QgsSettingsColorEditorWidgetWrapper::id() const
+QString QgsSettingsColorButtonWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Color ) ) );
 }
 
-bool QgsSettingsColorEditorWidgetWrapper::setWidgetValue( const QColor &value ) const
+bool QgsSettingsColorButtonWrapper::setWidgetValue( const QColor &value ) const
 {
   if ( mEditor )
   {
@@ -282,7 +282,7 @@ bool QgsSettingsColorEditorWidgetWrapper::setWidgetValue( const QColor &value ) 
   return false;
 }
 
-void QgsSettingsColorEditorWidgetWrapper::configureEditorPrivateImplementation()
+void QgsSettingsColorButtonWrapper::configureEditorPrivateImplementation()
 {
   if ( mEditor )
   {
@@ -294,7 +294,7 @@ void QgsSettingsColorEditorWidgetWrapper::configureEditorPrivateImplementation()
   }
 }
 
-void QgsSettingsColorEditorWidgetWrapper::enableAutomaticUpdatePrivate()
+void QgsSettingsColorButtonWrapper::enableAutomaticUpdatePrivate()
 {
   QObject::connect( this->mEditor, &QgsColorButton::colorChanged, this, [ = ]( const QColor & color )
   {
@@ -302,7 +302,7 @@ void QgsSettingsColorEditorWidgetWrapper::enableAutomaticUpdatePrivate()
   } );
 }
 
-bool QgsSettingsColorEditorWidgetWrapper::setSettingFromWidget() const
+bool QgsSettingsColorButtonWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -316,7 +316,7 @@ bool QgsSettingsColorEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-QColor QgsSettingsColorEditorWidgetWrapper::valueFromWidget() const
+QColor QgsSettingsColorButtonWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {

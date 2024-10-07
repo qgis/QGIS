@@ -118,19 +118,19 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for string settings
+ * \brief This class is a factory of editor for string settings with a line edit
  *
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsSettingsStringEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>
+class GUI_EXPORT QgsSettingsStringLineEditWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsSettingsStringEditorWidgetWrapper( QObject *parent = nullptr )
+    QgsSettingsStringLineEditWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>( parent ) {}
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsStringEditorWidgetWrapper( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsStringLineEditWrapper( parent );}
 
     QString id() const override;
 
@@ -143,21 +143,22 @@ class GUI_EXPORT QgsSettingsStringEditorWidgetWrapper : public QgsSettingsEditor
     void enableAutomaticUpdatePrivate() override;
 };
 
+
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for boolean settings
+ * \brief This class is a factory of editor for boolean settings with a checkbox
  *
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsSettingsBoolEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>
+class GUI_EXPORT QgsSettingsBoolCheckBoxWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsSettingsBoolEditorWidgetWrapper( QObject *parent = nullptr )
+    QgsSettingsBoolCheckBoxWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>( parent ) {}
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsBoolEditorWidgetWrapper( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsBoolCheckBoxWrapper( parent );}
 
     QString id() const override;
 
@@ -172,19 +173,19 @@ class GUI_EXPORT QgsSettingsBoolEditorWidgetWrapper : public QgsSettingsEditorWi
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for integer settings
+ * \brief This class is a factory of editor for integer settings with a spin box
  *
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsSettingsIntegerEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>
+class GUI_EXPORT QgsSettingsIntegerSpinBoxWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsSettingsIntegerEditorWidgetWrapper( QObject *parent = nullptr )
+    QgsSettingsIntegerSpinBoxWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>( parent ) {}
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsIntegerEditorWidgetWrapper( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsIntegerSpinBoxWrapper( parent );}
 
     QString id() const override;
 
@@ -200,19 +201,19 @@ class GUI_EXPORT QgsSettingsIntegerEditorWidgetWrapper : public QgsSettingsEdito
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for double settings
+ * \brief This class is a factory of editor for double settings with a double spin box
  *
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsSettingsDoubleEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>
+class GUI_EXPORT QgsSettingsDoubleSpinBoxWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsSettingsDoubleEditorWidgetWrapper( QObject *parent = nullptr )
+    QgsSettingsDoubleSpinBoxWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>( parent ) {}
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsDoubleEditorWidgetWrapper( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsDoubleSpinBoxWrapper( parent );}
 
     QString id() const override;
 
@@ -228,19 +229,19 @@ class GUI_EXPORT QgsSettingsDoubleEditorWidgetWrapper : public QgsSettingsEditor
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for color settings
+ * \brief This class is a factory of editor for color settings with a color button
  *
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsSettingsColorEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>
+class GUI_EXPORT QgsSettingsColorButtonWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsSettingsColorEditorWidgetWrapper( QObject *parent = nullptr )
+    QgsSettingsColorButtonWrapper( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>( parent ) {}
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsColorEditorWidgetWrapper( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsColorButtonWrapper( parent );}
 
     QString id() const override;
 
