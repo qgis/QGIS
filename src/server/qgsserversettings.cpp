@@ -125,7 +125,7 @@ void QgsServerSettings::initSettings()
                                QgsServerSettingsEnv::DEFAULT_VALUE,
                                QStringLiteral( "Specify the cache size (0 = automatic size)" ),
                                QStringLiteral( "/cache/size-bytes" ),
-                               QMetaType::Type::LongLong,
+                               QVariant::LongLong,
                                0,
                                QVariant()
                              };
