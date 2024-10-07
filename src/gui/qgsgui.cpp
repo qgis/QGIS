@@ -29,7 +29,7 @@
 #include "qgsadvanceddigitizingtoolsregistry.h"
 #include "qgscalloutsregistry.h"
 #include "callouts/qgscalloutwidget.h"
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include "qgsmacnative.h"
 #elif defined (Q_OS_WIN)
 #ifndef __MINGW32__

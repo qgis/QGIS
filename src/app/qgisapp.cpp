@@ -182,7 +182,7 @@
 // Mac OS X Includes
 // Must include before GEOS 3 due to unqualified use of 'Point'
 //
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include <ApplicationServices/ApplicationServices.h>
 #include "qgsmacnative.h"
 
@@ -13018,7 +13018,7 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
   {
     url = "file://" + QgsApplication::pkgDataPath() + "/doc/" + url;
   }
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   /* Use Mac OS X Launch Services which uses the user's default browser
    * and will just open a new window if that browser is already running.
    * QProcess creates a new browser process for each invocation and expects a

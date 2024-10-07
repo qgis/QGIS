@@ -54,7 +54,7 @@
 #include <getopt.h>
 #endif
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include <ApplicationServices/ApplicationServices.h>
 #if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
 typedef SInt32 SRefCon;
@@ -1358,7 +1358,7 @@ int main( int argc, char *argv[] )
   QgsCustomization::instance()->setSettings( customizationsettings );
   QgsCustomization::instance()->loadDefault();
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   if ( !getenv( "GDAL_DRIVER_PATH" ) )
   {
     // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
