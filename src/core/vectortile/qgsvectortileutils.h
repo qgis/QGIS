@@ -18,8 +18,6 @@
 
 #include "qgis_core.h"
 
-#define SIP_NO_FILE
-
 #include <QSet>
 #include <QVariantMap>
 
@@ -56,7 +54,7 @@ class CORE_EXPORT QgsVectorTileUtils
      * If \a forceUpdate is TRUE, any existing source will be updated.
      * \since QGIS 3.40
      */
-    static void updateUriSources( QString &uri SIP_OUT, bool forceUpdate = false );
+    static void updateUriSources( QString &uri SIP_INOUT, bool forceUpdate = false );
 
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center );
