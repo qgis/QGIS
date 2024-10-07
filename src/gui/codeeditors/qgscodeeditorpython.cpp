@@ -521,11 +521,6 @@ void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
 {
   QgsCodeEditor::populateContextMenu( menu );
 
-  QAction *pyQgisHelpAction = new QAction(
-    QgsApplication::getThemeIcon( QStringLiteral( "console/iconHelpConsole.svg" ) ),
-    tr( "Search Selection in PyQGIS Documentation" ),
-    menu );
-
   QString text = selectedText();
   if ( text.isEmpty() )
   {
@@ -535,6 +530,11 @@ void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
   {
     return;
   }
+
+  QAction *pyQgisHelpAction = new QAction(
+    QgsApplication::getThemeIcon( QStringLiteral( "console/iconHelpConsole.svg" ) ),
+    tr( "Search Selection in PyQGIS Documentation" ),
+    menu );
 
   pyQgisHelpAction->setEnabled( hasSelectedText() );
   pyQgisHelpAction->setShortcut( QStringLiteral( "F1" ) );
@@ -748,14 +748,14 @@ void QgsCodeEditorPython::showApiDocumentation( const QString &text )
 
       QString baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ),
                                         QString( "https://qgis.org/api/%1" ).arg( qgisVersion ) ).toString();
-      QDesktopServices::openUrl( QUrl( QString( "%1/class%2.html" ).arg( qgisVersion, searchText ) ) );
+      QDesktopServices::openUrl( QUrl( QString( "%1/class%2.html" ).arg( baseUrl, searchText ) ) );
       return;
     }
   }
   else if ( qtExpression.match( searchText ).hasMatch() )
   {
     QString baseUrl = QString( "https://doc.qt.io/qt-%1" ).arg( qtVersion );
-    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://doc.qt.io/qt-5/%1.html" ).arg( searchText.toLower() ) ) );
+    QDesktopServices::openUrl( QUrl( QStringLiteral( "%1/%2.html" ).arg( baseUrl, searchText.toLower() ) ) );
     return;
   }
   QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( qgisVersion, searchText ) ) );
