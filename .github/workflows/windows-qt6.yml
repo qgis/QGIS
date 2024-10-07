@@ -117,16 +117,21 @@ jobs:
           path: |
             C:/src/**/*.log
 
-      - name: Save PR number to zips
-        run: |
-          echo ${{ github.event.number }} | tee pr_number
-          powershell Compress-Archive -update pr_number *-win64.zip
-          echo ${{ github.event.pull_request.head.sha }} | tee git_commit
-          powershell Compress-Archive -update git_commit *-win64.zip
-    
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@v4
+        id: artifact-win64-qt6
         with:
           name: qgis-windows-qt6
           path: |
             build/*-win64.zip
+
+
+      - name: Schedule download comment
+        uses: ./.github/actions/post_sticky_comment
+        with:
+          marker: mingw64-qt6
+          body: |
+            ### 🪟 Windows Qt6 builds
+            Download [Windows Qt6builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            *(Built from commit ${{ github.event.pull_request.head.sha }})*
+          pr: ${{ github.event.number }}
