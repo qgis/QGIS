@@ -19212,6 +19212,17 @@ QgsVectorTileRendererData.setRenderZoomLevel: src/core/vectortile/qgsvectortiler
 QgsVectorTileRendererData.setTilePolygon: src/core/vectortile/qgsvectortilerenderer.h#L52
 QgsVectorTileRendererData.tilePolygon: src/core/vectortile/qgsvectortilerenderer.h#L54
 QgsVectorTileRendererData: src/core/vectortile/qgsvectortilerenderer.h#L39
+QgsVectorTileUtils.checkXYZUrlTemplate: src/core/vectortile/qgsvectortileutils.h#L94
+QgsVectorTileUtils.formatXYZUrlTemplate: src/core/vectortile/qgsvectortileutils.h#L92
+QgsVectorTileUtils.loadSprites: src/core/vectortile/qgsvectortileutils.h#L102
+QgsVectorTileUtils.makeQgisFields: src/core/vectortile/qgsvectortileutils.h#L70
+QgsVectorTileUtils.makeVectorLayerForTile: src/core/vectortile/qgsvectortileutils.h#L90
+QgsVectorTileUtils.scaleToZoom: src/core/vectortile/qgsvectortileutils.h#L80
+QgsVectorTileUtils.scaleToZoomLevel: src/core/vectortile/qgsvectortileutils.h#L88
+QgsVectorTileUtils.sortTilesByDistanceFromCenter: src/core/vectortile/qgsvectortileutils.h#L60
+QgsVectorTileUtils.tilePolygon: src/core/vectortile/qgsvectortileutils.h#L67
+QgsVectorTileUtils.updateUriSources: src/core/vectortile/qgsvectortileutils.h#L57
+QgsVectorTileUtils: src/core/vectortile/qgsvectortileutils.h#L48
 QgsVectorTileWriter.Layer.Layer: src/core/vectortile/qgsvectortilewriter.h#L95
 QgsVectorTileWriter.Layer.filterExpression: src/core/vectortile/qgsvectortilewriter.h#L101
 QgsVectorTileWriter.Layer.layer: src/core/vectortile/qgsvectortilewriter.h#L98
