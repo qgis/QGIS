@@ -3141,10 +3141,53 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     {
       QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
       constraintElem.setAttribute( QStringLiteral( "field" ), field.name() );
-      constraintElem.setAttribute( QStringLiteral( "constraints" ), field.constraints().constraints() );
-      constraintElem.setAttribute( QStringLiteral( "unique_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
-      constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
-      constraintElem.setAttribute( QStringLiteral( "exp_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+
+      // This manipulation is required because when the strength is set to NotSet the constraint is removed from
+      // the field but when the field is queried for the strength of a not-existing constraint it returns Hard by default,
+      // see issue #58431
+      QgsFieldConstraints::Constraints constraints { mFieldConstraints.value( field.name() ) };
+      QgsFieldConstraints::ConstraintStrength uniqueStrength { QgsFieldConstraints::ConstraintStrength::ConstraintStrengthNotSet };
+      QgsFieldConstraints::ConstraintStrength notNullStrength { QgsFieldConstraints::ConstraintStrength::ConstraintStrengthNotSet };
+      QgsFieldConstraints::ConstraintStrength expressionStrength { QgsFieldConstraints::ConstraintStrength::ConstraintStrengthNotSet };
+
+      QPair<QString, QgsFieldConstraints::Constraint> strengthKey { qMakePair( field.name(), QgsFieldConstraints::ConstraintUnique ) };
+
+      if ( mFieldConstraintStrength.contains( strengthKey ) && mFieldConstraintStrength.value( strengthKey ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthNotSet )
+      {
+        constraints.setFlag( QgsFieldConstraints::Constraint::ConstraintUnique, false );
+      }
+      else
+      {
+        uniqueStrength = mFieldConstraintStrength.value( strengthKey );
+      }
+
+      strengthKey = qMakePair( field.name(), QgsFieldConstraints::ConstraintNotNull );
+
+      if ( mFieldConstraintStrength.contains( strengthKey ) && mFieldConstraintStrength.value( strengthKey ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthNotSet )
+      {
+        constraints.setFlag( QgsFieldConstraints::Constraint::ConstraintNotNull, false );
+      }
+      else
+      {
+        notNullStrength = mFieldConstraintStrength.value( strengthKey );
+      }
+
+      strengthKey = qMakePair( field.name(), QgsFieldConstraints::ConstraintExpression );
+
+      if ( mFieldConstraintStrength.contains( strengthKey ) && mFieldConstraintStrength.value( strengthKey ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthNotSet )
+      {
+        constraints.setFlag( QgsFieldConstraints::Constraint::ConstraintExpression, false );
+      }
+      else
+      {
+        expressionStrength = mFieldConstraintStrength.value( strengthKey );
+      }
+
+
+      constraintElem.setAttribute( QStringLiteral( "constraints" ), constraints );
+      constraintElem.setAttribute( QStringLiteral( "unique_strength" ), uniqueStrength );
+      constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), notNullStrength );
+      constraintElem.setAttribute( QStringLiteral( "exp_strength" ), expressionStrength );
       constraintsElem.appendChild( constraintElem );
     }
     node.appendChild( constraintsElem );
