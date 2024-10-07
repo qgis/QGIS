@@ -114,12 +114,12 @@ bool QgsSettingsStringComboBoxWrapper::setWidgetValue( const QString &value ) co
 
 void QgsSettingsStringComboBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QComboBox::currentTextChanged, this, [ = ]( const QString & currentText )
+  QObject::connect( mEditor, &QComboBox::currentTextChanged, this, [ = ]( const QString & currentText )
   {
     QString textValue = currentText;
     if ( mMode == Mode::Data )
       textValue = mEditor->currentData().toString();
-    this->mSetting->setValue( textValue, this->mDynamicKeyPartList );
+    mSetting->setValue( textValue, mDynamicKeyPartList );
   } );
 }
 
