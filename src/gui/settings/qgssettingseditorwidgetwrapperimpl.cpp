@@ -24,7 +24,7 @@
 
 
 // *******
-// String
+// String with line edit (= default)
 // *******
 
 QString QgsSettingsStringLineEditWrapper::id() const
@@ -73,6 +73,75 @@ QString QgsSettingsStringLineEditWrapper::valueFromWidget() const
   if ( mEditor )
   {
     return mEditor->text();
+  }
+  else
+  {
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
+  }
+  return QString();
+}
+
+// *******
+// String with combo box
+// *******
+
+QString QgsSettingsStringComboBoxWrapper::id() const
+{
+  return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::String ) ) );
+}
+
+bool QgsSettingsStringComboBoxWrapper::setWidgetValue( const QString &value ) const
+{
+  if ( mEditor )
+  {
+    int idx = mMode == Mode::Data ? mEditor->findData( value ) : mEditor->findText( value );
+    if ( idx >= 0 )
+    {
+      mEditor->setCurrentIndex( idx );
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+  }
+  return false;
+}
+
+void QgsSettingsStringComboBoxWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QComboBox::currentTextChanged, this, [ = ]( const QString & currentText )
+  {
+    QString textValue = currentText;
+    if ( mMode == Mode::Data )
+      textValue = mEditor->currentData().toString();
+    this->mSetting->setValue( textValue, this->mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsStringComboBoxWrapper::setSettingFromWidget() const
+{
+  if ( mEditor )
+  {
+    mSetting->setValue( valueFromWidget(), mDynamicKeyPartList );
+    return true;
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+  }
+  return false;
+}
+
+QString QgsSettingsStringComboBoxWrapper::valueFromWidget() const
+{
+  if ( mEditor )
+  {
+    return mMode == Mode::Data ? mEditor->currentData().toString() : mEditor->currentText();
   }
   else
   {
