@@ -56,8 +56,10 @@ bool QgsSettingsEditorWidgetWrapper::configureEditor( QWidget *editor, const Qgs
   bool ok = configureEditorPrivate( editor, setting );
 
   if ( ok )
+  {
     editor->setProperty( "SETTING-EDITOR-WIDGET-WRAPPER", QVariant::fromValue( this ) );
-
+    setWidgetFromSetting();
+  }
   return ok;
 }
 
