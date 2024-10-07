@@ -18378,11 +18378,11 @@ QgsVectorFileWriter.writeAsVectorFormat: src/core/qgsvectorfilewriter.h#L597
 QgsVectorFileWriter.writeAsVectorFormatV2: src/core/qgsvectorfilewriter.h#L715
 QgsVectorFileWriter.writeAsVectorFormatV3: src/core/qgsvectorfilewriter.h#L735
 QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L47
-QgsVectorFileWriterTask.cancel: src/core/qgsvectorfilewritertask.h#L48
-QgsVectorFileWriterTask.errorOccurred: src/core/qgsvectorfilewritertask.h#L70
-QgsVectorFileWriterTask.finished: src/core/qgsvectorfilewritertask.h#L75
-QgsVectorFileWriterTask.run: src/core/qgsvectorfilewritertask.h#L74
-QgsVectorFileWriterTask.writeComplete: src/core/qgsvectorfilewritertask.h#L57
+QgsVectorFileWriterTask.cancel: src/core/qgsvectorfilewritertask.h#L51
+QgsVectorFileWriterTask.errorOccurred: src/core/qgsvectorfilewritertask.h#L73
+QgsVectorFileWriterTask.finished: src/core/qgsvectorfilewritertask.h#L78
+QgsVectorFileWriterTask.run: src/core/qgsvectorfilewritertask.h#L77
+QgsVectorFileWriterTask.writeComplete: src/core/qgsvectorfilewritertask.h#L60
 QgsVectorFileWriterTask: src/core/qgsvectorfilewritertask.h#L34
 QgsVectorLabelLegendNode.__repr__: src/core/layertree/qgslayertreemodellegendnode.h#L864
 QgsVectorLabelLegendNode.data: src/core/layertree/qgslayertreemodellegendnode.h#L844
