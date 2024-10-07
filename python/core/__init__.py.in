@@ -643,8 +643,9 @@ except ModuleNotFoundError:
 
 try:
    import shapely as _shapely
+   import shapely.geometry as _sg
 
-   def _geometry_as_shapely(self) -> _shapely.geometry.base.BaseGeometry:
+   def _geometry_as_shapely(self) -> _sg.base.BaseGeometry:
       wkb_qbytearray = self.asWkb()  # Get the geometry in WKB format (QByteArray)
       shapely_geom = _shapely.from_wkb(wkb_qbytearray.data())
 
