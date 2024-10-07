@@ -797,6 +797,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   pbnSelectionColor->setDefaultColor( QColor( 255, 255, 0, 255 ) );
 
   //set the default color for canvas background
+  if ( mSettings->value( QStringLiteral( "/qgis/default_canvas_theme_color" ), true ).toBool() )
+  {
+    radCanvasThemeColor->setChecked( true );
+  }
+  else
+  {
+    radCanvasSpecificColor->setChecked( true );
+  }
   red = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_red" ), 255 ).toInt();
   green = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
   blue = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
@@ -1742,6 +1750,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/default_selection_color_alpha" ), myColor.alpha() );
 
   //set the default color for canvas background
+  mSettings->setValue( QStringLiteral( "/qgis/default_canvas_theme_color" ), radCanvasThemeColor->isChecked() );
+
   myColor = pbnCanvasColor->color();
   mSettings->setValue( QStringLiteral( "/qgis/default_canvas_color_red" ), myColor.red() );
   mSettings->setValue( QStringLiteral( "/qgis/default_canvas_color_green" ), myColor.green() );
