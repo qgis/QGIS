@@ -1,10 +1,10 @@
-Qgis.defaultProjectScales: src/core/qgis.h#L5609
+Qgis.defaultProjectScales: src/core/qgis.h#L5611
 Qgis.devVersion: src/core/qgis.h#L89
-Qgis.geosVersion: src/core/qgis.h#L5644
-Qgis.geosVersionInt: src/core/qgis.h#L5616
-Qgis.geosVersionMajor: src/core/qgis.h#L5623
-Qgis.geosVersionMinor: src/core/qgis.h#L5630
-Qgis.geosVersionPatch: src/core/qgis.h#L5637
+Qgis.geosVersion: src/core/qgis.h#L5646
+Qgis.geosVersionInt: src/core/qgis.h#L5618
+Qgis.geosVersionMajor: src/core/qgis.h#L5625
+Qgis.geosVersionMinor: src/core/qgis.h#L5632
+Qgis.geosVersionPatch: src/core/qgis.h#L5639
 Qgis.releaseName: src/core/qgis.h#L79
 Qgis.version: src/core/qgis.h#L65
 Qgis.versionInt: src/core/qgis.h#L72
@@ -15609,6 +15609,8 @@ QgsScaleCalculator.mapUnits: src/core/qgsscalecalculator.h#L70
 QgsScaleCalculator.setDpi: src/core/qgsscalecalculator.h#L50
 QgsScaleCalculator.setMapUnits: src/core/qgsscalecalculator.h#L63
 QgsScaleCalculator: src/core/qgsscalecalculator.h#L34
+QgsScaleUtils.equalToOrGreaterThanMinimumScale: src/core/qgsscaleutils.h#L64
+QgsScaleUtils.lessThanMaximumScale: src/core/qgsscaleutils.h#L78
 QgsScaleUtils.loadScaleList: src/core/qgsscaleutils.h#L50
 QgsScaleUtils.saveScaleList: src/core/qgsscaleutils.h#L40
 QgsScaleUtils: src/core/qgsscaleutils.h#L28
