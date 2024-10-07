@@ -3,8 +3,7 @@ name: Write build artifact comments
 on:
   workflow_run:
     workflows: 
-      - 🪟 Workflow A
-      - 🪟 Windows Qt6
+      - 🪟 MingW64 Windows 64bit Build
     types:
       - completed
 
