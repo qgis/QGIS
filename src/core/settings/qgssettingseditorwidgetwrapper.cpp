@@ -68,9 +68,9 @@ void QgsSettingsEditorWidgetWrapper::configureAutomaticUpdate( QDialog *dialog )
   setWidgetFromSetting();
   if ( dialog )
   {
-    QObject::connect( dialog, &QDialog::accepted, this, [ = ]()
+    QObject::connect( dialog, &QDialog::accepted, this, [this]()
     {
-      setSettingFromWidget();
+      this->setSettingFromWidget();
     } );
   }
   else
