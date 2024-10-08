@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: 
       - 🪟 MingW64 Windows 64bit Build
+      - 🪟 Windows Qt6
     types:
       - completed
 

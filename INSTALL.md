@@ -36,6 +36,7 @@ Building QGIS from source - step by step
            * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
            * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
        * [4.2.2. Testing QGIS](#422-testing-qgis)
+   * [4.3 Building for Qt 6 with VCPKG in Microsoft Visual Studio](#41-building-with-qt6)
 * [5. Building on MacOS X](#5-building-on-macos-x)
    * [5.1. Install Developer Tools](#51-install-developer-tools)
    * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
@@ -708,6 +709,85 @@ can also change the build and release directories.
 Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
 is required.
 
+## 4.3 Building on Windows with vcpkg
+
+Vcpkg is a free and open source cross platform ecosystem for libraries.
+It provides precise control over the versions of dependencies that are used.
+
+### 4.3.1 Install Build Tools
+
+1. Download and install the free (as in free beer) [Microsoft Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022).
+2. Obtain [winflexbison](https://github.com/lexxmark/winflexbison/releases).
+
+### 4.3.2 Build QGIS
+
+There are two ways, to build with vcpkg. Either you download an sdk, which allows you
+to reuse dependencies that are already built. This is generally easier and recommended.
+It is also possible to build all dependencies yourself, which gives you more control
+over the dependencies.
+
+#### 4.3.2.1 Build with an SDK
+
+1. Download and unzip SDK. Get the latest [QGIS master SDK](https://nightly.link/qgis/QGIS/workflows/windows-qt6/master/qgis-sdk-x64-windows.zip).
+2. Build
+
+We will now configure QGIS.
+
+Open a _Developer PowerShell for VS 2022_
+
+```ps
+# We assume you have a copy of the QGIS source code available
+# and have changed the working directory into it
+
+# Configure
+cmake -S . \
+      -B build \
+      -DSDK_PATH="path/to/vcpkg-export-[date]" \
+      -DBUILD_WITH_QT6=ON \
+      -DWITH_QTWEBKIT=OFF \
+      -DVCPKG_TARGET_TRIPLET=x64-windows-release
+```
+
+This will provide you with a configured project. You can either build it directly
+from the command line.
+
+```ps
+# Build
+# Note: you can also use RelWithDebInfo to have debug symbols in your build
+cmake --build build --config Release
+```
+
+Or you can open the generated `.sln` file in the `build` folder with Visual Studio.
+This will allow you to use all the tools that this IDE has to offer.
+
+#### 4.3.2.1 Build all the dependencies locally
+
+It is also possible to build all the dependencies locally.
+This will require some time, cpu and disk space.
+
+```ps
+# We assume you have a copy of the QGIS source code available
+# and have changed the working directory into it
+
+# Configure
+cmake -S . \
+      -B build \
+      -D WITH_VCPKG \
+      -D BUILD_WITH_QT6=ON \
+      -D WITH_QTWEBKIT=OFF \
+      -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+      -D VCPKG_HOST_TRIPLET=x64-windows-release
+```
+
+**Manage dependency versions**
+
+The dependencies are defined in the file `vcpkg/vcpkg.json`.
+This file defines which versions of registries are used.
+To update to the most recent version, you can use the command `vcpkg x-update-baseline --x-manifest-root=vcpkg`.
+If you want to patch or update a specific dependency, you can copy the port for this
+dependency into the folder `vcpkg/ports`. Whenever the build is reconfigured, it will check for dependencies that need to be rebuilt.
+
+
 # 5. Building on MacOS X
 
 If you want to test QGIS, easiest option is to download and install all-in-one self-containing bundle directly from
@@ -1084,9 +1164,6 @@ CMake option:
 
 This will flood your terminal or system log with lots of useful output from
 QgsDebugMsg() calls in source code.
-
-Those lines can be reduced or augmented by setting the QGIS_DEBUG
-runtime environment variable between 0 (no messages) and 5 (all messages).
 
 If you would like to run the test suite, you will need to do so from the build
 directory, as it will not work with the installed/bundled app. First set the
