@@ -138,5 +138,10 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         """
         Get the settings entry type.
         """
-
         return self.SettingsType.EnumFlag
+
+    def typeId(self):
+        """
+        Defines a custom id since this class has not the same API as the cpp implementation
+        """
+        return "py-enum"
