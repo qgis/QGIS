@@ -26,6 +26,7 @@
 
 
 class QgsSettingsTreeNode;
+class QgsSettingsEditorWidgetWrapper;
 
 
 static const inline QMetaEnum sSettingsTypeMetaEnum = QMetaEnum::fromType<Qgis::SettingsType>() SIP_SKIP;
@@ -352,6 +353,22 @@ class CORE_EXPORT QgsSettingsEntryBase
      */
     bool hasChanged() const { return mHasChanged; }
 
+    /**
+     * Sets an editor widget wrapper for the setting
+     * Normally, editor widgets are automatically determined and built using QgsSettingsEditorWidgetRegistry.
+     * This might be useful for plugins to define a custom implementation.
+     * \since QGIS 3.40
+     */
+    void setEditorWidgetWrapper( QgsSettingsEditorWidgetWrapper *editorWrapper SIP_TRANSFER ) {mEditorWrapper = editorWrapper; }
+
+    /**
+     * Returns the editor widget wrapper for the setting
+     * Normally, editor widgets are automatically determined and built using QgsSettingsEditorWidgetRegistry and
+     * this method will then return a null pointer.
+     * \since QGIS 3.40
+     */
+    QgsSettingsEditorWidgetWrapper *editorWidgetWrapper() const {return mEditorWrapper;}
+
   private:
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
 
@@ -364,6 +381,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     QString mDescription;
     Qgis::SettingsOptions mOptions;
     mutable bool mHasChanged = false;
+    QgsSettingsEditorWidgetWrapper *mEditorWrapper = nullptr;
 };
 
 /**

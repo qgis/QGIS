@@ -759,6 +759,7 @@
 %Include auto_generated/sensor/qgsabstractsensor.sip
 %Include auto_generated/sensor/qgsiodevicesensor.sip
 %Include auto_generated/settings/qgssettings.sip
+%Include auto_generated/settings/qgssettingseditorwidgetwrapper.sip
 %Include auto_generated/settings/qgssettingsentry.sip
 %Include auto_generated/settings/qgssettingsentrygroup.sip
 %Include auto_generated/settings/qgssettingsentryimpl.sip

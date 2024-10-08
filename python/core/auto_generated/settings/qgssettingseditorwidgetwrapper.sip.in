@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/settings/qgssettingseditorwidgetwrapper.h                    *
+ * src/core/settings/qgssettingseditorwidgetwrapper.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -98,6 +98,13 @@ If not, the setting will be updated directly at each widget value change.
 %End
 
 
+    QStringList dynamicKeyPartList() const;
+%Docstring
+Returns the dynamic key parts
+
+.. versionadded:: 3.40
+%End
+
   protected:
     virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
 %Docstring
@@ -124,7 +131,7 @@ value is changed.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/settings/qgssettingseditorwidgetwrapper.h                    *
+ * src/core/settings/qgssettingseditorwidgetwrapper.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

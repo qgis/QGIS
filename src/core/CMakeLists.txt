@@ -943,6 +943,7 @@ set(QGIS_CORE_SRCS
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
   settings/qgssettings.cpp
+  settings/qgssettingseditorwidgetwrapper.cpp
   settings/qgssettingsentry.cpp
   settings/qgssettingsentrygroup.cpp
   settings/qgssettingsentryimpl.cpp
@@ -2036,6 +2037,7 @@ set(QGIS_CORE_HDRS
   sensor/qgsiodevicesensor.h
 
   settings/qgssettings.h
+  settings/qgssettingseditorwidgetwrapper.h
   settings/qgssettingsentry.h
   settings/qgssettingsentrygroup.h
   settings/qgssettingsentryenumflag.h

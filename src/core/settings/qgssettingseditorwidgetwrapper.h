@@ -19,19 +19,19 @@
 #include <QVariant>
 
 #include "qgis_sip.h"
-#include "qgis_gui.h"
+#include "qgis_core.h"
 
 class QgsSettingsEntryBase;
 
 class QDialog;
 
 /**
- * \ingroup gui
+ * \ingroup core
  * \brief Base class for settings editor wrappers
  *
  * \since QGIS 3.32
  */
-class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
+class CORE_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
 {
     Q_OBJECT
   public:
@@ -94,6 +94,12 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      */
     void configureAutomaticUpdate( QDialog *dialog = nullptr );
 
+
+    /**
+     * Returns the dynamic key parts
+     * \since QGIS 3.40
+     */
+    QStringList dynamicKeyPartList() const {return mDynamicKeyPartList;}
 
   protected:
     //! Creates the widgets

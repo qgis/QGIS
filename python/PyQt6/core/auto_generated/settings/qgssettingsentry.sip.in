@@ -360,6 +360,24 @@ Returns ``True`` if the setting was changed during the current QGIS session.
 .. versionadded:: 3.36
 %End
 
+    void setEditorWidgetWrapper( QgsSettingsEditorWidgetWrapper *editorWrapper /Transfer/ );
+%Docstring
+Sets an editor widget wrapper for the setting
+Normally, editor widgets are automatically determined and built using :py:class:`QgsSettingsEditorWidgetRegistry`.
+This might be useful for plugins to define a custom implementation.
+
+.. versionadded:: 3.40
+%End
+
+    QgsSettingsEditorWidgetWrapper *editorWidgetWrapper() const;
+%Docstring
+Returns the editor widget wrapper for the setting
+Normally, editor widgets are automatically determined and built using :py:class:`QgsSettingsEditorWidgetRegistry` and
+this method will then return a null pointer.
+
+.. versionadded:: 3.40
+%End
+
 };
 
 template<T>

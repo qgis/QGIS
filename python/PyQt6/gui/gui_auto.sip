@@ -519,7 +519,6 @@
 %Include auto_generated/symbology/qgsvectorfieldsymbollayerwidget.sip
 %Include auto_generated/sensor/qgssensorguiregistry.sip
 %Include auto_generated/sensor/qgssensorwidget.sip
-%Include auto_generated/settings/qgssettingseditorwidgetwrapper.sip
 %Include auto_generated/settings/qgssettingseditorwidgetwrapperimpl.sip
 %Include auto_generated/settings/qgssettingseditorwidgetregistry.sip
 %Include auto_generated/settings/qgssettingsregistrygui.sip

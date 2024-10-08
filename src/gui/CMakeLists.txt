@@ -498,7 +498,6 @@ set(QGIS_GUI_SRCS
   sensor/qgssensorguiregistry.cpp
   sensor/qgssensorwidget.cpp
 
-  settings/qgssettingseditorwidgetwrapper.cpp
   settings/qgssettingseditorwidgetwrapperimpl.cpp
   settings/qgssettingseditorwidgetregistry.cpp
   settings/qgssettingsregistrygui.cpp
@@ -1552,7 +1551,6 @@ set(QGIS_GUI_HDRS
   sensor/qgssensorguiregistry.h
   sensor/qgssensorwidget.h
 
-  settings/qgssettingseditorwidgetwrapper.h
   settings/qgssettingseditorwidgetwrapperimpl.h
   settings/qgssettingsenumflageditorwidgetwrapper.h
   settings/qgssettingseditorwidgetregistry.h

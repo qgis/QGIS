@@ -97,7 +97,10 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
 
 QWidget *QgsSettingsEditorWidgetRegistry::createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent ) const
 {
-  QgsSettingsEditorWidgetWrapper *eww = createWrapper( setting->typeId(), parent );
+
+  QgsSettingsEditorWidgetWrapper *eww = setting->editorWidgetWrapper();
+  if ( !eww )
+    eww = createWrapper( setting->typeId(), parent );
   if ( eww )
     return eww->createEditor( setting, dynamicKeyPartList, parent );
   else
