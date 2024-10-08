@@ -714,18 +714,21 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QgsExpression subExp( subExpression );
     QgsExpression filterExp( parameters.filter );
 
+    const QSet< QString > filterVars = filterExp.referencedVariables();
+    const QSet< QString > subExpVars = subExp.referencedVariables();
+    QSet<QString> allVars = filterVars + subExpVars;
+
     bool isStatic = true;
-    if ( filterExp.referencedVariables().contains( QStringLiteral( "parent" ) )
-         || filterExp.referencedVariables().contains( QString() )
-         || subExp.referencedVariables().contains( QStringLiteral( "parent" ) )
-         || subExp.referencedVariables().contains( QString() ) )
+    if ( filterVars.contains( QStringLiteral( "parent" ) )
+         || filterVars.contains( QString() )
+         || subExpVars.contains( QStringLiteral( "parent" ) )
+         || subExpVars.contains( QString() ) )
     {
       isStatic = false;
     }
     else
     {
-      const QSet<QString> refVars = filterExp.referencedVariables() + subExp.referencedVariables();
-      for ( const QString &varName : refVars )
+      for ( const QString &varName : allVars )
       {
         const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
         if ( scope && !scope->isStatic( varName ) )
@@ -738,15 +741,20 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
     if ( !isStatic )
     {
-      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
-                 QString::number( context->feature().id() ), QString::number( qHash( context->feature() ) ), orderBy );
+      bool ok = false;
+      const QString contextHash = context->uniqueHash( ok, allVars );
+      if ( ok )
+      {
+        cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
+                   orderBy, contextHash );
+      }
     }
     else
     {
       cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter, orderBy );
     }
 
-    if ( context->hasCachedValue( cacheKey ) )
+    if ( !cacheKey.isEmpty() && context->hasCachedValue( cacheKey ) )
     {
       return context->cachedValue( cacheKey );
     }
@@ -757,7 +765,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &aggregateError );
 
-    if ( ok )
+    if ( ok && !cacheKey.isEmpty() )
     {
       // important -- we should only store cached values when the expression is successfully calculated. Otherwise subsequent
       // use of the expression context will happily grab the invalid QVariant cached value without realising that there was actually an error
@@ -1004,8 +1012,13 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   QString cacheKey;
   if ( !isStatic )
   {
-    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
-               QString::number( context->feature().id() ), QString::number( qHash( context->feature() ) ), orderBy );
+    bool ok = false;
+    const QString contextHash = context->uniqueHash( ok, refVars );
+    if ( ok )
+    {
+      cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+                 orderBy, contextHash );
+    }
   }
   else
   {
