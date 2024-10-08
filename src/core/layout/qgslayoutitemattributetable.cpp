@@ -472,6 +472,10 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       atlasGeometryEngine.reset( QgsGeometry::createGeometryEngine( atlasGeometry.constGet() ) );
       atlasGeometryEngine->prepareGeometry();
     }
+    else
+    {
+      return false;
+    }
   }
 
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
@@ -533,9 +537,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     }
 
     //check against atlas feature intersection
-    if ( mFilterToAtlasIntersection )
+    if ( atlasGeometryEngine )
     {
-      if ( !f.hasGeometry() || !atlasGeometryEngine )
+      if ( !f.hasGeometry() )
       {
         continue;
       }
