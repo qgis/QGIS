@@ -2239,15 +2239,15 @@ namespace QgsWms
     return codec;
   }
 
-  bool QgsWmsParameters::writeGeoPdf() const
+  bool QgsWmsParameters::writeGeospatialPdf() const
   {
-    bool geoPdf = false;
+    bool geospatialPdf = false;
     const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
     if ( options.contains( PdfFormatOption::WRITE_GEO_PDF ) )
     {
-      geoPdf = QVariant( options[PdfFormatOption::WRITE_GEO_PDF] ).toBool();
+      geospatialPdf = QVariant( options[PdfFormatOption::WRITE_GEO_PDF] ).toBool();
     }
-    return geoPdf;
+    return geospatialPdf;
   }
 
   bool QgsWmsParameters::pdfForceVectorOutput() const

@@ -32,7 +32,7 @@
 #include <QUuid>
 #include <QTextStream>
 
-bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
+bool QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable()
 {
   // test if GDAL has read support in PDF driver
   GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
@@ -52,7 +52,7 @@ bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
   return false;
 }
 
-QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
+QString QgsAbstractGeospatialPdfExporter::geospatialPDFAvailabilityExplanation()
 {
   // test if GDAL has read support in PDF driver
   GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
@@ -69,10 +69,10 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
   if ( pHavePdfium && strstr( pHavePdfium, "YES" ) )
     return QString();
 
-  return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for GeoPDF creation." );
+  return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for geospatial PDF creation." );
 }
 
-bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
+bool QgsAbstractGeospatialPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
 {
   if ( details.includeFeatures && !saveTemporaryLayers() )
     return false;
@@ -102,7 +102,7 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   }
   else
   {
-    mErrorMessage = QObject::tr( "Could not create GeoPDF composition file" );
+    mErrorMessage = QObject::tr( "Could not create geospatial PDF composition file" );
     return false;
   }
 
@@ -118,12 +118,12 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   return res;
 }
 
-QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &filename ) const
+QString QgsAbstractGeospatialPdfExporter::generateTemporaryFilepath( const QString &filename ) const
 {
   return mTemporaryDir.filePath( QgsFileUtils::stringToSafeFilename( filename ) );
 }
 
-bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
+bool QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
 {
   switch ( mode )
   {
@@ -148,7 +148,7 @@ bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionM
   return false;
 }
 
-void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature, const QString &group )
+void QgsAbstractGeospatialPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeospatialPdfExporter::RenderedFeature &feature, const QString &group )
 {
   // because map layers may be rendered in parallel, we need a mutex here
   QMutexLocker locker( &mMutex );
@@ -159,7 +159,7 @@ void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, con
   mCollatedFeatures[ group ][ layerId ].append( f );
 }
 
-bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
+bool QgsAbstractGeospatialPdfExporter::saveTemporaryLayers()
 {
   for ( auto groupIt = mCollatedFeatures.constBegin(); groupIt != mCollatedFeatures.constEnd(); ++groupIt )
   {
@@ -201,7 +201,7 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
   return true;
 }
 
-QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
+QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
 {
   QDomDocument doc;
 
@@ -411,7 +411,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
   // georeferencing
   int i = 0;
-  for ( const QgsAbstractGeoPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
+  for ( const QgsAbstractGeospatialPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
   {
     QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
     georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced_%1" ).arg( i++ ) );
@@ -575,7 +575,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   return composition;
 }
 
-QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode mode )
+QString QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode mode )
 {
   switch ( mode )
   {

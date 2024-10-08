@@ -1388,10 +1388,10 @@ namespace QgsWms
       bool isForce2D() const;
 
       /**
-       * Returns if a GeoPDF shall be exported
+       * Returns if a geospatial shall be exported
        * \since QGIS 3.32
        */
-      bool writeGeoPdf() const;
+      bool writeGeospatialPdf() const;
 
       /**
        * Returns if pdf should be exported as vector
@@ -1448,7 +1448,7 @@ namespace QgsWms
       bool pdfUseOgcBestPracticeFormatGeoreferencing() const;
 
       /**
-       * Returns map themes for GeoPDF export
+       * Returns map themes for geospatial PDF export
        * \since QGIS 3.32
        */
       QStringList pdfExportMapThemes() const;

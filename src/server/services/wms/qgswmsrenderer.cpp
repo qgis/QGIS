@@ -650,7 +650,7 @@ namespace QgsWms
       {
         exportSettings.exportThemes = exportThemes;
       }
-      exportSettings.writeGeoPdf = mWmsParameters.writeGeoPdf();
+      exportSettings.writeGeoPdf = mWmsParameters.writeGeospatialPdf();
       exportSettings.textRenderFormat = mWmsParameters.pdfTextRenderFormat();
       exportSettings.forceVectorOutput = mWmsParameters.pdfForceVectorOutput();
       exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
