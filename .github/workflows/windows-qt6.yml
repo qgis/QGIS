@@ -50,6 +50,8 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           max-size: 1G
+          key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          save: ${{ github.event_name == 'push' }}
 
       - name: 🌱 Install dependencies and generate project files
         shell: bash
