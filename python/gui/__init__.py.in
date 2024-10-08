@@ -24,6 +24,7 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 from qgis.PyQt import QtCore
 from qgis._gui import *
 from qgis.core import Qgis as _Qgis
+from .additions.qgssettingsenumflageditorwrapper import PyQgsSettingsEnumEditorWidgetWrapper
 
 @MONKEYPATCH_INJECTIONS@
 
@@ -83,3 +84,6 @@ QgsSettingsBoolEditorWidgetWrapper = QgsSettingsBoolCheckBoxWrapper
 QgsSettingsIntegerEditorWidgetWrapper = QgsSettingsIntegerSpinBoxWrapper
 QgsSettingsDoubleEditorWidgetWrapper = QgsSettingsDoubleSpinBoxWrapper
 QgsSettingsColorEditorWidgetWrapper = QgsSettingsColorButtonWrapper
+
+# Classes patched
+QgsSettingsEnumEditorWidgetWrapper = PyQgsSettingsEnumEditorWidgetWrapper
