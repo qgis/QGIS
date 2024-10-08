@@ -1598,7 +1598,8 @@ namespace QgsWms
     {
       featuresRect.reset( new QgsRectangle() );
     }
-    else if ( filterGeomDefined )
+
+    if ( filterGeomDefined )
     {
       filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) ) );
     }
