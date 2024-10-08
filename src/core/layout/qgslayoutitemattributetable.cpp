@@ -485,7 +485,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
 
-  if ( !selectionRect.isEmpty() )
+  if ( !selectionRect.isNull() )
     req.setFilterRect( selectionRect );
 
   req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoFlags );
