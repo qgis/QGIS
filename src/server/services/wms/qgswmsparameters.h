@@ -1418,7 +1418,7 @@ namespace QgsWms
       bool exportLinesWithZeroWidth() const;
 
       /**
-       * Returns if a GeoPDF shall be exported
+       * Returns if a Geospatial PDF shall be exported
        * \since QGIS 3.32
        */
       bool writeGeoPdf() const;
@@ -1478,7 +1478,7 @@ namespace QgsWms
       bool pdfUseOgcBestPracticeFormatGeoreferencing() const;
 
       /**
-       * Returns map themes for GeoPDF export
+       * Returns map themes for Geospatial PDF export
        * \since QGIS 3.32
        */
       QStringList pdfExportMapThemes() const;

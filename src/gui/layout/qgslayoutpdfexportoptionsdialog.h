@@ -45,9 +45,9 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     /**
      * Constructor for QgsLayoutPdfExportOptionsDialog
      * \param parent parent widget
-     * \param allowGeoPdfExport set to FALSE if geoPdf export is blocked
-     * \param geoPdfReason set to a descriptive translated string explaining why geopdf export is not available if applicable
-     * \param geoPdfLayerOrder optional layer ID order list for layers in the geopdf file. Any layers not present in this list
+     * \param allowGeoPdfExport set to FALSE if Geospatial PDF export is blocked
+     * \param geoPdfReason set to a descriptive translated string explaining why Geospatial PDF export is not available if applicable
+     * \param geoPdfLayerOrder optional layer ID order list for layers in the Geospatial PDF file. Any layers not present in this list
      * will instead be appended to the end of the geopdf layer list
      * \param flags window flags
      */
@@ -89,9 +89,9 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     //! Returns whether lossless image compression is enabled
     bool losslessImageExport() const;
 
-    //! Sets whether to export a Geo-PDF
+    //! Sets whether to export a Geospatial PDF
     void setExportGeoPdf( bool enabled );
-    //! Returns whether Geo-PDF export is enabled
+    //! Returns whether Geospatial PDF export is enabled
     bool exportGeoPdf() const;
 
     //! Sets whether to use OGC best-practice format
@@ -104,10 +104,10 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     //! Returns the list of export themes
     QStringList exportThemes() const;
 
-    //! Returns a list of map layer IDs in the desired order they should appear in a generated GeoPDF file
+    //! Returns a list of map layer IDs in the desired order they should appear in a generated Geospatial PDF file
     QStringList geoPdfLayerOrder() const;
 
-    //! Returns a list of groups in the desired order they should appear in a generated GeoPDF file
+    //! Returns a list of groups in the desired order they should appear in a generated Geospatial PDF file
     QStringList geoPdfGroupOrder() const;
 
     //! Sets whether to open the pdf after exporting it

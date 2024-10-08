@@ -106,7 +106,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
          <property name="title">
-          <string>Create Geospatial PDF (GeoPDF)</string>
+          <string>Create Geospatial PDF</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -215,7 +215,7 @@
                  <item>
                   <widget class="QLabel" name="label_2">
                    <property name="text">
-                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group. Layers can be dragged and dropped to rearrange their order in the generated GeoPDF table of contents.</string>
+                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group. Layers can be dragged and dropped to rearrange their order in the generated Geospatial PDF table of contents.</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>

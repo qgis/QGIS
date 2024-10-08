@@ -462,7 +462,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     };
 
     /**
-     * Returns the behavior of this item during exporting to layered exports (e.g. SVG or GeoPDF).
+     * Returns the behavior of this item during exporting to layered exports (e.g. SVG or Geospatial PDF).
      *
      * \see numberExportLayers()
      * \see exportLayerDetails()

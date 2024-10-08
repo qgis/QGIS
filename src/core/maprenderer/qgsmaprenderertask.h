@@ -59,8 +59,8 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     /**
      * Constructor for QgsMapRendererTask to render a map to an image file.
      *
-     * If the output \a fileFormat is set to PDF, the \a geoPdf argument controls whether a GeoPDF file is created.
-     * See QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() for conditions on GeoPDF creation availability.
+     * If the output \a fileFormat is set to PDF, the \a geoPdf argument controls whether a Geospatial PDF file is created.
+     * See QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() for conditions on Geospatial PDF creation availability.
      *
      * Since QGIS 3.26 the optional \a flags argument can be used to control the task flags.
      */

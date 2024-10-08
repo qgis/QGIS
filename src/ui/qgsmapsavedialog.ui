@@ -69,7 +69,7 @@
      <item row="9" column="0" colspan="2">
       <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
        <property name="title">
-        <string>Create Geospatial PDF (GeoPDF)</string>
+        <string>Create Geospatial PDF</string>
        </property>
        <property name="checkable">
         <bool>true</bool>

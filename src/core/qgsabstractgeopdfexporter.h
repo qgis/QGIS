@@ -37,9 +37,9 @@ class QgsGeoPdfRenderedFeatureHandler;
  * \class QgsAbstractGeoPdfExporter
  * \ingroup core
  *
- * \brief Abstract base class for GeoPDF exporters.
+ * \brief Abstract base class for Geospatial PDF exporters.
  *
- * The base class handles generic GeoPDF export setup, cleanup and processing steps.
+ * The base class handles generic Geospatial PDF export setup, cleanup and processing steps.
  *
  * This class is a low level implementation detail only. Generally, you should use the high level interface exposed by
  * classes like QgsLayoutExporter instead.
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
   public:
 
     /**
-     * Returns TRUE if the current QGIS build is capable of GeoPDF support.
+     * Returns TRUE if the current QGIS build is capable of Geospatial PDF support.
      *
      * If FALSE is returned, a user-friendly explanation why can be retrieved via
      * geoPDFAvailabilityExplanation().
@@ -65,9 +65,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     static bool geoPDFCreationAvailable();
 
     /**
-     * Returns a user-friendly, translated string explaining why GeoPDF export
+     * Returns a user-friendly, translated string explaining why Geospatial PDF export
      * support is not available on the current QGIS build (or an empty string if
-     * GeoPDF support IS available).
+     * Geospatial PDF support IS available).
      * \see geoPDFCreationAvailable()
      */
     static QString geoPDFAvailabilityExplanation();
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     };
 
     /**
-     * \brief Contains details of a control point used during georeferencing GeoPDF outputs.
+     * \brief Contains details of a control point used during georeferencing Geospatial PDF outputs.
      * \ingroup core
      * \since QGIS 3.10
      */
@@ -233,9 +233,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       /**
        * TRUE if OGC "best practice" format georeferencing should be used.
        *
-       * \warning This results in GeoPDF files compatible with the TerraGo suite of tools, but
-       * can break compatibility with the built-in Acrobat geospatial tools (yes, GeoPDF
-       * format is a mess!).
+       * \warning This results in Geospatial PDF files compatible with some non-open source friendly suites of tools, but
+       * can break compatibility with the built-in Acrobat geospatial tools (yes, third party providers of the Geospatial PDF
+       * format are a mess!).
       */
       bool useOgcBestPracticeFormatGeoreferencing = false;
 
@@ -274,9 +274,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       QMap< QString, bool > initialLayerVisibility;
 
       /**
-       * Optional list of layer IDs, in the order desired to appear in the generated GeoPDF file.
+       * Optional list of layer IDs, in the order desired to appear in the generated Geospatial PDF file.
        *
-       * Layers appearing earlier in the list will show earlier in the GeoPDF layer tree list.
+       * Layers appearing earlier in the list will show earlier in the Geospatial PDF layer tree list.
        *
        * \see layerTreeGroupOrder
        *
@@ -285,9 +285,9 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
       QStringList layerOrder;
 
       /**
-       * Specifies the ordering of layer tree groups in the generated GeoPDF file.
+       * Specifies the ordering of layer tree groups in the generated Geospatial PDF file.
        *
-       * Groups appearing earlier in the list will show earlier in the GeoPDF layer tree list.
+       * Groups appearing earlier in the list will show earlier in the Geospatial PDF layer tree list.
        *
        * \see layerOrder
        * \see customLayerTreeGroups
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
      * argument gives a list of additional layers to include in the generated PDF file. These must have already
      * been created, e.g. as a result of rendering layers to separate PDF source files.
      *
-     * Any features previously collected by calls to pushRenderedFeature() will be included automatically in the GeoPDF
+     * Any features previously collected by calls to pushRenderedFeature() will be included automatically in the Geospatial PDF
      * export.
      *
      * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
@@ -326,13 +326,13 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     QString errorMessage() const { return mErrorMessage; }
 
     /**
-     * Returns a file path to use for temporary files required for GeoPDF creation.
+     * Returns a file path to use for temporary files required for Geospatial PDF creation.
      */
     QString generateTemporaryFilepath( const QString &filename ) const;
 
     /**
      * Returns TRUE if the specified composition \a mode is supported for layers
-     * during GeoPDF exports.
+     * during Geospatial PDF exports.
      *
      * \since QGIS 3.14
      */
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
   protected:
 
     /**
-     * Contains information relating to a single PDF layer in the GeoPDF export.
+     * Contains information relating to a single PDF layer in the Geospatial PDF export.
      */
     struct VectorComponentDetail
     {

@@ -3389,7 +3389,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   if ( singleFile )
   {
     allowGeoPdfExport = false;
-    geoPdfReason = tr( "GeoPDF export is not available when exporting an atlas to a single PDF file." );
+    geoPdfReason = tr( "Geospatial PDF export is not available when exporting an atlas to a single PDF file." );
   }
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
@@ -4579,14 +4579,14 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     if ( !map->crs().isValid() )
     {
       allowGeoPdfExport = false;
-      dialogGeoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for GeoPDF export." );
+      dialogGeoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for Geospatial PDF export." );
       break;
     }
 
     if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::MapRotation ) )
     {
       allowGeoPdfExport = false;
-      dialogGeoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );
+      dialogGeoPdfReason = tr( "One or more map items are rotated. This is not supported for Geospatial PDF export." );
       break;
     }
   }
