@@ -23,11 +23,6 @@ QgsStacObject::QgsStacObject( const QString &id, const QString &version, const Q
 {
 }
 
-bool QgsStacObject::isValid() const
-{
-  return mValid;
-}
-
 QString QgsStacObject::stacVersion() const
 {
   return mStacVersion;

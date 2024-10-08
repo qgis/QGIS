@@ -66,6 +66,12 @@ QNetworkReply *QgsStacController::fetchAsync( const QUrl &url )
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   QNetworkReply *reply = nam->get( req );
+
+  if ( !mAuthCfg.isEmpty() )
+  {
+    QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
+  }
+
   mReplies.append( reply );
 
   QgsDebugMsgLevel( QStringLiteral( "Fired STAC request with id %1" ).arg( reply->property( "requestId" ).toInt() ), 2 );

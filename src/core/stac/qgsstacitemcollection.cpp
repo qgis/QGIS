@@ -16,8 +16,7 @@
 #include "qgsstacitemcollection.h"
 
 QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > items, const QVector< QgsStacLink > links, int numberMatched )
-  : mValid( true )
-  , mItems( items )
+  : mItems( items )
   , mLinks( links )
   , mNumberMatched( numberMatched )
 {
@@ -82,9 +81,4 @@ int QgsStacItemCollection::numberReturned() const
 int QgsStacItemCollection::numberMatched() const
 {
   return mNumberMatched;
-}
-
-bool QgsStacItemCollection::isValid() const
-{
-  return mValid;
 }

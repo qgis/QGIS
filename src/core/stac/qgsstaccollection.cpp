@@ -27,7 +27,6 @@ QgsStacCollection::QgsStacCollection( const QString &id,
   , mLicense( license )
   , mExtent( extent )
 {
-  mValid = true;
 }
 
 QgsStacObject::Type QgsStacCollection::type() const
@@ -37,9 +36,6 @@ QgsStacObject::Type QgsStacCollection::type() const
 
 QString QgsStacCollection::toHtml() const
 {
-  if ( !mValid )
-    return QString();
-
   QString html = QStringLiteral( "<html><head></head>\n<body>\n" );
 
   html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Collection" ) );

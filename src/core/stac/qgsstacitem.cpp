@@ -29,7 +29,6 @@ QgsStacItem::QgsStacItem( const QString &id,
   ,  mProperties( properties )
   ,  mAssets( assets )
 {
-  mValid = true;
 }
 
 QgsStacObject::Type QgsStacItem::type() const
@@ -39,9 +38,6 @@ QgsStacObject::Type QgsStacItem::type() const
 
 QString QgsStacItem::toHtml() const
 {
-  if ( !mValid )
-    return QString();
-
   QString html = QStringLiteral( "<html><head></head>\n<body>\n" );
 
   html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Item" ) );

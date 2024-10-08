@@ -45,7 +45,7 @@ class CORE_EXPORT QgsStacObject
     };
 
     //! Default constructor is used for creating invalid objects
-    QgsStacObject() = default;
+    QgsStacObject() = delete;
 
     //! Constructor for valid objects
     QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links );
@@ -58,9 +58,6 @@ class CORE_EXPORT QgsStacObject
 
     //! Returns an HTML representation of the STAC object
     virtual QString toHtml() const = 0;
-
-    //! Returns TRUE is it is a valid constructed STAC object, FALSE otherwise
-    bool isValid() const;
 
     //! Returns the STAC version the object implements
     QString stacVersion() const;
@@ -97,7 +94,6 @@ class CORE_EXPORT QgsStacObject
 
 
   protected:
-    bool mValid = false;
     Type mType = Type::Unknown;
     QString mId;
     QString mStacVersion;

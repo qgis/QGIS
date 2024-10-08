@@ -32,8 +32,8 @@
 class CORE_EXPORT QgsStacItemCollection
 {
   public:
-    //! Default constructor creates an invalid item collection
-    QgsStacItemCollection() = default;
+    //! Default constructor deleted, use the variant with required parameters
+    QgsStacItemCollection() = delete;
 
     /**
      *  Constructs a valid item collection
@@ -93,11 +93,7 @@ class CORE_EXPORT QgsStacItemCollection
      */
     int numberMatched() const;
 
-    //! Returns TRUE if the item collection is valid, FALSE otherwise
-    bool isValid() const;
-
   private:
-    bool mValid = false;
     QVector< QgsStacItem * > mItems;
     const QVector< QgsStacLink > mLinks;
     QMap< QString, QString > mUrls;
