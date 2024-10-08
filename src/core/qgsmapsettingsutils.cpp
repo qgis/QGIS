@@ -39,7 +39,7 @@ QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &
       {
         if ( flags & EffectsCheckFlag::IgnoreGeoPdfSupportedEffects )
         {
-          layerHasAdvancedBlendMode = !QgsAbstractGeoPdfExporter::compositionModeSupported( layer->blendMode() );
+          layerHasAdvancedBlendMode = !QgsAbstractGeospatialPdfExporter::compositionModeSupported( layer->blendMode() );
         }
         else
         {

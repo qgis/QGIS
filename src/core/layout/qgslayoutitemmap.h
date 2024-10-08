@@ -1200,7 +1200,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     friend class QgsLayoutItemLegend;
     friend class TestQgsLayoutMap;
     friend class QgsCompositionConverter;
-    friend class QgsGeoPdfRenderedFeatureHandler;
+    friend class QgsGeospatialPdfRenderedFeatureHandler;
     friend class QgsLayoutExporter;
 
 };

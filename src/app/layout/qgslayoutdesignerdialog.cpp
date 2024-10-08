@@ -3339,16 +3339,16 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     outputFileName = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   }
 
-  bool allowGeoPdfExport = true;
-  QString geoPdfReason;
+  bool allowGeospatialPdfExport = true;
+  QString geospatialPdfReason;
   if ( singleFile )
   {
-    allowGeoPdfExport = false;
-    geoPdfReason = tr( "GeoPDF export is not available when exporting an atlas to a single PDF file." );
+    allowGeospatialPdfExport = false;
+    geospatialPdfReason = tr( "Geospatial PDF export is not available when exporting an atlas to a single PDF file." );
   }
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
-  if ( !getPdfExportSettings( pdfSettings, allowGeoPdfExport, geoPdfReason ) )
+  if ( !getPdfExportSettings( pdfSettings, allowGeospatialPdfExport, geospatialPdfReason ) )
     return;
 
   mView->setPaintingEnabled( false );
@@ -4477,7 +4477,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   return true;
 }
 
-bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeoPdfExport, const QString &geoPdfReason )
+bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeospatialPdfExport, const QString &geospatialPdfReason )
 {
   Qgis::TextRenderFormat prevTextRenderFormat = mMasterLayout->layoutProject()->labelingEngineSettings().defaultTextRenderFormat();
   bool forceVector = false;
@@ -4485,11 +4485,11 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool includeMetadata = true;
   bool disableRasterTiles = false;
   bool simplify = true;
-  bool geoPdf = false;
+  bool geospatialPdf = false;
   bool useOgcBestPracticeFormat = false;
   bool losslessImages = false;
   QStringList exportThemes;
-  QStringList geoPdfLayerOrder;
+  QStringList geospatialPdfLayerOrder;
   if ( mLayout )
   {
     settings.flags = mLayout->renderContext().flags();
@@ -4499,14 +4499,14 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
     simplify = mLayout->customProperty( QStringLiteral( "pdfSimplify" ), 1 ).toBool();
-    geoPdf = mLayout->customProperty( QStringLiteral( "pdfCreateGeoPdf" ), 0 ).toBool();
+    geospatialPdf = mLayout->customProperty( QStringLiteral( "pdfCreateGeoPdf" ), 0 ).toBool();
     useOgcBestPracticeFormat = mLayout->customProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), 0 ).toBool();
     const QString themes = mLayout->customProperty( QStringLiteral( "pdfExportThemes" ) ).toString();
     if ( !themes.isEmpty() )
       exportThemes = themes.split( QStringLiteral( "~~~" ) );
     const QString layerOrder = mLayout->customProperty( QStringLiteral( "pdfLayerOrder" ) ).toString();
     if ( !layerOrder.isEmpty() )
-      geoPdfLayerOrder = layerOrder.split( QStringLiteral( "~~~" ) );
+      geospatialPdfLayerOrder = layerOrder.split( QStringLiteral( "~~~" ) );
 
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
@@ -4517,7 +4517,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   }
 
   // open options dialog
-  QString dialogGeoPdfReason = geoPdfReason;
+  QString dialogGeospatialPdfReason = geospatialPdfReason;
   QList< QgsLayoutItemMap * > maps;
   if ( mLayout )
     mLayout->layoutItems( maps );
@@ -4526,20 +4526,20 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   {
     if ( !map->crs().isValid() )
     {
-      allowGeoPdfExport = false;
-      dialogGeoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for GeoPDF export." );
+      allowGeospatialPdfExport = false;
+      dialogGeospatialPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for geospatial PDF export." );
       break;
     }
 
     if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::MapRotation ) )
     {
-      allowGeoPdfExport = false;
-      dialogGeoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );
+      allowGeospatialPdfExport = false;
+      dialogGeospatialPdfReason = tr( "One or more map items are rotated. This is not supported for geospatial PDF export." );
       break;
     }
   }
 
-  QgsLayoutPdfExportOptionsDialog dialog( this, allowGeoPdfExport, dialogGeoPdfReason, geoPdfLayerOrder );
+  QgsLayoutPdfExportOptionsDialog dialog( this, allowGeospatialPdfExport, dialogGeospatialPdfReason, geospatialPdfLayerOrder );
 
   dialog.setTextRenderFormat( prevTextRenderFormat );
   dialog.setForceVector( forceVector );
@@ -4548,7 +4548,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setMetadataEnabled( includeMetadata );
   dialog.setRasterTilingDisabled( disableRasterTiles );
   dialog.setGeometriesSimplified( simplify );
-  dialog.setExportGeoPdf( geoPdf );
+  dialog.setExportGeospatialPdf( geospatialPdf );
   dialog.setUseOgcBestPracticeFormat( useOgcBestPracticeFormat );
   dialog.setExportThemes( exportThemes );
   dialog.setLosslessImageExport( losslessImages );
@@ -4563,10 +4563,10 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   disableRasterTiles = dialog.rasterTilingDisabled();
   simplify = dialog.geometriesSimplified();
   Qgis::TextRenderFormat textRenderFormat = dialog.textRenderFormat();
-  geoPdf = dialog.exportGeoPdf();
+  geospatialPdf = dialog.exportGeospatialPdf();
   useOgcBestPracticeFormat = dialog.useOgcBestPracticeFormat();
   exportThemes = dialog.exportThemes();
-  geoPdfLayerOrder = dialog.geoPdfLayerOrder();
+  geospatialPdfLayerOrder = dialog.geospatialPdfLayerOrder();
   losslessImages = dialog.losslessImageExport();
   QgsLayoutExporter::settingOpenAfterExportingPdf->setValue( dialog.openAfterExporting() );
 
@@ -4579,10 +4579,10 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfDisableRasterTiles" ), disableRasterTiles ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast< int >( textRenderFormat ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfSimplify" ), simplify ? 1 : 0 );
-    mLayout->setCustomProperty( QStringLiteral( "pdfCreateGeoPdf" ), geoPdf ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "pdfCreateGeoPdf" ), geospatialPdf ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), useOgcBestPracticeFormat ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QLatin1String( "~~~" ) ) );
-    mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geoPdfLayerOrder.join( QLatin1String( "~~~" ) ) );
+    mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geospatialPdfLayerOrder.join( QLatin1String( "~~~" ) ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfLosslessImages" ), losslessImages ? 1 : 0 );
   }
 
@@ -4591,7 +4591,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
-  settings.writeGeoPdf = geoPdf;
+  settings.writeGeoPdf = geospatialPdf;
   settings.useOgcBestPracticeFormatGeoreferencing = useOgcBestPracticeFormat;
   settings.useIso32000ExtensionFormatGeoreferencing = !useOgcBestPracticeFormat;
   settings.exportThemes = exportThemes;
