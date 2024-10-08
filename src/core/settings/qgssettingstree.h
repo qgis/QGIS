@@ -29,6 +29,7 @@
  */
 class CORE_EXPORT QgsSettingsTree
 {
+
   public:
     /**
      * Returns the tree root node for the settings tree
