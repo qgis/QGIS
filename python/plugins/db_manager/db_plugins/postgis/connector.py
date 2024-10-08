@@ -1015,14 +1015,14 @@ class PostGisDBConnector(DBConnector):
 
     def createView(self, view, query):
         view_name_parts = view.split('.')
-        
+
         if len(view_name_parts) > 2:
             # Raise an error when more than one period is used.
             raise ValueError("Invalid view name: Please use the format 'schema.viewname', or enter only the viewname for the public schema.")
-        elif len(view_name_parts) == 2: # To allow view creation into specified schema
+        elif len(view_name_parts) == 2:  # To allow view creation into specified schema
             schema, view_name = view_name_parts
             sql = "CREATE VIEW %s AS %s" % (self.quoteId([schema, view_name]), query)
-        else: # No specific schema specified
+        else:  # No specific schema specified
             sql = "CREATE VIEW %s AS %s" % (self.quoteId(view), query)
         self._execute_and_commit(sql)
 
