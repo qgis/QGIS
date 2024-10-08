@@ -94,7 +94,7 @@ class TestQgsLayoutTable : public QgsTest
     QgsVectorLayer *mVectorLayer = nullptr;
 
     //compares rows in table to expected rows
-    void compareTable( QgsLayoutItemAttributeTable *table, const QVector<QStringList> &expectedRows );
+    void compareTable( QgsLayoutItemAttributeTable *table, const QVector<QStringList> &expectedRows, bool expectedResult = true );
 };
 
 void TestQgsLayoutTable::initTestCase()
@@ -162,12 +162,12 @@ void TestQgsLayoutTable::attributeTableHeadings()
   }
 }
 
-void TestQgsLayoutTable::compareTable( QgsLayoutItemAttributeTable *table, const QVector<QStringList> &expectedRows )
+void TestQgsLayoutTable::compareTable( QgsLayoutItemAttributeTable *table, const QVector<QStringList> &expectedRows, bool expectedResult )
 {
   //retrieve rows and check
   QgsLayoutTableContents tableContents;
   const bool result = table->getTableContents( tableContents );
-  QCOMPARE( result, true );
+  QCOMPARE( result, expectedResult );
 
   QgsLayoutTableContents::const_iterator resultIt = tableContents.constBegin();
   int rowNumber = 0;
@@ -448,7 +448,7 @@ void TestQgsLayoutTable::attributeTableInsideAtlasOnly()
 
   // no atlas feature
   QVector<QStringList> expectedRows;
-  compareTable( table, expectedRows );
+  compareTable( table, expectedRows, false );
 
   //setup atlas
   std::unique_ptr< QgsVectorLayer > atlasLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:3857" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
