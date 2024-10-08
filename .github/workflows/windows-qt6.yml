@@ -132,6 +132,6 @@ jobs:
           marker: mingw64-qt6
           body: |
             ### 🪟 Windows Qt6 builds
-            Download [Windows Qt6builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}
