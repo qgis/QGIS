@@ -29,8 +29,8 @@ QgsFieldConstraints::ConstraintStrength QgsFieldConstraints::constraintStrength(
   if ( !( mConstraints & constraint ) )
     return ConstraintStrengthNotSet;
 
-  // defaults to not set
-  return mConstraintStrengths.value( constraint, ConstraintStrengthNotSet );
+  // defaults to not set for all but expressions (which does not use strength)
+  return mConstraintStrengths.value( constraint, constraint == ConstraintExpression ? ConstraintStrengthHard : ConstraintStrengthNotSet );
 }
 
 void QgsFieldConstraints::setConstraintStrength( QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength )
