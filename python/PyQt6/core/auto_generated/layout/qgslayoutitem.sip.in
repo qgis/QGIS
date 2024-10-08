@@ -432,7 +432,7 @@ Sets the item's parent ``group``.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 %Docstring
-Returns the behavior of this item during exporting to layered exports (e.g. SVG or GeoPDF).
+Returns the behavior of this item during exporting to layered exports (e.g. SVG or geospatial PDF).
 
 .. seealso:: :py:func:`numberExportLayers`
 
