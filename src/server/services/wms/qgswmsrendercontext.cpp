@@ -206,15 +206,19 @@ QStringList QgsWmsRenderContext::flattenedQueryLayers( const QStringList &layerN
       const auto &layers  { mLayerGroups[ name ] };
       for ( const auto &l : layers )
       {
-        const auto nick { layerNickname( *l ) };
-        // This handles the case for root (fake) group
-        if ( mLayerGroups.contains( nick ) )
+        // Only add allowed layers
+        if ( checkLayerReadPermissions( l ) )
         {
-          _result.append( name );
-        }
-        else
-        {
-          _result.append( findLeaves( nick ) );
+          const auto nick { layerNickname( *l ) };
+          // This handles the case for root (fake) group
+          if ( mLayerGroups.contains( nick ) )
+          {
+            _result.append( name );
+          }
+          else
+          {
+            _result.append( findLeaves( nick ) );
+          }
         }
       }
     }
@@ -355,11 +359,7 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
     {
       for ( const auto &tl : treeGroupLayers )
       {
-        auto layer = tl->layer();
-        if ( checkLayerReadPermissions( layer ) )
-        {
-          layerGroup.push_back( layer );
-        }
+        layerGroup.push_back( tl->layer() );
       }
     }
     else
@@ -369,11 +369,7 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
       QList<QgsMapLayer *> groupLayersList;
       for ( const auto &tl : treeGroupLayers )
       {
-        auto layer = tl->layer();
-        if ( checkLayerReadPermissions( layer ) )
-        {
-          groupLayersList << layer;
-        }
+        groupLayersList << tl->layer();
       }
       for ( const auto &l : projectLayerOrder )
       {
@@ -548,11 +544,28 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
           throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
                                         param );
         }
+
+        bool layerAdded = false;
         for ( QgsMapLayer *layer : mLayerGroups[lname] )
         {
-          const QString name = layerNickname( *layer );
-          mSlds[name] = namedElem;
-          mLayersToRender.insert( 0, layer );
+          // Insert only allowed layers
+          if ( checkLayerReadPermissions( layer ) )
+          {
+            const QString name = layerNickname( *layer );
+            mSlds[name] = namedElem;
+            mLayersToRender.insert( 0, layer );
+            layerAdded = true;
+          }
+        }
+        // No layers have been added, consider the group
+        // as non-existent.
+        if ( !layerAdded )
+        {
+          QgsWmsParameter param( QgsWmsParameter::LAYER );
+          param.mValue = lname;
+          throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
+                                        param );
+
         }
       }
       else
@@ -626,12 +639,25 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         layersFromGroup.push_front( nickname );
       }
 
+      bool layerAdded = false;
       for ( const auto &name : layersFromGroup )
       {
         for ( const auto layer : mNicknameLayers.values( name ) )
         {
-          addLayerToRender( layer );
+          if ( addLayerToRender( layer ) )
+          {
+            layerAdded = true;
+          }
         }
+      }
+      // No layers have been added, consider the group
+      // as non-existent.
+      if ( !layerAdded )
+      {
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = nickname;
+        throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
+                                      param );
       }
     }
     else
@@ -908,7 +934,7 @@ bool QgsWmsRenderContext::isExternalLayer( const QString &name ) const
   return false;
 }
 
-bool QgsWmsRenderContext::checkLayerReadPermissions( QgsMapLayer *layer )
+bool QgsWmsRenderContext::checkLayerReadPermissions( QgsMapLayer *layer ) const
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( !accessControl()->layerReadPermission( layer ) )
