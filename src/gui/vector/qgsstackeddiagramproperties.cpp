@@ -183,7 +183,7 @@ void QgsStackedDiagramProperties::syncToLayer()
     mStackedDiagramSpacingSpinBox->setValue( settingList.at( 0 ).stackedDiagramSpacing() );
     mStackedDiagramSpacingUnitComboBox->setUnit( settingList.at( 0 ).stackedDiagramSpacingUnit() );
 
-    if ( dr->rendererName() == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
+    if ( dr->rendererName() == QLatin1String( "Stacked" ) )
     {
       const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
       const auto renderers = stackedDiagramRenderer->renderers();
