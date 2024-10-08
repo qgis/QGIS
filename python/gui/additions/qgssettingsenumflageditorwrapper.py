@@ -1,0 +1,88 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    qgssettingsenumflageditorwrapper.py
+    ---------------------
+    Date                 : October 2024
+    Copyright            : (C) 2021 by Denis Rouzaud
+    Email                : denis@opengis.ch
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+from qgis.PyQt.QtWidgets import QWidget, QComboBox
+
+from qgis.core import QgsSettingsEntryBase, QgsSettingsEditorWidgetWrapper
+
+
+class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
+    """
+    A settings editor widget wrapper for enum settings as PyQgsSettingsEntryEnumFlag
+    """
+    def __init__(self, parent=None, editor=None, setting=None, displayStrings: dict=None):
+        self.setting = editor
+        self.editor = setting
+        self.displayStrings = {}
+        super().__init__(parent)
+        if editor is not None and setting is not None:
+            if displayStrings:
+                self.displayStrings = displayStrings
+            self.configureEditor(editor, setting)
+
+    def id(self):
+        return 'py-enum'
+
+    def createWrapper(self, parent=None):
+        return PyQgsSettingsEnumFlagWrapper(parent)
+
+    def setWidgetFromSetting(self):
+        if self.setting:
+            return self.setWidgetFromVariant(self.setting.value(self.dynamicKeyPartList()))
+        return False
+
+    def setSettingFromWidget(self):
+        if self.editor:
+            self.setting.setValue(self.variantValueFromWidget(), self.dynamicKeyPartList())
+            return True
+        else:
+            return False
+
+    def variantValueFromWidget(self):
+        if self.editor:
+            return self.setting.defaultValue().__class__(self.editor.currentData())
+        return None
+
+    def setWidgetFromVariant(self, value):
+        if self.editor:
+            idx = self.editor.findData(value)
+            self.editor.setCurrentIndex(idx)
+            return idx >= 0
+        return False
+
+    def createEditorPrivate(self, parent=None):
+        return QComboBox(parent)
+
+    def configureEditorPrivate(self, editor: QWidget, setting: QgsSettingsEntryBase):
+        self.setting = setting
+        self.editor = editor
+        if editor is not None:
+            for i in range(self.setting.metaEnum().keyCount()):
+                value = self.setting.metaEnum().value(i)
+                key = self.setting.metaEnum().key(i)
+                text = self.displayStrings.get(value, key)
+                self.editor.addItem(text, value)
+            return True
+        else:
+            return False
+
+    def enableAutomaticUpdatePrivate(self):
+        self.editor.currentIndexChanged.connect(
+            lambda: self.setting.setValue(self.editor.currentData(), self.dynamicKeyPartList()))
+
