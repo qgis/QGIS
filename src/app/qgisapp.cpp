@@ -1735,6 +1735,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutNorthArrowValidityCheck() );
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutOverviewValidityCheck() );
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutPictureSourceValidityCheck() );
+#ifndef WITH_QTWEBKIT
+  QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutHtmlItemValidityCheck() );
+#endif
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
