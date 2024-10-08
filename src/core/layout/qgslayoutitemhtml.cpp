@@ -339,6 +339,7 @@ QSizeF QgsLayoutItemHtml::totalSize() const
 void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int frameIndex )
 {
 #ifdef WITH_QTWEBKIT
+  Q_UNUSED( frameIndex )
   if ( !mWebPage )
     return;
 
