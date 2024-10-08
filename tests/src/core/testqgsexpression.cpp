@@ -2707,7 +2707,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( res.toInt(), 1 );
     }
 
-    void test_aggregate_with_variable()
+    void test_aggregate_with_variable_feature()
     {
       // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
       // see https://github.com/qgis/QGIS/issues/33382
@@ -2729,6 +2729,23 @@ class TestQgsExpression: public QObject
         int res2 = exp.evaluate( &context ).toInt();
         QCOMPARE( res2, f.attribute( "col1" ).toInt() );
       }
+    }
+
+    void test_aggregate_with_variables()
+    {
+      // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
+      // see https://github.com/qgis/QGIS/issues/58221
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      context.lastScope()->setVariable( QStringLiteral( "my_var" ), QStringLiteral( "3" ) );
+
+      QgsExpression exp( QString( "aggregate(layer:='aggregate_layer', aggregate:='concatenate_unique', expression:=\"col2\", filter:=\"col1\"=@my_var)" ) );
+      QString res = exp.evaluate( &context ).toString();
+      QCOMPARE( res, QStringLiteral( "test333" ) );
+
+      context.lastScope()->setVariable( QStringLiteral( "my_var" ), QStringLiteral( "4" ) );
+      res = exp.evaluate( &context ).toString();
+      QCOMPARE( res, QStringLiteral( "test" ) );
     }
 
     void aggregate_data()
