@@ -36,8 +36,8 @@
 class CORE_EXPORT QgsStacItem : public QgsStacObject
 {
   public:
-    //! Default constructor creates an invalid item
-    QgsStacItem() = default;
+    //! Default constructor deleted, use the variant with required parameters
+    QgsStacItem() = delete;
 
     /**
      * Constructs a valid QgsStacItem

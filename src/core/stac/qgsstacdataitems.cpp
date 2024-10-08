@@ -70,7 +70,7 @@ QVector<QgsDataItem *> QgsStacItemItem::createChildren()
   QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj );
   setStacItem( item );
 
-  if ( !mStacItem || !mStacItem->isValid() )
+  if ( !mStacItem )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
 
   return {};
@@ -323,7 +323,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
   QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
   setStacCatalog( cat );
 
-  if ( !mStacCatalog || !mStacCatalog->isValid() )
+  if ( !mStacCatalog )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
 
   int itemsCount = 0;
@@ -457,11 +457,8 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
   contents.reserve( items.size() );
   for ( QgsStacItem *item : items )
   {
-    if ( !item->isValid() )
-    {
-      delete item;
+    if ( !item )
       continue;
-    }
 
     const QString name = item->properties().value( QStringLiteral( "title" ), item->id() ).toString();
 

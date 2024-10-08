@@ -77,7 +77,6 @@ void TestQgsStac::testParseLocalCatalog()
   QgsStacCatalog *cat = dynamic_cast< QgsStacCatalog * >( obj );
 
   QVERIFY( cat );
-  QVERIFY( cat->isValid() );
   QCOMPARE( cat->id(), QLatin1String( "examples" ) );
   QCOMPARE( cat->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( cat->title(), QLatin1String( "Example Catalog" ) );
@@ -98,7 +97,6 @@ void TestQgsStac::testParseLocalCollection()
   QgsStacCollection *col = dynamic_cast< QgsStacCollection * >( obj );
 
   QVERIFY( col );
-  QVERIFY( col->isValid() );
   QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );
   QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( col->title(), QLatin1String( "Simple Example Collection" ) );
@@ -139,7 +137,6 @@ void TestQgsStac::testParseLocalItem()
   QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj );
 
   QVERIFY( item );
-  QVERIFY( item->isValid() );
   QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
   QCOMPARE( item->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( item->links().size(), 4 );

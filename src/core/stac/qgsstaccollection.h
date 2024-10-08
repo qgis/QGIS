@@ -35,8 +35,8 @@
 class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
 {
   public:
-    //! Default constructor creates an invalid collection
-    QgsStacCollection() = default;
+    //! Default constructor deleted, use the variant with required parameters
+    QgsStacCollection() = delete;
 
     /**
      * Constructs a valid QgsStacCollection

@@ -100,14 +100,22 @@ class CORE_EXPORT QgsStacController : public QObject
     int fetchItemCollectionAsync( const QUrl &url );
 
     /**
-     * Returns the STAC object fetched with the specified \a requestId
+     * Returns the STAC object fetched with the specified \a requestId.
+     * It should be used after the finishedStacObjectRequest signal is fired to get the fetched STAC object.
+     * Returns NULLPTR if the requestId was not found, request was canceled, request failed or parsing the STAC object failed.
      * The caller takes ownership of the returned object
+     * \see fetchStacObjectAsync
+     * \see finishedStacObjectRequest
      */
     QgsStacObject *takeStacObject( int requestId );
 
     /**
      * Returns the feature collection fetched with the specified \a requestId
+     * It should be used after the finishedItemCollectionRequest signal is fired to get the fetched STAC item collection.
+     * Returns NULLPTR if the requestId was not found, request was canceled, request failed or parsing the STAC object failed.
      * The caller takes ownership of the returned feature collection
+     * \see fetchItemCollectionAsync
+     * \see finishedItemCollectionRequest
      */
     QgsStacItemCollection *takeItemCollection( int requestId );
 
@@ -124,7 +132,25 @@ class CORE_EXPORT QgsStacController : public QObject
     void setAuthCfg( const QString &authCfg );
 
   signals:
+
+    /**
+     * This signal is fired when an async request initiated with fetchStacObjectAsync is finished.
+     * The parsed STAC object can be retrieved using takeStacObject
+     * \param id The requestId attribute of the finished request
+     * \param errorMessage Reason the request or parsing of the STAC object may have failed
+     * \see fetchStacObjectAsync
+     * \see takeStacObject
+     */
     void finishedStacObjectRequest( int id, QString errorMessage );
+
+    /**
+     * This signal is fired when an async request initiated with fetchItemCollectionAsync is finished.
+     * The parsed STAC item collection can be retrieved using takeItemCollection
+     * \param id The requestId attribute of the finished request
+     * \param errorMessage Reason the request or parsing of the STAC item collection may have failed
+     * \see fetchItemCollectionAsync
+     * \see takeItemCollection
+     */
     void finishedItemCollectionRequest( int id, QString errorMessage );
 
   private slots:

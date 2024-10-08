@@ -22,7 +22,6 @@ QgsStacCatalog::QgsStacCatalog( const QString &id,
   : QgsStacObject( id, version, links )
   , mDescription( description )
 {
-  mValid = true;
 }
 
 QgsStacObject::Type QgsStacCatalog::type() const
@@ -32,9 +31,6 @@ QgsStacObject::Type QgsStacCatalog::type() const
 
 QString QgsStacCatalog::toHtml() const
 {
-  if ( !mValid )
-    return QString();
-
   QString html = QStringLiteral( "<html><head></head>\n<body>\n" );
 
   html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Catalog" ) );

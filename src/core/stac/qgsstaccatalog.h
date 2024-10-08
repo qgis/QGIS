@@ -35,8 +35,8 @@
 class CORE_EXPORT QgsStacCatalog : public QgsStacObject
 {
   public:
-    //! Default constructor creates an invalid catalog
-    QgsStacCatalog() = default;
+    //! Default constructor deleted, use the variant with required parameters
+    QgsStacCatalog() = delete;
 
     /**
      * Constructs a valid QgsStacCatalog
