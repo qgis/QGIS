@@ -104,9 +104,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mGeospatialPDFGroupBox">
          <property name="title">
-          <string>Create Geospatial PDF (GeoPDF)</string>
+          <string>Create Geospatial PDF</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -128,7 +128,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QStackedWidget" name="mGeoPDFOptionsStackedWidget">
+           <widget class="QStackedWidget" name="mGeospatialPDFOptionsStackedWidget">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -153,7 +153,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="mGeoPdfUnavailableReason">
+               <widget class="QLabel" name="mGeospatialPdfUnavailableReason">
                 <property name="text">
                  <string/>
                 </property>
@@ -201,10 +201,10 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
+               <widget class="QComboBox" name="mGeospatialPdfFormatComboBox"/>
               </item>
               <item row="3" column="0" colspan="2">
-               <widget class="QGroupBox" name="mExportGeoPdfFeaturesCheckBox">
+               <widget class="QGroupBox" name="mExportGeospatialPdfFeaturesCheckBox">
                 <property name="title">
                  <string>Layer Structure</string>
                 </property>
@@ -215,7 +215,7 @@
                  <item>
                   <widget class="QLabel" name="label_2">
                    <property name="text">
-                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group. Layers can be dragged and dropped to rearrange their order in the generated GeoPDF table of contents.</string>
+                    <string>Uncheck layers to avoid exporting vector feature information for those layers, and optionally set the group name to allow multiple layers to be joined into a single logical PDF group. Layers can be dragged and dropped to rearrange their order in the generated Geospatial PDF table of contents.</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -223,7 +223,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QTreeView" name="mGeoPdfStructureTree">
+                  <widget class="QTreeView" name="mGeospatialPdfStructureTree">
                    <property name="headerHidden">
                     <bool>true</bool>
                    </property>
@@ -358,11 +358,11 @@
   <tabstop>mIncludeMetadataCheckbox</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>mComboImageCompression</tabstop>
-  <tabstop>mGeoPDFGroupBox</tabstop>
-  <tabstop>mGeoPdfFormatComboBox</tabstop>
+  <tabstop>mGeospatialPDFGroupBox</tabstop>
+  <tabstop>mGeospatialPdfFormatComboBox</tabstop>
   <tabstop>mIncludeMapThemesCheck</tabstop>
   <tabstop>mThemesList</tabstop>
-  <tabstop>mGeoPdfStructureTree</tabstop>
+  <tabstop>mGeospatialPdfStructureTree</tabstop>
   <tabstop>mSimplifyGeometriesCheckbox</tabstop>
   <tabstop>mDisableRasterTilingCheckBox</tabstop>
  </tabstops>

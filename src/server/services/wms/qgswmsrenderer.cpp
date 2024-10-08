@@ -718,7 +718,7 @@ namespace QgsWms
       {
         exportSettings.exportThemes = exportThemes;
       }
-      exportSettings.writeGeoPdf = mWmsParameters.writeGeoPdf();
+      exportSettings.writeGeoPdf = mWmsParameters.writeGeospatialPdf();
       exportSettings.textRenderFormat = mWmsParameters.pdfTextRenderFormat();
       exportSettings.forceVectorOutput = mWmsParameters.pdfForceVectorOutput();
       exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
@@ -1228,7 +1228,7 @@ namespace QgsWms
     ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
     ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
 
-    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails;
+    QgsAbstractGeospatialPdfExporter::ExportDetails pdfExportDetails;
     if ( mWmsParameters.pdfExportMetadata() )
     {
       pdfExportDetails.author = QgsProject::instance()->metadata().author();
@@ -1241,8 +1241,8 @@ namespace QgsWms
     }
     pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
     pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
-    const bool geoPdf = mWmsParameters.pdfAppendGeoreference();
-    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
+    const bool geospatialPdf = mWmsParameters.pdfAppendGeoreference();
+    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geospatialPdf, pdfExportDetails );
     if ( mWmsParameters.pdfAppendGeoreference() )
     {
       pdf->setSaveWorldFile( true );
