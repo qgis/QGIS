@@ -874,12 +874,13 @@ class CORE_EXPORT QgsDiagramRenderer
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY SIP_SKIP;
 
     QgsSingleCategoryDiagramRenderer() = default;
 
     QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
 
-    QString rendererName() const override { return QStringLiteral( "SingleCategory" ); }
+    QString rendererName() const override { return QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY; }
 
     QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
 
@@ -909,6 +910,8 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED SIP_SKIP;
+
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer() override;
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
@@ -926,7 +929,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
-    QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
+    QString rendererName() const override { return QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED; }
 
     void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
     double lowerValue() const { return mInterpolationSettings.lowerValue; }
@@ -997,6 +1000,8 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_STACKED SIP_SKIP;
+
     QgsStackedDiagramRenderer() = default;
 
     QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
@@ -1018,7 +1023,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     QList<QString> diagramAttributes() const override;
 
-    QString rendererName() const override { return QStringLiteral( "Stacked" ); }
+    QString rendererName() const override { return QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;

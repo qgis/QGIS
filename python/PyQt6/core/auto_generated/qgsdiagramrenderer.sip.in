@@ -869,6 +869,7 @@ Alters the size of rendered diagrams using a linear scaling.
 #include "qgsdiagramrenderer.h"
 %End
   public:
+
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
@@ -965,6 +966,7 @@ the rendered diagram is given by a combination of subrenderers.
 #include "qgsdiagramrenderer.h"
 %End
   public:
+
     QgsStackedDiagramRenderer();
 
     virtual QgsStackedDiagramRenderer *clone() const /Factory/;
