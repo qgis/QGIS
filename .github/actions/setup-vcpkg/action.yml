@@ -15,7 +15,10 @@ runs:
       if: runner.os != 'Windows'
       shell: bash
       run: |
-        . <(curl https://aka.ms/vcpkg-init.sh -L)
+        export VCPKG_ROOT=$HOME/.vcpkg
+        wget https://aka.ms/vcpkg-init.sh -O /tmp/vcpkg-init.sh
+        . /tmp/vcpkg-init.sh
+        echo "VCPKG_ROOT=$VCPKG_ROOT" >> $GITHUB_ENV
         echo "PATH=$VCPKG_ROOT;$PATH" >> $GITHUB_ENV
 
     - name: Setup vcpkg
