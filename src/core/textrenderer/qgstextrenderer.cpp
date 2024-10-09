@@ -2221,36 +2221,12 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         // scale for any print output or image saving @ specific dpi
         context.painter()->scale( subComponent.dpiRatio, subComponent.dpiRatio );
 
-        switch ( context.textRenderFormat() )
-        {
-          case Qgis::TextRenderFormat::AlwaysOutlines:
-          {
-            // draw outlined text
-            context.painter()->translate( 0, currentBlockYOffset );
-            QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
-            context.painter()->drawPicture( 0, 0, textPict );
-            currentBlockYOffset += partYOffset;
-            break;
-          }
-
-          case Qgis::TextRenderFormat::AlwaysText:
-          {
-            context.painter()->setFont( fragmentFont );
-            context.painter()->setPen( textColor );
-            context.painter()->setRenderHint( QPainter::TextAntialiasing );
-
-            double partYOffset = 0.0;
-            for ( const QString &part : parts )
-            {
-              double partXOffset = ( blockMaximumCharacterWidth - ( fragmentMetrics.horizontalAdvance( part ) / fontScale - letterSpacing ) ) / 2;
-              context.painter()->scale( 1 / fontScale, 1 / fontScale );
-              context.painter()->drawText( QPointF( partXOffset * fontScale, ( currentBlockYOffset + partYOffset ) * fontScale ), part );
-              context.painter()->scale( fontScale, fontScale );
-              partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
-            }
-            currentBlockYOffset += partYOffset;
-          }
-        }
+        // TODO -- this should respect the context's TextRenderFormat
+        // draw outlined text
+        context.painter()->translate( 0, currentBlockYOffset );
+        QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
+        context.painter()->drawPicture( 0, 0, textPict );
+        currentBlockYOffset += partYOffset;
       }
       fragmentIndex++;
     }
