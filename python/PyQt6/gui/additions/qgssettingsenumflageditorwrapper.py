@@ -19,7 +19,8 @@
 
 from qgis.PyQt.QtWidgets import QWidget, QComboBox
 
-from qgis.core import QgsSettingsEntryBase, QgsSettingsEditorWidgetWrapper
+from qgis.core import QgsSettingsEntryBase
+from qgis.gui import QgsSettingsEditorWidgetWrapper
 
 
 class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
