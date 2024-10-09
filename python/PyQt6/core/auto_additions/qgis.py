@@ -4858,6 +4858,9 @@ QgsRenderContext.TextFormatAlwaysText = Qgis.TextRenderFormat.AlwaysText
 QgsRenderContext.TextRenderFormat.TextFormatAlwaysText = Qgis.TextRenderFormat.AlwaysText
 QgsRenderContext.TextFormatAlwaysText.is_monkey_patched = True
 QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform)."
+QgsRenderContext.PreferText = Qgis.TextRenderFormat.PreferText
+QgsRenderContext.PreferText.is_monkey_patched = True
+QgsRenderContext.PreferText.__doc__ = "Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform). \n.. versionadded:: 3.40"
 Qgis.TextRenderFormat.__doc__ = """Options for rendering text.
 
 .. versionadded:: 3.22
@@ -4869,6 +4872,10 @@ Qgis.TextRenderFormat.__doc__ = """Options for rendering text.
 * ``AlwaysText``: Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
 
   Available as ``QgsRenderContext.TextFormatAlwaysText`` in older QGIS releases.
+
+* ``PreferText``: Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+
+  .. versionadded:: 3.40
 
 
 """

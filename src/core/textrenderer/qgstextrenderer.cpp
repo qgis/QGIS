@@ -1682,6 +1682,112 @@ void QgsTextRenderer::applyExtraSpacingForLineJustification( QFont &font, double
   font.setLetterSpacing( QFont::AbsoluteSpacing, prevLetterSpace + extraLetterSpace );
 }
 
+
+void QgsTextRenderer::renderBlockHorizontal( const QgsTextBlock &block, int blockIndex,
+    const QgsTextDocumentMetrics &metrics, QgsRenderContext &context,
+    const QgsTextFormat &format,
+    QPainter *painter, bool usePaths,
+    double fontScale, double extraWordSpace, double extraLetterSpace,
+    Qgis::TextLayoutMode mode )
+{
+  if ( !metrics.isNullFontSize() )
+  {
+    double xOffset = 0;
+    int fragmentIndex = 0;
+    for ( const QgsTextFragment &fragment : block )
+    {
+      // draw text, QPainterPath method
+      if ( !fragment.isWhitespace() && !fragment.isImage() )
+      {
+        QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
+
+        if ( extraWordSpace || extraLetterSpace )
+          applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
+
+        const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
+
+        QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
+        textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
+
+        if ( usePaths )
+        {
+          painter->setBrush( textColor );
+          QPainterPath path;
+          path.setFillRule( Qt::WindingFill );
+          path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
+          painter->drawPath( path );
+        }
+        else
+        {
+          painter->setPen( textColor );
+          painter->setFont( fragmentFont );
+          painter->drawText( QPointF( xOffset, yOffset ), fragment.text() );
+        }
+      }
+      else if ( fragment.isImage() )
+      {
+        bool fitsInCache = false;
+        const double imageWidth = metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode ) * fontScale;
+        const double imageHeight = metrics.fragmentFixedHeight( blockIndex, fragmentIndex, mode ) * fontScale;
+
+        const QImage image = QgsApplication::imageCache()->pathAsImage( fragment.characterFormat().imagePath(),
+                             QSize( static_cast< int >( std::round( imageWidth ) ),
+                                    static_cast< int >( std::round( imageHeight ) ) ),
+                             false,
+                             1, fitsInCache, context.flags() & Qgis::RenderContextFlag::RenderBlocking );
+        const double imageBaseline = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
+        const double yOffset = imageBaseline - image.height();
+        if ( !image.isNull() )
+          painter->drawImage( QPointF( xOffset, yOffset ), image );
+      }
+
+      xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode ) * fontScale;
+      fragmentIndex ++;
+    }
+  }
+};
+
+bool QgsTextRenderer::usePathsToRender( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document )
+{
+  switch ( context.textRenderFormat() )
+  {
+    case Qgis::TextRenderFormat::AlwaysOutlines:
+      return true;
+    case Qgis::TextRenderFormat::AlwaysText:
+      return false;
+    case Qgis::TextRenderFormat::PreferText:
+    {
+      // Prefer not to use paths -- but certain conditions will require us to use them
+      if ( format.buffer().enabled() )
+      {
+        // text buffer requires use of paths
+        // TODO: this was the original cause of use switching from text to paths by default,
+        // but that was way back in the 2.0 days and maybe the Qt issues have now been fixed?
+        return true;
+      }
+
+      // underline/overline/strikethrough looks different between path/non-path renders.
+      // TODO: validate which is correct. For now, maintain default appearance from before this code
+      // was introduced
+      if ( format.font().underline()
+           || format.font().overline()
+           || format.font().strikeOut()
+           || std::any_of( document.begin(), document.end(), []( const QgsTextBlock & block )
+    {
+      return std::any_of( block.begin(), block.end(), []( const QgsTextFragment & fragment )
+      {
+        return fragment.characterFormat().underline() == QgsTextCharacterFormat::BooleanValue::SetTrue
+                 || fragment.characterFormat().overline() == QgsTextCharacterFormat::BooleanValue::SetTrue
+                 || fragment.characterFormat().strikeOut() == QgsTextCharacterFormat::BooleanValue::SetTrue;
+        } );
+      } ) )
+      return true;
+
+      return false;
+    }
+  }
+  BUILTIN_UNREACHABLE
+}
 void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent drawType, Qgis::TextLayoutMode mode, const Component &component, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, double fontScale, const Qgis::TextHorizontalAlignment hAlignment,
     Qgis::TextVerticalAlignment vAlignment, double rotation )
 {
@@ -1724,6 +1830,9 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         break;
     }
   }
+
+  // should we use text or paths for this render?
+  const bool usePaths = usePathsToRender( context, format, document );
 
   int blockIndex = 0;
   for ( const QgsTextBlock &block : document )
@@ -1844,10 +1953,10 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     else
     {
       // store text's drawing in QPicture for drop shadow call
-      QPicture textPict;
-      QPainter textp;
-      textp.begin( &textPict );
-      textp.setPen( Qt::NoPen );
+
+      const bool drawShadowOnText = format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText;
+      // do we need to store text temporarily in a QPicture? Avoid if we can...
+      const bool requiresPicture = drawShadowOnText;
 
       std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
       if ( mode == Qgis::TextLayoutMode::Labeling )
@@ -1859,67 +1968,30 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
       referenceScaleOverride.reset();
 
-      if ( !metrics.isNullFontSize() )
+      std::unique_ptr< QPicture > textPicture;
+      if ( requiresPicture )
       {
-        textp.scale( 1 / fontScale, 1 / fontScale );
-
-        double xOffset = 0;
-        int fragmentIndex = 0;
-        for ( const QgsTextFragment &fragment : block )
-        {
-          // draw text, QPainterPath method
-          if ( !fragment.isWhitespace() && !fragment.isImage() )
-          {
-            QPainterPath path;
-            path.setFillRule( Qt::WindingFill );
-
-            QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
-
-            if ( extraWordSpace || extraLetterSpace )
-              applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
-
-            const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
-
-            path.addText( xOffset, yOffset, fragmentFont, fragment.text() );
-
-            QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-            textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
-            textp.setBrush( textColor );
-            textp.drawPath( path );
-          }
-          else if ( fragment.isImage() )
-          {
-            bool fitsInCache = false;
-            const double imageWidth = metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode ) * fontScale;
-            const double imageHeight = metrics.fragmentFixedHeight( blockIndex, fragmentIndex, mode ) * fontScale;
-
-            const QImage image = QgsApplication::imageCache()->pathAsImage( fragment.characterFormat().imagePath(),
-                                 QSize( static_cast< int >( std::round( imageWidth ) ),
-                                        static_cast< int >( std::round( imageHeight ) ) ),
-                                 false,
-                                 1, fitsInCache, context.flags() & Qgis::RenderContextFlag::RenderBlocking );
-            const double imageBaseline = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
-            const double yOffset = imageBaseline - image.height();
-            if ( !image.isNull() )
-              textp.drawImage( QPointF( xOffset, yOffset ), image );
-          }
-
-          xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode ) * fontScale;
-          fragmentIndex ++;
-        }
-        textp.end();
+        // render to picture
+        textPicture = std::make_unique< QPicture >();
+        QPainter picturePainter( textPicture.get() );
+        picturePainter.setPen( Qt::NoPen );
+        picturePainter.setBrush( Qt::NoBrush );
+        picturePainter.scale( 1 / fontScale, 1 / fontScale );
+        renderBlockHorizontal( block, blockIndex, metrics, context, format, &picturePainter, usePaths,
+                               fontScale, extraWordSpace, extraLetterSpace, mode );
+        picturePainter.end();
       }
 
-      if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
+      if ( drawShadowOnText )
       {
-        subComponent.picture = textPict;
+        subComponent.picture = *textPicture;
         subComponent.pictureBuffer = 0.0; // no pen width to deal with
         subComponent.origin = QPointF( 0.0, 0.0 );
 
         QgsTextRenderer::drawShadow( context, subComponent, format );
       }
 
-      // paint the text
+      // now render the actual text
       if ( context.useAdvancedEffects() )
       {
         context.painter()->setCompositionMode( format.blendMode() );
@@ -1928,47 +2000,18 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       // scale for any print output or image saving @ specific dpi
       context.painter()->scale( subComponent.dpiRatio, subComponent.dpiRatio );
 
-      switch ( context.textRenderFormat() )
+      if ( textPicture )
       {
-        case Qgis::TextRenderFormat::AlwaysOutlines:
-        {
-          // draw outlined text
-          QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
-          context.painter()->drawPicture( 0, 0, textPict );
-          break;
-        }
-
-        case Qgis::TextRenderFormat::AlwaysText:
-        {
-          double xOffset = 0;
-          int fragmentIndex = 0;
-          for ( const QgsTextFragment &fragment : block )
-          {
-            if ( !fragment.isWhitespace() && !fragment.isImage() )
-            {
-              QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
-
-              if ( extraWordSpace || extraLetterSpace )
-                applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
-
-              const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
-
-              QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-              textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
-
-              context.painter()->setPen( textColor );
-              context.painter()->setFont( fragmentFont );
-              context.painter()->setRenderHint( QPainter::TextAntialiasing );
-
-              context.painter()->scale( 1 / fontScale, 1 / fontScale );
-              context.painter()->drawText( QPointF( xOffset, yOffset ), fragment.text() );
-              context.painter()->scale( fontScale, fontScale );
-            }
-
-            xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
-            fragmentIndex++;
-          }
-        }
+        QgsPainting::applyScaleFixForQPictureDpi( context.painter() );
+        context.painter()->drawPicture( 0, 0, *textPicture );
+      }
+      else
+      {
+        context.painter()->scale( 1 / fontScale, 1 / fontScale );
+        context.painter()->setPen( Qt::NoPen );
+        context.painter()->setBrush( Qt::NoBrush );
+        renderBlockHorizontal( block, blockIndex, metrics, context, format, context.painter(), usePaths,
+                               fontScale, extraWordSpace, extraLetterSpace, mode );
       }
     }
     if ( maskPainter )
