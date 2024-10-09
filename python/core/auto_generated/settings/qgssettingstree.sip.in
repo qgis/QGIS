@@ -23,6 +23,11 @@ class QgsSettingsTree
 %End
   public:
 
+    static QgsSettingsTreeNode *treeRoot();
+%Docstring
+Returns the tree root node for the settings tree
+%End
+
 
     static const QgsSettingsTreeNode *node( const QString &key );
 %Docstring
