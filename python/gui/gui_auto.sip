@@ -128,6 +128,7 @@
 %Include auto_generated/qgsmaplayercombobox.sip
 %Include auto_generated/qgsmaplayerconfigwidget.sip
 %Include auto_generated/qgsmaplayerconfigwidgetfactory.sip
+%Include auto_generated/qgsmaplayerstylecategoriesmodel.sip
 %Include auto_generated/qgsmaplayerstylemanagerwidget.sip
 %Include auto_generated/qgsmapmouseevent.sip
 %Include auto_generated/qgsmapoverviewcanvas.sip
