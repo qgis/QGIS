@@ -73,8 +73,8 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
 
     def configureEditorPrivate(self, editor: QWidget, setting: QgsSettingsEntryBase):
         self.setting = setting
-        self.editor = editor
-        if editor is not None:
+        if isinstance(editor, QComboBox):
+            self.editor = editor
             for i in range(self.setting.metaEnum().keyCount()):
                 value = self.setting.metaEnum().value(i)
                 key = self.setting.metaEnum().key(i)
