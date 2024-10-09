@@ -94,6 +94,12 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      */
     void configureAutomaticUpdate( QDialog *dialog = nullptr );
 
+    /**
+     * Returns the dynamic key parts
+     * \since QGIS 3.40
+     */
+    QStringList dynamicKeyPartList() const {return mDynamicKeyPartList;}
+
 
   protected:
     //! Creates the widgets
