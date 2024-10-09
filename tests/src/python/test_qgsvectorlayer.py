@@ -4695,8 +4695,8 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
 
         # Check constraints at the layer level
         constraints = layer.fieldConstraintsAndStrength(0)
-        self.assertEquals(constraints[QgsFieldConstraints.Constraint.ConstraintNotNull], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
-        self.assertEquals(constraints[QgsFieldConstraints.Constraint.ConstraintUnique], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
+        self.assertEqual(constraints[QgsFieldConstraints.Constraint.ConstraintNotNull], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
+        self.assertEqual(constraints[QgsFieldConstraints.Constraint.ConstraintUnique], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
 
         # Export the style to QML and reload it
         style = QgsMapLayerStyle()
