@@ -31,6 +31,7 @@
 #include "qgsrasterlayer.h"
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsmaplayerlistutils_p.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -546,17 +547,12 @@ double Qgs3DMapSettings::terrainVerticalScale() const
 
 void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
-  QList<QgsMapLayerRef> lst;
-  lst.reserve( layers.count() );
-  for ( QgsMapLayer *layer : layers )
-  {
-    lst.append( layer );
-  }
+  const QList<QgsMapLayer *> raw = _qgis_listRefToRaw( mLayers );
 
-  if ( mLayers == lst )
+  if ( layers == raw )
     return;
 
-  mLayers = lst;
+  mLayers = _qgis_listRawToRef( layers );
   emit layersChanged();
 }
 
