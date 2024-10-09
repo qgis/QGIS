@@ -78,6 +78,24 @@ empty string before :py:func:`~QgsMapCanvas.setLayers` calls can be made.
 .. seealso:: :py:func:`layers`
 %End
 
+    void setFlags( Qgis::MapCanvasFlags flags );
+%Docstring
+Sets ``flags`` which control how the map canvas behaves.
+
+.. seealso:: :py:func:`flags`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::MapCanvasFlags flags() const;
+%Docstring
+Returns flags which control how the map canvas behaves.
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.40
+%End
+
     void setCurrentLayer( QgsMapLayer *layer );
 
     const QgsMapSettings &mapSettings() const /KeepReference/;
