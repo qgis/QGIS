@@ -6045,7 +6045,8 @@ font-style: italic;</string>
                                  <enum>Qt::StrongFocus</enum>
                                 </property>
                                 <property name="toolTip">
-                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.</string>
+                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.
+This limit is inclusive, that means the label will be displayed on this scale.</string>
                                 </property>
                                </widget>
                               </item>
@@ -6062,7 +6063,8 @@ font-style: italic;</string>
                                  <enum>Qt::StrongFocus</enum>
                                 </property>
                                 <property name="toolTip">
-                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
+                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.
+This limit is exclusive, that means the label will not be displayed on this scale.</string>
                                 </property>
                                </widget>
                               </item>
@@ -6076,7 +6078,8 @@ font-style: italic;</string>
                               <item row="0" column="0">
                                <widget class="QLabel" name="mLabelMinScale">
                                 <property name="toolTip">
-                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
+                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.
+This limit is exclusive, that means the label will not be displayed on this scale.</string>
                                 </property>
                                 <property name="text">
                                  <string/>
@@ -6089,7 +6092,8 @@ font-style: italic;</string>
                               <item row="1" column="0">
                                <widget class="QLabel" name="mLabelMaxScale">
                                 <property name="toolTip">
-                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.</string>
+                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.
+This limit is inclusive, that means the label will be displayed on this scale.</string>
                                 </property>
                                 <property name="text">
                                  <string/>
