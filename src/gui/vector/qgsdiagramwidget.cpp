@@ -107,7 +107,7 @@ void QgsDiagramWidget::syncToOwnLayer()
   // pick the right mode from the layer
   if ( dr && dr->diagram() )
   {
-    if ( dr->rendererName() == QLatin1String( "Stacked" ) )
+    if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       mDiagramTypeComboBox->setCurrentIndex( ModeStacked );
     }

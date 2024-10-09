@@ -654,6 +654,8 @@ void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
 }
 
+const QString QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY = QStringLiteral( "SingleCategory" );
+
 QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() const
 {
   return new QgsSingleCategoryDiagramRenderer( *this );
@@ -697,6 +699,8 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
   _writeXml( rendererElem, doc, context );
   layerElem.appendChild( rendererElem );
 }
+
+const QString QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED = QLatin1String( "LinearlyInterpolated" );
 
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
 {
@@ -858,6 +862,8 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
   layerElem.appendChild( rendererElem );
 }
 
+const QString QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED = QStringLiteral( "Stacked" );
+
 QgsStackedDiagramRenderer *QgsStackedDiagramRenderer::clone() const
 {
   return new QgsStackedDiagramRenderer( *this );
@@ -925,7 +931,7 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
 
   for ( const auto &stackedRenderer : stackedRenderers )
   {
-    if ( stackedRenderer->rendererName() == QStringLiteral( "Stacked" ) )
+    if ( stackedRenderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       // Nested stacked diagrams will use this recursion
       stackedRenderer->renderDiagram( feature, c, newPos, properties );

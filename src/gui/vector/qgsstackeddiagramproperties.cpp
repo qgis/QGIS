@@ -183,7 +183,7 @@ void QgsStackedDiagramProperties::syncToLayer()
     mStackedDiagramSpacingSpinBox->setValue( settingList.at( 0 ).stackedDiagramSpacing() );
     mStackedDiagramSpacingUnitComboBox->setUnit( settingList.at( 0 ).stackedDiagramSpacingUnit() );
 
-    if ( dr->rendererName() == QLatin1String( "Stacked" ) )
+    if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
       const auto renderers = stackedDiagramRenderer->renderers();
@@ -396,9 +396,9 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
         }
         else
         {
-          if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
+          if ( dr->rendererName() == QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY )
             return tr( "Fixed" );
-          else if ( dr->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
+          else if ( dr->rendererName() == QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED )
             return tr( "Scaled" );
           else
             return tr( "Unknown" );
@@ -480,7 +480,7 @@ bool QgsStackedDiagramPropertiesModel::setData( const QModelIndex &index, const 
       QgsDiagramSettings ds = dr->diagramSettings().at( 0 );
       ds.enabled = ( value.toInt() == Qt::Checked );
 
-      if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
+      if ( dr->rendererName() == QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY )
       {
         QgsSingleCategoryDiagramRenderer *dsr = static_cast< QgsSingleCategoryDiagramRenderer * >( dr );
         dsr->setDiagramSettings( ds );

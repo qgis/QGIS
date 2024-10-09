@@ -437,7 +437,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
   else // already a diagram renderer present
   {
     //single category renderer or interpolated one?
-    if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
+    if ( dr->rendererName() == QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY )
     {
       mFixedSizeRadio->setChecked( true );
     }
@@ -543,7 +543,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
       }
     }
 
-    if ( dr->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
+    if ( dr->rendererName() == QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED )
     {
       const QgsLinearlyInterpolatedDiagramRenderer *lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer *>( dr );
       if ( lidr )
