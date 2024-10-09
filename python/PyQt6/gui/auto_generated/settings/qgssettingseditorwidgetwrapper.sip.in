@@ -97,6 +97,13 @@ If not, the setting will be updated directly at each widget value change.
 .. versionadded:: 3.40
 %End
 
+    QStringList dynamicKeyPartList() const;
+%Docstring
+Returns the dynamic key parts
+
+.. versionadded:: 3.40
+%End
+
 
   protected:
     virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
