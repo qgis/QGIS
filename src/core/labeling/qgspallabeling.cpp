@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsstyle.h"
 #include "qgstextrenderer.h"
+#include "qgsscaleutils.h"
 
 #include "pal/labelposition.h"
 
@@ -1895,7 +1896,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       maxScale = 1 / std::fabs( maxScale );
     }
 
-    if ( !qgsDoubleNear( maxScale, 0.0 ) && context.rendererScale() < maxScale )
+    // maxScale is inclusive ( < --> no label )
+    if ( !qgsDoubleNear( maxScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( context.rendererScale(), maxScale ) )
     {
       return nullptr;
     }
@@ -1914,7 +1916,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       minScale = 1 / std::fabs( minScale );
     }
 
-    if ( !qgsDoubleNear( minScale, 0.0 ) && context.rendererScale() > minScale )
+    // minScale is exclusive ( >= --> no label )
+    if ( !qgsDoubleNear( minScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( context.rendererScale(), minScale ) )
     {
       return nullptr;
     }
