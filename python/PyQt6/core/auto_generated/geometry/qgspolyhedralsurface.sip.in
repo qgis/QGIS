@@ -58,6 +58,9 @@ Creates a polyhedral surface from a multiPolygon.
     virtual bool fromWkt( const QString &wkt );
 
 
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
+
+
     virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
