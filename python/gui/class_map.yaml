@@ -1209,6 +1209,10 @@ QgsCategorizedSymbolRendererWidget.setSymbolLevels: src/gui/symbology/qgscategor
 QgsCategorizedSymbolRendererWidget.showSymbolLevels: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L170
 QgsCategorizedSymbolRendererWidget.updateUiFromRenderer: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L223
 QgsCategorizedSymbolRendererWidget: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L115
+QgsCategoryDisplayLabelDelegate.QgsCategoryDisplayLabelDelegate: src/gui/qgsmaplayerstylecategoriesmodel.h#L85
+QgsCategoryDisplayLabelDelegate.drawDisplay: src/gui/qgsmaplayerstylecategoriesmodel.h#L88
+QgsCategoryDisplayLabelDelegate.sizeHint: src/gui/qgsmaplayerstylecategoriesmodel.h#L90
+QgsCategoryDisplayLabelDelegate: src/gui/qgsmaplayerstylecategoriesmodel.h#L79
 QgsCentroidFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L1276
 QgsCentroidFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1279
 QgsCentroidFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1280
@@ -4419,6 +4423,16 @@ QgsMapLayerConfigWidgetFactory.supportsLayerTreeGroup: src/gui/qgsmaplayerconfig
 QgsMapLayerConfigWidgetFactory.supportsStyleDock: src/gui/qgsmaplayerconfigwidgetfactory.h#L88
 QgsMapLayerConfigWidgetFactory.title: src/gui/qgsmaplayerconfigwidgetfactory.h#L73
 QgsMapLayerConfigWidgetFactory: src/gui/qgsmaplayerconfigwidgetfactory.h#L33
+QgsMapLayerStyleCategoriesModel.QgsMapLayerStyleCategoriesModel: src/gui/qgsmaplayerstylecategoriesmodel.h#L47
+QgsMapLayerStyleCategoriesModel.categories: src/gui/qgsmaplayerstylecategoriesmodel.h#L53
+QgsMapLayerStyleCategoriesModel.columnCount: src/gui/qgsmaplayerstylecategoriesmodel.h#L59
+QgsMapLayerStyleCategoriesModel.data: src/gui/qgsmaplayerstylecategoriesmodel.h#L60
+QgsMapLayerStyleCategoriesModel.flags: src/gui/qgsmaplayerstylecategoriesmodel.h#L62
+QgsMapLayerStyleCategoriesModel.rowCount: src/gui/qgsmaplayerstylecategoriesmodel.h#L58
+QgsMapLayerStyleCategoriesModel.setCategories: src/gui/qgsmaplayerstylecategoriesmodel.h#L50
+QgsMapLayerStyleCategoriesModel.setData: src/gui/qgsmaplayerstylecategoriesmodel.h#L61
+QgsMapLayerStyleCategoriesModel.setShowAllCategories: src/gui/qgsmaplayerstylecategoriesmodel.h#L56
+QgsMapLayerStyleCategoriesModel: src/gui/qgsmaplayerstylecategoriesmodel.h#L32
 QgsMapLayerStyleManagerWidget.apply: src/gui/qgsmaplayerstylemanagerwidget.h#L48
 QgsMapLayerStyleManagerWidget: src/gui/qgsmaplayerstylemanagerwidget.h#L34
 QgsMapMouseEvent.isSnapped: src/gui/qgsmapmouseevent.h#L82
