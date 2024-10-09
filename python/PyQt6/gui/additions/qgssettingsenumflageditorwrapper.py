@@ -29,8 +29,8 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
     """
 
     def __init__(self, parent=None, editor=None, setting=None, displayStrings: dict = None):
-        self.setting = editor
-        self.editor = setting
+        self.setting = setting
+        self.editor = editor
         self.displayStrings = {}
         super().__init__(parent)
         if editor is not None and setting is not None:
