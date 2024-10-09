@@ -1005,7 +1005,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   // Update other widgets pointing to the same field, required to happen now to insure
   // currentFormValuesFeature() gets the right value when processing constraints
   const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
-  for ( QgsAttributeFormEditorWidget *formEditorWidget : formEditorWidgets )
+  for ( QgsAttributeFormEditorWidget *formEditorWidget : std::as_const( formEditorWidgets ) )
   {
     if ( formEditorWidget->editorWidget() == eww )
       continue;
