@@ -14953,6 +14953,7 @@ QgsSettingsRegistry: src/core/settings/qgssettingsregistry.h#L38
 QgsSettingsRegistryCore: src/core/settings/qgssettingsregistrycore.h#L42
 QgsSettingsTree.createPluginTreeNode: src/core/settings/qgssettingstree.h#L78
 QgsSettingsTree.node: src/core/settings/qgssettingstree.h#L73
+QgsSettingsTree.treeRoot: src/core/settings/qgssettingstree.h#L38
 QgsSettingsTree.unregisterPluginTreeNode: src/core/settings/qgssettingstree.h#L84
 QgsSettingsTree: src/core/settings/qgssettingstree.h#L30
 QgsSettingsTreeNamedListNode.deleteAllItems: src/core/settings/qgssettingstreenode.h#L241
