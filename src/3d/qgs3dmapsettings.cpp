@@ -31,6 +31,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgsthreadingutils.h"
+#include "qgsmaplayerlistutils_p.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -643,17 +644,12 @@ void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QList<QgsMapLayerRef> lst;
-  lst.reserve( layers.count() );
-  for ( QgsMapLayer *layer : layers )
-  {
-    lst.append( layer );
-  }
+  const QList<QgsMapLayer *> raw = _qgis_listRefToRaw( mLayers );
 
-  if ( mLayers == lst )
+  if ( layers == raw )
     return;
 
-  mLayers = lst;
+  mLayers = _qgis_listRawToRef( layers );
   emit layersChanged();
 }
 
