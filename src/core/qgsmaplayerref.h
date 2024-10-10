@@ -86,6 +86,18 @@ struct _LayerRef
   }
 
   /**
+   * Returns TRUE if the layer reference is identical to \a other
+   */
+  bool operator==( const _LayerRef &other ) const
+  {
+    return layer == other.layer &&
+           layerId == other.layerId &&
+           name == other.name &&
+           source == other.source &&
+           provider == other.provider;
+  }
+
+  /**
    * Returns TRUE if the layer reference is resolved and contains a reference to an existing
    * map layer.
    */
