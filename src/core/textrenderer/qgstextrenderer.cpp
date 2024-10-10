@@ -1683,7 +1683,7 @@ void QgsTextRenderer::renderBlockHorizontal( const QgsTextBlock &block, int bloc
       {
         QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
-        if ( extraWordSpace || extraLetterSpace )
+        if ( !qgsDoubleNear( extraWordSpace, 0 ) || !qgsDoubleNear( extraLetterSpace, 0 ) )
           applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
         const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
