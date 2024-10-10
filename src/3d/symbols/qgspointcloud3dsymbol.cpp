@@ -17,8 +17,8 @@
 
 #include "qgscolorutils.h"
 #include "qgscolorramptexture.h"
+#include "qgsmaterial.h"
 
-#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
@@ -166,7 +166,7 @@ void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
   mSingleColor = color;
 }
 
-void QgsSingleColorPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
+void QgsSingleColorPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
   Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::SingleColor );
   mat->addParameter( renderingStyle );
@@ -250,7 +250,7 @@ void QgsColorRampPointCloud3DSymbol::setColorRampShaderMinMax( double min, doubl
   mColorRampShaderMax = max;
 }
 
-void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
+void QgsColorRampPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
   Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
   mat->addParameter( renderingStyle );
@@ -384,7 +384,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   }
 }
 
-void QgsRgbPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
+void QgsRgbPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
   Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::RgbRendering );
   mat->addParameter( renderingStyle );
@@ -571,7 +571,7 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 }
 
 
-void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
+void QgsClassificationPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
   const QgsColorRampShader mColorRampShader = colorRampShader();
   Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::Classification );
@@ -597,4 +597,3 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *m
   Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", static_cast< int >( colorRampType ) );
   mat->addParameter( colorRampTypeParameter );
 }
-

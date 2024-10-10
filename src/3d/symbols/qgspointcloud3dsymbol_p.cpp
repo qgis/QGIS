@@ -312,7 +312,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
 
   // Material
-  Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
+  QgsMaterial *mat = new QgsMaterial;
   if ( context.symbol() )
     context.symbol()->fillMaterial( mat );
 

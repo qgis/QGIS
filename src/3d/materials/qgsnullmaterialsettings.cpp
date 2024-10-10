@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsnullmaterialsettings.h"
+#include "qgsmaterial.h"
 #include <QMap>
 
 
@@ -50,7 +51,7 @@ QgsNullMaterialSettings *QgsNullMaterialSettings::clone() const
   return new QgsNullMaterialSettings( *this );
 }
 
-Qt3DRender::QMaterial *QgsNullMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const
+QgsMaterial *QgsNullMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const
 {
   return nullptr;
 }

@@ -18,6 +18,7 @@
 
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsmaterial.h"
 
 #include <QColor>
 
@@ -125,7 +126,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
+    QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
 #endif
 

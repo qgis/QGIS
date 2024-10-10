@@ -24,7 +24,7 @@
 
 ///@cond PRIVATE
 QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
-  : QMaterial( parent )
+  : QgsMaterial( parent )
   , mAmbientParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) ) )
   , mDiffuseTextureParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseTexture" ), QVariant() ) )
   , mDiffuseTextureScaleParameter( new Qt3DRender::QParameter( QStringLiteral( "texCoordScale" ), 1.0f ) )

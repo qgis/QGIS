@@ -917,3 +917,20 @@ QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, con
   newShaderCode.insert( insertionIndex, definesText.toLatin1() );
   return newShaderCode;
 }
+
+QByteArray Qgs3DUtils::removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines )
+{
+  QByteArray newShaderCode = shaderCode;
+
+  for ( const QString &define : defines )
+  {
+    const QString defineLine = "#define " + define + "\n";
+    const int defineLineIndex = newShaderCode.indexOf( defineLine.toUtf8() );
+    if ( defineLineIndex != -1 )
+    {
+      newShaderCode.remove( defineLineIndex, defineLine.size() );
+    }
+  }
+
+  return newShaderCode;
+}

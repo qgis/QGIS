@@ -202,7 +202,7 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
-  Qt3DRender::QMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+  QgsMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
   const QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
@@ -348,7 +348,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
-  Qt3DRender::QMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+  QgsMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
   if ( !mat )
   {
     const QgsSimpleLineMaterialSettings defaultMaterial;

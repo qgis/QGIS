@@ -25,6 +25,7 @@
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmaterial.h"
 #include "qgstexturematerial.h"
 
 #include <Qt3DRender/QTexture>
@@ -54,7 +55,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
 {
   Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity ) : nullptr;
 
-  Qt3DRender::QMaterial *material = nullptr;
+  QgsMaterial *material = nullptr;
   if ( texture )
   {
     if ( isShadingEnabled )

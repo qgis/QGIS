@@ -222,6 +222,23 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Dumps scene graph as string
     QString dumpSceneGraph() const;
 
+    /**
+     * Setups \a nrClipPlanes clip planes in the forward pass to enable OpenGL clipping.
+     * If \a nrClipPlanes is equal to 0, the clipping is disabled.
+     *
+     * \see removeClipPlanes()
+     * \since QGIS 3.40
+    */
+    void addClipPlanes( int nrClipPlanes );
+
+    /**
+     * Disables OpenGL clipping
+     *
+     * \see addClipPlanes()
+     * \since QGIS 3.40
+    */
+    void removeClipPlanes();
+
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -315,6 +332,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QEntity *mDepthRenderQuad = nullptr;
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
+
+    // clip planes render state
+    Qt3DRender::QRenderStateSet *mClipRenderStateSet = nullptr;
 
     Qt3DCore::QEntity *mRootEntity = nullptr;
 

@@ -24,7 +24,6 @@
 #include "qgsphongtexturedmaterialsettings.h"
 
 #include <Qt3DCore/QTransform>
-#include <Qt3DRender/QMaterial>
 #include <Qt3DExtras/QPhongMaterial>
 
 #include <Qt3DExtras/QDiffuseMapMaterial>
@@ -73,7 +72,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     void processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float offset, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
-    Qt3DRender::QMaterial *material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
+    QgsMaterial *material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
 
     // input specific for this class
     std::unique_ptr< QgsPolygon3DSymbol > mSymbol;
@@ -267,7 +266,7 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   if ( polyData.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
-  Qt3DRender::QMaterial *mat = material( mSymbol.get(), selected, context );
+  QgsMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
   const QByteArray data( reinterpret_cast<const char *>( polyData.tessellator->data().constData() ), static_cast<int>( polyData.tessellator->data().count() * sizeof( float ) ) );
@@ -301,7 +300,7 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
 }
 
 // front/back side culling
-static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::QMaterial *material )
+static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, QgsMaterial *material )
 {
   const auto techniques = material->effect()->techniques();
   for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
@@ -316,16 +315,16 @@ static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::Q
   }
 }
 
-Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const
+QgsMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const
 {
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( isSelected );
   materialContext.setSelectionColor( context.selectionColor() );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
-  Qt3DRender::QMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ?
-                                    QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles,
-                                    materialContext );
+  QgsMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ?
+                          QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles,
+                          materialContext );
   applyCullingMode( symbol->cullingMode(), material );
   return material;
 }

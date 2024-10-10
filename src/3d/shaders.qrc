@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>shaders/clipplane.shaderinc</file>
         <file>shaders/diffuseSpecular.frag</file>
         <file>shaders/instanced.vert</file>
         <file>shaders/light.inc.frag</file>
