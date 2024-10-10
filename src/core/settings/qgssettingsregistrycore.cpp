@@ -116,6 +116,10 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsLayerParallelLoa
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerParallelLoading = new QgsSettingsEntryBool( QStringLiteral( "provider-parallel-loading" ), QgsSettingsTree::sTreeCore, true, QStringLiteral( "Load layers in parallel (only available for some providers (GDAL and PostgreSQL)" ), Qgis::SettingsOption() );
 
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsNetworkCacheDirectory = new QgsSettingsEntryString( QStringLiteral( "directory" ), QgsSettingsTree::sTreeNetworkCache, QString(), QStringLiteral( "Network disk cache directory" ) );
+
+const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSize = new QgsSettingsEntryInteger64( QStringLiteral( "size-bytes" ), QgsSettingsTree::sTreeNetworkCache, 0, QStringLiteral( "Network disk cache size in bytes (0 = automatic size)" ) );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {

@@ -488,14 +488,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mRemoveUrlPushButton, &QAbstractButton::clicked, this, &QgsOptions::removeNoProxyUrl );
 
   // cache settings
-  mCacheDirectory->setText( mSettings->value( QStringLiteral( "cache/directory" ) ).toString() );
+  mCacheDirectory->setText( QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value() );
   mCacheDirectory->setPlaceholderText( QStandardPaths::writableLocation( QStandardPaths::CacheLocation ) );
   mCacheSize->setMinimum( 0 );
   mCacheSize->setMaximum( std::numeric_limits<int>::max() );
-  mCacheSize->setSingleStep( 1024 );
-  qint64 cacheSize = mSettings->value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
-  mCacheSize->setValue( static_cast<int>( cacheSize / 1024 ) );
-  mCacheSize->setClearValue( 50 * 1024 );
+  mCacheSize->setSingleStep( 50 );
+  qint64 cacheSize = QgsSettingsRegistryCore::settingsNetworkCacheSize->value();
+  mCacheSize->setValue( static_cast<int>( cacheSize / 1024 / 1024 ) );
+  mCacheSize->setClearValue( 0 );
   connect( mBrowseCacheDirectory, &QAbstractButton::clicked, this, &QgsOptions::browseCacheDirectory );
   connect( mClearCache, &QAbstractButton::clicked, this, &QgsOptions::clearCache );
 
@@ -1584,11 +1584,11 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "proxy/proxyType" ), mProxyTypeComboBox->currentText() );
 
   if ( !mCacheDirectory->text().isEmpty() )
-    mSettings->setValue( QStringLiteral( "cache/directory" ), mCacheDirectory->text() );
+    QgsSettingsRegistryCore::settingsNetworkCacheDirectory->setValue( mCacheDirectory->text() );
   else
-    mSettings->remove( QStringLiteral( "cache/directory" ) );
+    QgsSettingsRegistryCore::settingsNetworkCacheDirectory->remove();
 
-  mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024LL ) );
+  QgsSettingsRegistryCore::settingsNetworkCacheSize->setValue( mCacheSize->value() * 1024LL * 1024LL );
 
   //url with no proxy at all
   QStringList noProxyUrls;

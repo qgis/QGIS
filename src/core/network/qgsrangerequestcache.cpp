@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrangerequestcache.h"
+#include "qgsnetworkdiskcache.h"
 
 #include <QtDebug>
 #include <QFile>
@@ -75,6 +76,12 @@ bool QgsRangeRequestCache::setCacheDirectory( const QString &path )
 
 void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
 {
+  if ( cacheSize == 0 )
+  {
+    // Calculate maximum cache size based on available free space
+    cacheSize = QgsNetworkDiskCache::smartCacheSize( mCacheDir );
+  }
+
   mMaxDataSize = cacheSize;
   expire();
 }
