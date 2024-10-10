@@ -415,7 +415,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * for the current line if line = -1
      * If wrapping is disabled, returns -1 instead
      *
-     * \since QGIS 3.42
+     * \since QGIS 3.40
      */
     int wrapPosition( int line = -1 );
 
