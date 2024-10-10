@@ -546,12 +546,15 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
     if ( QgsLayerTree::isLayer( child ) )
     {
       nodeIdx++;
-      const QgsMapLayer *layer = qobject_cast<const QgsLayerTreeLayer *>( child )->layer();
-      switch ( layer->type() )
+      const QgsMapLayer *childLayer = qobject_cast<const QgsLayerTreeLayer *>( child )->layer();
+      if ( !childLayer )
+        continue;
+
+      switch ( childLayer->type() )
       {
         case Qgis::LayerType::Vector:
         {
-          const QgsVectorLayer *vlayer = static_cast<const QgsVectorLayer *>( layer );
+          const QgsVectorLayer *vlayer = static_cast<const QgsVectorLayer *>( childLayer );
           if ( vlayer->geometryType() == Qgis::GeometryType::Point )
           {
             if ( vectorLineIndex < nodeIdx )
@@ -616,7 +619,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
 
         case Qgis::LayerType::Raster:
         {
-          if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "gdal" ) )
+          if ( childLayer->dataProvider() && childLayer->dataProvider()->name() == QLatin1String( "gdal" ) )
           {
             // Assume non-gdal raster layers are most likely to be base maps (e.g. XYZ raster)
             // Admittedly a gross assumption, but better than nothing
