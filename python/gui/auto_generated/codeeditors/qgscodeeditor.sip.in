@@ -374,7 +374,7 @@ Returns the linear position of the start of the last wrapped part for the specif
 for the current line if line = -1
 If wrapping is disabled, returns -1 instead
 
-.. versionadded:: 3.42
+.. versionadded:: 3.40
 %End
 
   public slots:
