@@ -51,6 +51,7 @@ class QgsPostgresFeatureSource final: public QgsAbstractFeatureSource
     QgsPostgresPrimaryKeyType mPrimaryKeyType;
     QList<int> mPrimaryKeyAttrs;
     QString mQuery;
+    QgsDataSourceUri mUri;
     // TODO: loadFields()
     QgsCoordinateReferenceSystem mCrs;
 
