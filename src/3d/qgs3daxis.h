@@ -23,7 +23,6 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QViewport>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QScreenRayCaster>
 #include <QVector3D>
@@ -32,7 +31,8 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include <QtWidgets/QMenu>
-#include "qgs3dmapsettings.h"
+#include "framegraph/qgs3daxisrenderview.h"
+#include "qgs3daxissettings.h"
 
 #define SIP_NO_FILE
 
@@ -88,13 +88,11 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     void onCameraUpdate( );
     void onAxisViewportSizeUpdate( int val = 0 );
+    void onViewportScaleFactorChanged( double scaleFactor );
 
     // axis picking and menu
     void onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits );
-
     void onAxisModeChanged( Qgs3DAxisSettings::Mode mode );
-    void onAxisHorizPositionChanged( Qt::AnchorPoint pos );
-    void onAxisVertPositionChanged( Qt::AnchorPoint pos );
     void onCameraViewChange( float pitch, float yaw );
 
     void onCameraViewChangeHome() { onCameraViewChange( 45.0f, 45.0f ); }
@@ -116,7 +114,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void updateAxisLabelText( Qt3DExtras::QText2DEntity *textEntity, const QString &text );
     QFont createFont( int pointSize );
 
-    Qt3DRender::QViewport *constructAxisScene( Qt3DCore::QEntity *parent3DScene );
+    void constructAxisScene( Qt3DCore::QEntity *parent3DScene );
     void constructLabelsScene( Qt3DCore::QEntity *parent3DScene );
 
     Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &font, const QMatrix4x4 &rotation, const QVector3D &translation );
@@ -137,10 +135,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     float mCylinderLength = 40.0f;
     int mFontSize = 12;
 
-    Qt3DRender::QViewport *mViewport = nullptr;
-
+    Qgs3DAxisRenderView *mRenderView = nullptr;
     Qt3DCore::QEntity *mAxisSceneEntity = nullptr;
-    Qt3DRender::QLayer *mAxisObjectLayer = nullptr;
     Qt3DRender::QCamera *mAxisCamera = nullptr;
 
     Qt3DCore::QEntity *mAxisRoot = nullptr;

@@ -34,7 +34,7 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsline3dsymbol.h"
 #include "qgsoffscreen3dengine.h"
-#include "qgsframegraph.h"
+#include "framegraph/qgsframegraph.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
