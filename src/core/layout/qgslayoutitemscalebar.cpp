@@ -290,6 +290,21 @@ void QgsLayoutItemScaleBar::disconnectCurrentMap()
   mMap = nullptr;
 }
 
+Qgis::ScaleCalculationMethod QgsLayoutItemScaleBar::method() const
+{
+  return mMethod;
+}
+
+void QgsLayoutItemScaleBar::setMethod( Qgis::ScaleCalculationMethod method )
+{
+  if ( mMethod == method )
+    return;
+
+  mMethod = method;
+  refreshSegmentMillimeters();
+  resizeToMinimumWidth();
+}
+
 void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *context )
 {
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth ) )
@@ -570,19 +585,62 @@ double QgsLayoutItemScaleBar::mapWidth() const
     da.setEllipsoid( mLayout->project()->ellipsoid() );
 
     const Qgis::DistanceUnit units = da.lengthUnits();
-    double measure = 0;
-    try
+
+    QList< double > yValues;
+    switch ( mMethod )
     {
-      measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), mapExtent.yMinimum() ),
-                                QgsPointXY( mapExtent.xMaximum(), mapExtent.yMinimum() ) );
-      measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+      case Qgis::ScaleCalculationMethod::HorizontalTop:
+        yValues << mapExtent.yMaximum();
+        break;
+
+      case Qgis::ScaleCalculationMethod::HorizontalMiddle:
+        yValues << 0.5 * ( mapExtent.yMaximum() + mapExtent.yMinimum() );
+        break;
+
+
+      case Qgis::ScaleCalculationMethod::HorizontalBottom:
+        yValues << mapExtent.yMinimum();
+        break;
+
+      case Qgis::ScaleCalculationMethod::HorizontalAverage:
+        yValues << mapExtent.yMaximum();
+        yValues << 0.5 * ( mapExtent.yMaximum() + mapExtent.yMinimum() );
+        yValues << mapExtent.yMinimum();
+        break;
     }
-    catch ( QgsCsException & )
+
+    double sumValidMeasures = 0;
+    int validMeasureCount = 0;
+
+    for ( const double y : std::as_const( yValues ) )
     {
-      // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      try
+      {
+        double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), y ),
+                                         QgsPointXY( mapExtent.xMaximum(), y ) );
+        if ( std::isnan( measure ) )
+        {
+          // TODO report errors to user
+          QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+          continue;
+        }
+
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+        sumValidMeasures += measure;
+        validMeasureCount++;
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        continue;
+      }
     }
-    return measure;
+
+    if ( validMeasureCount == 0 )
+      return std::numeric_limits< double >::quiet_NaN();
+
+    return sumValidMeasures / validMeasureCount;
   }
 }
 
@@ -965,6 +1023,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mSettings.maximumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QString::number( mSettings.mapUnitsPerScaleBarUnit() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "method" ), qgsEnumValueToKey( mMethod ) );
 
   const QDomElement textElem = mSettings.textFormat().writeXml( doc, rwContext );
   composerScaleBarElem.appendChild( textElem );
@@ -1091,6 +1150,9 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toDouble() );
   mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
   mSettings.setMapUnitsPerScaleBarUnit( itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble() );
+
+  // default to horizontal bottom to keep same behavior for older projects
+  mMethod = qgsEnumKeyToValue( itemElem.attribute( QStringLiteral( "method" ) ), Qgis::ScaleCalculationMethod::HorizontalBottom );
 
   const QDomElement lineSymbolElem = itemElem.firstChildElement( QStringLiteral( "lineSymbol" ) );
   bool foundLineSymbol = false;
