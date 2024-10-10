@@ -660,7 +660,17 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
     return false;
   }
 
-  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  std::unique_ptr< QgsAbstractGeometry > preparedGeom;
+  if ( mGeosPrepared && isZVerticalLine( geom ) )
+  {
+    preparedGeom.reset( geom->vertexAt( QgsVertexId( 0, 0, 0 ) ).clone() );
+  }
+  else
+  {
+    preparedGeom.reset( geom->clone() );
+  }
+
+  geos::unique_ptr otherGeosGeom( asGeos( preparedGeom.get(), mPrecision ) );
   if ( !otherGeosGeom )
   {
     return false;
@@ -674,7 +684,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
-    if ( mGeosPrepared )
+    if ( mGeosPrepared && !isZVerticalLine( mGeometry ) )
     {
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
       return GEOSPreparedDistanceWithin_r( context, mGeosPrepared.get(), otherGeosGeom.get(), maxdist );
