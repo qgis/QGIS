@@ -26,6 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgsgeometryeditutils.h"
 #include "qgspolyhedralsurface.h"
+#include "qgsgeometryutils.h"
 #include <limits>
 #include <cstdio>
 
@@ -540,6 +541,44 @@ QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QS
   return overlay( geom, OverlaySymDifference, errorMsg, parameters ).release();
 }
 
+static bool isZVerticalLine( const QgsAbstractGeometry *geom, double tolerance = 4 * std::numeric_limits<double>::epsilon() )
+{
+  // checks if the Geometry if a purely vertical 3D line LineString Z((X Y Z1, X Y Z2, ..., X Y Zn))
+  // This is needed because QgsGeos is not able to handle this type of geometry on distance computation.
+
+  if ( geom->wkbType() != Qgis::WkbType::LineStringZ && geom->wkbType() != Qgis::WkbType::LineStringZM )
+  {
+    return false;
+  }
+
+  std::unique_ptr<QgsLineString> line( qgsgeometry_cast<QgsLineString *>( geom->clone() ) );
+  bool isVertical = true;
+  if ( line )
+  {
+    const int nrPoints = line->numPoints();
+    if ( nrPoints == 1 )
+    {
+      return true;
+    }
+
+    // if the 2D part of two points of the line are different, this means
+    // that the line is not purely vertical
+    const double sqrTolerance = tolerance * tolerance;
+    for ( int iVert = nrPoints - 1, jVert = 0; jVert < nrPoints; iVert = jVert++ )
+    {
+      const QgsPoint pi = geom->vertexAt( QgsVertexId( 0, 0, iVert ) );
+      const QgsPoint pj = geom->vertexAt( QgsVertexId( 0, 0, jVert ) );
+      if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) > sqrTolerance )
+      {
+        isVertical = false;
+        break;
+      }
+    }
+  }
+
+  return isVertical;
+}
+
 double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
   double distance = -1.0;
@@ -548,7 +587,21 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
     return distance;
   }
 
-  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  // GEOSPreparedDistance_r is not able to properly compute the distance if one
+  // of the geometries if a vertical line (LineString Z((X Y Z1, X Y Z2, ..., X Y Zn))).
+  // In that case, replace `geom` by a single point.
+  // However, GEOSDistance_r works.
+  std::unique_ptr< QgsAbstractGeometry > preparedGeom;
+  if ( mGeosPrepared && isZVerticalLine( geom ) )
+  {
+    preparedGeom.reset( geom->vertexAt( QgsVertexId( 0, 0, 0 ) ).clone() );
+  }
+  else
+  {
+    preparedGeom.reset( geom->clone() );
+  }
+
+  geos::unique_ptr otherGeosGeom( asGeos( preparedGeom.get(), mPrecision ) );
   if ( !otherGeosGeom )
   {
     return distance;
@@ -557,7 +610,7 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
-    if ( mGeosPrepared )
+    if ( mGeosPrepared && !isZVerticalLine( mGeometry ) )
     {
       GEOSPreparedDistance_r( context, mGeosPrepared.get(), otherGeosGeom.get(), &distance );
     }
@@ -607,7 +660,17 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
     return false;
   }
 
-  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  std::unique_ptr< QgsAbstractGeometry > preparedGeom;
+  if ( mGeosPrepared && isZVerticalLine( geom ) )
+  {
+    preparedGeom.reset( geom->vertexAt( QgsVertexId( 0, 0, 0 ) ).clone() );
+  }
+  else
+  {
+    preparedGeom.reset( geom->clone() );
+  }
+
+  geos::unique_ptr otherGeosGeom( asGeos( preparedGeom.get(), mPrecision ) );
   if ( !otherGeosGeom )
   {
     return false;
@@ -621,7 +684,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
-    if ( mGeosPrepared )
+    if ( mGeosPrepared && !isZVerticalLine( mGeometry ) )
     {
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
       return GEOSPreparedDistanceWithin_r( context, mGeosPrepared.get(), otherGeosGeom.get(), maxdist );
