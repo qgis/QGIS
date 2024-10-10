@@ -89,7 +89,8 @@ class CORE_EXPORT QgsFieldConstraints
 
     /**
      * Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
-     * is not present on this field.
+     * is not present on this field. If the strength is not set returns ConstraintStrengthNotSet
+     * for anything but ConstraintExpression which returns ConstraintStrengthHard.
      * \see constraints()
      * \see setConstraintStrength()
      */
