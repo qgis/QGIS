@@ -2802,7 +2802,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onSymbolsCounted();
     void onDirtyTransaction( const QString &sql, const QString &name );
     void emitDataChanged();
-    void onAfterCommitChangesDependency();
 
   private:
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature(), QgsExpressionContext *context = nullptr );
