@@ -111,6 +111,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
       mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast< int>( Qgis::TextRenderFormat::AlwaysOutlines ) );
       mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysText ) );
+      mTextRenderFormatComboBox->addItem( tr( "Prefer Exporting Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::PreferText ) );
 
       const bool geospatialPdfAvailable = QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable();
       mGeospatialPDFGroupBox->setEnabled( geospatialPdfAvailable );
