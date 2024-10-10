@@ -222,6 +222,35 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     const QgsChunkNodeId chId( childId );
     QgsTiledSceneTile t = mIndex.getTile( childId );
 
+    // first check if this node should be even considered
+    // XXX: This check doesn't work for Quantized Mesh layers and possibly some
+    // Cesium 3D tiles as well. For now this hack is in place to make sure both
+    // work in practice.
+    if ( t.metadata()["contentFormat"] == QStringLiteral( "cesiumtiles" )
+         && hasLargeBounds( t, mBoundsTransform ) )
+    {
+      // if the tile is huge, let's try to see if our scene is actually inside
+      // (if not, let' skip this child altogether!)
+      // TODO: make OBB of our scene in ECEF rather than just using center of the scene?
+      const QgsOrientedBox3D obb = t.boundingVolume().box();
+      const QgsPointXY c = mRenderContext.extent().center();
+      const QgsVector3D cEcef = mBoundsTransform.transform( QgsVector3D( c.x(), c.y(), 0 ), Qgis::TransformDirection::Reverse );
+      const QgsVector3D ecef2 = cEcef - obb.center();
+      const double *half = obb.halfAxes();
+      // this is an approximate check anyway, no need for double precision matrix/vector
+      QMatrix4x4 rot(
+        half[0], half[3], half[6], 0,
+        half[1], half[4], half[7], 0,
+        half[2], half[5], half[8], 0,
+        0, 0, 0, 1 );
+      QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
+      if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 ||
+           aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
+      {
+        continue;
+      }
+    }
+
     // fetching of hierarchy is handled by canCreateChildren() + prepareChildren()
     Q_ASSERT( mIndex.childAvailability( childId ) != Qgis::TileChildrenAvailability::NeedFetching );
 
