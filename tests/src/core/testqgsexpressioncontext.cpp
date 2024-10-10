@@ -61,6 +61,7 @@ class TestQgsExpressionContext : public QObject
     void description();
     void readWriteScope();
     void layerStores();
+    void uniqueHash();
 
   private:
 
@@ -1052,6 +1053,43 @@ void TestQgsExpressionContext::layerStores()
   QgsExpressionContext c3;
   c3 = context;
   QCOMPARE( c3.loadedLayerStore(), &store4 );
+}
+
+void TestQgsExpressionContext::uniqueHash()
+{
+  QgsExpressionContext context;
+  bool ok = true;
+  // the actual hash values aren't important, just that they are unique. Feel free to change the expected results accordingly
+  QSet< QString > vars;
+  vars.insert( QStringLiteral( "var1" ) );
+  vars.insert( QStringLiteral( "var2" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "||~~||||~~||" ) );
+  QVERIFY( ok );
+
+  QgsExpressionContextScope *scope1 = new QgsExpressionContextScope();
+  context.appendScope( scope1 );
+  scope1->setVariable( QStringLiteral( "var1" ), QStringLiteral( "a string" ) );
+  scope1->setVariable( QStringLiteral( "var2" ), 5 );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "a string||~~||5||~~||" ) );
+  QVERIFY( ok );
+
+  QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+  context.appendScope( scope2 );
+  scope2->setVariable( QStringLiteral( "var1" ), QStringLiteral( "b string" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "b string||~~||5||~~||" ) );
+  QVERIFY( ok );
+
+  QgsFeature feature;
+  feature.setId( 11 );
+  feature.setAttributes( QgsAttributes() << 5 << 11 );
+  context.setFeature( feature );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||1566||~~||b string||~~||5||~~||" ) );
+  QVERIFY( ok );
+
+  // a value which can't be converted to string
+  scope2->setVariable( QStringLiteral( "var1" ), QVariant::fromValue( QgsCoordinateReferenceSystem( "EPSG:3857" ) ) );
+  context.uniqueHash( ok, vars );
+  QVERIFY( !ok );
 }
 
 QGSTEST_MAIN( TestQgsExpressionContext )

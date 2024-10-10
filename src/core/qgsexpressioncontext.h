@@ -876,6 +876,18 @@ class CORE_EXPORT QgsExpressionContext
      */
     QgsFeedback *feedback() const;
 
+    /**
+     * Returns a unique hash representing the current state of the context.
+     *
+     * \param ok will be set to TRUE if the hash could be generated, or false if e.g. a variable value is of a type which cannot be hashed
+     * \param variables optional names of a subset of variables to include in the hash. If not specified, all variables will be considered.
+     *
+     * \returns calculated hash
+     *
+     * \since QGIS 3.40
+     */
+    QString uniqueHash( bool &ok SIP_OUT, const QSet<QString> &variables = QSet<QString>() ) const;
+
     //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;
     //! Inbuilt variable name for value original value variable
