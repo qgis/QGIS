@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayerprofilegenerator.h"
+#include "qgsabstractgeometry.h"
 #include "qgspolyhedralsurface.h"
 #include "qgsprofilerequest.h"
 #include "qgscurve.h"
@@ -721,6 +722,83 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
+  auto profileLine = qgsgeometry_cast<const QgsLineString *>( mProfileCurve.get() );
+  if ( profileLine )
+  {
+    // The profile generation code can't deal with curves that enter a single
+    // point multiple times. We handle this for line strings by splitting them
+    // into multiple parts, each with no repeated points, and computing the
+    // profile for each by itself.
+    std::unique_ptr< QgsVectorLayerProfileResults > totalResults;
+    double distanceProcessed = 0;
+
+    auto processPart = [this, &totalResults, &distanceProcessed]( QgsPointSequence & points )
+    {
+      mProfileCurve.reset( new QgsLineString( points ) );
+      if ( !generateProfileInner() ) return false;
+
+      if ( !totalResults )
+        // Use the first result set as a base
+        totalResults.reset( mResults.release() );
+      else
+      {
+        // Merge the results, shifting them by distanceProcessed
+        totalResults->mRawPoints.append( mResults->mRawPoints );
+        totalResults->minZ = std::min( totalResults->minZ, mResults->minZ );
+        totalResults->maxZ = std::max( totalResults->maxZ, mResults->maxZ );
+        for ( auto it = mResults->mDistanceToHeightMap.constKeyValueBegin();
+              it != mResults->mDistanceToHeightMap.constKeyValueEnd();
+              ++it )
+        {
+          totalResults->mDistanceToHeightMap[it->first + distanceProcessed] = it->second;
+        }
+        for ( auto it = mResults->features.constKeyValueBegin();
+              it != mResults->features.constKeyValueEnd();
+              ++it )
+        {
+          for ( QgsVectorLayerProfileResults::Feature feature : it->second )
+          {
+            feature.crossSectionGeometry.translate( distanceProcessed, 0 );
+            totalResults->features[it->first].push_back( feature );
+          }
+        }
+      }
+
+      distanceProcessed += mProfileCurve->length();
+      return true;
+    };
+
+    QgsPointSequence allPoints;
+    profileLine->points( allPoints );
+    QgsPointSequence partPoints;
+    QSet<QgsPoint> partPointSet;
+    for ( QgsPoint point : allPoints )
+    {
+      if ( partPointSet.contains( point ) )
+      {
+        // This point is used multiple times, cut the curve and process the
+        // current part
+        if ( !processPart( partPoints ) ) return false;
+        // Now start a new part containing the last line
+        partPoints = { partPoints.last() };
+        partPointSet = { partPoints[0] };
+      }
+      partPoints.push_back( point );
+      partPointSet.insert( point );
+    }
+    // Process the last part (if we didn't stop by closing the loop)
+    if ( partPoints.size() > 1 )
+      if ( !processPart( partPoints ) ) return false;
+
+    mResults.reset( totalResults.release() );
+    return true;
+  }
+
+  return generateProfileInner();
+}
+
+bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGenerationContext & )
+{
   // we need to transform the profile curve to the vector's CRS
   mTransformedCurve.reset( mProfileCurve->clone() );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
