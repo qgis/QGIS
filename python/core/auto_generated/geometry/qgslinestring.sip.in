@@ -643,6 +643,7 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
 
 
 
+
     double length3D() const /HoldGIL/;
 %Docstring
 Returns the length in 3D world of the line string.
