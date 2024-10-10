@@ -22,6 +22,8 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayerutils.h"
+#include "qgsprovidermetadata.h"
 
 ///@cond PRIVATE
 
@@ -185,6 +187,23 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   return true;
 }
 
+void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *feedback )
+{
+  if ( mTotalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
+  {
+    for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+    {
+      if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer ) )
+      {
+        // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
+        feedback->pushWarning( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QString(), QString() ) );
+        mLayers.removeAll( layer );
+        delete layer;
+      }
+    }
+  }
+}
+
 void QgsXyzTilesBaseAlgorithm::startJobs()
 {
   while ( mRendererJobs.size() < mThreadsNumber && !mMetaTiles.empty() )
@@ -281,20 +300,24 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   mOutputDir = outputDir;
   mTms = tms;
 
+  mTotalTiles = 0;
   for ( int z = mMinZoom; z <= mMaxZoom; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     mMetaTiles += getMetatiles( mWgs84Extent, z, mMetaTileSize );
+    feedback->pushWarning( QObject::tr( "%1 tiles will be created for zoom level %2" ).arg( mMetaTiles.size() - mTotalTiles ).arg( z ) );
+    mTotalTiles = mMetaTiles.size();
   }
+  feedback->pushWarning( QObject::tr( "A total of %1 tiles will be created" ).arg( mTotalTiles ) );
+
+  checkLayersUsagePolicy( feedback );
 
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
-
-  mTotalTiles = mMetaTiles.size();
 
   QEventLoop loop;
   // cppcheck-suppress danglingLifetime
@@ -403,7 +426,10 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
       j->deleteLater();
     }
     mRendererJobs.clear();
-    mEventLoop->exit();
+    if ( mEventLoop )
+    {
+      mEventLoop->exit();
+    }
     return;
   }
 
@@ -413,7 +439,10 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
   }
   else if ( mMetaTiles.size() == 0 && mRendererJobs.size() == 0 )
   {
-    mEventLoop->exit();
+    if ( mEventLoop )
+    {
+      mEventLoop->exit();
+    }
   }
 }
 
@@ -470,21 +499,33 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
                       .arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
   mMbtilesWriter->setMetadataValue( "bounds",  boundsStr );
 
+  mTotalTiles = 0;
   for ( int z = mMinZoom; z <= mMaxZoom; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     mMetaTiles += getMetatiles( mWgs84Extent, z, mMetaTileSize );
+    feedback->pushInfo( QObject::tr( "%1 tiles will be created for zoom level %2" ).arg( mMetaTiles.size() - mTotalTiles ).arg( z ) );
+    mTotalTiles = mMetaTiles.size();
   }
+  feedback->pushInfo( QObject::tr( "A total of %1 tiles will be created" ).arg( mTotalTiles ) );
 
-  mTotalTiles = mMetaTiles.size();
+  checkLayersUsagePolicy( feedback );
+
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    layer->moveToThread( QThread::currentThread() );
+  }
 
   QEventLoop loop;
   // cppcheck-suppress danglingLifetime
   mEventLoop = &loop;
   startJobs();
   loop.exec();
+
+  qDeleteAll( mLayers );
+  mLayers.clear();
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT_FILE" ), outputFile );
@@ -525,7 +566,10 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
       j->deleteLater();
     }
     mRendererJobs.clear();
-    mEventLoop->exit();
+    if ( mEventLoop )
+    {
+      mEventLoop->exit();
+    }
     return;
   }
 
@@ -535,7 +579,10 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
   }
   else if ( mMetaTiles.size() == 0 && mRendererJobs.size() == 0 )
   {
-    mEventLoop->exit();
+    if ( mEventLoop )
+    {
+      mEventLoop->exit();
+    }
   }
 }
 

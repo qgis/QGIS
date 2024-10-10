@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapLayerUtils
 {
 %Docstring(signature="appended")
@@ -78,6 +79,13 @@ Specifically this method:
 - Removes any characters which are not alphanumeric or '_'.
 
 .. versionadded:: 3.28
+%End
+
+    static bool isOpenStreetMapLayer( QgsMapLayer *layer );
+%Docstring
+Returns ``True`` if the layer is served by OpenStreetMap server.
+
+.. versionadded:: 3.40
 %End
 
 };

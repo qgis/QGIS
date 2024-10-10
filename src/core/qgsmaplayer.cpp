@@ -33,6 +33,7 @@
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
@@ -43,7 +44,6 @@
 #include "qgsmessagelog.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsprovidermetadata.h"
 #include "qgslayernotesutils.h"
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
@@ -234,6 +234,11 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return nullptr;
+}
+
+QgsProviderMetadata *QgsMapLayer::providerMetadata() const
+{
+  return QgsProviderRegistry::instance()->providerMetadata( providerType() );
 }
 
 QString QgsMapLayer::shortName() const
