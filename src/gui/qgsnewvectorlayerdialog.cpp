@@ -57,7 +57,6 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), "Real" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDate ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "Date" );
 
-  mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
   const Qgis::WkbType geomTypes[] =
@@ -150,30 +149,48 @@ void QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged( int index
 void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
 {
   // FIXME: sync with providers/ogr/qgsogrprovider.cpp
+
+  // ESRI field width specification is taken from here
+  // https://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=Geoprocessing%20considerations%20for%20shapefile%20output
+
+  constexpr int ESRI_TEXT_MAX_WIDTH_INCLUSIVE = 254;
+  constexpr int ESRI_SHORT_INTEGER_MAX_WIDTH_INCLUSIVE = 4;
+  // constexpr int ESRI_LONG_INTEGER_MAX_WIDTH_INCLUSIVE = 9;
+  // constexpr int ESRI_FLOAT_MAX_WIDTH_INCLUSIVE = 13;
+  constexpr int ESRI_DOUBLE_MAX_WIDTH_INCLUSIVE = 13;
+  constexpr int ESRI_DATE_MAX_WIDTH_INCLUSIVE = 8;
+
   switch ( index )
   {
     case 0: // Text data
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
-        mWidth->setText( QStringLiteral( "80" ) );
+      mWidth->setMaximum( ESRI_TEXT_MAX_WIDTH_INCLUSIVE );
+      if ( mWidth->value() < 1 || mWidth->value() > ESRI_TEXT_MAX_WIDTH_INCLUSIVE )
+        mWidth->setValue( 80 );
       mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 255, this ) );
       break;
 
     case 1: // Whole number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
-        mWidth->setText( QStringLiteral( "10" ) );
+      mWidth->setMaximum( ESRI_SHORT_INTEGER_MAX_WIDTH_INCLUSIVE );
+      if ( mWidth->value() < 1 || mWidth->value() > ESRI_SHORT_INTEGER_MAX_WIDTH_INCLUSIVE )
+        mWidth->setValue( ESRI_SHORT_INTEGER_MAX_WIDTH_INCLUSIVE );
       mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 10, this ) );
       break;
 
     case 2: // Decimal number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 20 )
-        mWidth->setText( QStringLiteral( "20" ) );
+      mWidth->setMaximum( ESRI_DOUBLE_MAX_WIDTH_INCLUSIVE );
+      if ( mWidth->value() < 1 || mWidth->value() > ESRI_DOUBLE_MAX_WIDTH_INCLUSIVE )
+        mWidth->setValue( ESRI_DOUBLE_MAX_WIDTH_INCLUSIVE );
+
       if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 15 )
         mPrecision->setText( QStringLiteral( "6" ) );
-
       mPrecision->setEnabled( true );
-      mWidth->setValidator( new QIntValidator( 1, 20, this ) );
+      break;
+
+    case 3: // Date
+      mWidth->setMaximum( ESRI_DATE_MAX_WIDTH_INCLUSIVE );
+      if ( mWidth->value() < 1 || mWidth->value() > ESRI_DATE_MAX_WIDTH_INCLUSIVE )
+        mWidth->setValue( ESRI_DATE_MAX_WIDTH_INCLUSIVE );
+      mPrecision->setEnabled( false );
       break;
 
     default:
@@ -301,7 +318,8 @@ void QgsNewVectorLayerDialog::setFilename( const QString &filename )
 
 void QgsNewVectorLayerDialog::checkOk()
 {
-  const bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 && mGeometryTypeBox->currentIndex() != -1 );
+  constexpr int MAX_FIELD_NUM = 255;
+  const bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 && mGeometryTypeBox->currentIndex() != -1 && mAttributeView->topLevelItemCount() < MAX_FIELD_NUM );
   mOkButton->setEnabled( ok );
 }
 
