@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsannotationitem.h"
+#include <QPainter>
 #include <tuple>
 #include <vector>
 #include <memory>
