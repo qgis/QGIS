@@ -80,22 +80,6 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
     lFormat.updateDataDefinedProperties( context );
 
   // DO NOT USE _format in the following code, always use lFormat!!
-
-#if 0
-  QStringList textLines;
-  for ( const QString &line : text )
-  {
-    if ( flags & Qgis::TextRendererFlag::WrapLines && textRequiresWrapping( context, line, rect.width(), lFormat ) )
-    {
-      textLines.append( wrappedText( context, line, rect.width(), lFormat ) );
-    }
-    else
-    {
-      textLines.append( line );
-    }
-  }
-#endif
-
   QgsTextDocumentRenderContext documentContext;
   documentContext.setFlags( flags );
   documentContext.setMaximumWidth( rect.width() );
