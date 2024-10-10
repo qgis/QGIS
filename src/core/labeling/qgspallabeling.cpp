@@ -2158,14 +2158,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     case Qgis::LabelPlacement::OutsidePolygons:
     {
       // non-curved labels always require document and metrics
-      if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
-      {
-        doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-      }
-      else
-      {
-        doc = QgsTextDocument::fromPlainText( { labelText } );
-      }
+      doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
       calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &evaluatedFormat, &doc, &documentMetrics, &outerBounds );
       break;
     }

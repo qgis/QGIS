@@ -69,15 +69,7 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       QgsPoint mapPoint( painterPoint );
       mapPoint.transform( context.mapToPixel().transform().inverted() );
 
-      QgsTextDocument doc;
-      if ( format.allowHtmlFormatting() && !text.isEmpty() )
-      {
-        doc = QgsTextDocument::fromHtml( QStringList() << text );
-      }
-      else
-      {
-        doc = QgsTextDocument::fromPlainText( { text } );
-      }
+      const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( { text }, format );
       QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, format, context );
       const QSizeF size = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
 

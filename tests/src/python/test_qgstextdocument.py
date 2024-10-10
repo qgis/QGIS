@@ -20,6 +20,7 @@ from qgis.core import (
     QgsTextCharacterFormat,
     QgsTextDocument,
     QgsTextFragment,
+    QgsTextFormat
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -198,6 +199,30 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[1][0].text(), 'b')
         self.assertTrue(doc[1][1].isTab())
         self.assertEqual(doc[1][2].text(), 'cdcd')
+
+    def testFromTextAndFormat(self):
+        format = QgsTextFormat()
+        format.setAllowHtmlFormatting(False)
+        doc = QgsTextDocument.fromTextAndFormat(['abc <b>def</b>'], format)
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(len(doc[0]), 1)
+        self.assertEqual(doc[0][0].text(), 'abc <b>def</b>')
+
+        # as html
+        format.setAllowHtmlFormatting(True)
+        doc = QgsTextDocument.fromTextAndFormat(['abc <b>def</b>'], format)
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(len(doc[0]), 2)
+        self.assertEqual(doc[0][0].text(), 'abc ')
+        self.assertEqual(doc[0][1].text(), 'def')
+
+        # with capitalization option
+        format.setCapitalization(Qgis.Capitalization.AllUppercase)
+        format.setAllowHtmlFormatting(False)
+        doc = QgsTextDocument.fromTextAndFormat(['abc def'], format)
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(len(doc[0]), 1)
+        self.assertEqual(doc[0][0].text(), 'ABC DEF')
 
     def testFromHtmlVerticalAlignment(self):
         doc = QgsTextDocument.fromHtml(['abc<div style="color: red"><sub>def<b>extra</b></sub> ghi</div><sup>sup</sup><span style="vertical-align: sub">css</span>'])

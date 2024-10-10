@@ -18,6 +18,7 @@
 #include "qgsstringutils.h"
 #include "qgstextblock.h"
 #include "qgstextfragment.h"
+#include "qgstextformat.h"
 
 #include <QTextDocument>
 #include <QTextBlock>
@@ -242,6 +243,22 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
   }
 
   return document;
+}
+
+QgsTextDocument QgsTextDocument::fromTextAndFormat( const QStringList &lines, const QgsTextFormat &format )
+{
+  QgsTextDocument doc;
+  if ( !format.allowHtmlFormatting() || lines.isEmpty() )
+  {
+    doc = QgsTextDocument::fromPlainText( lines );
+  }
+  else
+  {
+    doc = QgsTextDocument::fromHtml( lines );
+  }
+  if ( doc.size() > 0 )
+    doc.applyCapitalization( format.capitalization() );
+  return doc;
 }
 
 void QgsTextDocument::append( const QgsTextBlock &block )
