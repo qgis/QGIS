@@ -1698,6 +1698,8 @@ void TestQgsGeometry::distanceCheck()
   QGSCOMPARENEAR( line2DEngine->distance( polygon.constGet() ), distanceToLine2D, 0.01 );
   QGSCOMPARENEAR( polygon.distance( line2D ), distanceToLine2D, 0.01 );
   QGSCOMPARENEAR( line2D.distance( polygon ), distanceToLine2D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line2D.constGet(), distanceToLine2D + 0.01 ) );
+  QVERIFY( line2DEngine->distanceWithin( polygon.constGet(), distanceToLine2D + 0.01 ) );
 
   /**
    * Test polygon and 3D line
@@ -1711,6 +1713,8 @@ void TestQgsGeometry::distanceCheck()
   QGSCOMPARENEAR( line3DEngine->distance( polygon.constGet() ), distanceToLine3D, 0.01 );
   QGSCOMPARENEAR( polygon.distance( line3D ), distanceToLine3D, 0.01 );
   QGSCOMPARENEAR( line3D.distance( polygon ), distanceToLine3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line3D.constGet(), distanceToLine3D + 0.01 ) );
+  QVERIFY( line3DEngine->distanceWithin( polygon.constGet(), distanceToLine3D + 0.01 ) );
 
   /**
    * Test polygon and 3D point
@@ -1723,6 +1727,8 @@ void TestQgsGeometry::distanceCheck()
   QGSCOMPARENEAR( point3DEngine->distance( polygon.constGet() ), distanceToPoint3D, 0.01 );
   QGSCOMPARENEAR( polygon.distance( point3D ), distanceToPoint3D, 0.01 );
   QGSCOMPARENEAR( point3D.distance( polygon ), distanceToPoint3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( point3D.constGet(), distanceToPoint3D + 0.01 ) );
+  QVERIFY( point3DEngine->distanceWithin( polygon.constGet(), distanceToPoint3D + 0.01 ) );
 
   /**
    * Test polygon and 3D vertical line ((X Y Z1, X Y Z2, ..., X Y ZN, X Y Z1))
@@ -1734,6 +1740,8 @@ void TestQgsGeometry::distanceCheck()
   QGSCOMPARENEAR( line3DVerticalEngine->distance( polygon.constGet() ), distanceToPoint3D, 0.01 );
   QGSCOMPARENEAR( polygon.distance( line3DVertical ), distanceToPoint3D, 0.01 );
   QGSCOMPARENEAR( line3DVertical.distance( polygon ), distanceToPoint3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line3DVertical.constGet(), distanceToPoint3D + 0.01 ) );
+  QVERIFY( line3DVerticalEngine->distanceWithin( polygon.constGet(), distanceToPoint3D + 0.01 ) );
 
   /**
    * Test polygon and 3D vertical line of two points ((X Y Z1, X Y Z2))
@@ -1745,6 +1753,8 @@ void TestQgsGeometry::distanceCheck()
   QGSCOMPARENEAR( line3DVertical2Engine->distance( polygon.constGet() ), distanceToPoint3D, 0.01 );
   QGSCOMPARENEAR( polygon.distance( line3DVertical2 ), distanceToPoint3D, 0.01 );
   QGSCOMPARENEAR( line3DVertical2.distance( polygon ), distanceToPoint3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line3DVertical2.constGet(), distanceToPoint3D + 0.01 ) );
+  QVERIFY( line3DVertical2Engine->distanceWithin( polygon.constGet(), distanceToPoint3D + 0.01 ) );
 }
 
 void TestQgsGeometry::unaryUnion()
