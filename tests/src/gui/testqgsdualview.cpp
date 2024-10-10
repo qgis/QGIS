@@ -21,6 +21,9 @@
 #include <attributetable/qgsdualview.h>
 #include <editform/qgsattributeeditorhtmlelement.h>
 #include "qgsattributeform.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
+#include "qgsattributeformeditorwidget.h"
 #include <qgsapplication.h>
 #include "qgsfeatureiterator.h"
 #include <qgsvectorlayer.h>
@@ -57,6 +60,8 @@ class TestQgsDualView : public QObject
 
     void testAttributeFormSharedValueScanning();
     void testNoGeom();
+
+    void testDuplicateField();
 
 #ifdef WITH_QTWEBKIT
     void testHtmlWidget_data();
@@ -403,6 +408,47 @@ void TestQgsDualView::testHtmlWidget()
   QgsProject::instance()->removeMapLayer( &layer );
 }
 #endif
+
+void TestQgsDualView::testDuplicateField()
+{
+  // test updating same field appearing in different widget
+
+  // make a temporary vector layer
+  const QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "Range" ), QVariantMap() ) );
+
+  // add same field twice so they get synced
+  QgsEditFormConfig editFormConfig = layer->editFormConfig();
+  editFormConfig.clearTabs();
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  layer->setEditFormConfig( editFormConfig );
+
+  // add a feature to the vector layer
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 1 );
+  layer->dataProvider()->addFeature( ft );
+
+  QgsDualView dualView;
+  dualView.init( layer, mCanvas );
+
+  layer->startEditing();
+
+  const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = dualView.mAttributeForm->mFormEditorWidgets.values( 0 );
+
+  formEditorWidgets[0]->editorWidget()->setValues( 20, QVariantList() );
+  ft = layer->getFeature( ft.id() );
+  QCOMPARE( ft.attribute( QStringLiteral( "col0" ) ).toInt(), 20 );
+
+  formEditorWidgets[1]->editorWidget()->setValues( 21, QVariantList() );
+  ft = layer->getFeature( ft.id() );
+  QCOMPARE( ft.attribute( QStringLiteral( "col0" ) ).toInt(), 21 );
+
+  layer->rollBack();
+}
+
 
 QGSTEST_MAIN( TestQgsDualView )
 #include "testqgsdualview.moc"
