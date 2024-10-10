@@ -660,7 +660,22 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
     return false;
   }
 
-  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  geos::unique_ptr otherGeosGeom;
+
+  // GEOSPreparedDistanceWithin_r GEOSPreparedDistance_r are not able to properly compute the distance if one
+  // of the geometries if a vertical line (LineString Z((X Y Z1, X Y Z2, ..., X Y Zn))).
+  // In that case, replace `geom` by a single point.
+  // However, GEOSDistanceWithin_r and GEOSDistance_r work.
+  if ( mGeosPrepared && isZVerticalLine( geom->simplifiedTypeRef() ) )
+  {
+    QgsPoint firstPoint = geom->vertexAt( QgsVertexId( 0, 0, 0 ) );
+    otherGeosGeom = asGeos( &firstPoint );
+  }
+  else
+  {
+    otherGeosGeom = asGeos( geom, mPrecision );
+  }
+
   if ( !otherGeosGeom )
   {
     return false;
@@ -674,7 +689,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
-    if ( mGeosPrepared )
+    if ( mGeosPrepared && !isZVerticalLine( mGeometry->simplifiedTypeRef() ) )
     {
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
       return GEOSPreparedDistanceWithin_r( context, mGeosPrepared.get(), otherGeosGeom.get(), maxdist );
