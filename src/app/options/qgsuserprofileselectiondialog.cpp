@@ -21,11 +21,12 @@
 #include "qgsapplication.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsnewnamedialog.h"
+#include "qnamespace.h"
 
 #include "qgsuserprofileselectiondialog.h"
 
-QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
-  : QDialog( parent ), mManager( manager )
+QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, const QString &activeProfile, QWidget *parent )
+  : QDialog( parent ), mManager( manager ), mActiveProfile( activeProfile )
 
 {
   setupUi( this );
@@ -37,14 +38,25 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   // Add a new profile on button click
   connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
 
+  // Delete selected profile on button click
+  connect( mDeleteProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onDeleteProfile );
+
   const int iconSize = mManager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt();
   mProfileListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   // Fill the list of profiles
-  mProfileListWidget->clear();  // Clear bogus profiles in the Ui form
+  populateProfileList();
+}
+
+void QgsUserProfileSelectionDialog::populateProfileList()
+{
+  mProfileListWidget->clear();
   for ( auto profile : mManager->allProfiles() )
   {
-    auto item = new QListWidgetItem( mManager->profileForName( profile )->icon(), profile );
+    QListWidgetItem *item = new QListWidgetItem( mManager->profileForName( profile )->icon(), profile );
+    if ( profile == mActiveProfile )
+      item->setBackground( mProfileListWidget->palette().color( QPalette::Mid ) );
+
     mProfileListWidget->addItem( item );
 
     // If the profile is the last used one, select it
@@ -63,8 +75,8 @@ QString QgsUserProfileSelectionDialog::selectedProfileName() const
 
 void QgsUserProfileSelectionDialog::accept()
 {
-  // Accept only if an item is selected
-  if ( mProfileListWidget->currentItem() && mProfileListWidget->currentItem()->isSelected() )
+  // Accept only if an item is selected and not the already active profile
+  if ( mProfileListWidget->currentItem() && mProfileListWidget->currentItem()->isSelected() && mProfileListWidget->currentItem()->text() != mActiveProfile )
   {
     QDialog::accept();
   }
@@ -101,6 +113,38 @@ void QgsUserProfileSelectionDialog::onAddProfile()
   {
     QMessageBox::warning( this, tr( "New Profile" ), tr( "Cannot create folder '%1'" ).arg( profileName ) );
     return;
+  }
+}
+
+void QgsUserProfileSelectionDialog::onDeleteProfile()
+{
+  QString selectedProfile = selectedProfileName();
+
+  if ( selectedProfile == QStringLiteral( "default" ) )
+  {
+    QMessageBox::warning( this, tr( "Delete Profile" ), tr( "The default profile cannot be deleted." ), QMessageBox::Ok );
+    return;
+  }
+
+  if ( selectedProfile == mActiveProfile )
+  {
+    QMessageBox::warning( this, tr( "Delete Profile" ), tr( "The active profile cannot be deleted." ), QMessageBox::Ok );
+    return;
+  }
+
+  QMessageBox::StandardButton response = QMessageBox::warning( this, tr( "Delete Profile" ), tr( "Are you sure you want to delete profile '%1'? This action cannot be undone!" ).arg( selectedProfile ), QMessageBox::Yes | QMessageBox::No );
+
+  if ( response == QMessageBox::No )
+    return;
+
+  QgsError error = mManager->deleteProfile( selectedProfile );
+  if ( error.isEmpty() )
+  {
+    populateProfileList();
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Delete Profile" ), tr( "Profile '%1' could not be deleted!" ).arg( selectedProfile ) );
   }
 }
 

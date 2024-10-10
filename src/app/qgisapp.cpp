@@ -74,6 +74,7 @@
 #include <QWindow>
 #include <QActionGroup>
 
+#include "qgsuserprofileselectiondialog.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
@@ -3553,6 +3554,20 @@ void QgisApp::refreshProfileMenu()
   QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
   newProfileAction->setObjectName( "mActionNewProfile" );
   connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
+
+  mConfigMenu->addSeparator( );
+
+  QAction *openProfileSelectionDialog = mConfigMenu->addAction( tr( "Open Profile Selector…" ) );
+  openProfileSelectionDialog->setObjectName( "mActionOpenProfileSelector" );
+  connect( openProfileSelectionDialog, &QAction::triggered, this, [this, activeName]()
+  {
+    QgsUserProfileSelectionDialog dlg = QgsUserProfileSelectionDialog( userProfileManager(), activeName );
+
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      userProfileManager()->loadUserProfile( dlg.selectedProfileName() );
+    }
+  } );
 }
 
 void QgisApp::createProfileMenu()
