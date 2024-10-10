@@ -306,18 +306,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
   const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
   const double textDescent = textMetrics.descent();
 
-  QgsTextDocument doc;
-  if ( !mTextFormat.allowHtmlFormatting() )
-  {
-    doc = QgsTextDocument::fromPlainText( annotationStringList );
-  }
-  else
-  {
-    doc = QgsTextDocument::fromHtml( annotationStringList );
-  }
-  if ( doc.size() == 0 )
-    return;
-  doc.applyCapitalization( mTextFormat.capitalization() );
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( annotationStringList, mTextFormat );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( doc, mTextFormat, context );
 
   const QSizeF textSize = metrics.documentSize( Qgis::TextLayoutMode::Point, mTextFormat.orientation() );

@@ -90,7 +90,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 
   const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), ctx->context->expressionContext() );
 
-  const QgsTextDocument textDocument = f.allowHtmlFormatting() ? QgsTextDocument::fromHtml( lines ) : QgsTextDocument::fromPlainText( lines );
+  const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, f );
   // cppcheck-suppress autoVariables
   ctx->textDocument = &textDocument;
 
@@ -202,7 +202,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   if ( !document )
   {
     const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), context->expressionContext() );
-    tempDocument.emplace( format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( lines ) : QgsTextDocument::fromPlainText( lines ) );
+    tempDocument.emplace( QgsTextDocument::fromTextAndFormat( lines, format ) );
     document = &tempDocument.value();
   }
 

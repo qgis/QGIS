@@ -84,8 +84,7 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
   documentContext.setFlags( flags );
   documentContext.setMaximumWidth( rect.width() );
 
-  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( text ) : QgsTextDocument::fromPlainText( text );
-  document.applyCapitalization( lFormat.capitalization() );
+  const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( text, lFormat );
 
   const double fontScale = calculateScaleFactorForFormat( context, lFormat );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, lFormat, context, fontScale, documentContext );
@@ -118,8 +117,7 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizo
   lFormat = updateShadowPosition( lFormat );
 
   // DO NOT USE _format in the following code, always use lFormat!!
-  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
-  document.applyCapitalization( lFormat.capitalization() );
+  const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( textLines, lFormat );
   const double fontScale = calculateScaleFactorForFormat( context, lFormat );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, lFormat, context, fontScale );
 
@@ -151,8 +149,7 @@ void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text
   // DO NOT USE _format in the following code, always use lFormat!!
 
   // todo handle newlines??
-  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( { text  } ) : QgsTextDocument::fromPlainText( { text  } );
-  document.applyCapitalization( lFormat.capitalization() );
+  const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( {text}, lFormat );
 
   drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine );
 }
@@ -396,7 +393,7 @@ QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format
 void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment,
                                 const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, bool )
 {
-  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( textLines, format );
   const double fontScale = calculateScaleFactorForFormat( context, format );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
@@ -478,7 +475,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextH
 
 void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, bool )
 {
-  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( textLines, format );
   const double fontScale = calculateScaleFactorForFormat( context, format );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
@@ -815,19 +812,10 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )
 {
-  QgsTextDocument doc;
-  if ( !format.allowHtmlFormatting() )
-  {
-    doc = QgsTextDocument::fromPlainText( textLines );
-  }
-  else
-  {
-    doc = QgsTextDocument::fromHtml( textLines );
-  }
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( textLines, format );
   if ( doc.size() == 0 )
     return 0;
 
-  doc.applyCapitalization( format.capitalization() );
   return textWidth( context, format, doc );
 }
 
@@ -857,14 +845,8 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
     }
   }
 
-  if ( !format.allowHtmlFormatting() )
-  {
-    return textHeight( context, format, QgsTextDocument::fromPlainText( lines ), mode );
-  }
-  else
-  {
-    return textHeight( context, format, QgsTextDocument::fromHtml( lines ), mode );
-  }
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( lines, format );
+  return textHeight( context, format, doc, mode );
 }
 
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )

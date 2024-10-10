@@ -72,6 +72,15 @@ class CORE_EXPORT QgsTextDocument
     static QgsTextDocument fromHtml( const QStringList &lines );
 
     /**
+     * Constructor for QgsTextDocument consisting of a set of \a lines, respecting settings from a text \a format.
+     *
+     * This method will determine from the text \a format whether the lines should be treated as HTML or plain text.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsTextDocument fromTextAndFormat( const QStringList &lines, const QgsTextFormat &format );
+
+    /**
      * Appends a \a block to the document.
      */
     void append( const QgsTextBlock &block );
