@@ -1554,47 +1554,55 @@ class PyQgsTextRenderer(QgisTestCase):
         if reference_scale:
             context.setSymbologyReferenceScale(reference_scale)
 
-        painter.begin(image)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        image.fill(QColor(152, 219, 249))
+        for render_format in (Qgis.TextRenderFormat.AlwaysText,
+                              Qgis.TextRenderFormat.AlwaysOutlines,
+                              Qgis.TextRenderFormat.PreferText,
+                              ):
 
-        painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.PenStyle.NoPen)
-        # to highlight rect on image
-        # painter.drawRect(rect)
+            context.setTextRenderFormat(render_format)
+            painter.begin(image)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            image.fill(QColor(152, 219, 249))
 
-        if part is not None:
-            QgsTextRenderer.drawPart(rect,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format,
-                                     part)
-        else:
-            QgsTextRenderer.drawText(rect,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format,
-                                     vAlignment=vAlignment,
-                                     flags=flags,
-                                     mode=mode)
+            painter.setBrush(QBrush(QColor(182, 239, 255)))
+            painter.setPen(Qt.PenStyle.NoPen)
+            # to highlight rect on image
+            # painter.drawRect(rect)
 
-        painter.setFont(format.scaledFont(context))
-        painter.setPen(QPen(QColor(255, 0, 255, 200)))
-        # For comparison with QPainter's methods:
-        # if alignment == QgsTextRenderer.AlignCenter:
-        #     align = Qt.AlignHCenter
-        # elif alignment == QgsTextRenderer.AlignRight:
-        #     align = Qt.AlignRight
-        # else:
-        #     align = Qt.AlignLeft
-        # painter.drawText(rect, align, '\n'.join(text))
+            if part is not None:
+                QgsTextRenderer.drawPart(rect,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format,
+                                         part)
+            else:
+                QgsTextRenderer.drawText(rect,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format,
+                                         vAlignment=vAlignment,
+                                         flags=flags,
+                                         mode=mode)
 
-        painter.end()
-        return self.image_check(name, name, image, control_name=name)
+            painter.setFont(format.scaledFont(context))
+            painter.setPen(QPen(QColor(255, 0, 255, 200)))
+            # For comparison with QPainter's methods:
+            # if alignment == QgsTextRenderer.AlignCenter:
+            #     align = Qt.AlignHCenter
+            # elif alignment == QgsTextRenderer.AlignRight:
+            #     align = Qt.AlignRight
+            # else:
+            #     align = Qt.AlignLeft
+            # painter.drawText(rect, align, '\n'.join(text))
+
+            painter.end()
+            if not self.image_check(name, name, image, control_name=name):
+                return False
+        return True
 
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.HAlignment.AlignLeft,
                          text=['test'],
@@ -1616,38 +1624,45 @@ class PyQgsTextRenderer(QgisTestCase):
 
         context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, enable_scale_workaround)
 
-        painter.begin(image)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        image.fill(QColor(152, 219, 249))
+        for render_format in (Qgis.TextRenderFormat.AlwaysText,
+                              Qgis.TextRenderFormat.AlwaysOutlines,
+                              Qgis.TextRenderFormat.PreferText,
+                              ):
+            context.setTextRenderFormat(render_format)
+            painter.begin(image)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.PenStyle.NoPen)
-        # to highlight point on image
-        # painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
+            painter.setBrush(QBrush(QColor(182, 239, 255)))
+            painter.setPen(Qt.PenStyle.NoPen)
+            # to highlight point on image
+            # painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
 
-        if part is not None:
-            QgsTextRenderer.drawPart(point,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format,
-                                     part)
-        else:
-            QgsTextRenderer.drawText(point,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format)
+            if part is not None:
+                QgsTextRenderer.drawPart(point,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format,
+                                         part)
+            else:
+                QgsTextRenderer.drawText(point,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format)
 
-        painter.setFont(format.scaledFont(context))
-        painter.setPen(QPen(QColor(255, 0, 255, 200)))
-        # For comparison with QPainter's methods:
-        # painter.drawText(point, '\n'.join(text))
+            painter.setFont(format.scaledFont(context))
+            painter.setPen(QPen(QColor(255, 0, 255, 200)))
+            # For comparison with QPainter's methods:
+            # painter.drawText(point, '\n'.join(text))
 
-        painter.end()
-        return self.image_check(name, name, image, control_name=name)
+            painter.end()
+            if not self.image_check(name, name, image, control_name=name):
+                return False
+        return True
 
     def testDrawMassiveFont(self):
         """

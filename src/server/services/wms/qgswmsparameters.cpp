@@ -2345,6 +2345,10 @@ namespace QgsWms
       {
         format = Qgis::TextRenderFormat::AlwaysText;
       }
+      else if ( options[PdfFormatOption::TEXT_RENDER_FORMAT].compare( QStringLiteral( "PreferText" ), Qt::CaseInsensitive ) == 0 )
+      {
+        format = Qgis::TextRenderFormat::PreferText;
+      }
     }
     return format;
   }

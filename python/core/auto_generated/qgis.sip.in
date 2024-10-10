@@ -1550,6 +1550,7 @@ The development version
       {
       AlwaysOutlines,
       AlwaysText,
+      PreferText,
     };
 
     enum class LabelingFlag
