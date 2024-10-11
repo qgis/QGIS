@@ -1063,27 +1063,27 @@ void TestQgsExpressionContext::uniqueHash()
   QSet< QString > vars;
   vars.insert( QStringLiteral( "var1" ) );
   vars.insert( QStringLiteral( "var2" ) );
-  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "||~~||||~~||" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "var1=||~~||var2=||~~||" ) );
   QVERIFY( ok );
 
   QgsExpressionContextScope *scope1 = new QgsExpressionContextScope();
   context.appendScope( scope1 );
   scope1->setVariable( QStringLiteral( "var1" ), QStringLiteral( "a string" ) );
   scope1->setVariable( QStringLiteral( "var2" ), 5 );
-  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "a string||~~||5||~~||" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "var1=a string||~~||var2=5||~~||" ) );
   QVERIFY( ok );
 
   QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
   context.appendScope( scope2 );
   scope2->setVariable( QStringLiteral( "var1" ), QStringLiteral( "b string" ) );
-  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "b string||~~||5||~~||" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "var1=b string||~~||var2=5||~~||" ) );
   QVERIFY( ok );
 
   QgsFeature feature;
   feature.setId( 11 );
   feature.setAttributes( QgsAttributes() << 5 << 11 );
   context.setFeature( feature );
-  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||1566||~~||b string||~~||5||~~||" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||1566||~~||var1=b string||~~||var2=5||~~||" ) );
   QVERIFY( ok );
 
   // a value which can't be converted to string
