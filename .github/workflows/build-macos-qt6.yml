@@ -89,7 +89,7 @@ jobs:
         with:
           name: build-logs-${{ matrix.triplet }}
           path: |
-            build/_deps/vcpkg-src/buildtrees/**/*.log
+            ${{ env.VCPKG_ROOT }}/buildtrees/**/*.log
 
       - name: 📦 Create SDK
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
