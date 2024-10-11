@@ -789,6 +789,7 @@ QString QgsExpressionContext::uniqueHash( bool &ok, const QSet<QString> &variabl
   for ( const QString &variableName : std::as_const( sortedVars ) )
   {
     const QVariant value = variable( variableName );
+    hash.append( variableName + "=" );
     if ( QgsVariantUtils::isNull( value ) )
     {
       hash.append( delimiter );
