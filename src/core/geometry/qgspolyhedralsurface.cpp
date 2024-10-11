@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgscurve.h"
 #include "qgsfeedback.h"
+#include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
@@ -1010,14 +1011,20 @@ bool QgsPolyhedralSurface::isValid( QString &error, Qgis::GeometryValidityFlags 
 
   error.clear();
 
-  // GEOS does not handle PolyhedralSurface, check the polygons one by one
+  // GEOS does not handle PolyhedralSurface and 3D polygons,
+  // check the polygons one by one with QGIS geometry checker
   for ( int i = 0; i < mPatches.size(); ++i )
   {
-    const QgsGeos geos( mPatches.at( i ) );
-    const bool valid = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
-    if ( !valid )
+    QVector<QgsGeometry::Error> errors;
+    QgsGeometry qgsGeom = QgsGeometry( std::move( mPatches.at( i )->clone() ) );
+    qgsGeom.validateGeometry( errors, Qgis::GeometryValidationEngine::QgisInternal, flags );
+    if ( !errors.isEmpty() )
     {
-      error = QStringLiteral( "Polygon %1 is invalid: %2" ).arg( QString::number( i ), error );
+      error = QStringLiteral( "Polygon %1 is invalid:" ).arg( QString::number( i ) );
+      for ( int i = 0; i < errors.size(); ++i )
+      {
+        error += QStringLiteral( " %1 - %2." ).arg( QString::number( i ), errors[i].what() );
+      }
       break;
     }
   }
