@@ -17,7 +17,7 @@
           "gdal",
           "swig",
           "vcpkg-python-scripts",
-           "vcpkg-tool-mercurial",
+          "vcpkg-tool-mercurial",
           "pybind11"
         ]
       }
