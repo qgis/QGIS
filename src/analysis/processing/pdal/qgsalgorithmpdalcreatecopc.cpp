@@ -65,14 +65,14 @@ QgsPdalCreateCopcAlgorithm *QgsPdalCreateCopcAlgorithm::createInstance() const
 
 void QgsPdalCreateCopcAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud, QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ), QVariant(), true, false ) );
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Output layers" ) ) );
 }
 
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QStringList layers = parameterAsFileList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -101,7 +101,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
   QStringList outputLayers;
 
   int i = 0;
-  for ( QgsMapLayer *layer : layers )
+  for ( const QString &layer : layers )
   {
     if ( feedback->isCanceled() )
       break;
@@ -109,29 +109,22 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     multiStepFeedback.setCurrentStep( i );
     i++;
 
-    if ( !layer )
-      continue;
+    feedback->pushInfo( QObject::tr( "Processing layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer ) );
 
-    QgsPointCloudLayer *pcl = qobject_cast< QgsPointCloudLayer * >( layer );
-    if ( !pcl )
-      continue;
-
-    feedback->pushInfo( QObject::tr( "Processing layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer ? layer->name() : QString() ) );
-
-    if ( pcl->source().endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
+    if ( layer.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
     {
-      feedback->pushInfo( QObject::tr( "File %1 is a COPC file. Skipping…" ).arg( pcl->source() ) );
+      feedback->pushInfo( QObject::tr( "File %1 is a COPC file. Skipping…" ).arg( layer ) );
       continue;
     }
 
-    const QFileInfo fi( pcl->source() );
+    const QFileInfo fi( layer );
     const QDir directory = fi.absoluteDir();
     const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( outputDir.isEmpty() ? directory.absolutePath() : outputDir ).arg( fi.completeBaseName() );
 
     const QFileInfo outputFileInfo( outputFile );
     if ( outputFileInfo.exists() )
     {
-      feedback->pushInfo( QObject::tr( "File %1 is already indexed. Skipping…" ).arg( pcl->source() ) );
+      feedback->pushInfo( QObject::tr( "File %1 is already indexed. Skipping…" ).arg( layer ) );
       continue;
     }
     QString tmpDir = outputFile + QStringLiteral( "_tmp" );
@@ -148,7 +141,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     // generate COPC files
     options.push_back( { "single_file", std::string() } );
 
-    const std::vector<std::string> files = {pcl->source().toStdString()};
+    const std::vector<std::string> files = {layer.toStdString()};
     untwineProcess.start( files, outputFile.toStdString(), options );
     const int lastPercent = 0;
     while ( true )

@@ -59,7 +59,7 @@ QgsPdalBuildVpcAlgorithm *QgsPdalBuildVpcAlgorithm::createInstance() const
 
 void QgsPdalBuildVpcAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud, QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "BOUNDARY" ), QObject::tr( "Calculate boundary polygons" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "STATISTICS" ), QObject::tr( "Calculate statistics" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERVIEW" ), QObject::tr( "Build overview point cloud" ), false ) );
@@ -70,7 +70,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
 {
   Q_UNUSED( feedback );
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QStringList layers = parameterAsFileList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -95,7 +95,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFileName );
 
   QStringList args;
-  args.reserve( layers.count() + 5 );
+  args.reserve( 7 );
 
   args << QStringLiteral( "build_vpc" )
        << QStringLiteral( "--output=%1" ).arg( outputFileName );
@@ -128,10 +128,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   out.setCodec( "UTF-8" );
 #endif
-  for ( const QgsMapLayer *layer : std::as_const( layers ) )
-  {
-    out << layer->source() << "\n";
-  }
+  out << layers.join( '\n' );
 
   args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
 

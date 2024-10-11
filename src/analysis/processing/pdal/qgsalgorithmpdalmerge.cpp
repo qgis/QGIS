@@ -68,7 +68,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
 {
   Q_UNUSED( feedback );
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QStringList layers = parameterAsFileList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -90,12 +90,17 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args;
-  args.reserve( layers.count() + 3 );
+  args.reserve( 6 );
 
   args << QStringLiteral( "merge" )
        << QStringLiteral( "--output=%1" ).arg( outputFile );
 
-  applyCommonParameters( args, layers.at( 0 )->crs(), parameters, context );
+  // we create one layer to get its crs and reproject the clipping extent
+  const QgsMapLayer *l = QgsProcessingUtils::mapLayerFromString( layers.at( 0 ), context, true, QgsProcessingUtils::LayerHint::PointCloud, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  if ( !l )
+    throw QgsProcessingException( QObject::tr( "Could not open %1 as a point cloud layer" ).arg( layers.at( 0 ) ) );
+
+  applyCommonParameters( args, l->crs(), parameters, context );
   applyThreadsParameter( args, context );
 
   const QString fileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "inputFiles.txt" ), &context );
@@ -109,10 +114,8 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   out.setCodec( "UTF-8" );
 #endif
-  for ( const QgsMapLayer *layer : std::as_const( layers ) )
-  {
-    out << layer->source() << "\n";
-  }
+
+  out << layers.join( '\n' );
 
   args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
 
