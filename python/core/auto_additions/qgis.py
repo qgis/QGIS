@@ -5028,6 +5028,8 @@ Qgis.TextComponent.__doc__ = """Text components.
 """
 # --
 Qgis.TextComponent.baseClass = Qgis
+Qgis.TextComponents.baseClass = Qgis
+TextComponents = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsTextRenderer.HAlignment = Qgis.TextHorizontalAlignment
 # monkey patching scoped based enum
 QgsTextRenderer.AlignLeft = Qgis.TextHorizontalAlignment.Left
