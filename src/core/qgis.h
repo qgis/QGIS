@@ -2712,14 +2712,22 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.28
      */
-    enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int
-      {
-      Text, //!< Text component
-      Buffer, //!< Buffer component
-      Background, //!< Background shape
-      Shadow, //!< Drop shadow
+    enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Text = 1 << 0, //!< Text component
+      Buffer = 1 << 1, //!< Buffer component
+      Background = 1 << 2, //!< Background shape
+      Shadow = 1 << 3, //!< Drop shadow
     };
     Q_ENUM( TextComponent )
+
+    /**
+     * Text components.
+     *
+     * \since QGIS 3.42
+     */
+    Q_DECLARE_FLAGS( TextComponents, TextComponent )
+    Q_FLAG( TextComponents )
 
     /**
      * Text horizontal alignment.
@@ -5735,6 +5743,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextComponents )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRendererFlags )

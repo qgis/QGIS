@@ -1592,12 +1592,15 @@ The development version
     };
 
     enum class TextComponent
-      {
+    {
       Text,
       Buffer,
       Background,
       Shadow,
     };
+
+    typedef QFlags<Qgis::TextComponent> TextComponents;
+
 
     enum class TextHorizontalAlignment
       {
@@ -3332,6 +3335,8 @@ QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
 
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 

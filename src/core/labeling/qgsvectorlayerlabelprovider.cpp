@@ -497,6 +497,23 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   // NOTE: this is repeatedly called for multi-part labels
   QPainter *painter = context.painter();
 
+  Qgis::TextComponents components;
+  switch ( drawType )
+  {
+    case Qgis::TextComponent::Text:
+      components = Qgis::TextComponent::Text | Qgis::TextComponent::Shadow;
+      break;
+
+    case Qgis::TextComponent::Buffer:
+      components = Qgis::TextComponent::Buffer | Qgis::TextComponent::Shadow;
+      break;
+
+    case Qgis::TextComponent::Background:
+    case Qgis::TextComponent::Shadow:
+      components = drawType;
+      break;
+  }
+
   // features are pre-rotated but not scaled/translated,
   // so we only disable rotation here. Ideally, they'd be
   // also pre-scaled/translated, as suggested here:
@@ -789,7 +806,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
         QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
         const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );
-        QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document,
+        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, document,
                                            metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;
       }
@@ -806,7 +823,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
         component.origin.ry() += verticalAlignOffset;
 
-        QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, *document,
+        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, *document,
                                            *documentMetrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;
       }
