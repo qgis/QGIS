@@ -849,6 +849,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     enum class ValueAsStringFlag : int
     {
       AllowMapLayerValues = 1 << 0, //!< Enable map layer value handling
+      SkipCreatingLayerForSource = 1 << 1, //!< If value is a file path, use that directly. Don't try to create a map layer first just to get its source.
     };
     Q_DECLARE_FLAGS( ValueAsStringFlags, ValueAsStringFlag )
 #endif
@@ -2166,10 +2167,11 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
 
     /**
      * Constructor for QgsProcessingParameterMultipleLayers.
+     * If the optional \a sourceOnly is TRUE, the layers' source can be retrieved using parameterAsFileList. In case of files, their path will be forwarded without creating a map layer out of it first.
      */
     QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType layerType = Qgis::ProcessingSourceType::VectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
-                                          bool optional = false );
+                                          bool optional = false, bool sourceOnly = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2223,7 +2225,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
 
     Qgis::ProcessingSourceType mLayerType = Qgis::ProcessingSourceType::VectorAnyGeometry;
     int mMinimumNumberInputs = 0;
-
+    bool mSourceOnly = false;
 };
 
 /**

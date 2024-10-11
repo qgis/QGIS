@@ -2133,9 +2133,10 @@ A parameter for processing algorithms which accepts multiple map layers.
 
     QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType layerType = Qgis::ProcessingSourceType::VectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
-                                          bool optional = false );
+                                          bool optional = false, bool sourceOnly = false );
 %Docstring
 Constructor for QgsProcessingParameterMultipleLayers.
+If the optional ``sourceOnly`` is ``True``, the layers' source can be retrieved using parameterAsFileList. In case of files, their path will be forwarded without creating a map layer out of it first.
 %End
 
     static QString typeName();
