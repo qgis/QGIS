@@ -105,12 +105,12 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       {
         const QgsExpressionNodeColumnRef *col = static_cast<const QgsExpressionNodeColumnRef *>( node );
         const int idx = mFields.indexFromName( col->name() );
-        return idx >= 0 && mFields[idx].isNumeric();
+        return idx >= 0 && QgsVariantUtils::isNumericType( mFields[idx].type() );
       }
       case QgsExpressionNode::ntLiteral:
       {
         const QgsExpressionNodeLiteral *lit = static_cast<const QgsExpressionNodeLiteral *>( node );
-        return lit->value().type() == QVariant::Double || lit->value().type() == QVariant::Int;
+        return QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( lit->value().userType() ) );
       }
       case QgsExpressionNode::ntBinaryOperator:
       {
