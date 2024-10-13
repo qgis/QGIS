@@ -118,6 +118,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmflattenrelationships.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
+  processing/qgsalgorithmgenerateelevationprofile.cpp
   processing/qgsalgorithmgeometrybyexpression.cpp
   processing/qgsalgorithmgltftovector.cpp
   processing/qgsalgorithmgpsbabeltools.cpp
