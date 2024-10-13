@@ -92,27 +92,38 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterGeometry( QStringLiteral( "CURVE" ), QObject::tr( "Profile curve" ), QVariant(), false,  QList<int>() << static_cast<int>( Qgis::GeometryType::Line ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CURVE_CRS" ), QObject::tr( "Profile curve CRS" ), QVariant(), false ) );
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "MAP_LAYERS" ), QObject::tr( "Map layers" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), false ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "WIDTH" ), QObject::tr( "Chart width" ), Qgis::ProcessingNumberParameterType::Integer, 400, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "HEIGHT" ), QObject::tr( "Chart height" ), Qgis::ProcessingNumberParameterType::Integer, 300, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "WIDTH" ), QObject::tr( "Chart width (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 400, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "HEIGHT" ), QObject::tr( "Chart height (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 300, false, 0 ) );
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TERRAIN_LAYER" ), QObject::tr( "Terrain layer" ), QVariant(), true, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Raster ) << static_cast<int>( Qgis::ProcessingSourceType::Mesh ) ) );
+
+  auto minimumDistanceParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MINIMUM_DISTANCE" ), QObject::tr( "Chart minimum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  minimumDistanceParam->setFlags( minimumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( minimumDistanceParam.release() );
+  auto maximumDistanceParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAXIMUM_DISTANCE" ), QObject::tr( "Chart maximum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  maximumDistanceParam->setFlags( maximumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( maximumDistanceParam.release() );
+  auto minimumElevationParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MINIMUM_ELEVATION" ), QObject::tr( "Chart minimum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  minimumElevationParam->setFlags( minimumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( minimumElevationParam.release() );
+  auto maximumElevationParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAXIMUM_ELEVATION" ), QObject::tr( "Chart maximum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  maximumElevationParam->setFlags( maximumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( maximumElevationParam.release() );
 
   auto textColorParam = std::make_unique< QgsProcessingParameterColor >( QStringLiteral( "TEXT_COLOR" ), QObject::tr( "Chart text color" ), QColor( 0, 0, 0 ), true, true );
   textColorParam->setFlags( textColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( textColorParam.release() );
-
   auto backgroundColorParam = std::make_unique< QgsProcessingParameterColor >( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Chart background color" ), QColor( 255, 255, 255 ), true, true );
   backgroundColorParam->setFlags( backgroundColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( backgroundColorParam.release() );
-
   auto borderColorParam = std::make_unique< QgsProcessingParameterColor >( QStringLiteral( "BORDER_COLOR" ), QObject::tr( "Chart border color" ), QColor( 99, 99, 99 ), true, true );
   borderColorParam->setFlags( borderColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( borderColorParam.release() );
 
-  auto toleranceParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Profile tolerance" ), Qgis::ProcessingNumberParameterType::Double, 5.0, true, 0 );
+  auto toleranceParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Profile tolerance" ), Qgis::ProcessingNumberParameterType::Double, 5.0, false, 0 );
   toleranceParam->setFlags( toleranceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( toleranceParam.release() );
 
-  auto dpiParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DPI" ), QObject::tr( "Chart DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, true, 0 );
+  auto dpiParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DPI" ), QObject::tr( "Chart DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 0 );
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
@@ -154,7 +165,7 @@ QgsGenerateElevationProfileAlgorithm *QgsGenerateElevationProfileAlgorithm::crea
   return new QgsGenerateElevationProfileAlgorithm();
 }
 
-bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   const QgsGeometry curveGeom = parameterAsGeometry( parameters, QStringLiteral( "CURVE" ), context );
   const QgsCoordinateReferenceSystem curveCrs = parameterAsCrs( parameters, QStringLiteral( "CURVE_CRS" ), context );
@@ -199,13 +210,22 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
   return true;
 }
 
-QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   const QgsGeometry curveGeom = parameterAsGeometry( parameters, QStringLiteral( "CURVE" ), context );
 
-  const int width = parameterAsDouble( parameters, QStringLiteral( "WIDTH" ), context );
-  const int height = parameterAsDouble( parameters, QStringLiteral( "HEIGHT" ), context );
-  const int dpi = parameterAsDouble( parameters, QStringLiteral( "DPI" ), context );
+  const bool hasMinimumDistance = !parameterAsString( parameters, QStringLiteral( "MINIMUM_DISTANCE" ), context ).isEmpty();
+  const double minimumDistance = parameterAsDouble( parameters, QStringLiteral( "MINIMUM_DISTANCE" ), context );
+  const bool hasMaximumDistance = !parameterAsString( parameters, QStringLiteral( "MAXIMUM_DISTANCE" ), context ).isEmpty();
+  const double maximumDistance = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM_DISTANCE" ), context );
+  const bool hasMinimumElevation = !parameterAsString( parameters, QStringLiteral( "MINIMUM_ELEVATION" ), context ).isEmpty();
+  const double minimumElevation = parameterAsDouble( parameters, QStringLiteral( "MINIMUM_ELEVATION" ), context );
+  const bool hasMaximumElevation = !parameterAsString( parameters, QStringLiteral( "MAXIMUM_ELEVATION" ), context ).isEmpty();
+  const double maximumElevation = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM_ELEVATION" ), context );
+
+  const int width = parameterAsInt( parameters, QStringLiteral( "WIDTH" ), context );
+  const int height = parameterAsInt( parameters, QStringLiteral( "HEIGHT" ), context );
+  const int dpi = parameterAsInt( parameters, QStringLiteral( "DPI" ), context );
 
   const QString outputImage = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
 
@@ -253,28 +273,32 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
   mRenderer->waitForFinished();
 
   const QgsDoubleRange zRange = mRenderer->zRange();
+  double zMinimum = 0;
+  double zMaximum = 0;
   if ( zRange.upper() < zRange.lower() )
   {
     // invalid range, e.g. no features found in plot!
-    plotItem.setYMinimum( 0 );
-    plotItem.setYMaximum( 10 );
+    zMinimum = 0;
+    zMaximum = 10;
   }
   else if ( qgsDoubleNear( zRange.lower(), zRange.upper(), 0.0000001 ) )
   {
     // corner case ... a zero height plot! Just pick an arbitrary +/- 5 height range.
-    plotItem.setYMinimum( zRange.lower() - 5 );
-    plotItem.setYMaximum( zRange.lower() + 5 );
+    zMinimum = zRange.lower() - 5;
+    zMaximum = zRange.lower() + 5;
   }
   else
   {
     // add 5% margin to height range
     const double margin = ( zRange.upper() - zRange.lower() ) * 0.05;
-    plotItem.setYMinimum( zRange.lower() - margin );
-    plotItem.setYMaximum( zRange.upper() + margin );
+    zMinimum = zRange.lower() - margin;
+    zMaximum = zRange.upper() + margin;
   }
 
-  plotItem.setXMinimum( 0 );
-  plotItem.setXMaximum( curveGeom.constGet()->length() );
+  plotItem.setYMinimum( hasMinimumElevation ? minimumElevation : zMinimum );
+  plotItem.setYMaximum( hasMaximumElevation ? maximumElevation : zMaximum );
+  plotItem.setXMinimum( hasMinimumDistance ? minimumDistance : 0 );
+  plotItem.setXMaximum( hasMaximumDistance ? maximumDistance : curveGeom.constGet()->length() );
 
   plotItem.setRenderer( mRenderer.get() );
 
