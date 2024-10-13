@@ -174,7 +174,8 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
-  //find first valid feature we can add the ring to
+  //find valid features we can add the ring to
+  bool success = false;
   while ( fit.nextFeature( f ) )
   {
     if ( !f.hasGeometry() )
@@ -186,6 +187,7 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
     if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
     {
+      success = true;
       layer->changeGeometry( f.id(), g );
       if ( modifiedFeatureIds )
       {
@@ -199,7 +201,7 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     }
   }
 
-  return addRingReturnCode;
+  return success ? Qgis::GeometryOperationResult::Success : addRingReturnCode;
 }
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
