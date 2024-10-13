@@ -279,6 +279,35 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
             "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
         )
 
+    def testAddRingV2AtLeastOne(self):
+        # test adding ring on multi features
+        # Succeed if the ring can be added at least to 1 feature
+        layer = createEmptyPolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        pr = layer.dataProvider()
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))'))
+        f2 = QgsFeature(layer.fields(), 1)
+        f2.setGeometry(QgsGeometry.fromWkt('POLYGON((2 2, 6 2, 6 6, 2 6, 2 2))'))
+        assert pr.addFeatures([f1, f2])
+        self.assertEqual(layer.featureCount(), 2)
+
+        vle = QgsVectorLayerEditUtils(layer)
+        result = vle.addRingV2(QgsLineString([QgsPoint(0.5, 3), QgsPoint(1.5, 3), QgsPoint(1.5, 1.5), QgsPoint(3, 1.5), QgsPoint(3, 0.5), QgsPoint(0.5, 0.5), QgsPoint(0.5, 3)]))
+        self.assertEqual(Qgis.GeometryOperationResult.Success, result[0])
+        self.assertEqual({1}, set(result[1]))
+        layer.commitChanges()
+
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(0.5 3, 1.5 3, 1.5 1.5, 3 1.5, 3 0.5, 0.5 0.5, 0.5 3))"
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        )
+
     def testMoveVertex(self):
         layer = QgsVectorLayer("Point", "point", "memory")
         self.assertTrue(layer.startEditing())
