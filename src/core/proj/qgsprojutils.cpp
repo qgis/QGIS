@@ -397,8 +397,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *hori
   PJ_CONTEXT *context = QgsProjContext::get();
   // collect errors instead of dumping them to terminal
 
-  QStringList tempErrors;
-  proj_log_func( context, &tempErrors, proj_collecting_logger );
+  QgsScopedProjCollectingLogger projLogger;
 
   // const cast here is for compatibility with proj < 9.5
   QgsProjUtils::proj_pj_unique_ptr compoundCrs( proj_create_compound_crs( context,
@@ -406,10 +405,8 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *hori
       const_cast< PJ *>( horizontalCrs ),
       const_cast< PJ * >( verticalCrs ) ) );
 
-  // reset logging function
-  proj_log_func( context, nullptr, proj_logger );
   if ( errors )
-    *errors = tempErrors;
+    *errors = projLogger.errors();
 
   return compoundCrs;
 }
@@ -610,4 +607,19 @@ QStringList QgsProjUtils::searchPaths()
     res << p;
   }
   return res;
+}
+
+//
+// QgsScopedProjCollectingLogger
+//
+
+QgsScopedProjCollectingLogger::QgsScopedProjCollectingLogger()
+{
+  proj_log_func( QgsProjContext::get(), &mProjErrors, QgsProjUtils::proj_collecting_logger );
+}
+
+QgsScopedProjCollectingLogger::~QgsScopedProjCollectingLogger()
+{
+  // reset logger back to terminal output
+  proj_log_func( QgsProjContext::get(), nullptr, QgsProjUtils::proj_logger );
 }
