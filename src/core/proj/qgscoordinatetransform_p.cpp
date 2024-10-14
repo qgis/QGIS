@@ -244,36 +244,6 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
   }
 }
 
-static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
-{
-  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
-  dest->append( QString( message ) );
-}
-
-static void proj_logger( void *, int level, const char *message )
-{
-#ifndef QGISDEBUG
-  Q_UNUSED( message )
-#endif
-  if ( level == PJ_LOG_ERROR )
-  {
-    const QString messageString( message );
-    if ( messageString == QLatin1String( "push: Invalid latitude" ) )
-    {
-      // these messages tend to spam the console as they can be repeated 1000s of times
-      QgsDebugMsgLevel( messageString, 3 );
-    }
-    else
-    {
-      QgsDebugError( messageString );
-    }
-  }
-  else if ( level == PJ_LOG_DEBUG )
-  {
-    QgsDebugMsgLevel( QString( message ), 3 );
-  }
-}
-
 ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
@@ -292,7 +262,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 
   // use a temporary proj error collector
   QStringList projErrors;
-  proj_log_func( context, &projErrors, proj_collecting_logger );
+  proj_log_func( context, &projErrors, QgsProjUtils::proj_collecting_logger );
 
   mIsReversed = false;
 
@@ -530,7 +500,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   }
 
   // reset logger to terminal output
-  proj_log_func( context, nullptr, proj_logger );
+  proj_log_func( context, nullptr, QgsProjUtils::proj_logger );
 
   if ( !transform )
   {
