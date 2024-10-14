@@ -17,7 +17,7 @@
 ***************************************************************************
 """
 
-from qgis.PyQt.QtWidgets import QWidget, QComboBox
+from qgis.PyQt.QtWidgets import QComboBox
 
 from qgis.core import QgsSettingsEntryBase
 from qgis.gui import QgsSettingsEditorWidgetWrapper
@@ -62,16 +62,20 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
         return None
 
     def setWidgetFromVariant(self, value):
-        if self.editor:
-            idx = self.editor.findData(value)
-            self.editor.setCurrentIndex(idx)
+        if self.editor and value is not None:
+            ok = True
+            if isinstance(value, str):
+                value, ok = self.setting.metaEnum().keyToValue(value)
+            if ok:
+                idx = self.editor.findData(int(value))
+                self.editor.setCurrentIndex(idx)
             return idx >= 0
         return False
 
     def createEditorPrivate(self, parent=None):
         return QComboBox(parent)
 
-    def configureEditorPrivate(self, editor: QWidget, setting: QgsSettingsEntryBase):
+    def configureEditorPrivate(self, editor: QComboBox, setting: QgsSettingsEntryBase):
         self.setting = setting
         if isinstance(editor, QComboBox):
             self.editor = editor

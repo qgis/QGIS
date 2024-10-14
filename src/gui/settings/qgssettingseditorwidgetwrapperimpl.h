@@ -63,9 +63,9 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
 
     virtual bool setSettingFromWidget() const override = 0;
 
-    void setWidgetFromVariant( const QVariant &value ) const override
+    bool setWidgetFromVariant( const QVariant &value ) const override
     {
-      setWidgetValue( mSetting->convertFromVariant( value ) );
+      return setWidgetValue( mSetting->convertFromVariant( value ) );
     }
 
     //! Sets the widget value
