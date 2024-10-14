@@ -110,14 +110,6 @@ void QgsCrsDefinitionWidget::pbnCopyCRS_clicked()
   }
 }
 
-static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
-{
-  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
-  QString messageString( message );
-  messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
-  dest->append( messageString );
-}
-
 void QgsCrsDefinitionWidget::validateCurrent()
 {
   const QString projDef = mTextEditParameters->toPlainText();
@@ -125,7 +117,7 @@ void QgsCrsDefinitionWidget::validateCurrent()
   PJ_CONTEXT *context = proj_context_create();
 
   QStringList projErrors;
-  proj_log_func( context, &projErrors, proj_collecting_logger );
+  proj_log_func( context, &projErrors, QgsProjUtils::proj_collecting_logger );
   QgsProjUtils::proj_pj_unique_ptr crs;
 
   switch ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) )

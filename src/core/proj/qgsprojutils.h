@@ -211,6 +211,22 @@ class CORE_EXPORT QgsProjUtils
      */
     static QList< QgsDatumTransform::GridDetails > gridsUsed( const QString &proj );
 
+    /**
+     * Default QGIS proj log function.
+     *
+     * Uses QgsDebugError or QgsDebugMsgLevel to report errors in debug builds only.
+     */
+    static void proj_logger( void *user_data, int level, const char *message );
+
+    /**
+     * QGIS proj log function which collects errors to a QStringList.
+     *
+     * \warning The user_data argument passed to proj_log_func MUST be a QStringList object,
+     * and must exist for the duration where proj_collecting_logger is used. You MUST reset
+     * the proj_log_func to proj_logger before the user data QStringList is destroyed.
+     */
+    static void proj_collecting_logger( void *user_data, int level, const char *message );
+
 #if 0 // not possible in current Proj 6 API
 
     /**
