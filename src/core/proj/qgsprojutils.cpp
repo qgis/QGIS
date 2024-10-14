@@ -355,18 +355,29 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 #endif
 }
 
-static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
+void QgsProjUtils::proj_collecting_logger( void *user_data, int /*level*/, const char *message )
 {
   QStringList *dest = reinterpret_cast< QStringList * >( user_data );
-  dest->append( QString( message ) );
+  QString messageString( message );
+  messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
+  dest->append( messageString );
 }
 
-static void proj_logger( void *, int level, const char *message )
+void QgsProjUtils::proj_logger( void *, int level, const char *message )
 {
 #ifdef QGISDEBUG
   if ( level == PJ_LOG_ERROR )
   {
-    QgsDebugError( QString( message ) );
+    const QString messageString( message );
+    if ( messageString == QLatin1String( "push: Invalid latitude" ) )
+    {
+      // these messages tend to spam the console as they can be repeated 1000s of times
+      QgsDebugMsgLevel( messageString, 3 );
+    }
+    else
+    {
+      QgsDebugError( messageString );
+    }
   }
   else if ( level == PJ_LOG_DEBUG )
   {
