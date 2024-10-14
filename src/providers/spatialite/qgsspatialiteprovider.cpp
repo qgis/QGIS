@@ -6549,7 +6549,7 @@ QgsTransaction *QgsSpatiaLiteProviderMetadata::createTransaction( const QString 
   QgsSqliteHandle *ds { QgsSqliteHandle::openDb( dsUri.database() ) };
   if ( !ds )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
+    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is not currently opened" ).arg( connString ),
                                QObject::tr( "spatialite" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
