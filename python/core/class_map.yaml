@@ -3912,6 +3912,7 @@ QgsExpressionContext.setHighlightedFunctions: src/core/qgsexpressioncontext.h#L5
 QgsExpressionContext.setHighlightedVariables: src/core/qgsexpressioncontext.h#L540
 QgsExpressionContext.setLoadedLayerStore: src/core/qgsexpressioncontext.h#L845
 QgsExpressionContext.setOriginalValueVariable: src/core/qgsexpressioncontext.h#L785
+QgsExpressionContext.uniqueHash: src/core/qgsexpressioncontext.h#L889
 QgsExpressionContext.variable: src/core/qgsexpressioncontext.h#L508
 QgsExpressionContext.variableNames: src/core/qgsexpressioncontext.h#L626
 QgsExpressionContext.variablesToMap: src/core/qgsexpressioncontext.h#L514
