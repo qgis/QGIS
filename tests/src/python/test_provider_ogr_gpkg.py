@@ -39,6 +39,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsFeature,
+    QgsRelation,
+    QgsRelationContext,
     QgsFeatureRequest,
     QgsFeatureSink,
     QgsField,
@@ -1746,6 +1748,59 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertEqual(len([f for f in vl2_external.getFeatures(QgsFeatureRequest())]), 1)
         del vl2_external
 
+    def testTransactionGroupAutomatic(self):
+        """Test for issue #58845"""
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        tmpfile = os.path.join(temp_path, 'testTransactionGroupAutomatic.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('types', geom_type=ogr.wkbNone)
+        lyr.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+        lyr = ds.CreateLayer('shops', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('type_fk', ogr.OFTString))
+        ds = None
+
+        type_layer = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "types", 'types', 'ogr')
+        self.assertTrue(type_layer.isValid())
+        shops_layer = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "shops", 'shops', 'ogr')
+        self.assertTrue(shops_layer.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
+        p.addMapLayers([type_layer, shops_layer])
+
+        # Add one to many relation
+        relation = QgsRelation(QgsRelationContext(p))
+        relation.setName('shops_types')
+        relation.setId('shops_types')
+        relation.setReferencingLayer(shops_layer.id())
+        relation.setReferencedLayer(type_layer.id())
+        relation.addFieldPair('type_fk', 'name')
+        self.assertTrue(relation.isValid(), relation.validationError())
+
+        p.relationManager().addRelation(relation)
+
+        self.assertTrue(shops_layer.startEditing())
+        self.assertTrue(shops_layer.isEditable())
+        self.assertTrue(type_layer.isEditable())
+        f = QgsFeature(shops_layer.fields())
+        f['name'] = 'shop1'
+        self.assertTrue(shops_layer.addFeature(f))
+
+        self.assertTrue(p.commitChanges(True, shops_layer))
+        self.assertFalse(shops_layer.isEditable())
+        self.assertFalse(type_layer.isEditable())
+        self.assertTrue(shops_layer.startEditing())
+        self.assertTrue(shops_layer.isEditable())
+        self.assertTrue(type_layer.isEditable())
+
+        # Verify stored data
+        self.assertEqual(len([f for f in shops_layer.getFeatures()]), 1)
+        self.assertTrue(p.rollBack(True, shops_layer))
+
     def testJson(self):
         tmpfile = os.path.join(self.basetestpath, 'test_json.gpkg')
         testdata_path = unitTestDataPath('provider')
@@ -2250,6 +2305,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertFalse(vl1_1.isEditable())
         self.assertFalse(vl1_2.isEditable())
 
+        self.assertTrue(vl2_1.rollBack())
+
     def testTransactionGroupIterator(self):
         """Test issue GH #39178: the bug is that this test hangs
         forever in an endless loop"""
@@ -2317,6 +2374,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # Now add another one
         feature.setAttributes([None, 'three'])
         self.assertTrue(vl.addFeature(feature))
+        self.assertTrue(vl.commitChanges(True))
 
     def _testVectorLayerExporterDeferredSpatialIndex(self, layerOptions, expectSpatialIndex):
         """ Internal method """
