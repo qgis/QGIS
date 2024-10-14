@@ -490,3 +490,18 @@ QStringList QgsProjUtils::searchPaths()
   }
   return res;
 }
+
+//
+// QgsScopedProjCollectingLogger
+//
+
+QgsScopedProjCollectingLogger::QgsScopedProjCollectingLogger()
+{
+  proj_log_func( QgsProjContext::get(), &mProjErrors, QgsProjUtils::proj_collecting_logger );
+}
+
+QgsScopedProjCollectingLogger::~QgsScopedProjCollectingLogger()
+{
+  // reset logger back to terminal output
+  proj_log_func( QgsProjContext::get(), nullptr, QgsProjUtils::proj_logger );
+}
