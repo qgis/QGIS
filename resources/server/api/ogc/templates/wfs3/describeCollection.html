@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-md-6">
         <h1><a title="View items of: {{ title }}" href="{% for link in links %}
-        {% if link.type == "text/html" and link.rel == "items" %}
+        {% if link.type == &quot;text&sol;html&quot; and link.rel == &quot;items&quot; %}
         {{ link.href }}
         {% endif %}
         {% endfor %}">{{ title }}</a></h1>
