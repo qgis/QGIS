@@ -81,13 +81,22 @@ void QgsTransactionGroup::onEditingStarted()
   QString errorMsg;
   mTransaction->begin( errorMsg );
 
+  const auto triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
+
   const auto constMLayers = mLayers;
   for ( QgsVectorLayer *layer : constMLayers )
   {
     mTransaction->addLayer( layer, true );
-    layer->startEditing();
+
+    // Do not start editing the triggering layer, it will be started by the caller
+    if ( layer != triggeringLayer )
+    {
+      layer->startEditing();
+    }
+
     connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
+
   }
 }
 

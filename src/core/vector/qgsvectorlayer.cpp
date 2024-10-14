@@ -3764,7 +3764,11 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   updateFields();
 
   mDataProvider->updateExtents();
-  mDataProvider->leaveUpdateMode();
+
+  if ( stopEditing )
+  {
+    mDataProvider->leaveUpdateMode();
+  }
 
   // This second call is required because OGR provider with JSON
   // driver might have changed fields order after the call to
