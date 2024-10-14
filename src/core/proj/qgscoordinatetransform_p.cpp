@@ -261,8 +261,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   locker.changeMode( QgsReadWriteLocker::Write );
 
   // use a temporary proj error collector
-  QStringList projErrors;
-  proj_log_func( context, &projErrors, QgsProjUtils::proj_collecting_logger );
+  QgsScopedProjCollectingLogger errorLogger;
 
   mIsReversed = false;
 
@@ -312,7 +311,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   {
     if ( !mSourceCRS.projObject() || ! mDestCRS.projObject() )
     {
-      proj_log_func( context, nullptr, nullptr );
       return nullptr;
     }
 
@@ -464,6 +462,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   if ( !transform && nonAvailableError.isEmpty() )
   {
     const int errNo = proj_context_errno( context );
+    const QStringList projErrors = errorLogger.errors();
     if ( errNo && errNo != -61 )
     {
       nonAvailableError = QString( proj_errno_string( errNo ) );
@@ -498,9 +497,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
     }
   }
-
-  // reset logger to terminal output
-  proj_log_func( context, nullptr, QgsProjUtils::proj_logger );
 
   if ( !transform )
   {
