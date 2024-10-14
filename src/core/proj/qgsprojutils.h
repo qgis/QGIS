@@ -311,6 +311,46 @@ class CORE_EXPORT QgsProjContext
 #endif
 };
 
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for temporary swapping to an error-collecting PROJ log function.
+ *
+ * Temporarily sets the PROJ log function to one which collects errors for the lifetime of the object,
+ * before returning it to the default QGIS proj logging function on destruction.
+ *
+ * \note The collecting logger ONLY applies to the current thread.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsScopedProjCollectingLogger
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedProjCollectingLogger.
+     *
+     * PROJ errors will be collected, and can be retrieved by calling errors().
+     */
+    QgsScopedProjCollectingLogger();
+
+    /**
+     * Returns the PROJ logger back to the default QGIS PROJ logger.
+     */
+    ~QgsScopedProjCollectingLogger();
+
+    /**
+     * Returns the (possibly empty) list of collected errors.
+     */
+    QStringList errors() const { return mProjErrors; }
+
+  private:
+
+    QStringList mProjErrors;
+};
+
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjUtils::IdentifyFlags )
 #endif
 #endif // QGSPROJUTILS_H
