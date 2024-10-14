@@ -49,7 +49,7 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   //
   // https://bugreports.qt.io/browse/QTBUG-19794
 
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   QgsFeature *cachedFeature = mFeatureCache.object( id );
   if ( cachedFeature )
   {
@@ -66,7 +66,21 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
     }
     locker.changeMode( QgsReadWriteLocker::Write );
     mFeatureCache.insert( id, new QgsFeature( feature ) );
-    mIndex.addFeature( feature );
+
+    QgsGeometry indexGeom = mIndex.geometry( id );
+
+    // feature not in the index: add it
+    if ( indexGeom.isNull() )
+      mIndex.addFeature( feature );
+
+    // feature already in the index but with a different geometry (it has been evicted from the cache and externally modified):
+    // remove the old geometry and add the new one
+    else if ( !mIndex.geometry( id ).equals( feature.geometry() ) )
+    {
+      mIndex.deleteFeature( id, indexGeom.boundingBox() );
+      mIndex.addFeature( feature );
+    }
+
   }
   return true;
 }
@@ -131,15 +145,13 @@ void QgsFeaturePool::insertFeature( const QgsFeature &feature, bool skipLock )
   mIndex.addFeature( indexFeature );
 }
 
-void QgsFeaturePool::refreshCache( const QgsFeature &feature )
+void QgsFeaturePool::refreshCache( QgsFeature feature, const QgsFeature origFeature )
 {
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
-  mFeatureCache.remove( feature.id() );
-  mIndex.deleteFeature( feature );
+  mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
+  mIndex.deleteFeature( origFeature );
+  mIndex.addFeature( feature );
   locker.unlock();
-
-  QgsFeature tempFeature;
-  getFeature( feature.id(), tempFeature );
 }
 
 void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )

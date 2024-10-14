@@ -108,6 +108,9 @@ bool QgsVectorLayerFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatur
 
 void QgsVectorLayerFeaturePool::updateFeature( QgsFeature &feature )
 {
+  QgsFeature origFeature;
+  getFeature( feature.id(), origFeature );
+
   QgsThreadingUtils::runOnMainThread( [this, &feature]()
   {
     QgsVectorLayer *lyr = layer();
@@ -117,7 +120,7 @@ void QgsVectorLayerFeaturePool::updateFeature( QgsFeature &feature )
     }
   } );
 
-  refreshCache( feature );
+  refreshCache( feature, origFeature );
 }
 
 void QgsVectorLayerFeaturePool::deleteFeature( QgsFeatureId fid )
@@ -135,14 +138,17 @@ void QgsVectorLayerFeaturePool::deleteFeature( QgsFeatureId fid )
 
 void QgsVectorLayerFeaturePool::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geometry )
 {
-  Q_UNUSED( geometry )
-
+  QgsFeature feature;
   if ( isFeatureCached( fid ) )
   {
-    QgsFeature feature;
-    getFeature( fid, feature );
-    refreshCache( feature );
+    QgsFeature origFeature;
+    getFeature( fid, origFeature );  // gets the cached feature
+    feature = origFeature;
+    feature.setGeometry( geometry );
+    refreshCache( feature, origFeature );
   }
+  else
+    getFeature( fid, feature );  // gets the feature and adds it to the cache and index
 }
 
 void QgsVectorLayerFeaturePool::onFeatureDeleted( QgsFeatureId fid )
