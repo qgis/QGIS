@@ -455,7 +455,11 @@ void QgsVectorLayerEditBufferGroup::editingFinished( bool stopEditing )
     layer->updateFields();
 
     layer->dataProvider()->updateExtents();
-    layer->dataProvider()->leaveUpdateMode();
+
+    if ( stopEditing )
+    {
+      layer->dataProvider()->leaveUpdateMode();
+    }
 
     // This second call is required because OGR provider with JSON
     // driver might have changed fields order after the call to
