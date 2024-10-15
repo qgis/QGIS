@@ -10,7 +10,7 @@
     <height>491</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0,0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -49,6 +49,13 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mEnableDiagramCheckBox">
+     <property name="text">
+      <string>Enable diagram</string>
+     </property>
     </widget>
    </item>
    <item>
@@ -2411,6 +2418,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>mDiagramTypeComboBox</tabstop>
+  <tabstop>mEnableDiagramCheckBox</tabstop>
+  <tabstop>mOptionsTab</tabstop>
   <tabstop>mDiagramOptionsListWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mAttributesTreeWidget</tabstop>
