@@ -86,7 +86,7 @@ QgsLayoutItemMapGrid *QgsLayoutItemMapGridStack::grid( const int index ) const
   return qobject_cast<QgsLayoutItemMapGrid *>( item );
 }
 
-QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const
+QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const // cppcheck-suppress duplInheritedMember
 {
   QList< QgsLayoutItemMapGrid * > list;
   for ( QgsLayoutItemMapItem *item : mItems )

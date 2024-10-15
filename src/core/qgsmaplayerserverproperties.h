@@ -305,7 +305,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      * Reset properties to default
      * \since QGIS 3.22
      */
-    void reset();
+    void reset(); // cppcheck-suppress duplInheritedMember
 
     /**
      * Sets the short \a name of the layer used by QGIS Server to identify the layer.

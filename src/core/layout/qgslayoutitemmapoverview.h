@@ -101,7 +101,7 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
     /**
      * Returns a list of QgsLayoutItemMapOverviews contained by the stack.
      */
-    QList< QgsLayoutItemMapOverview * > asList() const;
+    QList< QgsLayoutItemMapOverview * > asList() const; // cppcheck-suppress duplInheritedMember
     bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     /**

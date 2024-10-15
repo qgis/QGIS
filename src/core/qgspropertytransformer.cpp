@@ -224,7 +224,7 @@ QString QgsGenericNumericTransformer::toExpression( const QString &baseExpressio
     return QStringLiteral( "coalesce(scale_polynomial(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, exponentString, nullOutputString );
 }
 
-QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName )
+QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName ) // cppcheck-suppress duplInheritedMember
 {
   bool ok = false;
 
