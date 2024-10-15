@@ -431,7 +431,7 @@ QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx ) /
   return *overview;
 }
 
-QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const
+QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const // cppcheck-suppress duplInheritedMember
 {
   QList< QgsLayoutItemMapOverview * > list;
   QList< QgsLayoutItemMapItem * >::const_iterator it = mItems.begin();
