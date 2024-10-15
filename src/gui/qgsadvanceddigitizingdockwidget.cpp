@@ -1258,9 +1258,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
   if ( mSnapMatch.layer() )
   {
-      // note ND: I'm not 100% sure if the point == mSnapMatch.point() comparison was intended be done using QgsPointXY or QgsPoint objects here!
-      // I'm using QgsPointXY here to keep the behavior the same from before a duplicate QgsPointXY == operator was removed...
-      if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( QgsPointXY( point ) == mSnapMatch.point() ) )
+    // note ND: I'm not 100% sure if the point == mSnapMatch.point() comparison was intended be done using QgsPointXY or QgsPoint objects here!
+    // I'm using QgsPointXY here to keep the behavior the same from before a duplicate QgsPointXY == operator was removed...
+    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( QgsPointXY( point ) == mSnapMatch.point() ) )
          || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
     {
       e->snapPoint();
