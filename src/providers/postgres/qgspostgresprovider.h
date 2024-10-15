@@ -491,7 +491,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * Set mLayerExtent by estimation, if possible
      *
-     * @return whether it was possible to estimate extent.
+     * \returns whether it was possible to estimate extent.
      * If false is returned, mLayerExtent is left untouched.
      */
     bool estimateExtent() const;
@@ -499,7 +499,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * Set mLayerExtent by 3d computation, if possible
      *
-     * @return whether it was possible to estimate extent.
+     * \returns whether it was possible to estimate extent.
      * If false is returned, mLayerExtent is left untouched.
      */
     bool computeExtent3D() const;

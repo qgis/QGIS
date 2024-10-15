@@ -13,7 +13,6 @@ class QgsExpressionBuilderDialog : QDialog
 {
 %Docstring(signature="appended")
 A generic dialog for building expression strings
-@remarks This class also shows an example on how to use :py:class:`QgsExpressionBuilderWidget`
 %End
 
 %TypeHeaderCode

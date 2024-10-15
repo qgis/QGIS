@@ -81,15 +81,18 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     /**
      * Defines the widget's diagram type and lets it know it should hide the type comboBox.
-     * @param diagramType Type of diagram to be set
+     *
+     * \param diagramType Type of diagram to be set
      */
     void setDiagramType( const QString diagramType );
 
     /**
      * Sets whether the widget should show diagram layer settings.
+     *
      * Used by stacked diagrams, which disable editing of DLS for sub diagrams
      * other than the first one.
-     * @param allowed Whether this widget should be allowed to edit diagram layer settings.
+     *
+     * \param allowed Whether this widget should be allowed to edit diagram layer settings.
     */
     void setAllowedToEditDiagramLayerSettings( bool allowed );
 
@@ -166,7 +169,8 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     /**
      * Convenience function to chain widgets' change value signal to another signal.
-     * @param widgets List of widgets.
+     *
+     * \param widgets List of widgets.
      */
     void connectValueChanged( const QList<QWidget *> &widgets );
 
