@@ -274,6 +274,6 @@ void QgsGpsDetector::connDestroyed( QObject *obj )
   // WTF? This whole class needs re-writing...
   if ( obj == mConn.get() )
   {
-    mConn.release();
+    mConn.release(); // cppcheck-suppress ignoredReturnValue
   }
 }
