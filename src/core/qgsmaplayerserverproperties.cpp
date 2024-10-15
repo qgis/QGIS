@@ -228,7 +228,7 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
   properties->setAttributionUrl( mAttributionUrl );
 }
 
-void QgsMapLayerServerProperties::reset()
+void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
 {
   QgsServerMetadataUrlProperties::reset();
   QgsServerWmsDimensionProperties::reset();
