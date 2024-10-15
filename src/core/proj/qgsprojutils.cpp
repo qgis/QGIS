@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 #include <QString>
 #include <QSet>
 #include <QRegularExpression>
