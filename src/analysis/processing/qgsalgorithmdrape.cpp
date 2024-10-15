@@ -93,13 +93,9 @@ bool QgsDrapeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, Qgs
                                   .arg( layer->bandCount() ) );
   mRasterExtent = layer->extent();
 
-  std::unique_ptr< QgsRasterInterface > provider( layer->dataProvider()->clone() );
-  QgsRasterDataProvider *dp = dynamic_cast< QgsRasterDataProvider * >( provider.get() );
-  if ( !dp )
+  mRasterProvider.reset( layer->dataProvider()->clone() );
+  if ( !mRasterProvider )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "RASTER" ) ) );
-
-  mRasterProvider.reset( dp );
-  provider.release();
 
   return true;
 }
