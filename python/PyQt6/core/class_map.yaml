@@ -18191,6 +18191,7 @@ QgsValueRelationFieldFormatter.sortValue: src/core/fieldformatter/qgsvaluerelati
 QgsValueRelationFieldFormatter.valueToStringList: src/core/fieldformatter/qgsvaluerelationfieldformatter.h#L76
 QgsValueRelationFieldFormatter: src/core/fieldformatter/qgsvaluerelationfieldformatter.h#L36
 QgsVariantUtils.isNull: src/core/qgsvariantutils.h#L58
+QgsVariantUtils.isNumericType: src/core/qgsvariantutils.h#L64
 QgsVariantUtils.typeToDisplayString: src/core/qgsvariantutils.h#L40
 QgsVariantUtils.typeToDisplayString: src/core/qgsvariantutils.h#L48
 QgsVariantUtils: src/core/qgsvariantutils.h#L31
