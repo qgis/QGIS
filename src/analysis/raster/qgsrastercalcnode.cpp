@@ -425,7 +425,7 @@ QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str,
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 
-QStringList QgsRasterCalcNode::referencedLayerNames()
+QStringList QgsRasterCalcNode::referencedLayerNames() const
 {
   QStringList referencedRasters;
 
@@ -439,7 +439,7 @@ QStringList QgsRasterCalcNode::referencedLayerNames()
   return referencedRasters;
 }
 
-QStringList QgsRasterCalcNode::cleanRasterReferences()
+QStringList QgsRasterCalcNode::cleanRasterReferences() const
 {
   QStringList rasterReferences;
   const QList<const QgsRasterCalcNode *> rasterRefNodes =  this->findNodes( QgsRasterCalcNode::Type::tRasterRef );

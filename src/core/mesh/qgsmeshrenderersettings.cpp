@@ -815,7 +815,7 @@ void QgsMeshRendererVectorWindBarbSettings::setShaftLength( double shaftLength )
   mShaftLength = shaftLength;
 }
 
-Qgis::RenderUnit QgsMeshRendererVectorWindBarbSettings::shaftLengthUnits()
+Qgis::RenderUnit QgsMeshRendererVectorWindBarbSettings::shaftLengthUnits() const
 {
   return mShaftLengthUnits;
 }

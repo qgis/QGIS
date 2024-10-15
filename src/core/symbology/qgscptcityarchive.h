@@ -63,7 +63,7 @@ class CORE_EXPORT QgsCptCityArchive
     static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName ) SIP_SKIP;
 
     // archive management
-    bool isEmpty();
+    bool isEmpty() const;
     QString archiveName() const { return mArchiveName; }
     static void initArchives( bool loadAll = false );
     static void initArchive( const QString &archiveName, const QString &archiveBaseDir );

@@ -98,7 +98,7 @@ Returns a list of nodes of a specific ``type``
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
 
-    QStringList referencedLayerNames( );
+    QStringList referencedLayerNames() const;
 %Docstring
 Returns a list of raster layer names that are referenced in the formula without the quotation marks.
 It uses QgsRasterCalcNode.cleanRasterReferences
@@ -108,7 +108,7 @@ It uses QgsRasterCalcNode.cleanRasterReferences
    since QGIS 3.22
 %End
 
-    QStringList cleanRasterReferences();
+    QStringList cleanRasterReferences() const;
 %Docstring
 Returns a list of raster layer references that are addressed in the formula, without quotation marks.
 

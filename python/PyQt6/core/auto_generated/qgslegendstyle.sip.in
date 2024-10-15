@@ -84,7 +84,7 @@ Sets the text ``format`` used for rendering this legend component.
 .. versionadded:: 3.30
 %End
 
-    double margin( Side side );
+    double margin( Side side ) const;
 %Docstring
 Returns the margin (in mm) for the specified ``side`` of the component.
 
