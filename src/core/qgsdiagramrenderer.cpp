@@ -1055,12 +1055,7 @@ void QgsStackedDiagramRenderer::addRenderer( QgsDiagramRenderer *renderer )
 
 const QgsDiagramRenderer *QgsStackedDiagramRenderer::renderer( const int index ) const
 {
-  if ( index >= 0 && index < mDiagramRenderers.count() )
-  {
-    return mDiagramRenderers.at( index );
-  }
-
-  return nullptr;
+  return mDiagramRenderers.value( index );
 }
 
 void QgsStackedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
