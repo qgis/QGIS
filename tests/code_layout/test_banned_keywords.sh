@@ -140,6 +140,9 @@ HINTS[38]="Use range based for loops instead"
 KEYWORDS[39]="\bqBound("
 HINTS[39]="Use std::clamp instead (but be careful of the different argument order!!)"
 
+KEYWORDS[40]="^\s*\* @"
+HINTS[40]="Use '\param', '\returns' format for doxygen annotations, not '@param', '@returns'"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
