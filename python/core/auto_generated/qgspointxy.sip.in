@@ -224,7 +224,7 @@ Compares this point with another point with a fuzzy tolerance
 .. versionadded:: 2.9
 %End
 
-    bool operator==( const QgsPointXY &other ) /HoldGIL/;
+    bool operator==( const QgsPointXY &other ) const /HoldGIL/;
 
     bool operator!=( const QgsPointXY &other ) const /HoldGIL/;
 
@@ -289,7 +289,6 @@ Multiply x and y by the given value
 %End
 
 }; // class QgsPointXY
-
 
 
 
