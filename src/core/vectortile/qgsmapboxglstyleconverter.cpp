@@ -1756,13 +1756,13 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
               textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, !textSizeProperty ? textSize : 1.0, &textOffset );
               if ( !textSizeProperty )
               {
-                ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty ).arg( textSize ) );
+                ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty.asExpression() ).arg( textSize ) );
               }
               else
               {
                 ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty.asExpression(), textSizeProperty.asExpression() ) );
               }
-              ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty ) );
+              ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty.asExpression() ) );
               break;
 
             case QMetaType::Type::QVariantList:
