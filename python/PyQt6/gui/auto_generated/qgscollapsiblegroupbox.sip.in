@@ -105,7 +105,6 @@ Overridden to prepare base call and avoid crash due to specific QT versions
 %End
 
   protected:
-    void init();
 
     void collapseExpandFixes();
 %Docstring
@@ -124,6 +123,7 @@ Visual fixes for when group box is collapsed/expanded
     void updateStyle();
     QRect titleRect() const;
     void clearModifiers();
+
 
 
 };
@@ -204,11 +204,9 @@ The configuration path to which it is saved is defined by
 %End
 
   protected:
-    void init();
     virtual void showEvent( QShowEvent *event );
 
     QString saveKey() const;
-
 
 };
 

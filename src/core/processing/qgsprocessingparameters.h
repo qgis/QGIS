@@ -2402,7 +2402,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "distance" ); }
+    static QString typeName() { return QStringLiteral( "distance" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
@@ -2471,7 +2471,7 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "duration" ); }
+    static QString typeName() { return QStringLiteral( "duration" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterDuration *clone() const override SIP_FACTORY;
 
@@ -2525,7 +2525,7 @@ class CORE_EXPORT QgsProcessingParameterScale : public QgsProcessingParameterNum
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "scale" ); }
+    static QString typeName() { return QStringLiteral( "scale" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterScale *clone() const override SIP_FACTORY;
 
@@ -2535,7 +2535,7 @@ class CORE_EXPORT QgsProcessingParameterScale : public QgsProcessingParameterNum
     /**
      * Creates a new parameter using the definition from a script code.
      */
-    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
 };
 

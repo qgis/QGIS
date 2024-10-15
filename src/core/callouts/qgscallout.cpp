@@ -761,7 +761,7 @@ QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout 
 }
 
 
-QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
+QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   std::unique_ptr< QgsManhattanLineCallout > callout = std::make_unique< QgsManhattanLineCallout >();
   callout->readProperties( properties, context );
@@ -801,7 +801,7 @@ QgsCurvedLineCallout::QgsCurvedLineCallout( const QgsCurvedLineCallout &other )
 
 }
 
-QgsCallout *QgsCurvedLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
+QgsCallout *QgsCurvedLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   std::unique_ptr< QgsCurvedLineCallout > callout = std::make_unique< QgsCurvedLineCallout >();
   callout->readProperties( properties, context );

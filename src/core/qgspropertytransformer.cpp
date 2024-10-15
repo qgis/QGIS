@@ -435,7 +435,7 @@ QString QgsSizeScaleTransformer::toExpression( const QString &baseExpression ) c
   return QString();
 }
 
-QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName )
+QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName ) // cppcheck-suppress duplInheritedMember
 {
   bool ok = false;
 
