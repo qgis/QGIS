@@ -175,7 +175,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline static const QgsCompoundCurve *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsCompoundCurve *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CompoundCurve )
         return static_cast<const QgsCompoundCurve *>( geom );

@@ -338,7 +338,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( !geom )
         return nullptr;
