@@ -366,7 +366,9 @@ void QgsTextFormatWidget::initWidget()
 
   overlapModeChanged();
 
-#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+  // stretch is available
+#else
   mLabelStretch->hide();
   mSpinStretch->hide();
   mFontStretchDDBtn->hide();
@@ -633,7 +635,9 @@ void QgsTextFormatWidget::toggleDDButtons( bool visible )
   const auto buttons = findChildren< QgsPropertyOverrideButton * >();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
-#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+    // stretch is available
+#else
     if ( button == mFontStretchDDBtn )
       continue; // always hidden
 #endif
