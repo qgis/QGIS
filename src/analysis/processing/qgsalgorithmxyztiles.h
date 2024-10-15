@@ -127,7 +127,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QgsCoordinateTransform mSrc2Wgs;
     QgsCoordinateTransform mWgs2Mercator;
     QgsRectangle mWgs84Extent;
-    QgsProcessingFeedback *mFeedback;
+    QgsProcessingFeedback *mFeedback = nullptr;
     long long mTotalTiles = 0;
     long long mProcessedTiles = 0;
     QgsCoordinateTransformContext mTransformContext;
@@ -160,7 +160,7 @@ class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
     void processMetaTile( QgsMapRendererSequentialJob *job ) override;
 
   private:
-    bool mTms;
+    bool mTms = false;
     QString mOutputDir;
 
 };
