@@ -12,6 +12,7 @@ the Free Software Foundation; either version 2 of the License, or
 from qgis.PyQt.QtWidgets import QComboBox, QSpinBox
 from qgis.core import (
     QgsLocatorFilter,
+    QgsSettings,
     QgsSettingsTree,
     QgsSettingsEntryEnumFlag,
     QgsSettingsEntryInteger,
@@ -50,23 +51,24 @@ class PyQgsSettingsRegistry(QgisTestCase):
         self.assertEqual(int_setting.value(), 6)
 
     def test_settings_registry_custom_enumflag_py(self):
-        self.priority_setting = QgsSettingsEntryEnumFlag("priority", self.settings_node, QgsLocatorFilter.Priority.High)
+        priority_setting = QgsSettingsEntryEnumFlag("priority", self.settings_node, QgsLocatorFilter.Priority.High)
         registry = QgsGui.settingsEditorWidgetRegistry()
-        registry.addWrapperForSetting(QgsSettingsEnumEditorWidgetWrapper(), self.priority_setting)
+        registry.addWrapperForSetting(QgsSettingsEnumEditorWidgetWrapper(), priority_setting)
 
-        self.editor = registry.createEditor(self.priority_setting, [])
-        self.assertIsInstance(self.editor, QComboBox)
+        editor = registry.createEditor(priority_setting, [])
+        self.assertIsInstance(editor, QComboBox)
+        wrapper = QgsSettingsEditorWidgetWrapper.fromWidget(editor)
 
-        self.assertEqual(self.editor.currentData(), QgsLocatorFilter.Priority.High)
+        self.assertEqual(editor.currentData(), "High")
 
-        self.editor.setCurrentIndex(self.editor.findData(QgsLocatorFilter.Priority.Low))
+        editor.setCurrentIndex(editor.findData("Low"))
 
-        wrapper = QgsSettingsEditorWidgetWrapper.fromWidget(self.editor)
-        self.assertEqual(wrapper.variantValueFromWidget(), QgsLocatorFilter.Priority.Low)
+        self.assertEqual(wrapper.variantValueFromWidget(), "Low")
 
         wrapper.setSettingFromWidget()
 
-        self.assertEqual(self.priority_setting.value(), QgsLocatorFilter.Priority.Low)
+        self.assertEqual(priority_setting.value(), QgsLocatorFilter.Priority.Low)
+        self.assertEqual(QgsSettings().value(f"plugins/{PLUGIN_NAME}/priority"), "Low")
 
 
 if __name__ == '__main__':

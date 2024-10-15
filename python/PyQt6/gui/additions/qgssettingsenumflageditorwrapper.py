@@ -46,29 +46,27 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
 
     def setWidgetFromSetting(self):
         if self.setting:
-            return self.setWidgetFromVariant(self.setting.value(self.dynamicKeyPartList()))
+            return self.setWidgetFromVariant(self.setting.valueAsVariant(self.dynamicKeyPartList()))
         return False
 
     def setSettingFromWidget(self):
         if self.editor:
-            self.setting.setValue(self.variantValueFromWidget(), self.dynamicKeyPartList())
+            self.setting.setVariantValue(self.variantValueFromWidget(), self.dynamicKeyPartList())
             return True
         else:
             return False
 
     def variantValueFromWidget(self):
         if self.editor:
-            return self.setting.defaultValue().__class__(self.editor.currentData())
+            return self.editor.currentData()
         return None
 
     def setWidgetFromVariant(self, value):
         if self.editor and value is not None:
-            ok = True
-            if isinstance(value, str):
-                value, ok = self.setting.metaEnum().keyToValue(value)
-            if ok:
-                idx = self.editor.findData(int(value))
-                self.editor.setCurrentIndex(idx)
+            if isinstance(value, int):
+                value = self.setting.metaEnum().valueToKey(value)
+            idx = self.editor.findData(value)
+            self.editor.setCurrentIndex(idx)
             return idx >= 0
         return False
 
@@ -83,7 +81,7 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
                 value = self.setting.metaEnum().value(i)
                 key = self.setting.metaEnum().key(i)
                 text = self.displayStrings.get(value, key)
-                self.editor.addItem(text, value)
+                self.editor.addItem(text, key)
             return True
         else:
             return False
