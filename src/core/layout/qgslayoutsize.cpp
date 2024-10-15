@@ -26,8 +26,7 @@ QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgi
   , mUnits( units )
 {
 #ifdef QGISDEBUG
-  if ( std::isnan( width ) || std::isnan( height ) )
-    qWarning( "Layout size with NaN dimensions created" );
+  Q_ASSERT_X( !std::isnan( width ) && !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
 #endif
 }
 
