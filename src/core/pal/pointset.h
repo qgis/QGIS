@@ -118,7 +118,7 @@ namespace pal
       /**
        * Computes an oriented bounding box for the shape's convex hull.
        */
-      OrientedConvexHullBoundingBox computeConvexHullOrientedBoundingBox( bool &ok );
+      OrientedConvexHullBoundingBox computeConvexHullOrientedBoundingBox( bool &ok ) const;
 
       /**
        * Split a polygon using some random logic into some other polygons.

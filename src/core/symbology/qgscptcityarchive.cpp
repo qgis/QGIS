@@ -423,7 +423,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
   return colorMap;
 }
 
-bool QgsCptCityArchive::isEmpty()
+bool QgsCptCityArchive::isEmpty() const
 {
   return ( mRootItems.isEmpty() );
 }

@@ -105,7 +105,7 @@ class CORE_EXPORT QgsRasterShader
                 int *returnRedValue SIP_OUT,
                 int *returnGreenValue SIP_OUT,
                 int *returnBlueValue SIP_OUT,
-                int *returnAlpha SIP_OUT );
+                int *returnAlpha SIP_OUT ) const;
 
     /**
      * \brief A public method that allows the user to set their own shader \a function.
