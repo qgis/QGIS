@@ -385,7 +385,10 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
   }
 
   mVTLayer = layer;
-  connect( mVTLayer, &QgsMapLayer::styleChanged, this, [ = ]() { setLayer( mVTLayer ); } );
+  if ( mVTLayer )
+  {
+    connect( mVTLayer, &QgsMapLayer::styleChanged, this, [ = ]() { setLayer( mVTLayer ); } );
+  }
 
   if ( layer && layer->labeling() && layer->labeling()->type() == QLatin1String( "basic" ) )
   {
