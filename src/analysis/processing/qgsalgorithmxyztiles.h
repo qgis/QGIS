@@ -129,7 +129,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     long long mTotalTiles = 0;
     long long mProcessedTiles = 0;
     QgsCoordinateTransformContext mTransformContext;
-    QEventLoop *mEventLoop;
+    QEventLoop *mEventLoop = nullptr;
     QList< MetaTile > mMetaTiles;
     QMap< QgsMapRendererSequentialJob *, MetaTile > mRendererJobs;
 };
