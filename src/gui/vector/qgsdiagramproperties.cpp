@@ -878,7 +878,7 @@ std::unique_ptr< QgsDiagram > QgsDiagramProperties::createDiagramObject()
 std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings()
 {
   std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings>();
-  ds->enabled = enabledDiagram();
+  ds->enabled = isDiagramEnabled();
   ds->font = mDiagramFontButton->currentFont();
   ds->opacity = mOpacityWidget->opacity();
 
@@ -1046,7 +1046,7 @@ void QgsDiagramProperties::apply()
   QgsSettings settings;
   if ( !dockMode() || !settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() )
   {
-    if ( enabledDiagram() && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
+    if ( isDiagramEnabled() && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
       QMessageBox::warning( this, tr( "Diagrams: No attributes added." ),
                             tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ) );
@@ -1325,7 +1325,7 @@ void QgsDiagramProperties::setDiagramEnabled( bool enabled )
   mEnableDiagramCheckBox->setChecked( enabled );
 }
 
-bool QgsDiagramProperties::enabledDiagram() const
+bool QgsDiagramProperties::isDiagramEnabled() const
 {
   return mEnableDiagramCheckBox->isChecked();
 }
