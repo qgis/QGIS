@@ -470,6 +470,27 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
   return false;
 }
 
+bool QgsVariantUtils::isNumericType( QMetaType::Type metaType )
+{
+  switch ( metaType )
+  {
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::Double:
+    case QMetaType::Type::Float:
+    case QMetaType::Type::Short:
+    case QMetaType::Type::UShort:
+    case QMetaType::Type::Char:
+    case QMetaType::Type::UChar:
+    case QMetaType::Type::SChar:
+      return true;
+    default:
+      return false;
+  }
+}
+
 QMetaType::Type QgsVariantUtils::variantTypeToMetaType( QVariant::Type variantType )
 {
   // variant types can be directly mapped to meta types
