@@ -52,11 +52,14 @@ QgsRendererRange::QgsRendererRange( const QgsRendererRange &range )
 
 QgsRendererRange::~QgsRendererRange() = default;
 
-
-// cpy and swap idiom, note that the cpy is done with 'pass by value'
 QgsRendererRange &QgsRendererRange::operator=( QgsRendererRange range )
 {
-  swap( range );
+  mLowerValue = range.mLowerValue;
+  mUpperValue = range.mUpperValue;
+  mSymbol.reset( range.mSymbol ? range.mSymbol->clone() : nullptr );
+  mLabel = range.mLabel;
+  mRender = range.mRender;
+  mUuid = range.mUuid;
   return *this;
 }
 
@@ -65,16 +68,6 @@ bool QgsRendererRange::operator<( const QgsRendererRange &other ) const
   return
     lowerValue() < other.lowerValue() ||
     ( qgsDoubleNear( lowerValue(), other.lowerValue() ) && upperValue() < other.upperValue() );
-}
-
-
-void QgsRendererRange::swap( QgsRendererRange &other )
-{
-  std::swap( mLowerValue, other.mLowerValue );
-  std::swap( mUpperValue, other.mUpperValue );
-  std::swap( mSymbol, other.mSymbol );
-  std::swap( mLabel, other.mLabel );
-  std::swap( mUuid, other.mUuid );
 }
 
 QString QgsRendererRange::uuid() const
