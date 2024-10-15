@@ -98,7 +98,7 @@ QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const
   return list;
 }
 
-QgsLayoutItemMapGrid &QgsLayoutItemMapGridStack::operator[]( int idx )
+QgsLayoutItemMapGrid &QgsLayoutItemMapGridStack::operator[]( int idx ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
   QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item );

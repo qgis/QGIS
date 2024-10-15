@@ -65,7 +65,7 @@ QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::clone() const
   return newRenderer;
 }
 
-QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   QgsInvertedPolygonRenderer *r = new QgsInvertedPolygonRenderer();
   //look for an embedded renderer <renderer-v2>
@@ -98,7 +98,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWr
   return rendererElem;
 }
 
-QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer ) // cppcheck-suppress duplInheritedMember
 {
   if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {

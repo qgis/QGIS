@@ -204,7 +204,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     void addFeature();
     void addFeatureGeometry();
-    void toggleEditing( bool state );
+
+    // TODO -- someone familiar with this widget needs to fix this:
+    void toggleEditing( bool state ); // cppcheck-suppress duplInheritedMember
+
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void mapToolDeactivated();
     void onDigitizingCompleted( const QgsFeature &feature );

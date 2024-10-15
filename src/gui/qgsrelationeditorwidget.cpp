@@ -499,7 +499,7 @@ void QgsRelationEditorWidget::multiEditItemSelectionChanged()
   updateButtons();
 }
 
-void QgsRelationEditorWidget::toggleEditing( bool state )
+void QgsRelationEditorWidget::toggleEditing( bool state ) // cppcheck-suppress duplInheritedMember
 {
   QgsAbstractRelationEditorWidget::toggleEditing( state );
 
