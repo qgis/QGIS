@@ -211,7 +211,7 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
   dsPtr.reset( connection );
   const QString quotedTableName { QgsSqliteUtils::quotedValue( tableName ) };
 
-  int resultCode;
+  int resultCode = 0;
   sqlite3_statement_unique_ptr stmt { dsPtr.prepare( QStringLiteral( "SELECT seq FROM sqlite_sequence WHERE name = %1" )
                                       .arg( quotedTableName ), resultCode )};
   if ( resultCode == SQLITE_OK )
