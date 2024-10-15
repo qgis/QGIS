@@ -2280,7 +2280,7 @@ namespace QgsWms
 
       //numbers are OK
       bool isNumeric;
-      tokenIt->toDouble( &isNumeric );
+      ( void )tokenIt->toDouble( &isNumeric );
       if ( isNumeric )
       {
         continue;
