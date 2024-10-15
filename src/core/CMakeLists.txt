@@ -738,7 +738,6 @@ set(QGIS_CORE_SRCS
   pal/labelposition.cpp
   pal/layer.cpp
   pal/pal.cpp
-  pal/palstat.cpp
   pal/pointset.cpp
   pal/priorityqueue.cpp
   pal/problem.cpp
@@ -1709,7 +1708,6 @@ set(QGIS_CORE_HDRS
   pal/palexception.h
   pal/pal.h
   pal/palrtree.h
-  pal/palstat.h
   pal/pointset.h
   pal/priorityqueue.h
   pal/problem.h

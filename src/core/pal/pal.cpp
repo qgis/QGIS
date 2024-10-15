@@ -31,7 +31,6 @@
 #include "pal.h"
 #include "layer.h"
 #include "palexception.h"
-#include "palstat.h"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
