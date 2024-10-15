@@ -33,12 +33,13 @@ class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaChec
       mThresholdMapUnits = configurationValue<double>( "threshold" );
       mMaxArea = configurationValue<double>( "maxArea" );
     }
-    static QString factoryDescription() { return tr( "Sliver polygon" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
     QString id() const override { return factoryId(); }
 
   private:
+    static QString factoryDescription() { return tr( "Sliver polygon" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
+
     bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const override;
 
     double mThresholdMapUnits = 0;
