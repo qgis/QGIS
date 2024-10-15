@@ -147,7 +147,7 @@ void Problem::reduce()
   delete[] ok;
 }
 
-void Problem::ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelPosition > &candidatesIndex )
+void Problem::ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelPosition > &candidatesIndex ) const
 {
   if ( list.isIn( lp->getId() ) )
   {
