@@ -1526,8 +1526,8 @@ class PyQgsTextRenderer(QgisTestCase):
         metrics2 = QgsTextRenderer.fontMetrics(context, s)
         painter.end()
 
-        self.assertAlmostEqual(metrics.width(string), 51.9, 1)
-        self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
+        self.assertAlmostEqual(metrics.horizontalAdvance(string), 51.9, 1)
+        self.assertAlmostEqual(metrics2.horizontalAdvance(string), 104.15, 1)
 
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.HAlignment.AlignLeft,
                     text=['test'],
