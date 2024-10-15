@@ -57,7 +57,6 @@ namespace pal
 {
   class Layer;
   class LabelPosition;
-  class PalStat;
   class Problem;
   class PointSet;
 
