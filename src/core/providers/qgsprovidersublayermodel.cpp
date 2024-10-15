@@ -79,6 +79,7 @@ QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::addChild( std::uniq
 
   QgsProviderSublayerModelNode *res = child.get();
   mChildren.emplace_back( std::move( child ) );
+  // cppcheck-suppress returnDanglingLifetime
   return res;
 }
 
