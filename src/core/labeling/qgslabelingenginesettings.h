@@ -182,7 +182,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      *
      * \since QGIS 3.40
      */
-    void resolveReferences( const QgsProject *project );
+    void resolveReferences( const QgsProject *project ); // cppcheck-suppress functionConst
 
     // TODO QGIS 4.0: In reality the text render format settings don't only apply to labels, but also
     // ANY text rendered using QgsTextRenderer (including some non-label text items in layouts).
