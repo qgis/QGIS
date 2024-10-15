@@ -229,7 +229,7 @@ namespace pal
       Pal *pal = nullptr;
 
       void solution_cost();
-      void ignoreLabel( const LabelPosition *lp, pal::PriorityQueue &list, PalRtree<LabelPosition> &candidatesIndex );
+      void ignoreLabel( const LabelPosition *lp, pal::PriorityQueue &list, PalRtree<LabelPosition> &candidatesIndex ) const;
   };
 
 } // namespace
