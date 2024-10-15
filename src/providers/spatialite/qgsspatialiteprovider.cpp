@@ -5782,7 +5782,7 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
     //       methods available within the class.
     sqlite3_database_unique_ptr slPtr;
     slPtr.reset( sqliteHandle() );
-    int resultCode;
+    int resultCode = 0;
     sqlite3_statement_unique_ptr stmt { slPtr.prepare( QStringLiteral( "SELECT COUNT(1) FROM %2" ).arg( mQuery ), resultCode )};
     if ( resultCode == SQLITE_OK )
     {
