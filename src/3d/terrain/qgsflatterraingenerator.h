@@ -69,7 +69,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     //! Sets CRS of the terrain
     void setCrs( const QgsCoordinateReferenceSystem &crs );
     //! Returns CRS of the terrain
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    QgsCoordinateReferenceSystem crs() const { return mCrs; } // cppcheck-suppress duplInheritedMember
 
   private:
 
