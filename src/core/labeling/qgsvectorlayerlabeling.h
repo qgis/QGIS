@@ -194,7 +194,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     void toSld( QDomNode &parent, const QVariantMap &props ) const override;
     void multiplyOpacity( double opacityFactor ) override;
     //! Create the instance from a DOM element with saved configuration
-    static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
+    static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
 
   private:
     std::unique_ptr<QgsPalLayerSettings> mSettings;

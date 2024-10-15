@@ -81,7 +81,7 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
     QgsReferencedRectangle() = default;
 
     //! Allows direct construction of QVariants from rectangle.
-    operator QVariant() const
+    operator QVariant() const // cppcheck-suppress duplInheritedMember
     {
       return QVariant::fromValue( *this );
     }
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
     QgsReferencedGeometry() = default;
 
     //! Allows direct construction of QVariants from geometry.
-    operator QVariant() const
+    operator QVariant() const // cppcheck-suppress duplInheritedMember
     {
       return QVariant::fromValue( *this );
     }
