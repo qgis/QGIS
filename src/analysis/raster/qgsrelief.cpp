@@ -728,7 +728,7 @@ void QgsRelief::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
 
   for ( int i = classesToRemove.size() - 1; i >= 0; --i )
   {
-    breaks.removeAt( classesToRemove.at( i ) );
+    breaks.removeAt( classesToRemove.at( i ) ); // cppcheck-suppress containerOutOfBounds
   }
 
   delete[] a;

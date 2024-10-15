@@ -458,7 +458,7 @@ void QgsRuntimeProfiler::otherProfilerStarted( const QString &group, const QStri
   for ( const QString &part : path )
   {
     // part may be name or id. Prefer checking it as id
-    QgsRuntimeProfilerNode *child = parentNode->child( group, QString(), part );
+    QgsRuntimeProfilerNode *child = parentNode->child( group, QString(), part ); // cppcheck-suppress invalidLifetime
     if ( !child )
       child = parentNode->child( group, part );
 
@@ -500,7 +500,7 @@ void QgsRuntimeProfiler::otherProfilerEnded( const QString &group, const QString
   for ( const QString &part : path )
   {
     // part may be name or id. Prefer checking it as id
-    QgsRuntimeProfilerNode *child = parentNode->child( group, QString(), part );
+    QgsRuntimeProfilerNode *child = parentNode->child( group, QString(), part ); // cppcheck-suppress invalidLifetime
     if ( !child )
       child = parentNode->child( group, part );
 
@@ -532,9 +532,9 @@ void QgsRuntimeProfiler::otherProfilerEnded( const QString &group, const QString
     endInsertRows();
   }
 
-  destNode->setElapsed( elapsed );
+  destNode->setElapsed( elapsed ); // cppcheck-suppress invalidLifetime
 
-  const QModelIndex nodeIndex = node2index( destNode );
+  const QModelIndex nodeIndex = node2index( destNode ); // cppcheck-suppress invalidLifetime
   const QModelIndex col2Index = index( nodeIndex.row(), 1, nodeIndex.parent() );
   emit dataChanged( nodeIndex, nodeIndex );
   emit dataChanged( col2Index, col2Index );
