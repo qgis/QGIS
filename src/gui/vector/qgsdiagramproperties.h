@@ -207,6 +207,18 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
      */
     void insertDefaults();
 
+    /**
+     * Sets widgets to reflect the \a enabled status of the diagram.
+     * @param enabled Whether the diagram is enabled or not.
+     */
+    void setDiagramEnabled( const bool enabled );
+
+    /**
+     * Returns whether the current diagram should be enabled or not,
+     * according to changes in the corresponding widgets.
+     */
+    bool enabledDiagram() const;
+
     friend class QgsStackedDiagramProperties;
     friend class QgsStackedDiagramPropertiesDialog;
 };

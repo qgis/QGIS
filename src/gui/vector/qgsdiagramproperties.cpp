@@ -312,6 +312,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   widgets << mDiagramLineUnitComboBox;
   widgets << mDiagramTypeComboBox;
   widgets << mDiagramUnitComboBox;
+  widgets << mEnableDiagramCheckBox;
   widgets << mFixedSizeRadio;
   widgets << mIncreaseMinimumSizeSpinBox;
   widgets << mIncreaseSmallDiagramsGroupBox;
@@ -453,8 +454,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
     const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() )
     {
-      mOptionsTab->setEnabled( settingList.at( 0 ).enabled );
-      mDiagramFrame->setEnabled( settingList.at( 0 ).enabled );
+      setDiagramEnabled( settingList.at( 0 ).enabled );
       mDiagramFontButton->setCurrentFont( settingList.at( 0 ).font );
       const QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
@@ -651,8 +651,6 @@ void QgsDiagramProperties::updateProperty()
 
 void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
 {
-  mDiagramFrame->setEnabled( true );
-
   mDiagramType = mDiagramTypeComboBox->itemData( index ).toString();
 
   if ( QgsTextDiagram::DIAGRAM_NAME_TEXT == mDiagramType )
@@ -880,7 +878,7 @@ std::unique_ptr< QgsDiagram > QgsDiagramProperties::createDiagramObject()
 std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings()
 {
   std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings>();
-  ds->enabled = ( mDiagramTypeComboBox->currentIndex() != -1 );
+  ds->enabled = enabledDiagram();
   ds->font = mDiagramFontButton->currentFont();
   ds->opacity = mOpacityWidget->opacity();
 
@@ -1044,14 +1042,11 @@ QgsDiagramLayerSettings QgsDiagramProperties::createDiagramLayerSettings()
 
 void QgsDiagramProperties::apply()
 {
-  const int index = mDiagramTypeComboBox->currentIndex();
-  const bool diagramsEnabled = ( index != -1 );
-
   // Avoid this messageBox when in both dock and liveUpdate mode
   QgsSettings settings;
   if ( !dockMode() || !settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() )
   {
-    if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
+    if ( enabledDiagram() && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
       QMessageBox::warning( this, tr( "Diagrams: No attributes added." ),
                             tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ) );
@@ -1323,4 +1318,14 @@ void QgsDiagramProperties::connectValueChanged( const QList<QWidget *> &widgets 
       QgsLogger::warning( QStringLiteral( "Could not create connection for widget %1" ).arg( widget->objectName() ) );
     }
   }
+}
+
+void QgsDiagramProperties::setDiagramEnabled( bool enabled )
+{
+  mEnableDiagramCheckBox->setChecked( enabled );
+}
+
+bool QgsDiagramProperties::enabledDiagram() const
+{
+  return mEnableDiagramCheckBox->isChecked();
 }
