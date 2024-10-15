@@ -344,7 +344,7 @@ class CORE_EXPORT QgsEditFormConfig
     bool legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config );
 
   private:
-    void fixLegacyConfig( QDomElement &el );
+    void fixLegacyConfig( QDomElement &el ) const;
 
     QExplicitlySharedDataPointer<QgsEditFormConfigPrivate> d;
 

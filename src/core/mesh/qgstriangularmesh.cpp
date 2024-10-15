@@ -141,7 +141,7 @@ QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Q
   return transformedVertex;
 }
 
-QgsMeshVertex QgsTriangularMesh::calculateCentroid( const QgsMeshFace &nativeFace )
+QgsMeshVertex QgsTriangularMesh::calculateCentroid( const QgsMeshFace &nativeFace ) const
 {
   return QgsMeshUtils::centroid( nativeFace, mTriangularMesh.vertices );
 }
