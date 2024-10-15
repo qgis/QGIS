@@ -409,7 +409,7 @@ void TestQgsLabelingEngine::testRuleBased()
   QgsTextFormat format = s1.format();
   format.setColor( QColor( 200, 0, 200 ) );
   QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
-#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
   font.setStretch( 100 );
 #endif
   format.setFont( font );
