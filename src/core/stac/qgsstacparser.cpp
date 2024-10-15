@@ -343,14 +343,11 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
     if ( data.contains( "stac_extensions" ) )
     {
       QStringList extensions;
-      if ( data.contains( "stac_extensions" ) )
+      for ( const auto &extension : data["stac_extensions"] )
       {
-        for ( const auto &extension : data["stac_extensions"] )
-        {
-          extensions.append( QString::fromStdString( extension ) );
-        }
-        item->setStacExtensions( extensions );
+        extensions.append( QString::fromStdString( extension ) );
       }
+      item->setStacExtensions( extensions );
     }
 
     if ( data.contains( "collection" ) )
