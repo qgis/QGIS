@@ -72,6 +72,12 @@ QgsDateTimeRange.__repr__ = _datetime_range_repr
 QgsDateRange.__repr__ = _date_range_repr
 
 
+def _property_bool_op(self):
+  return self.propertyType() != Qgis.PropertyType.Invalid
+
+QgsProperty.__bool__ = _property_bool_op
+
+
 # add some __repr__ methods to processing classes
 def _processing_source_repr(self):
     if self.featureLimit != -1:
