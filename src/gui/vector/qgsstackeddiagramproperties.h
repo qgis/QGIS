@@ -79,7 +79,6 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
 
     /**
      * Sets the diagram layer settings for the model.
-     * @param dls DiagramLayerSettings to be set.
      */
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
@@ -122,7 +121,6 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
 
     /**
      * Appends a diagram to the current QgsStackedDiagramProperties.
-     * @param dr Diagram renderer to be appended.
      */
     void appendSubDiagram( QgsDiagramRenderer *dr );
 
@@ -133,7 +131,6 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
 
     /**
      * Edits the properties of a diagram located at a given \a index.
-     * @param index Model index where the diagram is located.
      */
     void editSubDiagram( const QModelIndex &index );
 
@@ -153,7 +150,6 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
      * the first sub diagram in the stacked diagram. This includes the
      * first enabled sub diagram, as well as disabled sub diagrams that,
      * after being edited, can become the first enabled one.
-     * @param index Model index where the sub diagram is located.
      */
     bool couldBeFirstSubDiagram( const QModelIndex &index ) const;
 
@@ -186,13 +182,11 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
 
     /**
      * Delegates to the diagram properties widget to sync with the given renderer.
-     * @param dr Diagram Renderer to be used for the sync.
      */
     void syncToRenderer( const QgsDiagramRenderer *dr ) const;
 
     /**
      * Delegates to the diagram properties widget to sync with the given diagram layer settings.
-     * @param dls Diagram Layer Settings to be used for the sync.
      */
     void syncToSettings( const QgsDiagramLayerSettings *dls ) const;
 
@@ -209,7 +203,8 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
     /**
      * Delegates to the main widget to set whether the widget should show
      * diagram layer settings to be edited.
-     * @param allowed Whether the main widget should be allowed to edit diagram layer settings.
+     *
+     * \param allowed Whether the main widget should be allowed to edit diagram layer settings.
     */
     void setAllowedToEditDiagramLayerSettings( bool allowed ) const;
 

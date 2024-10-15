@@ -1022,21 +1022,25 @@ Writes stacked renderers state to a DOM element.
     QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 %Docstring
 Returns an ordered list with the renderers of the stacked renderer object.
-@param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
+
+:param sortByDiagramMode: If true, the list is returned backwards for vertical orientation.
 %End
 
     void addRenderer( QgsDiagramRenderer *renderer );
 %Docstring
 Adds a renderer to the stacked renderer object.
-@param renderer diagram renderer to be added to the stacked renderer
+
 Renderers added first will render their diagrams first, i.e., more to
 the left (horizontal mode) or more to the top (vertical mode).
+
+:param renderer: diagram renderer to be added to the stacked renderer
 %End
 
     const QgsDiagramRenderer *renderer( const int index ) const;
 %Docstring
 Returns the renderer at the given ``index``.
-@param index index of the disired renderer in the stacked renderer
+
+:param index: index of the disired renderer in the stacked renderer
 %End
 
   protected:

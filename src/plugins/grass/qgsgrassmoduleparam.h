@@ -118,7 +118,9 @@ class QgsGrassModuleParam
 
     /**
      * Gets gisprompt attribute
-     * @paream name gisprompt tag attribute name (age, element, prompt)
+     *
+     * \param descDomElement
+     * \param name gisprompt tag attribute name (age, element, prompt)
      */
     static QString getDescPrompt( QDomElement descDomElement, const QString &name );
 
