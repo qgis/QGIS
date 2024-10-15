@@ -33,11 +33,6 @@ QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
 
 }
 
-QIcon QgsDatabaseSchemaItem::iconDataCollection()
-{
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
-}
-
 QgsAbstractDatabaseProviderConnection *QgsDatabaseSchemaItem::databaseConnection() const
 {
   const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( providerKey() ) };
