@@ -288,7 +288,7 @@ namespace QgsWms
         if ( vLayer->renderer() )
         {
           const QString ruleKey { legendNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
-          bool ok;
+          bool ok = false;
           const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
           if ( ok )
           {
