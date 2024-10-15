@@ -160,8 +160,6 @@ class CORE_EXPORT QgsRendererCategory
     QString mLabel;
     bool mRender = true;
     QString mUuid;
-
-    void swap( QgsRendererCategory &other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
