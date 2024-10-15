@@ -71,11 +71,8 @@ def _date_range_repr(self):
 QgsDateTimeRange.__repr__ = _datetime_range_repr
 QgsDateRange.__repr__ = _date_range_repr
 
-
-def _property_bool_op(self):
-  return self.propertyType() != Qgis.PropertyType.Invalid
-
-QgsProperty.__bool__ = _property_bool_op
+QgsProperty.__bool__ = lambda self: self.propertyType() != Qgis.PropertyType.Invalid
+QgsOptionalExpression.__bool__ = lambda self: self.enabled()
 
 
 # add some __repr__ methods to processing classes
