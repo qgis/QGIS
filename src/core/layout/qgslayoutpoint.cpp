@@ -27,10 +27,7 @@ QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const Qgis::Layo
   , mUnits( units )
 {
 #ifdef QGISDEBUG
-  if ( std::isnan( mX ) || std::isnan( mY ) )
-  {
-    qWarning( "Layout point with NaN coordinates created" );
-  }
+  Q_ASSERT_X( !std::isnan( mX ) && !std::isnan( mY ), "QgsLayoutPoint", "Layout point with NaN coordinates created" );
 #endif
 }
 
