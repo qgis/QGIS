@@ -218,8 +218,8 @@ QgsRasterLayer *QgsRasterDemTerrainProvider::layer() const
 QgsRasterDemTerrainProvider::QgsRasterDemTerrainProvider( const QgsRasterDemTerrainProvider &other )
   : QgsAbstractTerrainProvider( other )
   , mRasterLayer( other.mRasterLayer )
+  , mRasterProvider( nullptr )
 {
-
 }
 
 
@@ -326,6 +326,7 @@ QgsMeshLayer *QgsMeshTerrainProvider::layer() const
 QgsMeshTerrainProvider::QgsMeshTerrainProvider( const QgsMeshTerrainProvider &other )
   : QgsAbstractTerrainProvider( other )
   , mMeshLayer( other.mMeshLayer )
+  , mTriangularMesh( QgsTriangularMesh() )
 {
 
 }
