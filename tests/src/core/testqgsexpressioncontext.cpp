@@ -1083,7 +1083,12 @@ void TestQgsExpressionContext::uniqueHash()
   feature.setId( 11 );
   feature.setAttributes( QgsAttributes() << 5 << 11 );
   context.setFeature( feature );
+
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
   QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||1566||~~||var1=b string||~~||var2=5||~~||" ) );
+#else
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||18646899||~~||var1=b string||~~||var2=5||~~||" ) );
+#endif
   QVERIFY( ok );
 
   // a value which can't be converted to string
