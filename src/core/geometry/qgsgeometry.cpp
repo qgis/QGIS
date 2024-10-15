@@ -1741,14 +1741,14 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
         {
           std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
           cp->setExteriorRing( curve );
-          exterior.release();
+          ( void )exterior.release();
           gc->addGeometry( cp.release() );
         }
         else
         {
           std::unique_ptr< QgsPolygon > p = std::make_unique< QgsPolygon  >();
           p->setExteriorRing( qgsgeometry_cast< QgsLineString * >( curve ) );
-          exterior.release();
+          ( void )exterior.release();
           gc->addGeometry( p.release() );
         }
       }
