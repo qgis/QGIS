@@ -973,7 +973,7 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStri
     loadFile();
 }
 
-QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props )
+QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props ) // cppcheck-suppress duplInheritedMember
 {
   QString schemeName = DEFAULT_CPTCITY_SCHEMENAME;
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;

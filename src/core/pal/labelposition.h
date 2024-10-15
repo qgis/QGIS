@@ -135,7 +135,7 @@ namespace pal
        *
        * \note This method considers the label's outer bounds (see QgsLabelFeature::outerBounds())
        */
-      QgsRectangle boundingBox() const;
+      QgsRectangle outerBoundingBox() const;
 
       /**
        * Returns the bounding box to use for candidate conflicts.

@@ -96,7 +96,7 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
      * Returns a reference to an overview at the specified \a index within the stack.
      * \see overview()
      */
-    QgsLayoutItemMapOverview &operator[]( int index );
+    QgsLayoutItemMapOverview &operator[]( int index ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns a list of QgsLayoutItemMapOverviews contained by the stack.

@@ -324,19 +324,21 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
      */
     Q_DECL_DEPRECATED QString endValueExpressionForWidth() const SIP_DEPRECATED;
 
+    // TODO QGIS 4.0 -- rename to avoid collision with base class methods
+
     /**
      * Sets the width unit.
      *
      * \see widthUnit()
      */
-    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
+    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns the width unit.
      *
      * \see setWidthUnit()
      */
-    Qgis::RenderUnit widthUnit() const;
+    Qgis::RenderUnit widthUnit() const; // cppcheck-suppress duplInheritedMember
 
     /**
      * Sets the interpolated width used to render the width of lines, \a see QgsInterpolatedLineWidth.

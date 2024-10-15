@@ -424,7 +424,7 @@ QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const int ind
   return qobject_cast<QgsLayoutItemMapOverview *>( item );
 }
 
-QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx )
+QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
   QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( item );

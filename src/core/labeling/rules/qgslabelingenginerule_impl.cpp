@@ -198,7 +198,7 @@ bool QgsAbstractLabelingEngineRuleDistanceFromFeature::candidateExceedsTolerance
   if ( !mInitialized )
     const_cast< QgsAbstractLabelingEngineRuleDistanceFromFeature * >( this )->initialize( context );
 
-  const QgsRectangle candidateBounds = candidate->boundingBox();
+  const QgsRectangle candidateBounds = candidate->outerBoundingBox();
   const QgsRectangle expandedBounds = candidateBounds.buffered( mDistanceMapUnits );
 
   const QList<QgsFeatureId> overlapCandidates = mIndex->intersects( expandedBounds );
@@ -591,7 +591,7 @@ bool QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::candidateIsIllegal( cons
   if ( !mInitialized )
     const_cast< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature * >( this )->initialize( context );
 
-  const QList<QgsFeatureId> overlapCandidates = mIndex->intersects( candidate->boundingBox() );
+  const QList<QgsFeatureId> overlapCandidates = mIndex->intersects( candidate->outerBoundingBox() );
   if ( overlapCandidates.empty() )
     return false;
 

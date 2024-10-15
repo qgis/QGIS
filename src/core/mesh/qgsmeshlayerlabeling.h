@@ -170,7 +170,7 @@ class CORE_EXPORT QgsMeshLayerSimpleLabeling : public QgsAbstractMeshLayerLabeli
     bool requiresAdvancedEffects() const override;
     void multiplyOpacity( double opacityFactor ) override;
     //! Create the instance from a DOM element with saved configuration
-    static QgsMeshLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
+    static QgsMeshLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
 
   private:
     std::unique_ptr<QgsPalLayerSettings> mSettings;

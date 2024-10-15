@@ -185,7 +185,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).

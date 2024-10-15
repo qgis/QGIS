@@ -179,7 +179,7 @@ QgsCircle QgsCircle::fromCenterDiameter( const QgsPoint &center, double diameter
   return QgsCircle( center, diameter / 2.0, azimuth );
 }
 
-QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 )
+QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 )  // cppcheck-suppress duplInheritedMember
 {
   const double azimuth = QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() ) * 180.0 / M_PI;
 
@@ -379,7 +379,7 @@ int QgsCircle::innerTangents( const QgsCircle &other, QgsPointXY &line1P1, QgsPo
          QgsPointXY( other.center() ), other.radius(), line1P1, line1P2, line2P1, line2P2 );
 }
 
-QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
+QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) // cppcheck-suppress duplInheritedMember
 {
   const double delta_x = std::fabs( pt1.x() - pt2.x() );
   const double delta_y = std::fabs( pt1.x() - pt2.y() );

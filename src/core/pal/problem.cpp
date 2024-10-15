@@ -231,7 +231,7 @@ void Problem::init_sol_falp()
       ignoreLabel( conflict, list, mAllCandidatesIndex );
     }
 
-    mActiveCandidatesIndex.insert( lp, lp->boundingBox() );
+    mActiveCandidatesIndex.insert( lp, lp->outerBoundingBox() );
   }
 
   if ( mDisplayAll )
