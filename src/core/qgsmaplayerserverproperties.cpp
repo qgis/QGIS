@@ -219,7 +219,7 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
   QgsServerWmsDimensionProperties::copyTo( properties );
 }
 
-void QgsMapLayerServerProperties::reset()
+void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
 {
   QgsServerMetadataUrlProperties::reset();
   QgsServerWmsDimensionProperties::reset();
