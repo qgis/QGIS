@@ -58,7 +58,6 @@ PyQgsPlot
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
-PyQgsTextRenderer
 PyQgsSpatialiteProvider
 PyQgsSymbolLayerReadSld
 PyQgsVectorLayerCache
