@@ -71,8 +71,7 @@ class CORE_EXPORT QgsLayoutSize
       mWidth = width;
       mHeight = height;
 #ifdef QGISDEBUG
-      if ( std::isnan( mWidth ) || std::isnan( mHeight ) )
-        qWarning( "Layout size with NaN dimensions created" );
+      Q_ASSERT_X( !std::isnan( width ) && !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
 #endif
     }
 
@@ -92,8 +91,7 @@ class CORE_EXPORT QgsLayoutSize
     {
       mWidth = width;
 #ifdef QGISDEBUG
-      if ( std::isnan( mWidth ) )
-        qWarning( "Layout size with NaN dimensions created" );
+      Q_ASSERT_X( !std::isnan( width ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
 #endif
     }
 
@@ -113,8 +111,7 @@ class CORE_EXPORT QgsLayoutSize
     {
       mHeight = height;
 #ifdef QGISDEBUG
-      if ( std::isnan( mHeight ) )
-        qWarning( "Layout size with NaN dimensions created" );
+      Q_ASSERT_X( !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
 #endif
     }
 

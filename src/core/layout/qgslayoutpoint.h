@@ -79,8 +79,7 @@ class CORE_EXPORT QgsLayoutPoint
     void setX( const double x )
     {
 #ifdef QGISDEBUG
-      if ( std::isnan( x ) )
-        qWarning( "Layout point with NaN coordinates created" );
+      Q_ASSERT_X( !std::isnan( x ), "QgsLayoutPoint", "Layout point with NaN coordinates created" );
 #endif
       mX = x;
     }
@@ -100,8 +99,7 @@ class CORE_EXPORT QgsLayoutPoint
     void setY( const double y )
     {
 #ifdef QGISDEBUG
-      if ( std::isnan( y ) )
-        qWarning( "Layout point with NaN coordinates created" );
+      Q_ASSERT_X( !std::isnan( y ), "QgsLayoutPoint", "Layout point with NaN coordinates created" );
 #endif
       mY = y;
     }
