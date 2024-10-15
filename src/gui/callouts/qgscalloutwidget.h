@@ -178,7 +178,7 @@ class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidg
 
     QgsManhattanLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); }
+    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); } // cppcheck-suppress duplInheritedMember
 
 };
 

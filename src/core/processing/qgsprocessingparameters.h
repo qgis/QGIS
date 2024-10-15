@@ -2356,7 +2356,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "distance" ); }
+    static QString typeName() { return QStringLiteral( "distance" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
@@ -2439,7 +2439,7 @@ class CORE_EXPORT QgsProcessingParameterArea : public QgsProcessingParameterNumb
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "area" ); }
+    static QString typeName() { return QStringLiteral( "area" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterArea *clone() const override SIP_FACTORY;
 
@@ -2520,7 +2520,7 @@ class CORE_EXPORT QgsProcessingParameterVolume : public QgsProcessingParameterNu
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "volume" ); }
+    static QString typeName() { return QStringLiteral( "volume" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterVolume *clone() const override SIP_FACTORY;
 
@@ -2588,7 +2588,7 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "duration" ); }
+    static QString typeName() { return QStringLiteral( "duration" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterDuration *clone() const override SIP_FACTORY;
 
@@ -2642,7 +2642,7 @@ class CORE_EXPORT QgsProcessingParameterScale : public QgsProcessingParameterNum
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "scale" ); }
+    static QString typeName() { return QStringLiteral( "scale" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterScale *clone() const override SIP_FACTORY;
 
@@ -2652,7 +2652,7 @@ class CORE_EXPORT QgsProcessingParameterScale : public QgsProcessingParameterNum
     /**
      * Creates a new parameter using the definition from a script code.
      */
-    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
 };
 

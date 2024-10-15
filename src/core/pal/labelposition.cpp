@@ -449,7 +449,7 @@ void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
   }
 }
 
-QgsRectangle LabelPosition::boundingBox() const
+QgsRectangle LabelPosition::outerBoundingBox() const
 {
   double amin[2];
   double amax[2];
@@ -459,7 +459,7 @@ QgsRectangle LabelPosition::boundingBox() const
 
 QgsRectangle LabelPosition::boundingBoxForCandidateConflicts( Pal *pal ) const
 {
-  QgsRectangle bounds = boundingBox();
+  QgsRectangle bounds = outerBoundingBox();
   QgsRectangle bufferedBounds = bounds;
   const QList< QgsAbstractLabelingEngineRule * > rules = pal->rules();
   for ( QgsAbstractLabelingEngineRule *rule : rules )
@@ -510,12 +510,12 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
 
 void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index )
 {
-  index.remove( this, boundingBox() );
+  index.remove( this, outerBoundingBox() );
 }
 
 void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
 {
-  index.insert( this, boundingBox() );
+  index.insert( this, outerBoundingBox() );
 }
 
 const GEOSGeometry *LabelPosition::multiPartGeom() const

@@ -502,7 +502,7 @@ void QgsRelationEditorWidget::linkFeature()
   QgsAbstractRelationEditorWidget::linkFeature( mFilterExpression );
 }
 
-void QgsRelationEditorWidget::toggleEditing( bool state )
+void QgsRelationEditorWidget::toggleEditing( bool state ) // cppcheck-suppress duplInheritedMember
 {
   QgsAbstractRelationEditorWidget::toggleEditing( state );
 
