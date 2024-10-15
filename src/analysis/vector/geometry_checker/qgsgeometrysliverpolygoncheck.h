@@ -41,8 +41,8 @@ class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaChec
   private:
     bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const override;
 
-    double mThresholdMapUnits;
-    double mMaxArea;
+    double mThresholdMapUnits = 0;
+    double mMaxArea = 0;
 
 };
 

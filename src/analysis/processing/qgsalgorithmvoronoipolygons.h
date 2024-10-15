@@ -56,9 +56,9 @@ class QgsVoronoiPolygonsAlgorithm : public QgsProcessingAlgorithm
     QString voronoiWithoutAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     std::unique_ptr< QgsProcessingFeatureSource > mSource;
-    double mBuffer;
-    double mTolerance;
-    bool mCopyAttributes;
+    double mBuffer = 0;
+    double mTolerance = 0;
+    bool mCopyAttributes = false;
 };
 
 ///@endcond PRIVATE
