@@ -34,7 +34,7 @@ class QgsCptCityArchive
     static QMap< QString, QString > copyingInfo( const QString &fileName );
     static QMap< QString, QString > description( const QString &fileName );
 
-    bool isEmpty();
+    bool isEmpty() const;
     QString archiveName() const;
     static void initArchives( bool loadAll = false );
     static void initArchive( const QString &archiveName, const QString &archiveBaseDir );
