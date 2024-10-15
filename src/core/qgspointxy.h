@@ -261,7 +261,7 @@ class CORE_EXPORT QgsPointXY
     }
 
     //! equality operator
-    bool operator==( const QgsPointXY &other ) SIP_HOLDGIL
+    bool operator==( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       if ( isEmpty() && other.isEmpty() )
         return true;
