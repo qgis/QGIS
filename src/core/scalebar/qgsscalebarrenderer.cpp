@@ -418,3 +418,8 @@ QList<double> QgsScaleBarRenderer::segmentWidths( const ScaleBarContext &scaleCo
 
   return widths;
 }
+
+bool QgsScaleBarRenderer::ScaleBarContext::isValid() const
+{
+  return !std::isnan( segmentWidth );
+}
