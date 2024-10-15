@@ -46,6 +46,12 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mPainter( rh.mPainter )
   , mPreviewRenderPainter( rh.mPreviewRenderPainter )
   , mMaskPainter( rh.mMaskPainter )
+
+    // TODO -- these were NOT being copied, but it's unclear if that was intentional or a bug??
+  , mMaskIdProvider( nullptr )
+  , mCurrentMaskId( -1 )
+
+  , mIsGuiPreview( rh.mIsGuiPreview )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
@@ -98,6 +104,10 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mPainter = rh.mPainter;
   mPreviewRenderPainter = rh.mPreviewRenderPainter;
   mMaskPainter = rh.mMaskPainter;
+  // TODO -- these were NOT being copied, but it's unclear if that was intentional or a bug??
+  // mMaskIdProvider
+  // mCurrentMaskId
+  mIsGuiPreview = rh.mIsGuiPreview;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
   mOriginalMapExtent = rh.mOriginalMapExtent;
