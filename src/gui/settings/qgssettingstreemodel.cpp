@@ -487,7 +487,7 @@ void QgsSettingsTreeItemDelegate::setEditorData( QWidget *editor, const QModelIn
   QgsSettingsEditorWidgetWrapper *eww = QgsSettingsEditorWidgetWrapper::fromWidget( editor );
   if ( eww )
   {
-    QVariant value = index.model()->data( index, Qt::DisplayRole );
+    const QVariant value = index.model()->data( index, Qt::DisplayRole );
     eww->setWidgetFromVariant( value );
   }
 }
