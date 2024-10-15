@@ -440,12 +440,16 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
     void setShaftLength( double shaftLength );
 
     /**
-     * Sets the units for the shaft length
+     * Returns the units for the shaft length.
+     *
+     * \see setShaftLengthUnits()
      */
-    Qgis::RenderUnit shaftLengthUnits();
+    Qgis::RenderUnit shaftLengthUnits() const;
 
     /**
-     * Returns the units for the shaft length
+     * Sets the units for the shaft length.
+     *
+     * \see shaftLengthUnits()
      */
     void setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit );
 

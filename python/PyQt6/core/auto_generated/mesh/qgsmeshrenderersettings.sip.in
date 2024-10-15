@@ -467,14 +467,18 @@ Returns the shaft length (in millimeters)
 Sets the shaft length  (in millimeters)
 %End
 
-    Qgis::RenderUnit shaftLengthUnits();
+    Qgis::RenderUnit shaftLengthUnits() const;
 %Docstring
-Sets the units for the shaft length
+Returns the units for the shaft length.
+
+.. seealso:: :py:func:`setShaftLengthUnits`
 %End
 
     void setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit );
 %Docstring
-Returns the units for the shaft length
+Sets the units for the shaft length.
+
+.. seealso:: :py:func:`shaftLengthUnits`
 %End
 
     WindSpeedUnit magnitudeUnits() const;
