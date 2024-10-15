@@ -508,7 +508,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
      * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
+    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Calculates the size corresponding to a specific value.

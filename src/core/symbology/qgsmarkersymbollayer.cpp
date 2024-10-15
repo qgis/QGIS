@@ -4035,7 +4035,7 @@ QgsAnimatedMarkerSymbolLayer::QgsAnimatedMarkerSymbolLayer( const QString &path,
 
 QgsAnimatedMarkerSymbolLayer::~QgsAnimatedMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &properties )
+QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &properties ) // cppcheck-suppress duplInheritedMember
 {
   QString path;
   double size = DEFAULT_RASTERMARKER_SIZE;
