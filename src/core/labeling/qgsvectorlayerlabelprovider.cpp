@@ -678,7 +678,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   else if ( drawType == Qgis::TextComponent::Buffer
             || drawType == Qgis::TextComponent::Text )
   {
-
     // TODO: optimize access :)
     QgsTextLabelFeature *lf = static_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
     QString txt = lf->text( label->getPartId() );
@@ -755,18 +754,27 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     component.origin = outPt;
     component.rotation = label->getAlpha();
 
-    QgsTextDocument document;
-    QgsTextDocumentMetrics metrics;
-
     // If we are using non-curved, HTML formatted labels then we've already precalculated the text metrics.
     // Otherwise we'll need to calculate them now.
-    bool metricsRequired = false;
     switch ( tmpLyr.placement )
     {
       case Qgis::LabelPlacement::Curved:
       case Qgis::LabelPlacement::PerimeterCurved:
-        metricsRequired = true;
+      {
+        QgsTextDocument document;
+        const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
+        const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
+        for ( const QString &line : multiLineList )
+        {
+          document.append( QgsTextBlock::fromPlainText( line, c ) );
+        }
+
+        QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
+        const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );
+        QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document,
+                                           metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;
+      }
 
       case Qgis::LabelPlacement::AroundPoint:
       case Qgis::LabelPlacement::OverPoint:
@@ -775,30 +783,12 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       case Qgis::LabelPlacement::Free:
       case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
       case Qgis::LabelPlacement::OutsidePolygons:
-        break;
-    }
-
-    if ( metricsRequired )
-    {
-      const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
-      const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
-      for ( const QString &line : multiLineList )
       {
-        document.append( QgsTextBlock::fromPlainText( line, c ) );
+        QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, lf->document(),
+                                           lf->documentMetrics(), hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
+        break;
       }
-
-      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
-      metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );
     }
-    else
-    {
-      document = lf->document();
-      metrics = lf->documentMetrics();
-    }
-
-    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document,
-                                       metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
-
   }
   if ( label->nextPart() )
     drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
