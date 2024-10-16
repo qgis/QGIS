@@ -10626,7 +10626,6 @@ QgsOgcUtils.rectangleToGMLBox: src/core/qgsogcutils.h#L139
 QgsOgcUtils.rectangleToGMLEnvelope: src/core/qgsogcutils.h#L148
 QgsOgcUtils.rectangleToGMLEnvelope: src/core/qgsogcutils.h#L154
 QgsOgcUtils: src/core/qgsogcutils.h#L53
-QgsOptional.bool: src/core/qgsoptional.h#L80
 QgsOptional.data: src/core/qgsoptional.h#L116
 QgsOptional.enabled: src/core/qgsoptional.h#L89
 QgsOptional.setData: src/core/qgsoptional.h#L125
@@ -13550,7 +13549,6 @@ QgsProjectionFactors: src/core/proj/qgsprojectionfactors.h#L30
 QgsProperty.QVariant: src/core/qgsproperty.h#L532
 QgsProperty.__repr__: src/core/qgsproperty.h#L536
 QgsProperty.asExpression: src/core/qgsproperty.h#L358
-QgsProperty.bool: src/core/qgsproperty.h#L274
 QgsProperty.convertToTransformer: src/core/qgsproperty.h#L526
 QgsProperty.expressionString: src/core/qgsproperty.h#L352
 QgsProperty.field: src/core/qgsproperty.h#L338
