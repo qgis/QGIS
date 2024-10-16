@@ -1062,7 +1062,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
     /**
      * Returns the renderer at the given \a index.
      *
-     * \param index index of the disired renderer in the stacked renderer
+     * \param index index of the desired renderer in the stacked renderer
      */
     const QgsDiagramRenderer *renderer( const int index ) const;
 

@@ -1040,7 +1040,7 @@ the left (horizontal mode) or more to the top (vertical mode).
 %Docstring
 Returns the renderer at the given ``index``.
 
-:param index: index of the disired renderer in the stacked renderer
+:param index: index of the desired renderer in the stacked renderer
 %End
 
   protected:
