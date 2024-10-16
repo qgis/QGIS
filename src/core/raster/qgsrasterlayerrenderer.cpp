@@ -516,7 +516,7 @@ bool QgsRasterLayerRenderer::render()
   QgsRasterIterator iterator( mPipe->last() );
 
   // Get the maximum tile size from the provider and set it as the maximum tile size for the iterator
-  if (  QgsRasterDataProvider *provider = mPipe->provider()  )
+  if ( QgsRasterDataProvider *provider = mPipe->provider() )
   {
     const QSize maxTileSize {provider->maximumTileSize()};
     iterator.setMaximumTileWidth( maxTileSize.width() );
