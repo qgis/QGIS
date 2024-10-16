@@ -67,6 +67,9 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   if ( !layer )
     return QStringList();
 
+  if ( !layer->flags().testFlag( QgsMapLayer::Searchable ) )
+    return QStringList();
+
   mLayerIsSpatial = layer->isSpatial();
   mDispExpression = QgsExpression( layer->displayExpression() );
   mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
