@@ -313,6 +313,13 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
     bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
 
+    /*
+     * Overridden because WMS provider can retrieve this information from the capabilities document.
+     * The size defined by the user in the provider settings takes precedence but cannot exceed the
+     * maximum tile size advertised by the capabilities document (if not null).
+     */
+    QSize maximumTileSize() const override;
+
     // Statistics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
     QgsRasterBandStats bandStatistics( int bandNo,
                                        Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
