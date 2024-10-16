@@ -4071,12 +4071,15 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
 void QgsProcessingPointPanel::setMapCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;
-  mButton->setVisible( true );
+  if ( mAllowSelectOnCanvas )
+  {
+    mButton->setVisible( true );
 
-  mCrs = canvas->mapSettings().destinationCrs();
-  mTool = std::make_unique< QgsProcessingPointMapTool >( mCanvas );
-  connect( mTool.get(), &QgsProcessingPointMapTool::clicked, this, &QgsProcessingPointPanel::updatePoint );
-  connect( mTool.get(), &QgsProcessingPointMapTool::complete, this, &QgsProcessingPointPanel::pointPicked );
+    mCrs = canvas->mapSettings().destinationCrs();
+    mTool = std::make_unique< QgsProcessingPointMapTool >( mCanvas );
+    connect( mTool.get(), &QgsProcessingPointMapTool::clicked, this, &QgsProcessingPointPanel::updatePoint );
+    connect( mTool.get(), &QgsProcessingPointMapTool::complete, this, &QgsProcessingPointPanel::pointPicked );
+  }
 }
 
 void QgsProcessingPointPanel::setAllowNull( bool allowNull )
@@ -4098,6 +4101,12 @@ void QgsProcessingPointPanel::setShowPointOnCanvas( bool show )
   {
     mMapPointRubberBand.reset();
   }
+}
+
+void QgsProcessingPointPanel::setAllowSelectOnCanvas( bool allow )
+{
+  mAllowSelectOnCanvas = allow;
+  mButton->setVisible( mAllowSelectOnCanvas && static_cast< bool >( mTool ) );
 }
 
 QVariant QgsProcessingPointPanel::value() const
@@ -4124,6 +4133,19 @@ void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordi
   }
   mLineEdit->setText( newText );
   updateRubberBand();
+}
+
+void QgsProcessingPointPanel::showEvent( QShowEvent * )
+{
+  if ( mFirstShow )
+  {
+    // we don't support select on canvas if the dialog is modal
+    if ( QWidget *parentWindow = window() )
+    {
+      setAllowSelectOnCanvas( !parentWindow->isModal() );
+    }
+    mFirstShow = false;
+  }
 }
 
 void QgsProcessingPointPanel::selectOnCanvas()
