@@ -210,12 +210,20 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     /**
      * Sets widgets to reflect the \a enabled status of the diagram.
      * \param enabled Whether the diagram is enabled or not.
+     *
+     * \see isDiagramEnabled()
+     *
+     * \since QGIS 3.40
      */
     void setDiagramEnabled( const bool enabled );
 
     /**
      * Returns whether the current diagram should be enabled or not,
      * according to changes in the corresponding widgets.
+     *
+     * \see setDiagramEnabled()
+     *
+     * \since QGIS 3.40
      */
     bool isDiagramEnabled() const;
 
