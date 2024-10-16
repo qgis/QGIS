@@ -585,8 +585,7 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
     mCurrentExtentButton->setVisible( true );
 
     mUseCanvasExtentAction->setVisible( true );
-    if ( drawOnCanvasOption )
-      mDrawOnCanvasAction->setVisible( true );
+    mDrawOnCanvasAction->setVisible( drawOnCanvasOption && !mBlockDrawOnCanvas );
 
     mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
     mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
@@ -666,4 +665,21 @@ void QgsExtentWidget::dropEvent( QDropEvent *event )
   }
   mCondensedLineEdit->setHighlighted( false );
   update();
+}
+
+void QgsExtentWidget::showEvent( QShowEvent * )
+{
+  if ( mFirstShow )
+  {
+    // we don't support select on canvas if the dialog is modal
+    if ( QWidget *parentWindow = window() )
+    {
+      if ( parentWindow->isModal() )
+      {
+        mBlockDrawOnCanvas = true;
+        mDrawOnCanvasAction->setVisible( false );
+      }
+    }
+    mFirstShow = false;
+  }
 }
