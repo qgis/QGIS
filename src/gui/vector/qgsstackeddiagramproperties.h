@@ -50,6 +50,8 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     //! constructor
     QgsStackedDiagramPropertiesModel( QObject *parent = nullptr );
 
+    ~QgsStackedDiagramPropertiesModel() override;
+
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QVariant headerData( int section, Qt::Orientation orientation,
@@ -63,15 +65,15 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
 
     // new methods
 
-    //! Returns the diagram renderer at the specified index
+    //! Returns the diagram renderer at the specified index. Does not transfer ownership.
     QgsDiagramRenderer *subDiagramForIndex( const QModelIndex &index ) const;
 
-    //! Inserts a new diagram at the specified position
+    //! Inserts a new diagram at the specified position. Takes ownership.
     void insertSubDiagram( const int index, QgsDiagramRenderer *newSubDiagram );
-    //! Replaces the diagram located at \a index by \a dr
+    //! Replaces the diagram located at \a index by \a dr. Takes ownership.
     void updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr );
 
-    //! Returns the list of diagram renderers from the model
+    //! Returns the list of diagram renderers from the model. Does not transfer ownership.
     QList< QgsDiagramRenderer *> subRenderers() const;
 
     //! Returns the diagram layer settings from the model
@@ -121,6 +123,7 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
 
     /**
      * Appends a diagram to the current QgsStackedDiagramProperties.
+     * Takes ownership.
      */
     void appendSubDiagram( QgsDiagramRenderer *dr );
 
@@ -192,6 +195,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
 
     /**
      * Gets a renderer object built from the diagram properties widget.
+     * Transfers ownership.
      */
     QgsDiagramRenderer *renderer();
 

@@ -102,7 +102,7 @@ void QgsStackedDiagramProperties::addSubDiagram()
 void QgsStackedDiagramProperties::appendSubDiagram( QgsDiagramRenderer *dr )
 {
   const int rows = mModel->rowCount();
-  mModel->insertSubDiagram( rows, dr );
+  mModel->insertSubDiagram( rows, dr ); // Transfers ownership
   const QModelIndex newIndex = mModel->index( rows, 0 );
   mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
 }
@@ -189,7 +189,7 @@ void QgsStackedDiagramProperties::syncToLayer()
       const auto renderers = stackedDiagramRenderer->renderers();
       for ( const auto &renderer : renderers )
       {
-        appendSubDiagram( renderer );
+        appendSubDiagram( renderer->clone() );
       }
     }
     else
@@ -225,7 +225,7 @@ void QgsStackedDiagramProperties::apply()
       ds->categoryLabels += ds1.at( 0 ).categoryLabels;
       ds->categoryColors += ds1.at( 0 ).categoryColors;
     }
-    dr->addRenderer( renderer );
+    dr->addRenderer( renderer->clone() );
   }
 
   dr->setDiagramSettings( *ds );
@@ -367,6 +367,11 @@ void QgsStackedDiagramPropertiesDialog::showHelp()
 QgsStackedDiagramPropertiesModel::QgsStackedDiagramPropertiesModel( QObject *parent )
   : QAbstractTableModel( parent )
 {
+}
+
+QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
+{
+  qDeleteAll( mRenderers );
 }
 
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
@@ -527,15 +532,17 @@ void QgsStackedDiagramPropertiesModel::insertSubDiagram( const int index, QgsDia
 
 void QgsStackedDiagramPropertiesModel::updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr )
 {
+  if ( !index.isValid() )
+    return;
+
+  delete mRenderers.at( index.row() );
   mRenderers.replace( index.row(), dr );
   emit dataChanged( index, index );
 }
 
 QList< QgsDiagramRenderer *> QgsStackedDiagramPropertiesModel::subRenderers() const
 {
-  QList<QgsDiagramRenderer *> subRenderers;
-  subRenderers = mRenderers;
-  return subRenderers;
+  return mRenderers;
 }
 
 void QgsStackedDiagramPropertiesModel::updateDiagramLayerSettings( QgsDiagramLayerSettings dls )
