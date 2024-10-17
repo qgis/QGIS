@@ -970,6 +970,9 @@ the rendered diagram is given by a combination of subrenderers.
     QgsStackedDiagramRenderer();
     ~QgsStackedDiagramRenderer();
 
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
+
     virtual QgsStackedDiagramRenderer *clone() const /Factory/;
 
 
