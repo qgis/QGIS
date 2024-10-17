@@ -1,3 +1,4 @@
+
 /***************************************************************************
                           qgsnmeaconnection.cpp  -  description
                           ---------------------
@@ -371,11 +372,12 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
         mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
       }
     }
-    else
+    else if ( result.status == 'V' )
     {
       mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Invalid );
       mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Invalid;
     }
+    // for other cases: quality and qualityIndicator read by GGA
   }
 
   if ( result.navstatus == 'S' )
@@ -451,11 +453,20 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       bool idAlreadyPresent = false;
       if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
       {
-        for ( const QgsSatelliteInfo &existingSatInView : std::as_const( mLastGPSInformation.satellitesInView ) )
+        for ( QgsSatelliteInfo &existingSatInView : mLastGPSInformation.satellitesInView )
         {
           if ( existingSatInView.id == currentSatellite.id )
           {
             idAlreadyPresent = true;
+            // Signal averaging
+            if ( existingSatInView.signal == 0 )
+            {
+              existingSatInView.signal = currentSatellite.sig;
+            }
+            else if ( currentSatellite.sig != 0 )
+            {
+              existingSatInView.signal = ( existingSatInView.signal + currentSatellite.sig ) / 2;
+            }
             break;
           }
         }

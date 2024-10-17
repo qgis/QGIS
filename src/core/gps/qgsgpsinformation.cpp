@@ -57,6 +57,13 @@ bool QgsGpsInformation::isValid() const
   {
     valid = true;
   }
+  else if ( status == 'D'
+            || bestFix == Qgis::GpsFixStatus::Fix2D
+            || bestFix == Qgis::GpsFixStatus::Fix3D
+            || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good UM98x
+  {
+    valid = true;
+  }
 
   valid &= longitude >= -180.0 && longitude <= 180.0 && latitude >= -90.0 && latitude <= 90.0;
 
