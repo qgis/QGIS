@@ -62,7 +62,7 @@ namespace pal
       /**
        * \brief Position of label candidate relative to feature.
        */
-      enum Quadrant
+      enum class Quadrant
       {
         QuadrantAboveLeft,
         QuadrantAbove,
@@ -73,6 +73,12 @@ namespace pal
         QuadrantBelowLeft,
         QuadrantBelow,
         QuadrantBelowRight
+      };
+
+      enum class LabelDirectionToLine
+      {
+        SameDirection,
+        Reversed
       };
 
       /**
@@ -86,13 +92,15 @@ namespace pal
        * \param alpha rotation in radians
        * \param cost geographic cost
        * \param feature labelpos owners
-       * \param isReversed label is reversed
+       * \param directionToLine whether the label direction is reversed from the line or polygon ring direction
        * \param quadrant relative position of label to feature
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
+                     FeaturePart *feature,
+                     LabelDirectionToLine directionToLine = LabelDirectionToLine::SameDirection,
+                     Quadrant quadrant = Quadrant::QuadrantOver );
 
       LabelPosition( const LabelPosition &other );
 
@@ -288,7 +296,11 @@ namespace pal
        */
       double getAlpha() const;
 
-      bool getReversed() const { return reversed; }
+      /**
+       * Returns TRUE if the label direction is the reversed from the line or polygon ring direction.
+       */
+      bool isReversedFromLineDirection() const { return mDirectionToLine == LabelDirectionToLine::Reversed; }
+
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
@@ -398,16 +410,14 @@ namespace pal
 
       int partId;
 
-      //True if label direction is the same as line / polygon ring direction.
-      //Could be used by the application to draw a directional arrow ('<' or '>')
-      //if the layer arrangement is P_LINE
-      bool reversed;
 
       bool upsideDown;
 
       LabelPosition::Quadrant quadrant;
 
     private:
+
+      LabelDirectionToLine mDirectionToLine = LabelDirectionToLine::SameDirection;
 
       unsigned int mGlobalId = 0;
       std::unique_ptr< LabelPosition > mNextPart;

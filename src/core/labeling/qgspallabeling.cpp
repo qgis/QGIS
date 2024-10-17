@@ -1852,10 +1852,10 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   if ( addDirSymb && placement == Qgis::LabelPlacement::Line
        && ( !leftDirSymb.isEmpty() || !rightDirSymb.isEmpty() ) )
   {
-    QString dirSym = leftDirSymb;
-
-    if ( fm.horizontalAdvance( rightDirSymb ) > fm.horizontalAdvance( dirSym ) )
-      dirSym = rightDirSymb;
+    // we don't know which symbol we'll be rendering yet, so just assume the worst and that
+    // we'll be rendering the larger one
+    const QString dirSym = fm.horizontalAdvance( rightDirSymb ) > fm.horizontalAdvance( leftDirSymb )
+                           ? rightDirSymb : leftDirSymb;
 
     switch ( placeDirSymb )
     {
