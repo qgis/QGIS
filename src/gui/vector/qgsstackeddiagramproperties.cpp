@@ -102,7 +102,7 @@ void QgsStackedDiagramProperties::addSubDiagram()
 void QgsStackedDiagramProperties::appendSubDiagram( QgsDiagramRenderer *dr )
 {
   const int rows = mModel->rowCount();
-  mModel->insertSubDiagram( rows, dr );
+  mModel->insertSubDiagram( rows, dr ); // Transfers ownership
   const QModelIndex newIndex = mModel->index( rows, 0 );
   mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
 }
@@ -189,7 +189,7 @@ void QgsStackedDiagramProperties::syncToLayer()
       const auto renderers = stackedDiagramRenderer->renderers();
       for ( const auto &renderer : renderers )
       {
-        appendSubDiagram( renderer );
+        appendSubDiagram( renderer->clone() );
       }
     }
     else
@@ -369,6 +369,11 @@ QgsStackedDiagramPropertiesModel::QgsStackedDiagramPropertiesModel( QObject *par
 {
 }
 
+QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
+{
+  qDeleteAll( mRenderers );
+}
+
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
 {
   const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
@@ -527,15 +532,17 @@ void QgsStackedDiagramPropertiesModel::insertSubDiagram( const int index, QgsDia
 
 void QgsStackedDiagramPropertiesModel::updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr )
 {
+  if ( !index.isValid() )
+    return;
+
+  delete mRenderers.at( index.row() );
   mRenderers.replace( index.row(), dr );
   emit dataChanged( index, index );
 }
 
 QList< QgsDiagramRenderer *> QgsStackedDiagramPropertiesModel::subRenderers() const
 {
-  QList<QgsDiagramRenderer *> subRenderers;
-  subRenderers = mRenderers;
-  return subRenderers;
+  return mRenderers;
 }
 
 void QgsStackedDiagramPropertiesModel::updateDiagramLayerSettings( QgsDiagramLayerSettings dls )

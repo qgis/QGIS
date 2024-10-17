@@ -1049,6 +1049,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     /**
      * Returns an ordered list with the renderers of the stacked renderer object.
+     * Does not transfer ownership.
      *
      * \param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
      */

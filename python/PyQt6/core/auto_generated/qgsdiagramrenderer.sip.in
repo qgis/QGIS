@@ -1026,6 +1026,7 @@ Writes stacked renderers state to a DOM element.
     QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 %Docstring
 Returns an ordered list with the renderers of the stacked renderer object.
+Does not transfer ownership.
 
 :param sortByDiagramMode: If true, the list is returned backwards for vertical orientation.
 %End
