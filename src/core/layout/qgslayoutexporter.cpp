@@ -1311,6 +1311,12 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device
     {
       QPdfOutputIntent outputIntent;
       outputIntent.setOutputProfile( colorSpace );
+      outputIntent.setOutputCondition( colorSpace.description() );
+
+      // There is no way to actually get the color space registry identifier or even
+      // the registry it comes from.
+      outputIntent.setOutputConditionIdentifier( QStringLiteral( "Unknown identifier" ) );
+      outputIntent.setRegistryName( QStringLiteral( "Unknown registry" ) );
       device->setOutputIntent( outputIntent );
 
       // PDF/X-4 standard allows PDF to be printing ready and is only possible if a color space has been set
