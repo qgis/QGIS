@@ -265,7 +265,7 @@ class TestQgsRelation(QgisTestCase):
         referencingLayer = rel.referencingLayer()
 
         # Set Not Null constraint on the field
-        referencingLayer.setFieldConstraint(referencingLayer.fields().indexFromName('foreignkey'), QgsFieldConstraints.ConstraintNotNull)
+        referencingLayer.setFieldConstraint(referencingLayer.fields().indexFromName('foreignkey'), QgsFieldConstraints.Constraint.ConstraintNotNull)
 
         self.assertFalse(rel.referencingFieldsAllowNull())
 
