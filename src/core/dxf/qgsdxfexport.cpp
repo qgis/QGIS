@@ -2439,7 +2439,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::FollowPlacement )
   {
     //calculate font alignment based on label quadrant
-    switch ( label->getQuadrant() )
+    switch ( label->quadrant() )
     {
       case Qgis::LabelQuadrantPosition::AboveLeft:
       case Qgis::LabelQuadrantPosition::Left:

@@ -290,7 +290,10 @@ namespace pal
 
       bool getUpsideDown() const { return upsideDown; }
 
-      Qgis::LabelQuadrantPosition getQuadrant() const { return mQuadrant; }
+      /**
+       * Returns the quadrant associated with this label position.
+       */
+      Qgis::LabelQuadrantPosition quadrant() const { return mQuadrant; }
 
       /**
        * Returns the next part of this label position (i.e. the next character for a curved label).
