@@ -60,22 +60,6 @@ namespace pal
     public:
 
       /**
-       * \brief Position of label candidate relative to feature.
-       */
-      enum class Quadrant
-      {
-        QuadrantAboveLeft,
-        QuadrantAbove,
-        QuadrantAboveRight,
-        QuadrantLeft,
-        QuadrantOver,
-        QuadrantRight,
-        QuadrantBelowLeft,
-        QuadrantBelow,
-        QuadrantBelowRight
-      };
-
-      /**
        * \brief Label directions in relation to line or polygon ring directions
        */
       enum class LabelDirectionToLine
@@ -103,7 +87,7 @@ namespace pal
                      double alpha, double cost,
                      FeaturePart *feature,
                      LabelDirectionToLine directionToLine = LabelDirectionToLine::SameDirection,
-                     Quadrant quadrant = Quadrant::QuadrantOver );
+                     Qgis::LabelQuadrantPosition quadrant = Qgis::LabelQuadrantPosition::Over );
 
       LabelPosition( const LabelPosition &other );
 
@@ -306,7 +290,7 @@ namespace pal
 
       bool getUpsideDown() const { return upsideDown; }
 
-      Quadrant getQuadrant() const { return quadrant; }
+      Qgis::LabelQuadrantPosition getQuadrant() const { return mQuadrant; }
 
       /**
        * Returns the next part of this label position (i.e. the next character for a curved label).
@@ -416,9 +400,9 @@ namespace pal
 
       bool upsideDown;
 
-      LabelPosition::Quadrant quadrant;
-
     private:
+
+      Qgis::LabelQuadrantPosition mQuadrant = Qgis::LabelQuadrantPosition::AboveLeft;
 
       LabelDirectionToLine mDirectionToLine = LabelDirectionToLine::SameDirection;
 

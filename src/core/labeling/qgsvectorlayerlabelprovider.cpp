@@ -389,19 +389,19 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
     //calculate font alignment based on label quadrant
     switch ( label->getQuadrant() )
     {
-      case LabelPosition::Quadrant::QuadrantAboveLeft:
-      case LabelPosition::Quadrant::QuadrantLeft:
-      case LabelPosition::Quadrant::QuadrantBelowLeft:
+      case Qgis::LabelQuadrantPosition::AboveLeft:
+      case Qgis::LabelQuadrantPosition::Left:
+      case Qgis::LabelQuadrantPosition::BelowLeft:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Right;
         break;
-      case LabelPosition::Quadrant::QuadrantAbove:
-      case LabelPosition::Quadrant::QuadrantOver:
-      case LabelPosition::Quadrant::QuadrantBelow:
+      case Qgis::LabelQuadrantPosition::Above:
+      case Qgis::LabelQuadrantPosition::Over:
+      case Qgis::LabelQuadrantPosition::Below:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
         break;
-      case LabelPosition::Quadrant::QuadrantAboveRight:
-      case LabelPosition::Quadrant::QuadrantRight:
-      case LabelPosition::Quadrant::QuadrantBelowRight:
+      case Qgis::LabelQuadrantPosition::AboveRight:
+      case Qgis::LabelQuadrantPosition::Right:
+      case Qgis::LabelQuadrantPosition::BelowRight:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Left;
         break;
     }

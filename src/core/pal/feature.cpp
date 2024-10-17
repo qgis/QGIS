@@ -233,7 +233,7 @@ bool FeaturePart::hasSameLabelFeatureAs( FeaturePart *part ) const
   return connectedFeatureId >= 0 && connectedFeatureId == mLF->layer()->connectedFeatureId( part->featureId() );
 }
 
-LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
+Qgis::LabelQuadrantPosition FeaturePart::quadrantFromOffset() const
 {
   QPointF quadOffset = mLF->quadOffset();
   qreal quadOffsetX = quadOffset.x(), quadOffsetY = quadOffset.y();
@@ -242,45 +242,45 @@ LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
   {
     if ( quadOffsetY < 0 )
     {
-      return LabelPosition::Quadrant::QuadrantAboveLeft;
+      return Qgis::LabelQuadrantPosition::AboveLeft;
     }
     else if ( quadOffsetY > 0 )
     {
-      return LabelPosition::Quadrant::QuadrantBelowLeft;
+      return Qgis::LabelQuadrantPosition::BelowLeft;
     }
     else
     {
-      return LabelPosition::Quadrant::QuadrantLeft;
+      return Qgis::LabelQuadrantPosition::Left;
     }
   }
   else  if ( quadOffsetX > 0 )
   {
     if ( quadOffsetY < 0 )
     {
-      return LabelPosition::Quadrant::QuadrantAboveRight;
+      return Qgis::LabelQuadrantPosition::AboveRight;
     }
     else if ( quadOffsetY > 0 )
     {
-      return LabelPosition::Quadrant::QuadrantBelowRight;
+      return Qgis::LabelQuadrantPosition::BelowRight;
     }
     else
     {
-      return LabelPosition::Quadrant::QuadrantRight;
+      return Qgis::LabelQuadrantPosition::Right;
     }
   }
   else
   {
     if ( quadOffsetY < 0 )
     {
-      return LabelPosition::Quadrant::QuadrantAbove;
+      return Qgis::LabelQuadrantPosition::Above;
     }
     else if ( quadOffsetY > 0 )
     {
-      return LabelPosition::Quadrant::QuadrantBelow;
+      return Qgis::LabelQuadrantPosition::Below;
     }
     else
     {
-      return LabelPosition::Quadrant::QuadrantOver;
+      return Qgis::LabelQuadrantPosition::Over;
     }
   }
 }
@@ -320,7 +320,7 @@ std::size_t FeaturePart::createCandidateCenteredOverPoint( double x, double y, s
     }
   }
 
-  lPos.emplace_back( std::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) );
+  lPos.emplace_back( std::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) );
   return 1;
 }
 
@@ -427,10 +427,10 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
     return nullptr;
   }
 
-  return std::make_unique< LabelPosition >( 0, px, py, getLabelWidth(), getLabelHeight(), 0.0, 0.0, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver );
+  return std::make_unique< LabelPosition >( 0, px, py, getLabelWidth(), getLabelHeight(), 0.0, 0.0, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
 }
 
-void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, Qgis::LabelPredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset, double angle )
+void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, Qgis::LabelQuadrantPosition &quadrant, double x, double y, double labelWidth, double labelHeight, Qgis::LabelPredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset, double angle )
 {
   double alpha = 0.0;
   double deltaX = 0;
@@ -439,91 +439,91 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
   switch ( position )
   {
     case Qgis::LabelPredefinedPointPosition::TopLeft:
-      quadrant = LabelPosition::Quadrant::QuadrantAboveLeft;
+      quadrant = Qgis::LabelQuadrantPosition::AboveLeft;
       alpha = 3 * M_PI_4;
       deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::TopSlightlyLeft:
-      quadrant = LabelPosition::Quadrant::QuadrantAboveRight; //right quadrant, so labels are left-aligned
+      quadrant = Qgis::LabelQuadrantPosition::AboveRight; //right quadrant, so labels are left-aligned
       alpha = M_PI_2;
       deltaX = -labelWidth / 4.0 - visualMargin.left();
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::TopMiddle:
-      quadrant = LabelPosition::Quadrant::QuadrantAbove;
+      quadrant = Qgis::LabelQuadrantPosition::Above;
       alpha = M_PI_2;
       deltaX = -labelWidth / 2.0;
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::TopSlightlyRight:
-      quadrant = LabelPosition::Quadrant::QuadrantAboveLeft; //left quadrant, so labels are right-aligned
+      quadrant = Qgis::LabelQuadrantPosition::AboveLeft; //left quadrant, so labels are right-aligned
       alpha = M_PI_2;
       deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::TopRight:
-      quadrant = LabelPosition::Quadrant::QuadrantAboveRight;
+      quadrant = Qgis::LabelQuadrantPosition::AboveRight;
       alpha = M_PI_4;
       deltaX = - visualMargin.left() + symbolWidthOffset;
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::MiddleLeft:
-      quadrant = LabelPosition::Quadrant::QuadrantLeft;
+      quadrant = Qgis::LabelQuadrantPosition::Left;
       alpha = M_PI;
       deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
       deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
       break;
 
     case Qgis::LabelPredefinedPointPosition::MiddleRight:
-      quadrant = LabelPosition::Quadrant::QuadrantRight;
+      quadrant = Qgis::LabelQuadrantPosition::Right;
       alpha = 0.0;
       deltaX = -visualMargin.left() + symbolWidthOffset;
       deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
       break;
 
     case Qgis::LabelPredefinedPointPosition::BottomLeft:
-      quadrant = LabelPosition::Quadrant::QuadrantBelowLeft;
+      quadrant = Qgis::LabelQuadrantPosition::BelowLeft;
       alpha = 5 * M_PI_4;
       deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft:
-      quadrant = LabelPosition::Quadrant::QuadrantBelowRight; //right quadrant, so labels are left-aligned
+      quadrant = Qgis::LabelQuadrantPosition::BelowRight; //right quadrant, so labels are left-aligned
       alpha = 3 * M_PI_2;
       deltaX = -labelWidth / 4.0 - visualMargin.left();
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::BottomMiddle:
-      quadrant = LabelPosition::Quadrant::QuadrantBelow;
+      quadrant = Qgis::LabelQuadrantPosition::Below;
       alpha = 3 * M_PI_2;
       deltaX = -labelWidth / 2.0;
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::BottomSlightlyRight:
-      quadrant = LabelPosition::Quadrant::QuadrantBelowLeft; //left quadrant, so labels are right-aligned
+      quadrant = Qgis::LabelQuadrantPosition::BelowLeft; //left quadrant, so labels are right-aligned
       alpha = 3 * M_PI_2;
       deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::BottomRight:
-      quadrant = LabelPosition::Quadrant::QuadrantBelowRight;
+      quadrant = Qgis::LabelQuadrantPosition::BelowRight;
       alpha = 7 * M_PI_4;
       deltaX = -visualMargin.left() + symbolWidthOffset;
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
     case Qgis::LabelPredefinedPointPosition::OverPoint:
-      quadrant = LabelPosition::Quadrant::QuadrantOver;
+      quadrant = Qgis::LabelQuadrantPosition::Over;
       alpha = 0;
       distanceToLabel = 0;
       deltaX = -labelWidth / 2.0;
@@ -596,7 +596,7 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
 
   auto addCandidate = [this, x, y, labelWidth, labelHeight, angle, visualMargin, symbolWidthOffset, symbolHeightOffset, &created, &cost, &lPos, &i, maxNumberCandidates]( Qgis::LabelPredefinedPointPosition position, double distance ) -> bool
   {
-    LabelPosition::Quadrant quadrant = LabelPosition::Quadrant::QuadrantAboveLeft;
+    Qgis::LabelQuadrantPosition quadrant = Qgis::LabelQuadrantPosition::AboveLeft;
 
     double labelX = 0;
     double labelY = 0;
@@ -737,7 +737,7 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
     for ( int j = 0; j < candidatesPerRay; ++j, rayDistance += rayStepDelta )
     {
-      LabelPosition::Quadrant quadrant = LabelPosition::Quadrant::QuadrantOver;
+      Qgis::LabelQuadrantPosition quadrant = Qgis::LabelQuadrantPosition::Over;
 
       if ( angleToCandidate < gamma1 || angleToCandidate > a360 - gamma1 )  // on the right
       {
@@ -748,49 +748,49 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
         deltaY = -labelHeight + labelHeight * iota / ( 2 * gamma1 );
 
-        quadrant = LabelPosition::Quadrant::QuadrantRight;
+        quadrant = Qgis::LabelQuadrantPosition::Right;
       }
       else if ( angleToCandidate < a90 - gamma2 )  // top-right
       {
         deltaX = rayDistance * std::cos( angleToCandidate );
         deltaY = rayDistance * std::sin( angleToCandidate );
-        quadrant = LabelPosition::Quadrant::QuadrantAboveRight;
+        quadrant = Qgis::LabelQuadrantPosition::AboveRight;
       }
       else if ( angleToCandidate < a90 + gamma2 ) // top
       {
         deltaX = -labelWidth * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
         deltaY = rayDistance;
-        quadrant = LabelPosition::Quadrant::QuadrantAbove;
+        quadrant = Qgis::LabelQuadrantPosition::Above;
       }
       else if ( angleToCandidate < a180 - gamma1 )  // top left
       {
         deltaX = rayDistance * std::cos( angleToCandidate ) - labelWidth;
         deltaY = rayDistance * std::sin( angleToCandidate );
-        quadrant = LabelPosition::Quadrant::QuadrantAboveLeft;
+        quadrant = Qgis::LabelQuadrantPosition::AboveLeft;
       }
       else if ( angleToCandidate < a180 + gamma1 ) // left
       {
         deltaX = -rayDistance - labelWidth;
         deltaY = - ( angleToCandidate - a180 + gamma1 ) * labelHeight / ( 2 * gamma1 );
-        quadrant = LabelPosition::Quadrant::QuadrantLeft;
+        quadrant = Qgis::LabelQuadrantPosition::Left;
       }
       else if ( angleToCandidate < a270 - gamma2 ) // down - left
       {
         deltaX = rayDistance * std::cos( angleToCandidate ) - labelWidth;
         deltaY = rayDistance * std::sin( angleToCandidate ) - labelHeight;
-        quadrant = LabelPosition::Quadrant::QuadrantBelowLeft;
+        quadrant = Qgis::LabelQuadrantPosition::BelowLeft;
       }
       else if ( angleToCandidate < a270 + gamma2 ) // down
       {
         deltaY = -rayDistance - labelHeight;
         deltaX = -labelWidth + ( angleToCandidate - a270 + gamma2 ) * labelWidth / ( 2 * gamma2 );
-        quadrant = LabelPosition::Quadrant::QuadrantBelow;
+        quadrant = Qgis::LabelQuadrantPosition::Below;
       }
       else if ( angleToCandidate < a360 ) // down - right
       {
         deltaX = rayDistance * std::cos( angleToCandidate );
         deltaY = rayDistance * std::sin( angleToCandidate ) - labelHeight;
-        quadrant = LabelPosition::Quadrant::QuadrantBelowRight;
+        quadrant = Qgis::LabelQuadrantPosition::BelowRight;
       }
 
       transformRotation.map( deltaX, deltaY, &deltaX, &deltaY );
@@ -948,7 +948,7 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
         // not possible here
         break;
     }
-    lPos.emplace_back( std::make_unique< LabelPosition >( i, labelX, candidateCenterY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) );
+    lPos.emplace_back( std::make_unique< LabelPosition >( i, labelX, candidateCenterY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) );
 
     currentDistanceAlongLine += lineStepDistance;
 
@@ -1176,7 +1176,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
           {
             const double candidateCost = cost + ( reversed ? 0 : 0.001 );
-            lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+            lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
           }
         }
         if ( aboveLine )
@@ -1184,7 +1184,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
           {
             const double candidateCost = cost + ( !reversed ? 0 : 0.001 ); // no extra cost for above line placements
-            lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+            lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
           }
         }
         if ( flags & Qgis::LabelLinePlacementFlag::OnLine )
@@ -1192,13 +1192,13 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
           {
             const double candidateCost = cost + 0.002;
-            lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+            lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
           }
         }
       }
       else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
       {
-        lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+        lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
       }
       else
       {
@@ -1377,7 +1377,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle ) )
         {
           const double candidateCost = cost + ( !reversed ? 0 : 0.001 ); // no extra cost for above line placements
-          lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+          lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
         }
       }
       if ( belowLine )
@@ -1385,7 +1385,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle ) )
         {
           const double candidateCost = cost + ( !reversed ? 0.001 : 0 );
-          lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+          lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
         }
       }
       if ( flags & Qgis::LabelLinePlacementFlag::OnLine )
@@ -1393,13 +1393,13 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
         {
           const double candidateCost = cost + 0.002;
-          lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+          lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ? LabelPosition::LabelDirectionToLine::Reversed : LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
         }
       }
     }
     else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
     {
-      lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) ); // Line
+      lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) ); // Line
     }
     else
     {
@@ -1435,14 +1435,14 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     return nullptr;
 
   auto it = placement->graphemePlacement.constBegin();
-  std::unique_ptr< LabelPosition > firstPosition = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver );
+  std::unique_ptr< LabelPosition > firstPosition = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
   firstPosition->setUpsideDownCharCount( placement->upsideDownCharCount );
   firstPosition->setPartId( it->graphemeIndex );
   LabelPosition *previousPosition = firstPosition.get();
   it++;
   while ( it != placement->graphemePlacement.constEnd() )
   {
-    std::unique_ptr< LabelPosition > position = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver );
+    std::unique_ptr< LabelPosition > position = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
     position->setPartId( it->graphemeIndex );
 
     LabelPosition *nextPosition = position.get();
@@ -1985,7 +1985,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
               if ( GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), rx - dlx, ry - dly, labelWidth, labelHeight, alpha ) )
               {
                 // cost is set to minimal value, evaluated later
-                lPos.emplace_back( std::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) );
+                lPos.emplace_back( std::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) );
                 numberCandidatesGenerated++;
               }
             }
@@ -1997,7 +1997,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
               // but the bugs noted in CostCalculator currently prevent this
               if ( mapShape->containsPoint( rx, ry ) )
               {
-                std::unique_ptr< LabelPosition > potentialCandidate = std::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver );
+                std::unique_ptr< LabelPosition > potentialCandidate = std::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
                 // cost is set to minimal value, evaluated later
                 lPos.emplace_back( std::move( potentialCandidate ) );
                 numberCandidatesGenerated++;
@@ -2126,7 +2126,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
   {
     double labelX = 0;
     double labelY = 0;
-    LabelPosition::Quadrant quadrant = LabelPosition::Quadrant::QuadrantAboveLeft;
+    Qgis::LabelQuadrantPosition quadrant = Qgis::LabelQuadrantPosition::AboveLeft;
 
     // Satisfy R2: Label should be placed entirely outside at some distance from the area feature.
     createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel * 0.5, visualMargin, 0, 0, labelAngle );
@@ -2241,7 +2241,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
 
   if ( mLF->hasFixedPosition() )
   {
-    lPos.emplace_back( std::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angleInRadians ), getLabelHeight( angleInRadians ), angleInRadians, 0.0, this, LabelPosition::LabelDirectionToLine::SameDirection, LabelPosition::Quadrant::QuadrantOver ) );
+    lPos.emplace_back( std::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angleInRadians ), getLabelHeight( angleInRadians ), angleInRadians, 0.0, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over ) );
   }
   else
   {

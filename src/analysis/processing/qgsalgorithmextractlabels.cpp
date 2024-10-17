@@ -220,21 +220,21 @@ class ExtractLabelSink : public QgsLabelSink
         case Qgis::LabelMultiLineAlignment::FollowPlacement:
           switch ( label->getQuadrant() )
           {
-            case pal::LabelPosition::Quadrant::QuadrantAboveLeft:
-            case pal::LabelPosition::Quadrant::QuadrantLeft:
-            case pal::LabelPosition::Quadrant::QuadrantBelowLeft:
+            case Qgis::LabelQuadrantPosition::AboveLeft:
+            case Qgis::LabelQuadrantPosition::Left:
+            case Qgis::LabelQuadrantPosition::BelowLeft:
               labelAlignment = QStringLiteral( "right" );
               break;
 
-            case pal::LabelPosition::Quadrant::QuadrantAbove:
-            case pal::LabelPosition::Quadrant::QuadrantOver:
-            case pal::LabelPosition::Quadrant::QuadrantBelow:
+            case Qgis::LabelQuadrantPosition::Above:
+            case Qgis::LabelQuadrantPosition::Over:
+            case Qgis::LabelQuadrantPosition::Below:
               labelAlignment = QStringLiteral( "center" );
               break;
 
-            case pal::LabelPosition::Quadrant::QuadrantAboveRight:
-            case pal::LabelPosition::Quadrant::QuadrantRight:
-            case pal::LabelPosition::Quadrant::QuadrantBelowRight:
+            case Qgis::LabelQuadrantPosition::AboveRight:
+            case Qgis::LabelQuadrantPosition::Right:
+            case Qgis::LabelQuadrantPosition::BelowRight:
               labelAlignment = QStringLiteral( "left" );
               break;
           }
