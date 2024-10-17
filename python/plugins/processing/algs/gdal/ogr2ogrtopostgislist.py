@@ -340,7 +340,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
                     self.tr(
                         'Only one of "Promote to Multipart" or "Output geometry type" (excluding Convert to Linear) can be enabled.'))
 
-        elif promotetomulti and not self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context):
+        elif promotetomulti and not self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)]:
             arguments.append('-nlt PROMOTE_TO_MULTI')
         if precision is False:
             arguments.append('-lco PRECISION=NO')
