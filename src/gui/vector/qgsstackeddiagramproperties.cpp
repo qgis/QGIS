@@ -225,7 +225,7 @@ void QgsStackedDiagramProperties::apply()
       ds->categoryLabels += ds1.at( 0 ).categoryLabels;
       ds->categoryColors += ds1.at( 0 ).categoryColors;
     }
-    dr->addRenderer( renderer );
+    dr->addRenderer( renderer->clone() );
   }
 
   dr->setDiagramSettings( *ds );

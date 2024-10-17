@@ -864,6 +864,11 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
 
 const QString QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED = QStringLiteral( "Stacked" );
 
+QgsStackedDiagramRenderer::~QgsStackedDiagramRenderer()
+{
+  qDeleteAll( mDiagramRenderers );
+}
+
 QgsStackedDiagramRenderer *QgsStackedDiagramRenderer::clone() const
 {
   return new QgsStackedDiagramRenderer( *this );
