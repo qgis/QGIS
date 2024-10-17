@@ -389,19 +389,19 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
     //calculate font alignment based on label quadrant
     switch ( label->getQuadrant() )
     {
-      case LabelPosition::QuadrantAboveLeft:
-      case LabelPosition::QuadrantLeft:
-      case LabelPosition::QuadrantBelowLeft:
+      case LabelPosition::Quadrant::QuadrantAboveLeft:
+      case LabelPosition::Quadrant::QuadrantLeft:
+      case LabelPosition::Quadrant::QuadrantBelowLeft:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Right;
         break;
-      case LabelPosition::QuadrantAbove:
-      case LabelPosition::QuadrantOver:
-      case LabelPosition::QuadrantBelow:
+      case LabelPosition::Quadrant::QuadrantAbove:
+      case LabelPosition::Quadrant::QuadrantOver:
+      case LabelPosition::Quadrant::QuadrantBelow:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
         break;
-      case LabelPosition::QuadrantAboveRight:
-      case LabelPosition::QuadrantRight:
-      case LabelPosition::QuadrantBelowRight:
+      case LabelPosition::Quadrant::QuadrantAboveRight:
+      case LabelPosition::Quadrant::QuadrantRight:
+      case LabelPosition::Quadrant::QuadrantBelowRight:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Left;
         break;
     }
@@ -697,7 +697,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       bool prependSymb = false;
       QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
-      if ( label->getReversed() )
+      if ( label->isReversedFromLineDirection() )
       {
         prependSymb = true;
         symb = tmpLyr.lineSettings().leftDirectionSymbol();
