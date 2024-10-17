@@ -864,6 +864,31 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
 
 const QString QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED = QStringLiteral( "Stacked" );
 
+QgsStackedDiagramRenderer::QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other )
+  : QgsDiagramRenderer( other )
+  , mSettings( other.mSettings )
+{
+  for ( QgsDiagramRenderer *renderer : std::as_const( other.mDiagramRenderers ) )
+  {
+    if ( renderer )
+      mDiagramRenderers << renderer->clone();
+  }
+}
+
+QgsStackedDiagramRenderer &QgsStackedDiagramRenderer::operator=( const QgsStackedDiagramRenderer &other )
+{
+  mSettings = other.mSettings;
+  qDeleteAll( mDiagramRenderers );
+  mDiagramRenderers.clear();
+  for ( QgsDiagramRenderer *renderer : std::as_const( other.mDiagramRenderers ) )
+  {
+    if ( renderer )
+      mDiagramRenderers << renderer->clone();
+  }
+
+  return *this;
+}
+
 QgsStackedDiagramRenderer::~QgsStackedDiagramRenderer()
 {
   qDeleteAll( mDiagramRenderers );
@@ -1078,6 +1103,9 @@ void QgsStackedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadW
 
 void QgsStackedDiagramRenderer::_readXmlSubRenderers( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  qDeleteAll( mDiagramRenderers );
+  mDiagramRenderers.clear();
+
   const QDomElement subRenderersElem = elem.firstChildElement( QStringLiteral( "DiagramRenderers" ) );
 
   if ( !subRenderersElem.isNull() )

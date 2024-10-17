@@ -1005,6 +1005,10 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
     QgsStackedDiagramRenderer() = default;
     ~QgsStackedDiagramRenderer() override;
 
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
+    QgsStackedDiagramRenderer &operator=( const QgsStackedDiagramRenderer &other );
+
     QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
