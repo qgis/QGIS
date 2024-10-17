@@ -1870,8 +1870,10 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
     }
   }
 
-  double w = 0.0, h = 0.0, rw = 0.0, rh = 0.0;
-  const double lineHeight = fm.ascent() + fm.descent(); // ignore +1 for baseline
+  double w = 0.0;
+  double h = 0.0;
+  double rw = 0.0;
+  double rh = 0.0;
 
   if ( document )
   {
@@ -1891,70 +1893,14 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   }
   else
   {
-    const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
-    const int lines = multiLineSplit.size();
+    // this branch is ONLY hit if we are using curved labels without HTML formatting, as otherwise we're always using the document!
+    // so here we have certain assumptions which apply to curved labels only:
+    // - orientation is ignored
+    // - labels are single lines only
+    // - line direction symbol are (currently!) not supported (see https://github.com/qgis/QGIS/issues/14968 )
 
-    const double lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
-
-    switch ( orientation )
-    {
-      case Qgis::TextOrientation::Horizontal:
-      {
-        h += fm.height() + static_cast< double >( ( lines - 1 ) * ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( lineHeight * multilineH ) : lineHeightPainterUnits ) );
-
-        for ( const QString &line : std::as_const( multiLineSplit ) )
-        {
-          w = std::max( w, fm.horizontalAdvance( line ) );
-        }
-        break;
-      }
-
-      case Qgis::TextOrientation::Vertical:
-      {
-        double letterSpacing = format.scaledFont( context ).letterSpacing();
-        double labelWidth = fm.maxWidth();
-        w = labelWidth + ( lines - 1 ) * ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
-
-        int maxLineLength = 0;
-        for ( const QString &line : std::as_const( multiLineSplit ) )
-        {
-          maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
-        }
-        h = fm.ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
-        break;
-      }
-
-      case Qgis::TextOrientation::RotationBased:
-      {
-        double widthHorizontal = 0.0;
-        for ( const QString &line : std::as_const( multiLineSplit ) )
-        {
-          widthHorizontal = std::max( w, fm.horizontalAdvance( line ) );
-        }
-
-        double widthVertical = 0.0;
-        double letterSpacing = format.scaledFont( context ).letterSpacing();
-        double labelWidth = fm.maxWidth();
-        widthVertical = labelWidth + ( lines - 1 ) * ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
-
-        double heightHorizontal = 0.0;
-        heightHorizontal += fm.height() + static_cast< double >( ( lines - 1 ) * ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( lineHeight * multilineH ) : lineHeightPainterUnits ) );
-
-        double heightVertical = 0.0;
-        int maxLineLength = 0;
-        for ( const QString &line : std::as_const( multiLineSplit ) )
-        {
-          maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
-        }
-        heightVertical = fm.ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
-
-        w = widthHorizontal;
-        rw = heightVertical;
-        h = heightHorizontal;
-        rh = widthVertical;
-        break;
-      }
-    }
+    h = fm.height();
+    w = fm.horizontalAdvance( text );
   }
 
   const double uPP = xform->mapUnitsPerPixel();
