@@ -272,6 +272,39 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(len(doc), 1)
         self.assertEqual(len(doc[0]), 0)
 
+    def testInsert(self):
+        doc = QgsTextDocument()
+        self.assertEqual(len(doc), 0)
+
+        with self.assertRaises(IndexError):
+            doc.insert(-1, QgsTextBlock(QgsTextFragment('a')))
+        with self.assertRaises(IndexError):
+            doc.insert(1, QgsTextBlock(QgsTextFragment('a')))
+        self.assertEqual(len(doc), 0)
+        doc.insert(0, QgsTextBlock(QgsTextFragment('a')))
+        self.assertEqual(len(doc), 1)
+        self.assertEqual(doc[0][0].text(), 'a')
+
+        doc.insert(0, QgsTextBlock(QgsTextFragment('b')))
+        self.assertEqual(len(doc), 2)
+        self.assertEqual(doc[0][0].text(), 'b')
+        self.assertEqual(doc[1][0].text(), 'a')
+
+        doc.insert(1, QgsTextBlock(QgsTextFragment('c')))
+        self.assertEqual(len(doc), 3)
+        self.assertEqual(doc[0][0].text(), 'b')
+        self.assertEqual(doc[1][0].text(), 'c')
+        self.assertEqual(doc[2][0].text(), 'a')
+
+        with self.assertRaises(IndexError):
+            doc.insert(4, QgsTextBlock(QgsTextFragment('d')))
+        doc.insert(3, QgsTextBlock(QgsTextFragment('d')))
+        self.assertEqual(len(doc), 4)
+        self.assertEqual(doc[0][0].text(), 'b')
+        self.assertEqual(doc[1][0].text(), 'c')
+        self.assertEqual(doc[2][0].text(), 'a')
+        self.assertEqual(doc[3][0].text(), 'd')
+
     def testAt(self):
         doc = QgsTextDocument()
         self.assertEqual(len(doc), 0)
