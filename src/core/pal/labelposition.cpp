@@ -41,7 +41,7 @@
 
 using namespace pal;
 
-LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Quadrant quadrant )
+LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Qgis::LabelQuadrantPosition quadrant )
   : id( id )
   , feature( feature )
   , probFeat( 0 )
@@ -51,7 +51,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   , h( h )
   , partId( -1 )
   , upsideDown( false )
-  , quadrant( quadrant )
+  , mQuadrant( quadrant )
   , mDirectionToLine( directionToLine )
   , mCost( cost )
   , mHasObstacleConflict( false )
@@ -159,7 +159,7 @@ LabelPosition::LabelPosition( const LabelPosition &other )
   partId = other.partId;
   upsideDown = other.upsideDown;
   mDirectionToLine = other.mDirectionToLine;
-  quadrant = other.quadrant;
+  mQuadrant = other.mQuadrant;
   mHasObstacleConflict = other.mHasObstacleConflict;
   mUpsideDownCharCount = other.mUpsideDownCharCount;
 
