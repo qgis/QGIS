@@ -174,16 +174,6 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
   return res;
 }
 
-QgsTextDocument QgsTextLabelFeature::document() const
-{
-  return mDocument;
-}
-
-QgsTextDocumentMetrics QgsTextLabelFeature::documentMetrics() const
-{
-  return mDocumentMetrics;
-}
-
 void QgsTextLabelFeature::setDocument( const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics )
 {
   mDocument = document;

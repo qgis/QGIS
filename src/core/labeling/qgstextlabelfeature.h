@@ -106,7 +106,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \see setDocument()
      * \since QGIS 3.14
      */
-    QgsTextDocument document() const;
+    const QgsTextDocument &document() const { return mDocument; }
 
     /**
      * Returns the document metrics for the label.
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \see document()
      * \since QGIS 3.28
      */
-    QgsTextDocumentMetrics documentMetrics() const;
+    const QgsTextDocumentMetrics &documentMetrics() const { return mDocumentMetrics; }
 
     /**
      * Sets the \a document and document \a metrics for the label.
