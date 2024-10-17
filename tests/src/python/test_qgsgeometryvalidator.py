@@ -152,6 +152,13 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(spy[1][0].where(), QgsPointXY(2, 7))
         self.assertEqual(spy[1][0].what(), 'segment 1 of ring 1 of polygon 0 intersects segment 2 of ring 2 of polygon 0 at 2, 7')
 
+    def test_polygon_3d(self):
+        geom = QgsGeometry.fromWkt("Polygon Z((0 0 0,0 0 7,0 5 7,0 5 0,0 0 0))")
+        validator = QgsGeometryValidator(geom)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
     def test_line_vertices(self):
         # valid line
         g = QgsGeometry.fromWkt("LineString (0 0, 10 0)")
@@ -181,6 +188,19 @@ class TestQgsGeometryValidator(QgisTestCase):
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
         self.assertEqual(spy[0][0].what(), 'line 0 with less than two points')
+
+    def test_line_3d(self):
+        geom1 = QgsGeometry.fromWkt("LineString Z(0 0 5, 10 0 5, 0 0 5)")
+        validator = QgsGeometryValidator(geom1)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        geom2 = QgsGeometry.fromWkt("LineString Z(0 0 5, 10 0 7, 15 3 14, 0 0 5)")
+        validator = QgsGeometryValidator(geom2)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
 
     def test_ring_vertex_count(self):
         # valid ring

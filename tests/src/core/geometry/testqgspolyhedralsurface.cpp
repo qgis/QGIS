@@ -1710,8 +1710,22 @@ void TestQgsPolyhedralSurface::testIsValid()
   QVERIFY( error.isEmpty() );
   QVERIFY( isValid );
 
-  // a QgsPolyhedralSurface with an invalid QgsPolygon is not valid
+  // a QgsPolyhedralSurface invalid according to Geos because it does not handle the Z component
+  // Still valid
   QgsPolyhedralSurface polySurface2;
+  polySurface2.fromWkt( "POLYHEDRALSURFACE Z"
+                        "(((0.0 0.0 0.0,0.0 5.0 0.0,5.0 5.0 0.0,5.0 0.0 0.0,0.0 0.0 0.0)),"
+                        "((0.0 0.0 7.0,5.0 0.0 7.0,5.0 5.0 7.0,0.0 5.0 7.0,0.0 0.0 7.0)),"
+                        "((0.0 0.0 0.0,0.0 0.0 7.0,0.0 5.0 7.0,0.0 5.0 0.0,0.0 0.0 0.0)),"
+                        "((0.0 5.0 0.0,0.0 5.0 7.0,5.0 5.0 7.0,5.0 5.0 0.0,0.0 5.0 0.0)),"
+                        "((5.0 5.0 0.0,5.0 5.0 7.0,5.0 0.0 7.0,5.0 0.0 0.0,5.0 5.0 0.0)),"
+                        "((5.0 0.0 0.0,5.0 0.0 7.0,0.0 0.0 7.0,0.0 0.0 0.0,5.0 0.0 0.0)))" );
+  isValid = polySurface2.isValid( error );
+  QVERIFY( error.isEmpty() );
+  QVERIFY( isValid );
+
+  // a QgsPolyhedralSurface with an invalid QgsPolygon is not valid
+  QgsPolyhedralSurface polySurface3;
   QgsPolygon patch;
   QgsLineString lineString;
 
@@ -1727,9 +1741,9 @@ void TestQgsPolyhedralSurface::testIsValid()
                         << QgsPoint( Qgis::WkbType::PointZ, 10, 2, 5 ) );
   patch.addInteriorRing( lineString.clone() );
 
-  polySurface2.addPatch( patch.clone() );
+  polySurface3.addPatch( patch.clone() );
 
-  isValid = polySurface2.isValid( error );
+  isValid = polySurface3.isValid( error );
   QCOMPARE( error, "Polygon 0 is invalid: Too few points in geometry component" );
   QVERIFY( !isValid );
 }
