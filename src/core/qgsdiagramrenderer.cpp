@@ -1083,11 +1083,6 @@ void QgsStackedDiagramRenderer::addRenderer( QgsDiagramRenderer *renderer )
   }
 }
 
-const QgsDiagramRenderer *QgsStackedDiagramRenderer::renderer( const int index ) const
-{
-  return mDiagramRenderers.value( index );
-}
-
 void QgsStackedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   const QDomElement categoryElem = elem.firstChildElement( QStringLiteral( "DiagramCategory" ) );

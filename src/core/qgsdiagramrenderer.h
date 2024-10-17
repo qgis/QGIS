@@ -1065,13 +1065,6 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
      */
     void addRenderer( QgsDiagramRenderer *renderer SIP_TRANSFER );
 
-    /**
-     * Returns the renderer at the given \a index.
-     *
-     * \param index index of the desired renderer in the stacked renderer
-     */
-    const QgsDiagramRenderer *renderer( const int index ) const;
-
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
     QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;

@@ -1041,13 +1041,6 @@ the left (horizontal mode) or more to the top (vertical mode).
 :param renderer: diagram renderer to be added to the stacked renderer
 %End
 
-    const QgsDiagramRenderer *renderer( const int index ) const;
-%Docstring
-Returns the renderer at the given ``index``.
-
-:param index: index of the desired renderer in the stacked renderer
-%End
-
   protected:
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
 
