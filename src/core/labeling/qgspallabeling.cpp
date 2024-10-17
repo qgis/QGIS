@@ -1796,6 +1796,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   QString leftDirSymb = mLineSettings.leftDirectionSymbol();
   QString rightDirSymb = mLineSettings.rightDirectionSymbol();
   QgsLabelLineSettings::DirectionSymbolPlacement placeDirSymb = mLineSettings.directionSymbolPlacement();
+  double multilineH = mFormat.lineHeight();
 
   if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
   {
@@ -1810,6 +1811,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::TextOrientation ) )
   {
     orientation = QgsTextRendererUtils::decodeTextOrientation( dataDefinedValues.value( QgsPalLayerSettings::Property::TextOrientation ).toString() );
+  }
+
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineHeight ) )
+  {
+    multilineH = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineHeight ).toDouble();
   }
 
   if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::DirSymbDraw ) )
@@ -1840,7 +1846,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
     wrapchr = QStringLiteral( "\n" ); // default to new line delimiter
   }
 
+  const double lineHeightPainterUnits = context.convertToPainterUnits( mFormat.lineHeight(), mFormat.lineHeightUnit() );
+
   //consider the space needed for the direction symbol
+  QSizeF maximumExtraSpaceAllowance( 0, 0 );
+  QSizeF minimumSize( 0, 0 );
   if ( addDirSymb && placement == Qgis::LabelPlacement::Line
        && ( !leftDirSymb.isEmpty() || !rightDirSymb.isEmpty() ) )
   {
@@ -1849,17 +1859,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
     const QString dirSym = fm.horizontalAdvance( rightDirSymb ) > fm.horizontalAdvance( leftDirSymb )
                            ? rightDirSymb : leftDirSymb;
 
-    // placement is Line, so we are guaranteed to be using a document
-    QString textCopy( text );
     switch ( placeDirSymb )
     {
       case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
-        textCopy.append( dirSym );
+        maximumExtraSpaceAllowance = QSizeF( fm.horizontalAdvance( dirSym ), 0 );
         break;
 
       case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
       case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
-        textCopy.prepend( dirSym + QStringLiteral( "\n" ) );
+        maximumExtraSpaceAllowance = QSizeF( 0, ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( ( fm.ascent() + fm.descent() ) * multilineH ) : lineHeightPainterUnits ) );
+        minimumSize = QSizeF( fm.horizontalAdvance( dirSym ), 0 );
         break;
     }
   }
@@ -1875,14 +1884,14 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
 
     *documentMetrics = QgsTextDocumentMetrics::calculateMetrics( *document, format, context );
     const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, orientation != Qgis::TextOrientation::RotationBased ? orientation : Qgis::TextOrientation::Horizontal );
-    w = size.width();
-    h = size.height();
+    w = std::max( minimumSize.width(), size.width() + maximumExtraSpaceAllowance.width() );
+    h = std::max( minimumSize.height(), size.height() + maximumExtraSpaceAllowance.height() );
 
     if ( orientation == Qgis::TextOrientation::RotationBased )
     {
       const QSizeF rotatedSize = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, Qgis::TextOrientation::Vertical );
-      rh = rotatedSize.width();
-      rw = rotatedSize.height();
+      rh = std::max( minimumSize.width(), rotatedSize.width() + maximumExtraSpaceAllowance.width() );
+      rw = std::max( minimumSize.height(), rotatedSize.height() + maximumExtraSpaceAllowance.height() );
     }
   }
   else
@@ -1903,6 +1912,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
 
   if ( documentMetrics )
   {
+    // TODO -- does this need to account for maximumExtraSpaceAllowance / minimumSize ? Right now the size
+    // of line direction symbols will be ignored
     const QRectF outerBoundsPixels = documentMetrics->outerBounds( Qgis::TextLayoutMode::Labeling, orientation );
 
     outerBounds = QRectF( outerBoundsPixels.left() * uPP,
