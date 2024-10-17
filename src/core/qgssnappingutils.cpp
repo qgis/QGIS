@@ -22,7 +22,7 @@
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
   : QObject( parent )
-  , mSnappingConfig( QgsProject::instance() )
+  , mSnappingConfig( QgsProject::instance() ) // skip-keyword-check
   , mEnableSnappingForInvisibleFeature( enableSnappingForInvisibleFeature )
 {
 }

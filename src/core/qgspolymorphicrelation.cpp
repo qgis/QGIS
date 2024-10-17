@@ -189,7 +189,7 @@ QgsAttributeList QgsPolymorphicRelation::referencedFields( const QString &layerI
 
   if ( d->mReferencedLayerIds.contains( layerId ) )
   {
-    QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+    QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ); // skip-keyword-check
 
     if ( vl && vl->isValid() )
     {

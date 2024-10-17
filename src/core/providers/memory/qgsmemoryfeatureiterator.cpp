@@ -304,7 +304,7 @@ QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
     mExpressionContext = std::make_unique< QgsExpressionContext >(
                            QList<QgsExpressionContextScope *>()
                            << QgsExpressionContextUtils::globalScope()
-                           << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+                           << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
     mExpressionContext->setFields( mFields );
   }
   return mExpressionContext.get();

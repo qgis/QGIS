@@ -1704,7 +1704,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   }
   else
   {
-    const QFileInfo project( QgsProject::instance()->fileName() );
+    const QFileInfo project( QgsProject::instance()->fileName() ); // skip-keyword-check
     QgsDebugMsgLevel( QStringLiteral( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString xml;

@@ -479,7 +479,7 @@ void QgsProject::setInstance( QgsProject *project )
 }
 
 
-QgsProject *QgsProject::instance()
+QgsProject *QgsProject::instance() // skip-keyword-check
 {
   if ( !sProject )
   {
@@ -2842,7 +2842,7 @@ QgsExpressionContext QgsProject::createExpressionContext() const
 
 QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
 {
-  // this method is called quite extensively using QgsProject::instance()
+  // this method is called quite extensively using QgsProject::instance() skip-keyword-check
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   // MUCH cheaper to clone than build

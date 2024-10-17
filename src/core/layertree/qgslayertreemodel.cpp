@@ -1209,7 +1209,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
       return false;
     QgsReadWriteContext context;
     QString errorMessage;
-    QgsLayerDefinition::loadLayerDefinition( layerDefinitionDoc, QgsProject::instance(), QgsLayerTree::toGroup( nodeParent ), errorMessage, context );
+    QgsLayerDefinition::loadLayerDefinition( layerDefinitionDoc, QgsProject::instance(), QgsLayerTree::toGroup( nodeParent ), errorMessage, context ); // skip-keyword-check
     emit messageEmitted( tr( "New layers added from another QGIS instance" ) );
   }
   else
@@ -1229,7 +1229,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
     QDomElement elem = rootLayerTreeElem.firstChildElement();
     while ( !elem.isNull() )
     {
-      QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() );
+      QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() ); // skip-keyword-check
       if ( node )
         nodes << node;
 

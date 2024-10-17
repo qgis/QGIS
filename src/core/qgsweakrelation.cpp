@@ -303,7 +303,9 @@ void QgsWeakRelation::writeXml( const QgsVectorLayer *layer, WeakRelationType ty
   if ( layer != relation.referencingLayer() && layer != relation.referencedLayer() )
     return;
 
-  const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
+  QgsPathResolver resolver;
+  if ( QgsProject *project = layer->project() )
+    resolver = project->pathResolver();
 
   relation.writeXml( node, doc );
   QDomNodeList relationsNodeList = node.toElement().elementsByTagName( QStringLiteral( "relation" ) );

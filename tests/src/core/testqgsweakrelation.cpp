@@ -286,21 +286,21 @@ void TestQgsWeakRelation::testReadWrite()
 void TestQgsWeakRelation::testWriteStyleCategoryRelations()
 {
   // Create a referencing layer and two referenced layers
-  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk1:int&field=fk2:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk1:int&field=fk2:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer1 );
 
-  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=name:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "None?field=pk:int&field=name:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer2 );
 
-  QgsVectorLayer mLayer3( QStringLiteral( "None?field=pk:int&field=name:string" ), QStringLiteral( "vl3" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &mLayer3, false, false );
+  QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "None?field=pk:int&field=name:string" ), QStringLiteral( "vl3" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer3 );
 
   // Create relation 1
   QgsRelation mRelation1;
   mRelation1.setId( QStringLiteral( "vl1.vl2" ) );
   mRelation1.setName( QStringLiteral( "vl1.vl2" ) );
-  mRelation1.setReferencingLayer( mLayer1.id() );
-  mRelation1.setReferencedLayer( mLayer2.id() );
+  mRelation1.setReferencingLayer( layer1->id() );
+  mRelation1.setReferencedLayer( layer2->id() );
   mRelation1.addFieldPair( QStringLiteral( "fk1" ), QStringLiteral( "pk" ) );
   QVERIFY( mRelation1.isValid() );
   QgsProject::instance()->relationManager()->addRelation( mRelation1 );
@@ -309,8 +309,8 @@ void TestQgsWeakRelation::testWriteStyleCategoryRelations()
   QgsRelation mRelation2;
   mRelation2.setId( QStringLiteral( "vl1.vl3" ) );
   mRelation2.setName( QStringLiteral( "vl1.vl3" ) );
-  mRelation2.setReferencingLayer( mLayer1.id() );
-  mRelation2.setReferencedLayer( mLayer3.id() );
+  mRelation2.setReferencingLayer( layer1->id() );
+  mRelation2.setReferencedLayer( layer3->id() );
   mRelation2.addFieldPair( QStringLiteral( "fk2" ), QStringLiteral( "pk" ) );
   QVERIFY( mRelation2.isValid() );
   QgsProject::instance()->relationManager()->addRelation( mRelation2 );
@@ -325,7 +325,7 @@ void TestQgsWeakRelation::testWriteStyleCategoryRelations()
   QString errorMessage;
   const QgsReadWriteContext context = QgsReadWriteContext();
 
-  mLayer1.writeSymbology( node, doc, errorMessage, context, QgsMapLayer::Relations );
+  layer1->writeSymbology( node, doc, errorMessage, context, QgsMapLayer::Relations );
 
   // Check XML tags and attributes
   const QDomElement referencedLayersElement = node.firstChildElement( QStringLiteral( "referencedLayers" ) );
@@ -350,22 +350,22 @@ void TestQgsWeakRelation::testWriteStyleCategoryRelations()
     Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "providerKey" ) ) );  // Weak relation attribute
 
     QCOMPARE( relationElement.attribute( QStringLiteral( "providerKey" ) ), QStringLiteral( "memory" ) );
-    QCOMPARE( relationElement.attribute( QStringLiteral( "referencingLayer" ) ), mLayer1.id() );
+    QCOMPARE( relationElement.attribute( QStringLiteral( "referencingLayer" ) ), layer1->id() );
 
     if ( relationElement.attribute( QStringLiteral( "id" ) ) == mRelation1.id() )
     {
-      QCOMPARE( relationElement.attribute( QStringLiteral( "referencedLayer" ) ), mLayer2.id() );
-      QCOMPARE( relationElement.attribute( QStringLiteral( "dataSource" ) ), mLayer2.publicSource() );
-      QCOMPARE( relationElement.attribute( QStringLiteral( "layerId" ) ), mLayer2.id() );
-      QCOMPARE( relationElement.attribute( QStringLiteral( "layerName" ) ), mLayer2.name() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "referencedLayer" ) ), layer2->id() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "dataSource" ) ), layer2->publicSource() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "layerId" ) ), layer2->id() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "layerName" ) ), layer2->name() );
       visitedCount++;
     }
     else if ( relationElement.attribute( QStringLiteral( "id" ) ) == mRelation2.id() )
     {
-      QCOMPARE( relationElement.attribute( QStringLiteral( "referencedLayer" ) ), mLayer3.id() );
-      QCOMPARE( relationElement.attribute( QStringLiteral( "dataSource" ) ), mLayer3.publicSource() );
-      QCOMPARE( relationElement.attribute( QStringLiteral( "layerId" ) ), mLayer3.id() );
-      QCOMPARE( relationElement.attribute( QStringLiteral( "layerName" ) ), mLayer3.name() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "referencedLayer" ) ), layer3->id() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "dataSource" ) ), layer3->publicSource() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "layerId" ) ), layer3->id() );
+      QCOMPARE( relationElement.attribute( QStringLiteral( "layerName" ) ), layer3->name() );
       visitedCount++;
     }
   }

@@ -83,7 +83,7 @@ QgsBrowserModel::~QgsBrowserModel()
 
 void QgsBrowserModel::updateProjectHome()
 {
-  QString home = QgsProject::instance()->homePath();
+  QString home = QgsProject::instance()->homePath(); // skip-keyword-check
   if ( mProjectHome && mProjectHome->path().mid( QStringLiteral( PROJECT_HOME_PREFIX ).length() ) == home )
     return;
 
@@ -248,7 +248,7 @@ void QgsBrowserModel::initialize()
 {
   if ( ! mInitialized )
   {
-    connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome ); // skip-keyword-check
     addRootItems();
     mInitialized = true;
   }

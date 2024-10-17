@@ -65,7 +65,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
      *
-     * If a specific \a project is not specified then the QgsProject::instance() project will be used to
+     * If a specific \a project is not specified then the QgsProject.instance() project will be used to
      * populate the model.
      */
     explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr );
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      *
-     * If a specific \a project is not specified then the QgsProject::instance() project will be used to
+     * If a specific \a project is not specified then the QgsProject.instance() project will be used to
      * populate the model.
      */
     explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr, QgsProject *project = nullptr );

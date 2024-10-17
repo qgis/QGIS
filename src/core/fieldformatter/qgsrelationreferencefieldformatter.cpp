@@ -50,7 +50,7 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
   }
 
   const QString relationName = config[QStringLiteral( "Relation" )].toString();
-  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationName );
+  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationName ); // skip-keyword-check
   if ( !relation.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );
@@ -117,7 +117,7 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
     return QVariant();
   }
   const QString relationName = config[QStringLiteral( "Relation" )].toString();
-  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() );
+  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ); // skip-keyword-check
   if ( !relation.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );

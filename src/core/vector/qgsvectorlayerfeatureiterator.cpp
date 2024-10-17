@@ -855,11 +855,11 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   std::unique_ptr<QgsExpression> exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() ); // skip-keyword-check
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() ); // skip-keyword-check
   exp->setGeomCalculator( &da );
-  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  exp->setAreaUnits( QgsProject::instance()->areaUnits() );
+  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() ); // skip-keyword-check
+  exp->setAreaUnits( QgsProject::instance()->areaUnits() ); // skip-keyword-check
 
   if ( !mExpressionContext )
     createExpressionContext();
@@ -1337,7 +1337,7 @@ void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
   mExpressionContext = std::make_unique< QgsExpressionContext >();
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
   mExpressionContext->setFeedback( mRequest.feedback() );
 }

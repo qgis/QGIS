@@ -28,7 +28,7 @@ bool QgsMapViewsManager::readXml( const QDomElement &element, const QDomDocument
   clear();
 
   QgsReadWriteContext readWriteContext;
-  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
   QDomElement elem3DMaps = element.firstChildElement( QStringLiteral( "mapViewDocks3D" ) );
   if ( !elem3DMaps.isNull() )
   {

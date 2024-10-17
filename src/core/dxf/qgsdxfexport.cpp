@@ -884,7 +884,7 @@ void QgsDxfExport::prepareRenderers()
                                 std::floor( mMapSettings.extent().width() * mFactor ),
                                 std::floor( mMapSettings.extent().height() * mFactor ), 0 ) );
 
-  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapSettings ) );
 
