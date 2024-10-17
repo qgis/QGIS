@@ -278,8 +278,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         if append and overwrite:
             raise QgsProcessingException(
                 self.tr(
-                    'Only one of Overwrite existing table or append to existing table can be enabled at a time.'))
-        elif append and not overwrite:
+                    'Only one of "Overwrite existing table" or "Append to existing table" can be enabled at a time.'))
+        elif append:
             arguments.append('-append')
         if addfields:
             arguments.append('-addfields')
@@ -332,15 +332,15 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             arguments.append(gt)
         if make_valid:
             arguments.append('-makevalid')
-        if promotetomulti and len(self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)]) > 0:
+        if promotetomulti and self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)]:
             if self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)] == 'CONVERT_TO_LINEAR':
                 arguments.append('-nlt PROMOTE_TO_MULTI')
             else:
                 raise QgsProcessingException(
                     self.tr(
-                        'Only one of Promote to Multipart or Output Geometry Type (excluding Convert to Linear) can be enabled.'))
+                        'Only one of "Promote to Multipart" or "Output geometry type" (excluding Convert to Linear) can be enabled.'))
 
-        elif promotetomulti and len(self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)]) < 1:
+        elif promotetomulti and not self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context):
             arguments.append('-nlt PROMOTE_TO_MULTI')
         if precision is False:
             arguments.append('-lco PRECISION=NO')
