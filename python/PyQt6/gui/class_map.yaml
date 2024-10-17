@@ -2538,6 +2538,7 @@ QgsExtentWidget.setOutputExtentFromLayer: src/gui/qgsextentwidget.h#L202
 QgsExtentWidget.setOutputExtentFromOriginal: src/gui/qgsextentwidget.h#L187
 QgsExtentWidget.setOutputExtentFromUser: src/gui/qgsextentwidget.h#L197
 QgsExtentWidget.setRatio: src/gui/qgsextentwidget.h#L214
+QgsExtentWidget.showEvent: src/gui/qgsextentwidget.h#L244
 QgsExtentWidget.toggleDialogVisibility: src/gui/qgsextentwidget.h#L237
 QgsExtentWidget.validationChanged: src/gui/qgsextentwidget.h#L231
 QgsExtentWidget: src/gui/qgsextentwidget.h#L51
