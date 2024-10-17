@@ -62,6 +62,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     static const QgsSettingsEntryInteger *settingAutopep8Level;
     static const QgsSettingsEntryBool *settingBlackNormalizeQuotes;
     static const QgsSettingsEntryString *settingExternalPythonEditorCommand;
+    static const QgsSettingsEntryBool *settingContextHelpEmbedded;
 ///@endcond PRIVATE
 #endif
 
@@ -128,6 +129,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * \since QGIS 3.16
      */
     void searchSelectedTextInPyQGISDocs();
+
+    /**
+     * Searches the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
+     *
+     * \since QGIS 3.42
+     */
+    virtual void showApiDocumentation( const QString &item );
 
     /**
      * Toggle comment for the selected text.
