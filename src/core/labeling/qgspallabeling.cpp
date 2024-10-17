@@ -1781,18 +1781,15 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QString &text, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument *document, QgsTextDocumentMetrics *documentMetrics, double &labelWidth, double &labelHeight, double &rotatedLabelWidth, double &rotatedLabelHeight, QRectF &outerBounds )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QString &text, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument *document, QgsTextDocumentMetrics *documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds )
 {
   if ( !mCurFeat )
   {
     return;
   }
 
-  QString textCopy( text );
-
   QString wrapchr = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
-  double multilineH = format.lineHeight();
   Qgis::TextOrientation orientation = format.orientation();
 
   bool addDirSymb = mLineSettings.addDirectionSymbol();
@@ -1808,11 +1805,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
   {
     evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
-  }
-
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineHeight ) )
-  {
-    multilineH = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineHeight ).toDouble();
   }
 
   if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::TextOrientation ) )
@@ -1857,6 +1849,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
     const QString dirSym = fm.horizontalAdvance( rightDirSymb ) > fm.horizontalAdvance( leftDirSymb )
                            ? rightDirSymb : leftDirSymb;
 
+    // placement is Line, so we are guaranteed to be using a document
+    QString textCopy( text );
     switch ( placeDirSymb )
     {
       case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
@@ -1904,10 +1898,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   }
 
   const double uPP = xform->mapUnitsPerPixel();
-  labelWidth = w * uPP;
-  labelHeight = h * uPP;
-  rotatedLabelWidth = rw * uPP;
-  rotatedLabelHeight = rh * uPP;
+  size = QSizeF( w * uPP, h * uPP );
+  rotatedSize = QSizeF( rw * uPP, rh * uPP );
 
   if ( documentMetrics )
   {
@@ -2226,10 +2218,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   // NOTE: this should come AFTER any option that affects font metrics
   const QFontMetricsF labelFontMetrics( labelFont );
-  double labelWidth;
-  double labelHeight;
-  double rotatedLabelWidth;
-  double rotatedLabelHeight;
+  QSizeF labelSize;
+  QSizeF rotatedSize;
 
   QgsTextDocument doc;
   QgsTextDocumentMetrics documentMetrics;
@@ -2244,11 +2234,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
       {
         doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelWidth, labelHeight, rotatedLabelWidth, rotatedLabelHeight, outerBounds );
+        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
       }
       else
       {
-        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, nullptr, nullptr, labelWidth, labelHeight, rotatedLabelWidth, rotatedLabelHeight, outerBounds );
+        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, nullptr, nullptr, labelSize, rotatedSize, outerBounds );
       }
       break;
     }
@@ -2263,7 +2253,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     {
       // non-curved labels always require document and metrics
       doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
-      calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelWidth, labelHeight, rotatedLabelWidth, rotatedLabelHeight, outerBounds );
+      calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
       break;
     }
   }
@@ -2738,11 +2728,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
             QString haliString = exprVal.toString();
             if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
             {
-              xdiff -= labelWidth / 2.0;
+              xdiff -= labelSize.width() / 2.0;
             }
             else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
             {
-              xdiff -= labelWidth;
+              xdiff -= labelSize.width();
             }
           }
         }
@@ -2758,22 +2748,22 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
             {
               if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
               {
-                ydiff -= labelHeight;;
+                ydiff -= labelSize.height();
               }
               else
               {
                 double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
                 if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
                 {
-                  ydiff -= labelHeight * descentRatio;
+                  ydiff -= labelSize.height() * descentRatio;
                 }
                 else //'Cap' or 'Half'
                 {
                   double capHeightRatio = ( labelFontMetrics.boundingRect( 'H' ).height() + 1 + labelFontMetrics.descent() ) / labelFontMetrics.height();
-                  ydiff -= labelHeight * capHeightRatio;
+                  ydiff -= labelSize.height() * capHeightRatio;
                   if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
                   {
-                    ydiff += labelHeight * ( capHeightRatio - descentRatio ) / 2.0;
+                    ydiff += labelSize.height() * ( capHeightRatio - descentRatio ) / 2.0;
                   }
                 }
               }
@@ -2896,13 +2886,13 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   //  feature to the layer
-  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), QSizeF( labelWidth, labelHeight ) );
+  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), labelSize );
   labelFeature->setAnchorPosition( anchorPosition );
   labelFeature->setFeature( feature );
   labelFeature->setSymbol( symbol );
   labelFeature->setDocument( doc, documentMetrics );
-  if ( !qgsDoubleNear( rotatedLabelWidth, 0.0 ) && !qgsDoubleNear( rotatedLabelHeight, 0.0 ) )
-    labelFeature->setRotatedSize( QSizeF( rotatedLabelWidth, rotatedLabelHeight ) );
+  if ( !qgsDoubleNear( rotatedSize.width(), 0.0 ) && !qgsDoubleNear( rotatedSize.height(), 0.0 ) )
+    labelFeature->setRotatedSize( rotatedSize );
   mFeatsRegPal++;
 
   labelFeature->setHasFixedPosition( hasDataDefinedPosition );
@@ -2933,7 +2923,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
                                          obstacleGeometry.boundingBox().height() ) );
   }
 
-  if ( outerBounds.left() != 0 || outerBounds.top() != 0 || !qgsDoubleNear( outerBounds.width(), labelWidth ) || !qgsDoubleNear( outerBounds.height(), labelHeight ) )
+  if ( outerBounds.left() != 0 || outerBounds.top() != 0 || !qgsDoubleNear( outerBounds.width(), labelSize.width() ) || !qgsDoubleNear( outerBounds.height(), labelSize.height() ) )
   {
     labelFeature->setOuterBounds( outerBounds );
   }
