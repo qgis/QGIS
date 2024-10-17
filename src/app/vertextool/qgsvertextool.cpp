@@ -163,11 +163,14 @@ class OneFeatureFilter : public QgsPointLocator::MatchFilter
 };
 
 
-//! a filter just to gather all matches at the same place
+/**
+ * For polygons we need to filter out the last vertex, because it will have
+ * the same coordinates than the first and we would have a duplicate match which
+ * would make topology editing mode behave incorrectly
+ */
 class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 {
   public:
-    QList<QgsPointLocator::Match> matches;
     QgsVertexTool *vertextool = nullptr;
 
     MatchCollectingFilter( QgsVertexTool *vertextool )
@@ -175,43 +178,19 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
-      if ( match.distance() > 0 )
+      std::cout << "filtering match from layer " << match.layer()->name().toStdString() << ", vertexNr " << match.vertexIndex() << std::endl;
+      if ( match.layer()->geometryType() != Qgis::GeometryType::Polygon )
+        return true;
+
+      QgsVertexId vid;
+      QgsGeometry matchGeom = vertextool->cachedGeometry( match.layer(), match.featureId() );
+      if ( !matchGeom.vertexIdFromVertexNr( match.vertexIndex(), vid ) )
+        // should not happen because vertex index in match object was created with vertexNrFromVertexId
+        // so the methods are reversible and we will have a vid
         return false;
 
-      // there may be multiple points at the same location, but we get only one
-      // result... the locator API needs a new method verticesInRect()
-      QgsGeometry matchGeom = vertextool->cachedGeometry( match.layer(), match.featureId() );
-      bool isPolygon = matchGeom.type() == Qgis::GeometryType::Polygon;
-      QgsVertexId polygonRingVid;
-      QgsVertexId vid;
-      QgsPoint pt;
-      while ( matchGeom.constGet()->nextVertex( vid, pt ) )
-      {
-        int vindex = matchGeom.vertexNrFromVertexId( vid );
-        if ( pt.x() == match.point().x() && pt.y() == match.point().y() )
-        {
-          if ( isPolygon )
-          {
-            // for polygons we need to handle the case where the first vertex is matching because the
-            // last point will have the same coordinates and we would have a duplicate match which
-            // would make subsequent code behave incorrectly (topology editing mode would add a single
-            // vertex twice)
-            if ( vid.vertex == 0 )
-            {
-              polygonRingVid = vid;
-            }
-            else if ( vid.ringEqual( polygonRingVid ) && vid.vertex == matchGeom.constGet()->vertexCount( vid.part, vid.ring ) - 1 )
-            {
-              continue;
-            }
-          }
-
-          QgsPointLocator::Match extra_match( match.type(), match.layer(), match.featureId(),
-                                              0, match.point(), vindex );
-          matches.append( extra_match );
-        }
-      }
-      return true;
+      // filter out the vertex if it is the last one (of its ring, in its part)
+      return vid.vertex != matchGeom.constGet()->vertexCount( vid.part, vid.ring ) - 1;
     }
 };
 
@@ -235,6 +214,7 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
+      std::cout << "SelectedMatchFilter: selecting best match, currently on match layer " << match.layer()->name().toStdString() << ", feature " << match.featureId() << ", match distance " << match.distance() << std::endl;
       if ( match.distance() <= mTolerance && match.layer() )
       {
         // option 1: we have "locked" feature - we consider just a match from that feature
@@ -1012,7 +992,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
 }
 
 
-QList<QgsPointLocator::Match> QgsVertexTool::findEditableLayerMatches( const QgsPointXY &mapPoint, QgsVectorLayer *layer )
+QgsPointLocator::MatchList QgsVertexTool::findEditableLayerMatches( const QgsPointXY &mapPoint, QgsVectorLayer *layer )
 {
   QgsPointLocator::MatchList matchList;
 
@@ -1681,6 +1661,8 @@ void QgsVertexTool::deleteVertexEditorSelection()
 void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
 {
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );
+  std::cout << "start dragging, event map point : " << mapPoint << std::endl;
+
   if ( isNearEndpointMarker( mapPoint ) )
   {
     startDraggingAddVertexAtEndpoint( mapPoint );
@@ -1689,9 +1671,14 @@ void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
 
   QgsPointLocator::Match m = snapToEditableLayer( e );
   if ( !m.isValid() )
+  {
+    std::cout << "no valid match found" << std::endl << std::endl;
     return;
+  }
   if ( mLockedFeature && ( mLockedFeature->featureId() != m.featureId() || mLockedFeature->layer() != m.layer() ) )
     return; // when a feature is bound to the vertex editor, only process actions for that feature
+
+  std::cout << "VALID match found" << std::endl << std::endl;
 
   // activate advanced digitizing dock
   setAdvancedDigitizingAllowed( true );
@@ -1730,22 +1717,30 @@ QSet<Vertex> QgsVertexTool::findCoincidentVertices( const QSet<Vertex> &vertices
 {
   QSet<Vertex> topoVertices;
   const auto editableLayers = editableVectorLayers();
+  std::cout << "-----------------" << std::endl;
+  std::cout << "looping vertices" << std::endl;
 
   for ( const Vertex &v : std::as_const( vertices ) )
   {
     QgsPointXY origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
     QgsPointXY mapPointV = toMapCoordinates( v.layer, origPointV );
+    std::cout << "\tlooping editable layers" << std::endl;
     for ( QgsVectorLayer *vlayer : editableLayers )
     {
       const auto snappedVertices = layerVerticesSnappedToPoint( vlayer, mapPointV );
+      std::cout << "\t\tlooping matches in layer " << vlayer->name().toStdString() << std::endl;
       for ( const QgsPointLocator::Match &otherMatch : snappedVertices )
       {
+        std::cout << "\t\t\tfound match: layer: " << otherMatch.layer()->name().toStdString() << ", featureId: " << otherMatch.featureId() << std::endl;
+        std::cout << "\t\t\tfeature: " << otherMatch.layer()->getFeature( otherMatch.featureId() ).geometry().asWkt().toStdString() << std::endl;
+        std::cout << "\t\t\tvertexIndex: " << otherMatch.vertexIndex() << std::endl;
         Vertex otherVertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
         if ( !vertices.contains( otherVertex ) )
           topoVertices << otherVertex;
       }
     }
   }
+  std::cout << "-----------------" << std::endl;
   return topoVertices;
 }
 
@@ -1775,6 +1770,7 @@ void QgsVertexTool::buildExtraVertices( const QSet<Vertex> &vertices, const QgsP
 void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 {
   Q_ASSERT( m.hasVertex() );
+  std::cout << "startDraggingMoveVertex" << std::endl;
 
   QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
@@ -1793,6 +1789,7 @@ void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
+    std::cout << "findCoincidentVertices" << std::endl;
     movingVertices.unite( findCoincidentVertices( movingVertices ) );
   }
 
@@ -1935,29 +1932,29 @@ void QgsVertexTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertice
   }
 }
 
-QList<QgsPointLocator::Match> QgsVertexTool::layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint )
+QgsPointLocator::MatchList QgsVertexTool::layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint )
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  loc->nearestVertex( mapPoint, 0, &myfilter, true );
-  return myfilter.matches;
+  double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
+  return loc->verticesInRect( mapPoint, tol, &myfilter, true );
 }
 
-QList<QgsPointLocator::Match> QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
+QgsPointLocator::MatchList QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
 {
-  QList<QgsPointLocator::Match> finalMatches;
+  QgsPointLocator::MatchList finalMatches;
   // we want segment matches that have exactly the same vertices as the given segment (mapPoint1, mapPoint2)
   // so rather than doing nearest edge search which could return any segment within a tolerance,
   // we first find matches for one endpoint and then see if there is a matching other endpoint.
-  const QList<QgsPointLocator::Match> matches1 = layerVerticesSnappedToPoint( layer, mapPoint1 );
+  const QgsPointLocator::MatchList matches1 = layerVerticesSnappedToPoint( layer, mapPoint1 );
   for ( const QgsPointLocator::Match &m : matches1 )
   {
     QgsGeometry g = cachedGeometry( layer, m.featureId() );
     int v0, v1;
     g.adjacentVertices( m.vertexIndex(), v0, v1 );
-    if ( v0 != -1 && QgsPointXY( g.vertexAt( v0 ) ) == mapPoint2 )
+    if ( v0 != -1 && toMapCoordinates( layer, QgsPointXY( g.vertexAt( v0 ) ) ) == mapPoint2 )
       finalMatches << QgsPointLocator::Match( QgsPointLocator::Edge, layer, m.featureId(), 0, m.point(), v0 );
-    else if ( v1 != -1 && QgsPointXY( g.vertexAt( v1 ) ) == mapPoint2 )
+    else if ( v1 != -1 && toMapCoordinates( layer, QgsPointXY( g.vertexAt( v1 ) ) ) == mapPoint2 )
       finalMatches << QgsPointLocator::Match( QgsPointLocator::Edge, layer, m.featureId(), 0, m.point(), m.vertexIndex() );
   }
   return finalMatches;

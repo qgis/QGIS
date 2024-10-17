@@ -92,6 +92,7 @@ class TestQgsVertexTool : public QObject
     void testActiveLayerPriority();
     void testSelectedFeaturesPriority();
     void testVertexToolCompoundCurve();
+    void testMoveVertexTopoOtherMapCrs();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -1645,6 +1646,61 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
   mouseClick( 0.5, 7, Qt::RightButton );
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+}
+
+void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
+{
+  // test moving of vertices of two features at once
+
+  QgsProject::instance()->setTopologicalEditing( true );
+  QgsCoordinateReferenceSystem prevCrs = QgsProject::instance()->crs();
+  QgsCoordinateReferenceSystem tmpCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4126" ) );
+
+  // connect linestring with polygon at point (7, 1)
+  mouseClick( 2, 1, Qt::LeftButton );
+  mouseClick( 7, 1, Qt::LeftButton );
+
+  QgsProject::instance()->setCrs( tmpCrs );
+  mCanvas->setDestinationCrs( tmpCrs );
+  mCanvas->refreshAllLayers();
+
+  QgsPointXY mapPointStart = mCanvas->mapSettings().layerToMapCoordinates( mLayerPolygon, QgsPointXY( 7, 1 ) );
+  QgsPointXY mapPointEnd = mCanvas->mapSettings().layerToMapCoordinates( mLayerPolygon, QgsPointXY( 3, 3 ) );
+
+  auto it = mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().constGet()->vertices();
+  while ( it.hasNext() )
+  {
+    auto pt = it.next();
+    std::cout << pt << std::endl;
+    auto mapPt = mCanvas->mapSettings().layerToMapCoordinates( mLayerPolygon, pt );
+    std::cout << mapPt << std::endl;
+    std::cout << mapToScreen( mapPt.x(), mapPt.y() ) << std::endl;
+  }
+  std::cout << "-----" << std::endl;
+  std::cout << "pt start: " << mapPointStart << std::endl;
+  std::cout << "pt end  : " << mapPointEnd << std::endl;
+  std::cout << "screen pt start: " << mapToScreen( mapPointStart.x(), mapPointStart.y() ) << std::endl;
+  std::cout << "-----" << std::endl;
+
+  // move shared vertex of linestring and polygon
+  mouseClick( mapPointStart.x(), mapPointStart.y(), Qt::LeftButton );
+  mouseClick( mapPointEnd.x(), mapPointEnd.y(), Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(3 3, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of vertex from earlier
+  mLayerLine->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  mCanvas->setDestinationCrs( prevCrs );
+  QgsProject::instance()->setCrs( prevCrs );
+  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )
