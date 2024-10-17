@@ -75,6 +75,9 @@ namespace pal
         QuadrantBelowRight
       };
 
+      /**
+       * \brief Label directions in relation to line or polygon ring directions
+       */
       enum class LabelDirectionToLine
       {
         SameDirection,
