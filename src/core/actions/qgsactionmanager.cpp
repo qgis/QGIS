@@ -226,7 +226,7 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 
