@@ -689,10 +689,20 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       context.setCurrentMaskId( maskId );
     }
 
-    //add the direction symbol if needed
+    const QgsTextDocument &precalculatedDocument = lf->document();
+    const QgsTextDocumentMetrics &precalculatedMetrics = lf->documentMetrics();
+    const QgsTextDocument *document = &precalculatedDocument;
+    const QgsTextDocumentMetrics *documentMetrics = &precalculatedMetrics;
+
+    // add the direction symbol if needed
+    // note that IF we do this, we can no longer use the original text document and metrics
+    // but have to re-calculate these with the newly added text!
+    std::optional< QgsTextDocument > newDocument;
+    std::optional< QgsTextDocumentMetrics > newDocumentMetrics;
     if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line &&
          tmpLyr.lineSettings().addDirectionSymbol() )
     {
+      newDocument.emplace( *document );
       bool prependSymb = false;
       QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
@@ -719,27 +729,34 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       switch ( tmpLyr.lineSettings().directionSymbolPlacement() )
       {
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
-          prependSymb = true;
-          symb = symb + QStringLiteral( "\n" );
+        {
+          newDocument->insert( 0, QgsTextBlock( QgsTextFragment( symb ) ) );
           break;
+        }
 
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
-          prependSymb = false;
-          symb = QStringLiteral( "\n" ) + symb;
+          newDocument->append( QgsTextBlock( QgsTextFragment( symb ) ) );
           break;
 
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
+        {
+          QgsTextBlock &block = newDocument.value()[ 0 ];
+          if ( prependSymb )
+          {
+            block.insert( 0, QgsTextFragment( symb ) );
+          }
+          else
+          {
+            block.append( QgsTextFragment( symb ) );
+          }
           break;
+        }
       }
 
-      if ( prependSymb )
-      {
-        txt.prepend( symb );
-      }
-      else
-      {
-        txt.append( symb );
-      }
+      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
+      newDocumentMetrics.emplace( QgsTextDocumentMetrics::calculateMetrics( newDocument.value(), tmpLyr.format(), context ) );
+      document = &newDocument.value();
+      documentMetrics = &newDocumentMetrics.value();
     }
 
     Qgis::TextHorizontalAlignment hAlign = Qgis::TextHorizontalAlignment::Left;
@@ -784,8 +801,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
       case Qgis::LabelPlacement::OutsidePolygons:
       {
-        QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, lf->document(),
-                                           lf->documentMetrics(), hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
+        QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, *document,
+                                           *documentMetrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;
       }
     }
