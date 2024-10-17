@@ -89,6 +89,7 @@ class TestQgsGeometry : public QgsTest
     void curveIndexOf();
     void splitCurve_data();
     void splitCurve();
+    void splitToDisjointXYParts();
 
     void fromBox3d();
     void fromPoint();
@@ -750,6 +751,30 @@ void TestQgsGeometry::splitCurve()
   auto [p1, p2] = qgsgeometry_cast< const QgsCurve * >( curve.constGet() )->splitCurveAtVertex( vertex );
   QCOMPARE( p1->asWkt(), curve1 );
   QCOMPARE( p2->asWkt(), curve2 );
+}
+
+void TestQgsGeometry::splitToDisjointXYParts()
+{
+  QgsLineString onePartLine( QgsPoint( 1.0, 1.0 ), QgsPoint( 2.0, 2.0 ) );
+  std::vector<std::unique_ptr<QgsLineString>> onePartParts = onePartLine.splitToDisjointXYParts();
+  QCOMPARE( onePartParts.size(), 1 );
+  QCOMPARE( onePartParts[0]->asWkt(), onePartLine.asWkt() );
+
+  QgsLineString onePointLine( QVector<QgsPoint> {QgsPoint( 1.0, 1.0 )} );
+  std::vector<std::unique_ptr<QgsLineString>> onePointParts = onePointLine.splitToDisjointXYParts();
+  QCOMPARE( onePointParts.size(), 1 );
+  QCOMPARE( onePointParts[0]->asWkt(), onePointLine.asWkt() );
+
+  QgsLineString emptyLine( QVector<QgsPoint> { } );
+  std::vector<std::unique_ptr<QgsLineString>> emptyParts = emptyLine.splitToDisjointXYParts();
+  QCOMPARE( emptyParts.size(), 1 );
+  QCOMPARE( emptyParts[0]->asWkt(), emptyLine.asWkt() );
+
+  QgsLineString triangle( QVector<QgsPoint> {QgsPoint( 0.0, 0.0 ), QgsPoint( 1.0, 0.0 ), QgsPoint( 1.0, 1.0 ), QgsPoint( 0.0, 0.0 )} );
+  std::vector<std::unique_ptr<QgsLineString>> triangleParts = triangle.splitToDisjointXYParts();
+  QCOMPARE( triangleParts.size(), 2 );
+  QCOMPARE( triangleParts[0]->asWkt(), "LineString (0 0, 1 0, 1 1)" );
+  QCOMPARE( triangleParts[1]->asWkt(), "LineString (1 1, 0 0)" );
 }
 
 void TestQgsGeometry::fromBox3d()
