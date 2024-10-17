@@ -50,7 +50,6 @@ PyQgsMapBoxGlStyleConverter
 PyQgsMemoryProvider
 PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
-PyQgsPlot
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
