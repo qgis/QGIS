@@ -24,24 +24,24 @@ class TestQgsVariantUtils(unittest.TestCase):
 
     def test_is_numeric_type(self):
 
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Int))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.UInt))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.LongLong))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.ULongLong))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Double))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Float))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Short))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.UShort))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Char))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.UChar))
-        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.SChar))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.Int))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.UInt))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.LongLong))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.ULongLong))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.Double))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.Float))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.Short))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.UShort))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.Char))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.UChar))
+        self.assertTrue(QgsVariantUtils.isNumericType(QMetaType.Type.SChar))
 
-        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Bool))
-        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.QString))
-        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.QByteArray))
-        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.QDateTime))
-        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.QDate))
-        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.QTime))
+        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Type.Bool))
+        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Type.QString))
+        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Type.QByteArray))
+        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Type.QDateTime))
+        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Type.QDate))
+        self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Type.QTime))
 
 
 if __name__ == '__main__':

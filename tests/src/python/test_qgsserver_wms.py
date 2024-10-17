@@ -440,7 +440,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         project = QgsProject()
         fields = QgsFields()
         fields.append(QgsField('int', QVariant.Int))
-        layer = QgsMemoryProviderUtils.createMemoryLayer('pointlabel', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('pointlabel', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem(4326))
         layer.setLabelsEnabled(True)
         settings = QgsPalLayerSettings()
         settings.xOffset = -10
