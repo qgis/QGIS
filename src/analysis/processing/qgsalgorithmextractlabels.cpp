@@ -218,7 +218,7 @@ class ExtractLabelSink : public QgsLabelSink
           break;
 
         case Qgis::LabelMultiLineAlignment::FollowPlacement:
-          switch ( label->getQuadrant() )
+          switch ( label->quadrant() )
           {
             case Qgis::LabelQuadrantPosition::AboveLeft:
             case Qgis::LabelQuadrantPosition::Left:
