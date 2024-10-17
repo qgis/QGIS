@@ -551,7 +551,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
 
   QVariant result = expr.evaluate( &context );
   convertedValue = result.toDouble( &ok );

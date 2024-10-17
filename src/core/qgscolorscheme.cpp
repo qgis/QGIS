@@ -199,8 +199,8 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
 
   QgsNamedColorList colorList;
 
-  QStringList colorStrings = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
-  const QStringList colorLabels = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
+  QStringList colorStrings = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) ); // skip-keyword-check
+  const QStringList colorLabels = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) ); // skip-keyword-check
 
   //generate list from custom colors
   int colorIndex = 0;
@@ -225,7 +225,7 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
 {
   Q_UNUSED( context )
   Q_UNUSED( baseColor )
-  QgsProject::instance()->setProjectColors( colors );
+  QgsProject::instance()->setProjectColors( colors ); // skip-keyword-check
   return true;
 }
 

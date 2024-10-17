@@ -129,7 +129,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 {
   ValueRelationCache cache;
 
-  const QgsVectorLayer *layer = resolveLayer( config, QgsProject::instance() );
+  const QgsVectorLayer *layer = resolveLayer( config, QgsProject::instance() ); // skip-keyword-check
 
   if ( !layer )
     return cache;

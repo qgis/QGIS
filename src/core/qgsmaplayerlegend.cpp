@@ -203,7 +203,7 @@ void QgsMapLayerLegendUtils::setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeL
   {
     QDomDocument doc;
     QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
     const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "custom symbol" ), symbol, doc, rwContext );
     doc.appendChild( elem );
     nodeLayer->setCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ), doc.toString() );
@@ -223,7 +223,7 @@ QgsSymbol *QgsMapLayerLegendUtils::legendNodeCustomSymbol( QgsLayerTreeLayer *no
   const QDomElement elem = doc.documentElement();
 
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
 
   return QgsSymbolLayerUtils::loadSymbol( elem, rwContext );
 }
@@ -234,7 +234,7 @@ void QgsMapLayerLegendUtils::setLegendNodeColorRampSettings( QgsLayerTreeLayer *
   {
     QDomDocument doc;
     QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
     QDomElement elem = doc.createElement( QStringLiteral( "rampSettings" ) );
     settings->writeXml( doc, elem, rwContext );
     doc.appendChild( elem );
@@ -255,7 +255,7 @@ QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSetti
   const QDomElement elem = doc.documentElement();
 
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
 
   QgsColorRampLegendNodeSettings settings;
   settings.readXml( elem, rwContext );

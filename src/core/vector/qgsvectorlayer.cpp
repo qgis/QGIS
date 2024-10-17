@@ -229,7 +229,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [this] { triggerRepaint(); } );
-  connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
+  connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded ); // skip-keyword-check
 
   connect( this, &QgsVectorLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsVectorLayer::dataSourceChanged, this, &QgsVectorLayer::supportsEditingChanged );
@@ -2268,7 +2268,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
       QStringList stuff = match.capturedTexts();
       QString lName = stuff[1];
 
-      const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
+      const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers(); // skip-keyword-check
 
       QMap<QString, QgsMapLayer *>::const_iterator it;
       for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )

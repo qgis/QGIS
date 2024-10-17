@@ -1560,7 +1560,7 @@ void QgsApplication::initQgis()
   ( void )QgsApplication::dataItemProviderRegistry();
 
   // create project instance if doesn't exist
-  QgsProject::instance();
+  QgsProject::instance(); // skip-keyword-check
 
   // Setup authentication manager for lazy initialization
   authManager()->setup( pluginPath(), qgisAuthDatabaseUri() );
@@ -1617,7 +1617,7 @@ void QgsApplication::exitQgis()
 
   // avoid creating instance just to delete it!
   if ( QgsProject::sProject )
-    delete QgsProject::instance();
+    delete QgsProject::instance(); // skip-keyword-check
 
   //Ensure that providers/layers which called deleteLater on objects as part of their cleanup
   //result in fully deleted objects before we do the provider registry cleanup.

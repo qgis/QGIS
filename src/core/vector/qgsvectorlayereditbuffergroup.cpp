@@ -400,7 +400,7 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
     while ( unorderedLayerIterator != unorderedLayers.end() )
     {
       // Get referencing relation to find referenced layers
-      const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator );
+      const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator ); // skip-keyword-check
 
       // If this layer references at least one modified layer continue
       bool layerReferencingModifiedLayer = false;

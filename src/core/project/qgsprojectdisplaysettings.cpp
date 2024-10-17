@@ -223,7 +223,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   }
   else if ( project )
   {
-    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default ) );
+    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
   }
 
   return true;

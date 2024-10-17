@@ -85,7 +85,7 @@ void QgsEditFormConfig::onRelationsLoaded()
     if ( !rel )
       continue;
 
-    rel->init( QgsProject::instance()->relationManager() );
+    rel->init( QgsProject::instance()->relationManager() ); // skip-keyword-check
   }
 }
 
