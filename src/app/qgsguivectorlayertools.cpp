@@ -37,6 +37,11 @@ bool QgsGuiVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttri
   f->setGeometry( defaultGeometry );
   QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QUuid(), -1, context.parentWidget() );
   a->setForceSuppressFormPopup( forceSuppressFormPopup() );
+
+  // Override with context
+  if ( context.forceSuppressFormPopup() )
+    a->setForceSuppressFormPopup( true );
+
   connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
   const QgsFeatureAction::AddFeatureResult result = a->addFeature( defaultValues, context.showModal(), std::unique_ptr<QgsExpressionContextScope>( context.additionalExpressionContextScope() ? new QgsExpressionContextScope( *context.additionalExpressionContextScope() ) : nullptr ), context.hideParent() );
   if ( !feature )
