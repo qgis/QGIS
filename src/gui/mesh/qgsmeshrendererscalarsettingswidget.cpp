@@ -39,6 +39,12 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   mScalarInterpolationTypeComboBox->addItem( tr( "Neighbour Average" ), QgsMeshRendererScalarSettings::NeighbourAverage );
   mScalarInterpolationTypeComboBox->setCurrentIndex( 0 );
 
+  mMinMaxValueTypeComboBox->addItem( tr( "User Defined" ) );
+  mMinMaxValueTypeComboBox->addItem( tr( "Whole Mesh" ) );
+  mMinMaxValueTypeComboBox->addItem( tr( "Current Canvas" ) );
+  mMinMaxValueTypeComboBox->addItem( tr( "Updated Canvas" ) );
+  mMinMaxValueTypeComboBox->setCurrentIndex( 0 );
+
   mScalarEdgeStrokeWidthUnitSelectionWidget->setUnits(
   {
     Qgis::RenderUnit::Millimeters,
@@ -65,6 +71,9 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   connect( mScalarEdgeStrokeWidthFixedRadioButton, &QCheckBox::toggled, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mScalarEdgeStrokeWidthVariablePushButton, &QgsMeshVariableStrokeWidthButton::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
 
+  connect( mMinMaxValueTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererScalarSettingsWidget::minMaxSourceChanged );
+  connect( mMinMaxValueTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMax );
+  connect( mMinMaxValueTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
@@ -83,9 +92,12 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
 {
   QgsMeshRendererScalarSettings settings;
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
-  settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
   settings.setOpacity( mOpacityWidget->opacity() );
   settings.setDataResamplingMethod( dataIntepolationMethod() );
+  settings.setMinMaxValueType( minMaxValueType() );
+
+  settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
+  settings.setMinMaxValueType( minMaxValueType() );
 
   const bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
   if ( hasEdges )
@@ -112,11 +124,29 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( mActiveDatasetGroup );
   const QgsColorRampShader shader = settings.colorRampShader();
-  const double min = settings.classificationMinimum();
-  const double max = settings.classificationMaximum();
+
+  const double  min = settings.classificationMinimum();
+  const double  max = settings.classificationMaximum();
+
+  const int indexMinMaxType = static_cast<int>( settings.minMaxValueType() );
+  whileBlocking( mMinMaxValueTypeComboBox )->setCurrentIndex( indexMinMaxType );
+
+  if ( settings.minMaxValueType() == QgsMeshRendererScalarSettings::MinMaxValueType::UserDefined )
+  {
+    mScalarMinSpinBox->setEnabled( true );
+    mScalarMaxSpinBox->setEnabled( true );
+    mScalarRecalculateMinMaxButton->setEnabled( true );
+  }
+  else
+  {
+    mScalarMinSpinBox->setDisabled( true );
+    mScalarMaxSpinBox->setDisabled( true );
+    mScalarRecalculateMinMaxButton->setDisabled( true );
+  }
 
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
+
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
   whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( min, max );
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
@@ -190,6 +220,12 @@ QgsMeshRendererScalarSettings::DataResamplingMethod QgsMeshRendererScalarSetting
   return method;
 }
 
+QgsMeshRendererScalarSettings::MinMaxValueType QgsMeshRendererScalarSettingsWidget::minMaxValueType() const
+{
+  const QgsMeshRendererScalarSettings::MinMaxValueType type = static_cast<QgsMeshRendererScalarSettings::MinMaxValueType>( mMinMaxValueTypeComboBox->currentIndex() );
+  return type;
+}
+
 bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const
 {
   if ( !mMeshLayer )
@@ -216,9 +252,63 @@ bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnEdges() const
   return onEdges;
 }
 
+void QgsMeshRendererScalarSettingsWidget::minMaxSourceChanged()
+{
+  if ( mMinMaxValueTypeComboBox->currentIndex() == 0 )
+  {
+    mScalarMinSpinBox->setEnabled( true );
+    mScalarMaxSpinBox->setEnabled( true );
+    mScalarRecalculateMinMaxButton->setEnabled( true );
+  }
+  else
+  {
+    mScalarMinSpinBox->setEnabled( false );
+    mScalarMaxSpinBox->setEnabled( false );
+    mScalarRecalculateMinMaxButton->setEnabled( false );
+  }
+}
 
 void QgsMeshRendererScalarSettingsWidget::setCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;
 }
 
+void QgsMeshRendererScalarSettingsWidget::recalculateMinMax()
+{
+  QPair<double, double> minMax;
+  QgsMeshDatasetIndex datasetIndex = mMeshLayer->activeScalarDatasetAtTime( mCanvas->temporalRange(), mActiveDatasetGroup );
+  switch ( minMaxValueType() )
+  {
+    case QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh:
+    {
+      minMax = mMeshLayer->minimumMaximumActiveScalarDataset( mMeshLayer->extent(), datasetIndex );
+      whileBlocking( mScalarMinSpinBox )->setValue( minMax.first );
+      whileBlocking( mScalarMaxSpinBox )->setValue( minMax.second );
+      break;
+    }
+    case QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas:
+    {
+      QgsCoordinateTransform transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mMeshLayer->crs(), QgsProject::instance() );
+      QgsRectangle canvasExtent = mCanvas->extent();
+      QgsRectangle dataExtent = transform.transform( canvasExtent );
+      minMax = mMeshLayer->minimumMaximumActiveScalarDataset( dataExtent, datasetIndex );
+      whileBlocking( mScalarMinSpinBox )->setValue( minMax.first );
+      whileBlocking( mScalarMaxSpinBox )->setValue( minMax.second );
+      break;
+    }
+    case QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas:
+    {
+      QgsCoordinateTransform transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mMeshLayer->crs(), QgsProject::instance() );
+      QgsRectangle canvasExtent = mCanvas->extent();
+      QgsRectangle dataExtent = transform.transform( canvasExtent );
+      minMax = mMeshLayer->minimumMaximumActiveScalarDataset( dataExtent, datasetIndex );
+      whileBlocking( mScalarMinSpinBox )->setValue( minMax.first );
+      whileBlocking( mScalarMaxSpinBox )->setValue( minMax.second );
+      break;
+    }
+    default:
+      break;
+  }
+
+  minMaxChanged();
+}
