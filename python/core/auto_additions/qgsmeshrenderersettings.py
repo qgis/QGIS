@@ -1,5 +1,19 @@
 # The following has been generated automatically from src/core/mesh/qgsmeshrenderersettings.h
 # monkey patching scoped based enum
+QgsMeshRendererScalarSettings.MinMaxValueType.UserDefined.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.WholeMesh.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.FixedCanvas.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.InteractiveFromCanvas.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.__doc__ = """This enumerator describes the extent used to compute min/max values
+
+* ``UserDefined``: 
+* ``WholeMesh``: 
+* ``FixedCanvas``: 
+* ``InteractiveFromCanvas``: 
+
+"""
+# --
+# monkey patching scoped based enum
 QgsMeshRendererVectorWindBarbSettings.WindSpeedUnit.MetersPerSecond.__doc__ = "Meters per second"
 QgsMeshRendererVectorWindBarbSettings.WindSpeedUnit.KilometersPerHour.__doc__ = "Kilometers per hour"
 QgsMeshRendererVectorWindBarbSettings.WindSpeedUnit.Knots.__doc__ = "Knots (Nautical miles per hour)"
