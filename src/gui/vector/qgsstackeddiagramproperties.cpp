@@ -393,7 +393,37 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
     switch ( index.column() )
     {
       case 1:
-        return ( !dr || !dr->diagram() ) ? tr( "(no diagram)" ) : dr->diagram()->diagramName();
+        if ( dr && dr->diagram() )
+        {
+          if ( dr->diagram()->diagramName() == QgsPieDiagram::DIAGRAM_NAME_PIE )
+          {
+            return tr( "Pie Chart" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsTextDiagram::DIAGRAM_NAME_TEXT )
+          {
+            return tr( "Text Diagram" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM )
+          {
+            return tr( "Histogram" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
+          {
+            return tr( "Stacked Bars" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
+          {
+            return tr( "Stacked Diagram" );
+          }
+          else
+          {
+            return dr->diagram()->diagramName();
+          }
+        }
+        else
+        {
+          return tr( "(no diagram)" );
+        }
       case 2:
         if ( !dr )
         {
