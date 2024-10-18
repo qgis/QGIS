@@ -421,6 +421,16 @@ void QgsDiagramProperties::insertDefaults()
 void QgsDiagramProperties::syncToLayer()
 {
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
+  if ( renderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
+  {
+    const QgsStackedDiagramRenderer *stackedRenderer = static_cast< const QgsStackedDiagramRenderer *>( renderer );
+    if ( stackedRenderer->rendererCount() > 0 )
+    {
+      // If layer has a stacked diagram renderer, take its first sub
+      // renderer as the basis for the new single one being created
+      renderer = stackedRenderer->renderer( 0 );
+    }
+  }
   syncToRenderer( renderer );
 
   const QgsDiagramLayerSettings *layerDls = mLayer->diagramLayerSettings();

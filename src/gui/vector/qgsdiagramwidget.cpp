@@ -131,8 +131,6 @@ void QgsDiagramWidget::syncToOwnLayer()
         // Play safe and set to histogram by default if the diagram name is unknown
         mDiagramTypeComboBox->setCurrentIndex( ModeHistogram );
       }
-      // TODO: if we get a stacked diagram, take the first subdiagram,
-      // Set its diagram type and sync to its settings
 
       // Delegate to single diagram's syncToLayer
       static_cast<QgsDiagramProperties *>( mWidget )->syncToLayer();
