@@ -41,6 +41,21 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   if ( !source->mTransactionConnection )
   {
     mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo, request.timeout(), request.requestMayBeNested() );
+
+    const QString sessionRoleKey = QStringLiteral( "session_role" );
+    if ( mSource->mUri.hasParam( sessionRoleKey ) )
+    {
+      const QString sessionRole = mSource->mUri.param( sessionRoleKey );
+      if ( !sessionRole.isEmpty() )
+      {
+        mConn->setSessionRole( sessionRole );
+      }
+    }
+    else
+    {
+      mConn->resetSessionRole();
+    }
+
     mIsTransactionConnection = false;
   }
   else
@@ -1051,6 +1066,7 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p
   , mPrimaryKeyType( p->mPrimaryKeyType )
   , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
   , mQuery( p->mQuery )
+  , mUri( p->mUri )
   , mCrs( p->crs() )
   , mShared( p->mShared )
   , mTopoLayerInfo( p->mTopoLayerInfo )
