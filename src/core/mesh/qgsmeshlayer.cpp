@@ -1660,7 +1660,36 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
   if ( !mRendererCache )
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
 
+  if ( !rendererContext.testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) )
+  {
+    QgsMeshDatasetIndex activeDatasetIndex = activeScalarDatasetIndex( rendererContext );
+    QgsMeshRendererScalarSettings scalarRendererSettings = mRendererSettings.scalarSettings( activeDatasetIndex.group() );
+
+    if ( scalarRendererSettings.minMaxValueType() == QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas )
+    {
+      double previousMin = scalarRendererSettings.classificationMinimum();
+      double previousMax = scalarRendererSettings.classificationMaximum();
+
+      QPair<double, double> minMax = minimumMaximumActiveScalarDataset( rendererContext.extent(), activeDatasetIndex );
+
+      if ( previousMin != minMax.first || previousMax != minMax.second )
+      {
+        scalarRendererSettings.setClassificationMinimumMaximum( minMax.first, minMax.second );
+        mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
+        emit legendChanged();
+      }
+    }
+  }
+
   return new QgsMeshLayerRenderer( this, rendererContext );
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetIndex( QgsRenderContext &rendererContext )
+{
+  if ( rendererContext.isTemporal() )
+    return activeScalarDatasetAtTime( rendererContext.temporalRange(), mRendererSettings.activeScalarDatasetGroup() );
+  else
+    return staticScalarDatasetIndex( mRendererSettings.activeScalarDatasetGroup() );
 }
 
 QPair<double, double> QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex )

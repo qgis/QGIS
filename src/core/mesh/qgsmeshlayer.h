@@ -982,6 +982,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 
   private: // Private methods
 
+    QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
+
     /**
      * Returns TRUE if the provider is in read-only mode
      */
