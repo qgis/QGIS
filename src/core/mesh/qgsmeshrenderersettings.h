@@ -114,17 +114,15 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
       NeighbourAverage,
     };
 
-    //! \brief This enumerator describes the extent used to compute min/max values
-    enum MinMaxValueType
+    /**
+     *  This enumerator describes the extent used to compute min/max values
+     */
+    enum class MinMaxValueType
     {
-      //! User defined Min Max values
-      UserDefined,
-      //! Constantly updated from extent of the canvas is used to compute statistics.
-      InteractiveFromCanvas,
-      //! Fixed Min Max Values set from canvas
-      FixedCanvas,
-      //! Values from whole mesh
-      WholeMesh
+      UserDefined, //User defined Min Max values
+      WholeMesh, // Values from whole mesh
+      FixedCanvas, //Fixed Min Max Values set from canvas
+      InteractiveFromCanvas, //Constantly updated from extent of the canvas is used to compute statistics
     };
 
     //! Returns color ramp shader function

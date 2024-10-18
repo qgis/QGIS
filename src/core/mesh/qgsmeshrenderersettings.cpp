@@ -136,16 +136,16 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
   QString minMaxTypeText;
   switch ( mMinMaxValueType )
   {
-    case UserDefined:
+    case QgsMeshRendererScalarSettings::MinMaxValueType::UserDefined:
       minMaxTypeText = QStringLiteral( "user-defined" );
       break;
-    case FixedCanvas:
+    case QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas:
       minMaxTypeText = QStringLiteral( "fixed-canvas" );
       break;
-    case InteractiveFromCanvas:
+    case QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas:
       minMaxTypeText = QStringLiteral( "interactive-canvas" );
       break;
-    case WholeMesh:
+    case QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh:
       minMaxTypeText = QStringLiteral( "whole-mesh" );
       break;
   }
@@ -181,19 +181,19 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
   const QString minMaxTypeText = elem.attribute( QStringLiteral( "min-max-value-type" ) );
   if ( QStringLiteral( "interactive-canvas" ) == minMaxTypeText )
   {
-    mMinMaxValueType = MinMaxValueType::InteractiveFromCanvas;
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas;
   }
-  if ( QStringLiteral( "fixed-canvas" ) == minMaxTypeText )
+  else if ( QStringLiteral( "fixed-canvas" ) == minMaxTypeText )
   {
-    mMinMaxValueType = MinMaxValueType::FixedCanvas;
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas;
   }
   else if ( QStringLiteral( "user-defined" ) == minMaxTypeText )
   {
-    mMinMaxValueType = MinMaxValueType::UserDefined;
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::UserDefined;
   }
   else if ( QStringLiteral( "whole-mesh" ) == minMaxTypeText )
   {
-    mMinMaxValueType = MinMaxValueType::WholeMesh;
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh;
   }
   else
   {
