@@ -40,11 +40,11 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   }
 
   setupUi( this );
-  connect( mSubDiagramsView, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsStackedDiagramProperties::* )( const QModelIndex & )>( &QgsStackedDiagramProperties::editSubDiagram ) );
+  connect( mSubDiagramsView, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsStackedDiagramProperties::* )( const QModelIndex & )>( &QgsStackedDiagramProperties::editSubDiagramRenderer ) );
 
-  connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagram );
-  connect( mEditSubDiagramButton, &QAbstractButton::clicked, this, static_cast<void ( QgsStackedDiagramProperties::* )()>( &QgsStackedDiagramProperties::editSubDiagram ) );
-  connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagram );
+  connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagramRenderer );
+  connect( mEditSubDiagramButton, &QAbstractButton::clicked, this, static_cast<void ( QgsStackedDiagramProperties::* )()>( &QgsStackedDiagramProperties::editSubDiagramRenderer ) );
+  connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagramRenderer );
 
   // Initialize stacked diagram controls
   mStackedDiagramModeComboBox->addItem( tr( "Horizontal" ), QgsDiagramSettings::Horizontal );
@@ -73,7 +73,7 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   syncToLayer();
 }
 
-void QgsStackedDiagramProperties::addSubDiagram()
+void QgsStackedDiagramProperties::addSubDiagramRenderer()
 {
   // Create a single category renderer by default
   std::unique_ptr< QgsDiagramRenderer > renderer;
@@ -94,12 +94,12 @@ void QgsStackedDiagramProperties::addSubDiagram()
   else
   {
     // append to root
-    appendSubDiagram( renderer.release() );
+    appendSubDiagramRenderer( renderer.release() );
   }
-  editSubDiagram();
+  editSubDiagramRenderer();
 }
 
-void QgsStackedDiagramProperties::appendSubDiagram( QgsDiagramRenderer *dr )
+void QgsStackedDiagramProperties::appendSubDiagramRenderer( QgsDiagramRenderer *dr )
 {
   const int rows = mModel->rowCount();
   mModel->insertSubDiagram( rows, dr ); // Transfers ownership
@@ -107,12 +107,12 @@ void QgsStackedDiagramProperties::appendSubDiagram( QgsDiagramRenderer *dr )
   mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
 }
 
-void QgsStackedDiagramProperties::editSubDiagram()
+void QgsStackedDiagramProperties::editSubDiagramRenderer()
 {
-  editSubDiagram( mSubDiagramsView->selectionModel()->currentIndex() );
+  editSubDiagramRenderer( mSubDiagramsView->selectionModel()->currentIndex() );
 }
 
-void QgsStackedDiagramProperties::editSubDiagram( const QModelIndex &index )
+void QgsStackedDiagramProperties::editSubDiagramRenderer( const QModelIndex &index )
 {
   if ( !index.isValid() )
     return;
@@ -159,7 +159,7 @@ void QgsStackedDiagramProperties::editSubDiagram( const QModelIndex &index )
   }
 }
 
-void QgsStackedDiagramProperties::removeSubDiagram()
+void QgsStackedDiagramProperties::removeSubDiagramRenderer()
 {
   const QItemSelection sel = mSubDiagramsView->selectionModel()->selection();
   const auto constSel = sel;
@@ -189,13 +189,13 @@ void QgsStackedDiagramProperties::syncToLayer()
       const auto renderers = stackedDiagramRenderer->renderers();
       for ( const auto &renderer : renderers )
       {
-        appendSubDiagram( renderer->clone() );
+        appendSubDiagramRenderer( renderer->clone() );
       }
     }
     else
     {
       // Take this single renderer as the first stacked renderer
-      appendSubDiagram( dr->clone() );
+      appendSubDiagramRenderer( dr->clone() );
     }
 
     const QgsDiagramLayerSettings *dls = mLayer->diagramLayerSettings();

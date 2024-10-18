@@ -117,30 +117,30 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
   private slots:
 
     /**
-     * Adds a diagram to the current QgsStackedDiagramProperties.
+     * Adds a sub diagram renderer to the current QgsStackedDiagramProperties.
      */
-    void addSubDiagram();
+    void addSubDiagramRenderer();
 
     /**
-     * Appends a diagram to the current QgsStackedDiagramProperties.
+     * Appends a sub diagram renderer to the current QgsStackedDiagramProperties.
      * Takes ownership.
      */
-    void appendSubDiagram( QgsDiagramRenderer *dr );
+    void appendSubDiagramRenderer( QgsDiagramRenderer *dr );
 
     /**
-     * Edits the properties of the current diagram.
+     * Edits the properties of the current diagram renderer.
      */
-    void editSubDiagram();
+    void editSubDiagramRenderer();
 
     /**
-     * Edits the properties of a diagram located at a given \a index.
+     * Edits the properties of a diagram renderer located at a given \a index.
      */
-    void editSubDiagram( const QModelIndex &index );
+    void editSubDiagramRenderer( const QModelIndex &index );
 
     /**
      * Removes a diagram from the current QgsStackedDiagramProperties.
      */
-    void removeSubDiagram();
+    void removeSubDiagramRenderer();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
