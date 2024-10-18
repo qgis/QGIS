@@ -867,6 +867,7 @@ const QString QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED = QString
 QgsStackedDiagramRenderer::QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other )
   : QgsDiagramRenderer( other )
   , mSettings( other.mSettings )
+  , mDiagramRenderers()
 {
   for ( QgsDiagramRenderer *renderer : std::as_const( other.mDiagramRenderers ) )
   {
