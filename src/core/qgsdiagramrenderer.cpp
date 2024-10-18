@@ -907,7 +907,7 @@ QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const
   // Iterate renderers. For each renderer, get the diagram
   // size for the feature and add it to the total size
   // accounting for stacked diagram defined spacing
-  for ( const auto &subRenderer : std::as_const( mDiagramRenderers ) )
+  for ( const QgsDiagramRenderer *subRenderer : std::as_const( mDiagramRenderers ) )
   {
     QSizeF size = subRenderer->sizeMapUnits( feature, c );
 
@@ -959,7 +959,7 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
   // Get subrenderers sorted by mode (vertical diagrams are returned backwards)
   const QList< QgsDiagramRenderer * > stackedRenderers = renderers( true );
 
-  for ( const auto &stackedRenderer : stackedRenderers )
+  for ( const QgsDiagramRenderer *stackedRenderer : stackedRenderers )
   {
     if ( stackedRenderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
@@ -1054,7 +1054,7 @@ QList<QString> QgsStackedDiagramRenderer::diagramAttributes() const
 QList< QgsLayerTreeModelLegendNode * > QgsStackedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
   QList< QgsLayerTreeModelLegendNode * > nodes;
-  for ( const auto &renderer : std::as_const( mDiagramRenderers ) )
+  for ( const QgsDiagramRenderer *renderer : std::as_const( mDiagramRenderers ) )
   {
     nodes << renderer->legendItems( nodeLayer );
   }

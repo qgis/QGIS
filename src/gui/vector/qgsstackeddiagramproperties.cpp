@@ -186,8 +186,8 @@ void QgsStackedDiagramProperties::syncToLayer()
     if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
-      const auto renderers = stackedDiagramRenderer->renderers();
-      for ( const auto &renderer : renderers )
+      const QList< QgsDiagramRenderer * > renderers = stackedDiagramRenderer->renderers();
+      for ( const QgsDiagramRenderer *renderer : renderers )
       {
         appendSubDiagramRenderer( renderer->clone() );
       }
@@ -216,7 +216,7 @@ void QgsStackedDiagramProperties::apply()
 
   // Get DiagramSettings from each subdiagram
   const QList< QgsDiagramRenderer *> renderers = mModel->subRenderers();
-  for ( const auto &renderer : renderers )
+  for ( const QgsDiagramRenderer *renderer : renderers )
   {
     const QList< QgsDiagramSettings > ds1 = renderer->diagramSettings();
     if ( !ds1.isEmpty() )
@@ -254,7 +254,7 @@ bool QgsStackedDiagramProperties::couldBeFirstSubDiagram( const QModelIndex &ind
 
   for ( int i = 0; i < index.row(); i++ )
   {
-    const auto &renderer = renderers.at( i );
+    const QgsDiagramRenderer *renderer = renderers.at( i );
     const QList< QgsDiagramSettings > ds = renderer->diagramSettings();
     if ( !ds.isEmpty() && ds.at( 0 ).enabled )
     {
