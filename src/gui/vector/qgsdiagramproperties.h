@@ -55,7 +55,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void syncToLayer();
 
     /**
-     * Updates the widget to reflect the diagram renderer.
+     * Updates the widget to reflect the diagram renderer. Does not take ownership.
      * \param dr Diagram renderer where settings are taken from.
      *
      * \since QGIS 3.40
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void syncToRenderer( const QgsDiagramRenderer *dr );
 
     /**
-     * Updates the widget to reflect the diagram layer settings.
+     * Updates the widget to reflect the diagram layer settings. Does not take ownership.
      * \param dls Diagram Layer Settings to update the widget.
      *
      * \since QGIS 3.40
