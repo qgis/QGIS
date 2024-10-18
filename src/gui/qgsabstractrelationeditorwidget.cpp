@@ -29,6 +29,8 @@
 #include "qgsproject.h"
 #include "qgstransactiongroup.h"
 #include "qgsvectorlayerutils.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -283,35 +285,34 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
   }
   else
   {
-    const auto constFieldPairs = mRelation.fieldPairs();
-    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-      keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeatureList.first().attribute( fieldPair.referencedField() ) );
-
+    const bool prevReuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value();
     QgsVectorLayerToolsContext context;
     context.setParentWidget( this );
     context.setShowModal( false );
     context.setHideParent( true );
-    std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::parentFormScope( mFeatureList.first(), mEditorContext.attributeFormModeString() ) );
-    context.setAdditionalExpressionContextScope( scope.get() );
-    QgsFeature linkFeature;
-    if ( !vlTools->addFeatureV2( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, context ) )
-      return QgsFeatureIds();
-
-    addedFeatureIds.insert( linkFeature.id() );
-
-    // In multiedit add to other features to but without dialog
-    for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
+    for ( const QgsFeature &editingFeature : std::as_const( mFeatureList ) )
     {
-      // First feature already added
-      if ( mFeatureList.first() == feature )
-        continue;
-
+      const auto constFieldPairs = mRelation.fieldPairs();
       for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-        linkFeature.setAttribute( fields.indexFromName( fieldPair.referencingField() ), feature.attribute( fieldPair.referencedField() ) );
+        keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), editingFeature.attribute( fieldPair.referencedField() ) );
 
-      mRelation.referencingLayer()->addFeature( linkFeature );
+      // In multiedit add to other features too but without dialog
+      if ( editingFeature != mFeatureList.first() )
+      {
+        QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->setValue( true );
+        context.setForceSuppressFormPopup( true );
+      }
+      std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::parentFormScope( editingFeature, mEditorContext.attributeFormModeString() ) );
+      context.setAdditionalExpressionContextScope( scope.get() );
+      QgsFeature linkFeature;
+      if ( !vlTools->addFeatureV2( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature, context ) )
+      {
+        QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->setValue( prevReuseAllLastValues );
+        return QgsFeatureIds();
+      }
       addedFeatureIds.insert( linkFeature.id() );
     }
+    QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->setValue( prevReuseAllLastValues );
   }
 
   updateUi();
