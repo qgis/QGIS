@@ -41,6 +41,7 @@ enum nmeaPACKTYPE
  */
 typedef struct _nmeaGPGGA
 {
+  char talkerId[2];   //!< Talker ID
   nmeaTIME utc;       //!< UTC of position (just time)
   double  lat;        //!< Latitude in NDEG - [degree][min].[sec/60]
   char    ns;         //!< [N]orth or [S]outh
@@ -63,6 +64,7 @@ typedef struct _nmeaGPGGA
  */
 typedef struct _nmeaGPGST
 {
+  char talkerId[2];   //!< Talker ID
   nmeaTIME utc;       //!< UTC of position fix
   double  rms_pr;     //!< RMS value of the pseudorange residuals; Includes carrier phase residuals during periods of RTK (float) and RTK (fixed) processing
   double  err_major;  //!< Error ellipse semi-major axis 1 sigma error, in meters
@@ -79,14 +81,13 @@ typedef struct _nmeaGPGST
  */
 typedef struct _nmeaGPGSA
 {
+  char talkerId[2];   //!< Talker ID
   char    fix_mode;   //!< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
   int     fix_type;   //!< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
   int     sat_prn[NMEA_MAXSAT]; //!< PRNs of satellites used in position fix (null for unused fields)
   double  PDOP;       //!< Dilution of precision
   double  HDOP;       //!< Horizontal dilution of precision
   double  VDOP;       //!< Vertical dilution of precision
-  char    pack_type;  //!< P=GPS, N=generic, L=GLONASS
-
 } nmeaGPGSA;
 
 /**
@@ -94,10 +95,10 @@ typedef struct _nmeaGPGSA
  */
 typedef struct _nmeaGPGSV
 {
+  char talkerId[2];   //!< Talker ID
   int     pack_count; //!< Total number of messages of this type in this cycle
   int     pack_index; //!< Message number
   int     sat_count;  //!< Total number of satellites in view
-  char    pack_type;  //!< P=GPS - S=SBas - N=generic - L=GLONAS - A=GALILEO - B=BEIDOU - Q=QZSS
   nmeaSATELLITE sat_data[NMEA_SATINPACK];
 
 } nmeaGPGSV;
@@ -107,6 +108,7 @@ typedef struct _nmeaGPGSV
  */
 typedef struct _nmeaGPRMC
 {
+  char talkerId[2];   //!< Talker ID
   nmeaTIME utc;       //!< UTC of position
   char    status;     //!< Status (A = active or V = void)
   double  lat;        //!< Latitude in NDEG - [degree][min].[sec/60]
@@ -126,6 +128,7 @@ typedef struct _nmeaGPRMC
  */
 typedef struct _nmeaGPVTG
 {
+  char talkerId[2];   //!< Talker ID
   double  dir;        //!< True track made good (degrees)
   char    dir_t;      //!< Fixed text 'T' indicates that track made good is relative to true north
   double  dec;        //!< Magnetic track made good
@@ -142,6 +145,7 @@ typedef struct _nmeaGPVTG
  */
 typedef struct _nmeaGPHDT
 {
+  char talkerId[2];   //!< Talker ID
   double  heading;    //!< Heading in degrees
   char    t_flag;      //!< Fixed text 'T' indicates that heading is relative to true north
 
@@ -152,6 +156,7 @@ typedef struct _nmeaGPHDT
  */
 typedef struct _nmeaHCHDG
 {
+  char talkerId[2];   //!< Talker ID
   double mag_heading;   //!< Magnetic sensor heading (degrees)
   double mag_deviation; //!< Magnetic deviation (degrees)
   char ew_deviation;     //!< [E]ast or [W]est
@@ -159,14 +164,6 @@ typedef struct _nmeaHCHDG
   char ew_variation;    //!< [E]ast or [W]est
 } nmeaHCHDG;
 
-/**
- * HDT packet information structure (Heading, )
- */
-typedef struct _nmeaHCHDT
-{
-  double direction;   //!< Heading respect to true north (degrees)
-  char t_flag;    //!< Static text [T]
-} nmeaHCHDT;
 
 void nmea_zero_GPGGA( nmeaGPGGA *pack );
 void nmea_zero_GPGST( nmeaGPGST *pack );
