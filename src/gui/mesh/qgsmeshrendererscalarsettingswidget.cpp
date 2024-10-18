@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshvariablestrokewidthwidget.h"
+#include "qgsmapcanvas.h"
 #include <QPointer>
 
 QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidget *parent )
@@ -215,4 +216,9 @@ bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnEdges() const
   return onEdges;
 }
 
+
+void QgsMeshRendererScalarSettingsWidget::setCanvas( QgsMapCanvas *canvas )
+{
+  mCanvas = canvas;
+}
 

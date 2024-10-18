@@ -59,6 +59,8 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
+    void setCanvas( QgsMapCanvas *canvas );
+
   signals:
     //! Mesh rendering settings changed
     void widgetChanged();
@@ -77,6 +79,7 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveDatasetGroup = -1;
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H
