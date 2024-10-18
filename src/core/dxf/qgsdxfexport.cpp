@@ -2439,21 +2439,21 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::FollowPlacement )
   {
     //calculate font alignment based on label quadrant
-    switch ( label->getQuadrant() )
+    switch ( label->quadrant() )
     {
-      case pal::LabelPosition::QuadrantAboveLeft:
-      case pal::LabelPosition::QuadrantLeft:
-      case pal::LabelPosition::QuadrantBelowLeft:
+      case Qgis::LabelQuadrantPosition::AboveLeft:
+      case Qgis::LabelQuadrantPosition::Left:
+      case Qgis::LabelQuadrantPosition::BelowLeft:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Right;
         break;
-      case pal::LabelPosition::QuadrantAbove:
-      case pal::LabelPosition::QuadrantOver:
-      case pal::LabelPosition::QuadrantBelow:
+      case Qgis::LabelQuadrantPosition::Above:
+      case Qgis::LabelQuadrantPosition::Over:
+      case Qgis::LabelQuadrantPosition::Below:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
         break;
-      case pal::LabelPosition::QuadrantAboveRight:
-      case pal::LabelPosition::QuadrantRight:
-      case pal::LabelPosition::QuadrantBelowRight:
+      case Qgis::LabelQuadrantPosition::AboveRight:
+      case Qgis::LabelQuadrantPosition::Right:
+      case Qgis::LabelQuadrantPosition::BelowRight:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Left;
         break;
     }
@@ -2482,7 +2482,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
     bool prependSymb = false;
     QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
-    if ( label->getReversed() )
+    if ( label->isReversedFromLineDirection() )
     {
       prependSymb = true;
       symb = tmpLyr.lineSettings().leftDirectionSymbol();

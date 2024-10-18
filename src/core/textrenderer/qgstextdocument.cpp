@@ -271,6 +271,16 @@ void QgsTextDocument::append( QgsTextBlock &&block )
   mBlocks.push_back( block );
 }
 
+void QgsTextDocument::insert( int index, const QgsTextBlock &block )
+{
+  mBlocks.insert( index, block );
+}
+
+void QgsTextDocument::insert( int index, QgsTextBlock &&block )
+{
+  mBlocks.insert( index, block );
+}
+
 void QgsTextDocument::reserve( int count )
 {
   mBlocks.reserve( count );
