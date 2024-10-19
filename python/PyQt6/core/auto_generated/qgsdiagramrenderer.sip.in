@@ -968,6 +968,10 @@ the rendered diagram is given by a combination of subrenderers.
   public:
 
     QgsStackedDiagramRenderer();
+    ~QgsStackedDiagramRenderer();
+
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
 
     virtual QgsStackedDiagramRenderer *clone() const /Factory/;
 
@@ -1022,13 +1026,14 @@ Writes stacked renderers state to a DOM element.
     QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 %Docstring
 Returns an ordered list with the renderers of the stacked renderer object.
+Does not transfer ownership.
 
 :param sortByDiagramMode: If true, the list is returned backwards for vertical orientation.
 %End
 
-    void addRenderer( QgsDiagramRenderer *renderer );
+    void addRenderer( QgsDiagramRenderer *renderer /Transfer/ );
 %Docstring
-Adds a renderer to the stacked renderer object.
+Adds a renderer to the stacked renderer object. Takes ownership.
 
 Renderers added first will render their diagrams first, i.e., more to
 the left (horizontal mode) or more to the top (vertical mode).
@@ -1038,9 +1043,14 @@ the left (horizontal mode) or more to the top (vertical mode).
 
     const QgsDiagramRenderer *renderer( const int index ) const;
 %Docstring
-Returns the renderer at the given ``index``.
+Returns the renderer at the given ``index``. Does not transfer ownership.
 
 :param index: index of the desired renderer in the stacked renderer
+%End
+
+    int rendererCount() const;
+%Docstring
+Returns the number of sub renderers in the stacked diagram renderer
 %End
 
   protected:

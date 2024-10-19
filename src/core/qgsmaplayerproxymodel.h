@@ -79,7 +79,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * Sets the \a project from which map layers are shown.
      *
-     * If \a project is NULLPTR then QgsProject::instance() will be used.
+     * If \a project is NULLPTR then QgsProject.instance() will be used.
      *
      * \since QGIS 3.24
      */

@@ -1003,6 +1003,11 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
     static const QString DIAGRAM_RENDERER_NAME_STACKED SIP_SKIP;
 
     QgsStackedDiagramRenderer() = default;
+    ~QgsStackedDiagramRenderer() override;
+
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
+    QgsStackedDiagramRenderer &operator=( const QgsStackedDiagramRenderer &other );
 
     QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
 
@@ -1044,27 +1049,31 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     /**
      * Returns an ordered list with the renderers of the stacked renderer object.
+     * Does not transfer ownership.
      *
      * \param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
      */
     QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 
     /**
-     * Adds a renderer to the stacked renderer object.
+     * Adds a renderer to the stacked renderer object. Takes ownership.
      *
      * Renderers added first will render their diagrams first, i.e., more to
      * the left (horizontal mode) or more to the top (vertical mode).
      *
      * \param renderer diagram renderer to be added to the stacked renderer
      */
-    void addRenderer( QgsDiagramRenderer *renderer );
+    void addRenderer( QgsDiagramRenderer *renderer SIP_TRANSFER );
 
     /**
-     * Returns the renderer at the given \a index.
+     * Returns the renderer at the given \a index. Does not transfer ownership.
      *
      * \param index index of the desired renderer in the stacked renderer
      */
     const QgsDiagramRenderer *renderer( const int index ) const;
+
+    //! Returns the number of sub renderers in the stacked diagram renderer
+    int rendererCount() const;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;

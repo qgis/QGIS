@@ -40,11 +40,11 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   }
 
   setupUi( this );
-  connect( mSubDiagramsView, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsStackedDiagramProperties::* )( const QModelIndex & )>( &QgsStackedDiagramProperties::editSubDiagram ) );
+  connect( mSubDiagramsView, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsStackedDiagramProperties::* )( const QModelIndex & )>( &QgsStackedDiagramProperties::editSubDiagramRenderer ) );
 
-  connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagram );
-  connect( mEditSubDiagramButton, &QAbstractButton::clicked, this, static_cast<void ( QgsStackedDiagramProperties::* )()>( &QgsStackedDiagramProperties::editSubDiagram ) );
-  connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagram );
+  connect( mAddSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::addSubDiagramRenderer );
+  connect( mEditSubDiagramButton, &QAbstractButton::clicked, this, static_cast<void ( QgsStackedDiagramProperties::* )()>( &QgsStackedDiagramProperties::editSubDiagramRenderer ) );
+  connect( mRemoveSubDiagramButton, &QPushButton::clicked, this, &QgsStackedDiagramProperties::removeSubDiagramRenderer );
 
   // Initialize stacked diagram controls
   mStackedDiagramModeComboBox->addItem( tr( "Horizontal" ), QgsDiagramSettings::Horizontal );
@@ -73,7 +73,7 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   syncToLayer();
 }
 
-void QgsStackedDiagramProperties::addSubDiagram()
+void QgsStackedDiagramProperties::addSubDiagramRenderer()
 {
   // Create a single category renderer by default
   std::unique_ptr< QgsDiagramRenderer > renderer;
@@ -94,25 +94,25 @@ void QgsStackedDiagramProperties::addSubDiagram()
   else
   {
     // append to root
-    appendSubDiagram( renderer.release() );
+    appendSubDiagramRenderer( renderer.release() );
   }
-  editSubDiagram();
+  editSubDiagramRenderer();
 }
 
-void QgsStackedDiagramProperties::appendSubDiagram( QgsDiagramRenderer *dr )
+void QgsStackedDiagramProperties::appendSubDiagramRenderer( QgsDiagramRenderer *dr )
 {
   const int rows = mModel->rowCount();
-  mModel->insertSubDiagram( rows, dr );
+  mModel->insertSubDiagram( rows, dr ); // Transfers ownership
   const QModelIndex newIndex = mModel->index( rows, 0 );
   mSubDiagramsView->selectionModel()->setCurrentIndex( newIndex, QItemSelectionModel::ClearAndSelect );
 }
 
-void QgsStackedDiagramProperties::editSubDiagram()
+void QgsStackedDiagramProperties::editSubDiagramRenderer()
 {
-  editSubDiagram( mSubDiagramsView->selectionModel()->currentIndex() );
+  editSubDiagramRenderer( mSubDiagramsView->selectionModel()->currentIndex() );
 }
 
-void QgsStackedDiagramProperties::editSubDiagram( const QModelIndex &index )
+void QgsStackedDiagramProperties::editSubDiagramRenderer( const QModelIndex &index )
 {
   if ( !index.isValid() )
     return;
@@ -159,7 +159,7 @@ void QgsStackedDiagramProperties::editSubDiagram( const QModelIndex &index )
   }
 }
 
-void QgsStackedDiagramProperties::removeSubDiagram()
+void QgsStackedDiagramProperties::removeSubDiagramRenderer()
 {
   const QItemSelection sel = mSubDiagramsView->selectionModel()->selection();
   const auto constSel = sel;
@@ -186,16 +186,16 @@ void QgsStackedDiagramProperties::syncToLayer()
     if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
-      const auto renderers = stackedDiagramRenderer->renderers();
-      for ( const auto &renderer : renderers )
+      const QList< QgsDiagramRenderer * > renderers = stackedDiagramRenderer->renderers();
+      for ( const QgsDiagramRenderer *renderer : renderers )
       {
-        appendSubDiagram( renderer );
+        appendSubDiagramRenderer( renderer->clone() );
       }
     }
     else
     {
       // Take this single renderer as the first stacked renderer
-      appendSubDiagram( dr->clone() );
+      appendSubDiagramRenderer( dr->clone() );
     }
 
     const QgsDiagramLayerSettings *dls = mLayer->diagramLayerSettings();
@@ -216,7 +216,7 @@ void QgsStackedDiagramProperties::apply()
 
   // Get DiagramSettings from each subdiagram
   const QList< QgsDiagramRenderer *> renderers = mModel->subRenderers();
-  for ( const auto &renderer : renderers )
+  for ( const QgsDiagramRenderer *renderer : renderers )
   {
     const QList< QgsDiagramSettings > ds1 = renderer->diagramSettings();
     if ( !ds1.isEmpty() )
@@ -225,7 +225,7 @@ void QgsStackedDiagramProperties::apply()
       ds->categoryLabels += ds1.at( 0 ).categoryLabels;
       ds->categoryColors += ds1.at( 0 ).categoryColors;
     }
-    dr->addRenderer( renderer );
+    dr->addRenderer( renderer->clone() );
   }
 
   dr->setDiagramSettings( *ds );
@@ -254,7 +254,7 @@ bool QgsStackedDiagramProperties::couldBeFirstSubDiagram( const QModelIndex &ind
 
   for ( int i = 0; i < index.row(); i++ )
   {
-    const auto &renderer = renderers.at( i );
+    const QgsDiagramRenderer *renderer = renderers.at( i );
     const QList< QgsDiagramSettings > ds = renderer->diagramSettings();
     if ( !ds.isEmpty() && ds.at( 0 ).enabled )
     {
@@ -369,6 +369,11 @@ QgsStackedDiagramPropertiesModel::QgsStackedDiagramPropertiesModel( QObject *par
 {
 }
 
+QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
+{
+  qDeleteAll( mRenderers );
+}
+
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
 {
   const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
@@ -388,7 +393,37 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
     switch ( index.column() )
     {
       case 1:
-        return ( !dr || !dr->diagram() ) ? tr( "(no diagram)" ) : dr->diagram()->diagramName();
+        if ( dr && dr->diagram() )
+        {
+          if ( dr->diagram()->diagramName() == QgsPieDiagram::DIAGRAM_NAME_PIE )
+          {
+            return tr( "Pie Chart" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsTextDiagram::DIAGRAM_NAME_TEXT )
+          {
+            return tr( "Text Diagram" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM )
+          {
+            return tr( "Histogram" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
+          {
+            return tr( "Stacked Bars" );
+          }
+          else if ( dr->diagram()->diagramName() == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
+          {
+            return tr( "Stacked Diagram" );
+          }
+          else
+          {
+            return dr->diagram()->diagramName();
+          }
+        }
+        else
+        {
+          return tr( "(no diagram)" );
+        }
       case 2:
         if ( !dr )
         {
@@ -527,15 +562,17 @@ void QgsStackedDiagramPropertiesModel::insertSubDiagram( const int index, QgsDia
 
 void QgsStackedDiagramPropertiesModel::updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr )
 {
+  if ( !index.isValid() )
+    return;
+
+  delete mRenderers.at( index.row() );
   mRenderers.replace( index.row(), dr );
   emit dataChanged( index, index );
 }
 
 QList< QgsDiagramRenderer *> QgsStackedDiagramPropertiesModel::subRenderers() const
 {
-  QList<QgsDiagramRenderer *> subRenderers;
-  subRenderers = mRenderers;
-  return subRenderers;
+  return mRenderers;
 }
 
 void QgsStackedDiagramPropertiesModel::updateDiagramLayerSettings( QgsDiagramLayerSettings dls )

@@ -95,7 +95,7 @@ class QgsSensorManager;
  * \brief Encapsulates a QGIS project, including sets of map layers and their styles,
  * layouts, annotations, canvases, etc.
  *
- * QgsProject is available both as a singleton (QgsProject::instance()) and for use as
+ * QgsProject is available both as a singleton (QgsProject.instance()) and for use as
  * standalone objects. The QGIS project singleton always gives access to the canonical project reference
  * open within the main QGIS application.
  *
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Create a new QgsProject.
      *
-     * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
+     * Most of the time you want to use QgsProject.instance() instead as many components of QGIS work with the singleton.
      *
      * Since QGIS 3.26.1 the \a capabilities argument specifies optional capabilities which can be selectively
      * enabled for the project. These affect the QgsProject object for its entire lifetime.
@@ -1250,7 +1250,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * ### Example
      *
-     *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
+     *     QVector<QgsVectorLayer*> vectorLayers = QgsProject.instance()->layers<QgsVectorLayer*>();
      *
      * \note not available in Python bindings
      * \see mapLayers()
@@ -1722,7 +1722,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
