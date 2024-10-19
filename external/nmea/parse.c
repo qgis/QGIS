@@ -404,7 +404,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
     return 0;
   }
 
-  if ( pack->pack_type != 'P' && pack->pack_type != 'N' && pack->pack_type != 'L' && pack->pack_type != 'A' && pack->pack_type != 'B' && pack->pack_type != 'Q' )
+  if ( pack->talkerId[1] != 'P' && pack->talkerId[1] != 'N' && pack->talkerId[1] != 'L' && pack->talkerId[1] != 'A' && pack->talkerId[1] != 'B' && pack->talkerId[1] != 'Q' )
   {
     nmea_error( "GSV parse error!" );
     return 0;
