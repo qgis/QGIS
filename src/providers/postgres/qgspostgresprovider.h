@@ -180,7 +180,9 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     Qgis::VectorProviderCapabilities capabilities() const override;
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
@@ -489,7 +491,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * Set mLayerExtent by estimation, if possible
      *
-     * @return whether it was possible to estimate extent.
+     * \returns whether it was possible to estimate extent.
      * If false is returned, mLayerExtent is left untouched.
      */
     bool estimateExtent() const;
@@ -497,7 +499,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     /**
      * Set mLayerExtent by 3d computation, if possible
      *
-     * @return whether it was possible to estimate extent.
+     * \returns whether it was possible to estimate extent.
      * If false is returned, mLayerExtent is left untouched.
      */
     bool computeExtent3D() const;

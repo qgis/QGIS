@@ -526,6 +526,10 @@ QString QgsGdalProvider::htmlMetadata() const
 
   QString myMetadata;
 
+  // Use the base dataset to display metadata, rather than potentially the
+  // warped VRT one, which might lack it.
+  GDALDatasetH dsForMetadata = mGdalBaseDataset;
+
   // GDAL Driver description
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + mDriverName + QStringLiteral( "</td></tr>\n" );
 
@@ -533,16 +537,16 @@ QString QgsGdalProvider::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( hDriver, GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
 
   // Dataset description
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( mGdalDataset ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( dsForMetadata ) ) + QStringLiteral( "</td></tr>\n" );
 
   // compression
-  QString compression = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
+  QString compression = QString( GDALGetMetadataItem( dsForMetadata, "COMPRESSION", "IMAGE_STRUCTURE" ) );
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Compression" ) + QStringLiteral( "</td><td>" ) + compression + QStringLiteral( "</td></tr>\n" );
 
   // Band details
-  for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); ++i )
+  for ( int i = 1; i <= GDALGetRasterCount( dsForMetadata ); ++i )
   {
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
+    GDALRasterBandH gdalBand = GDALGetRasterBand( dsForMetadata, i );
     char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band %1" ).arg( i ) + QStringLiteral( "</td><td>" );
     if ( GDALmetadata )
@@ -574,7 +578,7 @@ QString QgsGdalProvider::htmlMetadata() const
     myMetadata += tr( "Mask band (exposed as alpha band)" ) + QStringLiteral( "<br />\n" );
   }
 
-  char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
+  char **GDALmetadata = GDALGetMetadata( dsForMetadata, nullptr );
   if ( GDALmetadata )
   {
     QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );

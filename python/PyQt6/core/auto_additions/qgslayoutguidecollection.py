@@ -55,9 +55,6 @@ QgsLayoutGuideCollection.CustomRole.__doc__ = """Custom model roles.
 QgsLayoutGuideCollection.CustomRole.baseClass = QgsLayoutGuideCollection
 try:
     QgsLayoutGuide.__attribute_docs__ = {'positionChanged': "Emitted when the guide's position is changed.\n"}
-except NameError:
-    pass
-try:
     QgsLayoutGuide.__group__ = ['layout']
 except NameError:
     pass

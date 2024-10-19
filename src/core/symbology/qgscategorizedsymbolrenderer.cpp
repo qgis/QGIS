@@ -64,22 +64,17 @@ QgsRendererCategory::QgsRendererCategory( const QgsRendererCategory &cat )
 {
 }
 
-// copy+swap idion, the copy is done through the 'pass by value'
 QgsRendererCategory &QgsRendererCategory::operator=( QgsRendererCategory cat )
 {
-  swap( cat );
+  mValue = cat.mValue;
+  mSymbol.reset( cat.mSymbol ? cat.mSymbol->clone() : nullptr );
+  mLabel = cat.mLabel;
+  mRender = cat.mRender;
+  mUuid = cat.mUuid;
   return *this;
 }
 
 QgsRendererCategory::~QgsRendererCategory() = default;
-
-void QgsRendererCategory::swap( QgsRendererCategory &cat )
-{
-  std::swap( mValue, cat.mValue );
-  std::swap( mSymbol, cat.mSymbol );
-  std::swap( mLabel, cat.mLabel );
-  std::swap( mUuid, cat.mUuid );
-}
 
 QString QgsRendererCategory::uuid() const
 {
@@ -223,6 +218,22 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
     }
     mCategories << cat;
   }
+}
+
+Qgis::FeatureRendererFlags QgsCategorizedSymbolRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  QgsCategoryList::const_iterator catIt = mCategories.constBegin();
+  for ( ; catIt != mCategories.constEnd(); ++catIt )
+  {
+    if ( QgsSymbol *catSymbol = catIt->symbol() )
+    {
+      if ( catSymbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+        res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+    }
+  }
+
+  return res;
 }
 
 QgsCategorizedSymbolRenderer::~QgsCategorizedSymbolRenderer() = default;

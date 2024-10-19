@@ -696,8 +696,8 @@ Returns ``True`` if the given ``expression`` is a simple "field=value" type expr
 :param expression: expression to test
 
 :return: - ``True`` if the expression is a field equality expression
-         - field: will be set to the field name if the expression is a field equality expression
-         - value: will be set to the value if the expression is a field equality expression
+         - field: the field name if the expression is a field equality expression
+         - value: the value if the expression is a field equality expression
 
 .. versionadded:: 3.18
 %End
@@ -714,7 +714,7 @@ Returns ``True`` if the given ``expressions`` could be converted to an IN type e
 :param expressions: expressions to test
 
 :return: - ``True`` if the expression was converted to a field IN type expression
-         - result: will be set to the calculated "field IN (...)" expression, wherever possible
+         - result: the calculated "field IN (...)" expression, wherever possible
 
 .. versionadded:: 3.18
 %End

@@ -366,7 +366,9 @@ void QgsTextFormatWidget::initWidget()
 
   overlapModeChanged();
 
-#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+  // stretch is available
+#else
   mLabelStretch->hide();
   mSpinStretch->hide();
   mFontStretchDDBtn->hide();
@@ -509,7 +511,7 @@ void QgsTextFormatWidget::initWidget()
           << mTabDistanceUnitWidget
           << mTabStopDistanceSpin;
 
-  connectValueChanged( widgets, SLOT( updatePreview() ) );
+  connectValueChanged( widgets );
 
   connect( mQuadrantBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
 
@@ -633,7 +635,9 @@ void QgsTextFormatWidget::toggleDDButtons( bool visible )
   const auto buttons = findChildren< QgsPropertyOverrideButton * >();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
-#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+    // stretch is available
+#else
     if ( button == mFontStretchDDBtn )
       continue; // always hidden
 #endif
@@ -659,70 +663,70 @@ void QgsTextFormatWidget::setDockMode( bool enabled )
   mDockMode = enabled;
 }
 
-void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, const char *slot )
+void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets )
 {
   const auto constWidgets = widgets;
   for ( QWidget *widget : constWidgets )
   {
     if ( QgsSymbolButton *w = qobject_cast<QgsSymbolButton *>( widget ) )
     {
-      connect( w, SIGNAL( changed() ), this, slot );
+      connect( w, &QgsSymbolButton::changed, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QgsFieldExpressionWidget *w = qobject_cast< QgsFieldExpressionWidget *>( widget ) )
     {
-      connect( w, SIGNAL( fieldChanged( QString ) ), this, slot );
+      connect( w, qOverload< const QString & >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QgsOpacityWidget *w = qobject_cast< QgsOpacityWidget *>( widget ) )
     {
-      connect( w, SIGNAL( opacityChanged( double ) ), this, slot );
+      connect( w, &QgsOpacityWidget::opacityChanged, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QgsScaleWidget *w = qobject_cast< QgsScaleWidget *>( widget ) )
     {
-      connect( w, SIGNAL( scaleChanged( double ) ), this, slot );
+      connect( w, &QgsScaleWidget::scaleChanged, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QgsUnitSelectionWidget *w = qobject_cast<QgsUnitSelectionWidget *>( widget ) )
     {
-      connect( w, SIGNAL( changed() ), this, slot );
+      connect( w, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QComboBox *w = qobject_cast<QComboBox *>( widget ) )
     {
-      connect( w, SIGNAL( currentIndexChanged( int ) ), this, slot );
+      connect( w, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QSpinBox *w = qobject_cast<QSpinBox *>( widget ) )
     {
-      connect( w, SIGNAL( valueChanged( int ) ), this, slot );
+      connect( w, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( widget ) )
     {
-      connect( w, SIGNAL( valueChanged( double ) ), this, slot );
+      connect( w, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QgsColorButton *w = qobject_cast<QgsColorButton *>( widget ) )
     {
-      connect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
+      connect( w, &QgsColorButton::colorChanged, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QCheckBox *w = qobject_cast<QCheckBox *>( widget ) )
     {
-      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+      connect( w, &QCheckBox::toggled, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QRadioButton *w = qobject_cast<QRadioButton *>( widget ) )
     {
-      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+      connect( w, &QRadioButton::toggled, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QLineEdit *w = qobject_cast<QLineEdit *>( widget ) )
     {
-      connect( w, SIGNAL( textEdited( QString ) ), this, slot );
+      connect( w, &QLineEdit::textEdited, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QSlider *w = qobject_cast<QSlider *>( widget ) )
     {
-      connect( w, SIGNAL( valueChanged( int ) ), this, slot );
+      connect( w, &QSlider::valueChanged, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QGroupBox *w = qobject_cast<QGroupBox *>( widget ) )
     {
-      connect( w, SIGNAL( toggled( bool ) ), this, slot );
+      connect( w, &QGroupBox::toggled, this, &QgsTextFormatWidget::updatePreview );
     }
     else if ( QgsCodeEditorExpression *w = qobject_cast<QgsCodeEditorExpression *>( widget ) )
     {
-      connect( w, SIGNAL( textChanged() ), this, slot );
+      connect( w, &QgsCodeEditorExpression::textChanged, this, &QgsTextFormatWidget::updatePreview );
     }
     else
     {
@@ -2176,11 +2180,17 @@ QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
     return *lExpressionContext;
 
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+  {
+    expContext = mMapCanvas->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );

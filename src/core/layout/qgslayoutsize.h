@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsconfig.h"
 #include <QSizeF>
 
 
@@ -65,7 +66,14 @@ class CORE_EXPORT QgsLayoutSize
      * \see setHeight()
      * \see setUnits()
     */
-    void setSize( const double width, const double height ) { mWidth = width; mHeight = height; }
+    void setSize( const double width, const double height )
+    {
+      mWidth = width;
+      mHeight = height;
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( width ) && !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
+#endif
+    }
 
     /**
      * Returns the width of the size.
@@ -79,7 +87,13 @@ class CORE_EXPORT QgsLayoutSize
      * \see width()
      * \see setHeight()
     */
-    void setWidth( const double width ) { mWidth = width; }
+    void setWidth( const double width )
+    {
+      mWidth = width;
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( width ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
+#endif
+    }
 
     /**
      * Returns the height of the size.
@@ -93,7 +107,13 @@ class CORE_EXPORT QgsLayoutSize
      * \see height()
      * \see setWidth()
     */
-    void setHeight( const double height ) { mHeight = height; }
+    void setHeight( const double height )
+    {
+      mHeight = height;
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
+#endif
+    }
 
     /**
      * Returns the units for the size.

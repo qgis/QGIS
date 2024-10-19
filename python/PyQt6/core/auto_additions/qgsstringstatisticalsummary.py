@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgsstringstatisticalsummary.h
-QgsStringStatisticalSummary.displayName = staticmethod(QgsStringStatisticalSummary.displayName)
+try:
+    QgsStringStatisticalSummary.displayName = staticmethod(QgsStringStatisticalSummary.displayName)
+except NameError:
+    pass

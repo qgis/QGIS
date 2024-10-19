@@ -45,7 +45,6 @@ class QgsGeorefToolAddPoint;
 class QgsGeorefToolDeletePoint;
 class QgsGeorefToolMovePoint;
 class QgsGeorefToolMovePoint;
-class QgsGCPCanvasItem;
 class QgsGcpPoint;
 class QgsMapLayer;
 class QgsScreenHelper;
@@ -285,10 +284,9 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePointQgis = nullptr;
 
-    QgsGCPCanvasItem *mNewlyAddedPointItem = nullptr;
-
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
+    QgsGeorefDataPoint *mNewlyAddedPoint = nullptr;
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
     bool mUseZeroForTrans = false;

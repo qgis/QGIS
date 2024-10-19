@@ -262,6 +262,13 @@ E.g. if you only want to deal with visible features:
          skip_the_curren_feature()
 %End
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+%Docstring
+Returns flags associated with the renderer.
+
+.. versionadded:: 3.40
+%End
+
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 %Docstring
 Returns list of symbols used by the renderer.
@@ -361,7 +368,7 @@ the features displayed using that key.
 :param layer: associated vector layer
 
 :return: - QGIS expression string for matching features with the specified key
-         - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
+         - ok: ``True`` if legend key was successfully converted to a filter expression
 
 .. seealso:: :py:func:`legendKeys`
 

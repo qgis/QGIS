@@ -52,11 +52,11 @@ QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
   }
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsGeometryCollection &QgsGeometryCollection::operator=( const QgsGeometryCollection &c )
 {
   if ( &c != this )
   {
-    clearCache();
     QgsAbstractGeometry::operator=( c );
     int nGeoms = c.mGeometries.size();
     mGeometries.resize( nGeoms );
@@ -886,7 +886,7 @@ bool QgsGeometryCollection::isValid( QString &error, Qgis::GeometryValidityFlags
     return error.isEmpty();
   }
 
-  QgsGeos geos( this, /* tolerance = */ 0, /* allowInvalidSubGeom = */ false );
+  QgsGeos geos( this, /* precision = */ 0, /* flags = */ Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry );
   bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {

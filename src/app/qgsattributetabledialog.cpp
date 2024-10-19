@@ -54,6 +54,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsactionmenu.h"
 #include "qgsdockwidget.h"
+#include "qgssettingsregistrycore.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -409,6 +410,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     }
     mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );
+
+    if ( QgsSettingsRegistryCore::settingsAutosizeAttributeTable->value() )
+    {
+      mMainView->tableView()->resizeColumnsToContents();
+    }
 
     connect( mActionToggleMultiEdit, &QAction::toggled, mMainView, &QgsDualView::setMultiEditEnabled );
     connect( mActionSearchForm, &QAction::toggled, mMainView, &QgsDualView::toggleSearchMode );
@@ -1053,8 +1059,8 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                     tr( "Delete of feature on layer \"%1\", %2 as well\nand all of its other descendants.\nDelete these features?" ).arg( mLayer->name() ).arg( childrenInfo ),
+    int res = QMessageBox::question( this, tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ),
+                                     tr( "Delete of feature on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?" ).arg( mLayer->name() ).arg( childrenInfo ),
                                      QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       return;

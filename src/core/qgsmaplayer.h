@@ -48,6 +48,7 @@ class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
 class QgsProject;
+class QgsProviderMetadata;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
@@ -304,6 +305,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
+
+    /**
+     * Returns the layer data provider's metadata, it may be NULLPTR.
+     * \since QGIS 3.40
+     */
+    QgsProviderMetadata *providerMetadata() const;
 
     /**
      * Sets the short name of the layer used by QGIS Server to identify the layer.
@@ -778,6 +785,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param loadFromLocalDb if TRUE forces to load from local db instead of datasource one
      * \param categories the style categories to be loaded.
      * \param flags flags controlling how the style should be loaded (since QGIS 3.38)
+     *
+     * \returns status message, which may indicate success or contain an error message
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
                                     QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
@@ -1390,11 +1399,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * the specified data \a provider in use. See QgsDataSourceUri and the documentation for the various QgsMapLayer
      * subclasses for further details on data source strings.
      *
-     * The \a baseName argument specifies the user-visible name to use for the layer. (See name() or setName()).
+     * The \a baseName argument specifies the user-visible name to use for the layer. (See name() or setName()). If not
+     * specified, then the current name will be left unchanged (since QGIS 3.40).
      *
      * The \a provider argument is used to specify the unique key of the data provider to use for
      * the layer. This must match one of the values returned by QgsProviderRegistry::instance()->providerList().
-     * (See providerType()).
+     * (See providerType()). If not specified, then the current data provider will be used (since QGIS 3.40).
      *
      * If \a loadDefaultStyleFlag is set to TRUE then the layer's existing style will be reset to the default
      * for the data source.
@@ -1412,7 +1422,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see dataSourceChanged()
      * \since QGIS 3.20
      */
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName = QString(), const QString &provider = QString(), bool loadDefaultStyleFlag = false );
 
     /**
      * Updates the data source of the layer.

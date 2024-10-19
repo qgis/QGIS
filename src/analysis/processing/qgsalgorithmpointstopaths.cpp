@@ -210,9 +210,10 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const QString textDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_TEXT_DIR" ), context );
-  if ( ! textDir.isEmpty() &&
-       ! QDir( textDir ).exists() )
-    throw QgsProcessingException( QObject::tr( "The text output directory does not exist" ) );
+  if ( !textDir.isEmpty() && !QDir().mkpath( textDir ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Failed to create the text output directory" ) );
+  }
 
   QgsDistanceArea da = QgsDistanceArea();
   da.setSourceCrs( source->sourceCrs(), context.transformContext() );
@@ -331,7 +332,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
-    if ( ! textDir.isEmpty() )
+    if ( !textDir.isEmpty() )
     {
       const QString filename = QDir( textDir ).filePath( hit.key().toString() + QString( ".txt" ) );
       QFile textFile( filename );
@@ -352,7 +353,15 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       for ( int i = 1; i < pathPoints.size(); ++i )
       {
         const double angle = pathPoints.at( i - 1 ).azimuth( pathPoints.at( i ) );
-        const double distance = da.measureLine( pathPoints.at( i - 1 ), pathPoints.at( i ) );
+        double distance = 0;
+        try
+        {
+          distance = da.measureLine( pathPoints.at( i - 1 ), pathPoints.at( i ) );
+        }
+        catch ( QgsCsException & )
+        {
+          throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+        }
         out << QString( "%1;%2;90\n" ).arg( angle ).arg( distance );
       }
     }
@@ -364,6 +373,10 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   outputs.insert( QStringLiteral( "NUM_PATHS" ), pathCount );
+  if ( !textDir.isEmpty() )
+  {
+    outputs.insert( QStringLiteral( "OUTPUT_TEXT_DIR" ), textDir );
+  }
   return outputs;
 }
 

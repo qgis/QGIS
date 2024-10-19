@@ -45,14 +45,14 @@ class TestQgsMultiPolygon(QgisTestCase):
         p = QgsMultiPolygon([QgsPolygon(QgsLineString([[1, 2, 3], [10, 2, 3], [10, 10, 3], [1, 2, 3]])),
                              QgsPolygon(QgsLineString([[100, 2, 4], [110, 2, 4], [110, 10, 4], [100, 2, 4]]))])
         self.assertEqual(p.asWkt(),
-                         'MultiPolygonZ (((1 2 3, 10 2 3, 10 10 3, 1 2 3)),((100 2 4, 110 2 4, 110 10 4, 100 2 4)))')
+                         'MultiPolygon Z (((1 2 3, 10 2 3, 10 10 3, 1 2 3)),((100 2 4, 110 2 4, 110 10 4, 100 2 4)))')
 
         # with zm
         p = QgsMultiPolygon([QgsPolygon(QgsLineString([[1, 2, 3, 5], [10, 2, 3, 5], [10, 10, 3, 5], [1, 2, 3, 5]])),
                              QgsPolygon(
                                  QgsLineString([[100, 2, 4, 6], [110, 2, 4, 6], [110, 10, 4, 6], [100, 2, 4, 6]]))])
         self.assertEqual(p.asWkt(),
-                         'MultiPolygonZM (((1 2 3 5, 10 2 3 5, 10 10 3 5, 1 2 3 5)),((100 2 4 6, 110 2 4 6, 110 10 4 6, 100 2 4 6)))')
+                         'MultiPolygon ZM (((1 2 3 5, 10 2 3 5, 10 10 3 5, 1 2 3 5)),((100 2 4 6, 110 2 4 6, 110 10 4 6, 100 2 4 6)))')
 
     def testFuzzyComparisons(self):
         ######
@@ -222,7 +222,7 @@ class TestQgsMultiPolygon(QgisTestCase):
                     [[11, 22, 33], [13, 14, 33], [11, 14, 33], [11, 22, 33]]))])
         )
         self.assertEqual(collection.asWkt(),
-                         'MultiPolygonZ (((1 2 3, 3 4 3, 1 4 3, 1 2 3)),((11 22 33, 13 14 33, 11 14 33, 11 22 33)))')
+                         'MultiPolygon Z (((1 2 3, 3 4 3, 1 4 3, 1 2 3)),((11 22 33, 13 14 33, 11 14 33, 11 22 33)))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 13, 22))
 
@@ -232,7 +232,7 @@ class TestQgsMultiPolygon(QgisTestCase):
                 QgsPoint(100, 200)]
             ))
         self.assertEqual(collection.asWkt(),
-                         'MultiPolygonZ (((1 2 3, 3 4 3, 1 4 3, 1 2 3)),((11 22 33, 13 14 33, 11 14 33, 11 22 33)))')
+                         'MultiPolygon Z (((1 2 3, 3 4 3, 1 4 3, 1 2 3)),((11 22 33, 13 14 33, 11 14 33, 11 22 33)))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 13, 22))
 
@@ -240,7 +240,7 @@ class TestQgsMultiPolygon(QgisTestCase):
             collection.addGeometries([
                 QgsPolygon(QgsLineString([[100, 2, 3], [300, 4, 3], [300, 100, 3], [100, 2, 3]]))])
         )
-        self.assertEqual(collection.asWkt(), 'MultiPolygonZ (((1 2 3, 3 4 3, 1 4 3, 1 2 3)),((11 22 33, 13 14 33, 11 14 33, 11 22 33)),((100 2 3, 300 4 3, 300 100 3, 100 2 3)))')
+        self.assertEqual(collection.asWkt(), 'MultiPolygon Z (((1 2 3, 3 4 3, 1 4 3, 1 2 3)),((11 22 33, 13 14 33, 11 14 33, 11 22 33)),((100 2 3, 300 4 3, 300 100 3, 100 2 3)))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 300, 100))
 

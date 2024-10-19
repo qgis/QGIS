@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabeling.h"
+#include "qgsscaleutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyleentityvisitor.h"
 
@@ -427,9 +428,13 @@ bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
     return true;
   if ( qgsDoubleNear( mMaximumScale, 0.0 ) && qgsDoubleNear( mMinimumScale, 0.0 ) )
     return true;
-  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && mMaximumScale > scale )
+
+  // maxScale is inclusive ( < --> no label )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( scale, mMaximumScale ) )
     return false;
-  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && mMinimumScale < scale )
+
+  // minScale is exclusive ( >= --> no label )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMinimumScale ) )
     return false;
   return true;
 }
@@ -472,7 +477,7 @@ const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const
 }
 
 
-QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
+QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   QDomElement rulesElem = element.firstChildElement( QStringLiteral( "rules" ) );
 

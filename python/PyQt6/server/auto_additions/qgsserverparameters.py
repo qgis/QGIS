@@ -6,5 +6,11 @@ QgsServerParameter.REQUEST = QgsServerParameter.Name.REQUEST
 QgsServerParameter.MAP = QgsServerParameter.Name.MAP
 QgsServerParameter.FILE_NAME = QgsServerParameter.Name.FILE_NAME
 QgsServerParameter.Name.baseClass = QgsServerParameter
-QgsServerParameterDefinition.raiseError = staticmethod(QgsServerParameterDefinition.raiseError)
-QgsServerParameter.name = staticmethod(QgsServerParameter.name)
+try:
+    QgsServerParameterDefinition.raiseError = staticmethod(QgsServerParameterDefinition.raiseError)
+except NameError:
+    pass
+try:
+    QgsServerParameter.name = staticmethod(QgsServerParameter.name)
+except NameError:
+    pass

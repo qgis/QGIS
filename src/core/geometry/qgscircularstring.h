@@ -304,7 +304,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      */
-    inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString )
         return static_cast<const QgsCircularString *>( geom );

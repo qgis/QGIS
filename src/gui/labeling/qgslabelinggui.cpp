@@ -40,11 +40,16 @@
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mCanvas )
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+  {
+    expContext = mCanvas->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr );
+  }
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -280,6 +285,9 @@ QgsLabelingGui::QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, con
   mMinScaleWidget->setShowCurrentScaleButton( true );
   mMaxScaleWidget->setMapCanvas( mCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
+
+  mGeometryGeneratorExpressionButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  mGeometryGeneratorExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
 
   const QStringList calloutTypes = QgsApplication::calloutRegistry()->calloutTypes();
   for ( const QString &type : calloutTypes )

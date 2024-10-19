@@ -726,11 +726,12 @@ class TestQgsJsonUtils(QgisTestCase):
         # with field formatter
         setup = QgsEditorWidgetSetup('ValueMap', {"map": {"apples": 123, "bananas": 124}})
         child.setEditorWidgetSetup(1, setup)
+        parent.setEditorWidgetSetup(1, QgsEditorWidgetSetup('ValueMap', {"map": {"sixty-seven": 67}}))
         expected = """{
   "geometry": null,
   "id": 432,
   "properties": {
-    "fldint": 67,
+    "fldint": "sixty-seven",
     "fldtxt": "test1",
     "foreignkey": 123,
     "relation one": [
@@ -749,6 +750,36 @@ class TestQgsJsonUtils(QgisTestCase):
   "type": "Feature"
 }"""
         self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
+
+        # Use raw values
+        self.assertTrue(exporter.useFieldFormatters())
+        exporter.setUseFieldFormatters(False)
+        self.assertFalse(exporter.useFieldFormatters())
+        expected = """{
+  "geometry": null,
+  "id": 432,
+  "properties": {
+    "fldint": 67,
+    "fldtxt": "test1",
+    "foreignkey": 123,
+    "relation one": [
+      {
+        "x": "foo",
+        "y": 123,
+        "z": 321
+      },
+      {
+        "x": "bar",
+        "y": 123,
+        "z": 654
+      }
+    ]
+  },
+  "type": "Feature"
+}"""
+        self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
+        exporter.setUseFieldFormatters(True)
+        parent.setEditorWidgetSetup(1, QgsEditorWidgetSetup())
 
         # test excluding related attributes
         exporter.setIncludeRelated(False)
@@ -975,7 +1006,7 @@ class TestQgsJsonUtils(QgisTestCase):
                     "coordinates": [30.0, 10.0, 15.5]
                 }"""
         )
-        self.assertEqual(res.asWkt(), "PointZ (30 10 15.5)")
+        self.assertEqual(res.asWkt(), "Point Z (30 10 15.5)")
         res = QgsJsonUtils.geometryFromGeoJson(
             """{
                     "type": "Point",
@@ -1026,7 +1057,7 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self.assertEqual(
             res.asWkt(1),
-            "MultiPointZ ((10 40 15.5),(40 30 12.5),(20 20 1.1),(30 10 2.2))",
+            "MultiPoint Z ((10 40 15.5),(40 30 12.5),(20 20 1.1),(30 10 2.2))",
         )
         res = QgsJsonUtils.geometryFromGeoJson(
             """{
@@ -1087,7 +1118,7 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self.assertEqual(
             res.asWkt(1),
-            "LineStringZ (30 10 12.2, 10 30 12.3, 40 40 12.4)",
+            "LineString Z (30 10 12.2, 10 30 12.3, 40 40 12.4)",
         )
         res = QgsJsonUtils.geometryFromGeoJson(
             """{
@@ -1167,7 +1198,7 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self.assertEqual(
             res.asWkt(1),
-            "MultiLineStringZ ((10 10 1.2, 20 20 1.3, 10 40 1.4),(40 40 2, 30 30 3, 40 20 4, 30 10 5))",
+            "MultiLineString Z ((10 10 1.2, 20 20 1.3, 10 40 1.4),(40 40 2, 30 30 3, 40 20 4, 30 10 5))",
         )
         res = QgsJsonUtils.geometryFromGeoJson(
             """{
@@ -1276,7 +1307,7 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self.assertEqual(
             res.asWkt(1),
-            "PolygonZ ((35 10 1.1, 45 45 1.2, 15 40 1.3, 10 20 1.4, 35 10 1.1),(20 30 2, 35 35 3, 30 20 4, 20 30 2))",
+            "Polygon Z ((35 10 1.1, 45 45 1.2, 15 40 1.3, 10 20 1.4, 35 10 1.1),(20 30 2, 35 35 3, 30 20 4, 20 30 2))",
         )
         res = QgsJsonUtils.geometryFromGeoJson(
             """{
@@ -1410,7 +1441,7 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self.assertEqual(
             res.asWkt(1),
-            "MultiPolygonZ (((30 20 1, 45 40 2, 10 40 3, 30 20 1)),((15 5 11, 40 10 12, 10 20 13, 5 10 14, 15 5 11)))",
+            "MultiPolygon Z (((30 20 1, 45 40 2, 10 40 3, 30 20 1)),((15 5 11, 40 10 12, 10 20 13, 5 10 14, 15 5 11)))",
         )
         res = QgsJsonUtils.geometryFromGeoJson(
             """{

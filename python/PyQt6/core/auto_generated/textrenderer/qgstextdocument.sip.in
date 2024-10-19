@@ -57,6 +57,15 @@ If the HTML contains tab characters they will be appended as separate text fragm
 within the document, consisting of just the tab character.
 %End
 
+    static QgsTextDocument fromTextAndFormat( const QStringList &lines, const QgsTextFormat &format );
+%Docstring
+Constructor for QgsTextDocument consisting of a set of ``lines``, respecting settings from a text ``format``.
+
+This method will determine from the text ``format`` whether the lines should be treated as HTML or plain text.
+
+.. versionadded:: 3.40
+%End
+
     void append( const QgsTextBlock &block );
 %Docstring
 Appends a ``block`` to the document.

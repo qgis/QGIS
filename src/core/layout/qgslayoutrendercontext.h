@@ -331,7 +331,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /**
-     * Returns the possibly NULL feature filter provider.
+     * Returns the (possibly NULLPTR) feature filter provider.
      *
      * A feature filter provider for filtering visible features or attributes.
      * It is currently used by QGIS Server Access Control Plugins.

@@ -5478,7 +5478,7 @@ font-style: italic;</string>
                       <item>
                        <widget class="QgsCollapsibleGroupBox" name="mGeometryGeneratorGroupBox">
                         <property name="toolTip">
-                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Generates or transforms the geometry to be used for labeling&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The expression will be applied to each feature while rendering and the label will be placed based on the expression result.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Generates or transforms the geometry to be used for labeling&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The expression will be applied to each feature while rendering and the label will be placed based on the expression result.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="title">
                          <string>Geometry Generator</string>
@@ -5514,9 +5514,6 @@ font-style: italic;</string>
                          </item>
                          <item row="1" column="1">
                           <widget class="QToolButton" name="mGeometryGeneratorExpressionButton">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
                           </widget>
                          </item>
                          <item row="4" column="0">
@@ -6048,7 +6045,8 @@ font-style: italic;</string>
                                  <enum>Qt::StrongFocus</enum>
                                 </property>
                                 <property name="toolTip">
-                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.</string>
+                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.
+This limit is inclusive, that means the label will be displayed on this scale.</string>
                                 </property>
                                </widget>
                               </item>
@@ -6065,7 +6063,8 @@ font-style: italic;</string>
                                  <enum>Qt::StrongFocus</enum>
                                 </property>
                                 <property name="toolTip">
-                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
+                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.
+This limit is exclusive, that means the label will not be displayed on this scale.</string>
                                 </property>
                                </widget>
                               </item>
@@ -6079,7 +6078,8 @@ font-style: italic;</string>
                               <item row="0" column="0">
                                <widget class="QLabel" name="mLabelMinScale">
                                 <property name="toolTip">
-                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
+                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.
+This limit is exclusive, that means the label will not be displayed on this scale.</string>
                                 </property>
                                 <property name="text">
                                  <string/>
@@ -6092,7 +6092,8 @@ font-style: italic;</string>
                               <item row="1" column="0">
                                <widget class="QLabel" name="mLabelMaxScale">
                                 <property name="toolTip">
-                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.</string>
+                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.
+This limit is inclusive, that means the label will be displayed on this scale.</string>
                                 </property>
                                 <property name="text">
                                  <string/>

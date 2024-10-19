@@ -1,6 +1,4 @@
-# black list
-qgis_composerutils
-PyQgsAppStartup
+# block list
 test_gui_queryresultwidget
 
 # code layout tests are run on separate build

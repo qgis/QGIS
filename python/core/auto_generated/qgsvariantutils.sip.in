@@ -50,6 +50,13 @@ This method is more rigorous vs QVariant.isNull(), which will return
 .. versionadded:: 3.28
 %End
 
+    static bool isNumericType( QMetaType::Type metaType );
+%Docstring
+Returns ``True`` if the specified ``metaType`` is a numeric type.
+
+.. versionadded:: 3.40
+%End
+
 
 
 

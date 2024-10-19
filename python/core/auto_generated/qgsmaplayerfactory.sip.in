@@ -32,7 +32,7 @@ Returns the map layer type corresponding a ``string`` value.
 :param string: string to convert to map layer type
 
 :return: - converted map layer type
-         - ok: will be set to ``True`` if ``string`` was successfully converted to a map layer type
+         - ok: ``True`` if ``string`` was successfully converted to a map layer type
 
 .. seealso:: :py:func:`typeToString`
 %End

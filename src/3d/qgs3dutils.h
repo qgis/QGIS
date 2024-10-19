@@ -315,6 +315,16 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.40
      */
     static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Removes some define macros from a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to remove
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines );
 };
 
 #endif // QGS3DUTILS_H

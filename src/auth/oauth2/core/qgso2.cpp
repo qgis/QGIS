@@ -139,7 +139,11 @@ void QgsO2::setVerificationResponseContent()
   QFile verhtml( QStringLiteral( ":/oauth2method/oauth2_verification_finished.html" ) );
   if ( verhtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    setReplyContent( verhtml.readAll() );
+    setReplyContent( QString::fromUtf8( verhtml.readAll() )
+                     .replace( QStringLiteral( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished" ) )
+                     .replace( QStringLiteral( "{{ H3_TITLE }}" ), tr( "If you have not been returned to QGIS, bring the application to the forefront." ) )
+                     .replace( QStringLiteral( "{{ CLOSE_WINDOW }}" ), tr( "Close window" ) ).toUtf8()
+                   );
   }
 }
 

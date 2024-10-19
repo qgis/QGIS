@@ -1031,8 +1031,8 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     // to indicate that we should not enable WAL.
     // And NOLOCK=ON will be set in read-only attempts.
     // Only enable it when enterUpdateMode() has been executed.
-    if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) == nullptr &&
-         CSLFetchNameValue( papszOpenOptions, "NOLOCK" ) == nullptr )
+    if ( !CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) &&
+         !CSLFetchNameValue( papszOpenOptions, "NOLOCK" ) )
     {
       // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
       // mode so as to avoid readers blocking writer(s), and vice-versa.
@@ -1052,7 +1052,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
   }
 
-  if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) != nullptr )
+  if ( CSLFetchNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL" ) )
   {
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "DO_NOT_ENABLE_WAL", nullptr );
   }
@@ -1280,10 +1280,10 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
                               "PRAGMA journal_mode",
                               nullptr, nullptr );
           CPLPopErrorHandler();
-          if ( hSqlLyr != nullptr )
+          if ( hSqlLyr )
           {
             gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hSqlLyr ) );
-            if ( hFeat != nullptr )
+            if ( hFeat )
             {
               const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
               QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
@@ -1313,6 +1313,11 @@ QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QStrin
     field.replace( '\\', "\\\\" );
     field.replace( '`', "``" );
     return field.prepend( '`' ).append( '`' );
+  }
+  else if ( driverName == QLatin1String( "GPKG" ) || driverName == QLatin1String( "SQLite" ) )
+  {
+    field.replace( '"', "\"\"" );
+    return field.prepend( '\"' ).append( '\"' );
   }
   else
   {
@@ -1823,6 +1828,24 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( Qgis::WkbType type 
     case Qgis::WkbType::TriangleZM:
       return wkbTriangleZM;
 
+    case Qgis::WkbType::PolyhedralSurface:
+      return wkbPolyhedralSurface;
+    case Qgis::WkbType::PolyhedralSurfaceZ:
+      return wkbPolyhedralSurfaceZ;
+    case Qgis::WkbType::PolyhedralSurfaceM:
+      return wkbPolyhedralSurfaceM;
+    case Qgis::WkbType::PolyhedralSurfaceZM:
+      return wkbPolyhedralSurfaceZM;
+
+    case Qgis::WkbType::TIN:
+      return wkbTIN;
+    case Qgis::WkbType::TINZ:
+      return wkbTINZ;
+    case Qgis::WkbType::TINM:
+      return wkbTINM;
+    case Qgis::WkbType::TINZM:
+      return wkbTINZM;
+
     case Qgis::WkbType::NoGeometry:
       return wkbNone;
 
@@ -1944,6 +1967,24 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbTriangleZM:
       return Qgis::WkbType::TriangleZM;
 
+    case wkbPolyhedralSurface:
+      return Qgis::WkbType::PolyhedralSurface;
+    case wkbPolyhedralSurfaceZ:
+      return Qgis::WkbType::PolyhedralSurfaceZ;
+    case wkbPolyhedralSurfaceM:
+      return Qgis::WkbType::PolyhedralSurfaceM;
+    case wkbPolyhedralSurfaceZM:
+      return Qgis::WkbType::PolyhedralSurfaceZM;
+
+    case wkbTIN:
+      return Qgis::WkbType::TIN;
+    case wkbTINZ:
+      return Qgis::WkbType::TINZ;
+    case wkbTINM:
+      return Qgis::WkbType::TINM;
+    case wkbTINZM:
+      return Qgis::WkbType::TINZM;
+
     case wkbPoint25D:
       return Qgis::WkbType::Point25D;
     case wkbLineString25D:
@@ -1970,14 +2011,6 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
       return Qgis::WkbType::Unknown; // abstract types - no direct mapping to QGIS types
 
     case wkbLinearRing:
-    case wkbTIN:
-    case wkbTINZ:
-    case wkbTINM:
-    case wkbTINZM:
-    case wkbPolyhedralSurface:
-    case wkbPolyhedralSurfaceZ:
-    case wkbPolyhedralSurfaceM:
-    case wkbPolyhedralSurfaceZM:
       return Qgis::WkbType::Unknown; // unsupported types
   }
   return Qgis::WkbType::Unknown;
@@ -2289,7 +2322,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
   if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Cannot reuse existing opened dataset(s) %1 on %2 since it has been modified" ).arg( layerName, dsName ), 2 );
     invalidateCachedDatasets( dsName );
   }
 
@@ -3185,7 +3218,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   OGRErr err = OGRERR_UNSUPPORTED_OPERATION;
   const char *geomCol = OGR_L_GetGeometryColumn( hLayer );
-  if ( geomCol != NULL && strlen( geomCol ) > 0 )
+  if ( geomCol && strlen( geomCol ) > 0 )
   {
     QgsDebugMsgLevel( QStringLiteral( "WITH geomCol: %1" ).arg( geomCol ), 3 );
 

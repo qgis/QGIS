@@ -129,10 +129,12 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         layer = QgsVectorLayer('dummy', 'test', 'memory')
         layer_tree_layer = QgsLayerTreeLayer(layer)
 
-        node = QgsColorRampLegendNode(layer_tree_layer, r, 'min_label', 'max_label')
+        node = QgsColorRampLegendNode(layer_tree_layer, r, 'min_label', 'max_label', None, 'key', 'parentKey')
 
         self.assertEqual(node.ramp().color1().name(), '#c80000')
         self.assertEqual(node.ramp().color2().name(), '#00c800')
+        self.assertEqual(node.data(QgsLayerTreeModelLegendNode.LegendNodeRoles.RuleKeyRole), 'key')
+        self.assertEqual(node.data(QgsLayerTreeModelLegendNode.LegendNodeRoles.ParentRuleKeyRole), 'parentKey')
 
         node.setIconSize(QSize(11, 12))
         self.assertEqual(node.iconSize(), QSize(11, 12))

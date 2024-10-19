@@ -1036,6 +1036,19 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
 
   mCurrentFormFeature.setAttribute( eww->field().name(), value );
 
+  // Update other widgets pointing to the same field, required to happen now to insure
+  // currentFormValuesFeature() gets the right value when processing constraints
+  const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
+  for ( QgsAttributeFormEditorWidget *formEditorWidget : std::as_const( formEditorWidgets ) )
+  {
+    if ( formEditorWidget->editorWidget() == eww )
+      continue;
+
+    // formEditorWidget and eww points to the same field, so block signals
+    // as there is no need to handle valueChanged again for each duplicate
+    whileBlocking( formEditorWidget->editorWidget() )->setValue( value );
+  }
+
   switch ( mMode )
   {
     case QgsAttributeEditorContext::SingleEditMode:
@@ -1089,19 +1102,6 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
     case QgsAttributeEditorContext::AggregateSearchMode:
       //nothing to do
       break;
-  }
-
-  // Update other widgets pointing to the same field, required to happen now to insure
-  // currentFormValuesFeature() gets the right value when processing constraints
-  const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
-  for ( QgsAttributeFormEditorWidget *formEditorWidget : formEditorWidgets )
-  {
-    if ( formEditorWidget->editorWidget() == eww )
-      continue;
-
-    // formEditorWidget and eww points to the same field, so block signals
-    // as there is no need to handle valueChanged again for each duplicate
-    whileBlocking( formEditorWidget->editorWidget() )->setValue( value );
   }
 
   updateConstraints( eww );
@@ -2356,7 +2356,7 @@ void QgsAttributeForm::initPython()
     // If we have a function code, run it
     if ( !initCode.isEmpty() )
     {
-      if ( QgsGui::pythonMacroAllowed() )
+      if ( QgsGui::pythonEmbeddedInProjectAllowed( nullptr, nullptr, Qgis::PythonEmbeddedType::Macro ) )
         QgsPythonRunner::run( initCode );
       else
         mMessageBar->pushMessage( QString(),

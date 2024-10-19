@@ -21,6 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
+#include "qgstexturematerial.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -42,16 +43,10 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
-#include <Qt3DExtras/QTextureMaterial>
 
 #include <QFile>
 #include <QFileInfo>
 #include <QMatrix4x4>
-
-#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
-#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
-#include "tiny_gltf.h"
-
 
 ///@cond PRIVATE
 
@@ -292,7 +287,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
 }
 
 // Returns NULLPTR if primitive should not be rendered
-static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
+static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
 {
   if ( materialIndex < 0 )
   {
@@ -362,7 +357,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
     // We should be using PBR material unless unlit material is requested using KHR_materials_unlit
     // GLTF extension, but in various datasets that extension is not used (even though it should have been).
     // In the future we may want to have a switch whether to use unlit material or PBR material...
-    Qt3DExtras::QTextureMaterial *mat = new Qt3DExtras::QTextureMaterial;
+    QgsTextureMaterial *mat = new QgsTextureMaterial;
     mat->setTexture( texture );
     return mat;
   }
@@ -422,7 +417,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
         continue;
       }
 
-      Qt3DRender::QMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
+      QgsMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
       if ( !material )
       {
         // primitive should be skipped, eg fully transparent material
@@ -495,7 +490,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
 }
 
 
-static Qt3DCore::QEntity *parseModel( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
+Qt3DCore::QEntity *QgsGltf3DUtils::parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
 {
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
@@ -551,7 +546,7 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
     return nullptr;
   }
 
-  return parseModel( model, transform, baseUri, errors );
+  return parsedGltfToEntity( model, transform, baseUri, errors );
 }
 
 // For TinyGltfTextureImage

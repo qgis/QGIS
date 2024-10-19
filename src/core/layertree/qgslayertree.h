@@ -168,7 +168,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * before using the tree.
      *
      */
-    static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );
+    static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Load the layer order from an XML element.

@@ -123,6 +123,7 @@ Returns data type for the band specified by number
     QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const;
 %Docstring
 Returns a string color name representation of a color interpretation.
+It is translated since QGIS 3.40
 %End
 
     virtual bool reload();
@@ -141,6 +142,16 @@ Read band scale for raster value
     virtual double bandOffset( int bandNo ) const;
 %Docstring
 Read band offset for raster value
+%End
+
+    virtual QSize maximumTileSize() const;
+%Docstring
+Returns the maximum tile size in pixels for the data provider.
+By default, the maximum tile size is set to :py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_WIDTH x
+:py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_HEIGHT but can be overridden in subclasses (e.g. WMS
+can retrieve that information from the GetCapabilities document).
+
+.. versionadded:: 3.40
 %End
 
 
@@ -684,7 +695,7 @@ Returns maximum oversampling factor for zoomed-out operations.
 
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
 %Docstring
-Returns the (possibly NULL) attribute table for the specified ``bandNumber``.
+Returns the (possibly ``None``) attribute table for the specified ``bandNumber``.
 
 .. versionadded:: 3.30
 %End
@@ -692,7 +703,7 @@ Returns the (possibly NULL) attribute table for the specified ``bandNumber``.
     void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable /Transfer/ );
 %Docstring
 Set the attribute table to ``attributeTable`` for the specified ``bandNumber``,
-if the ``attributeTable`` is NULL any existing attribute table for the specified
+if the ``attributeTable`` is ``None`` any existing attribute table for the specified
 band will be removed.
 
 .. note::

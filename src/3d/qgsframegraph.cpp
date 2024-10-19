@@ -53,6 +53,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QAbstractTexture>
 #include "qgsfgutils.h"
 #include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QClipPlane>
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {
@@ -66,6 +67,10 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   //                                  |
   //                         +-----------------+
   //                         |  QLayerFilter   |  (using mForwardRenderLayer)
+  //                         +-----------------+
+  //                                  |
+  //                         +-----------------+
+  //                         | QRenderStateSet |  define clip planes
   //                         +-----------------+
   //                                  |
   //                      +-----------------------+
@@ -98,6 +103,9 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   mForwardRenderLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
   mForwardRenderLayerFilter->addLayer( mForwardRenderLayer );
 
+  mClipRenderStateSet = new Qt3DRender::QRenderStateSet( mForwardRenderLayerFilter );
+  mClipRenderStateSet->setObjectName( "Forward render pass Clip Plane RenderStateSet" );
+
   mForwardColorTexture = new Qt3DRender::QTexture2D;
   mForwardColorTexture->setWidth( mSize.width() );
   mForwardColorTexture->setHeight( mSize.height() );
@@ -128,7 +136,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   forwardRenderTargetColorOutput->setTexture( mForwardColorTexture );
   forwardRenderTarget->addOutput( forwardRenderTargetColorOutput );
 
-  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mForwardRenderLayerFilter );
+  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mClipRenderStateSet );
   mForwardRenderTargetSelector->setTarget( forwardRenderTarget );
 
   // first branch: opaque layer filter
@@ -988,4 +996,30 @@ void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
   mDebugOverlay->setEnabled( enabled );
+}
+
+void QgsFrameGraph::removeClipPlanes()
+{
+  for ( Qt3DRender::QRenderState *state : mClipRenderStateSet->renderStates() )
+  {
+    if ( qobject_cast<Qt3DRender::QClipPlane *>( state ) )
+    {
+      mClipRenderStateSet->removeRenderState( state );
+    }
+  }
+}
+
+void QgsFrameGraph::addClipPlanes( int nrClipPlanes )
+{
+  // remove existing QClipPlane
+  removeClipPlanes();
+
+  // create new QClipPlane
+  for ( int i = 0; i < nrClipPlanes; ++i )
+  {
+    Qt3DRender::QClipPlane *clipPlane = new Qt3DRender::QClipPlane;
+    clipPlane->setPlaneIndex( i );
+    mClipRenderStateSet->addRenderState( clipPlane );
+  }
+
 }

@@ -1,0 +1,145 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfigurationstorageregistry.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAuthConfigurationStorageRegistry: QObject
+{
+%Docstring(signature="appended")
+Registry for authentication configuration storages.
+
+This singleton class manages a list of authentication configuration storages.
+
+:py:class:`QgsAuthConfigurationStorageRegistry` is not usually directly created, but rather accessed through :py:func:`QgsApplication.authConfigurationStorageRegistry()`.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsauthconfigurationstorageregistry.h"
+%End
+  public:
+
+    QgsAuthConfigurationStorageRegistry();
+%Docstring
+Creates a new QgsAuthConfigurationStorageRegistry instance.
+%End
+
+    virtual ~QgsAuthConfigurationStorageRegistry();
+
+    bool addStorage( QgsAuthConfigurationStorage *storage /Transfer/ );
+%Docstring
+Add an authentication configuration storage to the registry.
+The registry takes ownership of the storage object.
+
+:param storage: The storage to add
+
+:return: ``True`` if the storage was added, ``False`` if it was already present in the registry.
+
+.. note::
+
+   The storage object must have a unique id.
+
+.. note::
+
+   This method must be called from the same thread the registry was created in.
+%End
+
+    bool removeStorage( const QString &id );
+%Docstring
+Remove the authentication configuration storage identified by ``id`` from the registry.
+
+:return: ``True`` if the storage was removed, ``False`` if it was not present in the registry.
+
+.. note::
+
+   This method must be called from the same thread the registry was created in.
+
+.. note::
+
+   The storage will be deleted.
+%End
+
+    QList<QgsAuthConfigurationStorage *> storages() const;
+%Docstring
+Returns the list of all registered authentication configuration storages.
+%End
+
+    QList<QgsAuthConfigurationStorage *> readyStorages() const;
+%Docstring
+Returns the list of all ready (and enabled) authentication configuration storage.
+%End
+
+    QList<QgsAuthConfigurationStorage *> readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
+%Docstring
+Returns the list of all ready (and enabled) authentication configuration storage
+with the required capability.
+
+:param capability: The capability to look for
+%End
+
+    QgsAuthConfigurationStorage *firstReadyStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
+%Docstring
+Returns the first ready (and enabled) authentication configuration storage which has the required capability.
+
+:param capability: The capability to look for
+%End
+
+    QgsAuthConfigurationStorage *storage( const QString &id ) const;
+%Docstring
+Returns the storage with the specified ``id`` or ``None`` if not found in the registry.
+
+:param id: The id of the storage to retrieve
+%End
+
+    void setStorageOrder( const QStringList &orderIds );
+%Docstring
+Order the storages by the specified ``orderIds``.
+
+:param orderIds: The ordered list of storage Ids to apply, storages not in the list will be appended at the end.
+
+.. note::
+
+   This method must be called from the same thread the registry was created in.
+%End
+
+
+  signals:
+
+    void storageAdded( const QString &id );
+%Docstring
+Emitted after a storage was added
+
+:param id: The id of the added storage
+%End
+
+    void storageChanged( const QString &id );
+%Docstring
+Emitted after a storage was changed
+
+:param id: The id of the changed storage
+%End
+
+    void storageRemoved( const QString &id );
+%Docstring
+Emitted after a storage was removed
+
+:param id: The id of the removed storage
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfigurationstorageregistry.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

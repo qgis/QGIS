@@ -61,8 +61,8 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
     connect( btnCaFile, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnCaFile_clicked );
     connect( btnCaFileClear, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnCaFileClear_clicked );
 
-    connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-             this, &QgsAuthAuthoritiesEditor::authMessageOut );
+    connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
+             this, &QgsAuthAuthoritiesEditor::logMessage );
 
     connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
              this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
@@ -470,9 +470,9 @@ void QgsAuthAuthoritiesEditor::btnAddCa_clicked()
       {
         if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
-          authMessageOut( QObject::tr( "Could not set trust policy for imported certificates" ),
-                          QObject::tr( "Authorities Manager" ),
-                          QgsAuthManager::WARNING );
+          logMessage( QObject::tr( "Could not set trust policy for imported certificates" ),
+                      QObject::tr( "Authorities Manager" ),
+                      Qgis::MessageLevel::Warning );
         }
       }
       QgsApplication::authManager()->rebuildCertTrustCache();
@@ -572,9 +572,9 @@ void QgsAuthAuthoritiesEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "casortby" ), QVariant( checked ) ) )
   {
-    authMessageOut( QObject::tr( "Could not store sort by preference" ),
-                    QObject::tr( "Authorities Manager" ),
-                    QgsAuthManager::WARNING );
+    logMessage( QObject::tr( "Could not store sort by preference" ),
+                QObject::tr( "Authorities Manager" ),
+                Qgis::MessageLevel::Warning );
   }
   populateCaCertsView();
 }
@@ -655,9 +655,9 @@ void QgsAuthAuthoritiesEditor::defaultTrustPolicyChanged( QgsAuthCertUtils::Cert
 {
   if ( !QgsApplication::authManager()->setDefaultCertTrustPolicy( trustpolicy ) )
   {
-    authMessageOut( QObject::tr( "Could not store default trust policy." ),
-                    QObject::tr( "Authorities Manager" ),
-                    QgsAuthManager::CRITICAL );
+    logMessage( QObject::tr( "Could not store default trust policy." ),
+                QObject::tr( "Authorities Manager" ),
+                Qgis::MessageLevel::Critical );
   }
   mDefaultTrustPolicy = trustpolicy;
   QgsApplication::authManager()->rebuildCertTrustCache();
@@ -685,16 +685,16 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 
     if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
     {
-      authMessageOut( QObject::tr( "Could not store 'CA file path' in authentication database." ),
-                      QObject::tr( "Authorities Manager" ),
-                      QgsAuthManager::WARNING );
+      logMessage( QObject::tr( "Could not store 'CA file path' in authentication database." ),
+                  QObject::tr( "Authorities Manager" ),
+                  Qgis::MessageLevel::Warning );
     }
     if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ),
          QVariant( dlg->allowInvalidCerts() ) ) )
     {
-      authMessageOut( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database." ),
-                      QObject::tr( "Authorities Manager" ),
-                      QgsAuthManager::WARNING );
+      logMessage( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database." ),
+                  QObject::tr( "Authorities Manager" ),
+                  Qgis::MessageLevel::Warning );
     }
 
     QgsApplication::authManager()->rebuildCaCertsCache();
@@ -707,9 +707,9 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
       {
         if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
-          authMessageOut( QObject::tr( "Could not set trust policy for imported certificates." ),
-                          QObject::tr( "Authorities Manager" ),
-                          QgsAuthManager::WARNING );
+          logMessage( QObject::tr( "Could not set trust policy for imported certificates." ),
+                      QObject::tr( "Authorities Manager" ),
+                      Qgis::MessageLevel::Warning );
         }
       }
       QgsApplication::authManager()->rebuildCertTrustCache();
@@ -728,16 +728,16 @@ void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
 {
   if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
   {
-    authMessageOut( QObject::tr( "Could not remove 'CA file path' from authentication database." ),
-                    QObject::tr( "Authorities Manager" ),
-                    QgsAuthManager::WARNING );
+    logMessage( QObject::tr( "Could not remove 'CA file path' from authentication database." ),
+                QObject::tr( "Authorities Manager" ),
+                Qgis::MessageLevel::Warning );
     return;
   }
   if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafileallowinvalid" ) ) )
   {
-    authMessageOut( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database." ),
-                    QObject::tr( "Authorities Manager" ),
-                    QgsAuthManager::WARNING );
+    logMessage( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database." ),
+                QObject::tr( "Authorities Manager" ),
+                Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -776,10 +776,9 @@ void QgsAuthAuthoritiesEditor::showTrustedCertificateAuthorities()
   dlg->deleteLater();
 }
 
-void QgsAuthAuthoritiesEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthAuthoritiesEditor::logMessage( const QString &message, const QString &authtag, Qgis::MessageLevel level )
 {
-  const int levelint = static_cast<int>( level );
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
+  messageBar()->pushMessage( authtag, message, level, 7 );
 }
 
 void QgsAuthAuthoritiesEditor::showEvent( QShowEvent *e )

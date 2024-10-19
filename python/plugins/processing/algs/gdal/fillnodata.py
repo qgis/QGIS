@@ -75,7 +75,7 @@ class fillnodata(GdalAlgorithm):
                                                      self.tr('Do not use the default validity mask for the input band'),
                                                      defaultValue=False,
                                                      optional=True)
-        nomask_param.setFlags(nomask_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        nomask_param.setFlags(nomask_param.flags() | QgsProcessingParameterDefinition.Flag.FlagHidden)
         self.addParameter(nomask_param)
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,

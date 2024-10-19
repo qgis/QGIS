@@ -131,7 +131,7 @@ Returns a string version of the parameter output ``value`` (if possible).
 :param context: processing context
 
 :return: - value converted to string
-         - ok: will be set to ``True`` if value could be represented as a string.
+         - ok: ``True`` if value could be represented as a string.
 
 .. seealso:: :py:func:`valueAsFormattedString`
 
@@ -148,7 +148,7 @@ By default this will return the same value as :py:func:`~QgsProcessingOutputDefi
 :param context: processing context
 
 :return: - value converted to string
-         - ok: will be set to ``True`` if value could be represented as a string.
+         - ok: ``True`` if value could be represented as a string.
 
 .. seealso:: :py:func:`valueAsString`
 

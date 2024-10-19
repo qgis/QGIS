@@ -52,7 +52,7 @@ QgsMapToolCaptureAnnotationItem::QgsMapToolCaptureAnnotationItem( QgsMapCanvas *
   mToolName = tr( "Annotation tool" );
 }
 
-QgsCreateAnnotationItemMapToolHandler *QgsMapToolCaptureAnnotationItem::handler()
+QgsCreateAnnotationItemMapToolHandler *QgsMapToolCaptureAnnotationItem::handler() const
 {
   return mHandler;
 }
@@ -120,7 +120,7 @@ void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event
   mHandler->pushCreatedItem( createdItem.release() );
 }
 
-QgsCreateAnnotationItemMapToolHandler *QgsCreatePointTextItemMapTool::handler()
+QgsCreateAnnotationItemMapToolHandler *QgsCreatePointTextItemMapTool::handler() const
 {
   return mHandler;
 }
@@ -369,7 +369,7 @@ void QgsCreatePictureItemMapTool::keyPressEvent( QKeyEvent *event )
   }
 }
 
-QgsCreateAnnotationItemMapToolHandler *QgsCreatePictureItemMapTool::handler()
+QgsCreateAnnotationItemMapToolHandler *QgsCreatePictureItemMapTool::handler() const
 {
   return mHandler;
 }
@@ -472,7 +472,7 @@ void QgsCreateRectangleTextItemMapTool::keyPressEvent( QKeyEvent *event )
   }
 }
 
-QgsCreateAnnotationItemMapToolHandler *QgsCreateRectangleTextItemMapTool::handler()
+QgsCreateAnnotationItemMapToolHandler *QgsCreateRectangleTextItemMapTool::handler() const
 {
   return mHandler;
 }

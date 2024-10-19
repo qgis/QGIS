@@ -260,7 +260,7 @@ void QgsImageOperation::adjustBrightnessContrast( QImage &image, const int brigh
   runPixelOperation( image, operation, feedback );
 }
 
-void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb, const int x, const int y )
+void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb, const int x, const int y ) const
 {
   Q_UNUSED( x )
   Q_UNUSED( y )

@@ -338,7 +338,9 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     QgsPointCloudStatistics metadataStatistics();
 
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
 

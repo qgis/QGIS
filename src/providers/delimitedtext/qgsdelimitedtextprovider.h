@@ -103,7 +103,9 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     QString subsetString() const override
     {
       return mSubsetString;

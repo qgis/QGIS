@@ -29,13 +29,14 @@ Building QGIS from source - step by step
        * [4.1.1. Visual Studio 2019 Community Edition](#411-visual-studio-2019-community-edition)
        * [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
        * [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
-       * [4.1.4. Configure and build from command line](#414-configure-and-build-from-command-line)
+       * [4.1.4. OSGeo4W](#414-OSGeo4W)
    * [4.2. Building on Linux with mingw64](#42-building-on-linux-with-mingw64)
        * [4.2.1. Building with Docker](#421-building-with-docker)
            * [4.2.1.1. Initial setup](#4211-initial-setup)
            * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
            * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
        * [4.2.2. Testing QGIS](#422-testing-qgis)
+   * [4.3 Building for Qt 6 with VCPKG in Microsoft Visual Studio](#41-building-with-qt6)
 * [5. Building on MacOS X](#5-building-on-macos-x)
    * [5.1. Install Developer Tools](#51-install-developer-tools)
    * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
@@ -578,14 +579,14 @@ cmake .. -DBUILD_WITH_QT6=ON -DWITH_QTWEBKIT=OFF -DWITH_QTWEBENGINE=ON
 ## 4.1. Building with Microsoft Visual Studio
 
 This section describes how to build QGIS using Visual Studio (MSVC) 2019 on Windows.
-This is currently also how the binary QGIS packages are made.
+The official Windows packages are built using OSGeo4W.
 
 This section describes the setup required to allow Visual Studio to be used to
 build QGIS.
 
-### 4.1.1. Visual Studio 2019 Community Edition
+### 4.1.1. Visual Studio 2022 Community Edition
 
-Download the [free (as in free beer) Community installer](https://download.visualstudio.microsoft.com/download/pr/68d6b204-9df0-4fcc-abcc-08ee0eff9cb2/b029547488a9383b0c8d8a9c813e246feb3ec19e0fe55020d4878fde5f0983fe/vs_Community.exe)
+Download and install the [free (as in free beer) Community installer](https://download.visualstudio.microsoft.com/download/pr/68d6b204-9df0-4fcc-abcc-08ee0eff9cb2/b029547488a9383b0c8d8a9c813e246feb3ec19e0fe55020d4878fde5f0983fe/vs_Community.exe)
 
 Select "Desktop Development with C++"
 
@@ -595,8 +596,8 @@ Download and install following packages:
 
 * [CMake](https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi)
 * GNU flex, GNU bison and GIT with [cygwin 64bit](https://cygwin.com/setup-x86_64.exe)
-* [OSGeo4W 64bit](https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe)
-* [ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip): Copy the `ninja.exe` to `C:\OSGeo4W64\bin\`
+* [OSGeo4W](https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe)
+* [ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip): Copy the `ninja.exe` to `C:\OSGeo4W\bin\`
 
 For the QGIS build you need to install following packages from cygwin:
 
@@ -612,7 +613,7 @@ and from OSGeo4W (select *Advanced Install*):
 
   * Note: If you install other packages, this might cause issues. Particularly, make sure
     **not** to install the msinttypes package. It installs a stdint.h file in
-    `OSGeo4W[64]\include`, that conflicts with Visual Studio own stdint.h, which for
+    `OSGeo4W\include`, that conflicts with Visual Studio own stdint.h, which for
     example breaks the build of the virtual layer provider.
 
 If you intend to also build all the dependencies, you can refer to [the OSGeo4W repository](https://github.com/jef-n/OSGeo4W).
@@ -620,10 +621,10 @@ If you intend to also build all the dependencies, you can refer to [the OSGeo4W 
 ### 4.1.3. Clone the QGIS Source Code
 
 Choose a directory to store the QGIS source code.
-For example, to put it in the OSGeo4W64 install, navigate there:
+For example, to put it in the OSGeo4W install, navigate there:
 
 ```cmd
-cd C:\OSGeo4W64
+cd C:\OSGeo4W
 ```
 
 This directory will be assumed for all instructions
@@ -648,10 +649,41 @@ cd QGIS
 git config core.filemode false
 ```
 
-### 4.1.4. Configure and build from command line
+### 4.1.4. OSGeo4W
 
-The best reference for building QGIS can be found in the [build scripts for OSGeo4W](
- https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-dev/osgeo4w/package.sh)
+The official Windows packages are made in OSGeo4W.  Also standalone MSI
+installers are also produced using the packages from OSGeo4W.
+
+The nightly build of master (package qgis-dev) is made with the [OSGeo4W build
+recipe](https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-dev/osgeo4w/package.sh).
+
+There are others for the long-term release build (qgis-ltr), the nightly of the
+next long-term point release (qgis-ltr-dev), the latest release (qgis), the
+nightly build of the next point release (qgis-rel-dev).  All of those are
+currently based on Qt5.  A build recipe for master with Qt6 is available as
+qgis-qt6-dev.
+
+To setup a build environment (including Visual C++ if not already installed) and to
+build the nightly run in a command line (cmd):
+
+```cmd
+mkdir osgeo4w-build
+cd osgeo4w-build
+curl -JLO https://raw.githubusercontent.com/jef-n/OSGeo4W/refs/heads/master/bootstrap.cmd
+curl -JLO https://raw.githubusercontent.com/jef-n/OSGeo4W/refs/heads/master/bootstrap.sh
+bootstrap.cmd qgis-dev
+```
+
+To build other packages you can simply replace qgis-dev with other packages.
+Calling `bootstrap.cmd` without any arguments will build all packages
+(including all dependencies).
+
+After the build is succeeded the OSGeo4W packages will be in `x86_64/`.
+
+To install the package you can add the `osgeo4w-build` directory as `User URL`
+in the OSGeo4W installer and select your `qgis-dev` package.
+
+The MSIs are created with `scripts\msis.sh` (actually `scripts/creatmsi.pl`).
 
 
 ## 4.2. Building on Linux with mingw64
@@ -707,6 +739,85 @@ can also change the build and release directories.
 
 Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
 is required.
+
+## 4.3 Building on Windows with vcpkg
+
+Vcpkg is a free and open source cross platform ecosystem for libraries.
+It provides precise control over the versions of dependencies that are used.
+
+### 4.3.1 Install Build Tools
+
+1. Download and install the free (as in free beer) [Microsoft Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022).
+2. Obtain [winflexbison](https://github.com/lexxmark/winflexbison/releases).
+
+### 4.3.2 Build QGIS
+
+There are two ways, to build with vcpkg. Either you download an sdk, which allows you
+to reuse dependencies that are already built. This is generally easier and recommended.
+It is also possible to build all dependencies yourself, which gives you more control
+over the dependencies.
+
+#### 4.3.2.1 Build with an SDK
+
+1. Download and unzip SDK. Get the latest [QGIS master SDK](https://nightly.link/qgis/QGIS/workflows/windows-qt6/master/qgis-sdk-x64-windows.zip).
+2. Build
+
+We will now configure QGIS.
+
+Open a _Developer PowerShell for VS 2022_
+
+```ps
+# We assume you have a copy of the QGIS source code available
+# and have changed the working directory into it
+
+# Configure
+cmake -S . \
+      -B build \
+      -DSDK_PATH="path/to/vcpkg-export-[date]" \
+      -DBUILD_WITH_QT6=ON \
+      -DWITH_QTWEBKIT=OFF \
+      -DVCPKG_TARGET_TRIPLET=x64-windows-release
+```
+
+This will provide you with a configured project. You can either build it directly
+from the command line.
+
+```ps
+# Build
+# Note: you can also use RelWithDebInfo to have debug symbols in your build
+cmake --build build --config Release
+```
+
+Or you can open the generated `.sln` file in the `build` folder with Visual Studio.
+This will allow you to use all the tools that this IDE has to offer.
+
+#### 4.3.2.1 Build all the dependencies locally
+
+It is also possible to build all the dependencies locally.
+This will require some time, cpu and disk space.
+
+```ps
+# We assume you have a copy of the QGIS source code available
+# and have changed the working directory into it
+
+# Configure
+cmake -S . \
+      -B build \
+      -D WITH_VCPKG \
+      -D BUILD_WITH_QT6=ON \
+      -D WITH_QTWEBKIT=OFF \
+      -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+      -D VCPKG_HOST_TRIPLET=x64-windows-release
+```
+
+**Manage dependency versions**
+
+The dependencies are defined in the file `vcpkg/vcpkg.json`.
+This file defines which versions of registries are used.
+To update to the most recent version, you can use the command `vcpkg x-update-baseline --x-manifest-root=vcpkg`.
+If you want to patch or update a specific dependency, you can copy the port for this
+dependency into the folder `vcpkg/ports`. Whenever the build is reconfigured, it will check for dependencies that need to be rebuilt.
+
 
 # 5. Building on MacOS X
 
@@ -1084,9 +1195,6 @@ CMake option:
 
 This will flood your terminal or system log with lots of useful output from
 QgsDebugMsg() calls in source code.
-
-Those lines can be reduced or augmented by setting the QGIS_DEBUG
-runtime environment variable between 0 (no messages) and 5 (all messages).
 
 If you would like to run the test suite, you will need to do so from the build
 directory, as it will not work with the installed/bundled app. First set the

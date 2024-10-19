@@ -280,6 +280,12 @@ QgsSymbolLayer.PropertyLineClipping = QgsSymbolLayer.Property.LineClipping
 QgsSymbolLayer.Property.PropertyLineClipping = QgsSymbolLayer.Property.LineClipping
 QgsSymbolLayer.PropertyLineClipping.is_monkey_patched = True
 QgsSymbolLayer.PropertyLineClipping.__doc__ = "Line clipping mode \n.. versionadded:: 3.24"
+QgsSymbolLayer.SkipMultiples = QgsSymbolLayer.Property.SkipMultiples
+QgsSymbolLayer.SkipMultiples.is_monkey_patched = True
+QgsSymbolLayer.SkipMultiples.__doc__ = "Skip multiples of \n.. versionadded:: 3.40"
+QgsSymbolLayer.ShowMarker = QgsSymbolLayer.Property.ShowMarker
+QgsSymbolLayer.ShowMarker.is_monkey_patched = True
+QgsSymbolLayer.ShowMarker.__doc__ = "Show markers \n.. versionadded:: 3.40"
 QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
 * ``Size``: Symbol size
@@ -592,6 +598,14 @@ QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
   Available as ``QgsSymbolLayer.PropertyLineClipping`` in older QGIS releases.
 
+* ``SkipMultiples``: Skip multiples of
+
+  .. versionadded:: 3.40
+
+* ``ShowMarker``: Show markers
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -604,13 +618,13 @@ QgsMarkerSymbolLayer.Bottom = QgsMarkerSymbolLayer.VerticalAnchorPoint.Bottom
 QgsLineSymbolLayer.AllRings = QgsLineSymbolLayer.RenderRingFilter.AllRings
 QgsLineSymbolLayer.ExteriorRingOnly = QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly
 QgsLineSymbolLayer.InteriorRingsOnly = QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly
-QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
 try:
-    QgsSymbolLayer.__group__ = ['symbology']
+    QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
+    QgsMarkerSymbolLayer.__group__ = ['symbology']
 except NameError:
     pass
 try:
-    QgsMarkerSymbolLayer.__group__ = ['symbology']
+    QgsSymbolLayer.__group__ = ['symbology']
 except NameError:
     pass
 try:

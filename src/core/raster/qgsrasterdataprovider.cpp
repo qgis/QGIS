@@ -800,6 +800,119 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
   return colorName( colorInterpretation( bandNo ) );
 }
 
+QString QgsRasterDataProvider::colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
+{
+  // Modified copy from GDAL
+  switch ( colorInterpretation )
+  {
+    case Qgis::RasterColorInterpretation::Undefined:
+      return tr( "Undefined" );
+
+    case Qgis::RasterColorInterpretation::GrayIndex:
+      return tr( "Gray" );
+
+    case Qgis::RasterColorInterpretation::PaletteIndex:
+      return tr( "Palette" );
+
+    case Qgis::RasterColorInterpretation::RedBand:
+      return tr( "Red" );
+
+    case Qgis::RasterColorInterpretation::GreenBand:
+      return tr( "Green" );
+
+    case Qgis::RasterColorInterpretation::BlueBand:
+      return tr( "Blue" );
+
+    case Qgis::RasterColorInterpretation::AlphaBand:
+      return tr( "Alpha" );
+
+    case Qgis::RasterColorInterpretation::HueBand:
+      return tr( "Hue" );
+
+    case Qgis::RasterColorInterpretation::SaturationBand:
+      return tr( "Saturation" );
+
+    case Qgis::RasterColorInterpretation::LightnessBand:
+      return tr( "Lightness" );
+
+    case Qgis::RasterColorInterpretation::CyanBand:
+      return tr( "Cyan" );
+
+    case Qgis::RasterColorInterpretation::MagentaBand:
+      return tr( "Magenta" );
+
+    case Qgis::RasterColorInterpretation::YellowBand:
+      return tr( "Yellow" );
+
+    case Qgis::RasterColorInterpretation::BlackBand:
+      return tr( "Black" );
+
+    case Qgis::RasterColorInterpretation::YCbCr_YBand:
+      return tr( "YCbCr_Y" );
+
+    case Qgis::RasterColorInterpretation::YCbCr_CbBand:
+      return tr( "YCbCr_Cb" );
+
+    case Qgis::RasterColorInterpretation::YCbCr_CrBand:
+      return tr( "YCbCr_Cr" );
+
+    case Qgis::RasterColorInterpretation::ContinuousPalette:
+      return tr( "Continuous Palette" );
+
+    case Qgis::RasterColorInterpretation::PanBand:
+      return tr( "Panchromatic" );
+
+    case Qgis::RasterColorInterpretation::CoastalBand:
+      return tr( "Coastal" );
+
+    case Qgis::RasterColorInterpretation::RedEdgeBand:
+      return tr( "Red Edge" );
+
+    case Qgis::RasterColorInterpretation::NIRBand:
+      return tr( "Near-InfraRed (NIR)" );
+
+    case Qgis::RasterColorInterpretation::SWIRBand:
+      return tr( "Short-Wavelength InfraRed (SWIR)" );
+
+    case Qgis::RasterColorInterpretation::MWIRBand:
+      return tr( "Mid-Wavelength InfraRed (MWIR)" );
+
+    case Qgis::RasterColorInterpretation::LWIRBand:
+      return tr( "Long-Wavelength InfraRed (LWIR)" );
+
+    case Qgis::RasterColorInterpretation::TIRBand:
+      return tr( "Thermal InfraRed (TIR)" );
+
+    case Qgis::RasterColorInterpretation::OtherIRBand:
+      return tr( "Other InfraRed" );
+
+    case Qgis::RasterColorInterpretation::SAR_Ka_Band:
+      return tr( "Synthetic Aperture Radar (SAR) Ka band" );
+
+    case Qgis::RasterColorInterpretation::SAR_K_Band:
+      return tr( "Synthetic Aperture Radar (SAR) K band" );
+
+    case Qgis::RasterColorInterpretation::SAR_Ku_Band:
+      return tr( "Synthetic Aperture Radar (SAR) Ku band" );
+
+    case Qgis::RasterColorInterpretation::SAR_X_Band:
+      return tr( "Synthetic Aperture Radar (SAR) X band" );
+
+    case Qgis::RasterColorInterpretation::SAR_C_Band:
+      return tr( "Synthetic Aperture Radar (SAR) C band" );
+
+    case Qgis::RasterColorInterpretation::SAR_S_Band:
+      return tr( "Synthetic Aperture Radar (SAR) S band" );
+
+    case Qgis::RasterColorInterpretation::SAR_L_Band:
+      return tr( "Synthetic Aperture Radar (SAR) L band" );
+
+    case Qgis::RasterColorInterpretation::SAR_P_Band:
+      return tr( "Synthetic Aperture Radar (SAR) P band" );
+  }
+  return QString();
+}
+
 QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri, bool *ok )
 {
   QUrl url = QUrl::fromPercentEncoding( uri.toUtf8() );

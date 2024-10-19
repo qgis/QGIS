@@ -31,7 +31,7 @@ class QgsTerrainTextureImage;
 
 #include <Qt3DCore/QEntity>
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 
 /**
  * \ingroup 3d

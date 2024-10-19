@@ -14,6 +14,10 @@ uniform mat4 modelViewProjection;
 uniform mat4 inst;  // transform of individual object instance
 uniform mat4 instNormal;  // should be mat3 but Qt3D only supports mat4...
 
+#ifdef CLIPPING
+    #pragma include clipplane.shaderinc
+#endif
+
 void main()
 {
     // TODO: i think this is not entirely correct: the translation by "pos" works
@@ -25,4 +29,8 @@ void main()
     worldPosition = vec3(offsetPos);
 
     gl_Position = modelViewProjection * offsetPos;
+
+#ifdef CLIPPING
+    setClipDistance(worldPosition);
+#endif
 }

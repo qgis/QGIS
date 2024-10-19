@@ -471,7 +471,7 @@ Preprocesses request
 
   signals:
 
- void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
+ void requestAboutToBeCreated( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, QIODevice *device ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -617,7 +617,7 @@ See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and p
 
 
 
- void requestCreated( QNetworkReply * ) /Deprecated/;
+ void requestCreated( QNetworkReply *reply ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -625,7 +625,10 @@ See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and p
    Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
 %End
 
-    void requestTimedOut( QNetworkReply * );
+    void requestTimedOut( QNetworkReply *reply );
+%Docstring
+Emitted when a request times out.
+%End
 
 
     void authBrowserAborted();

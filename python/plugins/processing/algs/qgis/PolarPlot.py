@@ -52,7 +52,9 @@ class PolarPlot(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
                                                       self.tr('Category name field'), parentLayerParameterName=self.INPUT))  # FIXME unused?
         self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
-                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
+                                                      self.tr('Value field'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
 
@@ -89,8 +91,9 @@ class PolarPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)
 
-        data = [go.Area(r=values[valuefieldname],
-                        t=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]
+        data = [go.Barpolar(r=values[valuefieldname],
+                            theta=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]
+
         plt.offline.plot(data, filename=output, auto_open=False)
 
         return {self.OUTPUT: output}

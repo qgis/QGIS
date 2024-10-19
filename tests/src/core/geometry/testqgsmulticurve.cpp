@@ -146,7 +146,7 @@ void TestQgsMultiCurve::addGeometryZM()
   QVERIFY( mc.is3D() );
   QVERIFY( !mc.isMeasure() );
   QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZ );
-  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurveZ" ) );
+  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve Z" ) );
   QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( mc.geometryN( 0 ) ) ), part );
 
@@ -159,7 +159,7 @@ void TestQgsMultiCurve::addGeometryZM()
   QVERIFY( !mc.is3D() );
   QVERIFY( mc.isMeasure() );
   QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveM );
-  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurveM" ) );
+  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve M" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( mc.geometryN( 0 ) ) ), part );
 
   mc.clear();
@@ -171,7 +171,7 @@ void TestQgsMultiCurve::addGeometryZM()
   QVERIFY( mc.is3D() );
   QVERIFY( mc.isMeasure() );
   QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurveZM );
-  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurveZM" ) );
+  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve ZM" ) );
   QCOMPARE( *( static_cast< const QgsCircularString * >( mc.geometryN( 0 ) ) ), part );
 
   //add another part

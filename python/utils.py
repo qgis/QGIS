@@ -711,6 +711,49 @@ def closeProjectMacro():
 
 
 #######################
+
+def _list_project_expression_functions():
+    """ Get a list of expression functions stored in the current project """
+    import ast
+    from qgis.core import QgsProject
+
+    functions = []
+    project_functions, ok = QgsProject.instance().readEntry("ExpressionFunctions", "/pythonCode")
+    if ok and project_functions:
+        code = ast.parse(project_functions)
+
+        for e in code.body:
+            if isinstance(e, ast.FunctionDef):
+                for d in e.decorator_list:
+                    if d.func.id == "qgsfunction":
+                        functions.append(e.name)
+
+    return functions
+
+
+def clean_project_expression_functions():
+    """
+    Unload expression functions from current project
+    and reload user expressions from profile folder
+    to avoid any potential overwrite from the
+    unloaded project functions
+    """
+    project_functions = _list_project_expression_functions()
+    if project_functions:
+        from qgis.core import QgsExpression
+        for function in project_functions:
+            QgsExpression.unregisterFunction(function)
+
+        # Reload user expressions
+        from qgis.core import QgsApplication
+        import expressions
+
+        userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
+        expressionspath = os.path.join(userpythonhome, "expressions")
+        expressions.reload(expressionspath)
+
+
+#######################
 # SERVER PLUGINS
 #
 # TODO: move into server_utils.py ?

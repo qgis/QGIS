@@ -255,7 +255,6 @@ Write contents of vector layer to an (OGR supported) vector format
 :param destCRS: CRS to reproject exported geometries to, or invalid CRS for no reprojection
 :param driverName: OGR driver to use
 :param onlySelected: write only selected features of layer
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
@@ -269,6 +268,8 @@ Write contents of vector layer to an (OGR supported) vector format
 :param includeZ: set to ``True`` to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
+
+:return: - errorMessage: the error message text, if an error occurs while writing the layer
 
 .. deprecated:: 3.40
 
@@ -306,7 +307,6 @@ Writes a layer out to a vector file.
            for no transformation
 :param driverName: OGR driver to use
 :param onlySelected: write only selected features of layer
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
@@ -320,6 +320,8 @@ Writes a layer out to a vector file.
 :param includeZ: set to ``True`` to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
+
+:return: - errorMessage: the error message text, if an error occurs while writing the layer
 
 .. deprecated:: 3.40
 
@@ -406,7 +408,8 @@ Writes a layer out to a vector file.
 :param fileName: file name to write to
 :param options: options.
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
+
+:return: - errorMessage: the error message text, if an error occurs while writing the layer
 
 .. deprecated:: 3.40
 
@@ -478,7 +481,7 @@ Writes a layer out to a vector file.
 :param newLayer: potentially modified layer name (output parameter)
 
 :return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
-         - errorMessage: will be set to the error message text, if an error occurs while writing the layer
+         - errorMessage: the error message text, if an error occurs while writing the layer
 
 .. deprecated:: 3.20
 
@@ -499,11 +502,11 @@ Writes a layer out to a vector file.
 :param fileName: file name to write to
 :param transformContext: coordinate transform context
 :param options: save options
-:param newFilename: potentially modified file name (output parameter)
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 
 :return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
+         - newFilename: potentially modified file name (output parameter)
          - newLayer: potentially modified layer name (output parameter)
+         - errorMessage: the error message text, if an error occurs while writing the layer
 
 .. versionadded:: 3.20
 %End

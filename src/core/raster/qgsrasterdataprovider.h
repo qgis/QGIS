@@ -138,68 +138,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Returns a string color name representation of a color interpretation.
+     * It is translated since QGIS 3.40
      */
-    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
-    {
-      // Modified copy from GDAL
-      switch ( colorInterpretation )
-      {
-        case Qgis::RasterColorInterpretation::Undefined:
-          return QStringLiteral( "Undefined" );
-
-        case Qgis::RasterColorInterpretation::GrayIndex:
-          return QStringLiteral( "Gray" );
-
-        case Qgis::RasterColorInterpretation::PaletteIndex:
-          return QStringLiteral( "Palette" );
-
-        case Qgis::RasterColorInterpretation::RedBand:
-          return QStringLiteral( "Red" );
-
-        case Qgis::RasterColorInterpretation::GreenBand:
-          return QStringLiteral( "Green" );
-
-        case Qgis::RasterColorInterpretation::BlueBand:
-          return QStringLiteral( "Blue" );
-
-        case Qgis::RasterColorInterpretation::AlphaBand:
-          return QStringLiteral( "Alpha" );
-
-        case Qgis::RasterColorInterpretation::HueBand:
-          return QStringLiteral( "Hue" );
-
-        case Qgis::RasterColorInterpretation::SaturationBand:
-          return QStringLiteral( "Saturation" );
-
-        case Qgis::RasterColorInterpretation::LightnessBand:
-          return QStringLiteral( "Lightness" );
-
-        case Qgis::RasterColorInterpretation::CyanBand:
-          return QStringLiteral( "Cyan" );
-
-        case Qgis::RasterColorInterpretation::MagentaBand:
-          return QStringLiteral( "Magenta" );
-
-        case Qgis::RasterColorInterpretation::YellowBand:
-          return QStringLiteral( "Yellow" );
-
-        case Qgis::RasterColorInterpretation::BlackBand:
-          return QStringLiteral( "Black" );
-
-        case Qgis::RasterColorInterpretation::YCbCr_YBand:
-          return QStringLiteral( "YCbCr_Y" );
-
-        case Qgis::RasterColorInterpretation::YCbCr_CbBand:
-          return QStringLiteral( "YCbCr_Cb" );
-
-        case Qgis::RasterColorInterpretation::YCbCr_CrBand:
-          return QStringLiteral( "YCbCr_Cr" );
-
-        case Qgis::RasterColorInterpretation::ContinuousPalette:
-          return QStringLiteral( "Continuous Palette" );
-      }
-      return QString();
-    }
+    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const;
 
     //! Reload data (data could change)
     virtual bool reload() { return true; }
@@ -215,6 +156,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Read band offset for raster value
      */
     virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ) return 0.0; }
+
+    /**
+     * Returns the maximum tile size in pixels for the data provider.
+     * By default, the maximum tile size is set to QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH x
+     * QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT but can be overridden in subclasses (e.g. WMS
+     * can retrieve that information from the GetCapabilities document).
+     * \since QGIS 3.40
+     */
+    virtual QSize maximumTileSize() const { return QSize( QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH, QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT ); }
 
     // TODO: remove or make protected all readBlock working with void*
 
@@ -736,7 +686,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     /**
-     * Returns the (possibly NULL) attribute table for the specified \a bandNumber.
+     * Returns the (possibly NULLPTR) attribute table for the specified \a bandNumber.
      *
      * \since QGIS 3.30
      */
@@ -744,7 +694,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Set the attribute table to \a attributeTable for the specified \a bandNumber,
-     * if the \a attributeTable is NULL any existing attribute table for the specified
+     * if the \a attributeTable is NULLPTR any existing attribute table for the specified
      * band will be removed.
      *
      * \note Ownership of the attribute table is transferred to the provider.

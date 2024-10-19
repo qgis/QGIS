@@ -29,6 +29,7 @@
 #include "qgspolygon.h"
 
 #include <QPointer>
+#include <QNetworkRequest>
 
 
 QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &structure )

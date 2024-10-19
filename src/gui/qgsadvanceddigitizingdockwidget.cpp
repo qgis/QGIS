@@ -987,6 +987,15 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
       value = result.toDouble( &ok );
     }
   }
+
+  if ( ok && type == Qgis::CadConstraintType::Distance )
+  {
+    const Qgis::DistanceUnit displayUnits { QgsProject::instance()->distanceUnits() };
+    // Convert to canvas units
+    const Qgis::DistanceUnit canvasUnits { mMapCanvas->mapSettings().mapUnits() };
+    value *= QgsUnitTypes::fromUnitToUnitFactor( displayUnits, canvasUnits );
+  }
+
   return value;
 }
 
@@ -1382,7 +1391,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
   if ( mSnapMatch.layer() )
   {
-    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( point == mSnapMatch.point() ) )
+    // note ND: I'm not 100% sure if the point == mSnapMatch.point() comparison was intended be done using QgsPointXY or QgsPoint objects here!
+    // I'm using QgsPointXY here to keep the behavior the same from before a duplicate QgsPointXY == operator was removed...
+    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( QgsPointXY( point ) == mSnapMatch.point() ) )
          || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
     {
       e->snapPoint();
@@ -2324,8 +2335,11 @@ QString QgsAdvancedDigitizingDockWidget::CadConstraint::displayValue() const
     }
     case Qgis::CadConstraintType::Distance:
     {
-      const Qgis::DistanceUnit units { QgsProject::instance()->distanceUnits() };
-      return QgsDistanceArea::formatDistance( mValue, mPrecision, units, true );
+      const Qgis::DistanceUnit displayUnits { QgsProject::instance()->distanceUnits() };
+      // Convert from canvas units
+      const Qgis::DistanceUnit canvasUnits { mMapCanvas->mapSettings().mapUnits() };
+      const double value { QgsUnitTypes::fromUnitToUnitFactor( canvasUnits, displayUnits ) *mValue };
+      return QgsDistanceArea::formatDistance( value, mPrecision, displayUnits, true );
     }
     case Qgis::CadConstraintType::Generic:
     case Qgis::CadConstraintType::ZValue:

@@ -119,6 +119,8 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsNetworkCacheDirec
 
 const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSize = new QgsSettingsEntryInteger64( QStringLiteral( "size-bytes" ), QgsSettingsTree::sTreeNetworkCache, 0, QStringLiteral( "Network disk cache size in bytes (0 = automatic size)" ) );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {

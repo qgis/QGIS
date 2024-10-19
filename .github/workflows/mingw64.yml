@@ -105,12 +105,26 @@ jobs:
 
       - name: Upload QGIS for Windows 64bit
         uses: actions/upload-artifact@v4
+        id: artifact-win64
         with:
           name: QGIS for Windows 64bit
           path: qgis-portable-win64.zip
 
       - name: Upload QGIS for Windows 64bit Debug Symbols
         uses: actions/upload-artifact@v4
+        id: artifact-win64-debug
         with:
           name: QGIS for Windows 64bit Debug Symbols
           path: qgis-portable-win64-debugsym.zip
+
+      - name: Schedule download comment
+        uses: ./.github/actions/post_sticky_comment
+        if: github.event_name == 'pull_request'
+        with:
+          marker: mingw64
+          body: |
+            ### 🪟 Windows builds
+            Download [Windows builds of this PR for testing](${{ steps.artifact-win64.outputs.artifact-url }}).
+            Debug symbols for this build are available [here](${{ steps.artifact-win64-debug.outputs.artifact-url }}).
+            *(Built from commit ${{ github.event.pull_request.head.sha }})*
+          pr: ${{ github.event.number }}

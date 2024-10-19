@@ -64,7 +64,7 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
     void applyChanges();
 
     //! Returns if the node is the root node
-    bool isRoot() const { return mParent == nullptr; }
+    bool isRoot() const { return !mParent; }
 
     //! Returns the dynamic key parts of the named list parent tree nodes
     QStringList namedParentNodes() const { return mNamedParentNodes; }

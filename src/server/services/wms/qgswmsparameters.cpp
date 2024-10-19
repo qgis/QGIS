@@ -2280,15 +2280,15 @@ namespace QgsWms
     return codec;
   }
 
-  bool QgsWmsParameters::writeGeoPdf() const
+  bool QgsWmsParameters::writeGeospatialPdf() const
   {
-    bool geoPdf = false;
+    bool geospatialPdf = false;
     const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
     if ( options.contains( PdfFormatOption::WRITE_GEO_PDF ) )
     {
-      geoPdf = QVariant( options[PdfFormatOption::WRITE_GEO_PDF] ).toBool();
+      geospatialPdf = QVariant( options[PdfFormatOption::WRITE_GEO_PDF] ).toBool();
     }
-    return geoPdf;
+    return geospatialPdf;
   }
 
   bool QgsWmsParameters::pdfForceVectorOutput() const
@@ -2344,6 +2344,10 @@ namespace QgsWms
       if ( options[PdfFormatOption::TEXT_RENDER_FORMAT].compare( QStringLiteral( "AlwaysText" ), Qt::CaseInsensitive ) == 0 )
       {
         format = Qgis::TextRenderFormat::AlwaysText;
+      }
+      else if ( options[PdfFormatOption::TEXT_RENDER_FORMAT].compare( QStringLiteral( "PreferText" ), Qt::CaseInsensitive ) == 0 )
+      {
+        format = Qgis::TextRenderFormat::PreferText;
       }
     }
     return format;

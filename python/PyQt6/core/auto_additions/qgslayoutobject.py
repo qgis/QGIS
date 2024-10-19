@@ -436,10 +436,7 @@ QgsLayoutObject.EvaluatedValue = QgsLayoutObject.PropertyValueType.EvaluatedValu
 QgsLayoutObject.OriginalValue = QgsLayoutObject.PropertyValueType.OriginalValue
 try:
     QgsLayoutObject.__attribute_docs__ = {'changed': "Emitted when the object's properties change.\n"}
-except NameError:
-    pass
-QgsLayoutObject.propertyAssociatesWithParentMultiframe = staticmethod(QgsLayoutObject.propertyAssociatesWithParentMultiframe)
-try:
+    QgsLayoutObject.propertyAssociatesWithParentMultiframe = staticmethod(QgsLayoutObject.propertyAssociatesWithParentMultiframe)
     QgsLayoutObject.__group__ = ['layout']
 except NameError:
     pass

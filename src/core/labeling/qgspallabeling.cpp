@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsstyle.h"
 #include "qgstextrenderer.h"
+#include "qgsscaleutils.h"
 
 #include "pal/labelposition.h"
 
@@ -1895,7 +1896,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       maxScale = 1 / std::fabs( maxScale );
     }
 
-    if ( !qgsDoubleNear( maxScale, 0.0 ) && context.rendererScale() < maxScale )
+    // maxScale is inclusive ( < --> no label )
+    if ( !qgsDoubleNear( maxScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( context.rendererScale(), maxScale ) )
     {
       return nullptr;
     }
@@ -1914,7 +1916,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       minScale = 1 / std::fabs( minScale );
     }
 
-    if ( !qgsDoubleNear( minScale, 0.0 ) && context.rendererScale() > minScale )
+    // minScale is exclusive ( >= --> no label )
+    if ( !qgsDoubleNear( minScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( context.rendererScale(), minScale ) )
     {
       return nullptr;
     }
@@ -2155,14 +2158,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     case Qgis::LabelPlacement::OutsidePolygons:
     {
       // non-curved labels always require document and metrics
-      if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
-      {
-        doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-      }
-      else
-      {
-        doc = QgsTextDocument::fromPlainText( { labelText } );
-      }
+      doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
       calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &evaluatedFormat, &doc, &documentMetrics, &outerBounds );
       break;
     }
@@ -2360,7 +2356,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     if ( geom.isEmpty() )
       return nullptr;
   }
-  geos_geom_clone = QgsGeos::asGeos( geom );
+  geos_geom_clone = QgsGeos::asGeos( geom, 0, Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 
   if ( isObstacle || ( geom.type() == Qgis::GeometryType::Point && offsetType == Qgis::LabelOffsetType::FromSymbolBounds ) )
   {
@@ -3974,7 +3970,7 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case Qgis::LayerType::Vector:
     {
       const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer );
-      return vl->labelsEnabled() || vl->diagramsEnabled();
+      return vl->labelsEnabled() || vl->diagramsEnabled() || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) );
     }
 
     case Qgis::LayerType::VectorTile:

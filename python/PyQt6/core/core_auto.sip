@@ -243,8 +243,11 @@
 %Include auto_generated/annotations/qgstextannotation.sip
 %Include auto_generated/auth/qgsauthcertutils.sip
 %Include auto_generated/auth/qgsauthconfig.sip
+%Include auto_generated/auth/qgsauthconfigurationstorage.sip
+%Include auto_generated/auth/qgsauthconfigurationstorageregistry.sip
 %Include auto_generated/auth/qgsauthmanager.sip
 %Include auto_generated/auth/qgsauthmethod.sip
+%Include auto_generated/auth/qgsauthconfigurationstoragedb.sip
 %Include auto_generated/browser/qgsbrowsermodel.sip
 %Include auto_generated/browser/qgsbrowserproxymodel.sip
 %Include auto_generated/browser/qgsconnectionsitem.sip
@@ -277,6 +280,7 @@
 %Include auto_generated/diagram/qgshistogramdiagram.sip
 %Include auto_generated/diagram/qgspiediagram.sip
 %Include auto_generated/diagram/qgsstackedbardiagram.sip
+%Include auto_generated/diagram/qgsstackeddiagram.sip
 %Include auto_generated/diagram/qgstextdiagram.sip
 %Include auto_generated/dxf/qgsdxfexport.sip
 %Include auto_generated/editform/qgseditformconfig.sip
@@ -353,6 +357,7 @@
 %Include auto_generated/geometry/qgsorientedbox3d.sip
 %Include auto_generated/geometry/qgspoint.sip
 %Include auto_generated/geometry/qgspolygon.sip
+%Include auto_generated/geometry/qgspolyhedralsurface.sip
 %Include auto_generated/geometry/qgsquadrilateral.sip
 %Include auto_generated/geometry/qgsrectangle.sip
 %Include auto_generated/geometry/qgsreferencedgeometry.sip
@@ -360,6 +365,7 @@
 %Include auto_generated/geometry/qgssphere.sip
 %Include auto_generated/geometry/qgssurface.sip
 %Include auto_generated/geometry/qgstriangle.sip
+%Include auto_generated/geometry/qgstriangulatedsurface.sip
 %Include auto_generated/geometry/qgsvertexid.sip
 %Include auto_generated/geometry/qgswkbptr.sip
 %Include auto_generated/geometry/qgswkbtypes.sip
@@ -389,6 +395,9 @@
 %Include auto_generated/labeling/qgspallabeling.sip
 %Include auto_generated/labeling/qgsrulebasedlabeling.sip
 %Include auto_generated/labeling/qgsvectorlayerlabeling.sip
+%Include auto_generated/labeling/rules/qgslabelingenginerule.sip
+%Include auto_generated/labeling/rules/qgslabelingenginerule_impl.sip
+%Include auto_generated/labeling/rules/qgslabelingengineruleregistry.sip
 %Include auto_generated/layertree/qgscolorramplegendnode.sip
 %Include auto_generated/layertree/qgscolorramplegendnodesettings.sip
 %Include auto_generated/layertree/qgslayertree.sip
@@ -690,6 +699,7 @@
 %Include auto_generated/symbology/qgsinterpolatedlinerenderer.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgslegendsymbolitem.sip
+%Include auto_generated/symbology/qgslinearreferencingsymbollayer.sip
 %Include auto_generated/symbology/qgslinesymbol.sip
 %Include auto_generated/symbology/qgslinesymbollayer.sip
 %Include auto_generated/symbology/qgsmapinfosymbolconverter.sip
@@ -720,6 +730,7 @@
 %Include auto_generated/textrenderer/qgsfontmanager.sip
 %Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
 %Include auto_generated/textrenderer/qgstextblock.sip
+%Include auto_generated/textrenderer/qgstextblockformat.sip
 %Include auto_generated/textrenderer/qgstextbuffersettings.sip
 %Include auto_generated/textrenderer/qgstextcharacterformat.sip
 %Include auto_generated/textrenderer/qgstextdocument.sip
@@ -787,6 +798,7 @@
 %Include auto_generated/vectortile/qgsvectortilelayer.sip
 %Include auto_generated/vectortile/qgsvectortilematrixset.sip
 %Include auto_generated/vectortile/qgsvectortilerenderer.sip
+%Include auto_generated/vectortile/qgsvectortileutils.sip
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/vectortile/qgsvtpktiles.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip

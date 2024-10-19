@@ -1481,7 +1481,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QString type = it->typeName();
-    if ( type == QLatin1String( "char" ) || type == QLatin1String( "varchar" ) )
+    if ( type == QLatin1String( "char" ) || type == QLatin1String( "varchar" ) || type == QLatin1String( "nvarchar" ) )
     {
       if ( it->length() > 0 )
         type = QStringLiteral( "%1(%2)" ).arg( type ).arg( it->length() );
@@ -2054,6 +2054,21 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
   emit dataChanged();
 
   return true;
+}
+
+bool QgsMssqlProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsMssqlProvider::subsetStringDialect() const
+{
+  return tr( "SQL Server WHERE clause" );
+}
+
+QString QgsMssqlProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://learn.microsoft.com/en-us/sql/t-sql/queries/where-transact-sql?view=sql-server-ver16" );
 }
 
 QString  QgsMssqlProvider::description() const

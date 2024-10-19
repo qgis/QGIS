@@ -8,10 +8,8 @@ QgsLayoutItemPicture.GridNorth = QgsLayoutItemPicture.NorthMode.GridNorth
 QgsLayoutItemPicture.TrueNorth = QgsLayoutItemPicture.NorthMode.TrueNorth
 try:
     QgsLayoutItemPicture.__attribute_docs__ = {'pictureRotationChanged': 'Emitted on picture rotation change\n'}
-except NameError:
-    pass
-QgsLayoutItemPicture.create = staticmethod(QgsLayoutItemPicture.create)
-try:
+    QgsLayoutItemPicture.create = staticmethod(QgsLayoutItemPicture.create)
+    QgsLayoutItemPicture.__signal_arguments__ = {'pictureRotationChanged': ['newRotation: float']}
     QgsLayoutItemPicture.__group__ = ['layout']
 except NameError:
     pass

@@ -716,7 +716,7 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
   invalidateGeos();
 }
 
-OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bool &ok )
+OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bool &ok ) const
 {
   ok = false;
   double bbox[4]; // xmin, ymin, xmax, ymax

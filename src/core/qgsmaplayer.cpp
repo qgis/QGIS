@@ -33,9 +33,11 @@
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
+#include "qgsscaleutils.h"
 #include "qgssldexportcontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -43,7 +45,6 @@
 #include "qgsmessagelog.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsprovidermetadata.h"
 #include "qgslayernotesutils.h"
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
@@ -252,6 +253,11 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return nullptr;
+}
+
+QgsProviderMetadata *QgsMapLayer::providerMetadata() const
+{
+  return QgsProviderRegistry::instance()->providerMetadata( providerType() );
 }
 
 void QgsMapLayer::setShortName( const QString &shortName )
@@ -915,6 +921,8 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
     layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
     layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
+    layerElement.setAttribute( QStringLiteral( "autoRefreshMode" ), qgsEnumValueToKey( mAutoRefreshMode ) );
+    layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( autoRefreshInterval() ) );
   }
 
   if ( categories.testFlag( Symbology3D ) )
@@ -1146,9 +1154,11 @@ bool QgsMapLayer::isInScaleRange( double scale ) const
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  return !mScaleBasedVisibility ||
-         ( ( mMinScale == 0 || mMinScale * Qgis::SCALE_PRECISION < scale )
-           && ( mMaxScale == 0 || scale < mMaxScale ) );
+  // mMinScale (denominator!) is inclusive ( >= --> In range )
+  // mMaxScale (denominator!) is exclusive ( < --> In range )
+  return !mScaleBasedVisibility
+         || ( ( mMinScale == 0 || !QgsScaleUtils::lessThanMaximumScale( scale, mMinScale ) )
+              && ( mMaxScale == 0 || !QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMaxScale ) ) );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
@@ -1309,7 +1319,8 @@ QgsCoordinateReferenceSystem QgsMapLayer::crs() const
 
 QgsCoordinateReferenceSystem QgsMapLayer::verticalCrs() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   switch ( mCRS.type() )
   {
@@ -1693,7 +1704,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   }
   else
   {
-    const QFileInfo project( QgsProject::instance()->fileName() );
+    const QFileInfo project( QgsProject::instance()->fileName() ); // skip-keyword-check
     QgsDebugMsgLevel( QStringLiteral( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString xml;
@@ -2436,7 +2447,10 @@ void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseN
   {
     flags |= Qgis::DataProviderReadFlag::TrustDataSource;
   }
-  setDataSource( dataSource, baseName, provider, options, flags );
+  setDataSource( dataSource,
+                 baseName.isEmpty() ? mLayerName : baseName,
+                 provider.isEmpty() ? mProviderKey : provider,
+                 options, flags );
 }
 
 void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
@@ -2538,6 +2552,11 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     {
       setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
       setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+    }
+    if ( layerElement.hasAttribute( QStringLiteral( "autoRefreshMode" ) ) )
+    {
+      setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
+      setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ) ).toInt() );
     }
   }
 

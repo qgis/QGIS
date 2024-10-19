@@ -1,0 +1,28 @@
+name: Setup Vcpkg
+description: Initialize vcpkg tool, does not checkout the registry
+  # TODO, set VCPKG_BASE_VERSION based on this
+  # inputs:
+  #  vcpkg-version:
+  #    description: Enter vcpkg version tag or stable or latest
+  #    required: false
+  #    default: latest
+  #    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Setup vcpkg
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        . <(curl https://aka.ms/vcpkg-init.sh -L)
+        echo "PATH=$VCPKG_ROOT;$PATH" >> $GITHUB_ENV
+
+    - name: Setup vcpkg
+      if: runner.os == 'Windows'
+      shell: powershell
+      run: |
+        $env:VCPKG_ROOT = "C:/.vcpkg"
+        iex (iwr -useb https://aka.ms/vcpkg-init.ps1)
+        echo "VCPKG_ROOT=$env:VCPKG_ROOT" >> $env:GITHUB_ENV
+        echo "PATH=$env:VCPKG_ROOT;$env:PATH" >> $env:GITHUB_ENV

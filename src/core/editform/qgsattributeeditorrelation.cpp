@@ -40,7 +40,7 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
 
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
-  elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
+  elem.setAttribute( QStringLiteral( "relation" ), mRelationId );
   elem.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), mForceSuppressFormPopup );
   elem.setAttribute( QStringLiteral( "nmRelationId" ), mNmRelationId.toString() );
   elem.setAttribute( QStringLiteral( "label" ), mLabel );

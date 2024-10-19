@@ -52,7 +52,7 @@ bool isInternalWidget( const QString &name )
   return false;
 }
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings *settings )
   : QMainWindow( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else

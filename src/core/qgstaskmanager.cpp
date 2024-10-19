@@ -170,6 +170,7 @@ bool QgsTask::waitForFinished( int timeout )
 {
   // We wait the task to be started
   mNotStartedMutex.acquire();
+  mNotStartedMutex.release();
 
   bool rv = true;
   if ( mOverallStatus == Complete || mOverallStatus == Terminated )
@@ -445,7 +446,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
     mInitialized = true;
     // defer connection to project until we actually need it -- we don't want to connect to the project instance in the constructor,
     // cos that forces early creation of QgsProject
-    connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
+    connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ), // skip-keyword-check
              this, &QgsTaskManager::layersWillBeRemoved );
   }
 

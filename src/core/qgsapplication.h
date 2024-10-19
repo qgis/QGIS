@@ -31,6 +31,7 @@ class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsAnnotationItemRegistry;
+class QgsAuthConfigurationStorageRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
 class QgsFieldFormatterRegistry;
@@ -78,6 +79,7 @@ class QgsDatabaseQueryLog;
 class QgsFontManager;
 class QgsSensorRegistry;
 class QgsProfileSourceRegistry;
+class QgsLabelingEngineRuleRegistry;
 
 /**
  * \ingroup core
@@ -158,8 +160,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     enum StyleSheetType
     {
-      Qt, //! StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
-      WebBrowser, //! StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
+      Qt, //!< StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
+      WebBrowser, //!< StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
     };
 
     static const char *QGIS_ORGANIZATION_NAME;
@@ -333,8 +335,20 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the user qgis.db file.
     static QString qgisUserDatabaseFilePath();
 
-    //! Returns the path to the user authentication database file: qgis-auth.db.
-    static QString qgisAuthDatabaseFilePath();
+    /**
+     *  Returns the path to the user authentication database file: qgis-auth.db.
+     *  \deprecated QGIS 3.30. Use qgisAuthDatabaseUri() instead.
+     */
+    Q_DECL_DEPRECATED static QString qgisAuthDatabaseFilePath() SIP_DEPRECATED;
+
+    /**
+     * Returns the URI to the user authentication database.
+     * The URI is be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
+     * where DATABASE is just the path to the file for SQLite databases. If DRIVER is omitted, PSQLITE is assumed.
+     * Optional SCHEMA can be specified as a query parameter.
+     * \since QGIS 3.40
+     */
+    static QString qgisAuthDatabaseUri();
 
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
@@ -867,6 +881,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsAuthManager *authManager();
 
     /**
+     * Returns the application's authentication configuration storage registry
+     * \since QGIS 3.40
+     */
+    static QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry();
+
+    /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
      */
@@ -929,6 +949,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.14
      */
     static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Gets the registry of available labeling engine rules.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns registry of available project storage implementations.
@@ -1146,6 +1173,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsBabelFormatRegistry *mGpsBabelFormatRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
       QgsScaleBarRendererRegistry *mScaleBarRendererRegistry = nullptr;
+      QgsLabelingEngineRuleRegistry *mLabelingEngineRuleRegistry = nullptr;
       QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;

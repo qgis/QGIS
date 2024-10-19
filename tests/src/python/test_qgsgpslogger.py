@@ -130,26 +130,26 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertEqual(res.asWkt(4), 'Point (18.9475 69.6442)')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.PointZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'PointZ (18.9475 69.6442 0)')
+        self.assertEqual(res.asWkt(4), 'Point Z (18.9475 69.6442 0)')
 
         # make elevation available
         gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
         res, err = logger.currentGeometry(QgsWkbTypes.Type.PointZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'PointZ (18.9475 69.6609 35)')
+        self.assertEqual(res.asWkt(4), 'Point Z (18.9475 69.6609 35)')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.MultiPointZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'MultiPointZ ((18.9475 69.6609 35))')
+        self.assertEqual(res.asWkt(4), 'MultiPoint Z ((18.9475 69.6609 35))')
 
         res, err = logger.currentGeometry(QgsWkbTypes.Type.LineString)
         self.assertFalse(err)
         self.assertEqual(res.asWkt(4), 'LineString (18.9475 69.6442, 18.9475 69.6609)')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.LineStringZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'LineStringZ (18.9475 69.6442 0, 18.9475 69.6609 35)')
+        self.assertEqual(res.asWkt(4), 'LineString Z (18.9475 69.6442 0, 18.9475 69.6609 35)')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.MultiLineStringZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'MultiLineStringZ ((18.9475 69.6442 0, 18.9475 69.6609 35))')
+        self.assertEqual(res.asWkt(4), 'MultiLineString Z ((18.9475 69.6442 0, 18.9475 69.6609 35))')
 
         # note enough vertices for polygons yet
         res, err = logger.currentGeometry(QgsWkbTypes.Type.Polygon)
@@ -161,30 +161,30 @@ class TestQgsGpsLogger(QgisTestCase):
 
         res, err = logger.currentGeometry(QgsWkbTypes.Type.PointZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'PointZ (19.1142 69.6609 35)')
+        self.assertEqual(res.asWkt(4), 'Point Z (19.1142 69.6609 35)')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.MultiPointZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'MultiPointZ ((19.1142 69.6609 35))')
+        self.assertEqual(res.asWkt(4), 'MultiPoint Z ((19.1142 69.6609 35))')
 
         res, err = logger.currentGeometry(QgsWkbTypes.Type.LineString)
         self.assertFalse(err)
         self.assertEqual(res.asWkt(4), 'LineString (18.9475 69.6442, 18.9475 69.6609, 19.1142 69.6609)')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.LineStringZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'LineStringZ (18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35)')
+        self.assertEqual(res.asWkt(4), 'LineString Z (18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35)')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.MultiLineStringZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'MultiLineStringZ ((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35))')
+        self.assertEqual(res.asWkt(4), 'MultiLineString Z ((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35))')
 
         res, err = logger.currentGeometry(QgsWkbTypes.Type.Polygon)
         self.assertFalse(err)
         self.assertEqual(res.asWkt(4), 'Polygon ((18.9475 69.6442, 18.9475 69.6609, 19.1142 69.6609, 18.9475 69.6442))')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.PolygonZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'PolygonZ ((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35, 18.9475 69.6442 0))')
+        self.assertEqual(res.asWkt(4), 'Polygon Z ((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35, 18.9475 69.6442 0))')
         res, err = logger.currentGeometry(QgsWkbTypes.Type.MultiPolygonZ)
         self.assertFalse(err)
-        self.assertEqual(res.asWkt(4), 'MultiPolygonZ (((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35, 18.9475 69.6442 0)))')
+        self.assertEqual(res.asWkt(4), 'MultiPolygon Z (((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35, 18.9475 69.6442 0)))')
 
     def test_point_recording(self):
         points_layer = QgsVectorLayer(
@@ -213,7 +213,7 @@ class TestQgsGpsLogger(QgisTestCase):
         exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
         exp.setOffsetFromUtc(3000)
         self.assertEqual(f.attributes(), [exp, None, None])
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21436000 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point Z (-1297000 21436000 0)')
 
         gps_connection.send_message(
             '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
@@ -229,7 +229,7 @@ class TestQgsGpsLogger(QgisTestCase):
         exp = QDateTime(2020, 1, 22, 9, 32, 1, 185)
         exp.setOffsetFromUtc(3000)
         self.assertEqual(f.attributes(), [exp, 0.004368333651276768, 2.0])
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21435000 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point Z (-1297000 21435000 0)')
 
         gps_connection.send_message(
             '$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
@@ -249,7 +249,7 @@ class TestQgsGpsLogger(QgisTestCase):
         exp = QDateTime(2020, 1, 22, 9, 32, 5, 185)
         exp.setOffsetFromUtc(3000)
         self.assertEqual(f.attributes(), [exp, 0.006666666666660603, 4.0])
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point Z (-1296000 21435000 0)')
 
         # stop recording distance
         logger.setDestinationField(Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint, None)
@@ -276,7 +276,7 @@ class TestQgsGpsLogger(QgisTestCase):
         exp = QDateTime(2020, 1, 22, 9, 32, 6, 185)
         exp.setOffsetFromUtc(3000)
         self.assertEqual(f.attributes(), [exp, NULL, 1.0])
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21435000 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point Z (-1297000 21435000 0)')
 
         # stop recording time since previous
         logger.setDestinationField(Qgis.GpsInformationComponent.TrackTimeSinceLastPoint, None)
@@ -307,7 +307,7 @@ class TestQgsGpsLogger(QgisTestCase):
         exp = QDateTime(2020, 1, 22, 9, 32, 7, 185)
         exp.setOffsetFromUtc(3000)
         self.assertEqual(f.attributes(), [exp, NULL, NULL])
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point Z (-1296000 21435000 0)')
 
         # stop recording timestamp
         logger.setDestinationField(Qgis.GpsInformationComponent.Timestamp, None)
@@ -340,7 +340,7 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertEqual(f.attributes(), [exp, NULL, NULL])
         f = next(features)
         self.assertEqual(f.attributes(), [NULL, NULL, NULL])
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point Z (-1296000 21435000 0)')
 
         # points should be written to layer's edit buffer
         self.assertTrue(logger.writeToEditBuffer())
@@ -410,7 +410,7 @@ class TestQgsGpsLogger(QgisTestCase):
         f = next(points_layer.getFeatures())
         exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
         exp.setOffsetFromUtc(3000)
-        self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1297000 21436000 1579682471000)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point M (-1297000 21436000 1579682471000)')
 
         gps_connection.send_message(
             '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
@@ -421,7 +421,7 @@ class TestQgsGpsLogger(QgisTestCase):
         features = points_layer.getFeatures()
         next(features)
         f = next(features)
-        self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1297000 21435000 1579682473000)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point M (-1297000 21435000 1579682473000)')
 
         gps_connection.send_message(
             '$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,Z2.00,220120,,,A*6C')
@@ -433,7 +433,7 @@ class TestQgsGpsLogger(QgisTestCase):
         next(features)
         next(features)
         f = next(features)
-        self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1296000 21435000 1579682477000)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point M (-1296000 21435000 1579682477000)')
         QgsSettings().setValue('gps/store-attribute-in-m-values', False)
 
     def test_point_recording_m_value_altitude(self):
@@ -463,7 +463,7 @@ class TestQgsGpsLogger(QgisTestCase):
         f = next(points_layer.getFeatures())
         exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
         exp.setOffsetFromUtc(3000)
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZM (-1297000 21436000 0 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point ZM (-1297000 21436000 0 0)')
 
         gps_connection.send_message("$GPGGA,084112.185,6938.9152,N,01856.8526,E,1,04,1.4,3335.0,M,29.4,M,,0000*63")
         self.assertEqual(len(spy), 2)
@@ -472,9 +472,9 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertEqual(points_layer.featureCount(), 2)
         features = points_layer.getFeatures()
         f = next(features)
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZM (-1297000 21436000 0 0)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point ZM (-1297000 21436000 0 0)')
         f = next(features)
-        self.assertEqual(f.geometry().asWkt(-3), 'PointZM (-1297000 21435000 3000 3000)')
+        self.assertEqual(f.geometry().asWkt(-3), 'Point ZM (-1297000 21435000 3000 3000)')
         QgsSettings().setValue('gps/store-attribute-in-m-values', False)
 
     def test_track_recording(self):
@@ -521,7 +521,7 @@ class TestQgsGpsLogger(QgisTestCase):
                          [exp, '2020-01-22T09:32:06+00:50',
                           0.021035000317942486])
         self.assertEqual(f.geometry().asWkt(-2),
-                         'LineStringZ (-1297400 21435500 0, -1297000 21435200 0, -1297400 21434700 0)')
+                         'LineString Z (-1297400 21435500 0, -1297000 21435200 0, -1297400 21434700 0)')
 
         self.assertFalse(logger.currentTrack())
 
@@ -632,7 +632,7 @@ class TestQgsGpsLogger(QgisTestCase):
                          [exp, '2020-01-22T09:32:06+00:50',
                           0.021035000317942486])
         self.assertEqual(f.geometry().asWkt(-2),
-                         'LineStringZM (-1297400 21435500 0 1579682471200, -1297000 21435200 0 1579682473200, -1297400 21434700 0 1579682478200)')
+                         'LineString ZM (-1297400 21435500 0 1579682471200, -1297000 21435200 0 1579682473200, -1297400 21434700 0 1579682478200)')
 
 
 if __name__ == '__main__':

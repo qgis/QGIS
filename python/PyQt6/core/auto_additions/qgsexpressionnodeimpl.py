@@ -24,7 +24,11 @@ QgsExpressionNodeBinaryOperator.boIntDiv = QgsExpressionNodeBinaryOperator.Binar
 QgsExpressionNodeBinaryOperator.boMod = QgsExpressionNodeBinaryOperator.BinaryOperator.boMod
 QgsExpressionNodeBinaryOperator.boPow = QgsExpressionNodeBinaryOperator.BinaryOperator.boPow
 QgsExpressionNodeBinaryOperator.boConcat = QgsExpressionNodeBinaryOperator.BinaryOperator.boConcat
-QgsExpressionNodeFunction.validateParams = staticmethod(QgsExpressionNodeFunction.validateParams)
+try:
+    QgsExpressionNodeFunction.validateParams = staticmethod(QgsExpressionNodeFunction.validateParams)
+    QgsExpressionNodeFunction.__group__ = ['expression']
+except NameError:
+    pass
 try:
     QgsExpressionNodeUnaryOperator.__group__ = ['expression']
 except NameError:
@@ -43,10 +47,6 @@ except NameError:
     pass
 try:
     QgsExpressionNodeInOperator.__group__ = ['expression']
-except NameError:
-    pass
-try:
-    QgsExpressionNodeFunction.__group__ = ['expression']
 except NameError:
     pass
 try:

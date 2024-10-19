@@ -32,12 +32,12 @@ class CORE_EXPORT QgsSettingsTree
 
   public:
 
-#ifndef SIP_RUN
-
     /**
      * Returns the tree root node for the settings tree
      */
     static QgsSettingsTreeNode *treeRoot();
+
+#ifndef SIP_RUN
 
     // only create first level here
     static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( QStringLiteral( "app" ) );
@@ -64,6 +64,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeMeasure = treeRoot()->createChildNode( QStringLiteral( "measure" ) );
     static inline QgsSettingsTreeNode *sTreeAnnotations = treeRoot()->createChildNode( QStringLiteral( "annotations" ) );
     static inline QgsSettingsTreeNode *sTreeNetworkCache = treeRoot()->createChildNode( QStringLiteral( "cache" ) );
+    static inline QgsSettingsTreeNode *sTreeAttributeTable = treeRoot()->createChildNode( QStringLiteral( "attribute-table" ) );
 
 #endif
 

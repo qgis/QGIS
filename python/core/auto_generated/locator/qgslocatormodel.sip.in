@@ -25,6 +25,7 @@ in order to ensure correct sorting of results by priority and match level.
   public:
 
     static const int NoGroup;
+    static const int UnorderedGroup;
 
 
     enum class CustomRole
@@ -35,6 +36,8 @@ in order to ensure correct sorting of results by priority and match level.
       ResultScore,
       ResultFilterName,
       ResultFilterGroupSorting,
+      ResultFilterGroupTitle,
+      ResultFilterGroupScore,
       ResultActions,
     };
 

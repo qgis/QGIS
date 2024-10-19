@@ -369,6 +369,11 @@ class CORE_EXPORT QgsRectangle
      */
     bool intersects( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
+      if ( isNull() || rect.isNull() )
+      {
+        return false;
+      }
+
       const double x1 = ( mXmin > rect.mXmin ? mXmin : rect.mXmin );
       const double x2 = ( mXmax < rect.mXmax ? mXmax : rect.mXmax );
       if ( x1 > x2 )

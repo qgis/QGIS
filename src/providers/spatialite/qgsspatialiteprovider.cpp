@@ -3740,6 +3740,20 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateF
   return false;
 }
 
+bool QgsSpatiaLiteProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsSpatiaLiteProvider::subsetStringDialect() const
+{
+  return tr( "SpatiaLite WHERE clause" );
+}
+
+QString QgsSpatiaLiteProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://www.gaia-gis.it/gaia-sins/spatialite-sql-5.1.0.html" );
+}
 
 QgsRectangle QgsSpatiaLiteProvider::extent() const
 {
@@ -5795,7 +5809,7 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
     //       methods available within the class.
     sqlite3_database_unique_ptr slPtr;
     slPtr.reset( sqliteHandle() );
-    int resultCode;
+    int resultCode = 0;
     sqlite3_statement_unique_ptr stmt { slPtr.prepare( QStringLiteral( "SELECT COUNT(1) FROM %2" ).arg( mQuery ), resultCode )};
     if ( resultCode == SQLITE_OK )
     {
@@ -6574,7 +6588,7 @@ QgsTransaction *QgsSpatiaLiteProviderMetadata::createTransaction( const QString 
   QgsSqliteHandle *ds { QgsSqliteHandle::openDb( dsUri.database() ) };
   if ( !ds )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
+    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is not currently opened" ).arg( connString ),
                                QObject::tr( "spatialite" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }

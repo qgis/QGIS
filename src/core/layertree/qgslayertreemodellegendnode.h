@@ -679,8 +679,10 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param parent attach a parent QObject to the legend node.
      * \param isCheckable set to TRUE to enable the checkbox for the node (since QGIS 3.18)
      * \param ruleKey optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
+     * \param parentRuleKey rule key of parent (since QGIS 3.40)
      */
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr, bool isCheckable = false, const QString &ruleKey = QString() );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr,
+                               bool isCheckable = false, const QString &ruleKey = QString(), const QString &parentRuleKey = QString() );
 
     Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;
@@ -715,6 +717,7 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString mLabel;
     bool mCheckable = false;
     QString mRuleKey;
+    QString mParentRuleKey;
 };
 
 class QgsImageFetcher;
@@ -747,6 +750,13 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     void invalidateMapBasedData() override;
 
+    /**
+     *  Fetches the image from the server and returns it.
+     *  \since QGIS 3.40
+     */
+    QImage getLegendGraphicBlocking( ) const;
+
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -763,7 +773,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
   private:
 
-    // Lazily initializes mImage
+    // Lazy loading of the image
     QImage getLegendGraphic( bool synchronous = false ) const;
 
     QImage renderMessage( const QString &msg ) const;

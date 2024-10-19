@@ -65,6 +65,51 @@ The development version
 %End
 
 
+    enum class AuthConfigurationStorageCapability
+    {
+      ClearStorage,
+
+      ReadConfiguration,
+      UpdateConfiguration,
+      DeleteConfiguration,
+      CreateConfiguration,
+
+      ReadCertificateIdentity,
+      UpdateCertificateIdentity,
+      DeleteCertificateIdentity,
+      CreateCertificateIdentity,
+
+      ReadSslCertificateCustomConfig,
+      UpdateSslCertificateCustomConfig,
+      DeleteSslCertificateCustomConfig,
+      CreateSslCertificateCustomConfig,
+
+      ReadCertificateAuthority,
+      UpdateCertificateAuthority,
+      DeleteCertificateAuthority,
+      CreateCertificateAuthority,
+
+      ReadCertificateTrustPolicy,
+      UpdateCertificateTrustPolicy,
+      DeleteCertificateTrustPolicy,
+      CreateCertificateTrustPolicy,
+
+      ReadMasterPassword,
+      UpdateMasterPassword,
+      DeleteMasterPassword,
+      CreateMasterPassword,
+
+      ReadSetting,
+      UpdateSetting,
+      DeleteSetting,
+      CreateSetting,
+
+    };
+
+    typedef QFlags<Qgis::AuthConfigurationStorageCapability> AuthConfigurationStorageCapabilities;
+
+
+
     enum MessageLevel
     {
       Info,
@@ -133,6 +178,8 @@ The development version
       CurvePolygon,
       MultiCurve,
       MultiSurface,
+      PolyhedralSurface,
+      TIN,
       NoGeometry,
       PointZ,
       LineStringZ,
@@ -147,6 +194,8 @@ The development version
       CurvePolygonZ,
       MultiCurveZ,
       MultiSurfaceZ,
+      PolyhedralSurfaceZ,
+      TINZ,
       PointM,
       LineStringM,
       PolygonM,
@@ -160,6 +209,8 @@ The development version
       CurvePolygonM,
       MultiCurveM,
       MultiSurfaceM,
+      PolyhedralSurfaceM,
+      TINM,
       PointZM,
       LineStringZM,
       PolygonZM,
@@ -172,6 +223,8 @@ The development version
       CurvePolygonZM,
       MultiCurveZM,
       MultiSurfaceZM,
+      PolyhedralSurfaceZM,
+      TINZM,
       TriangleZM,
       Point25D,
       LineString25D,
@@ -224,13 +277,19 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonMacroMode
+    enum class PythonEmbeddedMode
       {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
+    };
+
+    enum class PythonEmbeddedType
+    {
+      Macro,
+      ExpressionFunction,
     };
 
     enum class DataProviderReadFlag
@@ -424,9 +483,18 @@ The development version
       IgnoreMapRotation,
     };
 
+    enum class FeatureRendererFlag
+    {
+      AffectsLabeling,
+    };
+
+    typedef QFlags<Qgis::FeatureRendererFlag> FeatureRendererFlags;
+
+
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
+      AffectsLabeling,
     };
     typedef QFlags<Qgis::SymbolFlag> SymbolFlags;
 
@@ -442,6 +510,7 @@ The development version
     {
       DisableFeatureClipping,
       CanCalculateMaskGeometryPerFeature,
+      AffectsLabeling,
     };
     typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
 
@@ -1103,6 +1172,15 @@ The development version
       Bevel,
     };
 
+    enum class GeosCreationFlag
+    {
+      RejectOnInvalidSubGeometry,
+      SkipEmptyInteriorRings,
+    };
+
+    typedef QFlags<Qgis::GeosCreationFlag> GeosCreationFlags;
+
+
     enum class CoverageValidityResult
     {
       Invalid,
@@ -1452,6 +1530,7 @@ The development version
       SkipSymbolRendering,
       RecordProfile,
       AlwaysUseGlobalMasks,
+      DisableSymbolClippingToExtent,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -1460,6 +1539,7 @@ The development version
     {
       RenderPartialOutputs,
       RenderPartialOutputOverPreviousCachedImage,
+      AffectsLabeling,
     };
 
     typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
@@ -1470,6 +1550,7 @@ The development version
       {
       AlwaysOutlines,
       AlwaysText,
+      PreferText,
     };
 
     enum class LabelingFlag
@@ -1628,6 +1709,21 @@ The development version
     typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
 
 
+    enum class LinearReferencingPlacement
+    {
+      IntervalCartesian2D,
+      IntervalZ,
+      IntervalM,
+      Vertex,
+    };
+
+    enum class LinearReferencingLabelSource
+    {
+      CartesianDistance2D,
+      Z,
+      M,
+    };
+
     enum class GradientColorSource
       {
       SimpleTwoColor,
@@ -1762,6 +1858,14 @@ The development version
       Unknown,
     };
 
+    enum class MapCanvasFlag
+    {
+      ShowMainAnnotationLayer,
+    };
+
+    typedef QFlags<Qgis::MapCanvasFlag> MapCanvasFlags;
+
+
     enum class ViewSyncModeFlag
     {
       Sync3DTo2D,
@@ -1828,6 +1932,7 @@ The development version
       SkipGenericModelLogging,
       NotAvailableInStandaloneTool,
       RequiresProject,
+      SecurityRisk,
       Deprecated,
     };
 
@@ -2338,6 +2443,7 @@ The development version
       Superseded,
     };
 
+
     enum class RasterColorInterpretation
       {
       Undefined,
@@ -2357,7 +2463,28 @@ The development version
       YCbCr_YBand,
       YCbCr_CbBand,
       YCbCr_CrBand,
-      ContinuousPalette
+      ContinuousPalette,
+
+      // Note: values between PanBand and SAR_P_Band match additions done in
+      // GDAL 3.10, except that the numeric values of the constant don't match GDAL ones
+
+      PanBand,
+      CoastalBand,
+      RedEdgeBand,
+      NIRBand,
+      SWIRBand,
+      MWIRBand,
+      LWIRBand,
+      TIRBand,
+      OtherIRBand,
+      SAR_Ka_Band,
+      SAR_K_Band,
+      SAR_Ku_Band,
+      SAR_X_Band,
+      SAR_C_Band,
+      SAR_S_Band,
+      SAR_L_Band,
+      SAR_P_Band,
     };
 
     enum class RasterLayerType
@@ -2512,6 +2639,45 @@ The development version
       Centimeters,
       Millimeters,
       Inches,
+      ChainsInternational,
+      ChainsBritishBenoit1895A,
+      ChainsBritishBenoit1895B,
+      ChainsBritishSears1922Truncated,
+      ChainsBritishSears1922,
+      ChainsClarkes,
+      ChainsUSSurvey,
+      FeetBritish1865,
+      FeetBritish1936,
+      FeetBritishBenoit1895A,
+      FeetBritishBenoit1895B,
+      FeetBritishSears1922Truncated,
+      FeetBritishSears1922,
+      FeetClarkes,
+      FeetGoldCoast,
+      FeetIndian,
+      FeetIndian1937,
+      FeetIndian1962,
+      FeetIndian1975,
+      FeetUSSurvey,
+      LinksInternational,
+      LinksBritishBenoit1895A,
+      LinksBritishBenoit1895B,
+      LinksBritishSears1922Truncated,
+      LinksBritishSears1922,
+      LinksClarkes,
+      LinksUSSurvey,
+      YardsBritishBenoit1895A,
+      YardsBritishBenoit1895B,
+      YardsBritishSears1922Truncated,
+      YardsBritishSears1922,
+      YardsClarkes,
+      YardsIndian,
+      YardsIndian1937,
+      YardsIndian1962,
+      YardsIndian1975,
+      MilesUSSurvey,
+      Fathoms,
+      MetersGermanLegal,
       Unknown,
     };
 
@@ -2620,6 +2786,13 @@ The development version
       Unknown,
     };
 
+    enum class ScaleCalculationMethod
+    {
+      HorizontalTop,
+      HorizontalMiddle,
+      HorizontalBottom,
+      HorizontalAverage,
+    };
 
     enum class ScaleBarAlignment
       {
@@ -3006,7 +3179,7 @@ The development version
 
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
-    static const double SCALE_PRECISION;
+ static const double SCALE_PRECISION;
 
     static const double DEFAULT_Z_COORDINATE;
 
@@ -3065,6 +3238,8 @@ GEOS string version linked
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
+
+QFlags<Qgis::AuthConfigurationStorageCapability> operator|(Qgis::AuthConfigurationStorageCapability f1, QFlags<Qgis::AuthConfigurationStorageCapability> f2);
 
 QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
@@ -3142,6 +3317,8 @@ QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::Sublaye
 
 QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
 
+QFlags<Qgis::FeatureRendererFlag> operator|(Qgis::FeatureRendererFlag f1, QFlags<Qgis::FeatureRendererFlag> f2);
+
 QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
 
 QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
@@ -3173,6 +3350,8 @@ QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags
 QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
 
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
+
+QFlags<Qgis::GeosCreationFlag> operator|(Qgis::GeosCreationFlag f1, QFlags<Qgis::GeosCreationFlag> f2);
 
 QFlags<Qgis::FeatureRequestFlag> operator|(Qgis::FeatureRequestFlag f1, QFlags<Qgis::FeatureRequestFlag> f2);
 
@@ -3211,6 +3390,8 @@ QFlags<Qgis::VectorRenderingSimplificationFlag> operator|(Qgis::VectorRenderingS
 QFlags<Qgis::DataProviderReadFlag> operator|(Qgis::DataProviderReadFlag f1, QFlags<Qgis::DataProviderReadFlag> f2);
 
 QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability f1, QFlags<Qgis::VectorProviderCapability> f2);
+
+QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
 
 
 

@@ -745,9 +745,15 @@ void QgsCodeEditorWidget::addSearchHighlights()
     if ( fstart < 0 )
       break;
 
-    matchCount++;
     const int matchLength = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETTEXT, 0, static_cast< void * >( nullptr ) );
 
+    if ( matchLength == 0 )
+    {
+      startPos += 1;
+      continue;
+    }
+
+    matchCount++;
     startPos = fstart + matchLength;
 
     mEditor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );

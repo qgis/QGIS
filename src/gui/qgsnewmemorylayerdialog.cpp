@@ -69,6 +69,9 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
     Qgis::WkbType::MultiCurve,
     Qgis::WkbType::MultiPolygon,
     Qgis::WkbType::MultiSurface,
+    Qgis::WkbType::Triangle,
+    Qgis::WkbType::PolyhedralSurface,
+    Qgis::WkbType::TIN,
   };
 
   for ( const auto type : geomTypes )
@@ -352,6 +355,11 @@ void QgsNewMemoryLayerDialog::mAddAttributeButton_clicked()
     mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << fieldName << fieldType << width << precision ) );
 
     mFieldNameEdit->clear();
+
+    if ( !mFieldNameEdit->hasFocus() )
+    {
+      mFieldNameEdit->setFocus();
+    }
   }
 }
 

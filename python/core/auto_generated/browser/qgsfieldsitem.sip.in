@@ -71,12 +71,12 @@ Returns the connection URI
 
     QgsVectorLayer *layer() /Factory/;
 %Docstring
-Creates and returns a (possibly NULL) layer from the connection URI and schema/table information
+Creates and returns a (possibly ``None``) layer from the connection URI and schema/table information
 %End
 
     QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
 %Docstring
-Returns the (possibly NULL) properties of the table this fields belong to.
+Returns the (possibly ``None``) properties of the table this fields belong to.
 
 .. versionadded:: 3.16
 %End

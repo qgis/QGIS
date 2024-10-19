@@ -990,6 +990,46 @@ Creates a new QgsCentroidFillSymbolLayerWidget.
 
 
 
+
+class QgsLinearReferencingSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring(signature="appended")
+Widget for controlling the properties of a :py:class:`QgsLinearReferencingSymbolLayer`.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsLinearReferencingSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLinearReferencingSymbolLayerWidget.
+%End
+
+    ~QgsLinearReferencingSymbolLayerWidget();
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsLinearReferencingSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+};
+
+
+
+
 class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 {
 

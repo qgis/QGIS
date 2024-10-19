@@ -12,7 +12,13 @@
 class QgsTextFragment
 {
 %Docstring(signature="appended")
-Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
+Stores a fragment of document along with formatting overrides to be used when rendering the fragment.
+
+Text fragments consist of either a block of text or another atomic component of a document (such as an image).
+
+Each fragment has an associated :py:func:`~characterFormat`, which specifies the text formatting overrides
+to use when rendering the fragment. Additionally, the :py:func:`~characterFormat` may contain properties
+for other fragment types, such as image paths and sizes for image fragments.
 
 .. warning::
 
@@ -77,6 +83,13 @@ Returns the character formatting for the fragment.
 Sets the character ``format`` for the fragment.
 
 .. seealso:: :py:func:`characterFormat`
+%End
+
+    bool isImage() const;
+%Docstring
+Returns ``True`` if the fragment represents an image.
+
+.. versionadded:: 3.40
 %End
 
     double horizontalAdvance( const QFont &font, const QgsRenderContext &context, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;

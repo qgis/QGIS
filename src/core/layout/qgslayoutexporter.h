@@ -324,9 +324,9 @@ class CORE_EXPORT QgsLayoutExporter
       bool simplifyGeometries = true;
 
       /**
-       * TRUE if GeoPDF files should be created, instead of normal PDF files.
+       * TRUE if geospatial PDF files should be created, instead of normal PDF files.
        *
-       * Whilst GeoPDF files can include some desirable properties like the ability to interactively
+       * Whilst geospatial PDF files can include some desirable properties like the ability to interactively
        * query map features, they also can result in lower-quality output files, or forced rasterization
        * of layers.
        *
@@ -364,8 +364,8 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * TRUE if OGC "best practice" format georeferencing should be used.
        *
-       * \warning This results in GeoPDF files compatible with the TerraGo suite of tools, but
-       * can break compatibility with the built-in Acrobat geospatial tools (yes, GeoPDF
+       * \warning This results in geospatial PDF files compatible with a unnamed suite of tools starting with Terra and ending with Go, but
+       * can break compatibility with the built-in Acrobat geospatial tools (yes, Geospatial PDF
        * format is a mess!).
        *
        * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
@@ -373,17 +373,17 @@ class CORE_EXPORT QgsLayoutExporter
       bool useOgcBestPracticeFormatGeoreferencing = false;
 
       /**
-       * TRUE if feature vector information (such as attributes) should be exported during GeoPDF exports.
+       * TRUE if feature vector information (such as attributes) should be exported during Geospatial PDF exports.
        *
        * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
        */
       bool includeGeoPdfFeatures = true;
 
       /**
-       * Optional list of map themes to export as GeoPDF layer groups.
+       * Optional list of map themes to export as Geospatial PDF layer groups.
        *
        * If set, map item's which are not assigned a specific map theme will iterate through all listed
-       * themes and a GeoPDF layer group will be created for each.
+       * themes and a Geospatial PDF layer group will be created for each.
        *
        * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
        */

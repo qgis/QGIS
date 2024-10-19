@@ -38,7 +38,7 @@ Returns the project default symbol for a given type.
 
 :param symbolType: the symbol type
 
-:return: a symbol pointer or NULL if there is no default set
+:return: a symbol pointer or ``None`` if there is no default set
 
 .. note::
 
@@ -50,7 +50,7 @@ Returns the project default symbol for a given type.
 Sets the project default symbol for a given type.
 
 :param symbolType: the symbol type
-:param symbol: the symbol pointer, set to NULL to clear default
+:param symbol: the symbol pointer, set to ``None`` to clear default
 
 .. note::
 
@@ -61,7 +61,7 @@ Sets the project default symbol for a given type.
 %Docstring
 Returns the project default color ramp.
 
-:return: a color ramp pointer or NULL if there is no default set
+:return: a color ramp pointer or ``None`` if there is no default set
 
 .. note::
 
@@ -72,7 +72,7 @@ Returns the project default color ramp.
 %Docstring
 Sets the project default color ramp.
 
-:param colorRamp: the color ramp, set to NULL to clear default
+:param colorRamp: the color ramp, set to ``None`` to clear default
 
 .. note::
 

@@ -212,9 +212,23 @@ Returns the table header values.
 .. seealso:: :py:func:`setTableHeaders`
 %End
 
-    bool isHeaderCellSelected();
+    bool isHeaderCellSelected() const;
 %Docstring
 Returns ``True`` if any header cells are selected.
+%End
+
+    bool canMergeSelection() const;
+%Docstring
+Returns ``True`` if a selection has been made which can be merged.
+
+.. versionadded:: 3.40
+%End
+
+    bool canSplitSelection() const;
+%Docstring
+Returns ``True`` if a selection has been made which can be split.
+
+.. versionadded:: 3.40
 %End
 
   public slots:
@@ -364,6 +378,24 @@ Sets whether the table includes a header row.
 Sets the table ``headers``.
 
 .. seealso:: :py:func:`tableHeaders`
+%End
+
+    void mergeSelectedCells();
+%Docstring
+Merges selected table cells.
+
+.. seealso:: :py:func:`splitSelectedCells`
+
+.. versionadded:: 3.40
+%End
+
+    void splitSelectedCells();
+%Docstring
+Splits (un-merges) selected table cells.
+
+.. seealso:: :py:func:`mergeSelectedCells`
+
+.. versionadded:: 3.40
 %End
 
   protected:

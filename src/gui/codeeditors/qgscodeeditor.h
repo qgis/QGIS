@@ -407,6 +407,18 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void setLinearSelection( int start, int end );
 
+    // Override QsciScintilla::callTip to handle wrapping
+    virtual void callTip() override;
+
+    /**
+     * Returns the linear position of the start of the last wrapped part for the specified line, or
+     * for the current line if line = -1
+     * If wrapping is disabled, returns -1 instead
+     *
+     * \since QGIS 3.40
+     */
+    int wrapPosition( int line = -1 );
+
   public slots:
 
     /**
@@ -633,6 +645,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     bool readHistoryFile();
     void syncSoftHistory();
     void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
+    char getCharacter( int &pos ) const;
 
     QString mWidgetTitle;
     bool mMargin = false;

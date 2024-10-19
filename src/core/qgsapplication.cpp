@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
 #include "qgslocalizeddatapathregistry.h"
 #include "qgsdataitemproviderregistry.h"
@@ -36,6 +37,7 @@
 #include "qgsnumericformatregistry.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsscalebarrendererregistry.h"
+#include "qgslabelingengineruleregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgssourcecache.h"
@@ -191,6 +193,7 @@ Q_GLOBAL_STATIC( QString, sBuildOutputPath )
 Q_GLOBAL_STATIC( QStringList, sGdalSkipList )
 Q_GLOBAL_STATIC( QStringList, sDeferredSkippedGdalDrivers )
 Q_GLOBAL_STATIC( QString, sAuthDbDirPath )
+Q_GLOBAL_STATIC( QString, sAuthDbUri )
 
 Q_GLOBAL_STATIC( QString, sUserName )
 Q_GLOBAL_STATIC( QString, sUserFullName )
@@ -347,7 +350,7 @@ void QgsApplication::init( QString profileFolder )
     {
       if ( sPrefixPath()->isNull() )
       {
-#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
         setPrefixPath( applicationDirPath(), true );
 #elif defined(ANDROID)
         // this is "/data/data/org.qgis.qgis" in android
@@ -377,10 +380,27 @@ void QgsApplication::init( QString profileFolder )
   *sConfigPath() = profileFolder + '/'; // make sure trailing slash is included
   *sDefaultSvgPaths() << qgisSettingsDirPath() + QStringLiteral( "svg/" );
 
+  // Determine the auth DB URI, the first match wins:
+  // 1 - get it from QGIS_AUTH_DB_URI environment variable
+  // 2 - get it from QGIS_AUTH_DB_DIR_PATH environment variable, assume QSQLITE driver and add "qgis-auth.db"
+  // 3 - use the default path from settings dir path, assume QSQLITE and add "qgis-auth.db"
   *sAuthDbDirPath() = qgisSettingsDirPath();
+
   if ( getenv( "QGIS_AUTH_DB_DIR_PATH" ) )
   {
     setAuthDatabaseDirPath( getenv( "QGIS_AUTH_DB_DIR_PATH" ) );
+    sAuthDbUri()->clear();
+  }
+
+  if ( getenv( "QGIS_AUTH_DB_URI" ) )
+  {
+    *sAuthDbUri() = getenv( "QGIS_AUTH_DB_URI" );
+  }
+
+  // Default to sAuthDbDirPath
+  if ( sAuthDbUri->isEmpty() )
+  {
+    *sAuthDbUri() = QStringLiteral( "QSQLITE://" ) + *sAuthDbDirPath() + QStringLiteral( "qgis-auth.db" );
   }
 
   // force use of OpenGL renderer for Qt3d.
@@ -408,14 +428,14 @@ void QgsApplication::init( QString profileFolder )
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   // append bundled proj lib for MacOS
   QString projLib( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
   if ( QFile::exists( projLib ) )
   {
     currentProjSearchPaths.append( projLib );
   }
-#endif // Q_OS_MACX
+#endif // Q_OS_MACOS
 
   char **newPaths = new char *[currentProjSearchPaths.length()];
   for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
@@ -987,7 +1007,7 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined(Q_OS_MACX)
+#if defined(Q_OS_MACOS)
     prefixPath = appPath;
 #elif defined(Q_OS_WIN)
     prefixPath = appPath;
@@ -1196,6 +1216,11 @@ QString QgsApplication::qgisUserDatabaseFilePath()
 QString QgsApplication::qgisAuthDatabaseFilePath()
 {
   return *sAuthDbDirPath() + QStringLiteral( "qgis-auth.db" );
+}
+
+QString QgsApplication::qgisAuthDatabaseUri()
+{
+  return *sAuthDbUri();
 }
 
 QString QgsApplication::splashPath()
@@ -1535,10 +1560,10 @@ void QgsApplication::initQgis()
   ( void )QgsApplication::dataItemProviderRegistry();
 
   // create project instance if doesn't exist
-  QgsProject::instance();
+  QgsProject::instance(); // skip-keyword-check
 
   // Setup authentication manager for lazy initialization
-  authManager()->setup( pluginPath(), qgisAuthDatabaseFilePath() );
+  authManager()->setup( pluginPath(), qgisAuthDatabaseUri() );
 
   // Make sure we have a NAM created on the main thread.
   // Note that this might call QgsApplication::authManager to
@@ -1567,6 +1592,11 @@ QgsAuthManager *QgsApplication::authManager()
   }
 }
 
+QgsAuthConfigurationStorageRegistry *QgsApplication::authConfigurationStorageRegistry()
+{
+  return authManager()->authConfigurationStorageRegistry();
+}
+
 
 void QgsApplication::exitQgis()
 {
@@ -1587,7 +1617,7 @@ void QgsApplication::exitQgis()
 
   // avoid creating instance just to delete it!
   if ( QgsProject::sProject )
-    delete QgsProject::instance();
+    delete QgsProject::instance(); // skip-keyword-check
 
   //Ensure that providers/layers which called deleteLater on objects as part of their cleanup
   //result in fully deleted objects before we do the provider registry cleanup.
@@ -1632,7 +1662,7 @@ QString QgsApplication::showSettings()
                           defaultThemePath(),
                           svgPaths().join( tr( "\n                               ", "match indentation of application state" ) ),
                           qgisMasterDatabaseFilePath() )
-                    .arg( qgisAuthDatabaseFilePath() );
+                    .arg( QgsAuthManager::instance()->authenticationDatabaseUriStripped() );
   return myState;
 }
 
@@ -2631,6 +2661,11 @@ QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
   return members()->mScaleBarRendererRegistry;
 }
 
+QgsLabelingEngineRuleRegistry *QgsApplication::labelingEngineRuleRegistry()
+{
+  return members()->mLabelingEngineRuleRegistry;
+}
+
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
   return members()->mProjectStorageRegistry;
@@ -2809,6 +2844,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup labeling engine rule registry" ) );
+    mLabelingEngineRuleRegistry = new QgsLabelingEngineRuleRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup sensor registry" ) );
     mSensorRegistry = new QgsSensorRegistry();
     mSensorRegistry->populate();
@@ -2897,6 +2937,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSourceCache;
   delete mCalloutRegistry;
   delete mRecentStyleHandler;
+  delete mLabelingEngineRuleRegistry;
   delete mSymbolLayerRegistry;
   delete mExternalStorageRegistry;
   delete mProfileSourceRegistry;

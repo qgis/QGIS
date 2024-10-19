@@ -41,6 +41,6 @@ const QgsProject *QgsRelationContext::project() const
   }
 
   // Fallback to qgis instance
-  return QgsProject::instance();
+  return QgsProject::instance(); // skip-keyword-check
 }
 

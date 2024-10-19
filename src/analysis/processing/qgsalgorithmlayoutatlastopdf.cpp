@@ -92,7 +92,8 @@ void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
   const QStringList textExportOptions
   {
     QObject::tr( "Always Export Text as Paths (Recommended)" ),
-    QObject::tr( "Always Export Text as Text Objects" )
+    QObject::tr( "Always Export Text as Text Objects" ),
+    QObject::tr( "Prefer Exporting Text as Text Objects" ),
   };
 
   std::unique_ptr< QgsProcessingParameterEnum > textFormat = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "TEXT_FORMAT" ), QObject::tr( "Text export" ), textExportOptions, false, 0 );
@@ -166,7 +167,21 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithmBase::processAlgorithm( const QVariantMa
   settings.appendGeoreference = parameterAsBool( parameters, QStringLiteral( "GEOREFERENCE" ), context );
   settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
   settings.simplifyGeometries = parameterAsBool( parameters, QStringLiteral( "SIMPLIFY" ), context );
-  settings.textRenderFormat = parameterAsEnum( parameters, QStringLiteral( "TEXT_FORMAT" ), context ) == 0 ? Qgis::TextRenderFormat::AlwaysOutlines : Qgis::TextRenderFormat::AlwaysText;
+  const int textFormat = parameterAsEnum( parameters, QStringLiteral( "TEXT_FORMAT" ), context );
+  switch ( textFormat )
+  {
+    case 0:
+      settings.textRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
+      break;
+    case 1:
+      settings.textRenderFormat = Qgis::TextRenderFormat::AlwaysText;
+      break;
+    case 2:
+      settings.textRenderFormat = Qgis::TextRenderFormat::PreferText;
+      break;
+    default:
+      break;
+  }
 
   if ( parameterAsBool( parameters, QStringLiteral( "DISABLE_TILED" ), context ) )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;

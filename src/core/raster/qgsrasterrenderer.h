@@ -40,7 +40,7 @@ class QgsLayerTreeLayer;
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
 
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer )
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer ) // cppcheck-suppress duplInheritedMember
 
   public:
 

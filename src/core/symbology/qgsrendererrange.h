@@ -196,9 +196,6 @@ class CORE_EXPORT QgsRendererRange
     QString mLabel;
     bool mRender = true;
     QString mUuid;
-
-    // for cpy+swap idiom
-    void swap( QgsRendererRange &other );
 };
 
 typedef QList<QgsRendererRange> QgsRangeList;

@@ -282,7 +282,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
   const float hillShadeValue300 = mHillshadeFilter300->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
   if ( hillShadeValue300 != mOutputNodataValue )
   {
-    if ( !setElevationColor( *x5, &r, &g, &b ) )
+    if ( !getElevationColor( *x5, &r, &g, &b ) )
     {
       r = hillShadeValue300;
       g = hillShadeValue300;
@@ -365,7 +365,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
   return true;
 }
 
-bool QgsRelief::setElevationColor( double elevation, int *red, int *green, int *blue )
+bool QgsRelief::getElevationColor( double elevation, int *red, int *green, int *blue ) const
 {
   QList< ReliefColor >::const_iterator reliefColorIt = mReliefColors.constBegin();
   for ( ; reliefColorIt != mReliefColors.constEnd(); ++reliefColorIt )
@@ -728,7 +728,7 @@ void QgsRelief::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
 
   for ( int i = classesToRemove.size() - 1; i >= 0; --i )
   {
-    breaks.removeAt( classesToRemove.at( i ) );
+    breaks.removeAt( classesToRemove.at( i ) ); // cppcheck-suppress containerOutOfBounds
   }
 
   delete[] a;

@@ -565,9 +565,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
   }
 
-  std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
+  std::unique_ptr< QgsLayoutGeospatialPdfExporter > geospatialPdfExporter;
   if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
-    geoPdfExporter = std::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
+    geospatialPdfExporter = std::make_unique< QgsLayoutGeospatialPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
 
@@ -596,17 +596,17 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
 
-    QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > pdfComponents;
+    QList< QgsLayoutGeospatialPdfExporter::ComponentLayerDetail > pdfComponents;
 
     const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();  //#spellok
     const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();  //#spellok
 
     QSet<QString> mutuallyExclusiveGroups;
 
-    auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter, &settings, &baseDir, &baseFileName, &mutuallyExclusiveGroups]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
+    auto exportFunc = [this, &subSettings, &pdfComponents, &geospatialPdfExporter, &settings, &baseDir, &baseFileName, &mutuallyExclusiveGroups]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
     {
       ExportResult layerExportResult = Success;
-      QgsLayoutGeoPdfExporter::ComponentLayerDetail component;
+      QgsLayoutGeospatialPdfExporter::ComponentLayerDetail component;
       component.name = layerDetail.name;
       component.mapLayerId = layerDetail.mapLayerId;
       component.opacity = layerDetail.opacity;
@@ -618,7 +618,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         mutuallyExclusiveGroups.insert( layerDetail.mapTheme );
       }
 
-      component.sourcePdfPath = settings.writeGeoPdf ? geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) ) : baseDir.filePath( QStringLiteral( "%1_%2.pdf" ).arg( baseFileName ).arg( layerId, 4, 10, QChar( '0' ) ) );
+      component.sourcePdfPath = settings.writeGeoPdf ? geospatialPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) ) : baseDir.filePath( QStringLiteral( "%1_%2.pdf" ).arg( baseFileName ).arg( layerId, 4, 10, QChar( '0' ) ) );
       pdfComponents << component;
       QPdfWriter printer = QPdfWriter( component.sourcePdfPath );
       preparePrintAsPdf( mLayout, &printer, component.sourcePdfPath );
@@ -644,7 +644,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
     if ( settings.writeGeoPdf )
     {
-      QgsAbstractGeoPdfExporter::ExportDetails details;
+      QgsAbstractGeospatialPdfExporter::ExportDetails details;
       details.dpi = settings.dpi;
       // TODO - multipages
       QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
@@ -654,7 +654,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
       if ( settings.exportMetadata )
       {
-        // copy layout metadata to GeoPDF export settings
+        // copy layout metadata to geospatial PDF export settings
         details.author = mLayout->project()->metadata().author();
         details.producer = getCreator();
         details.creator = getCreator();
@@ -677,7 +677,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         mLayout->layoutItems( maps );
         for ( QgsLayoutItemMap *map : std::as_const( maps ) )
         {
-          QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
+          QgsAbstractGeospatialPdfExporter::GeoReferencedSection georef;
           georef.crs = map->crs();
 
           const QPointF topLeft = map->mapToScene( QPointF( 0, 0 ) );
@@ -702,26 +702,26 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
           const QgsPointXY bottomLeftMap = t.map( bottomLeft );
           const QgsPointXY bottomRightMap = t.map( bottomRight );
 
-          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topLeftMm.x(), topLeftMm.y() ), topLeftMap );
-          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topRightMm.x(), topRightMm.y() ), topRightMap );
-          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() ), bottomLeftMap );
-          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomRightMm.x(), bottomRightMm.y() ), bottomRightMap );
+          georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( topLeftMm.x(), topLeftMm.y() ), topLeftMap );
+          georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( topRightMm.x(), topRightMm.y() ), topRightMap );
+          georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() ), bottomLeftMap );
+          georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( bottomRightMm.x(), bottomRightMm.y() ), bottomRightMap );
           details.georeferencedSections << georef;
         }
       }
 
-      details.customLayerTreeGroups = geoPdfExporter->customLayerTreeGroups();
-      details.initialLayerVisibility = geoPdfExporter->initialLayerVisibility();
-      details.layerOrder = geoPdfExporter->layerOrder();
-      details.layerTreeGroupOrder = geoPdfExporter->layerTreeGroupOrder();
+      details.customLayerTreeGroups = geospatialPdfExporter->customLayerTreeGroups();
+      details.initialLayerVisibility = geospatialPdfExporter->initialLayerVisibility();
+      details.layerOrder = geospatialPdfExporter->layerOrder();
+      details.layerTreeGroupOrder = geospatialPdfExporter->layerTreeGroupOrder();
       details.includeFeatures = settings.includeGeoPdfFeatures;
       details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
       details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
 
-      if ( !geoPdfExporter->finalize( pdfComponents, filePath, details ) )
+      if ( !geospatialPdfExporter->finalize( pdfComponents, filePath, details ) )
       {
         result = PrintError;
-        mErrorMessage = geoPdfExporter->errorMessage();
+        mErrorMessage = geospatialPdfExporter->errorMessage();
       }
     }
     else
@@ -1311,6 +1311,12 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device
     {
       QPdfOutputIntent outputIntent;
       outputIntent.setOutputProfile( colorSpace );
+      outputIntent.setOutputCondition( colorSpace.description() );
+
+      // There is no way to actually get the color space registry identifier or even
+      // the registry it comes from.
+      outputIntent.setOutputConditionIdentifier( QStringLiteral( "Unknown identifier" ) );
+      outputIntent.setRegistryName( QStringLiteral( "Unknown registry" ) );
       device->setOutputIntent( outputIntent );
 
       // PDF/X-4 standard allows PDF to be printing ready and is only possible if a color space has been set

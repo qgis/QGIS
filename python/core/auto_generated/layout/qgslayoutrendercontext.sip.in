@@ -337,7 +337,7 @@ Returns the current list of predefined scales for use with the layout.
 
     QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-Returns the possibly NULL feature filter provider.
+Returns the (possibly ``None``) feature filter provider.
 
 A feature filter provider for filtering visible features or attributes.
 It is currently used by QGIS Server Access Control Plugins.

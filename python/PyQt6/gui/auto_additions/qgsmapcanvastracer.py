@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/gui/qgsmapcanvastracer.h
-QgsMapCanvasTracer.tracerForCanvas = staticmethod(QgsMapCanvasTracer.tracerForCanvas)
+try:
+    QgsMapCanvasTracer.tracerForCanvas = staticmethod(QgsMapCanvasTracer.tracerForCanvas)
+except NameError:
+    pass

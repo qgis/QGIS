@@ -1,2 +1,5 @@
 # The following has been generated automatically from src/core/qgsdatetimestatisticalsummary.h
-QgsDateTimeStatisticalSummary.displayName = staticmethod(QgsDateTimeStatisticalSummary.displayName)
+try:
+    QgsDateTimeStatisticalSummary.displayName = staticmethod(QgsDateTimeStatisticalSummary.displayName)
+except NameError:
+    pass

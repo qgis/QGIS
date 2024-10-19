@@ -25,6 +25,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslogger.h"
 #include "qgspolygon.h"
 #include "qgsgeometryeditutils.h"
+#include "qgspolyhedralsurface.h"
+#include "qgsgeometryutils_base.h"
 #include <limits>
 #include <cstdio>
 
@@ -172,12 +174,12 @@ void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
 ///@endcond
 
 
-QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision, bool allowInvalidSubGeom )
+QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision, Qgis::GeosCreationFlags flags )
   : QgsGeometryEngine( geometry )
   , mGeos( nullptr )
   , mPrecision( precision )
 {
-  cacheGeos( allowInvalidSubGeom );
+  cacheGeos( flags );
 }
 
 QgsGeometry QgsGeos::geometryFromGeos( GEOSGeometry *geos )
@@ -252,14 +254,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod m
   return fromGeos( geos.get() );
 }
 
-geos::unique_ptr QgsGeos::asGeos( const QgsGeometry &geometry, double precision )
+geos::unique_ptr QgsGeos::asGeos( const QgsGeometry &geometry, double precision, Qgis::GeosCreationFlags flags )
 {
   if ( geometry.isNull() )
   {
     return nullptr;
   }
 
-  return asGeos( geometry.constGet(), precision );
+  return asGeos( geometry.constGet(), precision, flags );
 }
 
 Qgis::GeometryOperationResult QgsGeos::addPart( QgsGeometry &geometry, GEOSGeometry *newPart )
@@ -281,7 +283,7 @@ void QgsGeos::geometryChanged()
 {
   mGeos.reset();
   mGeosPrepared.reset();
-  cacheGeos( false );
+  cacheGeos( Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry );
 }
 
 void QgsGeos::prepareGeometry()
@@ -297,7 +299,7 @@ void QgsGeos::prepareGeometry()
   }
 }
 
-void QgsGeos::cacheGeos( bool allowInvalidSubGeom ) const
+void QgsGeos::cacheGeos( Qgis::GeosCreationFlags flags ) const
 {
   if ( mGeos )
   {
@@ -309,7 +311,7 @@ void QgsGeos::cacheGeos( bool allowInvalidSubGeom ) const
     return;
   }
 
-  mGeos = asGeos( mGeometry, mPrecision, allowInvalidSubGeom );
+  mGeos = asGeos( mGeometry, mPrecision, flags );
 }
 
 QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
@@ -539,6 +541,43 @@ QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QS
   return overlay( geom, OverlaySymDifference, errorMsg, parameters ).release();
 }
 
+static bool isZVerticalLine( const QgsAbstractGeometry *geom, double tolerance = 4 * std::numeric_limits<double>::epsilon() )
+{
+  // checks if the Geometry if a purely vertical 3D line LineString Z((X Y Z1, X Y Z2, ..., X Y Zn))
+  // This is needed because QgsGeos is not able to handle this type of geometry on distance computation.
+
+  if ( geom->wkbType() != Qgis::WkbType::LineStringZ && geom->wkbType() != Qgis::WkbType::LineStringZM )
+  {
+    return false;
+  }
+
+  bool isVertical = true;
+  if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( geom ) )
+  {
+    const int nrPoints = line->numPoints();
+    if ( nrPoints == 1 )
+    {
+      return true;
+    }
+
+    // if the 2D part of two points of the line are different, this means
+    // that the line is not purely vertical
+    const double sqrTolerance = tolerance * tolerance;
+    const double *lineX = line->xData();
+    const double *lineY = line->yData();
+    for ( int iVert = nrPoints - 1, jVert = 0; jVert < nrPoints; iVert = jVert++ )
+    {
+      if ( QgsGeometryUtilsBase::sqrDistance2D( lineX[iVert], lineY[iVert], lineX[jVert], lineY[jVert] ) > sqrTolerance )
+      {
+        isVertical = false;
+        break;
+      }
+    }
+  }
+
+  return isVertical;
+}
+
 double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
   double distance = -1.0;
@@ -547,7 +586,22 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
     return distance;
   }
 
-  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  geos::unique_ptr otherGeosGeom;
+
+  // GEOSPreparedDistance_r is not able to properly compute the distance if one
+  // of the geometries if a vertical line (LineString Z((X Y Z1, X Y Z2, ..., X Y Zn))).
+  // In that case, replace `geom` by a single point.
+  // However, GEOSDistance_r works.
+  if ( mGeosPrepared && isZVerticalLine( geom->simplifiedTypeRef() ) )
+  {
+    QgsPoint firstPoint = geom->vertexAt( QgsVertexId( 0, 0, 0 ) );
+    otherGeosGeom = asGeos( &firstPoint, mPrecision );
+  }
+  else
+  {
+    otherGeosGeom = asGeos( geom, mPrecision );
+  }
+
   if ( !otherGeosGeom )
   {
     return distance;
@@ -556,7 +610,7 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
-    if ( mGeosPrepared )
+    if ( mGeosPrepared && !isZVerticalLine( mGeometry->simplifiedTypeRef() ) )
     {
       GEOSPreparedDistance_r( context, mGeosPrepared.get(), otherGeosGeom.get(), &distance );
     }
@@ -606,7 +660,22 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
     return false;
   }
 
-  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  geos::unique_ptr otherGeosGeom;
+
+  // GEOSPreparedDistanceWithin_r GEOSPreparedDistance_r are not able to properly compute the distance if one
+  // of the geometries if a vertical line (LineString Z((X Y Z1, X Y Z2, ..., X Y Zn))).
+  // In that case, replace `geom` by a single point.
+  // However, GEOSDistanceWithin_r and GEOSDistance_r work.
+  if ( mGeosPrepared && isZVerticalLine( geom->simplifiedTypeRef() ) )
+  {
+    QgsPoint firstPoint = geom->vertexAt( QgsVertexId( 0, 0, 0 ) );
+    otherGeosGeom = asGeos( &firstPoint );
+  }
+  else
+  {
+    otherGeosGeom = asGeos( geom, mPrecision );
+  }
+
   if ( !otherGeosGeom )
   {
     return false;
@@ -620,7 +689,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
-    if ( mGeosPrepared )
+    if ( mGeosPrepared && !isZVerticalLine( mGeometry->simplifiedTypeRef() ) )
     {
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
       return GEOSPreparedDistanceWithin_r( context, mGeosPrepared.get(), otherGeosGeom.get(), maxdist );
@@ -1727,7 +1796,7 @@ QgsPoint QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, 
   return QgsPoint( t, x, y, z, m );
 }
 
-geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision, bool allowInvalidSubGeom )
+geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision, Qgis::GeosCreationFlags flags )
 {
   if ( !geom )
     return nullptr;
@@ -1778,8 +1847,8 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     geomVector.reserve( c->numGeometries() );
     for ( int i = 0; i < c->numGeometries(); ++i )
     {
-      geos::unique_ptr geosGeom = asGeos( c->geometryN( i ), precision );
-      if ( !allowInvalidSubGeom && !geosGeom )
+      geos::unique_ptr geosGeom = asGeos( c->geometryN( i ), precision, flags );
+      if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosGeom )
       {
         return nullptr;
       }
@@ -1787,18 +1856,41 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     }
     return createGeosCollection( geosType, geomVector );
   }
+  else if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::PolyhedralSurface  ||
+            QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::TIN )
+  {
+    // PolyhedralSurface and TIN support
+    // convert it to a geos MultiPolygon
+    const QgsPolyhedralSurface *polyhedralSurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( geom );
+    if ( !polyhedralSurface )
+      return nullptr;
+
+    std::vector<geos::unique_ptr> geomVector;
+    geomVector.reserve( polyhedralSurface->numPatches() );
+    for ( int i = 0; i < polyhedralSurface->numPatches(); ++i )
+    {
+      geos::unique_ptr geosPolygon = createGeosPolygon( polyhedralSurface->patchN( i ), precision );
+      if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosPolygon )
+      {
+        return nullptr;
+      }
+      geomVector.emplace_back( std::move( geosPolygon ) );
+    }
+
+    return createGeosCollection( GEOS_MULTIPOLYGON, geomVector );
+  }
   else
   {
     switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
     {
       case Qgis::GeometryType::Point:
-        return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision );
+        return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision, flags );
 
       case Qgis::GeometryType::Line:
-        return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision );
+        return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision, flags );
 
       case Qgis::GeometryType::Polygon:
-        return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision );
+        return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision, flags );
 
       case Qgis::GeometryType::Unknown:
       case Qgis::GeometryType::Null:
@@ -2511,7 +2603,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   return coordSeq;
 }
 
-geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision )
+geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision, Qgis::GeosCreationFlags )
 {
   const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( point );
   if ( !pt )
@@ -2520,7 +2612,7 @@ geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int
   return createGeosPointXY( pt->x(), pt->y(), pt->is3D(), pt->z(), pt->isMeasure(), pt->m(), coordDims, precision );
 }
 
-geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision )
+geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision, Qgis::GeosCreationFlags )
 {
   Q_UNUSED( hasM )
   Q_UNUSED( m )
@@ -2575,7 +2667,7 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
   return geosPoint;
 }
 
-geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision )
+geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags )
 {
   const QgsCurve *c = qgsgeometry_cast<const QgsCurve *>( curve );
   if ( !c )
@@ -2594,7 +2686,7 @@ geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve
   return geosGeom;
 }
 
-geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision )
+geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags )
 {
   const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( poly );
   if ( !polygon )
@@ -2612,17 +2704,36 @@ geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, do
   {
     geos::unique_ptr exteriorRingGeos( GEOSGeom_createLinearRing_r( context, createCoordinateSequence( exteriorRing, precision, true ) ) );
 
-    int nHoles = polygon->numInteriorRings();
+    int nHoles = 0;
+    int nInteriorRings = polygon->numInteriorRings();
+    if ( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings )
+    {
+      for ( int i = 0; i < nInteriorRings; ++i )
+      {
+        const QgsCurve *interiorRing = polygon->interiorRing( i );
+        if ( !interiorRing->isEmpty() )
+        {
+          nHoles++;
+        }
+      }
+    }
+    else
+    {
+      nHoles = nInteriorRings;
+    }
     GEOSGeometry **holes = nullptr;
     if ( nHoles > 0 )
     {
       holes = new GEOSGeometry*[ nHoles ];
     }
 
-    for ( int i = 0; i < nHoles; ++i )
+    for ( int i = 0; i < nInteriorRings; ++i )
     {
       const QgsCurve *interiorRing = polygon->interiorRing( i );
-      holes[i] = GEOSGeom_createLinearRing_r( context, createCoordinateSequence( interiorRing, precision, true ) );
+      if ( !( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) || !interiorRing->isEmpty() )
+      {
+        holes[i] = GEOSGeom_createLinearRing_r( context, createCoordinateSequence( interiorRing, precision, true ) );
+      }
     }
     geosPolygon.reset( GEOSGeom_createPolygon_r( context, exteriorRingGeos.release(), holes, nHoles ) );
     delete[] holes;

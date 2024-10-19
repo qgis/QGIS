@@ -62,7 +62,7 @@ from qgis.core import (
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
-from utilities import getTestFont, svgSymbolsPath
+from utilities import getTestFont, svgSymbolsPath, unitTestDataPath
 
 start_app()
 
@@ -1526,8 +1526,8 @@ class PyQgsTextRenderer(QgisTestCase):
         metrics2 = QgsTextRenderer.fontMetrics(context, s)
         painter.end()
 
-        self.assertAlmostEqual(metrics.width(string), 51.9, 1)
-        self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
+        self.assertAlmostEqual(metrics.horizontalAdvance(string), 51.9, 1)
+        self.assertAlmostEqual(metrics2.horizontalAdvance(string), 104.15, 1)
 
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.HAlignment.AlignLeft,
                     text=['test'],
@@ -1554,47 +1554,55 @@ class PyQgsTextRenderer(QgisTestCase):
         if reference_scale:
             context.setSymbologyReferenceScale(reference_scale)
 
-        painter.begin(image)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        image.fill(QColor(152, 219, 249))
+        for render_format in (Qgis.TextRenderFormat.AlwaysText,
+                              Qgis.TextRenderFormat.AlwaysOutlines,
+                              Qgis.TextRenderFormat.PreferText,
+                              ):
 
-        painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.PenStyle.NoPen)
-        # to highlight rect on image
-        # painter.drawRect(rect)
+            context.setTextRenderFormat(render_format)
+            painter.begin(image)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            image.fill(QColor(152, 219, 249))
 
-        if part is not None:
-            QgsTextRenderer.drawPart(rect,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format,
-                                     part)
-        else:
-            QgsTextRenderer.drawText(rect,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format,
-                                     vAlignment=vAlignment,
-                                     flags=flags,
-                                     mode=mode)
+            painter.setBrush(QBrush(QColor(182, 239, 255)))
+            painter.setPen(Qt.PenStyle.NoPen)
+            # to highlight rect on image
+            # painter.drawRect(rect)
 
-        painter.setFont(format.scaledFont(context))
-        painter.setPen(QPen(QColor(255, 0, 255, 200)))
-        # For comparison with QPainter's methods:
-        # if alignment == QgsTextRenderer.AlignCenter:
-        #     align = Qt.AlignHCenter
-        # elif alignment == QgsTextRenderer.AlignRight:
-        #     align = Qt.AlignRight
-        # else:
-        #     align = Qt.AlignLeft
-        # painter.drawText(rect, align, '\n'.join(text))
+            if part is not None:
+                QgsTextRenderer.drawPart(rect,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format,
+                                         part)
+            else:
+                QgsTextRenderer.drawText(rect,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format,
+                                         vAlignment=vAlignment,
+                                         flags=flags,
+                                         mode=mode)
 
-        painter.end()
-        return self.image_check(name, name, image, control_name=name)
+            painter.setFont(format.scaledFont(context))
+            painter.setPen(QPen(QColor(255, 0, 255, 200)))
+            # For comparison with QPainter's methods:
+            # if alignment == QgsTextRenderer.AlignCenter:
+            #     align = Qt.AlignHCenter
+            # elif alignment == QgsTextRenderer.AlignRight:
+            #     align = Qt.AlignRight
+            # else:
+            #     align = Qt.AlignLeft
+            # painter.drawText(rect, align, '\n'.join(text))
+
+            painter.end()
+            if not self.image_check(name, name, image, control_name=name):
+                return False
+        return True
 
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.HAlignment.AlignLeft,
                          text=['test'],
@@ -1616,38 +1624,45 @@ class PyQgsTextRenderer(QgisTestCase):
 
         context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, enable_scale_workaround)
 
-        painter.begin(image)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        image.fill(QColor(152, 219, 249))
+        for render_format in (Qgis.TextRenderFormat.AlwaysText,
+                              Qgis.TextRenderFormat.AlwaysOutlines,
+                              Qgis.TextRenderFormat.PreferText,
+                              ):
+            context.setTextRenderFormat(render_format)
+            painter.begin(image)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.PenStyle.NoPen)
-        # to highlight point on image
-        # painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
+            painter.setBrush(QBrush(QColor(182, 239, 255)))
+            painter.setPen(Qt.PenStyle.NoPen)
+            # to highlight point on image
+            # painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
 
-        if part is not None:
-            QgsTextRenderer.drawPart(point,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format,
-                                     part)
-        else:
-            QgsTextRenderer.drawText(point,
-                                     angle,
-                                     alignment,
-                                     text,
-                                     context,
-                                     format)
+            if part is not None:
+                QgsTextRenderer.drawPart(point,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format,
+                                         part)
+            else:
+                QgsTextRenderer.drawText(point,
+                                         angle,
+                                         alignment,
+                                         text,
+                                         context,
+                                         format)
 
-        painter.setFont(format.scaledFont(context))
-        painter.setPen(QPen(QColor(255, 0, 255, 200)))
-        # For comparison with QPainter's methods:
-        # painter.drawText(point, '\n'.join(text))
+            painter.setFont(format.scaledFont(context))
+            painter.setPen(QPen(QColor(255, 0, 255, 200)))
+            # For comparison with QPainter's methods:
+            # painter.drawText(point, '\n'.join(text))
 
-        painter.end()
-        return self.image_check(name, name, image, control_name=name)
+            painter.end()
+            if not self.image_check(name, name, image, control_name=name):
+                return False
+        return True
 
     def testDrawMassiveFont(self):
         """
@@ -3492,6 +3507,88 @@ class PyQgsTextRenderer(QgisTestCase):
                                 alignment=QgsTextRenderer.HAlignment.AlignJustify, rect=QRectF(100, 100, 200, 100),
                                 flags=Qgis.TextRendererFlag.WrapLines)
 
+    def testDrawTextRectWordWrapHtml1(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'html_rect_wrapped1', text=['some text <span style="font-size: 60pt">more text</span> and more'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 100, 300, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
+    def testDrawTextRectWordWrapHtml2(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'html_rect_wrapped2', text=['thiswordistoolong but <span style="font-size: 60pt">this is</span> not'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 100, 300, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
+    def testDrawTextRectWordWrapHtmlImage1(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'html_img_wrapping', text=[f'this img <img src="{unitTestDataPath()}/small_sample_image.png" width="80" height="50"> should wrap'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 130, 300, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
+    def testDrawTextRectWordWrapTab(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(5)
+        format.setTabStopDistance(5)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(
+            self.checkRender(format, 'tab_wrapping', text=['this\ttab\tshould\twrap'],
+                             alignment=QgsTextRenderer.HAlignment.AlignLeft, rect=QRectF(50, 130, 350, 100),
+                             flags=Qgis.TextRendererFlag.WrapLines)
+        )
+
     def testDrawTextRectMultilineBottomAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -3946,6 +4043,133 @@ class PyQgsTextRenderer(QgisTestCase):
             '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
             point=QPointF(50, 200))
 
+    def testHtmlHeadings(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_headings', None, text=[
+            '<h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6>'],
+            point=QPointF(10, 300))
+
+    def testHtmlHeadingsLargerFont(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(40)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_headings_larger', None, text=[
+            '<h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6>'],
+            point=QPointF(10, 350))
+
+    def testHtmlAlignmentLeftBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRender(format, 'html_align_rect_left_base', None, text=[
+            '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="center">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300))
+
+    def testHtmlAlignmentRightBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRender(format, 'html_align_rect_right_base', None, text=[
+            '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="center">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Right)
+
+    def testHtmlAlignmentCenterBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRender(format, 'html_align_rect_center_base', None, text=[
+            '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="left">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageAutoSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_autosize', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png">test</p>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageAutoWidth(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_autowidth', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png" height="80">test</p>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageAutoHeight(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_autoheight', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png" width="80">test</p>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
+    def testHtmlImageFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(0, 0))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.background().setFillColor(QColor(255, 255, 255))
+
+        assert self.checkRender(format, 'image_fixed_size', None, text=[
+            f'<p>Test <img src="{unitTestDataPath()}/small_sample_image.png" width="80" height="200">test</p>'],
+            rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center)
+
     def testHtmlSuperSubscript(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -4014,6 +4238,41 @@ class PyQgsTextRenderer(QgisTestCase):
         assert self.checkRenderPoint(format, 'text_html_supersubscript_buffer_shadow', None, text=[
             '<sub>sub</sub>N<sup>sup</sup>'],
             point=QPointF(50, 200))
+
+    def testHtmlWordSpacing(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_word_spacing', None, text=[
+            'test of <span style="word-spacing: 20.5">wo space</span>'],
+            point=QPointF(10, 200))
+
+    def testHtmlWordSpacingPx(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        # unit should be ignored, we always treat it as pt as pixels don't
+        # scale
+        assert self.checkRenderPoint(format, 'html_word_spacing', None, text=[
+            'test of <span style="word-spacing: 20.5px">wo space</span>'],
+            point=QPointF(10, 200))
+
+    def testHtmlWordSpacingNegative(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'html_word_spacing_negative', None, text=[
+            'test of <span style="word-spacing: -20.5">wo space</span>'],
+            point=QPointF(10, 200))
 
     def testTextRenderFormat(self):
         format = QgsTextFormat()

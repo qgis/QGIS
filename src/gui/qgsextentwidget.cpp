@@ -239,6 +239,45 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
     case Qgis::DistanceUnit::Inches:
+    case Qgis::DistanceUnit::ChainsInternational:
+    case Qgis::DistanceUnit::ChainsBritishBenoit1895A:
+    case Qgis::DistanceUnit::ChainsBritishBenoit1895B:
+    case Qgis::DistanceUnit::ChainsBritishSears1922Truncated:
+    case Qgis::DistanceUnit::ChainsBritishSears1922:
+    case Qgis::DistanceUnit::ChainsClarkes:
+    case Qgis::DistanceUnit::ChainsUSSurvey:
+    case Qgis::DistanceUnit::FeetBritish1865:
+    case Qgis::DistanceUnit::FeetBritish1936:
+    case Qgis::DistanceUnit::FeetBritishBenoit1895A:
+    case Qgis::DistanceUnit::FeetBritishBenoit1895B:
+    case Qgis::DistanceUnit::FeetBritishSears1922Truncated:
+    case Qgis::DistanceUnit::FeetBritishSears1922:
+    case Qgis::DistanceUnit::FeetClarkes:
+    case Qgis::DistanceUnit::FeetGoldCoast:
+    case Qgis::DistanceUnit::FeetIndian:
+    case Qgis::DistanceUnit::FeetIndian1937:
+    case Qgis::DistanceUnit::FeetIndian1962:
+    case Qgis::DistanceUnit::FeetIndian1975:
+    case Qgis::DistanceUnit::FeetUSSurvey:
+    case Qgis::DistanceUnit::LinksInternational:
+    case Qgis::DistanceUnit::LinksBritishBenoit1895A:
+    case Qgis::DistanceUnit::LinksBritishBenoit1895B:
+    case Qgis::DistanceUnit::LinksBritishSears1922Truncated:
+    case Qgis::DistanceUnit::LinksBritishSears1922:
+    case Qgis::DistanceUnit::LinksClarkes:
+    case Qgis::DistanceUnit::LinksUSSurvey:
+    case Qgis::DistanceUnit::YardsBritishBenoit1895A:
+    case Qgis::DistanceUnit::YardsBritishBenoit1895B:
+    case Qgis::DistanceUnit::YardsBritishSears1922Truncated:
+    case Qgis::DistanceUnit::YardsBritishSears1922:
+    case Qgis::DistanceUnit::YardsClarkes:
+    case Qgis::DistanceUnit::YardsIndian:
+    case Qgis::DistanceUnit::YardsIndian1937:
+    case Qgis::DistanceUnit::YardsIndian1962:
+    case Qgis::DistanceUnit::YardsIndian1975:
+    case Qgis::DistanceUnit::MilesUSSurvey:
+    case Qgis::DistanceUnit::Fathoms:
+    case Qgis::DistanceUnit::MetersGermanLegal:
       decimals = 4;
       break;
   }
@@ -546,8 +585,7 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
     mCurrentExtentButton->setVisible( true );
 
     mUseCanvasExtentAction->setVisible( true );
-    if ( drawOnCanvasOption )
-      mDrawOnCanvasAction->setVisible( true );
+    mDrawOnCanvasAction->setVisible( drawOnCanvasOption && !mBlockDrawOnCanvas );
 
     mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
     mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
@@ -627,4 +665,21 @@ void QgsExtentWidget::dropEvent( QDropEvent *event )
   }
   mCondensedLineEdit->setHighlighted( false );
   update();
+}
+
+void QgsExtentWidget::showEvent( QShowEvent * )
+{
+  if ( mFirstShow )
+  {
+    // we don't support select on canvas if the dialog is modal
+    if ( QWidget *parentWindow = window() )
+    {
+      if ( parentWindow->isModal() )
+      {
+        mBlockDrawOnCanvas = true;
+        mDrawOnCanvasAction->setVisible( false );
+      }
+    }
+    mFirstShow = false;
+  }
 }

@@ -577,7 +577,7 @@ class TestQgsAnnotationRectangleTextItem(QgisTestCase):
         format.setSize(20)
         item.setFormat(format)
 
-        item.setAlignment(Qt.AlignRight | Qt.AlignBottom)
+        item.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
 
         settings = QgsMapSettings()
         settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))

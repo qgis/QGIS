@@ -24,7 +24,7 @@ import os
 import math
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (QgsProcessing,
                        QgsFeatureSink,
@@ -137,10 +137,10 @@ class Climb(QgisAlgorithm):
         fieldnumber = 0
 
         # Create new fields for climb and descent
-        thefields.append(QgsField(self.CLIMBATTRIBUTE, QVariant.Double))
-        thefields.append(QgsField(self.DESCENTATTRIBUTE, QVariant.Double))
-        thefields.append(QgsField(self.MINELEVATTRIBUTE, QVariant.Double))
-        thefields.append(QgsField(self.MAXELEVATTRIBUTE, QVariant.Double))
+        thefields.append(QgsField(self.CLIMBATTRIBUTE, QMetaType.Type.Double))
+        thefields.append(QgsField(self.DESCENTATTRIBUTE, QMetaType.Type.Double))
+        thefields.append(QgsField(self.MINELEVATTRIBUTE, QMetaType.Type.Double))
+        thefields.append(QgsField(self.MAXELEVATTRIBUTE, QMetaType.Type.Double))
 
         # combine all the vector fields
         out_fields = QgsProcessingUtils.combineFields(thefields, source_fields)

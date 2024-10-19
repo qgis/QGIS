@@ -28,7 +28,6 @@
 #include <Qt3DCore/QGeometry>
 #include <Qt3DCore/QBuffer>
 #endif
-#include <Qt3DRender/QMaterial>
 #include <QVector3D>
 
 #define SIP_NO_FILE
@@ -36,15 +35,17 @@
 class IndexedPointCloudNode;
 class QgsAABB;
 
-class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
+class QgsPointCloud3DSymbolHandler
 {
   public:
     QgsPointCloud3DSymbolHandler();
 
     virtual ~QgsPointCloud3DSymbolHandler() = default;
 
+    struct PointData;
+
     virtual bool prepare( const QgsPointCloud3DRenderContext &context ) = 0;// override;
-    virtual void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) = 0; // override;
+    virtual void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) = 0; // override;
     virtual void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) = 0;// override;
 
     void triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox );
@@ -55,7 +56,8 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     //! temporary data we will pass to the tessellator
     struct PointData
     {
-      QVector<QVector3D> positions;  // Contains triplets of float x,y,z for each point
+      QgsVector3D positionsOrigin;   // All "positions" are relative to this point, defined in map coordinates (with double precision)
+      QVector<QVector3D> positions;  // Contains triplets of float x,y,z for each point. These are in map coordinates, relative to "positionsOrigin"
       QVector<float> parameter;
       QVector<float> pointSizes; // Contains point sizes, in case they are overridden for classification renderer
       QVector<QVector3D> colors;
@@ -103,7 +105,7 @@ class QgsSingleColorPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHand
     QgsSingleColorPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -120,7 +122,7 @@ class QgsColorRampPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandle
     QgsColorRampPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -137,7 +139,7 @@ class QgsRGBPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler
     QgsRGBPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -154,7 +156,7 @@ class QgsClassificationPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolH
     QgsClassificationPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:

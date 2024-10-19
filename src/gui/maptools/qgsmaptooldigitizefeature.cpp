@@ -106,6 +106,7 @@ void QgsMapToolDigitizeFeature::activate()
 
   if ( vlayer && vlayer->geometryType() == Qgis::GeometryType::Null )
   {
+    setCursor( QCursor( Qt::ArrowCursor ) );
     layerGeometryCaptured( QgsGeometry() );
     return;
   }
@@ -129,6 +130,18 @@ void QgsMapToolDigitizeFeature::deactivate()
     //set the layer back to the one remembered
     mCanvas->setCurrentLayer( mCurrentLayer );
   emit digitizingFinished();
+}
+
+void QgsMapToolDigitizeFeature::reactivate()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  if ( !vlayer )
+    vlayer = currentVectorLayer();
+
+  if ( vlayer && vlayer->geometryType() == Qgis::GeometryType::Null )
+  {
+    layerGeometryCaptured( QgsGeometry() );
+  }
 }
 
 void QgsMapToolDigitizeFeature::keyPressEvent( QKeyEvent *e )

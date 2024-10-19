@@ -138,7 +138,7 @@ class QgsDataItem;
 class QgsTileScaleWidget;
 class QgsLabelingWidget;
 class QgsLayerStylingWidget;
-class QgsDiagramProperties;
+class QgsStackedDiagramProperties;
 class QgsLocatorWidget;
 class QgsNominatimGeocoder;
 class QgsDataSourceManagerDialog;
@@ -897,9 +897,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAppCanvasFiltering *canvasFiltering();
 
     /**
-     * Take screenshots for user documentation
-     * @param saveDirectory path were the screenshots will be saved
-     * @param categories an int as a flag value of QgsAppScreenShots::Categories
+     * Take screenshots for user documentation.
+     *
+     * \param saveDirectory path were the screenshots will be saved
+     * \param categories an int as a flag value of QgsAppScreenShots::Categories
      */
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
 
@@ -1128,7 +1129,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void eraseAuthenticationDatabase();
 
     //! Push authentication manager output to messagebar
-    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
+    void authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level );
 
     //! update default action of toolbutton
     void toolButtonActionTriggered( QAction * );
@@ -2759,6 +2760,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     friend class TestQgisAppPython;
     friend class TestQgisApp;
+    friend class TestQgsProjectExpressions;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };

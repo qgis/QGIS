@@ -128,6 +128,7 @@
 %Include auto_generated/qgsmaplayercombobox.sip
 %Include auto_generated/qgsmaplayerconfigwidget.sip
 %Include auto_generated/qgsmaplayerconfigwidgetfactory.sip
+%Include auto_generated/qgsmaplayerstylecategoriesmodel.sip
 %Include auto_generated/qgsmaplayerstylemanagerwidget.sip
 %Include auto_generated/qgsmapmouseevent.sip
 %Include auto_generated/qgsmapoverviewcanvas.sip
@@ -358,6 +359,8 @@
 %End
 %Include auto_generated/inputcontroller/qgsabstractinputcontroller.sip
 %Include auto_generated/inputcontroller/qgsinputcontrollermanager.sip
+%Include auto_generated/labeling/qgslabelingenginerulewidget.sip
+%Include auto_generated/labeling/qgslabelingengineruleswidget.sip
 %Include auto_generated/labeling/qgslabellineanchorwidget.sip
 %Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
 %Include auto_generated/labeling/qgslabelsettingswidgetbase.sip

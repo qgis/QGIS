@@ -621,6 +621,21 @@ bool QgsHanaProvider::setSubsetString( const QString &subset, bool )
   return true;
 }
 
+bool QgsHanaProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsHanaProvider::subsetStringDialect() const
+{
+  return tr( "SAP HANA SQL query" );
+}
+
+QString QgsHanaProvider::subsetStringHelpUrl() const
+{
+  return QStringLiteral( "https://help.sap.com/docs/SAP_HANA_PLATFORM/4fe29514fd584807ac9f2a04f6754767/20ff532c751910148657c32fe3431a9f.html" );
+}
+
 bool QgsHanaProvider::isValid() const
 {
   return mValid;

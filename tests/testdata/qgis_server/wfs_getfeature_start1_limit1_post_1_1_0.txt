@@ -1,0 +1,28 @@
+Content-Type: text/xml; subtype=gml/3.1.1; charset=utf-8
+
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd http://www.qgis.org/gml ?">
+<gml:boundedBy>
+ <gml:Envelope srsName="EPSG:4326">
+  <gml:lowerCorner>8 44</gml:lowerCorner>
+  <gml:upperCorner>9 45</gml:upperCorner>
+ </gml:Envelope>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:testlayer gml:id="testlayer.1">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:4326">
+    <gml:lowerCorner>8.20354699 44.90143568</gml:lowerCorner>
+    <gml:upperCorner>8.20354699 44.90143568</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+    <pos xmlns="http://www.opengis.net/gml" srsDimension="2">8.20354699 44.90143568</pos>
+   </Point>
+  </qgs:geometry>
+  <qgs:id>2</qgs:id>
+  <qgs:name>two</qgs:name>
+  <qgs:utf8nameè>two àò</qgs:utf8nameè>
+ </qgs:testlayer>
+</gml:featureMember>
+</wfs:FeatureCollection>

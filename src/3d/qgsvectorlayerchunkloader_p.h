@@ -27,9 +27,9 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader_p.h"
+#include "qgschunkloader.h"
 #include "qgsfeature3dhandler_p.h"
-#include "qgschunkedentity_p.h"
+#include "qgschunkedentity.h"
 
 #define SIP_NO_FILE
 

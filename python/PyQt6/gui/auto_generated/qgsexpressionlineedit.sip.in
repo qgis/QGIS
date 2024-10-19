@@ -113,7 +113,7 @@ Determines if the current expression is valid.
 
 
 :return: - ``True`` if the current expression is valid.
-         - expressionError: will be set to any generated error message 
+         - expressionError: any generated error message 
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );

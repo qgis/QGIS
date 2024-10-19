@@ -20,7 +20,7 @@ __date__ = 'August 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
 from osgeo import gdal
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (QgsFeature,
                        QgsFeatureSink,
                        QgsFields,
@@ -81,9 +81,9 @@ class PointsFromLines(QgisAlgorithm):
         rasterDS = None
 
         fields = QgsFields()
-        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        fields.append(QgsField('line_id', QVariant.Int, '', 10, 0))
-        fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
+        fields.append(QgsField('id', QMetaType.Type.Int, '', 10, 0))
+        fields.append(QgsField('line_id', QMetaType.Type.Int, '', 10, 0))
+        fields.append(QgsField('point_id', QMetaType.Type.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Type.Point, raster_layer.crs())

@@ -551,7 +551,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
 
   QVariant result = expr.evaluate( &context );
   convertedValue = result.toDouble( &ok );
@@ -771,6 +771,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Ellipsoid acronym of current layer CRS." ) );
+
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the layer (e.g., 'EPSG:5703')." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_definition" ), QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of layer (full definition)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the layer." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the layer." ) );
 
   //feature variables
   sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );

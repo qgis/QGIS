@@ -147,6 +147,10 @@ Replaces the headers in the table with a specified list of :py:class:`QgsLayoutT
 
     virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
 
+    virtual int rowSpan( int row, int column ) const;
+
+    virtual int columnSpan( int row, int column ) const;
+
 
 };
 

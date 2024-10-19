@@ -52,7 +52,7 @@ QgsLayout *QgsLayoutAtlas::layout()
   return mLayout;
 }
 
-const QgsLayout *QgsLayoutAtlas::layout() const
+const QgsLayout *QgsLayoutAtlas::layout() const  // cppcheck-suppress duplInheritedMember
 {
   return mLayout.data();
 }

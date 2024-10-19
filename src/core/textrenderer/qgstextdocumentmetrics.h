@@ -19,14 +19,69 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgstextdocument.h"
 
 #include <QVector>
 #include <QSizeF>
 #include <QRectF>
 
-class QgsTextDocument;
 class QgsRenderContext;
 class QgsTextFormat;
+struct DocumentMetrics;
+struct BlockMetrics;
+
+/**
+ * \class QgsTextDocumentRenderContext
+ * \ingroup core
+ *
+ * \brief Encapsulates the context in which a text document is to be rendered.
+ *
+ * \warning This API is not considered stable and may change in future QGIS versions.
+ *
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsTextDocumentRenderContext
+{
+  public:
+
+    /**
+     * Returns associated text renderer flags.
+     *
+     * \see setFlags()
+     */
+    Qgis::TextRendererFlags flags() const { return mFlags; }
+
+    /**
+     * Sets associated text renderer flags.
+     *
+     * \see flags()
+     */
+    void setFlags( Qgis::TextRendererFlags flags ) { mFlags = flags; }
+
+    /**
+     * Returns the maximum width (in painter units) for rendered text.
+     *
+     * This is used to control text wrapping, when the Qgis::TextRendererFlag::WrapLines flag is set.
+     *
+     * \see setMaximumWidth()
+     */
+    double maximumWidth() const { return mMaximumWidth; }
+
+    /**
+     * Sets the maximum width (in painter units) for rendered text.
+     *
+     * This is used to control text wrapping, when the Qgis::TextRendererFlag::WrapLines flag is set.
+     *
+     * \see maximumWidth()
+     */
+    void setMaximumWidth( double width ) { mMaximumWidth = width; }
+
+  private:
+
+    Qgis::TextRendererFlags mFlags;
+    double mMaximumWidth = 0;
+
+};
 
 /**
  * \class QgsTextDocumentMetrics
@@ -50,8 +105,12 @@ class CORE_EXPORT QgsTextDocumentMetrics
      * QgsTextRenderer::calculateScaleFactorForFormat() and then manually calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
+     *
+     * Since QGIS 3.40 the optional \a documentContext argument can be used to pass text renderer context to change the
+     * logistics of the calculated metrics.
      */
-    static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0 );
+    static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
+        const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext() );
 
     /**
      * Returns TRUE if the metrics could not be calculated because the text format has a null font size.
@@ -59,6 +118,16 @@ class CORE_EXPORT QgsTextDocumentMetrics
      * \since QGIS 3.30
      */
     bool isNullFontSize() const { return mIsNullSize; }
+
+    /**
+     * Returns the document associated with the calculated metrics.
+     *
+     * Note that this may not exactly match the original document which was used in the call to calculateMetrics(),
+     * as certain settings (such as text wrapping) require restructuring the document.
+     *
+     * \since QGIS 3.40
+     */
+    const QgsTextDocument &document() const { return mDocument; }
 
     /**
      * Returns the overall size of the document.
@@ -114,6 +183,13 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
+     * Returns the fixed height of the fragment at the specified block and fragment index, or -1 if the fragment does not have a fixed height.
+     *
+     * \since QGIS 3.40
+     */
+    double fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
      * Returns the vertical orientation x offset for the specified block.
      */
     double verticalOrientationXOffset( int blockIndex ) const;
@@ -140,6 +216,8 @@ class CORE_EXPORT QgsTextDocumentMetrics
 
   private:
 
+    QgsTextDocument mDocument;
+
     bool mIsNullSize = false;
 
     QSizeF mDocumentSizeLabelMode;
@@ -160,6 +238,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBaselineOffsetsAscentBased;
 
     QList< QList< double > > mFragmentHorizontalAdvance;
+    QList< QList< double > > mFragmentFixedHeights;
 
     QList< QList< double > > mFragmentVerticalOffsetsLabelMode;
     QList< QList< double > > mFragmentVerticalOffsetsPointMode;
@@ -172,6 +251,8 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double mLastLineAscentOffset = 0;
     double mFirstLineCapHeight = 0;
 
+    static void finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics );
+    static void processFragment( QgsTextDocumentMetrics &res, const QgsTextFormat &format, const QgsRenderContext &context, const QgsTextDocumentRenderContext &documentContext, double scaleFactor, DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment, QgsTextBlock &currentOutputBlock );
 };
 
 #endif // QGSTEXTDOCUMENTMETRICS_H

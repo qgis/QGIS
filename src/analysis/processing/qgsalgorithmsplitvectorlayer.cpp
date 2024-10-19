@@ -102,7 +102,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   if ( !QDir().mkpath( outputDir ) )
-    throw QgsProcessingException( QStringLiteral( "Failed to create output directory." ) );
+    throw QgsProcessingException( QObject::tr( "Failed to create output directory." ) );
 
   const QgsFields fields = source->fields();
   const QgsCoordinateReferenceSystem crs = source->sourceCrs();

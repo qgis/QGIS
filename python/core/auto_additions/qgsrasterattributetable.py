@@ -1,30 +1,24 @@
 # The following has been generated automatically from src/core/raster/qgsrasterattributetable.h
 try:
     QgsRasterAttributeTable.UsageInformation.__attribute_docs__ = {'description': 'Usage description', 'unique': 'Usage must be unique', 'required': 'Usage is required', 'isColor': 'Usage is part of a color component', 'isRamp': 'Usage is part of a ramp component', 'supported': 'Usage is supported', 'maybeClass': 'May be suitable for classification', 'allowedTypes': 'Usage allowed types'}
-except NameError:
-    pass
-try:
-    QgsRasterAttributeTable.MinMaxClass.__attribute_docs__ = {'minMaxValues': 'List of values for the class'}
-except NameError:
-    pass
-QgsRasterAttributeTable.guessFieldUsage = staticmethod(QgsRasterAttributeTable.guessFieldUsage)
-QgsRasterAttributeTable.usageName = staticmethod(QgsRasterAttributeTable.usageName)
-QgsRasterAttributeTable.valueAndColorFieldUsages = staticmethod(QgsRasterAttributeTable.valueAndColorFieldUsages)
-QgsRasterAttributeTable.createFromRaster = staticmethod(QgsRasterAttributeTable.createFromRaster)
-QgsRasterAttributeTable.usageInformation = staticmethod(QgsRasterAttributeTable.usageInformation)
-try:
-    QgsRasterAttributeTable.__group__ = ['raster']
-except NameError:
-    pass
-try:
     QgsRasterAttributeTable.UsageInformation.__group__ = ['raster']
 except NameError:
     pass
 try:
-    QgsRasterAttributeTable.Field.__group__ = ['raster']
+    QgsRasterAttributeTable.MinMaxClass.__attribute_docs__ = {'minMaxValues': 'List of values for the class'}
+    QgsRasterAttributeTable.MinMaxClass.__group__ = ['raster']
 except NameError:
     pass
 try:
-    QgsRasterAttributeTable.MinMaxClass.__group__ = ['raster']
+    QgsRasterAttributeTable.guessFieldUsage = staticmethod(QgsRasterAttributeTable.guessFieldUsage)
+    QgsRasterAttributeTable.usageName = staticmethod(QgsRasterAttributeTable.usageName)
+    QgsRasterAttributeTable.valueAndColorFieldUsages = staticmethod(QgsRasterAttributeTable.valueAndColorFieldUsages)
+    QgsRasterAttributeTable.createFromRaster = staticmethod(QgsRasterAttributeTable.createFromRaster)
+    QgsRasterAttributeTable.usageInformation = staticmethod(QgsRasterAttributeTable.usageInformation)
+    QgsRasterAttributeTable.__group__ = ['raster']
+except NameError:
+    pass
+try:
+    QgsRasterAttributeTable.Field.__group__ = ['raster']
 except NameError:
     pass

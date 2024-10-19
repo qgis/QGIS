@@ -244,6 +244,7 @@ helper function to create zero padded band names
     virtual QString colorInterpretationName( int bandNumber ) const;
 %Docstring
 Returns the name of the color interpretation for the specified ``bandNumber``.
+It is translated since QGIS 3.40
 
 .. versionadded:: 3.18
 %End

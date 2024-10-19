@@ -92,6 +92,61 @@ class CORE_EXPORT Qgis
     //
 
     /**
+     * Authentication configuration storage capabilities.
+     *
+     * \since QGIS 3.40
+     */
+    enum class AuthConfigurationStorageCapability: int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ClearStorage = 1 << 0, //!< Can clear all configurations from storage
+
+      ReadConfiguration = 1 << 1, //!< Can read an authentication configuration
+      UpdateConfiguration = 1 << 2, //!< Can update an authentication configuration
+      DeleteConfiguration = 1 << 3, //!< Can deleet an authentication configuration
+      CreateConfiguration = 1 << 4, //!< Can create a new authentication configuration
+
+      ReadCertificateIdentity = 1 << 5, //!< Can read a certificate identity
+      UpdateCertificateIdentity = 1 << 6, //!< Can update a certificate identity
+      DeleteCertificateIdentity = 1 << 7, //!< Can delete a certificate identity
+      CreateCertificateIdentity = 1 << 8, //!< Can create a new certificate identity
+
+      ReadSslCertificateCustomConfig = 1 << 9, //!< Can read a SSL certificate custom config
+      UpdateSslCertificateCustomConfig = 1 << 10, //!< Can update a SSL certificate custom config
+      DeleteSslCertificateCustomConfig = 1 << 11, //!< Can delete a SSL certificate custom config
+      CreateSslCertificateCustomConfig = 1 << 12, //!< Can create a new SSL certificate custom config
+
+      ReadCertificateAuthority = 1 << 13, //!< Can read a certificate authority
+      UpdateCertificateAuthority = 1 << 14, //!< Can update a certificate authority
+      DeleteCertificateAuthority = 1 << 15, //!< Can delete a certificate authority
+      CreateCertificateAuthority = 1 << 16, //!< Can create a new certificate authority
+
+      ReadCertificateTrustPolicy = 1 << 17, //!< Can read a certificate trust policy
+      UpdateCertificateTrustPolicy = 1 << 18, //!< Can update a certificate trust policy
+      DeleteCertificateTrustPolicy = 1 << 19, //!< Can delete a certificate trust policy
+      CreateCertificateTrustPolicy = 1 << 20, //!< Can create a new certificate trust policy
+
+      ReadMasterPassword = 1 << 21, //!< Can read the master password
+      UpdateMasterPassword = 1 << 22, //!< Can update the master password
+      DeleteMasterPassword = 1 << 23, //!< Can delete the master password
+      CreateMasterPassword = 1 << 24, //!< Can create a new master password
+
+      ReadSetting = 1 << 25, //!< Can read the authentication settings
+      UpdateSetting = 1 << 26, //!< Can update the authentication setting
+      DeleteSetting = 1 << 27, //!< Can delete the authentication setting
+      CreateSetting = 1 << 28, //!< Can create a new authentication setting
+
+    };
+    Q_ENUM( AuthConfigurationStorageCapability )
+
+    /**
+     *  Authentication configuration storage capabilities
+     *  \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( AuthConfigurationStorageCapabilities, AuthConfigurationStorageCapability )
+    Q_FLAG( AuthConfigurationStorageCapabilities )
+
+
+    /**
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
      */
@@ -213,6 +268,8 @@ class CORE_EXPORT Qgis
       CurvePolygon = 10, //!< CurvePolygon
       MultiCurve = 11, //!< MultiCurve
       MultiSurface = 12, //!< MultiSurface
+      PolyhedralSurface = 15, //!< PolyhedralSurface \since QGIS 3.40
+      TIN = 16, //!< TIN \since QGIS 3.40
       NoGeometry = 100, //!< No geometry
       PointZ = 1001, //!< PointZ
       LineStringZ = 1002, //!< LineStringZ
@@ -227,6 +284,8 @@ class CORE_EXPORT Qgis
       CurvePolygonZ = 1010, //!< CurvePolygonZ
       MultiCurveZ = 1011, //!< MultiCurveZ
       MultiSurfaceZ = 1012, //!< MultiSurfaceZ
+      PolyhedralSurfaceZ = 1015, //!< PolyhedralSurfaceZ
+      TINZ = 1016, //!< TINZ
       PointM = 2001, //!< PointM
       LineStringM = 2002, //!< LineStringM
       PolygonM = 2003, //!< PolygonM
@@ -240,6 +299,8 @@ class CORE_EXPORT Qgis
       CurvePolygonM = 2010, //!< CurvePolygonM
       MultiCurveM = 2011, //!< MultiCurveM
       MultiSurfaceM = 2012, //!< MultiSurfaceM
+      PolyhedralSurfaceM = 2015, //!< PolyhedralSurfaceM
+      TINM = 2016, //!< TINM
       PointZM = 3001, //!< PointZM
       LineStringZM = 3002, //!< LineStringZM
       PolygonZM = 3003, //!< PolygonZM
@@ -252,6 +313,8 @@ class CORE_EXPORT Qgis
       CurvePolygonZM = 3010, //!< CurvePolygonZM
       MultiCurveZM = 3011, //!< MultiCurveZM
       MultiSurfaceZM = 3012, //!< MultiSurfaceZM
+      PolyhedralSurfaceZM = 3015, //!< PolyhedralSurfaceM
+      TINZM = 3016, //!< TINZM
       TriangleZM = 3017, //!< TriangleZM
       Point25D = 0x80000001, //!< Point25D
       LineString25D, //!< LineString25D
@@ -333,18 +396,29 @@ class CORE_EXPORT Qgis
     Q_FLAG( VectorLayerTypeFlags )
 
     /**
-     * Authorisation to run Python Macros
-     * \since QGIS 3.10
+     * Authorisation to run Python Embedded in projects
+     * \since QGIS 3.40
      */
-    enum class PythonMacroMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
+    enum class PythonEmbeddedMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
       {
-      Never = 0, //!< Macros are never run
+      Never = 0, //!< Python embedded never run
       Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
-      Always = 3, //!< Macros are always run
-      NotForThisSession, //!< Macros will not be run for this session
+      Always = 3, //!< Python embedded is always run
+      NotForThisSession, //!< Python embedded will not be run for this session
     };
-    Q_ENUM( PythonMacroMode )
+    Q_ENUM( PythonEmbeddedMode )
+
+    /**
+     * Type of Python Embedded in projects
+     * \since QGIS 3.40
+     */
+    enum class PythonEmbeddedType : int
+    {
+      Macro = 0,
+      ExpressionFunction = 1,
+    };
+    Q_ENUM( PythonEmbeddedType )
 
     /**
      * Flags which control data provider construction.
@@ -544,7 +618,7 @@ class CORE_EXPORT Qgis
     {
       Root, //!< Root Node
       Standard, //!< Normal Node
-      NamedList, //! Named List Node
+      NamedList, //!< Named List Node
     };
     Q_ENUM( SettingsTreeNodeType )
 
@@ -612,8 +686,8 @@ class CORE_EXPORT Qgis
      */
     enum class SettingsOption : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      SaveFormerValue = 1 << 1, //<! Save the former value of the settings
-      SaveEnumFlagAsInt = 1 << 2, //! The enum/flag will be saved as an integer value instead of text
+      SaveFormerValue = 1 << 1, //!< Save the former value of the settings
+      SaveEnumFlagAsInt = 1 << 2, //!< The enum/flag will be saved as an integer value instead of text
     };
     Q_ENUM( SettingsOption )
     Q_DECLARE_FLAGS( SettingsOptions, SettingsOption )
@@ -680,6 +754,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolRotationMode )
 
     /**
+     * \brief Flags controlling behavior of vector feature renderers.
+     *
+     * \since QGIS 3.40
+     */
+    enum class FeatureRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      AffectsLabeling = 1 << 0, //!< If present, indicates that the renderer will participate in the map labeling problem
+    };
+    Q_ENUM( FeatureRendererFlag )
+
+    /**
+     * \brief Flags controlling behavior of vector feature renderers.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( FeatureRendererFlags, FeatureRendererFlag )
+    Q_FLAG( FeatureRendererFlags )
+
+    /**
      * \brief Flags controlling behavior of symbols
      *
      * \since QGIS 3.20
@@ -687,6 +780,7 @@ class CORE_EXPORT Qgis
     enum class SymbolFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
+      AffectsLabeling = 1 << 1, //!< If present, indicates that the symbol will participate in the map labeling problem \since QGIS 3.40
     };
     Q_ENUM( SymbolFlag )
     //! Symbol flags
@@ -720,6 +814,7 @@ class CORE_EXPORT Qgis
     {
       DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
       CanCalculateMaskGeometryPerFeature = 1 << 1, //!< If present, indicates that mask geometry can safely be calculated per feature for the symbol layer. This avoids using the entire symbol layer's mask geometry for every feature rendered, considerably simplifying vector exports and resulting in much smaller file sizes. \since QGIS 3.38
+      AffectsLabeling = 1 << 2, //!< If present, indicates that the symbol layer will participate in the map labeling problem \since QGIS 3.40
     };
     Q_ENUM( SymbolLayerFlag )
     //! Symbol layer flags
@@ -1878,6 +1973,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Flags which control geos geometry creation behavior.
+     *
+     * \since QGIS 3.40
+     */
+    enum class GeosCreationFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RejectOnInvalidSubGeometry = 1 << 0,  //!< Don't allow geometries with invalid sub-geometries to be created
+      SkipEmptyInteriorRings = 1 << 1,      //!< Skip any empty polygon interior ring
+    };
+    Q_ENUM( GeosCreationFlag )
+
+    /**
+     * Geos geometry creation behavior flags.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( GeosCreationFlags, GeosCreationFlag )
+    Q_FLAG( GeosCreationFlags )
+
+    /**
      * Coverage validity results.
      *
      * \since QGIS 3.36
@@ -2470,6 +2585,7 @@ class CORE_EXPORT Qgis
       SkipSymbolRendering      = 0x40000, //!< Disable symbol rendering while still drawing labels if enabled \since QGIS 3.24
       RecordProfile            = 0x80000, //!< Enable run-time profiling while rendering \since QGIS 3.34
       AlwaysUseGlobalMasks     = 0x100000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
+      DisableSymbolClippingToExtent = 0x200000, //!< Force symbol clipping to map extent to be disabled in all situations. This will result in slower rendering, and should only be used in situations where the feature clipping is always undesirable. \since QGIS 3.40
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
@@ -2485,6 +2601,7 @@ class CORE_EXPORT Qgis
     {
       RenderPartialOutputs = 1 << 0,  //!< The renderer benefits from rendering temporary in-progress preview renders. These are temporary results which will be used for the layer during rendering in-progress compositions, which will differ from the final layer render. They can be used for showing overlays or other information to users which help inform them about what is actually occurring during a slow layer render, but where these overlays and additional content is not wanted in the final layer renders. Another use case is rendering unsorted results as soon as they are available, before doing a final sorted render of the entire layer contents.
       RenderPartialOutputOverPreviousCachedImage = 1 << 1,//!< When rendering temporary in-progress preview renders, these preview renders can be drawn over any previously cached layer render we have for the same region. This can allow eg a low-resolution zoomed in version of the last map render to be used as a base painting surface to overdraw with incremental preview render outputs. If not set, an empty image will be used as the starting point for the render preview image.
+      AffectsLabeling = 1 << 2, //!< The layer rendering will interact with the map labeling \since QGIS 3.40
     };
     Q_ENUM( MapLayerRendererFlag )
 
@@ -2507,6 +2624,7 @@ class CORE_EXPORT Qgis
       {
       AlwaysOutlines SIP_MONKEYPATCH_COMPAT_NAME( TextFormatAlwaysOutlines ), //!< Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
       AlwaysText SIP_MONKEYPATCH_COMPAT_NAME( TextFormatAlwaysText ), //!< Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+      PreferText, //!< Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform). \since QGIS 3.40
     };
     Q_ENUM( TextRenderFormat )
 
@@ -2792,6 +2910,33 @@ class CORE_EXPORT Qgis
     Q_FLAG( MarkerLinePlacements )
 
     /**
+     * Defines how/where the labels should be placed in a linear referencing symbol layer.
+     *
+     * \since QGIS 3.40
+     */
+    enum class LinearReferencingPlacement : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      IntervalCartesian2D = 1 << 0, //!< Place labels at regular intervals, using Cartesian distance calculations on a 2D plane
+      IntervalZ = 1 << 1, //!< Place labels at regular intervals, linearly interpolated using Z values
+      IntervalM = 1 << 2, //!< Place labels at regular intervals, linearly interpolated using M values
+      Vertex = 1 << 3, //!< Place labels on every vertex in the line
+    };
+    Q_ENUM( LinearReferencingPlacement )
+
+    /**
+     * Defines what quantity to use for the labels shown in a linear referencing symbol layer.
+     *
+     * \since QGIS 3.40
+     */
+    enum class LinearReferencingLabelSource : int
+    {
+      CartesianDistance2D, //!< Distance along line, calculated using Cartesian calculations on a 2D plane.
+      Z, //!< Z values
+      M, //!< M values
+    };
+    Q_ENUM( LinearReferencingLabelSource )
+
+    /**
      * Gradient color sources.
      *
      * \note Prior to QGIS 3.24 this was available as QgsGradientFillSymbolLayer::GradientColorType
@@ -3048,6 +3193,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( RendererUsage )
 
     /**
+     * Flags controlling behavior of map canvases.
+     *
+     * \since QGIS 3.40
+     */
+    enum class MapCanvasFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ShowMainAnnotationLayer = 1 << 0, //!< The project's main annotation layer should be rendered in the canvas
+    };
+    Q_ENUM( MapCanvasFlag )
+
+    /**
+     * Flags controlling behavior of map canvases.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( MapCanvasFlags, MapCanvasFlag )
+    Q_FLAG( MapCanvasFlags )
+
+    /**
      * Synchronization of 2D map canvas and 3D view
      *
      * \since QGIS 3.26
@@ -3160,6 +3324,7 @@ class CORE_EXPORT Qgis
       SkipGenericModelLogging SIP_MONKEYPATCH_COMPAT_NAME( FlagSkipGenericModelLogging ) = 1 << 12, //!< When running as part of a model, the generic algorithm setup and results logging should be skipped
       NotAvailableInStandaloneTool SIP_MONKEYPATCH_COMPAT_NAME( FlagNotAvailableInStandaloneTool ) = 1 << 13, //!< Algorithm should not be available from the standalone "qgis_process" tool. Used to flag algorithms which make no sense outside of the QGIS application, such as "select by..." style algorithms.
       RequiresProject SIP_MONKEYPATCH_COMPAT_NAME( FlagRequiresProject ) = 1 << 14, //!< The algorithm requires that a valid QgsProject is available from the processing context in order to execute
+      SecurityRisk = 1 << 15, //!< The algorithm represents a potential security risk if executed with untrusted inputs. \since QGIS 3.40
       Deprecated SIP_MONKEYPATCH_COMPAT_NAME( FlagDeprecated ) = HideFromToolbox | HideFromModeler, //!< Algorithm is deprecated
     };
     Q_ENUM( ProcessingAlgorithmFlag );
@@ -4198,26 +4363,48 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
+
     enum class RasterColorInterpretation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, ColorInterpretation ) : int
       {
       Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedColorInterpretation ) = 0, //!< Undefined
       GrayIndex = 1,          //!< Grayscale
       PaletteIndex = 2,       //!< Paletted (see associated color table)
-      RedBand = 3,            //!< Red band of RGBA image
-      GreenBand = 4,          //!< Green band of RGBA image
-      BlueBand = 5,           //!< Blue band of RGBA image
+      RedBand = 3,            //!< Red band of RGBA image, or red spectral band [0.62 - 0.69 um]
+      GreenBand = 4,          //!< Green band of RGBA image, or green spectral band [0.51 - 0.60 um]
+      BlueBand = 5,           //!< Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]
       AlphaBand = 6,          //!< Alpha (0=transparent, 255=opaque)
       HueBand = 7,            //!< Hue band of HLS image
       SaturationBand = 8,     //!< Saturation band of HLS image
       LightnessBand = 9,      //!< Lightness band of HLS image
       CyanBand = 10,          //!< Cyan band of CMYK image
       MagentaBand = 11,       //!< Magenta band of CMYK image
-      YellowBand = 12,        //!< Yellow band of CMYK image
+      YellowBand = 12,        //!< Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]
       BlackBand = 13,         //!< Black band of CMLY image
       YCbCr_YBand = 14,       //!< Y Luminance
       YCbCr_CbBand = 15,      //!< Cb Chroma
       YCbCr_CrBand = 16,      //!< Cr Chroma
-      ContinuousPalette = 17  //!< Continuous palette, QGIS addition, GRASS
+      ContinuousPalette = 17, //!< Continuous palette, QGIS addition, GRASS
+
+      // Note: values between PanBand and SAR_P_Band match additions done in
+      // GDAL 3.10, except that the numeric values of the constant don't match GDAL ones
+
+      PanBand = 18,           //!< Panchromatic band [0.40 - 1.00 um] \since QGIS 3.40
+      CoastalBand = 19,       //!< Coastal band [0.40 - 0.45 um] \since QGIS 3.40
+      RedEdgeBand = 20,       //!< Red-edge band [0.69 - 0.79 um] \since QGIS 3.40
+      NIRBand = 21,           //!< Near-InfraRed (NIR) band [0.75 - 1.40 um] \since QGIS 3.40
+      SWIRBand = 22,          //!< Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um] \since QGIS 3.40
+      MWIRBand = 23,          //!< Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um] \since QGIS 3.40
+      LWIRBand = 24,          //!< Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um] \since QGIS 3.40
+      TIRBand = 25,           //!< Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um] \since QGIS 3.40
+      OtherIRBand = 26,       //!< Other infrared band [0.75 - 1000 um] \since QGIS 3.40
+      SAR_Ka_Band = 27,       //!< Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz] \since QGIS 3.40
+      SAR_K_Band = 28,        //!< Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz] \since QGIS 3.40
+      SAR_Ku_Band = 30,       //!< Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz] \since QGIS 3.40
+      SAR_X_Band = 31,        //!< Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz] \since QGIS 3.40
+      SAR_C_Band = 32,        //!< Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz] \since QGIS 3.40
+      SAR_S_Band = 33,        //!< Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz] \since QGIS 3.40
+      SAR_L_Band = 34,        //!< Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz] \since QGIS 3.40
+      SAR_P_Band = 35,        //!< Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz] \since QGIS 3.40
     };
     Q_ENUM( RasterColorInterpretation )
 
@@ -4359,7 +4546,7 @@ class CORE_EXPORT Qgis
       ProviderHintBenefitsFromResampling = 1 << 3, //!< Provider benefits from resampling and should apply user default resampling settings \since QGIS 3.10
       ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) \since QGIS 3.16
       ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
-      DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
+      DpiDependentData = 1 << 6, //!< Provider's rendering is dependent on requested pixel size of the viewport \since QGIS 3.20
       NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table \since QGIS 3.30
       BuildPyramids = 1 << 8, //!< Supports building of pyramids (overviews) (since QGIS 3.38 -- this is a replacement for RasterInterfaceCapability::BuildPyramids)
     };
@@ -4490,6 +4677,45 @@ class CORE_EXPORT Qgis
       Centimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceCentimeters ), //!< Centimeters
       Millimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMillimeters ), //!< Millimeters
       Inches, //!< Inches \since QGIS 3.32
+      ChainsInternational, //!< International chains \since QGIS 3.40
+      ChainsBritishBenoit1895A, //!< British chains (Benoit 1895 A) \since QGIS 3.40
+      ChainsBritishBenoit1895B, //!< British chains (Benoit 1895 B) \since QGIS 3.40
+      ChainsBritishSears1922Truncated, //!< British chains (Sears 1922 truncated) \since QGIS 3.40
+      ChainsBritishSears1922, //!< British chains (Sears 1922) \since QGIS 3.40
+      ChainsClarkes, //!< Clarke's chains \since QGIS 3.40
+      ChainsUSSurvey, //!< US Survey chains \since QGIS 3.40
+      FeetBritish1865, //!< British feet (1865) \since QGIS 3.40
+      FeetBritish1936, //!< British feet (1936) \since QGIS 3.40
+      FeetBritishBenoit1895A, //!< British feet (Benoit 1895 A) \since QGIS 3.40
+      FeetBritishBenoit1895B, //!< British feet (Benoit 1895 B) \since QGIS 3.40
+      FeetBritishSears1922Truncated, //!< British feet (Sears 1922 truncated) \since QGIS 3.40
+      FeetBritishSears1922, //!< British feet (Sears 1922) \since QGIS 3.40
+      FeetClarkes, //!< Clarke's feet \since QGIS 3.40
+      FeetGoldCoast, //!< Gold Coast feet \since QGIS 3.40
+      FeetIndian, //!< Indian (geodetic) feet \since QGIS 3.40
+      FeetIndian1937, //!< Indian feet (1937) \since QGIS 3.40
+      FeetIndian1962, //!< Indian feet (1962) \since QGIS 3.40
+      FeetIndian1975, //!< Indian feet (1975) \since QGIS 3.40
+      FeetUSSurvey, //!< US Survey feet \since QGIS 3.40
+      LinksInternational, //!< International links \since QGIS 3.40
+      LinksBritishBenoit1895A, //!< British links (Benoit 1895 A) \since QGIS 3.40
+      LinksBritishBenoit1895B, //!< British links (Benoit 1895 B) \since QGIS 3.40
+      LinksBritishSears1922Truncated, //!< British links (Sears 1922 truncated) \since QGIS 3.40
+      LinksBritishSears1922, //!< British links (Sears 1922) \since QGIS 3.40
+      LinksClarkes, //!< Clarke's links \since QGIS 3.40
+      LinksUSSurvey, //!< US Survey links \since QGIS 3.40
+      YardsBritishBenoit1895A, //!< British yards (Benoit 1895 A) \since QGIS 3.40
+      YardsBritishBenoit1895B, //!< British yards (Benoit 1895 B) \since QGIS 3.40
+      YardsBritishSears1922Truncated, //!< British yards (Sears 1922 truncated) \since QGIS 3.40
+      YardsBritishSears1922, //!< British yards (Sears 1922) \since QGIS 3.40
+      YardsClarkes, //!< Clarke's yards \since QGIS 3.40
+      YardsIndian, //!< Indian yards \since QGIS 3.40
+      YardsIndian1937, //!< Indian yards (1937) \since QGIS 3.40
+      YardsIndian1962, //!< Indian yards (1962) \since QGIS 3.40
+      YardsIndian1975, //!< Indian yards (1975) \since QGIS 3.40
+      MilesUSSurvey, //!< US Survey miles \since QGIS 3.40
+      Fathoms, //!< Fathoms \since QGIS 3.40
+      MetersGermanLegal, //!< German legal meter \since QGIS 3.40
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( DistanceUnknownUnit ), //!< Unknown distance unit
     };
     Q_ENUM( DistanceUnit )
@@ -4671,6 +4897,19 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( PictureFormat )
 
+    /**
+     * Scale calculation logic.
+     *
+     * \since QGIS 3.40
+     */
+    enum class ScaleCalculationMethod : int
+    {
+      HorizontalTop = 0, //!< Calculate horizontally, across top of map
+      HorizontalMiddle, //!< Calculate horizontally, across midle of map
+      HorizontalBottom, //!< Calculate horizontally, across bottom of map
+      HorizontalAverage, //!< Calculate horizontally, using the average of the top, middle and bottom scales
+    };
+    Q_ENUM( ScaleCalculationMethod )
 
     /**
      * Scalebar alignment.
@@ -5363,8 +5602,10 @@ class CORE_EXPORT Qgis
      * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
+     *
+     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 4.0.
      */
-    static const double SCALE_PRECISION;
+    Q_DECL_DEPRECATED static const double SCALE_PRECISION;
 
     /**
      * Default Z coordinate value.
@@ -5443,6 +5684,7 @@ QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
@@ -5481,6 +5723,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
@@ -5497,6 +5740,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeosCreationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceDefinitionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ZonalStatistics )
@@ -5516,6 +5760,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorRenderingSimplificationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderReadFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

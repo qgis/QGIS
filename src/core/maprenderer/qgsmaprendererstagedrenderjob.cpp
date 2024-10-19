@@ -163,7 +163,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       mLabelJob.context.setPainter( painter );
       drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), painter );
       mLabelJob.complete = true;
-      mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+      mLabelJob.participatingLayers = participatingLabelLayers( mLabelingEngineV2.get() );
       mLabelJob.context.setPainter( nullptr );
     }
   }

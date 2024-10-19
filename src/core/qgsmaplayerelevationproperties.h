@@ -92,7 +92,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerElevationProperties, Property ) : int
       {
-      ZOffset, //! Z offset
+      ZOffset, //!< Z offset
       ExtrusionHeight, //!< Extrusion height
       RasterPerBandLowerElevation, //!< Lower elevation for each raster band \since QGIS 3.38
       RasterPerBandUpperElevation, //!< Upper elevation for each raster band \since QGIS 3.38

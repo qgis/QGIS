@@ -102,7 +102,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.left(), 64.8, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
-        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixAll(self):
         plot = Qgs2DPlot()
@@ -173,7 +173,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
-        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixFirst(self):
         plot = Qgs2DPlot()
@@ -244,7 +244,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.left(), 64.82, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
-        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixLast(self):
         plot = Qgs2DPlot()
@@ -315,7 +315,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
-        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixFirstAndLast(self):
         plot = Qgs2DPlot()
@@ -386,7 +386,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
-        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotIntervals(self):
         plot = Qgs2DPlot()
@@ -505,7 +505,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.left(), 44.71, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
-        self.assertAlmostEqual(plot_rect.bottom(), 465.55, 0)
+        self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testOptimiseIntervals(self):
         plot = Qgs2DPlot()

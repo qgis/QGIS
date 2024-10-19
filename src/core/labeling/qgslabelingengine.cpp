@@ -31,6 +31,9 @@
 #include "qgslabelingresults.h"
 #include "qgsfillsymbol.h"
 #include "qgsruntimeprofiler.h"
+#include "qgslabelingenginerule.h"
+
+#include <QUuid>
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
@@ -98,6 +101,22 @@ void QgsLabelingEngine::setMapSettings( const QgsMapSettings &mapSettings )
   mLayerRenderingOrderIds = mMapSettings.layerIds();
   if ( mResults )
     mResults->setMapSettings( mapSettings );
+}
+
+bool QgsLabelingEngine::prepare( QgsRenderContext &context )
+{
+  const QList<const QgsAbstractLabelingEngineRule *> rules = mMapSettings.labelingEngineSettings().rules();
+  bool res = true;
+  for ( const QgsAbstractLabelingEngineRule *rule : rules )
+  {
+    if ( !rule->active() || !rule->isAvailable() )
+      continue;
+
+    std::unique_ptr< QgsAbstractLabelingEngineRule > ruleClone( rule->clone() );
+    res = ruleClone->prepare( context ) && res;
+    mEngineRules.emplace_back( std::move( ruleClone ) );
+  }
+  return res;
 }
 
 QList< QgsMapLayer * > QgsLabelingEngine::participatingLayers() const
@@ -192,10 +211,18 @@ QStringList QgsLabelingEngine::participatingLayerIds() const
   return layers;
 }
 
-void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
+QString QgsLabelingEngine::addProvider( QgsAbstractLabelProvider *provider )
 {
   provider->setEngine( this );
   mProviders << provider;
+  const QString id = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  mProvidersById.insert( id, provider );
+  return id;
+}
+
+QgsAbstractLabelProvider *QgsLabelingEngine::providerById( const QString &id )
+{
+  return mProvidersById.value( id );
 }
 
 void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider *provider )
@@ -203,6 +230,7 @@ void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider *provider )
   int idx = mProviders.indexOf( provider );
   if ( idx >= 0 )
   {
+    mProvidersById.remove( mProvidersById.key( provider ) );
     delete mProviders.takeAt( idx );
   }
 }
@@ -278,6 +306,14 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 
   mPal->setShowPartialLabels( settings.testFlag( Qgis::LabelingFlag::UsePartialCandidates ) );
   mPal->setPlacementVersion( settings.placementVersion() );
+
+  QList< QgsAbstractLabelingEngineRule * > rules;
+  rules.reserve( static_cast< int >( mEngineRules.size() ) );
+  for ( auto &it : mEngineRules )
+  {
+    rules.append( it.get() );
+  }
+  mPal->setRules( rules );
 
   // for each provider: get labels and register them in PAL
   const double step = !mProviders.empty() ? 100.0 / mProviders.size() : 1;

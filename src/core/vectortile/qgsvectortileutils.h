@@ -18,10 +18,11 @@
 
 #include "qgis_core.h"
 
-#define SIP_NO_FILE
-
 #include <QSet>
 #include <QVariantMap>
+
+#include "qgshttpheaders.h"
+
 
 class QPointF;
 class QPolygon;
@@ -47,6 +48,13 @@ class QgsMapBoxGlStyleConversionContext;
 class CORE_EXPORT QgsVectorTileUtils
 {
   public:
+
+    /**
+     * Parses the style URL to update the source URLs in the \a uri.
+     * If \a forceUpdate is TRUE, any existing source will be updated.
+     * \since QGIS 3.40
+     */
+    static void updateUriSources( QString &uri SIP_INOUT, bool forceUpdate = false );
 
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center );
@@ -92,6 +100,16 @@ class CORE_EXPORT QgsVectorTileUtils
      * \param styleUrl optional the style url
      */
     static void loadSprites( const QVariantMap &styleDefinition, QgsMapBoxGlStyleConversionContext &context, const QString &styleUrl = QString() );
+
+  private:
+    //! Parses the style URL to get a list of named source URLs.
+    static QMap<QString, QString> parseStyleSourceUrl( const QString &styleUrl, const QgsHttpHeaders &headers = QgsHttpHeaders(), const QString &authCfg = QString() );
+
+    //! Returns the tiles URLs of a source
+    static QVariantList parseStyleSourceContentUrl( const QString &sourceUrl, const QgsHttpHeaders &headers = QgsHttpHeaders(), const QString &authCfg = QString() );
+
+    friend class TestQgsVectorTileUtils;
+
 };
 
 #endif // QGSVECTORTILEUTILS_H

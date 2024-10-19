@@ -46,11 +46,11 @@ Writes the contents of vector layer to a different datasource.
 :param destCRS: destination CRS, or an invalid (default constructed) CRS if
                 not available
 :param onlySelected: set to ``True`` to export only selected features
-:param errorMessage: if non-null, will be set to any error messages
 :param options: optional provider dataset options
 :param feedback: optional feedback object to show progress and cancellation of export
 
-:return: NoError for a successful export, or encountered error
+:return: - NoError for a successful export, or encountered error
+         - errorMessage: if non-null, any error messages
 %End
 
     QgsVectorLayerExporter( const QString &uri,

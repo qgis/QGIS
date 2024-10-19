@@ -44,6 +44,7 @@ class TestQgs3DUtils : public QgsTest
     void testQgsBox3DDistanceTo();
     void testQgsRay3D();
     void testExportToObj();
+    void testDefinesToShaderCode();
   private:
 };
 
@@ -376,6 +377,70 @@ void TestQgs3DUtils::testExportToObj()
     QString actual = out.readAll();
     QGSCOMPARELONGSTR( "export_obj", "sparse_faces.obj", actual.toUtf8() );
   }
+}
+
+void TestQgs3DUtils::testDefinesToShaderCode()
+{
+  // load the different files
+  const QByteArray shaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample.frag" ) ) );
+  QVERIFY( !shaderCode.isEmpty() );
+
+  const QByteArray shaderCodeWithDefines = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_with_defines.frag" ) ) );
+  QVERIFY( !shaderCodeWithDefines.isEmpty() );
+
+  const QByteArray shaderCodeNoVersion = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_no_version.frag" ) ) );
+  QVERIFY( !shaderCodeNoVersion.isEmpty() );
+
+  const QByteArray shaderCodeNoVersionWithDefines = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_no_version_with_defines.frag" ) ) );
+  QVERIFY( !shaderCodeNoVersionWithDefines.isEmpty() );
+
+  const QByteArray shaderCodeWithBaseColorMap = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_with_basecolormap.frag" ) ) );
+  QVERIFY( !shaderCodeWithBaseColorMap.isEmpty() );
+
+  const QStringList definesList( {"BASE_COLOR_MAP", "ROUGHNESS_MAP"} );
+
+
+  // =============================================
+  // =========== test addDefinesToShaderCode
+
+  // test a shader code
+  const QByteArray actualShaderCodeWithDefines = Qgs3DUtils::addDefinesToShaderCode( shaderCode, definesList );
+  QCOMPARE( actualShaderCodeWithDefines, shaderCodeWithDefines );
+
+  // shader code without a #version - this should not happen
+  // in that case the #define is inserted at the beginning
+  const QByteArray actualShaderCodeNoVersionWithDefines = Qgs3DUtils::addDefinesToShaderCode( shaderCodeNoVersion, definesList );
+  QCOMPARE( actualShaderCodeNoVersionWithDefines, shaderCodeNoVersionWithDefines );
+
+  // input is empty
+  // the result only contains the #define code
+  const QByteArray onlyDefines = Qgs3DUtils::addDefinesToShaderCode( QByteArray(), definesList );
+  QCOMPARE( onlyDefines, QByteArray( "#define BASE_COLOR_MAP\n#define ROUGHNESS_MAP\n" ) );
+
+
+  // =============================================
+  // =========== test removeDefinesFromShaderCode
+
+  // test a shader code
+  const QByteArray actualShaderCodeWithoutDefines = Qgs3DUtils::removeDefinesFromShaderCode( shaderCodeWithDefines, definesList );
+  QCOMPARE( actualShaderCodeWithoutDefines, shaderCode );
+
+  // remove defines one by one
+  const   QByteArray actualShaderCodeWithBaseColorMap = Qgs3DUtils::removeDefinesFromShaderCode( shaderCodeWithDefines, QStringList {"ROUGHNESS_MAP"} );
+  QCOMPARE( actualShaderCodeWithBaseColorMap, shaderCodeWithBaseColorMap );
+
+  const QByteArray actualShaderCode = Qgs3DUtils::removeDefinesFromShaderCode( actualShaderCodeWithBaseColorMap, QStringList {"BASE_COLOR_MAP"} );
+  QCOMPARE( actualShaderCode, shaderCode );
+
+  // shader code without a #version - this should not happen
+  // define macros should be removed
+  const QByteArray actualShaderCodeNoVersionWithoutDefines = Qgs3DUtils::removeDefinesFromShaderCode( shaderCodeNoVersionWithDefines, definesList );
+  QCOMPARE( actualShaderCodeNoVersionWithoutDefines, shaderCodeNoVersion );
+
+  // input is empty
+  // result should be empty
+  const QByteArray actualEmpty = Qgs3DUtils::removeDefinesFromShaderCode( QByteArray(), definesList );
+  QCOMPARE( actualEmpty, QByteArray() );
 }
 
 

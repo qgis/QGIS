@@ -141,7 +141,7 @@ QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Q
   return transformedVertex;
 }
 
-QgsMeshVertex QgsTriangularMesh::calculateCentroid( const QgsMeshFace &nativeFace )
+QgsMeshVertex QgsTriangularMesh::calculateCentroid( const QgsMeshFace &nativeFace ) const
 {
   return QgsMeshUtils::centroid( nativeFace, mTriangularMesh.vertices );
 }
@@ -690,7 +690,7 @@ bool QgsMeshUtils::isInTriangleFace( const QgsPointXY point, const QgsMeshFace &
   QVector<QgsMeshVertex> triangle( 3 );
   for ( int i = 0; i < 3; ++i )
   {
-    if ( face[i] > vertices.count() )
+    if ( face[i] >= vertices.count() )
       return false;
     triangle[i] = vertices[face[i]];
   }

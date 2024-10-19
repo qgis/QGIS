@@ -32,6 +32,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvariantutils.h"
 #include "qgsfields.h"
+#include "qgsmessagebar.h"
 
 
 // FTC = FieldTypeCombo
@@ -75,9 +76,10 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   populateFields();
   populateOutputFieldTypes();
 
-  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setOkButtonState );
+  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setDialogButtonState );
   connect( mOutputFieldWidthSpinBox, &QAbstractSpinBox::editingFinished, this, &QgsFieldCalculator::setPrecisionMinMax );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::showHelp );
+  connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsFieldCalculator::calculate );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs(), QgsProject::instance()->transformContext() );
@@ -161,10 +163,21 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   setWindowTitle( tr( "%1 — Field Calculator" ).arg( mVectorLayer->name() ) );
 
-  setOkButtonState();
+  // Init the message bar instance
+  mMsgBar = new QgsMessageBar( this );
+  mMsgBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  this->vLayout->insertWidget( 0, mMsgBar );
+
+  setDialogButtonState();
 }
 
 void QgsFieldCalculator::accept()
+{
+  calculate();
+  QDialog::accept();
+}
+
+void QgsFieldCalculator::calculate()
 {
   builder->expressionTree()->saveToRecent( builder->expressionText(), QStringLiteral( "fieldcalc" ) );
 
@@ -338,8 +351,15 @@ void QgsFieldCalculator::accept()
     }
 
     mVectorLayer->endEditCommand();
+    if ( mNewFieldGroupBox->isChecked() )
+    {
+      pushMessage( tr( "Field \"%1\" created successfully" ).arg( mOutputFieldNameLineEdit->text() ) );
+    }
+    else if ( mUpdateExistingGroupBox->isChecked() )
+    {
+      pushMessage( tr( "Field \"%1\" updated successfully" ).arg( mExistingFieldComboBox->currentText() ) )   ;
+    }
   }
-  QDialog::accept();
 }
 
 void QgsFieldCalculator::populateOutputFieldTypes()
@@ -431,7 +451,7 @@ void QgsFieldCalculator::mNewFieldGroupBox_toggled( bool on )
 void QgsFieldCalculator::mUpdateExistingGroupBox_toggled( bool on )
 {
   mNewFieldGroupBox->setChecked( !on );
-  setOkButtonState();
+  setDialogButtonState();
 
   if ( on )
   {
@@ -464,7 +484,7 @@ void QgsFieldCalculator::mCreateVirtualFieldCheckbox_stateChanged( int state )
 void QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged( const QString &text )
 {
   Q_UNUSED( text )
-  setOkButtonState();
+  setDialogButtonState();
 }
 
 
@@ -536,27 +556,37 @@ void QgsFieldCalculator::populateFields()
   mExistingFieldComboBox->setCurrentIndex( -1 );
 }
 
-void QgsFieldCalculator::setOkButtonState()
+void QgsFieldCalculator::setDialogButtonState()
 {
-  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  QList<QPushButton *> buttons =
+  {
+    mButtonBox->button( QDialogButtonBox::Ok ),
+    mButtonBox->button( QDialogButtonBox::Apply )
+  };
+
+  bool enableButtons = true;
+  QString tooltip;
 
   if ( ( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() )
        && mOutputFieldNameLineEdit->text().isEmpty() )
   {
-    okButton->setToolTip( tr( "Please enter a field name" ) );
-    okButton->setEnabled( false );
-    return;
+    tooltip = tr( "Please enter a field name" );
+    enableButtons = false;
   }
-
-  if ( !builder->isExpressionValid() )
+  else if ( !builder->isExpressionValid() )
   {
-    okButton->setToolTip( okButton->toolTip() + tr( "\n The expression is invalid see (more info) for details" ) );
-    okButton->setEnabled( false );
-    return;
+    tooltip = tr( "The expression is invalid see \"(more info)\" for details" );
+    enableButtons = false;
   }
 
-  okButton->setToolTip( QString() );
-  okButton->setEnabled( true );
+  for ( QPushButton *button : buttons )
+  {
+    if ( button )
+    {
+      button->setEnabled( enableButtons );
+      button->setToolTip( tooltip );
+    }
+  }
 }
 
 void QgsFieldCalculator::setPrecisionMinMax()
@@ -591,4 +621,9 @@ QgsField QgsFieldCalculator::fieldDefinition()
                    QString(),
                    static_cast< QMetaType::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_SUBTYPE_IDX ).toInt() )
                  );
+}
+
+void QgsFieldCalculator::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
+{
+  mMsgBar->pushMessage( text, level, duration );
 }

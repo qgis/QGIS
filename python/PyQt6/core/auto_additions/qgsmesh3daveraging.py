@@ -3,8 +3,8 @@ QgsMesh3DAveragingMethod.MultiLevelsAveragingMethod = QgsMesh3DAveragingMethod.M
 QgsMesh3DAveragingMethod.SigmaAveragingMethod = QgsMesh3DAveragingMethod.Method.SigmaAveragingMethod
 QgsMesh3DAveragingMethod.RelativeHeightAveragingMethod = QgsMesh3DAveragingMethod.Method.RelativeHeightAveragingMethod
 QgsMesh3DAveragingMethod.ElevationAveragingMethod = QgsMesh3DAveragingMethod.Method.ElevationAveragingMethod
-QgsMesh3DAveragingMethod.createFromXml = staticmethod(QgsMesh3DAveragingMethod.createFromXml)
 try:
+    QgsMesh3DAveragingMethod.createFromXml = staticmethod(QgsMesh3DAveragingMethod.createFromXml)
     QgsMesh3DAveragingMethod.__group__ = ['mesh']
 except NameError:
     pass

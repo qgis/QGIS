@@ -16,13 +16,12 @@
  ***************************************************************************/
 
 #include "qgsmeshterraingenerator.h"
-
-#include <Qt3DRender/QMaterial>
+#include "qgsmeshterraintileloader_p.h"
 
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgsmeshlayerutils.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
@@ -93,7 +92,7 @@ void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
     disconnect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
 
   mLayer = QgsMapLayerRef( layer );
-  mIsValid = layer != nullptr;
+  mIsValid = layer;
   updateTriangularMesh();
   if ( mIsValid )
   {

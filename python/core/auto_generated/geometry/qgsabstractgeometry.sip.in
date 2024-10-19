@@ -437,11 +437,11 @@ Returns the point corresponding to a specified vertex id
 Searches for the closest segment of the geometry to a given point.
 
 :param pt: specifies the point to find closest segment to
-:param segmentPt: storage for the closest point within the geometry
-:param vertexAfter: storage for the ID of the vertex at the end of the closest segment
 :param epsilon: epsilon for segment snapping
 
 :return: - squared distance to closest segment or negative value on error
+         - segmentPt: the closest point within the geometry
+         - vertexAfter: the ID of the vertex at the end of the closest segment
          - leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not be determined, e.g. point exactly on a line) ``False`` if point is to right of segment)
 %End
 
@@ -784,7 +784,7 @@ Checks validity of the geometry, and returns ``True`` if the geometry is valid.
               (corresponding to :py:class:`Qgis`.GeometryValidityFlags).
 
 :return: - ``True`` if geometry is valid
-         - error: will be set to the validity error message
+         - error: the validity error message
 
 .. versionadded:: 3.8
 %End

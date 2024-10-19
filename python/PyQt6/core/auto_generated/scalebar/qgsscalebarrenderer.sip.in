@@ -55,6 +55,13 @@ custom labeling.
 
       Flags flags;
 
+      bool isValid() const;
+%Docstring
+Returns ``True`` if the context has valid settings.
+
+.. versionadded:: 3.40
+%End
+
     };
 
     QgsScaleBarRenderer();

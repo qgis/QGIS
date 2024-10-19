@@ -1,6 +1,6 @@
 # The following has been generated automatically from src/core/raster/qgsrasterlayerutils.h
-QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange = staticmethod(QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange)
 try:
+    QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange = staticmethod(QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange)
     QgsRasterLayerUtils.__group__ = ['raster']
 except NameError:
     pass

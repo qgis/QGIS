@@ -124,8 +124,36 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
 
-    // init renderer
+    const qreal dpmm = mContext.dotsPerMm();
+
     QgsLegendSettings settings = legendSettings();
+
+    // adjust the size settings if there any WMS cascading layers to renderer
+    const auto layersToRender = mContext.layersToRender();
+    for ( const auto &layer : std::as_const( layersToRender ) )
+    {
+      // If it is a cascading WMS layer, get legend node image size
+      if ( layer->dataProvider()->name() == QStringLiteral( "wms" ) )
+      {
+        if ( QgsWmsLegendNode *layerNode = qobject_cast<QgsWmsLegendNode *>( model.findLegendNode( layer->id(), QString() ) ) )
+        {
+          const auto image { layerNode->getLegendGraphicBlocking( ) };
+          if ( ! image.isNull() )
+          {
+            // Check that we are not exceeding the maximum size
+            if ( mContext.isValidWidthHeight( image.width(), image.height() ) )
+            {
+              const double w = image.width() / dpmm;
+              const double h = image.height() / dpmm;
+              const QSizeF newWmsSize { w, h };
+              settings.setWmsLegendSize( newWmsSize );
+            }
+          }
+        }
+      }
+    }
+
+    // init renderer
     QgsLegendRenderer renderer( &model, settings );
 
     // create context
@@ -146,7 +174,6 @@ namespace QgsWms
 
     // create image according to context
     std::unique_ptr<QImage> image;
-    const qreal dpmm = mContext.dotsPerMm();
     const QSizeF minSize = renderer.minimumSize( &context );
     const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
     if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
@@ -261,7 +288,7 @@ namespace QgsWms
         if ( vLayer->renderer() )
         {
           const QString ruleKey { legendNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
-          bool ok;
+          bool ok = false;
           const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
           if ( ok )
           {
@@ -691,7 +718,7 @@ namespace QgsWms
       {
         exportSettings.exportThemes = exportThemes;
       }
-      exportSettings.writeGeoPdf = mWmsParameters.writeGeoPdf();
+      exportSettings.writeGeoPdf = mWmsParameters.writeGeospatialPdf();
       exportSettings.textRenderFormat = mWmsParameters.pdfTextRenderFormat();
       exportSettings.forceVectorOutput = mWmsParameters.pdfForceVectorOutput();
       exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
@@ -1201,7 +1228,7 @@ namespace QgsWms
     ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
     ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
 
-    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails;
+    QgsAbstractGeospatialPdfExporter::ExportDetails pdfExportDetails;
     if ( mWmsParameters.pdfExportMetadata() )
     {
       pdfExportDetails.author = QgsProject::instance()->metadata().author();
@@ -1214,8 +1241,8 @@ namespace QgsWms
     }
     pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
     pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
-    const bool geoPdf = mWmsParameters.pdfAppendGeoreference();
-    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
+    const bool geospatialPdf = mWmsParameters.pdfAppendGeoreference();
+    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geospatialPdf, pdfExportDetails );
     if ( mWmsParameters.pdfAppendGeoreference() )
     {
       pdf->setSaveWorldFile( true );
@@ -1571,7 +1598,8 @@ namespace QgsWms
     {
       featuresRect.reset( new QgsRectangle() );
     }
-    else if ( filterGeomDefined )
+
+    if ( filterGeomDefined )
     {
       filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) ) );
     }
@@ -2388,7 +2416,7 @@ namespace QgsWms
 
       //numbers are OK
       bool isNumeric;
-      tokenIt->toDouble( &isNumeric );
+      ( void )tokenIt->toDouble( &isNumeric );
       if ( isNumeric )
       {
         continue;

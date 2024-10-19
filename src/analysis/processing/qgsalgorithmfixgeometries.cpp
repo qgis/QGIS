@@ -109,7 +109,7 @@ bool QgsFixGeometriesAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
   if ( mMethod == Qgis::MakeValidMethod::Structure )
   {
-    throw QgsProcessingException( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" );
+    throw QgsProcessingException( QObject::tr( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
   }
 #endif
   return true;

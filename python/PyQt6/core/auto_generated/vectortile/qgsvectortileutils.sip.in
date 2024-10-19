@@ -1,0 +1,102 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortileutils.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+class QgsVectorTileUtils
+{
+%Docstring(signature="appended")
+Random utility functions for working with vector tiles
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortileutils.h"
+%End
+  public:
+
+    static void updateUriSources( QString &uri /In,Out/, bool forceUpdate = false );
+%Docstring
+Parses the style URL to update the source URLs in the ``uri``.
+If ``forceUpdate`` is ``True``, any existing source will be updated.
+
+.. versionadded:: 3.40
+%End
+
+    static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center );
+%Docstring
+Orders tile requests according to the distance from view center (given in tile matrix coords)
+%End
+
+    static QPolygon tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp );
+%Docstring
+Returns polygon (made by four corners of the tile) in screen coordinates
+
+:raises QgsCsException: 
+%End
+
+    static QgsFields makeQgisFields( const QSet<QString> &flds );
+%Docstring
+Returns :py:class:`QgsFields` instance based on the set of field names
+%End
+
+    static double scaleToZoom( double mapScale, double z0Scale = 559082264.0287178 );
+%Docstring
+Finds zoom level given map scale denominator.
+
+The ``z0Scale`` argument gives the scale denominator at zoom level 0, where the default
+value corresponds to GoogleCRS84Quad tile matrix set
+
+.. versionadded:: 3.16
+%End
+
+    static int scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom, double z0Scale = 559082264.0287178 );
+%Docstring
+Finds the best fitting zoom level given a map scale denominator and allowed zoom level range.
+
+The ``z0Scale`` argument gives the scale denominator at zoom level 0, where the default
+value corresponds to GoogleCRS84Quad tile matrix set.
+%End
+    static QgsVectorLayer *makeVectorLayerForTile( QgsVectorTileLayer *mvt, QgsTileXYZ tileID, const QString &layerName );
+%Docstring
+Returns a temporary vector layer for given sub-layer of tile in vector tile layer
+%End
+    static QString formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile, const QgsTileMatrix &tileMatrix );
+%Docstring
+Returns formatted tile URL string replacing {x}, {y}, {z} placeholders (or {-y} instead of {y} for TMS convention)
+%End
+    static bool checkXYZUrlTemplate( const QString &url );
+%Docstring
+Checks whether the URL template string is correct (contains {x}, {y} / {-y}, {z} placeholders)
+%End
+
+    static void loadSprites( const QVariantMap &styleDefinition, QgsMapBoxGlStyleConversionContext &context, const QString &styleUrl = QString() );
+%Docstring
+Downloads the sprite image and sets it to the conversion context
+
+:param styleDefinition: the style definition map
+:param context: the style conversion context
+:param styleUrl: optional the style url
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortileutils.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

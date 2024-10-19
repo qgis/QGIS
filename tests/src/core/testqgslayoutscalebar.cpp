@@ -65,6 +65,7 @@ class TestQgsLayoutScaleBar : public QgsTest
     void hollow();
     void hollowDefaults();
     void tickSubdivisions();
+    void methodTop();
 };
 
 void TestQgsLayoutScaleBar::initTestCase()
@@ -904,6 +905,175 @@ void TestQgsLayoutScaleBar::tickSubdivisions()
 
   scalebar->setStyle( QStringLiteral( "Line Ticks Middle" ) );
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "layoutscalebar_tick_subdivisions" ), &l );
+}
+
+void TestQgsLayoutScaleBar::methodTop()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
+  map1->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map1->setFrameEnabled( false );
+  map1->setVisibility( false );
+  l.addLayoutItem( map1 );
+  // only scale at center of map can be calculated
+  map1->setExtent( QgsRectangle( -100, -100, 100, 100 ) );
+  map1->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  QgsLayoutItemScaleBar *scalebar1 = new QgsLayoutItemScaleBar( &l );
+  scalebar1->attemptSetSceneRect( QRectF( 20, 10, 50, 20 ) );
+  l.addLayoutItem( scalebar1 );
+  scalebar1->setLinkedMap( map1 );
+  scalebar1->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar1->setUnits( Qgis::DistanceUnit::Kilometers );
+  scalebar1->setUnitsPerSegment( 10000 );
+  scalebar1->setNumberOfSegmentsLeft( 0 );
+  scalebar1->setNumberOfSegments( 2 );
+  scalebar1->setHeight( 5 );
+  scalebar1->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
+  scalebar1->setMethod( Qgis::ScaleCalculationMethod::HorizontalMiddle );
+  Q_NOWARN_DEPRECATED_PUSH
+  scalebar1->setLineWidth( 1.0 );
+  Q_NOWARN_DEPRECATED_POP
+  qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar1->numericFormat() ) )->setShowThousandsSeparator( false );
+  scalebar1->setStyle( QStringLiteral( "Single Box" ) );
+
+  QgsLayoutItemScaleBar *scalebar1A = new QgsLayoutItemScaleBar( &l );
+  scalebar1A->attemptSetSceneRect( QRectF( 20, 30, 50, 20 ) );
+  l.addLayoutItem( scalebar1A );
+  scalebar1A->setLinkedMap( map1 );
+  scalebar1A->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar1A->setUnits( Qgis::DistanceUnit::Kilometers );
+  scalebar1A->setUnitsPerSegment( 10000 );
+  scalebar1A->setNumberOfSegmentsLeft( 0 );
+  scalebar1A->setNumberOfSegments( 2 );
+  scalebar1A->setHeight( 5 );
+  scalebar1A->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
+  scalebar1A->setMethod( Qgis::ScaleCalculationMethod::HorizontalAverage );
+  Q_NOWARN_DEPRECATED_PUSH
+  scalebar1A->setLineWidth( 1.0 );
+  Q_NOWARN_DEPRECATED_POP
+  qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar1A->numericFormat() ) )->setShowThousandsSeparator( false );
+  scalebar1A->setStyle( QStringLiteral( "Single Box" ) );
+
+  QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
+  map2->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map2->setFrameEnabled( false );
+  map2->setVisibility( false );
+  l.addLayoutItem( map2 );
+  // only scale at top of map can be calculated
+  map2->setExtent( QgsRectangle( -100, -280, 100, -80 ) );
+  map2->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  QgsLayoutItemScaleBar *scalebar2 = new QgsLayoutItemScaleBar( &l );
+  scalebar2->attemptSetSceneRect( QRectF( 20, 50, 50, 20 ) );
+  l.addLayoutItem( scalebar2 );
+  scalebar2->setLinkedMap( map2 );
+  scalebar2->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar2->setUnits( Qgis::DistanceUnit::Kilometers );
+  scalebar2->setUnitsPerSegment( 1000 );
+  scalebar2->setNumberOfSegmentsLeft( 0 );
+  scalebar2->setNumberOfSegments( 2 );
+  scalebar2->setHeight( 5 );
+  scalebar2->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
+  scalebar2->setMethod( Qgis::ScaleCalculationMethod::HorizontalTop );
+  Q_NOWARN_DEPRECATED_PUSH
+  scalebar2->setLineWidth( 1.0 );
+  Q_NOWARN_DEPRECATED_POP
+  qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar2->numericFormat() ) )->setShowThousandsSeparator( false );
+  scalebar2->setStyle( QStringLiteral( "Single Box" ) );
+
+  QgsLayoutItemScaleBar *scalebar2A = new QgsLayoutItemScaleBar( &l );
+  scalebar2A->attemptSetSceneRect( QRectF( 20, 70, 50, 20 ) );
+  l.addLayoutItem( scalebar2A );
+  scalebar2A->setLinkedMap( map2 );
+  scalebar2A->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar2A->setUnits( Qgis::DistanceUnit::Kilometers );
+  scalebar2A->setUnitsPerSegment( 1000 );
+  scalebar2A->setNumberOfSegmentsLeft( 0 );
+  scalebar2A->setNumberOfSegments( 2 );
+  scalebar2A->setHeight( 5 );
+  scalebar2A->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
+  scalebar2A->setMethod( Qgis::ScaleCalculationMethod::HorizontalAverage );
+  Q_NOWARN_DEPRECATED_PUSH
+  scalebar2A->setLineWidth( 1.0 );
+  Q_NOWARN_DEPRECATED_POP
+  qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar2A->numericFormat() ) )->setShowThousandsSeparator( false );
+  scalebar2A->setStyle( QStringLiteral( "Single Box" ) );
+
+  QgsLayoutItemMap *map3 = new QgsLayoutItemMap( &l );
+  map3->attemptSetSceneRect( QRectF( 20, 90, 150, 150 ) );
+  map3->setFrameEnabled( false );
+  map3->setVisibility( false );
+  l.addLayoutItem( map3 );
+  // only scale at bottom of map can be calculated
+  map3->setExtent( QgsRectangle( -100, 80, 100, 280 ) );
+  map3->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  QgsLayoutItemScaleBar *scalebar3 = new QgsLayoutItemScaleBar( &l );
+  scalebar3->attemptSetSceneRect( QRectF( 20, 90, 50, 20 ) );
+  l.addLayoutItem( scalebar3 );
+  scalebar3->setLinkedMap( map3 );
+  scalebar3->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar3->setUnits( Qgis::DistanceUnit::Kilometers );
+  scalebar3->setUnitsPerSegment( 1000 );
+  scalebar3->setNumberOfSegmentsLeft( 0 );
+  scalebar3->setNumberOfSegments( 2 );
+  scalebar3->setHeight( 5 );
+  scalebar3->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
+  scalebar3->setMethod( Qgis::ScaleCalculationMethod::HorizontalBottom );
+  Q_NOWARN_DEPRECATED_PUSH
+  scalebar3->setLineWidth( 1.0 );
+  Q_NOWARN_DEPRECATED_POP
+  qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar3->numericFormat() ) )->setShowThousandsSeparator( false );
+  scalebar3->setStyle( QStringLiteral( "Single Box" ) );
+
+  QgsLayoutItemScaleBar *scalebar3A = new QgsLayoutItemScaleBar( &l );
+  scalebar3A->attemptSetSceneRect( QRectF( 20, 110, 50, 20 ) );
+  l.addLayoutItem( scalebar3A );
+  scalebar3A->setLinkedMap( map3 );
+  scalebar3A->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar3A->setUnits( Qgis::DistanceUnit::Kilometers );
+  scalebar3A->setUnitsPerSegment( 1000 );
+  scalebar3A->setNumberOfSegmentsLeft( 0 );
+  scalebar3A->setNumberOfSegments( 2 );
+  scalebar3A->setHeight( 5 );
+  scalebar3A->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
+  scalebar3A->setMethod( Qgis::ScaleCalculationMethod::HorizontalAverage );
+  Q_NOWARN_DEPRECATED_PUSH
+  scalebar3A->setLineWidth( 1.0 );
+  Q_NOWARN_DEPRECATED_POP
+  qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar3A->numericFormat() ) )->setShowThousandsSeparator( false );
+  scalebar3A->setStyle( QStringLiteral( "Single Box" ) );
+
+  QgsLayoutItemMap *map4 = new QgsLayoutItemMap( &l );
+  map4->attemptSetSceneRect( QRectF( 20, 90, 150, 150 ) );
+  map4->setFrameEnabled( false );
+  map4->setVisibility( false );
+  l.addLayoutItem( map4 );
+  // scale is valid everywhere
+  map4->setExtent( QgsRectangle( -80, -80, 80, 80 ) );
+  map4->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  QgsLayoutItemScaleBar *scalebar4 = new QgsLayoutItemScaleBar( &l );
+  scalebar4->attemptSetSceneRect( QRectF( 20, 130, 50, 20 ) );
+  l.addLayoutItem( scalebar4 );
+  scalebar4->setLinkedMap( map4 );
+  scalebar4->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar4->setUnits( Qgis::DistanceUnit::Kilometers );
+  scalebar4->setUnitsPerSegment( 5000 );
+  scalebar4->setNumberOfSegmentsLeft( 0 );
+  scalebar4->setNumberOfSegments( 2 );
+  scalebar4->setHeight( 5 );
+  scalebar4->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
+  scalebar4->setMethod( Qgis::ScaleCalculationMethod::HorizontalAverage );
+  Q_NOWARN_DEPRECATED_PUSH
+  scalebar4->setLineWidth( 1.0 );
+  Q_NOWARN_DEPRECATED_POP
+  qgis::down_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar4->numericFormat() ) )->setShowThousandsSeparator( false );
+  scalebar4->setStyle( QStringLiteral( "Single Box" ) );
+
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "scalebar_method" ), &l );
 }
 
 

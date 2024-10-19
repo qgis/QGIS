@@ -381,6 +381,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void toggleFullScreen( bool enabled );
 
     void addPages();
+    void showPageProperties();
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
     void undoRedoOccurredForItems( const QSet< QString > &itemUuids );
@@ -426,6 +427,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void onMapPreviewRefreshed();
     void onItemAdded( QgsLayoutItem *item );
     void onItemDestroyed( QObject *item );
+    void layoutMenuAboutToShow();
 
   private:
 
@@ -564,7 +566,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     bool showFileSizeWarning();
     bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
     bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings );
-    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeoPdfExport = true, const QString &geoPdfReason = QString() );
+    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeospatialPdfExport = true, const QString &geospatialPdfReason = QString() );
 
     void toggleAtlasActions( bool enabled );
 

@@ -4,7 +4,7 @@
 #                    Alexander Bruy (alexander.bruy@gmail.com),
 #                    Maxim Dubinin (sim@gis-lab.info)
 #
-# Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2024 Tom Kralidis (tomkralidis@gmail.com)
 # Copyright (C) 2014 Angelos Tzotsos (tzotsos@gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
@@ -35,13 +35,12 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from jinja2 import Environment, FileSystemLoader
 
+from qgis.core import Qgis, QgsMessageLog, QgsSettings
 from qgis.PyQt.QtCore import QUrl, QUrlQuery
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
-from qgis.core import Qgis, QgsSettings
-
-LOGGER = logging.getLogger('MetaSearch')
+LOGGER = QgsMessageLog()
 
 
 class StaticContext:
@@ -167,3 +166,9 @@ def clean_ows_url(url):
         url.setQuery(query_string)
 
     return url.toString()
+
+
+def log_message(message, level=Qgis.MessageLevel.Info):
+    """helper function to emit logging messages"""
+
+    LOGGER.logMessage(message, 'MetaSearch', level)

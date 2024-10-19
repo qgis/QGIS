@@ -228,12 +228,14 @@ void QgsLayoutItemMap::setExtent( const QgsRectangle &extent )
   //recalculate data defined scale and extents, since that may override extent
   refreshMapExtents();
 
-  //adjust height
-  QRectF currentRect = rect();
-
-  double newHeight = currentRect.width() * mExtent.height() / mExtent.width();
-
-  attemptSetSceneRect( QRectF( pos().x(), pos().y(), currentRect.width(), newHeight ) );
+  //adjust height, if possible
+  if ( mExtent.isFinite() && !mExtent.isEmpty() )
+  {
+    const QRectF currentRect = rect();
+    const double newHeight = mExtent.width() == 0 ? 0
+                             : currentRect.width() * mExtent.height() / mExtent.width();
+    attemptSetSceneRect( QRectF( pos().x(), pos().y(), currentRect.width(), newHeight ) );
+  }
   update();
 }
 
@@ -3015,7 +3017,7 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
   QgsGeometry g = mLayout->reportContext().currentGeometry( crs() );
   // Rotating the geometry, so the bounding box is correct wrt map rotation
-  if ( mEvaluatedMapRotation != 0.0 )
+  if ( !g.boundingBox().isEmpty() && mEvaluatedMapRotation != 0.0 )
   {
     QgsPointXY prevCenter = g.boundingBox().center();
     g.rotate( mEvaluatedMapRotation, g.boundingBox().center() );

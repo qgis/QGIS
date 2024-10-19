@@ -517,13 +517,13 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
             "links", {
               {
                 { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) )  },
-                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
                 { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
                 { "title", title + " as GeoJSON" }
               },
               {
                 { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) )  },
-                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
                 { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML )  },
                 { "title", title + " as HTML" }
               }/* TODO: not sure what these "concepts" are about, neither if they are mandatory

@@ -1098,7 +1098,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "nodes_to_points collection 1" ) << "geom_to_wkt(nodes_to_points(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))')))" << false
           << QVariant( QStringLiteral( "MultiPoint ((0 1),(0 0),(1 0),(1 1))" ) );
       QTest::newRow( "nodes_to_points collection 2" ) << "geom_to_wkt(nodes_to_points(geom_from_wkt('GEOMETRYCOLLECTION(POINTZM(0 1 2 3), POINTZM(0 0 3 4), POINTZM(1 1 5 6), POLYGONZM((-1 -1 7 8, 4 0 1 2, 4 2 7 6, 0 2 1 3, -1 -1 7 8),(-0.1 -0.1 5 4, 0.4 0 9 8, 0.4 0.2 7 10, 0 0.2 0 0, -0.1 -0.1 5 4),(-1 -1 0 0, 4 0 0 1, 4 2 1 2, 0 2 2 3, -1 -1 0 0)), POINTZM(1 0 1 2))')))" << false
-          << QVariant( QStringLiteral( "MultiPointZM ((0 1 2 3),(0 0 3 4),(1 1 5 6),(-1 -1 7 8),(4 0 1 2),(4 2 7 6),(0 2 1 3),(-1 -1 7 8),(-0.1 -0.1 5 4),(0.4 0 9 8),(0.4 0.2 7 10),(0 0.2 0 0),(-0.1 -0.1 5 4),(-1 -1 0 0),(4 0 0 1),(4 2 1 2),(0 2 2 3),(-1 -1 0 0),(1 0 1 2))" ) );
+          << QVariant( QStringLiteral( "MultiPoint ZM ((0 1 2 3),(0 0 3 4),(1 1 5 6),(-1 -1 7 8),(4 0 1 2),(4 2 7 6),(0 2 1 3),(-1 -1 7 8),(-0.1 -0.1 5 4),(0.4 0 9 8),(0.4 0.2 7 10),(0 0.2 0 0),(-0.1 -0.1 5 4),(-1 -1 0 0),(4 0 0 1),(4 2 1 2),(0 2 2 3),(-1 -1 0 0),(1 0 1 2))" ) );
       QTest::newRow( "nodes_to_points empty collection" ) << "geom_to_wkt(nodes_to_points(geom_from_wkt('GEOMETRYCOLLECTION()')))" << false <<
           QVariant( QStringLiteral( "MultiPoint EMPTY" ) );
       QTest::newRow( "nodes_to_points no close polygon" ) << "geom_to_wkt(nodes_to_points(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'),true))" << false << QVariant( QStringLiteral( "MultiPoint ((-1 -1),(4 0),(4 2),(0 2))" ) );
@@ -1119,7 +1119,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "segments_to_lines collection 1" ) << "geom_to_wkt(segments_to_lines(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))')))" << false
           << QVariant( QStringLiteral( "MultiLineString EMPTY" ) );
       QTest::newRow( "segments_to_lines collection 2" ) << "geom_to_wkt(segments_to_lines(geom_from_wkt('GEOMETRYCOLLECTION(POINTZM(0 1 2 3), LINESTRINGZM(0 0 1 2, 1 1 3 4, 2 2 5 6), POINTZM(1 1 5 6), POLYGONZM((-1 -1 7 8, 4 0 1 2, 4 2 7 6, 0 2 1 3, -1 -1 7 8)), POINTZM(1 0 1 2))')))" << false
-          << QVariant( QStringLiteral( "MultiLineStringZM ((0 0 1 2, 1 1 3 4),(1 1 3 4, 2 2 5 6),(-1 -1 7 8, 4 0 1 2),(4 0 1 2, 4 2 7 6),(4 2 7 6, 0 2 1 3),(0 2 1 3, -1 -1 7 8))" ) );
+          << QVariant( QStringLiteral( "MultiLineString ZM ((0 0 1 2, 1 1 3 4),(1 1 3 4, 2 2 5 6),(-1 -1 7 8, 4 0 1 2),(4 0 1 2, 4 2 7 6),(4 2 7 6, 0 2 1 3),(0 2 1 3, -1 -1 7 8))" ) );
       QTest::newRow( "segments_to_lines empty collection" ) << "geom_to_wkt(segments_to_lines(geom_from_wkt('GEOMETRYCOLLECTION()')))" << false <<
           QVariant( QStringLiteral( "MultiLineString EMPTY" ) );
       QTest::newRow( "length line" ) << "length(geom_from_wkt('LINESTRING(0 0, 4 0)'))" << false << QVariant( 4.0 );
@@ -1312,15 +1312,15 @@ class TestQgsExpression: public QObject
       QTest::newRow( "collect_geometries array one" ) << "geom_to_wkt(collect_geometries(array(make_point(4,5))))" << false << QVariant( "MultiPoint ((4 5))" );
       QTest::newRow( "collect_geometries array two" ) << "geom_to_wkt(collect_geometries(array(make_point(4,5), make_point(6,7))))" << false << QVariant( "MultiPoint ((4 5),(6 7))" );
       QTest::newRow( "make_point" ) << "geom_to_wkt(make_point(2.2,4.4))" << false << QVariant( "Point (2.2 4.4)" );
-      QTest::newRow( "make_point z" ) << "geom_to_wkt(make_point(2.2,4.4,5.5))" << false << QVariant( "PointZ (2.2 4.4 5.5)" );
-      QTest::newRow( "make_point zm" ) << "geom_to_wkt(make_point(2.2,4.4,5.5,6.6))" << false << QVariant( "PointZM (2.2 4.4 5.5 6.6)" );
+      QTest::newRow( "make_point z" ) << "geom_to_wkt(make_point(2.2,4.4,5.5))" << false << QVariant( "Point Z (2.2 4.4 5.5)" );
+      QTest::newRow( "make_point zm" ) << "geom_to_wkt(make_point(2.2,4.4,5.5,6.6))" << false << QVariant( "Point ZM (2.2 4.4 5.5 6.6)" );
       QTest::newRow( "make_point bad" ) << "make_point(2.2)" << true << QVariant();
       QTest::newRow( "make_point bad 2" ) << "make_point(2.2, 3, 3, 3, 3)" << true << QVariant();
-      QTest::newRow( "make_point_m" ) << "geom_to_wkt(make_point_m(2.2,4.4,5.5))" << false << QVariant( "PointM (2.2 4.4 5.5)" );
+      QTest::newRow( "make_point_m" ) << "geom_to_wkt(make_point_m(2.2,4.4,5.5))" << false << QVariant( "Point M (2.2 4.4 5.5)" );
       QTest::newRow( "make_line bad" ) << "make_line(make_point(2,4))" << false << QVariant();
       QTest::newRow( "make_line" ) << "geom_to_wkt(make_line(make_point(2,4),make_point(4,6)))" << false << QVariant( "LineString (2 4, 4 6)" );
       QTest::newRow( "make_line" ) << "geom_to_wkt(make_line(make_point(2,4),make_point(4,6),make_point(7,9)))" << false << QVariant( "LineString (2 4, 4 6, 7 9)" );
-      QTest::newRow( "make_line" ) << "geom_to_wkt(make_line(make_point(2,4,1,3),make_point(4,6,9,8),make_point(7,9,3,4)))" << false << QVariant( "LineStringZM (2 4 1 3, 4 6 9 8, 7 9 3 4)" );
+      QTest::newRow( "make_line" ) << "geom_to_wkt(make_line(make_point(2,4,1,3),make_point(4,6,9,8),make_point(7,9,3,4)))" << false << QVariant( "LineString ZM (2 4 1 3, 4 6 9 8, 7 9 3 4)" );
       QTest::newRow( "make_line array" ) << "geom_to_wkt(make_line(array(make_point(2,4),make_point(4,6))))" << false << QVariant( "LineString (2 4, 4 6)" );
       QTest::newRow( "make_line one" ) << "geom_to_wkt(make_line(array(make_point(2,4))))" << false << QVariant();
       QTest::newRow( "make_line array mixed" ) << "geom_to_wkt(make_line(array(make_point(2,4),make_point(4,6)),make_point(8,9)))" << false << QVariant( "LineString (2 4, 4 6, 8 9)" );
@@ -1411,9 +1411,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "project not point" ) << "project( geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'), 1, 2 )" << true << QVariant();
       QTest::newRow( "project x" ) << "toint(x(project( make_point( 1, 2 ), 3, radians(270)))*1000000)" << false << QVariant( -2 * 1000000 );
       QTest::newRow( "project y" ) << "toint(y(project( point:=make_point( 1, 2 ), distance:=3, azimuth:=radians(270)))*1000000)" << false << QVariant( 2 * 1000000 );
-      QTest::newRow( "project m value preserved" ) << "geom_to_wkt(project( make_point( 1, 2, 2, 5), 1, 0.0, 0.0 ) )" << false << QVariant( "PointZM (1 2 3 5)" );
-      QTest::newRow( "project 2D Point" ) << "geom_to_wkt(project( point:=make_point( 1, 2), distance:=1, azimuth:=radians(0), elevation:=0 ) )" << false << QVariant( "PointZ (1 2 nan)" );
-      QTest::newRow( "project 3D Point" ) << "geom_to_wkt(project( make_point( 1, 2, 2), 5, radians(450), radians (450) ) )" << false << QVariant( "PointZ (6 2 2)" );
+      QTest::newRow( "project m value preserved" ) << "geom_to_wkt(project( make_point( 1, 2, 2, 5), 1, 0.0, 0.0 ) )" << false << QVariant( "Point ZM (1 2 3 5)" );
+      QTest::newRow( "project 2D Point" ) << "geom_to_wkt(project( point:=make_point( 1, 2), distance:=1, azimuth:=radians(0), elevation:=0 ) )" << false << QVariant( "Point Z (1 2 nan)" );
+      QTest::newRow( "project 3D Point" ) << "geom_to_wkt(project( make_point( 1, 2, 2), 5, radians(450), radians (450) ) )" << false << QVariant( "Point Z (6 2 2)" );
       QTest::newRow( "inclination not geom first" ) << "inclination( 'a', make_point( 1, 2, 2 ) )" << true << QVariant();
       QTest::newRow( "inclination not geom second" ) << " inclination( make_point( 1, 2, 2 ), 'a' )" << true << QVariant();
       QTest::newRow( "inclination not point first" ) << "inclination( geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'), make_point( 1, 2, 2) )" << true << QVariant();
@@ -1438,10 +1438,19 @@ class TestQgsExpression: public QObject
       QTest::newRow( "line_interpolate_point null" ) << "line_interpolate_point(NULL, 5)" << false << QVariant();
       QTest::newRow( "line_interpolate_point point" ) << "line_interpolate_point(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant();
       QTest::newRow( "line_interpolate_point line" ) << "geom_to_wkt(line_interpolate_point(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),distance:=5))" << false << QVariant( "Point (5 0)" );
+      QTest::newRow( "line_interpolate_point_by_m not geom" ) << "line_interpolate_point_by_m('g', 5)" << true << QVariant();
+      QTest::newRow( "line_interpolate_point_by_m null" ) << "line_interpolate_point_by_m(NULL, 5)" << false << QVariant();
+      QTest::newRow( "line_interpolate_point_by_m point" ) << "line_interpolate_point_by_m(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant();
+      QTest::newRow( "line_interpolate_point_by_m line" ) << "geom_to_wkt(line_interpolate_point_by_m(geometry:=geom_from_wkt('LineStringM(0 0 0, 10 10 10)'),m:=5))" << false << QVariant( "Point (5 5)" );
       QTest::newRow( "line_locate_point not geom" ) << "line_locate_point('g', geom_from_wkt('Point 5 0'))" << false << QVariant();
       QTest::newRow( "line_locate_point null" ) << "line_locate_point(NULL, geom_from_wkt('Point 5 0'))" << false << QVariant();
       QTest::newRow( "line_locate_point point" ) << "line_locate_point(geom_from_wkt('POINT(1 2)'),geom_from_wkt('Point 5 0'))" << false << QVariant();
       QTest::newRow( "line_locate_point line" ) << "line_locate_point(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),point:=geom_from_wkt('Point(5 0)'))" << false << QVariant( 5.0 );
+      QTest::newRow( "line_locate_m not geom" ) << "line_locate_m('g', 0)" << true << QVariant();
+      QTest::newRow( "line_locate_m null" ) << "line_locate_m(NULL, 0)" << false << QVariant();
+      QTest::newRow( "line_locate_m point" ) << "line_locate_m(geom_from_wkt('POINT(1 2)'),0)" << false << QVariant();
+      QTest::newRow( "line_locate_m line out of range" ) << "line_locate_m(geom_from_wkt('LineStringM(0 0 0, 10 10 10)'),m:=20)" << false << QVariant();
+      QTest::newRow( "line_locate_m line" ) << "line_locate_m(geom_from_wkt('LineStringM(0 0 0, 10 10 10)'),m:=0)" << false << QVariant( 0.0 );
       QTest::newRow( "line_interpolate_angle not geom" ) << "line_interpolate_angle('g', 5)" << true << QVariant();
       QTest::newRow( "line_interpolate_angle null" ) << "line_interpolate_angle(NULL, 5)" << false << QVariant();
       QTest::newRow( "line_interpolate_angle point" ) << "line_interpolate_angle(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant( 0.0 );
@@ -1507,11 +1516,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "scale polygon centroid" ) << "geom_to_wkt(scale(geom_from_wkt('Polygon((0 0, 10 0, 10 10, 0 0))'), 1.2, 0.8))" << false << QVariant( "Polygon ((-1 1, 11 1, 11 9, -1 1))" );
       QTest::newRow( "affine_transform not geom" ) << "affine_transform('g', 0, 0, 0, 0, 0, 0)" << true << QVariant();
       QTest::newRow( "affine_transform null" ) << "affine_transform(NULL, 0, 0, 0, 0, 0, 0)" << false << QVariant();
-      QTest::newRow( "affine_transform point XYZM" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(2 2 2 2)'), 2, 2, 180, 0, 1, 1, 1, 2, 2))" << false << QVariant( "PointZM (2 0 5 5)" );
+      QTest::newRow( "affine_transform point XYZM" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(2 2 2 2)'), 2, 2, 180, 0, 1, 1, 1, 2, 2))" << false << QVariant( "Point ZM (2 0 5 5)" );
       QTest::newRow( "affine_transform point with negative scale" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(1 1)'), 0, 0, 90, -2, -2))" << false << QVariant( "Point (2 -2)" );
       QTest::newRow( "affine_transform line XY" ) << "geom_to_wkt(affine_transform(geom_from_wkt('LINESTRING(1 0, 2 0)'), 0, 0, 90, 2, 1))" << false << QVariant( "LineString (0 2, 0 4)" );
       QTest::newRow( "affine_transform polygon XYZ" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'), 0, 0, -90, 0.5, 0.5))" << false << QVariant( "Polygon ((0 0, 0.5 0, 0.5 -0.5, 0 -0.5, 0 0))" );
-      QTest::newRow( "affine_transform point XY with translation on ZM" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(1 1)'), 0, 0, 0, 1, 1, 3, 4))" << false << QVariant( "PointZM (1 1 3 4)" );
+      QTest::newRow( "affine_transform point XY with translation on ZM" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(1 1)'), 0, 0, 0, 1, 1, 3, 4))" << false << QVariant( "Point ZM (1 1 3 4)" );
       QTest::newRow( "triangular_wave not geom" ) << "triangular_wave('g', 1, 2)" << true << QVariant();
       QTest::newRow( "triangular_wave null" ) << "triangular_wave(NULL, 1, 2)" << false << QVariant();
       QTest::newRow( "triangular_wave point" ) << "geom_to_wkt(triangular_wave(make_point(1,2), 1, 2))" << false << QVariant( "Point (1 2)" );
@@ -1644,10 +1653,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "concave_hull point" ) << "geom_to_wkt(concave_hull(geom_from_wkt('Point(0 0)'), 0.99))" << false << QVariant( "Point (0 0)" );
       QTest::newRow( "concave_hull multilinestring" ) << "geom_to_wkt(concave_hull(geom_from_wkt('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,130 62,122 40,156 32,162 76,172 88),(132 178,134 148,128 136,96 128,132 108,150 130,170 142,174 110,156 96,158 90,158 88),(22 64,66 28,94 38,94 68,114 76,112 30,132 10,168 18,178 34,186 52,184 74,190 100,190 122,182 148,178 170,176 184,156 164,146 178,132 186,92 182,56 158,36 150,62 150,76 128,88 118))'), 0.99))" << false <<
           QVariant( "Polygon ((30 112, 36 150, 92 182, 132 186, 176 184, 190 122, 190 100, 186 52, 178 34, 168 18, 132 10, 66 28, 22 64, 30 112))" );
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+      QTest::newRow( "concave_hull multipoint" ) << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'), 0.99),2)" << false <<
+          QVariant( "Polygon ((2.4 8.2, 2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6, 2.4 8.2))" );
+#else
       QTest::newRow( "concave_hull multipoint" ) << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'), 0.99),2)" << false <<
           QVariant( "Polygon ((2.3 6, 2.4 8.2, 2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6))" );
+#endif
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=12 )
+      QTest::newRow( "concave_hull multipoint allow holes" ) << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'), 0.99, true),2)" << false
+          << QVariant( "Polygon ((2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6, 2.4 8.2, 2.6 8.5),(3.6 6.1, 4.4 4.2, 7.8 4.3, 6.8 7.3, 3.6 6.1))" );
+#else
       QTest::newRow( "concave_hull multipoint allow holes" ) << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'), 0.99, true),2)" << false
           << QVariant( "Polygon ((2.4 8.2, 2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6, 2.4 8.2),(3.6 6.1, 4.4 4.2, 7.8 4.3, 6.8 7.3, 3.6 6.1))" );
+#endif
 #endif
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );
@@ -1879,6 +1898,9 @@ class TestQgsExpression: public QObject
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
+      QTest::newRow( "ramp color error" ) << "ramp_color('NotExistingRamp',0.3)" << true << QVariant();
+      QTest::newRow( "ramp color object" ) << "ramp_color_object('Spectral',0.3)" << false << QVariant( QColor::fromRgbF( 0.994, 0.746, 0.454 ) );
+      QTest::newRow( "ramp color object error" ) << "ramp_color_object('NotExistingRamp',0.3)" << true << QVariant();
       QTest::newRow( "create ramp color, wrong parameter" ) << "create_ramp(1)" << true << QVariant();
       QTest::newRow( "create ramp color, no color" ) << "create_ramp(map())" << true << QVariant();
       QTest::newRow( "create ramp color, one color" ) << "ramp_color(create_ramp(map(0,'0,0,0')),0.5)" << false << QVariant( "0,0,0,255" );
@@ -1894,7 +1916,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color cmyk" ) << "color_cmyk(100,50,33,10)" << false << QVariant( "0,115,154" );
       QTest::newRow( "color cmyka" ) << "color_cmyka(50,25,90,60,200)" << false << QVariant( "51,76,10,200" );
       QTest::newRow( "color grayscale average" ) << "color_grayscale_average('255,100,50')" << false << QVariant( "135,135,135,255" );
+      QTest::newRow( "color grayscale average object" ) << "color_grayscale_average(color_rgbf(0.6,0.5,0.1))" << false << QVariant( QColor::fromRgbF( 0.4, 0.4, 0.4 ) );
+      QTest::newRow( "color grayscale average cmyk" ) << "color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))" << false << QVariant( QColor::fromCmykF( 0.4, 0.4, 0.4, 0.8 ) );
       QTest::newRow( "color mix rgb" ) << "color_mix_rgb('0,0,0,100','255,255,255',0.5)" << false << QVariant( "127,127,127,177" );
+
+// looks like way color are rounded has changed between Qt 5 and 6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,177" );
+#else
+      QTest::newRow( "color mix" ) << "color_mix('0,0,0,100','255,255,255',0.5)" << false << QVariant( "128,128,128,178" );
+#endif
+
+      QTest::newRow( "color mix mixed types" ) << "color_mix('0,0,0,100',color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
+      QTest::newRow( "color mix mixed color types" ) << "color_mix(color_cmykf(1.0,1.0,1.0,1.0),color_rgbf(1.0,1.0,1.0),0.5)" << true << QVariant();
+      QTest::newRow( "color mix cmyk" ) << "color_mix(color_cmykf(0.9,0.9,0.9,0.9),color_cmykf(0.1,0.1,0.1,0.1),0.5)" << false << QVariant( QColor::fromCmykF( 0.5, 0.5, 0.5, 0.5 ) );
 
       QTest::newRow( "color part bad color" ) << "color_part('notacolor','red')" << true << QVariant();
       QTest::newRow( "color part bad part" ) << "color_part(color_rgb(255,127,0),'bad')" << true << QVariant();
@@ -1913,6 +1948,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color part magenta" ) << "to_int(color_part(color_cmyk(0,10,90,76),'magenta'))" << false << QVariant( 10 );
       QTest::newRow( "color part yellow" ) << "to_int(color_part(color_cmyk(21,0,92,70),'yellow'))" << false << QVariant( 92 );
       QTest::newRow( "color part black" ) << "to_int(color_part(color_cmyk(21,0,92,70),'black'))" << false << QVariant( 70 );
+      QTest::newRow( "color part object" ) << "to_int(color_part(color_cmykf(0.1,0.2,0.3,0.9),'black'))" << false << QVariant( 90 );
       QTest::newRow( "set color part bad color" ) << "set_color_part('notacolor','red', 5)" << true << QVariant();
       QTest::newRow( "set color part bad part" ) << "set_color_part(color_rgb(255,127,0),'bad', 5)" << true << QVariant();
       QTest::newRow( "set color part red" ) << "color_part(set_color_part(color_rgba(200,127,150,100),'red',100),'red')" << false << QVariant( 100 );
@@ -1930,11 +1966,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "set color part magenta" ) << "to_int(color_part(set_color_part(color_cmyk(0,10,90,76),'magenta',31),'magenta'))" << false << QVariant( 31 );
       QTest::newRow( "set color part yellow" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'yellow',96),'yellow'))" << false << QVariant( 96 );
       QTest::newRow( "set color part black" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'black',100),'black'))" << false << QVariant( 100 );
+      QTest::newRow( "set color part object" ) << "to_int(color_part(set_color_part(color_cmykf(0.21,0,0.92,0.70),'black',100),'black'))" << false << QVariant( 100 );
 
       QTest::newRow( "color darker" ) << "darker('200,100,30',150)" << false << QVariant( "133,67,20,255" );
       QTest::newRow( "color darker bad color" ) << "darker('notacolor',150)" << true << QVariant();
       QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
       QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
+      QTest::newRow( "color darker object " ) << "darker(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.76 ) );
+      QTest::newRow( "color lighter object" ) << "lighter(color_cmykf(0.1,0.4,0.6,0.6),150)" << false << QVariant( QColor::fromCmykF( 0, 0.333, 0.5555, 0.46 ) );
 
       QTest::newRow( "color rgb float" ) << "color_rgbf(1,0.4989,0)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0 ) );
       QTest::newRow( "color rgba float" ) << "color_rgbf(1,0.4989,0,0.21)" << false << QVariant( QColor::fromRgbF( 1., 0.4989, 0, 0.21 ) );
@@ -2202,7 +2241,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "exif date from map" ) << QStringLiteral( "exif('%1photos/0997.JPG')['Exif.Image.DateTime']" ).arg( testDataDir ) << false << QVariant( QDateTime( QDate( 2018, 3, 16 ), QTime( 12, 19, 19 ) ) );
       QTest::newRow( "exif bad tag" ) << QStringLiteral( "exif('%1photos/0997.JPG','bad tag')" ).arg( testDataDir ) << false << QVariant();
       QTest::newRow( "exif bad file path" ) << QStringLiteral( "exif('bad path','Exif.Image.DateTime')" ) << false << QVariant();
-      QTest::newRow( "exif_geotag" ) << QStringLiteral( "geom_to_wkt(exif_geotag('%1photos/0997.JPG'))" ).arg( testDataDir ) << false << QVariant( "PointZ (149.27516667 -37.2305 422.19101124)" );
+      QTest::newRow( "exif_geotag" ) << QStringLiteral( "geom_to_wkt(exif_geotag('%1photos/0997.JPG'))" ).arg( testDataDir ) << false << QVariant( "Point Z (149.27516667 -37.2305 422.19101124)" );
       QTest::newRow( "exif_geotag bad file path" ) << QStringLiteral( "geom_to_wkt(exif_geotag('bad path'))" ).arg( testDataDir ) << false << QVariant( "Point EMPTY" );
 
       // Form encoding tests
@@ -2314,33 +2353,33 @@ class TestQgsExpression: public QObject
           switch ( resultColor.spec() )
           {
             case QColor::Spec::Cmyk:
-              QVERIFY( qgsDoubleNear( resultColor.cyanF(), expectedColor.cyanF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.magentaF(), expectedColor.magentaF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.yellowF(), expectedColor.yellowF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.blackF(), expectedColor.blackF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.cyanF(), expectedColor.cyanF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.magentaF(), expectedColor.magentaF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.yellowF(), expectedColor.yellowF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.blackF(), expectedColor.blackF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::Hsl:
-              QVERIFY( qgsDoubleNear( resultColor.hslHueF(), expectedColor.hslHueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.hslSaturationF(), expectedColor.hslSaturationF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.lightnessF(), expectedColor.lightnessF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.hslHueF(), expectedColor.hslHueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.hslSaturationF(), expectedColor.hslSaturationF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.lightnessF(), expectedColor.lightnessF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::Hsv:
-              QVERIFY( qgsDoubleNear( resultColor.hsvHueF(), expectedColor.hsvHueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.hsvSaturationF(), expectedColor.hsvSaturationF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.valueF(), expectedColor.valueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.hsvHueF(), expectedColor.hsvHueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.hsvSaturationF(), expectedColor.hsvSaturationF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.valueF(), expectedColor.valueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::ExtendedRgb:
             case QColor::Spec::Rgb:
-              QVERIFY( qgsDoubleNear( resultColor.redF(), expectedColor.redF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.greenF(), expectedColor.greenF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.blueF(), expectedColor.blueF(), 0.001 ) );
-              QVERIFY( qgsDoubleNear( resultColor.alphaF(), expectedColor.alphaF(), 0.001 ) );
+              QGSCOMPARENEAR( resultColor.redF(), expectedColor.redF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.greenF(), expectedColor.greenF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.blueF(), expectedColor.blueF(), 0.001 );
+              QGSCOMPARENEAR( resultColor.alphaF(), expectedColor.alphaF(), 0.001 );
               break;
 
             case QColor::Spec::Invalid:
@@ -2678,7 +2717,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( res.toInt(), 1 );
     }
 
-    void test_aggregate_with_variable()
+    void test_aggregate_with_variable_feature()
     {
       // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
       // see https://github.com/qgis/QGIS/issues/33382
@@ -2700,6 +2739,23 @@ class TestQgsExpression: public QObject
         int res2 = exp.evaluate( &context ).toInt();
         QCOMPARE( res2, f.attribute( "col1" ).toInt() );
       }
+    }
+
+    void test_aggregate_with_variables()
+    {
+      // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
+      // see https://github.com/qgis/QGIS/issues/58221
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      context.lastScope()->setVariable( QStringLiteral( "my_var" ), QStringLiteral( "3" ) );
+
+      QgsExpression exp( QString( "aggregate(layer:='aggregate_layer', aggregate:='concatenate_unique', expression:=\"col2\", filter:=\"col1\"=@my_var)" ) );
+      QString res = exp.evaluate( &context ).toString();
+      QCOMPARE( res, QStringLiteral( "test333" ) );
+
+      context.lastScope()->setVariable( QStringLiteral( "my_var" ), QStringLiteral( "4" ) );
+      res = exp.evaluate( &context ).toString();
+      QCOMPARE( res, QStringLiteral( "test" ) );
     }
 
     void aggregate_data()

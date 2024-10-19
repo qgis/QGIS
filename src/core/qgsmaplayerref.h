@@ -41,9 +41,9 @@ struct _LayerRef
    */
   enum MatchType
   {
-    Name = 1 << 2, //! Match layer name
-    Provider = 1 << 3, //! Match layer provider name
-    Source = 1 << 4, //! Match layer source
+    Name = 1 << 2, //!< Match layer name
+    Provider = 1 << 3, //!< Match layer provider name
+    Source = 1 << 4, //!< Match layer source
     All = Provider | Source //!< Match all
   };
 
@@ -86,10 +86,15 @@ struct _LayerRef
   }
 
   /**
+   * Equality operator is deleted to avoid confusion as there are multiple ways two _LayerRef objects can be considered equal.
+   */
+  bool operator==( const _LayerRef &other ) = delete;
+
+  /**
    * Returns TRUE if the layer reference is resolved and contains a reference to an existing
    * map layer.
    */
-  operator bool() const
+  explicit operator bool() const
   {
     return static_cast< bool >( layer.data() );
   }

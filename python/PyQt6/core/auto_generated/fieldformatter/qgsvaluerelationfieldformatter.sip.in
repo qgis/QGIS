@@ -156,7 +156,7 @@ optionally checks for ``parentFeature``
 
     static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
 %Docstring
-Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
+Returns the (possibly ``None``) layer from the widget's ``config`` and ``project``
 
 .. versionadded:: 3.8
 %End

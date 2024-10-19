@@ -190,7 +190,7 @@ Adds a ``bookmark`` to the manager.
 :param bookmark: the bookmark to add
 
 :return: - The bookmark's ID (or newly generated ID, if no ID was originally set and one was automatically generated)
-         - ok: will be set to ``True`` if the bookmark was successfully added, or ``False`` if the bookmark could not be added (eg as a result of a duplicate bookmark ID).
+         - ok: ``True`` if the bookmark was successfully added, or ``False`` if the bookmark could not be added (eg as a result of a duplicate bookmark ID).
 
 .. seealso:: :py:func:`removeBookmark`
 

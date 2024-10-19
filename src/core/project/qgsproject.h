@@ -95,7 +95,7 @@ class QgsSensorManager;
  * \brief Encapsulates a QGIS project, including sets of map layers and their styles,
  * layouts, annotations, canvases, etc.
  *
- * QgsProject is available both as a singleton (QgsProject::instance()) and for use as
+ * QgsProject is available both as a singleton (QgsProject.instance()) and for use as
  * standalone objects. The QGIS project singleton always gives access to the canonical project reference
  * open within the main QGIS application.
  *
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Create a new QgsProject.
      *
-     * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
+     * Most of the time you want to use QgsProject.instance() instead as many components of QGIS work with the singleton.
      *
      * Since QGIS 3.26.1 the \a capabilities argument specifies optional capabilities which can be selectively
      * enabled for the project. These affect the QgsProject object for its entire lifetime.
@@ -1250,7 +1250,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * ### Example
      *
-     *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
+     *     QVector<QgsVectorLayer*> vectorLayers = QgsProject.instance()->layers<QgsVectorLayer*>();
      *
      * \note not available in Python bindings
      * \see mapLayers()
@@ -1698,11 +1698,31 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
 
+    /**
+     * Loads python expression functions stored in the currrent project
+     * \param force Whether to check enablePythonEmbedded setting (default) or not.
+     * \returns Whether the project functions were loaded or not.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    bool loadFunctionsFromProject( bool force = false ) SIP_SKIP;
+
+    /**
+      * Unloads python expression functions stored in the current project
+      * and reloads local functions from the user profile.
+      *
+      * \note not available in Python bindings
+      * \since QGIS 3.40
+      */
+    void cleanFunctionsFromProject() SIP_SKIP;
+
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -1729,17 +1749,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a project is being read.
      */
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &document );
 
     /**
      * Emitted when a project is being read. And passing the /a context
      */
-    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+    void readProjectWithContext( const QDomDocument &document, QgsReadWriteContext &context );
 
     /**
      * Emitted when the project is being written.
      */
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument &document );
 
     /**
      * Emitted after the basic initialization of a layer from the project
@@ -1771,7 +1791,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \deprecated QGIS 3.40. Use readVersionMismatchOccurred() instead.
      */
-    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString & ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString &warning ) SIP_DEPRECATED;
 
     /**
      * Emitted when a project is read and the version of QGIS used to save
@@ -2563,8 +2583,28 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
   private:
 
     QHash< QString, QColor > mColors;
-
 };
+
+class GetNamedProjectColorObject : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedProjectColorObject( const QgsProject *project );
+
+    /**
+     * Optimized constructor for GetNamedProjectColor when a list of map is already available
+     * and does not need to be read from a project.
+     */
+    GetNamedProjectColorObject( const QHash< QString, QColor > &colors );
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+
+    QHash< QString, QColor > mColors;
+};
+
+
 
 class GetSensorData : public QgsScopedExpressionFunction
 {

@@ -44,8 +44,11 @@ QgsSQLStatement.ntTableDef = QgsSQLStatement.NodeType.ntTableDef
 QgsSQLStatement.ntJoin = QgsSQLStatement.NodeType.ntJoin
 QgsSQLStatement.ntColumnSorted = QgsSQLStatement.NodeType.ntColumnSorted
 QgsSQLStatement.ntCast = QgsSQLStatement.NodeType.ntCast
-QgsSQLStatement.quotedIdentifier = staticmethod(QgsSQLStatement.quotedIdentifier)
-QgsSQLStatement.quotedIdentifierIfNeeded = staticmethod(QgsSQLStatement.quotedIdentifierIfNeeded)
-QgsSQLStatement.stripQuotedIdentifier = staticmethod(QgsSQLStatement.stripQuotedIdentifier)
-QgsSQLStatement.stripMsQuotedIdentifier = staticmethod(QgsSQLStatement.stripMsQuotedIdentifier)
-QgsSQLStatement.quotedString = staticmethod(QgsSQLStatement.quotedString)
+try:
+    QgsSQLStatement.quotedIdentifier = staticmethod(QgsSQLStatement.quotedIdentifier)
+    QgsSQLStatement.quotedIdentifierIfNeeded = staticmethod(QgsSQLStatement.quotedIdentifierIfNeeded)
+    QgsSQLStatement.stripQuotedIdentifier = staticmethod(QgsSQLStatement.stripQuotedIdentifier)
+    QgsSQLStatement.stripMsQuotedIdentifier = staticmethod(QgsSQLStatement.stripMsQuotedIdentifier)
+    QgsSQLStatement.quotedString = staticmethod(QgsSQLStatement.quotedString)
+except NameError:
+    pass

@@ -156,6 +156,7 @@ QgsProcessingToolboxProxyModel.Filters.baseClass = QgsProcessingToolboxProxyMode
 Filters = QgsProcessingToolboxProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsProcessingToolboxModel.__attribute_docs__ = {'recentAlgorithmAdded': 'Emitted whenever recent algorithms are added to the model.\n', 'favoriteAlgorithmAdded': 'Emitted whenever favorite algorithms are added to the model.\n'}
+    QgsProcessingToolboxModel.__group__ = ['processing']
 except NameError:
     pass
 try:
@@ -180,10 +181,6 @@ except NameError:
     pass
 try:
     QgsProcessingToolboxModelAlgorithmNode.__group__ = ['processing']
-except NameError:
-    pass
-try:
-    QgsProcessingToolboxModel.__group__ = ['processing']
 except NameError:
     pass
 try:

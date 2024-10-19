@@ -1,0 +1,281 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfigurationstoragedb.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAuthConfigurationStorageDb : QgsAuthConfigurationStorage
+{
+%Docstring(signature="appended")
+QSqlDatabase based implementation of :py:class:`QgsAuthConfigurationStorage`.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsauthconfigurationstoragedb.h"
+%End
+  public:
+
+    QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings );
+%Docstring
+Creates a new QgsAuthConfigurationStorageDb instance from the specified ``settings``.
+Settings can contain the following keys:
+
+Mandatory settings:
+
+- driver: the database driver to use (default is "QSQLITE", see: https://doc.qt.io/qt-6/sql-driver.html)
+- database: the database name (or path in case of QSQLITE)
+
+Optional settings:
+
+- host: the database host
+- user: the database user
+- password: the database password
+- port: the database port
+- schema: the database schema for all the tables (ignored if not supported)
+- options: the database connection options (see: https://doc.qt.io/qt-6/qsqldatabase.html#setConnectOptions)
+
+.. note::
+
+   Even if this generic storage also works with a pre-existing SQLite DB,
+   a convenience subclass :py:class:`QgsAuthConfigurationStorageSqlite` is provided for
+   SQLite DBs.
+%End
+
+    QgsAuthConfigurationStorageDb( const QString &uri );
+%Docstring
+Creates a new QgsAuthConfigurationStorageDb instance from the specified ``uri``.
+The URI should be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
+
+.. note::
+
+   It is not possible to set the schema in the URI, pass SCHEMA=\verbatim<SCHEMA>\endverbatim in the options instead.
+%End
+
+
+    ~QgsAuthConfigurationStorageDb();
+
+
+    QSqlDatabase authDatabaseConnection() const;
+%Docstring
+Returns the database connection used by this storage.
+%End
+
+  public:
+    virtual QString name() const;
+
+    virtual QString type() const;
+
+    virtual QString description() const;
+
+    virtual QString id() const;
+
+
+    virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const;
+
+    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const;
+
+    virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload /Out/, bool full = false ) const;
+
+    virtual bool storeMethodConfig( const QgsAuthMethodConfig &mconfig, const QString &payload );
+
+    virtual bool removeMethodConfig( const QString &id );
+
+    virtual bool methodConfigExists( const QString &id ) const;
+
+    virtual bool storeAuthSetting( const QString &key, const QString &value );
+
+    virtual QString loadAuthSetting( const QString &key ) const;
+
+    virtual bool removeAuthSetting( const QString &key );
+
+    virtual bool authSettingExists( const QString &key ) const;
+
+    virtual bool clearMethodConfigs();
+
+    virtual bool erase();
+
+    virtual bool isReady() const;
+
+    virtual bool initialize();
+
+    virtual QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const;
+
+
+    virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem );
+
+    virtual bool removeCertIdentity( const QSslCertificate &cert );
+
+    virtual const QSslCertificate loadCertIdentity( const QString &id ) const;
+
+    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const;
+
+    virtual const QList<QSslCertificate> certIdentities() const;
+
+    virtual QStringList certIdentityIds() const;
+
+    virtual bool certIdentityExists( const QString &id ) const;
+
+    virtual bool removeCertIdentity( const QString &id );
+
+    virtual bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config );
+
+    virtual QStringList sslCertCustomConfigIds() const;
+
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const;
+
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfigByHost( const QString &hostport ) const;
+
+    virtual const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const;
+
+    virtual bool sslCertCustomConfigExists( const QString &id, const QString &hostport );
+
+    virtual bool removeSslCertCustomConfig( const QString &id, const QString &hostport );
+
+
+    virtual bool storeCertAuthority( const QSslCertificate &cert );
+
+    virtual QStringList certAuthorityIds() const;
+
+    virtual const QSslCertificate loadCertAuthority( const QString &id ) const;
+
+    virtual bool certAuthorityExists( const QSslCertificate &cert ) const;
+
+    virtual bool removeCertAuthority( const QSslCertificate &cert );
+
+    virtual const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> caCertsPolicy() const;
+
+    virtual const QList<QSslCertificate> caCerts() const;
+
+
+    virtual bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy );
+
+    virtual QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const;
+
+    virtual bool removeCertTrustPolicy( const QSslCertificate &cert );
+
+    virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const;
+
+
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const;
+
+    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config );
+
+    virtual bool clearMasterPasswords();
+
+
+
+    virtual QString methodConfigTableName() const;
+%Docstring
+Returns the name of the table used to store the method configurations.
+%End
+
+    virtual QString authSettingsTableName() const;
+%Docstring
+Returns the name of the table used to store the auth settings.
+%End
+
+    virtual QString certIdentityTableName() const;
+%Docstring
+Returns the name of the table used to store the certificate identities.
+%End
+
+    virtual QString certAuthorityTableName() const;
+%Docstring
+Returns the name of the table used to store the certificate authorities.
+%End
+
+    virtual QString sslCertCustomConfigTableName() const;
+%Docstring
+Returns the name of the table used to store the SSL custom configurations.
+%End
+
+    virtual QString certTrustPolicyTableName() const;
+%Docstring
+Returns the name of the table used to store the certificate trust policies.
+%End
+
+    virtual QString masterPasswordTableName() const;
+%Docstring
+Returns the name of the table used to store the master passwords.
+%End
+
+    virtual bool tableExists( const QString &table ) const;
+%Docstring
+Returns ``True`` if the specified ``table`` exists in the database, ``False`` otherwise.
+
+.. note::
+
+   The schema is automatically prepended to the table name.
+%End
+
+    virtual QString quotedQualifiedIdentifier( const QString &identifier, bool isIndex = false ) const;
+%Docstring
+Returns the quoted identifier, prefixed with the schema
+(if not null), ready for the insertion into a SQL query.
+
+:param identifier: the identifier to quote.
+:param isIndex: if ``True``, the identifier is treated as an index name.
+%End
+
+  protected:
+
+    bool authDbOpen() const;
+%Docstring
+Opens the connction to the database.
+
+:return: ``True`` if the connection was opened successfully, ``False`` otherwise.
+%End
+
+    bool authDbQuery( QSqlQuery *query, const QString &sql = QString() ) const;
+%Docstring
+Runs the specified ``query`` on the database. Optional ``sql`` can be provided.
+
+:return: ``True`` if the query was executed successfully, ``False`` otherwise.
+%End
+
+    bool authDbTransactionQuery( QSqlQuery *query );
+%Docstring
+Executes the specified ``query`` on the database using a transaction. Optional ``sql`` can be provided.
+
+:return: ``True`` if the query was executed successfully, ``False`` otherwise.
+%End
+
+    bool createConfigTables();
+%Docstring
+Creates the configuration tables in the database.
+
+:return: ``True`` if the tables were created successfully, ``False`` otherwise.
+%End
+
+    bool createCertTables();
+%Docstring
+Creates the certificate tables in the database.
+
+:return: ``True`` if the tables were created successfully, ``False`` otherwise.
+%End
+
+    virtual void checkCapabilities();
+%Docstring
+Checks the capabilities of the storage.
+%End
+
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfigurationstoragedb.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

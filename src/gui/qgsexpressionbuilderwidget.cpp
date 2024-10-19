@@ -17,7 +17,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
-#include <QInputDialog>
 #include <QComboBox>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
@@ -49,6 +48,7 @@
 #include "qgsexpressionstoredialog.h"
 #include "qgsexpressiontreeview.h"
 #include "qgscodeeditorwidget.h"
+#include "qgsexpressionaddfunctionfiledialog.h"
 
 
 bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
@@ -339,8 +339,16 @@ void QgsExpressionBuilderWidget::btnRun_pressed()
   if ( !cmbFileNames->currentItem() )
     return;
 
-  QString file = cmbFileNames->currentItem()->text();
-  saveFunctionFile( file );
+  if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  {
+    saveProjectFunctionsEntry();
+  }
+  else
+  {
+    QString file = cmbFileNames->currentItem()->text();
+    saveFunctionFile( file );
+  }
+
   runPythonCode( txtPython->text() );
 }
 
@@ -395,6 +403,11 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   }
 }
 
+void QgsExpressionBuilderWidget::saveProjectFunctionsEntry()
+{
+  mProject->writeEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), txtPython->text() );
+}
+
 void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
 {
   mFunctionsPath = path;
@@ -410,6 +423,16 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
     QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), info.baseName() );
     cmbFileNames->addItem( item );
   }
+
+  bool ok = false;
+  mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString(), &ok );
+  if ( ok )
+  {
+    QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) ), DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME );
+    item->setData( Qt::UserRole, QStringLiteral( "project" ) );
+    cmbFileNames->insertItem( 0, item );
+  }
+
   if ( !cmbFileNames->currentItem() )
   {
     cmbFileNames->setCurrentRow( 0 );
@@ -435,67 +458,120 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
   cmbFileNames->insertItem( 0, item );
   cmbFileNames->setCurrentRow( 0 );
 
-  QString templatetxt;
-  QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templatetxt );
-  txtPython->setText( templatetxt );
+  QString templateText;
+  QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templateText );
+  txtPython->setText( templateText );
   saveFunctionFile( fileName );
 }
 
 void QgsExpressionBuilderWidget::btnNewFile_pressed()
 {
-  bool ok;
-  QString text = QInputDialog::getText( this, tr( "New File" ),
-                                        tr( "New file name:" ), QLineEdit::Normal,
-                                        QString(), &ok );
-  if ( ok && !text.isEmpty() )
+  // If a project has an entry for functions, then we should
+  // already have a 'Project functions' item in the file list.
+  // Since only one item should correspond to 'Project functions',
+  // we'll disable this option in the 'add function file' dialog.
+  bool ok = false;
+  mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString(), &ok );
+
+  QgsExpressionAddFunctionFileDialog dlg {!ok, this};
+  if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
-    newFunctionFile( text );
+    if ( dlg.createProjectFunctions() )
+    {
+      QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) ), DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME );
+      item->setData( Qt::UserRole, QStringLiteral( "project" ) );
+      cmbFileNames->insertItem( 0, item );
+      cmbFileNames->setCurrentRow( 0 );
+
+      QString templateText;
+      QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templateText );
+      txtPython->setText( templateText );
+      saveProjectFunctionsEntry();
+    }
+    else
+    {
+      newFunctionFile( dlg.fileName() );
+    }
     btnRemoveFile->setEnabled( cmbFileNames->count() > 0 );
   }
 }
 
 void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
 {
-  if ( QMessageBox::question( this, tr( "Remove File" ),
-                              tr( "Are you sure you want to remove current functions file?" ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
-    return;
+  if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  {
+    if ( QMessageBox::question( this, tr( "Remove Project Functions" ),
+                                tr( "Are you sure you want to remove the project functions?" ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+      return;
+
+    mProject->removeEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) );
+  }
+  else
+  {
+    if ( QMessageBox::question( this, tr( "Remove File" ),
+                                tr( "Are you sure you want to remove current functions file?" ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+      return;
+
+    QString fileName = cmbFileNames->currentItem()->text();
+    if ( !QFile::remove( mFunctionsPath + QDir::separator() + fileName.append( ".py" ) ) )
+    {
+      QMessageBox::warning( this, tr( "Remove file" ), tr( "Failed to remove function file '%1'." ).arg( fileName ) );
+      return;
+    }
+  }
 
   int currentRow = cmbFileNames->currentRow();
-  QString fileName = cmbFileNames->currentItem()->text();
-  if ( QFile::remove( mFunctionsPath + QDir::separator() + fileName.append( ".py" ) ) )
   {
-    {
-      QListWidgetItem *itemToRemove = whileBlocking( cmbFileNames )->takeItem( currentRow );
-      delete itemToRemove;
-    }
+    QListWidgetItem *itemToRemove = whileBlocking( cmbFileNames )->takeItem( currentRow );
+    delete itemToRemove;
+  }
 
-    if ( cmbFileNames->count() > 0 )
+  if ( cmbFileNames->count() > 0 )
+  {
+    whileBlocking( cmbFileNames )->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
+    if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QStringLiteral( "project" ) )
     {
-      whileBlocking( cmbFileNames )->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
-      loadCodeFromFile( mFunctionsPath + QDir::separator() + cmbFileNames->currentItem()->text() );
+      loadCodeFromProjectFunctions();
     }
     else
     {
-      btnRemoveFile->setEnabled( false );
-      txtPython->clear();
+      loadCodeFromFile( mFunctionsPath + QDir::separator() + cmbFileNames->currentItem()->text() );
     }
   }
   else
   {
-    QMessageBox::warning( this, tr( "Remove file" ), tr( "Failed to remove function file '%1'." ).arg( fileName ) );
+    btnRemoveFile->setEnabled( false );
+    txtPython->clear();
   }
+
 }
 
 void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem )
 {
   if ( lastitem )
   {
-    QString filename = lastitem->text();
-    saveFunctionFile( filename );
+    if ( lastitem->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+    {
+      saveProjectFunctionsEntry();
+    }
+    else
+    {
+      QString filename = lastitem->text();
+      saveFunctionFile( filename );
+    }
   }
-  QString path = mFunctionsPath + QDir::separator() + item->text();
-  loadCodeFromFile( path );
+
+  if ( item->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  {
+    loadCodeFromProjectFunctions();
+  }
+  else
+  {
+    QString path = mFunctionsPath + QDir::separator() + item->text();
+    loadCodeFromFile( path );
+  }
 }
 
 void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
@@ -504,6 +580,11 @@ void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
     path.append( ".py" );
 
   txtPython->loadScript( path );
+}
+
+void QgsExpressionBuilderWidget::loadCodeFromProjectFunctions()
+{
+  loadFunctionCode( mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) ) );
 }
 
 void QgsExpressionBuilderWidget::loadFunctionCode( const QString &code )
@@ -989,8 +1070,16 @@ void QgsExpressionBuilderWidget::autosave()
   if ( !item )
     return;
 
-  QString file = item->text();
-  saveFunctionFile( file );
+  if ( item->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  {
+    saveProjectFunctionsEntry();
+  }
+  else
+  {
+    QString file = item->text();
+    saveFunctionFile( file );
+  }
+
   lblAutoSave->setText( QStringLiteral( "Saved" ) );
   QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect();
   lblAutoSave->setGraphicsEffect( effect );

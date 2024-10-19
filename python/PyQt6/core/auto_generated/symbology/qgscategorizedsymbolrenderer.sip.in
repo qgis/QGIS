@@ -133,8 +133,6 @@ Converts the category to a matching SLD rule, within the specified DOM document 
 %End
 
   protected:
-
-    void swap( QgsRendererCategory &other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
@@ -157,6 +155,8 @@ A list of renderer ``categories`` can optionally be specified. If no categories 
 can be added later by calling :py:func:`~QgsCategorizedSymbolRenderer.addCategory`.
 %End
     ~QgsCategorizedSymbolRenderer();
+
+    virtual Qgis::FeatureRendererFlags flags() const;
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 

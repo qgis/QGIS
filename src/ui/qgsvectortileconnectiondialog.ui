@@ -20,21 +20,60 @@
       <string>Connection Details</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="mEditName">
-        <property name="toolTip">
-         <string>Name of the new connection</string>
+      <item row="8" column="2">
+       <widget class="QgsSpinBox" name="mSpinZMax">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="value">
+         <number>14</number>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label">
+      <item row="8" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxZMax">
         <property name="text">
-         <string>Name</string>
+         <string>Max. Zoom Level</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="3">
+      <item row="11" column="0">
+       <widget class="QLabel" name="lblReferer">
+        <property name="text">
+         <string>Referer</string>
+        </property>
+        <property name="buddy">
+         <cstring>mEditReferer</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="mEditUrl">
+        <property name="toolTip">
+         <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
+        </property>
+        <property name="placeholderText">
+         <string>http://example.com/{z}/{x}/{y}.pbf</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxZMin">
+        <property name="text">
+         <string>Min. Zoom Level</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="3">
        <widget class="QGroupBox" name="mAuthGroupBox">
         <property name="title">
          <string>Authentication</string>
@@ -58,14 +97,21 @@
         </layout>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>URL</string>
+      <item row="11" column="2">
+       <widget class="QLineEdit" name="mEditReferer">
+        <property name="toolTip">
+         <string>Optional custom referer</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Source URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
        <widget class="QgsSpinBox" name="mSpinZMin">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -75,83 +121,34 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="lblReferer">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Referer</string>
-        </property>
-        <property name="buddy">
-         <cstring>mEditReferer</cstring>
+         <string>Name</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
-       <widget class="QgsSpinBox" name="mSpinZMax">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="value">
-         <number>14</number>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0" colspan="2">
-       <widget class="QCheckBox" name="mCheckBoxZMax">
-        <property name="text">
-         <string>Max. Zoom Level</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="mEditName">
+        <property name="toolTip">
+         <string>Name of the new connection</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLineEdit" name="mEditUrl">
-        <property name="toolTip">
-         <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
-        </property>
-        <property name="placeholderText">
-         <string>http://example.com/{z}/{x}/{y}.pbf</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="mCheckBoxZMin">
-        <property name="text">
-         <string>Min. Zoom Level</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="2">
-       <widget class="QLineEdit" name="mEditReferer">
-        <property name="toolTip">
-         <string>Optional custom referer</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Style URL</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
        <widget class="QLineEdit" name="mEditStyleUrl">
         <property name="toolTip">
          <string>If specified, the layer will be automatically styled using styling JSON from the entered URL.</string>
         </property>
-        <property name="placeholderText">
-         <string>Optional</string>
-        </property>
         <property name="clearButtonEnabled">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Style URL</string>
         </property>
        </widget>
       </item>
@@ -185,13 +182,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>mEditName</tabstop>
-  <tabstop>mEditUrl</tabstop>
-  <tabstop>mCheckBoxZMin</tabstop>
-  <tabstop>mSpinZMin</tabstop>
-  <tabstop>mCheckBoxZMax</tabstop>
-  <tabstop>mSpinZMax</tabstop>
   <tabstop>mEditStyleUrl</tabstop>
+  <tabstop>mEditUrl</tabstop>
+  <tabstop>mSpinZMin</tabstop>
+  <tabstop>mSpinZMax</tabstop>
   <tabstop>mEditReferer</tabstop>
+  <tabstop>mCheckBoxZMax</tabstop>
+  <tabstop>mCheckBoxZMin</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -202,8 +199,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>224</x>
-     <y>381</y>
+     <x>236</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -218,8 +215,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>292</x>
-     <y>387</y>
+     <x>304</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

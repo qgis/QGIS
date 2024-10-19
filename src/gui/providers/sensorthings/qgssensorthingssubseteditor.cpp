@@ -55,6 +55,7 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
   boldFont.setBold( true );
   mLabelComparisons->setFont( boldFont );
   mLabelLogical->setFont( boldFont );
+  mLabelDate->setFont( boldFont );
   mLabelArithmetic->setFont( boldFont );
 
   mButtonEq->setToolTip( tr( "Equal" ) );

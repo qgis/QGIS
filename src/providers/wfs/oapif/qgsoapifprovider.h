@@ -61,8 +61,9 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
     QString subsetString() const override { return mSubsetString; }
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-
-    bool supportsSubsetString() const override { return true; }
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
+    bool supportsSubsetString() const override;
 
     QString storageType() const override { return QStringLiteral( "OGC API - Features" ); }
 

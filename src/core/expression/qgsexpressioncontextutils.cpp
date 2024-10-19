@@ -386,6 +386,16 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer *>( layer ) ) ), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_crs_ellipsoid" ), layer->crs().ellipsoidAcronym(), true, true ) );
 
+
+  const QgsCoordinateReferenceSystem verticalCrs = layer->verticalCrs();
+  if ( verticalCrs.isValid() )
+  {
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs" ), verticalCrs.authid(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs_definition" ), verticalCrs.toProj(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs_description" ), verticalCrs.description(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_vertical_crs_wkt" ), verticalCrs.toWkt( Qgis::CrsWktVariant::Preferred ), true ) );
+  }
+
   const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer );
   if ( vLayer )
   {
@@ -404,7 +414,7 @@ QList<QgsExpressionContextScope *> QgsExpressionContextUtils::globalProjectLayer
   QList<QgsExpressionContextScope *> scopes;
   scopes << globalScope();
 
-  QgsProject *project = QgsProject::instance();  // TODO: use project associated with layer
+  QgsProject *project = QgsProject::instance();  // TODO: use project associated with layer skip-keyword-check
   if ( project )
     scopes << projectScope( project );
 
@@ -944,6 +954,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const Q
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
+  QgsExpression::registerFunction( new GetNamedProjectColorObject( nullptr ) );
   QgsExpression::registerFunction( new GetSensorData( ) );
   QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
   QgsExpression::registerFunction( new GetLayoutMapLayerCredits( nullptr ) );
@@ -1221,9 +1232,17 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
           QgsGeometry geom = QgsMeshUtils::toGeometry( nativeMesh.face( faceIndex ), nativeMesh.vertices );
           if ( calc )
           {
-            double area = calc->measureArea( geom );
-            area = calc->convertAreaMeasurement( area, parent->areaUnits() );
-            return QVariant( area );
+            try
+            {
+              double area = calc->measureArea( geom );
+              area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+              return QVariant( area );
+            }
+            catch ( QgsCsException & )
+            {
+              parent->setEvalErrorString( QObject::tr( "An error occurred while calculating area" ) );
+              return QVariant();
+            }
           }
           else
           {
@@ -1412,4 +1431,3 @@ QgsScopedExpressionFunction *LoadLayerFunction::clone() const
   return new LoadLayerFunction();
 }
 ///@endcond
-

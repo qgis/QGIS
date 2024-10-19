@@ -366,33 +366,34 @@ class PyQgsOGRProvider(QgisTestCase):
         testsets = (
             ("Triangle((0 0, 0 1, 1 1, 0 0))", QgsWkbTypes.Type.Triangle, "Triangle ((0 0, 0 1, 1 1, 0 0))"),
             ("Triangle Z((0 0 1, 0 1 2, 1 1 3, 0 0 1))", QgsWkbTypes.Type.TriangleZ,
-             "TriangleZ ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
+             "Triangle Z ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
             ("Triangle M((0 0 4, 0 1 5, 1 1 6, 0 0 4))", QgsWkbTypes.Type.TriangleM,
-             "TriangleM ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
+             "Triangle M ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
             ("Triangle ZM((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))", QgsWkbTypes.Type.TriangleZM,
-             "TriangleZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
+             "Triangle ZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
 
-            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.MultiPolygon,
-             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
-            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.Type.MultiPolygonZ,
-             "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
-            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.Type.MultiPolygonM,
-             "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.TIN,
+             "TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.Type.TINZ,
+             "TIN Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.Type.TINM,
+             "TIN M (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
             ("TIN ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonZM,
-             "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
+             QgsWkbTypes.Type.TINZM,
+             "TIN ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
 
-            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.MultiPolygon,
-             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.PolyhedralSurface,
+             "PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
             ("PolyhedralSurface Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonZ,
-             "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+
+             QgsWkbTypes.Type.PolyhedralSurfaceZ,
+             "PolyhedralSurface Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
             ("PolyhedralSurface M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonM,
-             "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+             QgsWkbTypes.Type.PolyhedralSurfaceM,
+             "PolyhedralSurface M (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
             ("PolyhedralSurface ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
-             QgsWkbTypes.Type.MultiPolygonZM,
-             "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
+             QgsWkbTypes.Type.PolyhedralSurfaceZM,
+             "PolyhedralSurface ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
         )
         for row in testsets:
             datasource = os.path.join(self.basetestpath, 'test.csv')
@@ -408,10 +409,6 @@ class PyQgsOGRProvider(QgisTestCase):
             self.assertTrue(vl.getFeatures(QgsFeatureRequest(1)).nextFeature(f))
             self.assertTrue(f.geometry())
             self.assertEqual(f.geometry().constGet().asWkt(), row[2])
-
-    """PolyhedralSurface, Tin => mapped to MultiPolygon
-          Triangle => mapped to Polygon
-      """
 
     def testSetupProxy(self):
         """Test proxy setup"""
@@ -1275,16 +1272,19 @@ class PyQgsOGRProvider(QgisTestCase):
         fields = vl.fields()
         self.assertFalse(fields.field('stringf').constraints().domainName())
 
-        datasource = os.path.join(unitTestDataPath(), 'domains.gdb|layername=test')
-        vl = QgsVectorLayer(datasource, 'test', 'ogr')
-        self.assertTrue(vl.isValid())
-        fields = vl.fields()
-        self.assertEqual(fields.field('default_value').splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.DefaultValue)
-        self.assertEqual(fields.field('duplicate').splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.Duplicate)
-        self.assertEqual(fields.field('ratio').splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.GeometryRatio)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            src_file_name = os.path.join(unitTestDataPath(), 'domains.gdb')
+            dest_file_name = os.path.join(temp_dir, 'domains.gdb')
+            shutil.copytree(src_file_name, dest_file_name)
+            vl = QgsVectorLayer(dest_file_name + '|layername=test', 'test', 'ogr')
+            self.assertTrue(vl.isValid())
+            fields = vl.fields()
+            self.assertEqual(fields.field('default_value').splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.DefaultValue)
+            self.assertEqual(fields.field('duplicate').splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.Duplicate)
+            self.assertEqual(fields.field('ratio').splitPolicy(),
+                             Qgis.FieldDomainSplitPolicy.GeometryRatio)
 
     def testGdbLayerMetadata(self):
         """
@@ -1921,7 +1921,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(vl.isValid())
         feature = next(vl.getFeatures())
         self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Type.MultiPolygonZ)
-        self.assertEqual(feature.geometry().asWkt(), 'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0,'
+        self.assertEqual(feature.geometry().asWkt(), 'MultiPolygon Z (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0,'
                                                      ' 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
 
         # single layer geopackage -- sublayers MUST have the layerName set on the uri,
@@ -2678,7 +2678,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Type.PointZ)
         self.assertEqual(feature.geometry().asWkt(),
-                         'PointZ (635660.10747100005391985 1768912.79759799991734326 3.36980799999999991)')
+                         'Point Z (635660.10747100005391985 1768912.79759799991734326 3.36980799999999991)')
 
         self.assertTrue(polyline_layer.isValid())
         self.assertEqual(polyline_layer.featureCount(), 2)
@@ -2686,7 +2686,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Type.LineStringZ)
         self.assertEqual(feature.geometry().vertexAt(1).asWkt(),
-                         'PointZ (635660.11699699994642287 1768910.93880999996326864 3.33884099999999995)')
+                         'Point Z (635660.11699699994642287 1768910.93880999996326864 3.33884099999999995)')
 
     def test_provider_connection_shp(self):
         """
@@ -3616,6 +3616,7 @@ class PyQgsOGRProvider(QgisTestCase):
         del vl
 
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    @unittest.skipIf(gdal.GetDriverByName("OpenFileGDB") is None, "GDAL OpenFileGDB driver required")
     def testReadOnlyFieldsFileGeodatabase(self):
 
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -3626,6 +3627,39 @@ class PyQgsOGRProvider(QgisTestCase):
 
             vl = QgsVectorLayer(dest_file_name, 'vl')
             self.assertTrue(vl.fields()["Shape_Area"].isReadOnly())
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    @unittest.skipIf(gdal.GetDriverByName("OpenFileGDB") is None, "GDAL OpenFileGDB driver required")
+    def testDeleteFieldFileGeodatabase(self):
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = os.path.join(temp_dir, 'testDeleteFieldFileGeodatabase.gdb')
+            ds = ogr.GetDriverByName("OpenFileGDB").CreateDataSource(dest_file_name)
+            lyr = ds.CreateLayer("test", geom_type=ogr.wkbNone)
+            lyr.CreateField(ogr.FieldDefn("fld1"))
+            lyr.CreateField(ogr.FieldDefn("fld2"))
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f["fld1"] = "a"
+            f["fld2"] = "b"
+            lyr.CreateFeature(f)
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f["fld1"] = "c"
+            f["fld2"] = "d"
+            lyr.CreateFeature(f)
+            ds = None
+
+            vl = QgsVectorLayer(dest_file_name, 'vl')
+            self.assertTrue(vl.startEditing())
+            self.assertTrue(vl.deleteAttribute(1))  # delete field fld1
+            self.assertTrue(vl.commitChanges())
+
+            # Re-open a connection without explicitly closing the one we've edited
+            vl2 = QgsVectorLayer(dest_file_name, 'vl2')
+            features = {f.id(): f.attributes() for f in vl2.getFeatures()}
+            self.assertEqual(features, {
+                1: [1, 'b'],
+                2: [2, 'd']
+            })
 
 
 if __name__ == '__main__':

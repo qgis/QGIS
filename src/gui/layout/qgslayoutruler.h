@@ -89,7 +89,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
 
   signals:
     //! Emitted when mouse cursor coordinates change
-    void cursorPosChanged( QPointF );
+    void cursorPosChanged( QPointF position );
 
   protected:
     void paintEvent( QPaintEvent *event ) override;

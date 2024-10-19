@@ -37,4 +37,7 @@ QgsServerSettingsEnv.QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS = QgsServerSettingsEnv
 QgsServerSettingsEnv.QGIS_SERVER_APPLICATION_NAME = QgsServerSettingsEnv.EnvVar.QGIS_SERVER_APPLICATION_NAME
 QgsServerSettingsEnv.QGIS_SERVER_CAPABILITIES_CACHE_SIZE = QgsServerSettingsEnv.EnvVar.QGIS_SERVER_CAPABILITIES_CACHE_SIZE
 QgsServerSettingsEnv.EnvVar.baseClass = QgsServerSettingsEnv
-QgsServerSettings.name = staticmethod(QgsServerSettings.name)
+try:
+    QgsServerSettings.name = staticmethod(QgsServerSettings.name)
+except NameError:
+    pass

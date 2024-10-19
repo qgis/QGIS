@@ -48,6 +48,7 @@
 #include <QUrlQuery>
 #include <QApplication>
 #include <nlohmann/json.hpp>
+#include <qstringliteral.h>
 
 ///@cond PRIVATE
 
@@ -196,7 +197,11 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
   std::unique_ptr< QgsTiledSceneTile > tile = std::make_unique< QgsTiledSceneTile >( mNextTileId++ );
 
   tile->setBaseUrl( baseUrl );
-  tile->setMetadata( {{ QStringLiteral( "gltfUpAxis" ), static_cast< int >( gltfUpAxis ) }} );
+  tile->setMetadata(
+  {
+    { QStringLiteral( "gltfUpAxis" ), static_cast< int >( gltfUpAxis ) },
+    { QStringLiteral( "contentFormat" ), QStringLiteral( "cesiumtiles" ) },
+  } );
 
   QgsMatrix4x4 transform;
   if ( json.contains( "transform" ) && !json["transform"].is_null() )

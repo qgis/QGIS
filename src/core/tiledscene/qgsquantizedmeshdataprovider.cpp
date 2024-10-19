@@ -18,9 +18,11 @@
 
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgslogger.h"
 #include "qgsmatrix4x4.h"
 #include "qgsorientedbox3d.h"
@@ -33,7 +35,7 @@
 #include "qgstiledscenetile.h"
 #include "qgstiles.h"
 #include "qgsvectortileutils.h"
-#include <climits>
+#include <limits>
 #include <nlohmann/json.hpp>
 #include <qglobal.h>
 #include <qnetworkrequest.h>
@@ -42,9 +44,6 @@
 #include <qvector.h>
 
 ///@cond PRIVATE
-
-constexpr const char *providerName = "quantizedmesh";
-constexpr const char *providerDescription = "Cesium Quantized Mesh tiles";
 
 class MissingFieldException : public std::exception
 {
@@ -58,79 +57,176 @@ class MissingFieldException : public std::exception
     const char *mField;
 };
 
-class QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
+template <typename T>
+static T jsonGet( nlohmann::json &json, const char *idx )
 {
-  public:
-    QgsQuantizedMeshIndex( QgsQuantizedMeshDataProvider::Metadata metadata,
-                           QgsTileMatrix tileMatrix )
-      : mMetadata( metadata )
-      , mTileMatrix( tileMatrix ) {}
-    QgsTiledSceneTile rootTile() const override;
-    long long parentTileId( long long id ) const override;
-    QVector< long long > childTileIds( long long id ) const override;
-    QgsTiledSceneTile getTile( long long id ) override;
-    QVector< long long > getTiles( const QgsTiledSceneRequest &request ) override;
-    Qgis::TileChildrenAvailability childAvailability( long long id ) const override;
-    bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) override;
-  protected:
-    QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) override;
-
-    // Tile ID coding scheme:
-    // From MSb, 3 bits reserved, 5 bits zoom, 28 bits X, 28 bits Y
-    static long long encodeTileId( QgsTileXYZ tile );
-    static QgsTileXYZ decodeTileId( long long id );
-    bool containsTile( QgsTileXYZ tile ) const;
-    double geometricErrorAtZoom( uint8_t zoom ) const;
-
-    QgsQuantizedMeshDataProvider::Metadata mMetadata;
-    QgsTileMatrix mTileMatrix;
-
-    static constexpr long long ROOT_TILE_ID = LLONG_MAX - 1;
-};
-
-long long QgsQuantizedMeshIndex::encodeTileId( QgsTileXYZ tile )
-{
-  Q_ASSERT( tile.zoomLevel() < ( 2 << 4 ) && ( tile.column() < ( 2 << 27 ) ) &&
-            ( tile.row() < ( 2 << 27 ) ) );
-  return tile.row() | ( ( long long )tile.column() << 28 ) |
-         ( ( long long )tile.zoomLevel() << 56 );
+  auto &obj = json[idx];
+  if ( obj.is_null() )
+  {
+    throw MissingFieldException( idx );
+  }
+  return obj.get<T>();
 }
 
-QgsTileXYZ QgsQuantizedMeshIndex::decodeTileId( long long id )
+
+QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
+  const QString &uri,
+  const QgsCoordinateTransformContext &transformContext,
+  QgsError &error )
 {
-  Q_ASSERT( id >> 61 == 0 ); // Reserved bits are zero for regular tiles
-  return QgsTileXYZ(
-           ( int )( ( id >> 28 ) & ( ( 2 << 27 ) - 1 ) ),
-           ( int )( id & ( ( 2 << 27 ) - 1 ) ),
-           ( int )( ( id >> 56 ) & ( ( 2 << 4 ) - 1 ) ) );
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+  mAuthCfg = dsUri.authConfigId();
+  mHeaders = dsUri.httpHeaders();
+
+  // The provided URL should be the metadata JSON's location
+  QUrl metadataUrl = dsUri.param( "url" );
+  QNetworkRequest requestData( metadataUrl );
+  mHeaders.updateNetworkRequest( requestData );
+  QgsSetRequestInitiatorClass( requestData,
+                               QStringLiteral( "QgsQuantizedMeshDataProvider" ) );
+  QgsBlockingNetworkRequest request;
+  if ( !mAuthCfg.isEmpty() )
+    request.setAuthCfg( mAuthCfg );
+  auto respCode = request.get( requestData );
+  if ( respCode != QgsBlockingNetworkRequest::ErrorCode::NoError )
+  {
+    error.append(
+      QObject::tr( "Failed to retrieve quantized mesh tiles metadata: %1" )
+      .arg( request.errorMessage().data() ) );
+    return;
+  }
+  auto reply = request.reply().content();
+
+  try
+  {
+    auto replyJson = nlohmann::json::parse( reply.data() );
+
+    // The metadata is an (undocumented) variant of TileJSON
+    if ( jsonGet<std::string>( replyJson, "format" ) != "quantized-mesh-1.0" )
+    {
+      error.append( QObject::tr( "Unexpected tile format: %1" )
+                    .arg( replyJson["format"].dump().c_str() ) );
+      return;
+    }
+
+    auto crsString = QString::fromStdString( jsonGet<std::string>( replyJson, "projection" ) );
+    mCrs = QgsCoordinateReferenceSystem( crsString );
+    if ( !mCrs.isValid() )
+    {
+      error.append( QObject::tr( "Invalid CRS '%1'!" ).arg( crsString ) );
+      return;
+    }
+
+    try
+    {
+      std::vector<double> bounds = jsonGet<std::vector<double>>( replyJson, "bounds" );
+      if ( bounds.size() != 4 )
+      {
+        error.append( QObject::tr( "Bounds array doesn't have 4 items" ) );
+        return;
+      }
+      mExtent = QgsRectangle( bounds[0], bounds[1], bounds[2], bounds[3] );
+    }
+    catch ( MissingFieldException & )
+    {
+      mExtent = mCrs.bounds();
+    }
+
+    auto zRange = dummyZRange;
+    mBoundingVolume =
+      QgsOrientedBox3D::fromBox3D(
+        QgsBox3D(
+          mExtent.xMinimum(), mExtent.yMinimum(), zRange.lower(),
+          mExtent.xMaximum(), mExtent.yMaximum(), zRange.upper() ) );
+
+    // The TileJSON spec uses "scheme", but some real-world datasets use "schema"
+    if ( replyJson.find( "scheme" ) != replyJson.end() )
+      mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "scheme" ) );
+    else if ( replyJson.find( "schema" ) != replyJson.end() )
+      mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "schema" ) );
+    else throw MissingFieldException( "scheme/schema" );
+
+    for ( auto &aabbs : replyJson.at( "available" ) )
+    {
+      QVector<QgsTileRange> tileRanges;
+      for ( auto &aabb : aabbs )
+      {
+        tileRanges.push_back(
+          QgsTileRange(
+            jsonGet<int>( aabb, "startX" ), jsonGet<int>( aabb, "endX" ),
+            jsonGet<int>( aabb, "startY" ), jsonGet<int>( aabb, "endY" ) ) );
+      }
+      mAvailableTiles.push_back( tileRanges );
+    }
+
+    try
+    {
+      mMinZoom = jsonGet<uint8_t>( replyJson, "minzoom" );
+      mMaxZoom = jsonGet<uint8_t>( replyJson, "maxzoom" );
+    }
+    catch ( MissingFieldException & )
+    {
+      mMinZoom = 0;
+      mMaxZoom = mAvailableTiles.size() - 1;
+    }
+
+    QString versionStr =
+      QString::fromStdString( jsonGet<std::string>( replyJson, "version" ) );
+    for ( auto &urlStr : jsonGet<std::vector<std::string>>( replyJson, "tiles" ) )
+    {
+      QUrl url = metadataUrl.resolved( QString::fromStdString( urlStr ) );
+      mTileUrls.push_back(
+        url.toString( QUrl::DecodeReserved ).replace( "{version}", versionStr ) );
+    }
+
+    int rootTileCount = 1;
+    if ( crsString == QLatin1String( "EPSG:4326" ) )
+      rootTileCount = 2;
+    else if ( crsString != QLatin1String( "EPSG:3857" ) )
+      error.append( QObject::tr( "Unhandled CRS: %1" ).arg( crsString ) );
+
+    QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
+    // Bounds of tile schema in projected coordinates
+    auto crsBounds =
+      QgsCoordinateTransform( wgs84, mCrs, transformContext )
+      .transform( mCrs.bounds() );
+    QgsPointXY topLeft( crsBounds.xMinimum(), crsBounds.yMaximum() );
+    double z0TileSize = crsBounds.height();
+
+    mTileMatrix = QgsTileMatrix::fromCustomDef( 0, mCrs, topLeft, z0TileSize, rootTileCount, 1 );
+  }
+  catch ( nlohmann::json::exception &ex )
+  {
+    error.append( QObject::tr( "Error parsing JSON metadata: %1" ).arg( ex.what() ) );
+  }
+  catch ( MissingFieldException &ex )
+  {
+    error.append( QObject::tr( "Error parsing JSON metadata: %1" ).arg( ex.what() ) );
+  }
 }
 
-double QgsQuantizedMeshIndex::geometricErrorAtZoom( uint8_t zoom ) const
-{
-  // The specification doesn't mandate any precision, we can only make a guess
-  // based on each tile's maximum possible numerical precision and some
-  // reasonable-looking constant.
-  return 400000 / pow( 2, zoom );
-}
+const QgsDoubleRange QgsQuantizedMeshMetadata::dummyZRange = {-10000, 10000};
 
 static QgsTileXYZ tileToTms( QgsTileXYZ &xyzTile )
 {
   // Flip Y axis for TMS schema
+  Q_ASSERT( xyzTile.zoomLevel() >= 0 );
   return {xyzTile.column(),
           ( 1 << xyzTile.zoomLevel() ) - xyzTile.row() - 1,
           xyzTile.zoomLevel()};
 }
 
-bool QgsQuantizedMeshIndex::containsTile( QgsTileXYZ tile ) const
+bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
 {
-  if ( tile.zoomLevel() < mMetadata.mMinZoom || tile.zoomLevel() > mMetadata.mMaxZoom ||
-       tile.zoomLevel() >= mMetadata.mAvailableTiles.size() )
+  if ( tile.zoomLevel() < mMinZoom || tile.zoomLevel() > mMaxZoom ||
+       tile.zoomLevel() >= mAvailableTiles.size() )
     return false;
   // We operate with XYZ-style tile coordinates, but the availability array may
   // be given in TMS-style
-  if ( mMetadata.mTileScheme == QLatin1String( "tms" ) )
+  if ( mTileScheme == QLatin1String( "tms" ) )
     tile = tileToTms( tile );
-  for ( auto &range : mMetadata.mAvailableTiles[tile.zoomLevel()] )
+  for ( auto &range : mAvailableTiles[tile.zoomLevel()] )
   {
     if ( range.startColumn() <= tile.column() && range.endColumn() >= tile.column() &&
          range.startRow() <= tile.row() && range.endRow() >= tile.row() )
@@ -139,11 +235,48 @@ bool QgsQuantizedMeshIndex::containsTile( QgsTileXYZ tile ) const
   return false;
 }
 
+double QgsQuantizedMeshMetadata::geometricErrorAtZoom( int zoom ) const
+{
+  // The specification doesn't mandate any precision, we can only make a guess
+  // based on each tile's maximum possible numerical precision and some
+  // reasonable-looking constant.
+  return 400000 / pow( 2, zoom );
+}
+
+long long QgsQuantizedMeshIndex::encodeTileId( QgsTileXYZ tile )
+{
+  if ( tile.zoomLevel() == -1 )
+  {
+    Q_ASSERT( tile.column() == 0 && tile.row() == 0 );
+    return ROOT_TILE_ID;
+  }
+  Q_ASSERT( tile.zoomLevel() < ( 2 << 4 ) && ( tile.column() < ( 2 << 27 ) ) &&
+            ( tile.row() < ( 2 << 27 ) ) );
+  return tile.row() | ( ( long long )tile.column() << 28 ) |
+         ( ( long long )tile.zoomLevel() << 56 ) | ( ( long long ) 1 << 61 );
+}
+
+QgsTileXYZ QgsQuantizedMeshIndex::decodeTileId( long long id )
+{
+  if ( id == ROOT_TILE_ID )
+    return QgsTileXYZ( 0, 0, -1 );
+
+  Q_ASSERT( id >> 61 == 1 ); // Check reserved bits
+  return QgsTileXYZ(
+           ( int )( ( id >> 28 ) & ( ( 2 << 27 ) - 1 ) ),
+           ( int )( id & ( ( 2 << 27 ) - 1 ) ),
+           ( int )( ( id >> 56 ) & ( ( 2 << 4 ) - 1 ) ) );
+}
+
 QgsTiledSceneTile QgsQuantizedMeshIndex::rootTile() const
 {
   // Returns virtual tile to paper over tiling schemes which have >1 tile at zoom 0
   auto tile = QgsTiledSceneTile( ROOT_TILE_ID );
-  tile.setBoundingVolume( QgsOrientedBox3D::fromBox3D( mMetadata.mCrs.bounds() ) );
+  auto bounds = mWgs84ToCrs.transform( mMetadata.mCrs.bounds() );
+  tile.setBoundingVolume(
+    QgsOrientedBox3D::fromBox3D(
+      QgsBox3D( bounds, mMetadata.dummyZRange.lower(), mMetadata.dummyZRange.upper() ) ) );
+  tile.setGeometricError( std::numeric_limits<double>::max() );
   return tile;
 }
 long long QgsQuantizedMeshIndex::parentTileId( long long id ) const
@@ -161,13 +294,13 @@ QVector<long long> QgsQuantizedMeshIndex::childTileIds( long long id ) const
   QVector<long long> children;
   auto x = tile.column(), y = tile.row(), zoom = tile.zoomLevel();
 
-  if ( containsTile( {x * 2, y * 2, zoom + 1} ) )
+  if ( mMetadata.containsTile( {x * 2, y * 2, zoom + 1} ) )
     children.push_back( encodeTileId( {x * 2, y * 2, zoom + 1} ) );
-  if ( containsTile( {x * 2 + 1, y * 2, zoom + 1} ) )
+  if ( mMetadata.containsTile( {x * 2 + 1, y * 2, zoom + 1} ) )
     children.push_back( encodeTileId( {x * 2 + 1, y * 2, zoom + 1} ) );
-  if ( containsTile( {x * 2, y * 2 + 1, zoom + 1} ) )
+  if ( mMetadata.containsTile( {x * 2, y * 2 + 1, zoom + 1} ) )
     children.push_back( encodeTileId( {x * 2, y * 2 + 1, zoom + 1} ) );
-  if ( containsTile( {x * 2 + 1, y * 2 + 1, zoom + 1} ) )
+  if ( mMetadata.containsTile( {x * 2 + 1, y * 2 + 1, zoom + 1} ) )
     children.push_back( encodeTileId( {x * 2 + 1, y * 2 + 1, zoom + 1} ) );
 
   return children;
@@ -177,10 +310,17 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
   auto xyzTile = decodeTileId( id );
   QgsTiledSceneTile sceneTile( id );
 
-  auto zoomedMatrix = QgsTileMatrix::fromTileMatrix( xyzTile.zoomLevel(), mTileMatrix );
+  auto zoomedMatrix = QgsTileMatrix::fromTileMatrix( xyzTile.zoomLevel(), mMetadata.mTileMatrix );
   auto tileExtent = zoomedMatrix.tileExtent( xyzTile );
-  sceneTile.setBoundingVolume( QgsOrientedBox3D::fromBox3D( tileExtent ) );
-  sceneTile.setGeometricError( geometricErrorAtZoom( xyzTile.zoomLevel() ) );
+
+  sceneTile.setBoundingVolume(
+    QgsOrientedBox3D::fromBox3D(
+      QgsBox3D( tileExtent, mMetadata.dummyZRange.lower(), mMetadata.dummyZRange.upper() ) ) );
+  sceneTile.setGeometricError( mMetadata.geometricErrorAtZoom( xyzTile.zoomLevel() ) );
+
+  if ( id == ROOT_TILE_ID )
+    // The root tile is fictitious and has no content, don't bother pointing to any.
+    return sceneTile;
 
   if ( mMetadata.mTileScheme == QLatin1String( "tms" ) )
     xyzTile = tileToTms( xyzTile );
@@ -195,7 +335,11 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
     auto tileUri = QgsVectorTileUtils::formatXYZUrlTemplate(
                      mMetadata.mTileUrls[0], xyzTile, zoomedMatrix );
     sceneTile.setResources( {{"content", tileUri}} );
-    sceneTile.setMetadata( {{"gltfUpAxis", static_cast<int>( Qgis::Axis::Z )}} );
+    sceneTile.setMetadata(
+    {
+      {QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Z )},
+      {QStringLiteral( "contentFormat" ), QStringLiteral( "quantizedmesh" )},
+    } );
   }
 
   // Tile meshes have 0.0 -- 1.0 coordinates. Rescale them to the tile's real
@@ -216,10 +360,10 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
   if ( request.requiredGeometricError() != 0 )
   {
     while ( zoomLevel < mMetadata.mMaxZoom &&
-            geometricErrorAtZoom( zoomLevel ) > request.requiredGeometricError() )
+            mMetadata.geometricErrorAtZoom( zoomLevel ) > request.requiredGeometricError() )
       zoomLevel++;
   }
-  auto tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mTileMatrix );
+  auto tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mMetadata.mTileMatrix );
 
   QVector<long long> ids;
   // We can only filter on X and Y
@@ -238,7 +382,7 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); row++ )
     {
       auto xyzTile = QgsTileXYZ( col, row, zoomLevel );
-      if ( containsTile( xyzTile ) )
+      if ( mMetadata.containsTile( xyzTile ) )
         ids.push_back( encodeTileId( xyzTile ) );
     }
 
@@ -269,6 +413,9 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
   QNetworkRequest requestData( uri );
   requestData.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   requestData.setRawHeader( "Accept", "application/vnd.quantized-mesh,application/octet-stream;q=0.9" );
+  mMetadata.mHeaders.updateNetworkRequest( requestData );
+  if ( !mMetadata.mAuthCfg.isEmpty() )
+    QgsApplication::authManager()->updateNetworkRequest( requestData, mMetadata.mAuthCfg );
   QgsSetRequestInitiatorClass( requestData,
                                QStringLiteral( "QgsQuantizedMeshIndex" ) );
 
@@ -282,21 +429,10 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    QgsDebugError( QStringLiteral( "Request failed: %1" ).arg( uri ) );
+    QgsDebugError( QStringLiteral( "Request failed (%1): %2" ).arg( uri ).arg( reply->errorString() ) );
     return {};
   }
   return reply->data();
-}
-
-template <typename T>
-static T jsonGet( nlohmann::json &json, const char *idx )
-{
-  auto &obj = json[idx];
-  if ( obj.is_null() )
-  {
-    throw MissingFieldException( idx );
-  }
-  return obj.get<T>();
 }
 
 QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
@@ -305,112 +441,14 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
   : QgsTiledSceneDataProvider( uri, providerOptions, flags ), mUri( uri ),
     mProviderOptions( providerOptions )
 {
-  // The provided URI should be the metadata JSON's location
-  QNetworkRequest requestData( uri );
-  QgsSetRequestInitiatorClass( requestData,
-                               QStringLiteral( "QgsQuantizedMeshDataProvider" ) );
-  QgsBlockingNetworkRequest request;
-  auto respCode = request.get( requestData );
-  if ( respCode != QgsBlockingNetworkRequest::ErrorCode::NoError )
+  mMetadata = QgsQuantizedMeshMetadata( uri, transformContext(), mError );
+  if ( mError.isEmpty() )
   {
-    appendError(
-      QObject::tr( "Failed to retrieve quantized mesh tiles metadata: %1" )
-      .arg( request.errorMessage().data() ) );
-    return;
-  }
-  auto reply = request.reply().content();
-
-  try
-  {
-    auto replyJson = nlohmann::json::parse( reply.data() );
-
-    // The metadata is an (undocumented) variant of TileJSON
-    if ( jsonGet<std::string>( replyJson, "format" ) != "quantized-mesh-1.0" )
-    {
-      appendError( QObject::tr( "Unexpected tile format: %1" )
-                   .arg( replyJson["format"].dump().c_str() ) );
-      return;
-    }
-
-    std::vector<double> bounds = jsonGet<std::vector<double>>( replyJson, "bounds" );
-    if ( bounds.size() != 4 )
-    {
-      appendError( QObject::tr( "Bounds array doesn't have 4 items" ) );
-      return;
-    }
-    mMetadata.mExtent = QgsRectangle( bounds[0], bounds[1], bounds[2], bounds[3] );
-    // Call our class' version explicitly to tell clang-tidy we don't need virtual dispatch here
-    auto zRange = QgsQuantizedMeshDataProvider::zRange();
-    mMetadata.mBoundingVolume =
-      QgsOrientedBox3D::fromBox3D(
-        QgsBox3D(
-          mMetadata.mExtent.xMinimum(), mMetadata.mExtent.yMinimum(), zRange.lower(),
-          mMetadata.mExtent.xMaximum(), mMetadata.mExtent.yMaximum(), zRange.upper() ) );
-
-    auto crsString = QString::fromStdString( jsonGet<std::string>( replyJson, "projection" ) );
-    mMetadata.mCrs = QgsCoordinateReferenceSystem( crsString );
-    if ( !mMetadata.mCrs.isValid() )
-    {
-      appendError( QObject::tr( "Invalid CRS '%1'!" ).arg( crsString ) );
-      return;
-    }
-    mMetadata.mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "scheme" ) );
-    mMetadata.mMinZoom = jsonGet<uint8_t>( replyJson, "minzoom" );
-    mMetadata.mMaxZoom = jsonGet<uint8_t>( replyJson, "maxzoom" );
-
-    for ( auto &aabbs : replyJson.at( "available" ) )
-    {
-      QVector<QgsTileRange> tileRanges;
-      for ( auto &aabb : aabbs )
-      {
-        tileRanges.push_back(
-          QgsTileRange(
-            jsonGet<int>( aabb, "startX" ), jsonGet<int>( aabb, "endX" ),
-            jsonGet<int>( aabb, "startY" ), jsonGet<int>( aabb, "endY" ) ) );
-      }
-      mMetadata.mAvailableTiles.push_back( tileRanges );
-    }
-
-    QString versionStr =
-      QString::fromStdString( jsonGet<std::string>( replyJson, "version" ) );
-    for ( auto &url : jsonGet<std::vector<std::string>>( replyJson, "tiles" ) )
-    {
-      mMetadata.mTileUrls.push_back(
-        QString::fromStdString( url ).replace( "{version}", versionStr ) );
-    }
-
-    int rootTileCount = 1;
-    if ( crsString == QLatin1String( "EPSG:4326" ) )
-      rootTileCount = 2;
-    else if ( crsString != QLatin1String( "EPSG:3857" ) )
-      appendError( QObject::tr( "Unhandled CRS: %1" ).arg( crsString ) );
-
     QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
-    // Bounds of tile schema in projected coordinates
-    auto crsBounds =
-      QgsCoordinateTransform( wgs84, mMetadata.mCrs, transformContext() )
-      .transform( mMetadata.mCrs.bounds() );
-    QgsPointXY topLeft( crsBounds.xMinimum(), crsBounds.yMaximum() );
-    double z0TileSize = crsBounds.height();
-
-    QgsTileMatrix tileMatrix;
-    tileMatrix = QgsTileMatrix::fromCustomDef( 0, mMetadata.mCrs, topLeft,
-                 z0TileSize, rootTileCount, 1 );
-
-    mIndex.emplace( new QgsQuantizedMeshIndex( mMetadata, tileMatrix ) );
+    QgsCoordinateTransform wgs84ToCrs( wgs84, mMetadata->mCrs, transformContext() );
+    mIndex.emplace( new QgsQuantizedMeshIndex( *mMetadata, wgs84ToCrs ) );
+    mIsValid = true;
   }
-  catch ( nlohmann::json::exception &ex )
-  {
-    appendError( QObject::tr( "Error parsing JSON metadata: %1" ).arg( ex.what() ) );
-    return;
-  }
-  catch ( MissingFieldException &ex )
-  {
-    appendError( QObject::tr( "Error parsing JSON metadata: %1" ).arg( ex.what() ) );
-    return;
-  }
-
-  mIsValid = true;
 }
 
 Qgis::TiledSceneProviderCapabilities
@@ -425,12 +463,12 @@ QgsTiledSceneDataProvider *QgsQuantizedMeshDataProvider::clone() const
 const QgsCoordinateReferenceSystem
 QgsQuantizedMeshDataProvider::sceneCrs() const
 {
-  return mMetadata.mCrs;
+  return mMetadata->mCrs;
 }
 const QgsTiledSceneBoundingVolume &
 QgsQuantizedMeshDataProvider::boundingVolume() const
 {
-  return mMetadata.mBoundingVolume;
+  return mMetadata->mBoundingVolume;
 }
 
 QgsTiledSceneIndex QgsQuantizedMeshDataProvider::index() const
@@ -443,24 +481,28 @@ QgsTiledSceneIndex QgsQuantizedMeshDataProvider::index() const
 
 QgsDoubleRange QgsQuantizedMeshDataProvider::zRange() const
 {
-  // The metadata JSON doesn't declare this, each tile sets its own
-  // altitude range. For now some "reasonable defaults" are in place.
-  return {-10000, 10000};
+  return mMetadata->dummyZRange;
 }
 QgsCoordinateReferenceSystem QgsQuantizedMeshDataProvider::crs() const
 {
-  return mMetadata.mCrs;
+  return mMetadata->mCrs;
 }
 QgsRectangle QgsQuantizedMeshDataProvider::extent() const
 {
-  return mMetadata.mExtent;
+  return mMetadata->mExtent;
 }
 bool QgsQuantizedMeshDataProvider::isValid() const { return mIsValid; }
 QString QgsQuantizedMeshDataProvider::name() const { return providerName; }
 QString QgsQuantizedMeshDataProvider::description() const { return providerDescription; }
 
+const QgsQuantizedMeshMetadata &QgsQuantizedMeshDataProvider::quantizedMeshMetadata() const
+{
+  return *mMetadata;
+}
+
 QgsQuantizedMeshProviderMetadata::QgsQuantizedMeshProviderMetadata()
-  : QgsProviderMetadata( providerName, providerDescription ) {}
+  : QgsProviderMetadata( QgsQuantizedMeshDataProvider::providerName,
+                         QgsQuantizedMeshDataProvider::providerDescription ) {}
 
 QgsDataProvider *QgsQuantizedMeshProviderMetadata::createProvider(
   const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,

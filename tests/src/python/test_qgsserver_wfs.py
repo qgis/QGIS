@@ -287,7 +287,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         tests = []
 
         template = """<?xml version="1.0" encoding="UTF-8"?>
-<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+<wfs:GetFeature service="WFS" version="{}" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" xmlns:feature="http://www.qgis.org/gml">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
       <ogc:BBOX>
@@ -301,15 +301,20 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-        tests.append(('nobbox_post', template.format("")))
-        tests.append(('startindex2_post', template.format('startIndex="2"')))
-        tests.append(('limit2_post', template.format('maxFeatures="2"')))
-        tests.append(('start1_limit1_post', template.format(
-            'startIndex="1" maxFeatures="1"')))
+        for version in ['1.0.0', '1.1.0']:
+            version_underscore = '_' + version.replace(".", "_")
+            tests.append((f'nobbox_post{version_underscore}', template.format(
+                version, "")))
+            tests.append((f'startindex2_post{version_underscore}', template.format(
+                version, 'startIndex="2"')))
+            tests.append((f'limit2_post{version_underscore}', template.format(
+                version, 'maxFeatures="2"')))
+            tests.append((f'start1_limit1_post{version_underscore}', template.format(
+                version, 'startIndex="1" maxFeatures="1"')))
 
-        srsTemplate = """<?xml version="1.0" encoding="UTF-8"?>
-<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-  <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+        srsTemplate = """<?xml version="" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="{}" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" {} xmlns:feature="http://www.qgis.org/gml">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
       <ogc:BBOX>
         <ogc:PropertyName>geometry</ogc:PropertyName>
@@ -322,7 +327,12 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-        tests.append(('srsname_post', srsTemplate.format("")))
+        tests.append(('srsname_post_1_0_0', srsTemplate.format(
+            '1.0.0', '', 'srsName="EPSG:3857"')))
+        tests.append(('srsname_post_1_1_0', srsTemplate.format(
+            '1.1.0', '', 'srsName="EPSG:3857"')))
+        tests.append(('srsname_post_1_1_0_urn', srsTemplate.format(
+            '1.1.0', '', 'srsName="urn:ogc:def:crs:EPSG::3857"')))
 
         # Issue https://github.com/qgis/QGIS/issues/36398
         # Check get feature within polygon having srsName=EPSG:4326 (same as the project/layer)
@@ -494,7 +504,7 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-        tests.append(('nobbox_post', template.format("")))
+        tests.append(('nobbox_post_1_0_0', template.format("")))
 
         template = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
@@ -511,7 +521,7 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-        tests.append(('nobbox_post', template.format("")))
+        tests.append(('nobbox_post_1_0_0', template.format("")))
 
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
@@ -572,10 +582,15 @@ class TestQgsServerWFS(QgsServerTestBase):
             "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0&PROPERTYNAME=*", 'wfs_getFeature_1_0_0_featureid_0')
 
     def test_getFeatureFeature11urn(self):
-        """Test GetFeature with SRSNAME urn:ogc:def:crs:EPSG::4326"""
+        """Test GetFeature with SRSNAME as urn:ogc:def:crs:EPSG::X"""
 
+        # urn:ogc:def:crs:EPSG::4326
         self.wfs_request_compare(
             "GetFeature", '1.1.0', "SRSNAME=urn:ogc:def:crs:EPSG::4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0')
+
+        # urn:ogc:def:crs:EPSG::3857
+        self.wfs_request_compare(
+            "GetFeature", '1.1.0', "SRSNAME=urn:ogc:def:crs:EPSG::3857&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0_epsg3857')
 
     def test_get_feature_srsname_empty(self):
         """Test GetFeature with an empty SRSNAME."""

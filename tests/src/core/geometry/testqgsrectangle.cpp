@@ -32,6 +32,7 @@ class TestQgsRectangle: public QObject
     void set();
     void setXY();
     void fromCenter();
+    void intersects();
     void manipulate();
     void regression6194();
     void operators();
@@ -230,6 +231,38 @@ void TestQgsRectangle::fromCenter()
   QCOMPARE( rect.yMinimum(), 21.0 );
   QCOMPARE( rect.xMaximum(), 22.0 );
   QCOMPARE( rect.yMaximum(), 21.0 );
+}
+
+void TestQgsRectangle::intersects()
+{
+  QgsRectangle rect1, rect2;
+
+  // both rectangle are null - rects do not intersect
+  QVERIFY( rect1.isNull() );
+  QVERIFY( rect2.isNull() );
+  QVERIFY( !rect1.intersects( rect2 ) );
+  QVERIFY( !rect2.intersects( rect1 ) );
+
+  // rect2 is null - rects do not intersect
+  rect1.set( 1, 2, 3, 5 );
+  QVERIFY( !rect1.isNull() );
+  QVERIFY( rect2.isNull() );
+  QVERIFY( !rect1.intersects( rect2 ) );
+  QVERIFY( !rect2.intersects( rect1 ) );
+
+  // rect2 is still null - rects do not intersect
+  rect2.set( std::numeric_limits<double>::quiet_NaN(),  std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
+  QVERIFY( !rect1.isNull() );
+  QVERIFY( rect2.isNull() );
+  QVERIFY( !rect1.intersects( rect2 ) );
+  QVERIFY( !rect2.intersects( rect1 ) );
+
+  // intersection
+  rect2.set( 1.5, 3.2, 2.5, 4 );
+  QVERIFY( !rect1.isNull() );
+  QVERIFY( !rect2.isNull() );
+  QVERIFY( rect1.intersects( rect2 ) );
+  QVERIFY( rect2.intersects( rect1 ) );
 }
 
 void TestQgsRectangle::manipulate()

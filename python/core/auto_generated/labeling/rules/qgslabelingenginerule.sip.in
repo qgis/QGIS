@@ -1,0 +1,254 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/rules/qgslabelingenginerule.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsLabelingEngineContext
+{
+%Docstring(signature="appended")
+Encapsulates the context for a labeling engine run.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerule.h"
+%End
+  public:
+
+    QgsLabelingEngineContext( QgsRenderContext &renderContext );
+%Docstring
+Constructor for QgsLabelingEngineContext.
+%End
+
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+%End
+
+
+    QgsRectangle extent() const;
+%Docstring
+Returns the map extent defining the limits for labeling.
+
+.. seealso:: :py:func:`mapBoundaryGeometry`
+
+.. seealso:: :py:func:`setExtent`
+%End
+
+    void setExtent( const QgsRectangle &extent );
+%Docstring
+Sets the map ``extent`` defining the limits for labeling.
+
+.. seealso:: :py:func:`setMapBoundaryGeometry`
+
+.. seealso:: :py:func:`extent`
+%End
+
+    QgsGeometry mapBoundaryGeometry() const;
+%Docstring
+Returns the map label boundary geometry, which defines the limits within which labels may be placed
+in the map.
+
+The map boundary geometry specifies the actual geometry of the map
+boundary, which will be used to detect whether a label is visible (or partially visible) in
+the rendered map. This may differ from :py:func:`~QgsLabelingEngineContext.extent` in the case of rotated or non-rectangular
+maps.
+
+.. seealso:: :py:func:`setMapBoundaryGeometry`
+
+.. seealso:: :py:func:`extent`
+%End
+
+    void setMapBoundaryGeometry( const QgsGeometry &geometry );
+%Docstring
+Sets the map label boundary ``geometry``, which defines the limits within which labels may be placed
+in the map.
+
+The map boundary geometry specifies the actual geometry of the map
+boundary, which will be used to detect whether a label is visible (or partially visible) in
+the rendered map. This may differ from :py:func:`~QgsLabelingEngineContext.extent` in the case of rotated or non-rectangular
+maps.
+
+.. seealso:: :py:func:`setExtent`
+
+.. seealso:: :py:func:`mapBoundaryGeometry`
+%End
+
+  private:
+    QgsLabelingEngineContext( const QgsLabelingEngineContext &other );
+};
+
+class QgsAbstractLabelingEngineRule
+{
+%Docstring(signature="appended")
+Abstract base class for labeling engine rules.
+
+Labeling engine rules implement custom logic to modify the labeling solution for a map render,
+e.g. by preventing labels being placed which violate custom constraints.
+
+.. note::
+
+   :py:class:`QgsAbstractLabelingEngineRule` cannot be subclassed in Python. Use one of the existing
+   implementations of this class instead.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerule.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->id() == "minimumDistanceLabelToFeature" )
+    {
+      sipType = sipType_QgsLabelingEngineRuleMinimumDistanceLabelToFeature;
+    }
+    else if ( sipCpp->id() == "minimumDistanceLabelToLabel" )
+    {
+      sipType = sipType_QgsLabelingEngineRuleMinimumDistanceLabelToLabel;
+    }
+    else if ( sipCpp->id() == "maximumDistanceLabelToFeature" )
+    {
+      sipType = sipType_QgsLabelingEngineRuleMaximumDistanceLabelToFeature;
+    }
+    else if ( sipCpp->id() == "avoidLabelOverlapWithFeature" )
+    {
+      sipType = sipType_QgsLabelingEngineRuleAvoidLabelOverlapWithFeature;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    virtual ~QgsAbstractLabelingEngineRule();
+
+    virtual QgsAbstractLabelingEngineRule *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of this rule.
+
+The caller takes ownership of the returned object.
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+Returns a string uniquely identifying the rule subclass.
+%End
+
+    virtual QString displayType() const = 0;
+%Docstring
+Returns a user-friendly, translated string representing the rule type.
+%End
+
+    virtual bool isAvailable() const;
+%Docstring
+Returns ``True`` if the rule is available for use within the current QGIS environment.
+
+The base class method returns ``True``.
+
+Rules can return ``False`` if required dependencies are not available, e.g. if a library version
+is too old for the rule.
+%End
+
+    virtual QString description() const;
+%Docstring
+Returns a user-friendly description of the rule.
+
+This should include the rule :py:func:`~QgsAbstractLabelingEngineRule.name` if set, and other useful details for users
+to quickly identify the rule's purpose when shown in a tooltip.
+
+The returned string may contain HTML formatting.
+%End
+
+    QString name() const;
+%Docstring
+Returns the name for this instance of the rule.
+
+The name is a user-configurable value which helps them identify and describe the
+rule within their projects.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the ``name`` for this instance of the rule.
+
+The name is a user-configurable value which helps them identify and describe the
+rule within their projects.
+
+.. seealso:: :py:func:`name`
+%End
+
+    bool active() const;
+%Docstring
+Returns ``True`` if the rule is active.
+
+.. seealso:: :py:func:`setActive`
+%End
+
+    void setActive( bool active );
+%Docstring
+Sets whether the rule is ``active``.
+
+.. seealso:: :py:func:`active`
+%End
+
+    virtual bool prepare( QgsRenderContext &context ) = 0;
+%Docstring
+Prepares the rule.
+
+This must be called on the main render thread, prior to commencing the render operation. Thread sensitive
+logic (such as creation of feature sources) can be performed in this method.
+%End
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Writes the rule properties to an XML ``element``.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads the rule properties from an XML ``element``.
+
+.. seealso:: :py:func:`resolveReferences`
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual void resolveReferences( const QgsProject *project );
+%Docstring
+Resolves reference to layers from stored layer ID.
+
+Should be called following a call :py:func:`~QgsAbstractLabelingEngineRule.readXml`.
+%End
+
+
+
+
+
+  protected:
+
+    virtual void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const;
+%Docstring
+Copies common properties from this object to an ``other``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/rules/qgslabelingenginerule.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

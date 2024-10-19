@@ -23,6 +23,8 @@ A vector feature renderer which uses numeric attributes to classify features int
 
     ~QgsGraduatedSymbolRenderer();
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
@@ -283,6 +285,8 @@ Recalculate classes for a layer
 
 :param vl: The layer being rendered (from which data values are calculated)
 :param nclasses: the number of classes
+
+:return: Optional parameter for error reporting
 %End
 
 

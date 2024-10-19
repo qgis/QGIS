@@ -399,7 +399,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
       mLabelJob.complete = true;
       mLabelJob.renderingTime = labelTime.elapsed();
-      mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+      mLabelJob.participatingLayers = participatingLabelLayers( mLabelingEngineV2.get() );
     }
   }
 

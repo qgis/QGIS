@@ -27,9 +27,22 @@ import urllib.request
 import osgeo.gdal  # NOQA
 
 from owslib.wms import WebMapService
-from qgis.core import QgsProject
-from qgis.PyQt.QtCore import QUrl
-from qgis.server import QgsBufferServerResponse, QgsServer, QgsServerRequest
+from qgis.core import (
+    QgsProject,
+    QgsMemoryProviderUtils,
+    QgsWkbTypes,
+    QgsCoordinateReferenceSystem,
+    QgsFields,
+    QgsField,
+    QgsPalLayerSettings,
+    QgsVectorLayerSimpleLabeling,
+)
+from qgis.PyQt.QtCore import QUrl, QUrlQuery, QVariant
+from qgis.server import (
+    QgsBufferServerResponse,
+    QgsServer,
+    QgsServerRequest,
+)
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 
@@ -419,6 +432,37 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         # check content
         rootLayerName = 'QGIS Test Project'
         self.assertIn(rootLayerName, w.contents.keys())
+
+    def test_get_styles_sld_label_negative_offset(self):
+        """Test issue GH #458862"""
+
+        # Create a point layer with a negative offset for the label
+        project = QgsProject()
+        fields = QgsFields()
+        fields.append(QgsField('int', QVariant.Int))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('pointlabel', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem(4326))
+        layer.setLabelsEnabled(True)
+        settings = QgsPalLayerSettings()
+        settings.xOffset = -10
+        settings.yOffset = -5
+        settings.fieldName = 'int'
+        settings.enabled = True
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
+
+        labeling = QgsVectorLayerSimpleLabeling(settings)
+        layer.setLabeling(labeling)
+
+        project.addMapLayer(layer)
+
+        # Test GetStyles with labeling
+        server = QgsServer()
+        request = QgsServerRequest()
+        request.setUrl(QUrl('?SERVICE=WMS&REQUEST=GetStyles&LAYERS=pointlabel'))
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        body = response.body().data().decode('utf8').replace('\n', '')
+        self.assertIn('<se:DisplacementX>-36</se:DisplacementX>', body)
+        self.assertIn('<se:DisplacementY>-18</se:DisplacementY>', body)
 
 
 if __name__ == '__main__':

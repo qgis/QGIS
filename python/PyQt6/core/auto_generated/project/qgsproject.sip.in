@@ -426,7 +426,7 @@ The :py:func:`~QgsProject.verticalCrsChanged` signal will be raised if the verti
 :param crs: the vertical CRS
 
 :return: - ``True`` if vertical CRS was successfully set
-         - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
+         - errorMessage: a descriptive message if the vertical CRS could not be set
 
 .. seealso:: :py:func:`verticalCrs`
 
@@ -1657,10 +1657,13 @@ Sets the elevation shading renderer used for global map shading
 .. versionadded:: 3.30
 %End
 
+
+
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -1685,17 +1688,17 @@ Emitted when the project is about to be cleared.
 .. versionadded:: 3.34
 %End
 
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &document );
 %Docstring
 Emitted when a project is being read.
 %End
 
-    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+    void readProjectWithContext( const QDomDocument &document, QgsReadWriteContext &context );
 %Docstring
 Emitted when a project is being read. And passing the /a context
 %End
 
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument &document );
 %Docstring
 Emitted when the project is being written.
 %End
@@ -1725,7 +1728,7 @@ additional information to the layer.
 Emitted when the project file has been written and closed.
 %End
 
- void oldProjectVersionWarning( const QString & ) /Deprecated/;
+ void oldProjectVersionWarning( const QString &warning ) /Deprecated/;
 %Docstring
 Emitted when an old project file is read.
 
@@ -2246,7 +2249,7 @@ that the user has some chance of repairing the damage cleanly.
                     parameter is not mandatory, as the changes from all layers will be committed.
 
 :return: - ``True`` if the commit was successful.
-         - commitErrors: will be set to a list of descriptive errors if the commit fails.
+         - commitErrors: a list of descriptive errors if the commit fails.
 
 .. seealso:: :py:func:`startEditing`
 
@@ -2265,7 +2268,7 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
                     parameter is not mandatory, as the changes from all layers will be rolled back.
 
 :return: - ``True`` if the rollback was successful.
-         - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
+         - rollbackErrors: a list of descriptive errors if the rollback fails.
 
 .. seealso:: :py:func:`startEditing`
 

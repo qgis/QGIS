@@ -166,6 +166,16 @@ void QgsMergedFeatureRenderer::startRender( QgsRenderContext &context, const Qgs
   }
 }
 
+Qgis::FeatureRendererFlags QgsMergedFeatureRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  if ( mSubRenderer )
+  {
+    res = mSubRenderer->flags();
+  }
+  return res;
+}
+
 bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   if ( !context.painter() || !mSubRenderer )

@@ -2361,6 +2361,14 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::GeometryCollectionZ:
       case Qgis::WkbType::GeometryCollectionM:
       case Qgis::WkbType::GeometryCollectionZM:
+      case Qgis::WkbType::PolyhedralSurface:
+      case Qgis::WkbType::PolyhedralSurfaceZ:
+      case Qgis::WkbType::PolyhedralSurfaceM:
+      case Qgis::WkbType::PolyhedralSurfaceZM:
+      case Qgis::WkbType::TIN:
+      case Qgis::WkbType::TINZ:
+      case Qgis::WkbType::TINM:
+      case Qgis::WkbType::TINZM:
       case Qgis::WkbType::Triangle:
       case Qgis::WkbType::TriangleZ:
       case Qgis::WkbType::TriangleM:
@@ -2513,6 +2521,22 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   emit dataChanged();
 
   return true;
+}
+
+bool QgsOracleProvider::supportsSubsetString() const
+{
+  return true;
+}
+
+QString QgsOracleProvider::subsetStringDialect() const
+{
+  return tr( "Oracle SQL WHERE clause" );
+}
+
+QString QgsOracleProvider::subsetStringHelpUrl() const
+{
+  // TODO find the "correct" link...
+  return QString();
 }
 
 QList<QgsVectorLayer *> QgsOracleProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &owner, const QString &tableName )

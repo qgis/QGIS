@@ -23,6 +23,8 @@
 
 class QgsSettingsEntryBase;
 
+class QDialog;
+
 /**
  * \ingroup gui
  * \brief Base class for settings editor wrappers
@@ -80,6 +82,24 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      */
     virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
 
+    /**
+     * Configure the settings update behavior when a widget value is changed.
+     *
+     * If a \a dialog is provided, the setting will be updated when the dialog is accepted.
+     * If not, the setting will be updated directly at each widget value change.
+     *
+     * \note This must called after createEditor() or configureEditor().
+     *
+     * \since QGIS 3.40
+     */
+    void configureAutomaticUpdate( QDialog *dialog = nullptr );
+
+    /**
+     * Returns the dynamic key parts
+     * \since QGIS 3.40
+     */
+    QStringList dynamicKeyPartList() const {return mDynamicKeyPartList;}
+
 
   protected:
     //! Creates the widgets
@@ -87,6 +107,13 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
 
     //! Configures an existing \a editor widget
     virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
+
+    /**
+     * Enables automatic update, which causes the setting to be updated immediately when the widget
+     * value is changed.
+     * \since QGIS 3.40
+     */
+    virtual void enableAutomaticUpdatePrivate() = 0;
 
     QStringList mDynamicKeyPartList;
 };

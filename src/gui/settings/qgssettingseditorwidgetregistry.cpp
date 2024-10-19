@@ -29,11 +29,11 @@
 
 QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
 {
-  addWrapper( new QgsSettingsStringEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsBoolEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsIntegerEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsDoubleEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsColorEditorWidgetWrapper() );
+  addWrapper( new QgsSettingsStringLineEditWrapper() );
+  addWrapper( new QgsSettingsBoolCheckBoxWrapper() );
+  addWrapper( new QgsSettingsIntegerSpinBoxWrapper() );
+  addWrapper( new QgsSettingsDoubleSpinBoxWrapper() );
+  addWrapper( new QgsSettingsColorButtonWrapper() );
 
   // enum
 #if defined( HAVE_QTSERIALPORT )

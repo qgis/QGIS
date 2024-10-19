@@ -107,6 +107,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsinterpolatedlinerenderer.cpp
   symbology/qgsinvertedpolygonrenderer.cpp
   symbology/qgslegendsymbolitem.cpp
+  symbology/qgslinearreferencingsymbollayer.cpp
   symbology/qgslinesymbol.cpp
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmapinfosymbolconverter.cpp
@@ -140,6 +141,7 @@ set(QGIS_CORE_SRCS
   diagram/qgshistogramdiagram.cpp
   diagram/qgspiediagram.cpp
   diagram/qgsstackedbardiagram.cpp
+  diagram/qgsstackeddiagram.cpp
   diagram/qgstextdiagram.cpp
 
   editform/qgseditformconfig.cpp
@@ -206,10 +208,15 @@ set(QGIS_CORE_SRCS
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
   auth/qgsauthcrypto.cpp
+  auth/qgsauthconfigurationstorage.cpp
+  auth/qgsauthconfigurationstorageregistry.cpp
   auth/qgsauthmanager.cpp
   auth/qgsauthmethod.cpp
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
+
+  auth/qgsauthconfigurationstoragesqlite.cpp
+  auth/qgsauthconfigurationstoragedb.cpp
 
   annotations/qgsannotation.cpp
   annotations/qgsannotationitem.cpp
@@ -355,9 +362,24 @@ set(QGIS_CORE_SRCS
   scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
+  stac/qgsstacasset.cpp
+  stac/qgsstaccatalog.cpp
+  stac/qgsstaccollection.cpp
+  stac/qgsstacconnection.cpp
+  stac/qgsstaccontroller.cpp
+  stac/qgsstacdataitems.cpp
+  stac/qgsstacextent.cpp
+  stac/qgsstacitemcollection.cpp
+  stac/qgsstacitem.cpp
+  stac/qgsstaclink.cpp
+  stac/qgsstacobject.cpp
+  stac/qgsstacparser.cpp
+  stac/qgsstacprovider.cpp
+
   textrenderer/qgsfontmanager.cpp
   textrenderer/qgstextbackgroundsettings.cpp
   textrenderer/qgstextblock.cpp
+  textrenderer/qgstextblockformat.cpp
   textrenderer/qgstextbuffersettings.cpp
   textrenderer/qgstextcharacterformat.cpp
   textrenderer/qgstextdocument.cpp
@@ -716,7 +738,6 @@ set(QGIS_CORE_SRCS
   pal/labelposition.cpp
   pal/layer.cpp
   pal/pal.cpp
-  pal/palstat.cpp
   pal/pointset.cpp
   pal/priorityqueue.cpp
   pal/problem.cpp
@@ -874,6 +895,9 @@ set(QGIS_CORE_SRCS
   labeling/qgstextlabelfeature.cpp
   labeling/qgsvectorlayerlabeling.cpp
   labeling/qgsvectorlayerlabelprovider.cpp
+  labeling/rules/qgslabelingenginerule.cpp
+  labeling/rules/qgslabelingenginerule_impl.cpp
+  labeling/rules/qgslabelingengineruleregistry.cpp
 
   geometry/qgsabstractgeometry.cpp
   geometry/qgsbox3d.cpp
@@ -901,6 +925,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsorientedbox3d.cpp
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
+  geometry/qgspolyhedralsurface.cpp
   geometry/qgsquadrilateral.cpp
   geometry/qgsrectangle.cpp
   geometry/qgsreferencedgeometry.cpp
@@ -908,6 +933,7 @@ set(QGIS_CORE_SRCS
   geometry/qgssphere.cpp
   geometry/qgssurface.cpp
   geometry/qgstriangle.cpp
+  geometry/qgstriangulatedsurface.cpp
   geometry/qgsvertexid.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
@@ -1356,10 +1382,15 @@ set(QGIS_CORE_HDRS
   auth/qgsauthcertutils.h
   auth/qgsauthconfig.h
   auth/qgsauthcrypto.h
+  auth/qgsauthconfigurationstorage.h
+  auth/qgsauthconfigurationstorageregistry.h
   auth/qgsauthmanager.h
   auth/qgsauthmethod.h
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
+
+  auth/qgsauthconfigurationstoragesqlite.h
+  auth/qgsauthconfigurationstoragedb.h
 
   browser/qgsbrowsermodel.h
   browser/qgsbrowserproxymodel.h
@@ -1397,6 +1428,7 @@ set(QGIS_CORE_HDRS
   diagram/qgshistogramdiagram.h
   diagram/qgspiediagram.h
   diagram/qgsstackedbardiagram.h
+  diagram/qgsstackeddiagram.h
   diagram/qgstextdiagram.h
 
   dxf/qgsdxfexport.h
@@ -1490,6 +1522,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsorientedbox3d.h
   geometry/qgspoint.h
   geometry/qgspolygon.h
+  geometry/qgspolyhedralsurface.h
   geometry/qgsquadrilateral.h
   geometry/qgsrectangle.h
   geometry/qgsreferencedgeometry.h
@@ -1497,6 +1530,7 @@ set(QGIS_CORE_HDRS
   geometry/qgssphere.h
   geometry/qgssurface.h
   geometry/qgstriangle.h
+  geometry/qgstriangulatedsurface.h
   geometry/qgsvertexid.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
@@ -1533,6 +1567,9 @@ set(QGIS_CORE_HDRS
   labeling/qgstextlabelfeature.h
   labeling/qgsvectorlayerlabeling.h
   labeling/qgsvectorlayerlabelprovider.h
+  labeling/rules/qgslabelingenginerule.h
+  labeling/rules/qgslabelingenginerule_impl.h
+  labeling/rules/qgslabelingengineruleregistry.h
 
   layertree/qgscolorramplegendnode.h
   layertree/qgscolorramplegendnodesettings.h
@@ -1671,7 +1708,6 @@ set(QGIS_CORE_HDRS
   pal/palexception.h
   pal/pal.h
   pal/palrtree.h
-  pal/palstat.h
   pal/pointset.h
   pal/priorityqueue.h
   pal/problem.h
@@ -1921,6 +1957,20 @@ set(QGIS_CORE_HDRS
   scalebar/qgssteppedlinescalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
+  stac/qgsstacasset.h
+  stac/qgsstaccatalog.h
+  stac/qgsstaccollection.h
+  stac/qgsstacconnection.h
+  stac/qgsstaccontroller.h
+  stac/qgsstacdataitems.h
+  stac/qgsstacextent.h
+  stac/qgsstacitemcollection.h
+  stac/qgsstacitem.h
+  stac/qgsstaclink.h
+  stac/qgsstacobject.h
+  stac/qgsstacparser.h
+  stac/qgsstacprovider.h
+
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
@@ -1938,6 +1988,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsinterpolatedlinerenderer.h
   symbology/qgsinvertedpolygonrenderer.h
   symbology/qgslegendsymbolitem.h
+  symbology/qgslinearreferencingsymbollayer.h
   symbology/qgslinesymbol.h
   symbology/qgslinesymbollayer.h
   symbology/qgsmapinfosymbolconverter.h
@@ -1969,6 +2020,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgsfontmanager.h
   textrenderer/qgstextbackgroundsettings.h
   textrenderer/qgstextblock.h
+  textrenderer/qgstextblockformat.h
   textrenderer/qgstextbuffersettings.h
   textrenderer/qgstextcharacterformat.h
   textrenderer/qgstextdocument.h
@@ -2118,12 +2170,6 @@ if (${QT_VERSION_BASE}Positioning_FOUND)
   )
 endif()
 
-
-if (HAVE_OPENCL)
-    set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-        qgsopenclutils.h
-    )
-endif()
 
 if (HAVE_WEBENGINE)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2293,7 +2339,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
 
-
 # require c++17
 target_compile_features(qgis_core PRIVATE cxx_std_17)
 
@@ -2316,7 +2361,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
-  ${SQLITE3_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
@@ -2346,6 +2390,7 @@ target_include_directories(qgis_core PUBLIC
   geocoding
   gps
   labeling
+  labeling/rules
   layertree
   layout
   locator
@@ -2376,6 +2421,7 @@ target_include_directories(qgis_core PUBLIC
   scalebar
   settings
   sensor
+  stac
   symbology
   textrenderer
   tiledscene
@@ -2496,7 +2542,7 @@ target_link_libraries(qgis_core
   GDAL::GDAL
   ${SPATIALINDEX_LIBRARY}
   EXPAT::EXPAT
-  ${SQLITE3_LIBRARY}
+  SQLite::SQLite3
   ${LIBZIP_LIBRARY}
   $<TARGET_NAME_IF_EXISTS:protobuf::libprotobuf-lite>
   ${ZLIB_LIBRARIES}

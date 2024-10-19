@@ -4,141 +4,195 @@
 
 declare -a KEYWORDS=()
 declare -a HINTS=()
+declare -a PATHS=()
 
 KEYWORDS[0]="\-DBL_MAX"
 HINTS[0]="Use the type-safe method std::numeric_limits<double>::lowest() instead"
+PATHS[0]="."
 
 KEYWORDS[1]="DBL_MAX"
 HINTS[1]="Use the type-safe method std::numeric_limits<double>::max() instead"
+PATHS[1]="."
 
 KEYWORDS[2]="DBL_MIN"
 HINTS[2]="Use the type-safe method std::numeric_limits<double>::min() instead (but be careful - maybe you actually want lowest!!)"
+PATHS[2]="."
 
 KEYWORDS[3]="DBL_EPSILON"
 HINTS[3]="Use the type-safe method std::numeric_limits<double>::epsilon() instead"
+PATHS[3]="."
 
 KEYWORDS[4]="INT_MIN"
 HINTS[4]="Use the type-safe method std::numeric_limits<int>::min() instead"
+PATHS[4]="."
 
 KEYWORDS[5]="INT_MAX"
 HINTS[5]="Use the type-safe method std::numeric_limits<int>::max() instead"
+PATHS[5]="."
 
 KEYWORDS[6]="\bqMin("
 HINTS[6]="Use std::min instead"
+PATHS[6]="."
 
 KEYWORDS[7]="\bqMax("
 HINTS[7]="Use std::max instead"
+PATHS[7]="."
 
 KEYWORDS[8]="\bqAbs("
 HINTS[8]="Use std::fabs instead"
+PATHS[8]="."
 
 KEYWORDS[9]="\bqRound("
 HINTS[9]="Use std::round instead"
+PATHS[9]="."
 
 KEYWORDS[10]="\bqSort("
 HINTS[10]="Use std::sort instead"
+PATHS[10]="."
 
 KEYWORDS[11]="@param"
 HINTS[11]="Use \param instead (works correct with Python docstrings)"
+PATHS[11]="."
 
 KEYWORDS[12]="@return"
 HINTS[12]="Use \returns instead (works correct with Python docstrings)"
+PATHS[12]="."
 
 KEYWORDS[13]="@note"
 HINTS[13]="Use \note instead (works correct with Python docstrings)"
+PATHS[13]="."
 
 KEYWORDS[14]="@since"
 HINTS[14]="Use \since instead (works correct with Python docstrings)"
+PATHS[14]="."
 
 KEYWORDS[15]="@warning"
 HINTS[15]="Use \warning instead (works correct with Python docstrings)"
+PATHS[15]="."
 
-KEYWORDS[11]="@deprecated"
-HINTS[11]="Use \deprecated instead (works correct with Python docstrings)"
+KEYWORDS[16]="@deprecated"
+HINTS[16]="Use \deprecated instead (works correct with Python docstrings)"
+PATHS[16]="."
 
-KEYWORDS[12]="\bqIsFinite("
-HINTS[12]="Use std::isfinite instead"
+KEYWORDS[17]="\bqIsFinite("
+HINTS[17]="Use std::isfinite instead"
+PATHS[17]="."
 
-KEYWORDS[13]="\bqIsInf("
-HINTS[13]="Use std::isinf instead"
+KEYWORDS[18]="\bqIsInf("
+HINTS[18]="Use std::isinf instead"
+PATHS[18]="."
 
-KEYWORDS[14]="\bqIsNaN("
-HINTS[14]="Use std::isnan instead"
+KEYWORDS[19]="\bqIsNaN("
+HINTS[19]="Use std::isnan instead"
+PATHS[19]="."
 
-KEYWORDS[15]="\bqCopy("
-HINTS[15]="Use std::copy instead"
+KEYWORDS[20]="\bqCopy("
+HINTS[20]="Use std::copy instead"
+PATHS[20]="."
 
-KEYWORDS[16]="\bqCount("
-HINTS[16]="Use std::count instead"
+KEYWORDS[21]="\bqCount("
+HINTS[21]="Use std::count instead"
+PATHS[21]="."
 
-KEYWORDS[17]="\bqEqual("
-HINTS[17]="Use std::equal instead"
+KEYWORDS[22]="\bqEqual("
+HINTS[22]="Use std::equal instead"
+PATHS[22]="."
 
-KEYWORDS[18]="\bqFill("
-HINTS[18]="Use std::fill instead"
+KEYWORDS[23]="\bqFill("
+HINTS[23]="Use std::fill instead"
+PATHS[23]="."
 
-KEYWORDS[19]="\bqFind("
-HINTS[19]="Use std::find instead"
+KEYWORDS[24]="\bqFind("
+HINTS[24]="Use std::find instead"
+PATHS[24]="."
 
-KEYWORDS[20]="\bqGreater("
-HINTS[20]="Use std::greater instead"
+KEYWORDS[25]="\bqGreater("
+HINTS[25]="Use std::greater instead"
+PATHS[25]="."
 
-KEYWORDS[21]="\bqLess("
-HINTS[21]="Use std::less instead"
+KEYWORDS[26]="\bqLess("
+HINTS[26]="Use std::less instead"
+PATHS[26]="."
 
-KEYWORDS[22]="\bqLowerBound("
-HINTS[22]="Use std::lower_bound instead"
+KEYWORDS[27]="\bqLowerBound("
+HINTS[27]="Use std::lower_bound instead"
+PATHS[27]="."
 
-KEYWORDS[23]="\bqStableSort("
-HINTS[23]="Use std::stable_sort instead"
+KEYWORDS[28]="\bqStableSort("
+HINTS[28]="Use std::stable_sort instead"
+PATHS[29]="."
 
-KEYWORDS[24]="\bqSwap("
-HINTS[24]="Use std::swap instead"
+KEYWORDS[29]="\bqSwap("
+HINTS[29]="Use std::swap instead"
+PATHS[29]="."
 
-KEYWORDS[25]="\bqUpperBound("
-HINTS[25]="Use std::upper_bound instead"
+KEYWORDS[30]="\bqUpperBound("
+HINTS[30]="Use std::upper_bound instead"
+PATHS[30]="."
 
-KEYWORDS[26]="QScopedPointer"
-HINTS[26]="Use std::unique_ptr instead"
+KEYWORDS[31]="QScopedPointer"
+HINTS[31]="Use std::unique_ptr instead"
+PATHS[31]="."
 
-KEYWORDS[27]="QSharedPointer"
-HINTS[27]="Use std::shared_ptr instead"
+KEYWORDS[32]="QSharedPointer"
+HINTS[32]="Use std::shared_ptr instead"
+PATHS[32]="."
 
-KEYWORDS[28]="QOverload"
-HINTS[28]="Use qOverload instead"
+KEYWORDS[33]="QOverload"
+HINTS[33]="Use qOverload instead"
+PATHS[33]="."
 
-KEYWORDS[29]="qFloor"
-HINTS[29]="Use std::floor instead"
+KEYWORDS[34]="qFloor"
+HINTS[34]="Use std::floor instead"
+PATHS[34]="."
 
-KEYWORDS[30]="qCeil"
-HINTS[30]="Use std::ceil instead"
+KEYWORDS[35]="qCeil"
+HINTS[35]="Use std::ceil instead"
+PATHS[35]="."
 
-KEYWORDS[31]="qSqrt"
-HINTS[31]="Use std::sqrt instead"
+KEYWORDS[36]="qSqrt"
+HINTS[36]="Use std::sqrt instead"
+PATHS[36]="."
 
-KEYWORDS[32]="QStringLiteral()"
-HINTS[32]="Use QString() instead"
+KEYWORDS[37]="QStringLiteral()"
+HINTS[37]="Use QString() instead"
+PATHS[37]="."
 
-KEYWORDS[33]="QStringLiteral( \"\" )"
-HINTS[33]="Use QString() instead"
+KEYWORDS[38]="QStringLiteral( \"\" )"
+HINTS[38]="Use QString() instead"
+PATHS[38]="."
 
-KEYWORDS[34]="QLatin1String( \"\" )"
-HINTS[34]="Use QString() instead"
+KEYWORDS[39]="QLatin1String( \"\" )"
+HINTS[39]="Use QString() instead"
+PATHS[39]="."
 
-KEYWORDS[35]="@see"
-HINTS[35]="Use \see instead (works correct with Python docstrings)"
+KEYWORDS[40]="@see"
+HINTS[40]="Use \see instead (works correct with Python docstrings)"
+PATHS[40]="."
 
-KEYWORDS[36]="@brief"
-HINTS[36]="Use \brief instead (works correct with Python docstrings)"
+KEYWORDS[41]="@brief"
+HINTS[41]="Use \brief instead (works correct with Python docstrings)"
+PATHS[41]="."
 
-KEYWORDS[37]="Q_FOREACH"
-HINTS[37]="Use range based for loops instead"
+KEYWORDS[42]="Q_FOREACH"
+HINTS[42]="Use range based for loops instead"
+PATHS[42]="."
 
-KEYWORDS[38]="foreach"
-HINTS[38]="Use range based for loops instead"
+KEYWORDS[43]="foreach"
+HINTS[43]="Use range based for loops instead"
+PATHS[43]="."
 
-KEYWORDS[39]="\bqBound("
-HINTS[39]="Use std::clamp instead (but be careful of the different argument order!!)"
+KEYWORDS[44]="\bqBound("
+HINTS[44]="Use std::clamp instead (but be careful of the different argument order!!)"
+PATHS[44]="."
+
+KEYWORDS[45]="^\s*\* @"
+HINTS[45]="Use '\param', '\returns' format for doxygen annotations, not '@param', '@returns'"
+PATHS[45]="."
+
+KEYWORDS[46]="QgsProject::instance()"
+HINTS[46]="Do not introduce new use of QgsProject::instance() in core library! Find alternative ways to achieve what you are doing here."
+PATHS[46]="core"
 
 RES=
 DIR=$(git rev-parse --show-toplevel)
@@ -147,7 +201,7 @@ pushd "${DIR}" > /dev/null || exit
 
 for i in "${!KEYWORDS[@]}"
 do
-  FOUND=$(git grep "${KEYWORDS[$i]}" -- 'src/*.h' 'src/*.cpp' | grep --invert-match skip-keyword-check)
+  FOUND=$(git grep "${KEYWORDS[$i]}" -- "src/${PATHS[$i]}/*.h" "src/${PATHS[$i]}/*.cpp" | grep --invert-match skip-keyword-check)
 
   if [[  ${FOUND} ]]; then
     echo "Found source files with banned keyword: ${KEYWORDS[$i]}!"

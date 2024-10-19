@@ -220,7 +220,14 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
       if ( engine->intersects( lineFeature.geometry().constGet() ) )
       {
         const QgsGeometry outGeom = polyGeom.intersection( lineFeature.geometry() );
-        length += mDa.measureLength( outGeom );
+        try
+        {
+          length += mDa.measureLength( outGeom );
+        }
+        catch ( QgsCsException & )
+        {
+          throw QgsProcessingException( QObject::tr( "An error occurred while calculating feature length" ) );
+        }
         count++;
       }
     }

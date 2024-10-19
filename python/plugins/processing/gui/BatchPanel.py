@@ -23,7 +23,7 @@ import os
 import json
 import warnings
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Dict
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
@@ -83,7 +83,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsProcessingUtils,
     QgsFileFilterGenerator,
-    QgsProcessingContext
+    QgsProcessingContext,
+    QgsFileUtils
 )
 from qgis.gui import (
     QgsProcessingParameterWidgetContext,
@@ -440,6 +441,9 @@ class BatchPanelFillWidget(QToolButton):
 class BatchPanel(QgsPanelWidget, WIDGET):
     PARAMETERS = "PARAMETERS"
     OUTPUTS = "OUTPUTS"
+    ROWS = "rows"
+    FORMAT = "format"
+    CURRENT_FORMAT = "batch_3.40"
 
     def __init__(self, parent, alg):
         super().__init__(None)
@@ -543,22 +547,96 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.wrappers = []
 
     def load(self):
-        context = dataobjects.createContext()
+        if self.alg.flags() & Qgis.ProcessingAlgorithmFlag.SecurityRisk:
+            message_box = QMessageBox()
+            message_box.setWindowTitle(self.tr("Security warning"))
+            message_box.setText(
+                self.tr(
+                    "This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks. Only continue if you trust the source of the file. Continue?"))
+            message_box.setIcon(QMessageBox.Icon.Warning)
+            message_box.addButton(QMessageBox.StandardButton.Yes)
+            message_box.addButton(QMessageBox.StandardButton.No)
+            message_box.setDefaultButton(QMessageBox.StandardButton.No)
+            message_box.exec()
+            if message_box.result() != QMessageBox.StandardButton.Yes:
+                return
+
         settings = QgsSettings()
         last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
-        filename, selected_filter = QFileDialog.getOpenFileName(self,
-                                                                self.tr('Open Batch'), last_path,
-                                                                self.tr('JSON files (*.json)'))
-        if filename:
-            last_path = QFileInfo(filename).path()
-            settings.setValue('/Processing/LastBatchPath', last_path)
-            with open(filename) as f:
-                values = json.load(f)
+        filters = ';;'.join([self.tr('Batch Processing files (*.batch)'),
+                             self.tr('JSON files (*.json)')])
+        filename, _ = QFileDialog.getOpenFileName(self,
+                                                  self.tr('Open Batch'),
+                                                  last_path,
+                                                  filters)
+        if not filename:
+            return
+
+        last_path = QFileInfo(filename).path()
+        settings.setValue('/Processing/LastBatchPath', last_path)
+        with open(filename) as f:
+            values = json.load(f)
+
+        if isinstance(values, dict):
+            if values.get(self.FORMAT) == self.CURRENT_FORMAT:
+                self.load_batch_file_3_40_version(values)
+            else:
+                QMessageBox.critical(
+                    self,
+                    self.tr('Load Batch Parameters'),
+                    self.tr('This file format is unknown and cannot be opened as batch parameters.'))
         else:
-            # If the user clicked on the cancel button.
+            self.load_old_json_batch_file(values)
+
+    def load_batch_file_3_40_version(self, values: Dict):
+        """
+        Loads the newer version 3.40 batch parameter JSON format
+        """
+        context = dataobjects.createContext()
+        rows: List = values.get(self.ROWS, [])
+
+        self.clear()
+        for row_number, row in enumerate(rows):
+            self.addRow()
+            this_row_params = row[self.PARAMETERS]
+            this_row_outputs = row[self.OUTPUTS]
+
+            for param in self.alg.parameterDefinitions():
+                if param.isDestination():
+                    continue
+                if param.name() in this_row_params:
+                    column = self.parameter_to_column[param.name()]
+                    value = this_row_params[param.name()]
+                    wrapper = self.wrappers[row_number][column]
+                    wrapper.setParameterValue(value, context)
+
+            for out in self.alg.destinationParameterDefinitions():
+                if out.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
+                    continue
+                if out.name() in this_row_outputs:
+                    column = self.parameter_to_column[out.name()]
+                    value = this_row_outputs[out.name()].strip("'")
+                    widget = self.tblParameters.cellWidget(row_number + 1, column)
+                    widget.setValue(value)
+
+    def load_old_json_batch_file(self, values: List):
+        """
+        Loads the old, insecure batch parameter JSON format
+        """
+        message_box = QMessageBox()
+        message_box.setWindowTitle(self.tr("Security warning"))
+        message_box.setText(
+            self.tr("Opening older QGIS batch Processing files from an untrusted source can harm your computer. Only continue if you trust the source of the file. Continue?"))
+        message_box.setIcon(QMessageBox.Icon.Warning)
+        message_box.addButton(QMessageBox.StandardButton.Yes)
+        message_box.addButton(QMessageBox.StandardButton.No)
+        message_box.setDefaultButton(QMessageBox.StandardButton.No)
+        message_box.exec()
+        if message_box.result() != QMessageBox.StandardButton.Yes:
             return
 
         self.clear()
+        context = dataobjects.createContext()
         try:
             for row, alg in enumerate(values):
                 self.addRow()
@@ -585,15 +663,15 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         except TypeError:
             QMessageBox.critical(
                 self,
-                self.tr('Error'),
-                self.tr('An error occurred while reading your file.'))
+                self.tr('Load Batch Parameters'),
+                self.tr('An error occurred while reading the batch parameters file.'))
 
     def save(self):
-        toSave = []
+        row_parameters = []
         context = dataobjects.createContext()
         for row in range(self.batchRowCount()):
-            algParams = {}
-            algOutputs = {}
+            this_row_params = {}
+            this_row_outputs = {}
             alg = self.alg
             for param in alg.parameterDefinitions():
                 if param.isDestination():
@@ -602,15 +680,6 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 col = self.parameter_to_column[param.name()]
                 wrapper = self.wrappers[row][col]
 
-                # For compatibility with 3.x API, we need to check whether the wrapper is
-                # the deprecated WidgetWrapper class. If not, it's the newer
-                # QgsAbstractProcessingParameterWidgetWrapper class
-                # TODO QGIS 4.0 - remove
-                if issubclass(wrapper.__class__, WidgetWrapper):
-                    widget = wrapper.widget
-                else:
-                    widget = wrapper.wrappedWidget()
-
                 value = wrapper.parameterValue()
 
                 if not param.checkValueIsAcceptable(value, context):
@@ -618,7 +687,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                         param.description(), row + 2)
                     self.parent.messageBar().pushMessage("", msg, level=Qgis.MessageLevel.Warning, duration=5)
                     return
-                algParams[param.name()] = param.valueAsPythonString(value, context)
+                this_row_params[param.name()] = param.valueAsJsonObject(value, context)
 
             for out in alg.destinationParameterDefinitions():
                 if out.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
@@ -627,28 +696,34 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 widget = self.tblParameters.cellWidget(row + 1, col)
                 text = widget.getValue()
                 if text.strip() != '':
-                    algOutputs[out.name()] = text.strip()
+                    this_row_outputs[out.name()] = text.strip()
                 else:
                     self.parent.messageBar().pushMessage("",
                                                          self.tr('Wrong or missing output value: {0} (row {1})').format(
                                                              out.description(), row + 2),
                                                          level=Qgis.MessageLevel.Warning, duration=5)
                     return
-            toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
+            row_parameters.append({self.PARAMETERS: this_row_params, self.OUTPUTS: this_row_outputs})
+
+        output_json = {
+            self.FORMAT: self.CURRENT_FORMAT,
+            self.ROWS: row_parameters
+        }
 
         settings = QgsSettings()
         last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
         filename, __ = QFileDialog.getSaveFileName(self,
                                                    self.tr('Save Batch'),
                                                    last_path,
-                                                   self.tr('JSON files (*.json)'))
-        if filename:
-            if not filename.endswith('.json'):
-                filename += '.json'
-            last_path = QFileInfo(filename).path()
-            settings.setValue('/Processing/LastBatchPath', last_path)
-            with open(filename, 'w') as f:
-                json.dump(toSave, f)
+                                                   self.tr('Batch Processing files (*.batch)'))
+        if not filename:
+            return
+
+        filename = QgsFileUtils.ensureFileNameHasExtension(filename, ['batch'])
+        last_path = QFileInfo(filename).path()
+        settings.setValue('/Processing/LastBatchPath', last_path)
+        with open(filename, 'w') as f:
+            json.dump(output_json, f, indent=2)
 
     def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row - 1][column] = wrapper

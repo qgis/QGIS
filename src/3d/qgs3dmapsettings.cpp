@@ -21,6 +21,7 @@
 #include "qgsmeshterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsquantizedmeshterraingenerator.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgslightsource.h"
@@ -30,6 +31,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgsthreadingutils.h"
+#include "qgsmaplayerlistutils_p.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -262,6 +264,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     meshTerrainGenerator->setCrs( mCrs, mTransformContext );
     setTerrainGenerator( meshTerrainGenerator );
   }
+  else if ( terrainGenType == QLatin1String( "quantizedmesh" ) )
+  {
+    QgsQuantizedMeshTerrainGenerator *qmTerrainGenerator = new QgsQuantizedMeshTerrainGenerator;
+    setTerrainGenerator( qmTerrainGenerator );
+  }
   else // "flat"
   {
     QgsFlatTerrainGenerator *flatGen = new QgsFlatTerrainGenerator;
@@ -464,6 +471,10 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 
   mTerrainGenerator->resolveReferences( project );
+
+  // Set extent now that layer-based generators actually have a chance to know their CRS
+  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
+  mTerrainGenerator->setExtent( terrainExtent );
 }
 
 QgsRectangle Qgs3DMapSettings::extent() const
@@ -633,17 +644,12 @@ void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QList<QgsMapLayerRef> lst;
-  lst.reserve( layers.count() );
-  for ( QgsMapLayer *layer : layers )
-  {
-    lst.append( layer );
-  }
+  const QList<QgsMapLayer *> raw = _qgis_listRefToRaw( mLayers );
 
-  if ( mLayers == lst )
+  if ( layers == raw )
     return;
 
-  mLayers = lst;
+  mLayers = _qgis_listRawToRef( layers );
   emit layersChanged();
 }
 
@@ -789,8 +795,11 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
-  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, gen->crs(), mTransformContext );
-  gen->setExtent( terrainExtent );
+  if ( gen->crs().isValid() ) // Don't bother setting an extent rect in the wrong CRS
+  {
+    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, gen->crs(), mTransformContext );
+    gen->setExtent( terrainExtent );
+  }
   mTerrainGenerator.reset( gen );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
 

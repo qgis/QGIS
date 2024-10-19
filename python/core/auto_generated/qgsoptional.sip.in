@@ -7,7 +7,6 @@
  ************************************************************************/
 
 
-
 template<T>
 class QgsOptional
 {
@@ -49,7 +48,6 @@ A QgsOptional constructed with enabled status and data
 
     bool operator== ( const QgsOptional<T> &other ) const;
 
-    operator bool() const;
 
     bool enabled() const;
 %Docstring

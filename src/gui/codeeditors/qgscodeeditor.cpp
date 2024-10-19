@@ -35,6 +35,7 @@
 #include <QClipboard>
 #include <QScrollBar>
 #include <QMessageBox>
+#include "Qsci/qscilexer.h"
 
 QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
@@ -238,6 +239,12 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   }
 
   QsciScintilla::keyPressEvent( event );
+
+  // Update calltips unless event is autorepeat
+  if ( !event->isAutoRepeat() )
+  {
+    callTip();
+  }
 
 }
 
@@ -1124,9 +1131,7 @@ void QgsCodeEditor::moveCursorToEnd()
 
 int QgsCodeEditor::linearPosition() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  return positionFromLineIndex( line, index );
+  return static_cast<int>( SendScintilla( SCI_GETCURRENTPOS ) );
 }
 
 void QgsCodeEditor::setLinearPosition( int linearIndex )
@@ -1172,4 +1177,234 @@ int QgsCodeInterpreter::exec( const QString &command )
 {
   mState = execCommandImpl( command );
   return mState;
+}
+
+
+int QgsCodeEditor::wrapPosition( int line )
+{
+  // If wrapping is disabled, return -1
+  if ( wrapMode() == WrapNone )
+  {
+    return -1;
+  }
+  // Get the current line
+  if ( line == -1 )
+  {
+    int _index;
+    lineIndexFromPosition( linearPosition(), &line, &_index );
+  }
+
+  // If line isn't wrapped, return -1
+  if ( SendScintilla( SCI_WRAPCOUNT, line ) <= 1 )
+  {
+    return -1;
+  }
+
+  // Get the linear position at the end of the current line
+  const long endLine = SendScintilla( SCI_GETLINEENDPOSITION, line );
+  // Get the y coordinates of the start of the last wrapped line
+  const long y = SendScintilla( SCI_POINTYFROMPOSITION, 0, endLine );
+  // Return the linear position of the start of the last wrapped line
+  return static_cast<int>( SendScintilla( SCI_POSITIONFROMPOINT, 0, y ) );
+}
+
+
+// Adapted from QsciScintilla source code (qsciscintilla.cpp) to handle line wrap
+void QgsCodeEditor::callTip()
+{
+  if ( callTipsStyle() == CallTipsNone || lexer() == nullptr )
+  {
+    return;
+  }
+
+  QsciAbstractAPIs *apis = lexer()->apis();
+
+  if ( !apis )
+    return;
+
+  int pos, commas = 0;
+  bool found = false;
+  char ch;
+
+  pos = linearPosition();
+
+  // Move backwards through the line looking for the start of the current
+  // call tip and working out which argument it is.
+  while ( ( ch = getCharacter( pos ) ) != '\0' )
+  {
+    if ( ch == ',' )
+      ++commas;
+    else if ( ch == ')' )
+    {
+      int depth = 1;
+
+      // Ignore everything back to the start of the corresponding
+      // parenthesis.
+      while ( ( ch = getCharacter( pos ) ) != '\0' )
+      {
+        if ( ch == ')' )
+          ++depth;
+        else if ( ch == '(' && --depth == 0 )
+          break;
+      }
+    }
+    else if ( ch == '(' )
+    {
+      found = true;
+      break;
+    }
+  }
+
+  // Cancel any existing call tip.
+  SendScintilla( SCI_CALLTIPCANCEL );
+
+  // Done if there is no new call tip to set.
+  if ( !found )
+    return;
+
+  int contextStart, lastWordStart;
+  QStringList context = apiContext( pos, contextStart, lastWordStart );
+
+  if ( context.isEmpty() )
+    return;
+
+  // The last word is complete, not partial.
+  context << QString();
+
+  QList<int> ctShifts;
+  QStringList ctEntries = apis->callTips( context, commas, callTipsStyle(), ctShifts );
+
+  int nbEntries = ctEntries.count();
+
+  if ( nbEntries == 0 )
+    return;
+
+  const int maxNumberOfCallTips = callTipsVisible();
+
+  // Clip to at most maxNumberOfCallTips entries.
+  if ( maxNumberOfCallTips > 0 && maxNumberOfCallTips < nbEntries )
+  {
+    ctEntries = ctEntries.mid( 0, maxNumberOfCallTips );
+    nbEntries = maxNumberOfCallTips;
+  }
+
+  int shift;
+  QString ct;
+
+  int nbShifts = ctShifts.count();
+
+  if ( maxNumberOfCallTips < 0 && nbEntries > 1 )
+  {
+    shift = ( nbShifts > 0 ? ctShifts.first() : 0 );
+    ct = ctEntries[0];
+    ct.prepend( '\002' );
+  }
+  else
+  {
+    if ( nbShifts > nbEntries )
+      nbShifts = nbEntries;
+
+    // Find the biggest shift.
+    shift = 0;
+
+    for ( int i = 0; i < nbShifts; ++i )
+    {
+      int sh = ctShifts[i];
+
+      if ( shift < sh )
+        shift = sh;
+    }
+
+    ct = ctEntries.join( "\n" );
+  }
+
+  QByteArray ctBa = ct.toLatin1();
+  const char *cts = ctBa.data();
+
+  const int currentWrapPosition = wrapPosition();
+
+  if ( currentWrapPosition != -1 )
+  {
+    SendScintilla( SCI_CALLTIPSHOW, currentWrapPosition, cts );
+  }
+  else
+  {
+    // Shift the position of the call tip (to take any context into account) but
+    // don't go before the start of the line.
+    if ( shift )
+    {
+      int ctmin = static_cast<int>( SendScintilla( SCI_POSITIONFROMLINE, SendScintilla( SCI_LINEFROMPOSITION, ct ) ) );
+      if ( lastWordStart - shift < ctmin )
+        lastWordStart = ctmin;
+    }
+
+    int line, index;
+    lineIndexFromPosition( lastWordStart, &line, &index );
+    SendScintilla( SCI_CALLTIPSHOW, positionFromLineIndex( line, index ), cts );
+  }
+
+  // Done if there is more than one call tip.
+  if ( nbEntries > 1 )
+    return;
+
+  // Highlight the current argument.
+  const char *astart;
+
+  if ( commas == 0 )
+    astart = strchr( cts, '(' );
+  else
+    for ( astart = strchr( cts, ',' ); astart && --commas > 0; astart = strchr( astart + 1, ',' ) )
+      ;
+
+  if ( !astart )
+    return;
+
+  astart++;
+  if ( !*astart )
+    return;
+
+  // The end is at the next comma or unmatched closing parenthesis.
+  const char *aend;
+  int depth = 0;
+
+  for ( aend = astart; *aend; ++aend )
+  {
+    char ch = *aend;
+
+    if ( ch == ',' && depth == 0 )
+      break;
+    else if ( ch == '(' )
+      ++depth;
+    else if ( ch == ')' )
+    {
+      if ( depth == 0 )
+        break;
+
+      --depth;
+    }
+  }
+
+  if ( astart != aend )
+    SendScintilla( SCI_CALLTIPSETHLT, astart - cts, aend - cts );
+}
+
+
+// Duplicated from QsciScintilla source code (qsciscintilla.cpp)
+// Get the "next" character (ie. the one before the current position) in the
+// current line.  The character will be '\0' if there are no more.
+char QgsCodeEditor::getCharacter( int &pos ) const
+{
+  if ( pos <= 0 )
+    return '\0';
+
+  char ch = static_cast<char>( SendScintilla( SCI_GETCHARAT, --pos ) );
+
+  // Don't go past the end of the previous line.
+  if ( ch == '\n' || ch == '\r' )
+  {
+    ++pos;
+    return '\0';
+  }
+
+  return ch;
 }

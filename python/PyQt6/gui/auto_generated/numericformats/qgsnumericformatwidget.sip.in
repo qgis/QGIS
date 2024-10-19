@@ -8,7 +8,7 @@
 
 
 
-class QgsNumericFormatWidget : QgsPanelWidget
+class QgsNumericFormatWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Base class for widgets which allow control over the properties of :py:class:`QgsNumericFormat` subclasses
@@ -41,6 +41,17 @@ Ownership of the returned object is transferred to the caller
 
 .. seealso:: :py:func:`setFormat`
 %End
+
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context generator class that will be used to retrieve
+an expression context for the widget when required.
+
+.. versionadded:: 3.40
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
   signals:
 
@@ -305,7 +316,7 @@ Constructor for QgsFractionNumericFormatWidget, initially showing the specified 
 
 
 
-class QgsExpressionBasedNumericFormatWidget : QgsNumericFormatWidget, QgsExpressionContextGenerator
+class QgsExpressionBasedNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
 A widget which allow control over the properties of a :py:class:`QgsExpressionBasedNumericFormat`.

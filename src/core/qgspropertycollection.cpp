@@ -207,7 +207,7 @@ bool QgsPropertyCollection::hasProperty( int key ) const
 
   auto it = mProperties.constFind( key );
   if ( it != mProperties.constEnd() )
-    return ( *it );
+    return static_cast< bool >( *it );
   return false;
 }
 

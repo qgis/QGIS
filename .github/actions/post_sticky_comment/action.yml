@@ -1,0 +1,54 @@
+name: Post Sticky Comment
+description: Post a sticky comment
+inputs:
+  marker:
+    description: Unique marker
+    required: true
+    type: string
+  body:
+    description: Body
+    required: true
+    type: string
+  pr:
+    description: Pull Request Number
+    required: true
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Create metadata
+      uses: actions/github-script@v7
+      env:
+        BODY: ${{ inputs.body }}
+      with:
+        script: |
+          const fs = require('fs');
+          
+          try {
+            // Get inputs from the GitHub Action
+            const marker = "${{ inputs.marker }}";
+            const body = process.env.BODY; // Transfer input via env variable as it's not possible to access it directly https://github.com/actions/github-script/issues/56#issuecomment-642188313
+            const pr = ${{ inputs.pr }};
+
+            // Create the content of the JSON file
+            const content = JSON.stringify({
+              marker: marker,
+              body: body,
+              pr_number: pr
+            }, null, 2);
+            console.debug(content)
+          
+            fs.writeFileSync('comment-${{ github.job }}.json', content);
+          
+            console.log('comment.json file has been written successfully.');
+          } catch (error) {
+            core.setFailed(`Action failed with error: ${error}`);
+          }
+
+    - name: 📤 Upload data
+      uses: actions/upload-artifact@v4
+      with:
+        name: comment_artifacts-${{ github.job }}
+        path: |
+          comment-${{ github.job }}.json

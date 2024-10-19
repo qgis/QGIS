@@ -107,7 +107,7 @@ class CORE_EXPORT QgsDefaultValue
      * Checks if a default value is set. Alias for isValid().
      * \returns FALSE if the expression is a null string.
      */
-    operator bool() const SIP_PYTHON_SPECIAL_BOOL( isValid );
+    explicit operator bool() const SIP_PYTHON_SPECIAL_BOOL( isValid );
 
   private:
     QString mExpression;

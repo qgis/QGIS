@@ -256,7 +256,7 @@ Splitter has been moved.
 %Docstring
 Emitted when a file needs to be opened
 %End
-    void handleDropUriList( const QgsMimeDataUtils::UriList & );
+    void handleDropUriList( const QgsMimeDataUtils::UriList &uris );
 %Docstring
 Emitted when drop uri list needs to be handled
 %End

@@ -53,6 +53,13 @@ Converts the block to plain text.
 .. versionadded:: 3.16
 %End
 
+    void reserve( int count );
+%Docstring
+Reserves the specified ``count`` of fragments for optimised fragment appending.
+
+.. versionadded:: 3.40
+%End
+
     void append( const QgsTextFragment &fragment );
 %Docstring
 Appends a ``fragment`` to the block.
@@ -72,6 +79,24 @@ Returns ``True`` if the block is empty.
     int size() const;
 %Docstring
 Returns the number of fragments in the block.
+%End
+
+    const QgsTextBlockFormat &blockFormat() const;
+%Docstring
+Returns the block formatting for the fragment.
+
+.. seealso:: :py:func:`setBlockFormat`
+
+.. versionadded:: 3.40
+%End
+
+    void setBlockFormat( const QgsTextBlockFormat &format );
+%Docstring
+Sets the block ``format`` for the fragment.
+
+.. seealso:: :py:func:`blockFormat`
+
+.. versionadded:: 3.40
 %End
 
     void applyCapitalization( Qgis::Capitalization capitalization );

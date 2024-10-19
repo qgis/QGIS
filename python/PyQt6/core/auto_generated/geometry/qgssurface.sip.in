@@ -21,12 +21,6 @@ Surface geometry type.
 %End
   public:
 
-    virtual QgsPolygon *surfaceToPolygon() const = 0 /Factory/;
-%Docstring
-Gets a polygon representation of this surface.
-Ownership is transferred to the caller.
-%End
-
     virtual QgsBox3D boundingBox3D() const;
 
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;

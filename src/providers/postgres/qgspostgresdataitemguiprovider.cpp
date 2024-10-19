@@ -192,7 +192,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemG
 QWidget *QgsPostgresDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
 {
   QgsPGRootItem *pgRootItem = qobject_cast<QgsPGRootItem *>( root );
-  if ( pgRootItem != nullptr )
+  if ( pgRootItem )
   {
     QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode::Manager );
     connect( select, &QgsPgSourceSelect::connectionsChanged, pgRootItem, &QgsPGRootItem::onConnectionsChanged );

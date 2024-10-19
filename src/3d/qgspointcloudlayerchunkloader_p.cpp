@@ -17,7 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgspointcloudlayer3drenderer.h"
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgslogger.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudrequest.h"
@@ -93,6 +93,13 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     }
 
     mHandler->processNode( pc, pcNode, mContext );
+
+    if ( mContext.isCanceled() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
+      return;
+    }
+
     if ( mContext.symbol()->renderAsTriangles() )
       mHandler->triangulate( pc, pcNode, mContext, bbox );
   } );

@@ -23,7 +23,7 @@ import os
 import math
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
@@ -161,12 +161,12 @@ class PointDistance(QgisAlgorithm):
             target_id_field = target_source.fields()[outIdx]
             target_id_field.setName('TargetID')
             fields.append(target_id_field)
-            fields.append(QgsField('Distance', QVariant.Double))
+            fields.append(QgsField('Distance', QMetaType.Type.Double))
         else:
-            fields.append(QgsField('MEAN', QVariant.Double))
-            fields.append(QgsField('STDDEV', QVariant.Double))
-            fields.append(QgsField('MIN', QVariant.Double))
-            fields.append(QgsField('MAX', QVariant.Double))
+            fields.append(QgsField('MEAN', QMetaType.Type.Double))
+            fields.append(QgsField('STDDEV', QMetaType.Type.Double))
+            fields.append(QgsField('MIN', QMetaType.Type.Double))
+            fields.append(QgsField('MAX', QMetaType.Type.Double))
 
         out_wkb = QgsWkbTypes.multiType(source.wkbType()) if matType == 0 else source.wkbType()
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
@@ -258,7 +258,7 @@ class PointDistance(QgisAlgorithm):
                 input_id_field.setName('ID')
                 fields.append(input_id_field)
                 for f in target_source.getFeatures(QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([targetIdx]).setDestinationCrs(source.sourceCrs(), context.transformContext())):
-                    fields.append(QgsField(str(f[targetField]), QVariant.Double))
+                    fields.append(QgsField(str(f[targetField]), QMetaType.Type.Double))
 
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                        fields, source.wkbType(), source.sourceCrs())

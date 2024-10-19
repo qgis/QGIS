@@ -30,7 +30,7 @@
 #include <QUrl>
 #include <QRegularExpression>
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 // Modeless dialog with close button only
 constexpr Qt::WindowFlags kAboutWindowFlags = Qt::WindowSystemMenuHint;
 #else

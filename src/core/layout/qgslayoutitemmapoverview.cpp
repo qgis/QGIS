@@ -424,14 +424,14 @@ QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const int ind
   return qobject_cast<QgsLayoutItemMapOverview *>( item );
 }
 
-QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx )
+QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
   QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( item );
   return *overview;
 }
 
-QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const
+QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const // cppcheck-suppress duplInheritedMember
 {
   QList< QgsLayoutItemMapOverview * > list;
   QList< QgsLayoutItemMapItem * >::const_iterator it = mItems.begin();

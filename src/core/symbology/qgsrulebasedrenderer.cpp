@@ -30,6 +30,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgspointdistancerenderer.h"
+#include "qgsscaleutils.h"
 
 #include <QSet>
 
@@ -297,10 +298,15 @@ bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
     return true;
   if ( qgsDoubleNear( mMaximumScale, 0.0 ) && qgsDoubleNear( mMinimumScale, 0.0 ) )
     return true;
-  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && mMaximumScale > scale )
+
+  // maxScale is inclusive ( < --> no render )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( scale, mMaximumScale ) )
     return false;
-  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && mMinimumScale < scale )
+
+  // minScale is exclusive ( >= --> no render )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMinimumScale ) )
     return false;
+
   return true;
 }
 
@@ -969,6 +975,32 @@ QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( const QgsFeature &, QgsRender
 {
   // not used at all
   return nullptr;
+}
+
+Qgis::FeatureRendererFlags QgsRuleBasedRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+
+  std::function< void( Rule *rule ) > exploreRule;
+  exploreRule = [&res, &exploreRule]( Rule * rule )
+  {
+    if ( !rule )
+      return;
+
+    if ( QgsSymbol *symbol = rule->symbol() )
+    {
+      if ( symbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+        res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+    }
+
+    for ( Rule *child : rule->children() )
+    {
+      exploreRule( child );
+    }
+  };
+  exploreRule( mRootRule );
+
+  return res;
 }
 
 bool QgsRuleBasedRenderer::renderFeature( const QgsFeature &feature,

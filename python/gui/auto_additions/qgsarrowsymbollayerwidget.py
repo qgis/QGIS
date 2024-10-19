@@ -1,6 +1,6 @@
 # The following has been generated automatically from src/gui/symbology/qgsarrowsymbollayerwidget.h
-QgsArrowSymbolLayerWidget.create = staticmethod(QgsArrowSymbolLayerWidget.create)
 try:
+    QgsArrowSymbolLayerWidget.create = staticmethod(QgsArrowSymbolLayerWidget.create)
     QgsArrowSymbolLayerWidget.__group__ = ['symbology']
 except NameError:
     pass
