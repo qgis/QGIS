@@ -51,9 +51,9 @@ bool QgsGpsInformation::isValid() const
     valid = false;
   }
   else if ( status == 'A' || status == 'D'
-       || bestFix == Qgis::GpsFixStatus::Fix2D
-       || bestFix == Qgis::GpsFixStatus::Fix3D
-       || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good - D=Differential for UM98x
+          || bestFix == Qgis::GpsFixStatus::Fix2D
+          || bestFix == Qgis::GpsFixStatus::Fix3D
+          || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good - D=Differential for UM98x
   {
     valid = true;
   }
