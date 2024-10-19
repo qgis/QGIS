@@ -29,60 +29,58 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressioncontextgenerator.h"
 
-QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
-  : QWidget( parent )
-  , mExpressionDialogTitle( tr( "Expression Builder" ) )
-  , mDistanceArea( nullptr )
+QgsFieldExpressionWidget::QgsFieldExpressionWidget(QWidget *parent)
+    : QWidget(parent), mExpressionDialogTitle(tr("Expression Builder")), mDistanceArea(nullptr)
 
 {
-  QHBoxLayout *layout = new QHBoxLayout( this );
-  layout->setContentsMargins( 0, 0, 0, 0 );
+  QHBoxLayout *layout = new QHBoxLayout(this);
+  layout->setContentsMargins(0, 0, 0, 0);
 
-  mCombo = new QComboBox( this );
-  mCombo->setEditable( true );
-  mCombo->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
+  mCombo = new QComboBox(this);
+  mCombo->setEditable(true);
+  mCombo->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
   const int width = mCombo->minimumSizeHint().width();
-  mCombo->setMinimumWidth( width );
+  mCombo->setMinimumWidth(width);
 
-  mFieldProxyModel = new QgsFieldProxyModel( mCombo );
-  mFieldProxyModel->sourceFieldModel()->setAllowExpression( true );
-  mCombo->setModel( mFieldProxyModel );
+  mFieldProxyModel = new QgsFieldProxyModel(mCombo);
+  mFieldProxyModel->sourceFieldModel()->setAllowExpression(true);
+  mCombo->setModel(mFieldProxyModel);
 
-  mButton = new QToolButton( this );
-  mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mButton = new QToolButton(this);
+  mButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+  mButton->setIcon(QgsApplication::getThemeIcon(QStringLiteral("/mIconExpression.svg")));
 
-  layout->addWidget( mCombo );
-  layout->addWidget( mButton );
+  layout->addWidget(mCombo);
+  layout->addWidget(mButton);
 
-  connect( mCombo->lineEdit(), &QLineEdit::textEdited, this, &QgsFieldExpressionWidget::expressionEdited );
-  connect( mCombo->lineEdit(), &QLineEdit::editingFinished, this, &QgsFieldExpressionWidget::expressionEditingFinished );
-  connect( mCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsFieldExpressionWidget::currentFieldChanged );
-  connect( mButton, &QAbstractButton::clicked, this, &QgsFieldExpressionWidget::editExpression );
-  connect( mFieldProxyModel, &QAbstractItemModel::modelAboutToBeReset, this, &QgsFieldExpressionWidget::beforeResetModel );
-  connect( mFieldProxyModel, &QAbstractItemModel::modelReset, this, &QgsFieldExpressionWidget::afterResetModel );
+  connect(mCombo->lineEdit(), &QLineEdit::textEdited, this, &QgsFieldExpressionWidget::expressionEdited);
+  connect(mCombo->lineEdit(), &QLineEdit::editingFinished, this, &QgsFieldExpressionWidget::expressionEditingFinished);
+  connect(mCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), this, &QgsFieldExpressionWidget::currentFieldChanged);
+  connect(mButton, &QAbstractButton::clicked, this, &QgsFieldExpressionWidget::editExpression);
+  connect(mFieldProxyModel, &QAbstractItemModel::modelAboutToBeReset, this, &QgsFieldExpressionWidget::beforeResetModel);
+  connect(mFieldProxyModel, &QAbstractItemModel::modelReset, this, &QgsFieldExpressionWidget::afterResetModel);
 
   mExpressionContext = QgsExpressionContext();
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                     << QgsExpressionContextUtils::projectScope(QgsProject::instance());
 
-  mCombo->installEventFilter( this );
+  mCombo->installEventFilter(this);
 }
 
-void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString &title )
+void QgsFieldExpressionWidget::setExpressionDialogTitle(const QString &title)
 {
   mExpressionDialogTitle = title;
 }
 
-void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
+void QgsFieldExpressionWidget::setFilters(QgsFieldProxyModel::Filters filters)
 {
-  mFieldProxyModel->setFilters( filters );
+  mFieldProxyModel->setFilters(filters);
 }
 
-void QgsFieldExpressionWidget::setAllowEmptyFieldName( bool allowEmpty )
+void QgsFieldExpressionWidget::setAllowEmptyFieldName(bool allowEmpty)
 {
-  mCombo->lineEdit()->setClearButtonEnabled( allowEmpty );
-  mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( allowEmpty );
+  mCombo->lineEdit()->setClearButtonEnabled(allowEmpty);
+  mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName(allowEmpty);
 }
 
 bool QgsFieldExpressionWidget::allowEmptyFieldName() const
@@ -90,24 +88,24 @@ bool QgsFieldExpressionWidget::allowEmptyFieldName() const
   return mFieldProxyModel->sourceFieldModel()->allowEmptyFieldName();
 }
 
-void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
+void QgsFieldExpressionWidget::setLeftHandButtonStyle(bool isLeft)
 {
-  QHBoxLayout *layout = dynamic_cast<QHBoxLayout *>( this->layout() );
-  if ( !layout )
+  QHBoxLayout *layout = dynamic_cast<QHBoxLayout *>(this->layout());
+  if (!layout)
     return;
 
-  if ( isLeft )
+  if (isLeft)
   {
-    QLayoutItem *item = layout->takeAt( 1 );
-    layout->insertWidget( 0, item->widget() );
+    QLayoutItem *item = layout->takeAt(1);
+    layout->insertWidget(0, item->widget());
   }
   else
-    layout->addWidget( mCombo );
+    layout->addWidget(mCombo);
 }
 
-void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
+void QgsFieldExpressionWidget::setGeomCalculator(const QgsDistanceArea &da)
 {
-  mDistanceArea = std::shared_ptr<const QgsDistanceArea>( new QgsDistanceArea( da ) );
+  mDistanceArea = std::shared_ptr<const QgsDistanceArea>(new QgsDistanceArea(da));
 }
 
 QString QgsFieldExpressionWidget::currentText() const
@@ -117,7 +115,7 @@ QString QgsFieldExpressionWidget::currentText() const
 
 QString QgsFieldExpressionWidget::asExpression() const
 {
-  return isExpression() ? currentText() : QgsExpression::quotedColumnRef( currentText() );
+  return isExpression() ? currentText() : QgsExpression::quotedColumnRef(currentText());
 }
 
 QString QgsFieldExpressionWidget::expression() const
@@ -125,27 +123,27 @@ QString QgsFieldExpressionWidget::expression() const
   return asExpression();
 }
 
-bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) const
+bool QgsFieldExpressionWidget::isValidExpression(QString *expressionError) const
 {
   QString temp;
-  return QgsExpression::checkExpression( currentText(), &mExpressionContext, expressionError ? *expressionError : temp );
+  return QgsExpression::checkExpression(currentText(), &mExpressionContext, expressionError ? *expressionError : temp);
 }
 
 bool QgsFieldExpressionWidget::isExpression() const
 {
-  return !mFieldProxyModel->sourceFieldModel()->isField( currentText() );
+  return !mFieldProxyModel->sourceFieldModel()->isField(currentText());
 }
 
-QString QgsFieldExpressionWidget::currentField( bool *isExpression, bool *isValid ) const
+QString QgsFieldExpressionWidget::currentField(bool *isExpression, bool *isValid) const
 {
   QString text = currentText();
   const bool valueIsExpression = this->isExpression();
-  if ( isValid )
+  if (isValid)
   {
     // valid if not an expression (ie, set to a field), or set to an expression and expression is valid
     *isValid = !valueIsExpression || isValidExpression();
   }
-  if ( isExpression )
+  if (isExpression)
   {
     *isExpression = valueIsExpression;
   }
@@ -157,82 +155,82 @@ QgsVectorLayer *QgsFieldExpressionWidget::layer() const
   return mFieldProxyModel->sourceFieldModel()->layer();
 }
 
-void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+void QgsFieldExpressionWidget::registerExpressionContextGenerator(const QgsExpressionContextGenerator *generator)
 {
   mExpressionContextGenerator = generator;
 }
 
-void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant> > &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsFieldExpressionWidget::setCustomPreviewGenerator(const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext(const QVariant &)> &previewContextGenerator)
 {
   mCustomPreviewLabel = label;
   mCustomChoices = choices;
   mPreviewContextGenerator = previewContextGenerator;
 }
 
-void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
+void QgsFieldExpressionWidget::setLayer(QgsMapLayer *layer)
 {
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>(layer);
 
-  if ( mFieldProxyModel->sourceFieldModel()->layer() )
-    disconnect( mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer );
+  if (mFieldProxyModel->sourceFieldModel()->layer())
+    disconnect(mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer);
 
-  if ( vl )
+  if (vl)
     mExpressionContext = vl->createExpressionContext();
   else
     mExpressionContext = QgsProject::instance()->createExpressionContext();
 
-  mFieldProxyModel->sourceFieldModel()->setLayer( vl );
+  mFieldProxyModel->sourceFieldModel()->setLayer(vl);
 
-  if ( mFieldProxyModel->sourceFieldModel()->layer() )
-    connect( mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer, Qt::UniqueConnection );
+  if (mFieldProxyModel->sourceFieldModel()->layer())
+    connect(mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer, Qt::UniqueConnection);
 }
 
-void QgsFieldExpressionWidget::setField( const QString &fieldName )
+void QgsFieldExpressionWidget::setField(const QString &fieldName)
 {
-  if ( fieldName.isEmpty() )
+  if (fieldName.isEmpty())
   {
-    setRow( -1 );
-    emit fieldChanged( QString() );
-    emit fieldChanged( QString(), true );
+    setRow(-1);
+    emit fieldChanged(QString());
+    emit fieldChanged(QString(), true);
     return;
   }
 
-  if ( fieldName.size() > mCombo->lineEdit()->maxLength() )
+  if (fieldName.size() > mCombo->lineEdit()->maxLength())
   {
-    mCombo->lineEdit()->setMaxLength( fieldName.size() );
+    mCombo->lineEdit()->setMaxLength(fieldName.size());
   }
 
-  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
-  if ( !idx.isValid() )
+  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName(fieldName);
+  if (!idx.isValid())
   {
     // try to remove quotes and white spaces
     QString simpleFieldName = fieldName.trimmed();
-    if ( simpleFieldName.startsWith( '"' ) && simpleFieldName.endsWith( '"' ) )
+    if (simpleFieldName.startsWith('"') && simpleFieldName.endsWith('"'))
     {
-      simpleFieldName.remove( 0, 1 ).chop( 1 );
-      idx = mFieldProxyModel->sourceFieldModel()->indexFromName( simpleFieldName );
+      simpleFieldName.remove(0, 1).chop(1);
+      idx = mFieldProxyModel->sourceFieldModel()->indexFromName(simpleFieldName);
     }
 
-    if ( !idx.isValid() )
+    if (!idx.isValid())
     {
       // new expression
-      mFieldProxyModel->sourceFieldModel()->setExpression( fieldName );
-      idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
+      mFieldProxyModel->sourceFieldModel()->setExpression(fieldName);
+      idx = mFieldProxyModel->sourceFieldModel()->indexFromName(fieldName);
     }
   }
-  const QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
-  mCombo->setCurrentIndex( proxyIndex.row() );
+  const QModelIndex proxyIndex = mFieldProxyModel->mapFromSource(idx);
+  mCombo->setCurrentIndex(proxyIndex.row());
   currentFieldChanged();
 }
 
-void QgsFieldExpressionWidget::setFields( const QgsFields &fields )
+void QgsFieldExpressionWidget::setFields(const QgsFields &fields)
 {
-  mFieldProxyModel->sourceFieldModel()->setFields( fields );
+  mFieldProxyModel->sourceFieldModel()->setFields(fields);
 }
 
-void QgsFieldExpressionWidget::setExpression( const QString &expression )
+void QgsFieldExpressionWidget::setExpression(const QString &expression)
 {
-  setField( expression );
+  setField(expression);
 }
 
 void QgsFieldExpressionWidget::editExpression()
@@ -242,48 +240,48 @@ void QgsFieldExpressionWidget::editExpression()
 
   const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
-  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, QStringLiteral( "generic" ), context );
-  if ( mDistanceArea )
+  QgsExpressionBuilderDialog dlg(vl, currentExpression, this, QStringLiteral("generic"), context);
+  if (mDistanceArea)
   {
-    dlg.setGeomCalculator( *mDistanceArea );
+    dlg.setGeomCalculator(*mDistanceArea);
   }
-  dlg.setWindowTitle( mExpressionDialogTitle );
-  dlg.setAllowEvalErrors( mAllowEvalErrors );
+  dlg.setWindowTitle(mExpressionDialogTitle);
+  dlg.setAllowEvalErrors(mAllowEvalErrors);
 
-  if ( !mCustomChoices.isEmpty() )
+  if (!mCustomChoices.isEmpty())
   {
-    dlg.expressionBuilder()->setCustomPreviewGenerator( mCustomPreviewLabel, mCustomChoices, mPreviewContextGenerator );
+    dlg.expressionBuilder()->setCustomPreviewGenerator(mCustomPreviewLabel, mCustomChoices, mPreviewContextGenerator);
   }
 
-  if ( !vl )
-    dlg.expressionBuilder()->expressionTree()->loadFieldNames( mFieldProxyModel->sourceFieldModel()->fields() );
+  if (!vl)
+    dlg.expressionBuilder()->expressionTree()->loadFieldNames(mFieldProxyModel->sourceFieldModel()->fields());
 
-  if ( dlg.exec() )
+  if (dlg.exec())
   {
     const QString newExpression = dlg.expressionText();
-    setField( newExpression );
+    setField(newExpression);
   }
 }
 
-void QgsFieldExpressionWidget::expressionEdited( const QString &expression )
+void QgsFieldExpressionWidget::expressionEdited(const QString &expression)
 {
-  updateLineEditStyle( expression );
-  emit fieldChanged( expression, isValidExpression() );
+  updateLineEditStyle(expression);
+  emit fieldChanged(expression, isValidExpression());
 }
 
 void QgsFieldExpressionWidget::expressionEditingFinished()
 {
   const QString expression = mCombo->lineEdit()->text();
-  mFieldProxyModel->sourceFieldModel()->setExpression( expression );
-  const QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( expression );
-  const QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
-  mCombo->setCurrentIndex( proxyIndex.row() );
+  mFieldProxyModel->sourceFieldModel()->setExpression(expression);
+  const QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName(expression);
+  const QModelIndex proxyIndex = mFieldProxyModel->mapFromSource(idx);
+  mCombo->setCurrentIndex(proxyIndex.row());
   currentFieldChanged();
 }
 
-void QgsFieldExpressionWidget::changeEvent( QEvent *event )
+void QgsFieldExpressionWidget::changeEvent(QEvent *event)
 {
-  if ( event->type() == QEvent::EnabledChange )
+  if (event->type() == QEvent::EnabledChange)
   {
     updateLineEditStyle();
   }
@@ -291,7 +289,7 @@ void QgsFieldExpressionWidget::changeEvent( QEvent *event )
 
 void QgsFieldExpressionWidget::reloadLayer()
 {
-  setLayer( mFieldProxyModel->sourceFieldModel()->layer() );
+  setLayer(mFieldProxyModel->sourceFieldModel()->layer());
 }
 
 void QgsFieldExpressionWidget::beforeResetModel()
@@ -303,21 +301,21 @@ void QgsFieldExpressionWidget::beforeResetModel()
 void QgsFieldExpressionWidget::afterResetModel()
 {
   // Restore expression
-  mCombo->lineEdit()->setText( mBackupExpression );
+  mCombo->lineEdit()->setText(mBackupExpression);
 }
 
-bool QgsFieldExpressionWidget::eventFilter( QObject *watched, QEvent *event )
+bool QgsFieldExpressionWidget::eventFilter(QObject *watched, QEvent *event)
 {
-  if ( watched == mCombo && event->type() == QEvent::KeyPress )
+  if (watched == mCombo && event->type() == QEvent::KeyPress)
   {
-    QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
-    if ( keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return )
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+    if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
     {
       expressionEditingFinished();
       return true;
     }
   }
-  return QObject::eventFilter( watched, event );
+  return QObject::eventFilter(watched, event);
 }
 
 bool QgsFieldExpressionWidget::allowEvalErrors() const
@@ -325,27 +323,26 @@ bool QgsFieldExpressionWidget::allowEvalErrors() const
   return mAllowEvalErrors;
 }
 
-void QgsFieldExpressionWidget::setAllowEvalErrors( bool allowEvalErrors )
+void QgsFieldExpressionWidget::setAllowEvalErrors(bool allowEvalErrors)
 {
-  if ( allowEvalErrors == mAllowEvalErrors )
+  if (allowEvalErrors == mAllowEvalErrors)
     return;
 
   mAllowEvalErrors = allowEvalErrors;
   emit allowEvalErrorsChanged();
 }
 
-
 bool QgsFieldExpressionWidget::buttonVisible() const
 {
-  return mButton->isVisibleTo( this );
+  return mButton->isVisibleTo(this);
 }
 
-void QgsFieldExpressionWidget::setButtonVisible( bool visible )
+void QgsFieldExpressionWidget::setButtonVisible(bool visible)
 {
-  if ( visible == buttonVisible() )
+  if (visible == buttonVisible())
     return;
 
-  mButton->setVisible( visible );
+  mButton->setVisible(visible);
   emit buttonVisibleChanged();
 }
 
@@ -354,62 +351,63 @@ void QgsFieldExpressionWidget::currentFieldChanged()
   updateLineEditStyle();
 
   bool isExpression, isValid;
-  const QString fieldName = currentField( &isExpression, &isValid );
+  const QString fieldName = currentField(&isExpression, &isValid);
 
   // display tooltip if widget is shorter than expression
-  const QFontMetrics metrics( mCombo->lineEdit()->font() );
-  if ( metrics.boundingRect( fieldName ).width() > mCombo->lineEdit()->width() )
+  const QFontMetrics metrics(mCombo->lineEdit()->font());
+  if (metrics.boundingRect(fieldName).width() > mCombo->lineEdit()->width())
   {
-    mCombo->setToolTip( fieldName );
+    mCombo->setToolTip(fieldName);
   }
   else
   {
-    mCombo->setToolTip( QString() );
+    mCombo->setToolTip(QString());
   }
 
-  emit fieldChanged( fieldName );
-  emit fieldChanged( fieldName, isValid );
+  emit fieldChanged(fieldName);
+  emit fieldChanged(fieldName, isValid);
 }
 
-void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
+void QgsFieldExpressionWidget::updateLineEditStyle(const QString &expression)
 {
   QString stylesheet;
-  if ( !isEnabled() )
+  if (!isEnabled())
   {
-    stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::gray ).name() );
+    stylesheet = QStringLiteral("QLineEdit { color: %1; }").arg(QColor(Qt::gray).name());
   }
   else
   {
     bool isExpression, isValid;
-    if ( !expression.isEmpty() )
+    if (!expression.isEmpty())
     {
       isExpression = true;
-      isValid = isExpressionValid( expression );
+      isValid = isExpressionValid(expression);
     }
     else
     {
-      currentField( &isExpression, &isValid );
+      currentField(&isExpression, &isValid);
     }
     QFont font = mCombo->lineEdit()->font();
-    font.setItalic( isExpression );
-    mCombo->lineEdit()->setFont( font );
+    font.setFamily((QgsCodeEditor::getMonospaceFont()).family());
+    font.setItalic(false);
+    mCombo->lineEdit()->setFont(font);
 
-    if ( isExpression && !isValid )
+    if (isExpression && !isValid)
     {
-      stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::red ).name() );
+      stylesheet = QStringLiteral("QLineEdit { color: %1; }").arg(QColor(Qt::red).name());
     }
   }
-  mCombo->lineEdit()->setStyleSheet( stylesheet );
+  mCombo->lineEdit()->setStyleSheet(stylesheet);
 }
 
-bool QgsFieldExpressionWidget::isExpressionValid( const QString &expressionStr )
+bool QgsFieldExpressionWidget::isExpressionValid(const QString &expressionStr)
 {
-  QgsExpression expression( expressionStr );
-  expression.prepare( &mExpressionContext );
+  QgsExpression expression(expressionStr);
+  expression.prepare(&mExpressionContext);
   return !expression.hasParserError();
 }
 
-void QgsFieldExpressionWidget::appendScope( QgsExpressionContextScope *scope )
+void QgsFieldExpressionWidget::appendScope(QgsExpressionContextScope *scope)
 {
-  mExpressionContext.appendScope( scope );
+  mExpressionContext.appendScope(scope);
 }
