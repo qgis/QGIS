@@ -354,10 +354,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   }
 
   // Check if the number of fields is even, indicating the presence of SIGNAL_ID
-  if ( field_count % 2 == 0 )
-  {
-    has_signal_id = 1;
-  }
+  has_signal_id = field_count >= 21 ? 1 : 0;
 
   if ( has_signal_id )
   {
