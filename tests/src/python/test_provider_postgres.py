@@ -3355,6 +3355,15 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         cur.execute(sql_pk)
         self.assertEqual(cur.fetchall(), [('dep', 'character varying')])
 
+    def testNameType(self):
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'"table_catalog","table_schema","table_name"\' table="information_schema"."tables" () sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertIsNotNone(feat.attributes()[0])
+
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 
