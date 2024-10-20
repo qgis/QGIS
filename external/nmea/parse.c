@@ -398,7 +398,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nsat = nsat * 4 + 3 /* first three sentence`s */;
 
   int expected_nsen = has_signal_id ? ( NMEA_SATINPACK * 4 + 4 ) : ( NMEA_SATINPACK * 4 + 3 );
-  if ( nsen - 1 < nsat || nsen - 1 > expected_nsen )
+  if ( nsen - 2 < nsat || nsen - 2 > expected_nsen )
   {
     nmea_error( "GSV parse error!" );
     return 0;
