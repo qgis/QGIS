@@ -55,6 +55,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QPainterPath shape() const;
 
+    virtual bool isValid() const;
+
 
     QgsLineSymbol *symbol();
 %Docstring
