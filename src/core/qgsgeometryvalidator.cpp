@@ -150,7 +150,7 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
 
   // test for duplicate nodes, and if we find any flag errors and then remove them so that the subsequent
   // tests work OK.
-  const QVector< QgsVertexId > duplicateNodes = line->collectDuplicateNodes( 1E-8 );
+  const QVector< QgsVertexId > duplicateNodes = line->collectDuplicateNodes( 1E-8, line->is3D() );
   if ( !duplicateNodes.empty() )
   {
     noDupes.reset( line->clone() );
