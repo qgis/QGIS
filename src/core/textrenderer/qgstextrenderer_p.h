@@ -264,6 +264,7 @@ class QgsTextSettingsPrivate : public QSharedData
     QgsTextSettingsPrivate( const QgsTextSettingsPrivate &other )
       : QSharedData( other )
       , isValid( other.isValid )
+      , originalFontFamily( other.originalFontFamily )
       , textFont( other.textFont )
       , families( other.families )
       , textNamedStyle( other.textNamedStyle )
@@ -289,6 +290,8 @@ class QgsTextSettingsPrivate : public QSharedData
     }
 
     bool isValid = false;
+
+    QString originalFontFamily;
     QFont textFont;
     QStringList families;
     QString textNamedStyle;
