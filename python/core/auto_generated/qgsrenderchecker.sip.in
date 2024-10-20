@@ -183,6 +183,7 @@ Sets the largest allowable difference in size between the rendered and the expec
     enum class Flag
     {
       AvoidExportingRenderedImage,
+      Silent,
     };
 
     typedef QFlags<QgsRenderChecker::Flag> Flags;
