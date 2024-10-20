@@ -907,7 +907,7 @@ QString QgsDataSourceUri::param( const QString &key ) const
   else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
     return mAuthConfigId;
 
-  return QUrl::fromPercentEncoding(mParams.value( key ).toUtf8());
+  return QUrl::fromPercentEncoding( mParams.value( key ).toUtf8() );
 }
 
 QStringList QgsDataSourceUri::params( const QString &key ) const
