@@ -864,7 +864,7 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
   else
   {
     // may be multiple
-      mParams.insert( key, QUrl::toPercentEncoding(value) );
+    mParams.insert( key, QUrl::toPercentEncoding(value) );
   }
 }
 
