@@ -214,6 +214,7 @@ void QgsTextFormat::setFont( const QFont &font )
 {
   d->isValid = true;
   d->textFont = font;
+  d->originalFontFamily.clear();
 }
 
 QString QgsTextFormat::namedStyle() const
@@ -466,7 +467,8 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 {
   d->isValid = true;
   QFont appFont = QApplication::font();
-  mTextFontFamily = QgsApplication::fontManager()->processFontFamilyName( layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString() );
+  d->originalFontFamily = QgsApplication::fontManager()->processFontFamilyName( layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString() );
+  mTextFontFamily = d->originalFontFamily;
   QString fontFamily = mTextFontFamily;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
@@ -555,7 +557,8 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   else
     textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   QFont appFont = QApplication::font();
-  mTextFontFamily = QgsApplication::fontManager()->processFontFamilyName( textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() ) );
+  d->originalFontFamily = QgsApplication::fontManager()->processFontFamilyName( textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() ) );
+  mTextFontFamily = d->originalFontFamily;
   QString fontFamily = mTextFontFamily;
 
   const QDomElement familiesElem = textStyleElem.firstChildElement( QStringLiteral( "families" ) );
@@ -749,7 +752,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
 {
   // text style
   QDomElement textStyleElem = doc.createElement( QStringLiteral( "text-style" ) );
-  textStyleElem.setAttribute( QStringLiteral( "fontFamily" ), d->textFont.family() );
+  textStyleElem.setAttribute( QStringLiteral( "fontFamily" ), !d->originalFontFamily.isEmpty() ? d->originalFontFamily : d->textFont.family() );
 
   QDomElement familiesElem = doc.createElement( QStringLiteral( "families" ) );
   for ( const QString &family : std::as_const( d->families ) )
