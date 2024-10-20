@@ -1724,6 +1724,7 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
                                   0,
                                   count );
 
+
   if ( vals.isValid() )
   {
     // vals could be scalar or vectors, for contour rendering we want always magnitude
@@ -1749,7 +1750,7 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
 
     if ( metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces || metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes )
     {
-      value = scalarDatasetValues.at( intersectedFaceIndex );
+      value = scalarDatasetValues.at( tMesh->trianglesToNativeFaces().at( intersectedFaceIndex ) );
       min = std::min( min, value );
       max = std::max( max, value );
     }
