@@ -310,7 +310,8 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 
     // convert mode to signal (aka quality) indicator
     // (see https://gitlab.com/fhuberts/nmealib/-/blob/master/src/info.c#L27)
-    if ( result.status == 'A' )
+    // UM98x Status == D  (Differential)
+    if ( result.status == 'A' || result.status == 'D' )
     {
       if ( result.mode == 'A' )
       {
