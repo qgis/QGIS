@@ -277,7 +277,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
 QString QgsWmsProvider::prepareUri( QString uri )
 {
   // some services provide a percent/url encoded (legend) uri string, always decode here
-  if(uri.startsWith( "https%3A%2F%2F" ) || uri.startsWith( "http%3A%2F%2F" ))
+  if( uri.startsWith( "https%3A%2F%2F" ) || uri.startsWith( "http%3A%2F%2F" ))
   {
     uri = QUrl::fromPercentEncoding( uri.toUtf8() );
   }
