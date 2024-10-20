@@ -935,11 +935,13 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     /**
      * Extracts minimum and maximum value for active scalar dataset on mesh faces.
      * \param extent extent in which intersecting faces are searched for
-     * \return QPair of double
-     * \note not available in Python bindings
+     * \param datasetIndex index for which dataset the values should be extracted
+     * \param min minimal value
+     * \param max maximal value
+     * \return TRUE if values were extracted
      * \since QGIS 3.42
      */
-    QPair<double, double> minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex ) SIP_SKIP;
+    bool minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min SIP_OUT, double &max SIP_OUT );
 
   public slots:
 

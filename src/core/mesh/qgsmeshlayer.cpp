@@ -1669,14 +1669,18 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
     {
       double previousMin = scalarRendererSettings.classificationMinimum();
       double previousMax = scalarRendererSettings.classificationMaximum();
+      double min, max;
 
-      QPair<double, double> minMax = minimumMaximumActiveScalarDataset( rendererContext.extent(), activeDatasetIndex );
+      bool found  = minimumMaximumActiveScalarDataset( rendererContext.extent(), activeDatasetIndex, min, max );
 
-      if ( previousMin != minMax.first || previousMax != minMax.second )
+      if ( found )
       {
-        scalarRendererSettings.setClassificationMinimumMaximum( minMax.first, minMax.second );
-        mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
-        emit legendChanged();
+        if ( previousMin != min || previousMax != max )
+        {
+          scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+          mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
+          emit legendChanged();
+        }
       }
     }
   }
@@ -1692,11 +1696,14 @@ QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetIndex( QgsRenderContext &re
     return staticScalarDatasetIndex( mRendererSettings.activeScalarDatasetGroup() );
 }
 
-QPair<double, double> QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex )
+bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min, double &max )
 {
-  QPair<double, double> minMax;
-  double min = std::numeric_limits<double>::max();
-  double max = -std::numeric_limits<double>::max();
+
+  if ( extent.isNull() || !this->extent().intersects( extent ) )
+    return false;
+
+  min = std::numeric_limits<double>::max();
+  max = -std::numeric_limits<double>::max();
 
   QgsTriangularMesh *tMesh = triangularMesh();
 
@@ -1704,34 +1711,36 @@ QPair<double, double> QgsMeshLayer::minimumMaximumActiveScalarDataset( const Qgs
   const QgsMeshDatasetGroupMetadata metadata = datasetGroupMetadata( datasetIndex.group() );
   QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
 
-  if ( datasetIndex.isValid() )
+  if ( !datasetIndex.isValid() )
   {
-    // populate scalar values
-    const int count = QgsMeshLayerUtils::datasetValuesCount( mNativeMesh.get(), scalarDataType );
-    const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                                    this,
-                                    datasetIndex,
-                                    0,
-                                    count );
-
-    if ( vals.isValid() )
-    {
-      // vals could be scalar or vectors, for contour rendering we want always magnitude
-      scalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
-    }
-    else
-    {
-      scalarDatasetValues = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
-    }
-  }
-  else // datasetIndex is invalid, return large values
-  {
-
-    return QPair<double, double>( min, max );
+    return false;
   }
 
+  // populate scalar values
+  const int count = QgsMeshLayerUtils::datasetValuesCount( mNativeMesh.get(), scalarDataType );
+  const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                                  this,
+                                  datasetIndex,
+                                  0,
+                                  count );
+
+  if ( vals.isValid() )
+  {
+    // vals could be scalar or vectors, for contour rendering we want always magnitude
+    scalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+  }
+  else
+  {
+    scalarDatasetValues = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
+  }
 
   QList<int> intersectedFacesIndices = tMesh->faceIndexesForRectangle( extent );
+
+  if ( intersectedFacesIndices.isEmpty() )
+  {
+    return false;
+  }
+
   double value;
 
   for ( int intersectedFaceIndex : intersectedFacesIndices )
@@ -1757,8 +1766,7 @@ QPair<double, double> QgsMeshLayer::minimumMaximumActiveScalarDataset( const Qgs
     }
   }
 
-  minMax = QPair<double, double>( min, max );
-  return minMax;
+  return true;
 }
 
 QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProfileRequest &request )

@@ -275,40 +275,37 @@ void QgsMeshRendererScalarSettingsWidget::setCanvas( QgsMapCanvas *canvas )
 
 void QgsMeshRendererScalarSettingsWidget::recalculateMinMax()
 {
-  QPair<double, double> minMax;
-  QgsMeshDatasetIndex datasetIndex = mMeshLayer->activeScalarDatasetAtTime( mCanvas->temporalRange(), mActiveDatasetGroup );
+  QgsRectangle searchExtent;
+
   switch ( minMaxValueType() )
   {
     case QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh:
     {
-      minMax = mMeshLayer->minimumMaximumActiveScalarDataset( mMeshLayer->extent(), datasetIndex );
-      whileBlocking( mScalarMinSpinBox )->setValue( minMax.first );
-      whileBlocking( mScalarMaxSpinBox )->setValue( minMax.second );
+      searchExtent = mMeshLayer->extent();
       break;
     }
     case QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas:
-    {
-      QgsCoordinateTransform transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mMeshLayer->crs(), QgsProject::instance() );
-      QgsRectangle canvasExtent = mCanvas->extent();
-      QgsRectangle dataExtent = transform.transform( canvasExtent );
-      minMax = mMeshLayer->minimumMaximumActiveScalarDataset( dataExtent, datasetIndex );
-      whileBlocking( mScalarMinSpinBox )->setValue( minMax.first );
-      whileBlocking( mScalarMaxSpinBox )->setValue( minMax.second );
-      break;
-    }
     case QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas:
     {
-      QgsCoordinateTransform transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mMeshLayer->crs(), QgsProject::instance() );
-      QgsRectangle canvasExtent = mCanvas->extent();
-      QgsRectangle dataExtent = transform.transform( canvasExtent );
-      minMax = mMeshLayer->minimumMaximumActiveScalarDataset( dataExtent, datasetIndex );
-      whileBlocking( mScalarMinSpinBox )->setValue( minMax.first );
-      whileBlocking( mScalarMaxSpinBox )->setValue( minMax.second );
+      mCanvas->mapSettings().outputExtentToLayerExtent( mMeshLayer, searchExtent );
       break;
     }
     default:
       break;
   }
 
-  minMaxChanged();
+  if ( !searchExtent.isEmpty() )
+  {
+    QgsMeshDatasetIndex datasetIndex = mMeshLayer->activeScalarDatasetAtTime( mCanvas->temporalRange(), mActiveDatasetGroup );
+    double min, max;
+    bool found;
+
+    found = mMeshLayer->minimumMaximumActiveScalarDataset( searchExtent, datasetIndex, min, max );
+    if ( found )
+    {
+      whileBlocking( mScalarMinSpinBox )->setValue( min );
+      whileBlocking( mScalarMaxSpinBox )->setValue( max );
+      minMaxChanged();
+    }
+  }
 }
