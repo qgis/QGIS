@@ -1286,7 +1286,7 @@ bool QgsPostgresProvider::loadFields()
       // PG 12 returns "name" type for some system table fields (e.g. information_schema.tables)
       else if ( fieldTypeName == QLatin1String( "name" ) )
       {
-        fieldSubType = QVariant::String;
+        fieldType = QVariant::String;
         fieldSize = 63;
       }
       else
