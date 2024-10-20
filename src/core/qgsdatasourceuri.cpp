@@ -885,7 +885,7 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
   else
   {
     // may be multiple
-    mParams.insert( key, value );
+    mParams.insert( key, QUrl::toPercentEncoding( value ) );
   }
 }
 
@@ -928,7 +928,7 @@ QString QgsDataSourceUri::param( const QString &key ) const
   else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
     return mAuthConfigId;
 
-  return mParams.value( key );
+  return QUrl::fromPercentEncoding( mParams.value( key ).toUtf8() );
 }
 
 QStringList QgsDataSourceUri::params( const QString &key ) const
