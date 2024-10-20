@@ -722,7 +722,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
       else if ( item.first == QLatin1String( "authcfg" ) )
         mAuthConfigId = query.queryItemValue( QStringLiteral( "authcfg" ), QUrl::ComponentFormattingOption::FullyDecoded );
       else
-          mParams.insert( item.first, item.second );
+        mParams.insert( item.first, item.second );
     }
   }
 }
