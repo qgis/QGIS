@@ -9,7 +9,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "dbfdce706b841fc052edfe4d0296dd4f59fc1dbe",
+        "baseline": "d4bc16c09fae1c10c74827ffe73b6c54b287021d",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -93,7 +93,9 @@
             "python"
           ]
         },
+        "py-autopep8",
         "py-dateutil",
+        "py-isort",
         "py-jinja2",
         "py-lxml",
         "py-markupsafe",
@@ -106,6 +108,7 @@
         "py-pyyaml",
         "py-qscintilla",
         "py-requests",
+        "py-six",
         "python3"
       ]
     },
