@@ -208,8 +208,6 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
   mEdgeStrokeWidth.readXml( elemEdgeStrokeWidth, context );
   mEdgeStrokeWidthUnit = static_cast<Qgis::RenderUnit>(
                            elemEdge.attribute( QStringLiteral( "stroke-width-unit" ) ).toInt() );
-
-  updateShader();
 }
 
 QgsInterpolatedLineWidth QgsMeshRendererScalarSettings::edgeStrokeWidth() const
