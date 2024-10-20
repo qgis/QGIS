@@ -1724,7 +1724,6 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
                                   0,
                                   count );
 
-
   if ( vals.isValid() )
   {
     // vals could be scalar or vectors, for contour rendering we want always magnitude
