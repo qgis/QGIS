@@ -119,6 +119,8 @@ class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
     static constexpr const char *providerName = "quantizedmesh";
     static constexpr const char *providerDescription = "Cesium Quantized Mesh tiles";
 
+  private:
+    QString uriFromIon( const QString &uri );
 
   private:
     QString mUri; // For clone()
