@@ -129,6 +129,23 @@ QgsGeometry QgsLayoutItemPolygon::clipPath() const
   return QgsGeometry::fromQPolygonF( path );
 }
 
+
+bool QgsLayoutItemPolygon::isValid() const
+{
+  QList<QPointF> uniquePoints;
+  int seen = 0;
+  for ( QPointF point : mPolygon )
+  {
+    if ( !uniquePoints.contains( point ) )
+    {
+      uniquePoints.append( point );
+      if ( ++seen > 2 )
+        return true;
+    }
+  }
+  return false;
+}
+
 QgsFillSymbol *QgsLayoutItemPolygon::symbol()
 {
   return mPolygonStyleSymbol.get();
