@@ -722,7 +722,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
       else if ( item.first == QLatin1String( "authcfg" ) )
         mAuthConfigId = query.queryItemValue( QStringLiteral( "authcfg" ), QUrl::ComponentFormattingOption::FullyDecoded );
       else
-        mParams.insert( item.first, item.second );
+          mParams.insert( item.first, item.second );
     }
   }
 }
@@ -864,7 +864,7 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
   else
   {
     // may be multiple
-    mParams.insert( key, value );
+      mParams.insert( key, QUrl::toPercentEncoding(value) );
   }
 }
 
@@ -907,7 +907,7 @@ QString QgsDataSourceUri::param( const QString &key ) const
   else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
     return mAuthConfigId;
 
-  return mParams.value( key );
+  return QUrl::fromPercentEncoding(mParams.value( key ).toUtf8());
 }
 
 QStringList QgsDataSourceUri::params( const QString &key ) const
