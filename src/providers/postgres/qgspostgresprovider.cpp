@@ -1235,6 +1235,8 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == QLatin1String( "ltree" ) ||
                 fieldTypeName == QLatin1String( "uuid" ) ||
                 fieldTypeName == QLatin1String( "xml" ) ||
+                fieldTypeName == QLatin1String( "bit" ) ||
+                fieldTypeName == QLatin1String( "varbit" ) ||
                 fieldTypeName.startsWith( QLatin1String( "time" ) ) ||
                 fieldTypeName.startsWith( QLatin1String( "date" ) ) )
       {
@@ -1323,7 +1325,7 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTType ), tr( "PostGIS" ) );
+          QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTypeName ), tr( "PostGIS" ) );
           continue;
         }
       }
