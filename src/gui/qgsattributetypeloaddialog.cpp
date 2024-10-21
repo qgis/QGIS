@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsiconutils.h"
 
 #include <QTableWidgetItem>
 #include <QLineEdit>
@@ -70,7 +71,7 @@ void QgsAttributeTypeLoadDialog::fillLayerList()
   {
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
     if ( vl )
-      layerComboBox->addItem( vl->name(), vl->id() );
+      layerComboBox->addItem( QgsIconUtils::iconForLayer( vl ), vl->name(), vl->id() );
   }
   layerComboBox->setCurrentIndex( -1 );
   layerComboBox->blockSignals( false );
@@ -88,12 +89,11 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
   QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layerIndex < 0 ? nullptr : QgsProject::instance()->mapLayer( layerComboBox->itemData( layerIndex ).toString() ) );
   if ( vLayer )
   {
-    QMap<QString, int> fieldMap = vLayer->dataProvider()->fieldNameMap();
-    QMap<QString, int>::iterator it = fieldMap.begin();
-    for ( ; it != fieldMap.end(); ++it )
+    const QgsFields vLayerFields = vLayer->dataProvider()->fields();
+    for (int idx = 0; idx < vLayerFields.count(); ++idx )
     {
-      keyComboBox->addItem( it.key(), it.value() );
-      valueComboBox->addItem( it.key(), it.value() );
+      keyComboBox->addItem( vLayerFields.iconForField( idx ), vLayerFields.at( idx ).name(), idx );
+      valueComboBox->addItem( vLayerFields.iconForField( idx ), vLayerFields.at( idx ).name(), idx );
     }
   }
 
