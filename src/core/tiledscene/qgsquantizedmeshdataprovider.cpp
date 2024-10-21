@@ -42,6 +42,7 @@
 #include <qobject.h>
 #include <qstringliteral.h>
 #include <qvector.h>
+#include <QUrlQuery>
 
 ///@cond PRIVATE
 
@@ -441,7 +442,16 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
   : QgsTiledSceneDataProvider( uri, providerOptions, flags ), mUri( uri ),
     mProviderOptions( providerOptions )
 {
-  mMetadata = QgsQuantizedMeshMetadata( uri, transformContext(), mError );
+  if ( uri.startsWith( QLatin1String( "ion://" ) ) )
+  {
+    QString updatedUri = uriFromIon( uri );
+    mMetadata = QgsQuantizedMeshMetadata( updatedUri, transformContext(), mError );
+  }
+  else
+  {
+    mMetadata = QgsQuantizedMeshMetadata( uri, transformContext(), mError );
+  }
+
   if ( mError.isEmpty() )
   {
     QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
@@ -449,6 +459,114 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
     mIndex.emplace( new QgsQuantizedMeshIndex( *mMetadata, wgs84ToCrs ) );
     mIsValid = true;
   }
+}
+
+QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
+{
+  // we expect one of the two options:
+  // ion://?assetId=123&accessToken=xyz
+  // ion://?assetId=123&authcfg=abc
+
+  QUrl url( uri );
+  const QString assetId = QUrlQuery( url ).queryItemValue( QStringLiteral( "assetId" ) );
+  const QString accessToken = QUrlQuery( url ).queryItemValue( QStringLiteral( "accessToken" ) );
+
+  const QString CESIUM_ION_URL = QStringLiteral( "https://api.cesium.com/" );
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+  QString authCfg = dsUri.authConfigId();
+  QgsHttpHeaders headers = dsUri.httpHeaders();
+
+  // get asset info
+  {
+    const QString assetInfoEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1" ).arg( assetId );
+    QNetworkRequest request = QNetworkRequest( assetInfoEndpoint );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsQuantizedMeshDataProvider" ) )
+    headers.updateNetworkRequest( request );
+    if ( !accessToken.isEmpty() )
+      request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
+
+    QgsBlockingNetworkRequest networkRequest;
+    if ( accessToken.isEmpty() )
+      networkRequest.setAuthCfg( authCfg );
+
+    switch ( networkRequest.get( request ) )
+    {
+      case QgsBlockingNetworkRequest::NoError:
+        break;
+
+      case QgsBlockingNetworkRequest::NetworkError:
+      case QgsBlockingNetworkRequest::TimeoutError:
+      case QgsBlockingNetworkRequest::ServerExceptionError:
+        // TODO -- error reporting
+        return QString();
+    }
+
+    const QgsNetworkReplyContent content = networkRequest.reply();
+    const json assetInfoJson  = json::parse( content.content().toStdString() );
+    if ( assetInfoJson["type"] != "TERRAIN" )
+    {
+      appendError( QgsErrorMessage( tr( "Only ion TERRAIN content can be accessed, not %1" ).arg( QString::fromStdString( assetInfoJson["type"].get<std::string>() ) ) ) );
+      return QString();
+    }
+  }
+
+  // get tileset access details
+  QString tileSetUri;
+  {
+    const QString tileAccessEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1/endpoint" ).arg( assetId );
+    QNetworkRequest request = QNetworkRequest( tileAccessEndpoint );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsQuantizedMeshDataProvider" ) )
+    headers.updateNetworkRequest( request );
+    if ( !accessToken.isEmpty() )
+      request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
+
+    QgsBlockingNetworkRequest networkRequest;
+    if ( accessToken.isEmpty() )
+      networkRequest.setAuthCfg( authCfg );
+
+    switch ( networkRequest.get( request ) )
+    {
+      case QgsBlockingNetworkRequest::NoError:
+        break;
+
+      case QgsBlockingNetworkRequest::NetworkError:
+      case QgsBlockingNetworkRequest::TimeoutError:
+      case QgsBlockingNetworkRequest::ServerExceptionError:
+        // TODO -- error reporting
+        return QString();
+    }
+
+    const QgsNetworkReplyContent content = networkRequest.reply();
+    const json tileAccessJson = json::parse( content.content().toStdString() );
+
+    if ( tileAccessJson.contains( "url" ) )
+    {
+      tileSetUri = QString::fromStdString( tileAccessJson["url"].get<std::string>() );
+    }
+    else if ( tileAccessJson.contains( "options" ) )
+    {
+      const auto &optionsJson = tileAccessJson["options"];
+      if ( optionsJson.contains( "url" ) )
+      {
+        tileSetUri = QString::fromStdString( optionsJson["url"].get<std::string>() );
+      }
+    }
+
+    if ( tileAccessJson.contains( "accessToken" ) )
+    {
+      // The tileset accessToken is NOT the same as the token we use to access the asset details -- ie we can't
+      // use the same authentication as we got from the providers auth cfg!
+      headers.insert( QStringLiteral( "Authorization" ),
+                      QStringLiteral( "Bearer %1" ).arg( QString::fromStdString( tileAccessJson["accessToken"].get<std::string>() ) ) );
+    }
+  }
+
+  QgsDataSourceUri finalUri;
+  finalUri.setParam( "url", tileSetUri + "layer.json" );
+  finalUri.setHttpHeaders( headers );
+  return finalUri.encodedUri();
 }
 
 Qgis::TiledSceneProviderCapabilities
