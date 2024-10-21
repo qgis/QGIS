@@ -935,7 +935,9 @@ void TestQgsIdentify::identifyVectorTile()
   const QString vtPath = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/vector_tile/{z}-{x}-{y}.pbf" );
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-  dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( vtPath ).toString() );
+  // The values need to be passed to QgsDataSourceUri::setParam() in the same format they are expected to be retrieved.
+  // QUrl::fromPercentEncoding() is needed here because QUrl::fromLocalFile(vtPath).toString() returns the curly braces in an URL-encoded format.
+  dsUri.setParam( QStringLiteral( "url" ), QUrl::fromPercentEncoding( QUrl::fromLocalFile( vtPath ).toString().toUtf8() ) );
   QgsVectorTileLayer *tempLayer = new QgsVectorTileLayer( dsUri.encodedUri(), QStringLiteral( "testlayer" ) );
   QVERIFY( tempLayer->isValid() );
 
