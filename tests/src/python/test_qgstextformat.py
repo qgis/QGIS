@@ -46,7 +46,7 @@ class PyQgsTextFormat(QgisTestCase):
         font = getTestFont()
         text_format.setFont(font)
 
-        # when writign the settings to XML, the originally missing font family should have been replaced by the new font family
+        # when writing the settings to XML, the originally missing font family should have been replaced by the new font family
         element = text_format.writeXml(document, context)
         self.assertEqual(element.attribute("fontFamily"), "QGIS Vera Sans")
 
