@@ -74,7 +74,15 @@ void QgsLayoutViewToolAddNodeItem::layoutPressEvent( QgsLayoutViewMouseEvent *ev
       return;
 
     if ( QgsLayoutNodesItem *nodesItem = qobject_cast< QgsLayoutNodesItem * >( item ) )
+    {
       nodesItem->setNodes( mPolygon );
+      if ( !nodesItem->isValid() )
+      {
+        nodesItem->deleteLater();
+        mRubberBand.reset();
+        return;
+      }
+    }
 
     layout()->addLayoutItem( item );
     layout()->setSelectedItem( item );
