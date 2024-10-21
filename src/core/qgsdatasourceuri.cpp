@@ -710,7 +710,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 
   mHttpHeaders.setFromUrlQuery( query );
 
-  const auto constQueryItems = query.queryItems();
+  const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
     if ( !item.first.startsWith( QgsHttpHeaders::PARAM_PREFIX ) && item.first != QgsHttpHeaders::KEY_REFERER )
