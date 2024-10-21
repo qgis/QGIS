@@ -62,6 +62,27 @@ QgsAlignRastersAlgorithm *QgsAlignRastersAlgorithm::createInstance() const
   return new QgsAlignRastersAlgorithm();
 }
 
+bool QgsAlignRastersAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
+{
+  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
+  const QList<QgsAlignRasterData::RasterItem> items = QgsProcessingParameterAlignRasterLayers::parameterAsItems( layersVariant, context );
+  bool unconfiguredLayers = false;
+  for ( const QgsAlignRasterData::RasterItem &item : items )
+  {
+    if ( item.outputFilename.isEmpty() )
+    {
+      unconfiguredLayers = true;
+      break;
+    }
+  }
+  if ( unconfiguredLayers )
+  {
+    *message = QObject::tr( "An output file is not configured for one or more input layers. Configure output files via 'Configure Raster…' under Input layers parameter." );
+    return false;
+  }
+  return QgsProcessingAlgorithm::checkParameterValues( parameters, context );
+}
+
 void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterAlignRasterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
