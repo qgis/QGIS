@@ -301,6 +301,7 @@ Emitted when point cloud generation state is changed
 
   protected:
 
+
 };
 
 /************************************************************************

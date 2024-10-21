@@ -72,6 +72,7 @@ class TestQgsIdentify : public QObject
     void testLineStringZ();
     void testPolygonZ();
     void identifyPointCloud();
+    void identifyVirtualPointCloud();
 
   private:
     void doAction();
@@ -1300,6 +1301,37 @@ void TestQgsIdentify::identifyPointCloud()
   double z4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4985 - WGS 72)" )].toDouble();
   QGSCOMPARENEAR( z4979, -5.79000, 0.001 );
   QGSCOMPARENEAR( z4985, -5.40314874, 0.001 );
+#endif
+}
+
+void TestQgsIdentify::identifyVirtualPointCloud()
+{
+#ifdef HAVE_COPC
+  std::unique_ptr< QgsPointCloudLayer > pointCloud = std::make_unique< QgsPointCloudLayer >( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/virtual/sunshine-coast/combined.vpc", QStringLiteral( "pointcloud" ), QStringLiteral( "vpc" ) );
+  QVERIFY( pointCloud->isValid() );
+  pointCloud->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:28356" ) );
+
+  for ( int i = 0; i < pointCloud->dataProvider()->subIndexes().size(); i++ )
+    pointCloud->dataProvider()->loadSubIndex( i );
+
+  // set project CRS and ellipsoid
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4979" ) );
+  QgsProject::instance()->setCrs( srs );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( QgsRectangle::fromCenterAndSize( QgsPointXY( 152.9805606, -26.6620500 ), 0.00001, 0.00001 ) );
+  QCOMPARE( QgsProject::instance()->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 7 );
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 152.9805606, -26.6620500 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << pointCloud.get() );
+  QCOMPARE( result.length(), 1 );
+  double z = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z" )].toDouble();
+  QGSCOMPARENEAR( z, 74.69, 0.001 );
 #endif
 }
 
