@@ -95,6 +95,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Distance->setToolTip( tr( "Distance" ) );
   mCircle1Distance->setMinimum( 0 );
   mCircle1Distance->setMaximum( std::numeric_limits<double>::max() );
+  mCircle1Distance->setDecimals( mCadDockWidget->constraintX()->precision() );
   connect( mCircle1Distance, &QgsDoubleSpinBox::returnPressed, this, [ = ]() { mCircle2Digitize->setChecked( true ); } );
   layout->addWidget( mCircle1Distance, 3, 1 );
 
@@ -143,6 +144,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Distance->setToolTip( tr( "Distance" ) );
   mCircle2Distance->setMinimum( 0 );
   mCircle2Distance->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2Distance->setDecimals( mCadDockWidget->constraintX()->precision() );
   layout->addWidget( mCircle2Distance, 7, 1 );
 
   connect( mCircle1X, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
