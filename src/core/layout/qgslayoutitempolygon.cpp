@@ -194,20 +194,15 @@ void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt,
 
 bool QgsLayoutItemPolygon::_removeNode( const int index )
 {
-  if ( index < 0 || index >= mPolygon.size() )
+  if ( index < 0 || index >= mPolygon.size() || mPolygon.size() <= 3 )
     return false;
 
   mPolygon.remove( index );
 
-  if ( mPolygon.size() < 3 )
-    mPolygon.clear();
-  else
-  {
-    int newSelectNode = index;
-    if ( index == mPolygon.size() )
-      newSelectNode = 0;
-    setSelectedNode( newSelectNode );
-  }
+  int newSelectNode = index;
+  if ( index == mPolygon.size() )
+    newSelectNode = 0;
+  setSelectedNode( newSelectNode );
 
   return true;
 }
