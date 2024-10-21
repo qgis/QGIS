@@ -3169,6 +3169,25 @@ class PyQgsTextRenderer(QgisTestCase):
         format.buffer().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         self.assertTrue(self.checkRender(format, 'text_with_buffer', text=['test'], rect=QRectF(100, 100, 200, 100)))
 
+    def testDrawTextWithBufferBlendMode(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
+        format.background().setFillColor(QColor(200, 100, 150))
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setColor(QColor(100, 255, 100))
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        format.buffer().setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
+        self.assertTrue(self.checkRender(format, 'text_with_buffer_blend_mode', text=['test'],
+                                         rect=QRectF(100, 100, 200, 100)))
+
     def testDrawTextWithBackground(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
