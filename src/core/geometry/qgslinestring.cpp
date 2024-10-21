@@ -2214,6 +2214,11 @@ QgsPoint QgsLineString::centroid() const
  * See details in QEP #17
  ****************************************************************************/
 
+double area2( const double ax, const double ay, const double bx, const double by, const double cx, const double cy )
+{
+  return ( bx - ax ) * ( cy - ay ) - ( cx - ax ) * ( by - ay );
+}
+
 void QgsLineString::sumUpArea( double &sum ) const
 {
   if ( mHasCachedSummedUpArea )
@@ -2224,7 +2229,7 @@ void QgsLineString::sumUpArea( double &sum ) const
 
   mSummedUpArea = 0;
   const int maxIndex = mX.size();
-  if ( maxIndex < 2 )
+  if ( maxIndex < 3 )
   {
     mHasCachedSummedUpArea = true;
     return;
@@ -2232,16 +2237,22 @@ void QgsLineString::sumUpArea( double &sum ) const
 
   const double *x = mX.constData();
   const double *y = mY.constData();
-  double prevX = *x++;
-  double prevY = *y++;
-  for ( int i = 1; i < maxIndex; ++i )
-  {
-    mSummedUpArea += prevX * ( *y - prevY ) - prevY * ( *x - prevX );
-    prevX = *x++;
-    prevY = *y++;
-  }
-  mSummedUpArea *= 0.5;
+  const double x0 = *x++;
+  const double y0 = *y++;
 
+  double x1 = *x++;
+  double y1 = *y++;
+
+  for ( int i = 2; i < maxIndex; ++i )
+  {
+    const double x2 = *x++;
+    const double y2 = *y++;
+    mSummedUpArea += area2( x0, y0, x1, y1, x2, y2 );
+    x1 = x2;
+    y1 = y2;
+  }
+
+  mSummedUpArea *= 0.5;
   mHasCachedSummedUpArea = true;
   sum += mSummedUpArea;
 }

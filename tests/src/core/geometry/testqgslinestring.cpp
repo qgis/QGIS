@@ -2234,24 +2234,23 @@ void TestQgsLineString::sumUpArea()
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 10 ) );
   ls.sumUpArea( area );
-  QGSCOMPARENEAR( area, -24, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( area, 1, 4 * std::numeric_limits<double>::epsilon() );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
                 << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) );
   ls.sumUpArea( area );
-  QGSCOMPARENEAR( area, -22, 4 * std::numeric_limits<double>::epsilon() );
-
+  QGSCOMPARENEAR( area, 3, 4 * std::numeric_limits<double>::epsilon() );
   ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 )
                 << QgsPoint( 2, 2 ) << QgsPoint( 0, 2 ) );
   ls.sumUpArea( area );
-  QGSCOMPARENEAR( area, -18, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( area, 7, 4 * std::numeric_limits<double>::epsilon() );
 
   double shift = 10.0;
   ls.setPoints( QgsPointSequence() << QgsPoint( shift + 0, shift + 0 ) << QgsPoint( shift + 2, shift + 0 )
                 << QgsPoint( shift + 2, shift + 2 ) << QgsPoint( shift + 0, shift + 2 )
                 << QgsPoint( shift + 0, shift + 0 ) );
   ls.sumUpArea( area );
-  QGSCOMPARENEAR( area, -14, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( area, 11, 4 * std::numeric_limits<double>::epsilon() );
 
   // the length of the equator ~ 40 075.014 172 304 363 km
   shift = 40075.014172304363;
