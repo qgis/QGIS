@@ -85,6 +85,9 @@ jobs:
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
+      - uses: mxschmitt/action-tmate@v3
+        if: always()
+
       - name: 🌋 Build
         shell: bash
         run: |
