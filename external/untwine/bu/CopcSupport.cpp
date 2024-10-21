@@ -25,6 +25,8 @@
 #include "../untwine/Common.hpp"
 #include "../untwine/FileDimInfo.hpp"
 
+#include <stringconv.hpp>  // untwine/os
+
 namespace untwine
 {
 namespace bu
@@ -39,7 +41,7 @@ CopcSupport::CopcSupport(const BaseInfo& b) : m_b(b),
     else
         m_wktVlr = b.srs.getWKT();
 
-    m_f.open(toNative(b.opts.outputName), std::ios::out | std::ios::binary);
+    m_f.open(os::toNative(b.opts.outputName), std::ios::out | std::ios::binary);
 
     m_header.global_encoding = m_b.globalEncoding;
     m_header.global_encoding |= (1 << 4); // Set for WKT

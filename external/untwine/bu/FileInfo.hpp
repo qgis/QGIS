@@ -14,7 +14,7 @@
 
 #include <list>
 
-#include "../untwine/Common.hpp"
+#include <mapfile.hpp>  // untwine/os
 
 namespace untwine
 {
@@ -44,16 +44,16 @@ public:
     char *address() const
         { return reinterpret_cast<char *>(m_ctx.addr()); }
 
-    MapContext context() const
+    untwine::os::MapContext context() const
         { return m_ctx; }
-    void setContext(const MapContext& ctx)
+    void setContext(const untwine::os::MapContext& ctx)
         { m_ctx = ctx; }
 
 private:
     std::string m_filename;
     int m_numPoints;
     int m_start;
-    MapContext m_ctx;
+    untwine::os::MapContext m_ctx;
 };
 using FileInfoList = std::list<FileInfo>;
 
