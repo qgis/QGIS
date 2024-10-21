@@ -82,14 +82,14 @@ set(UNTWINE_HDRS
 )
 
 # MINGW must come before WIN32 test
-# APPLE must come before LINUX test
+# APPLE must come before UNIX test
 if (MINGW)
     set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/mingw)
 elseif (WIN32)
     set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/windows)
 elseif (APPLE)
     set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/osx)
-elseif (LINUX)
+elseif (UNIX)
     set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/generic)
 else()
     message(FATAL_ERROR "OS not supported")
