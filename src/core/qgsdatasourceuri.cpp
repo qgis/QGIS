@@ -680,17 +680,17 @@ QByteArray QgsDataSourceUri::encodedUri() const
   QUrlQuery url;
   for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
-    url.addQueryItem( it.key(), it.value() );
+    url.addQueryItem( it.key(), QUrl::toPercentEncoding( it.value() ) );
   }
 
   if ( !mUsername.isEmpty() )
-    url.addQueryItem( QStringLiteral( "username" ), mUsername );
+    url.addQueryItem( QStringLiteral( "username" ), QUrl::toPercentEncoding( mUsername ) );
 
   if ( !mPassword.isEmpty() )
-    url.addQueryItem( QStringLiteral( "password" ), mPassword );
+    url.addQueryItem( QStringLiteral( "password" ), QUrl::toPercentEncoding( mPassword ) );
 
   if ( !mAuthConfigId.isEmpty() )
-    url.addQueryItem( QStringLiteral( "authcfg" ), mAuthConfigId );
+    url.addQueryItem( QStringLiteral( "authcfg" ), QUrl::toPercentEncoding( mAuthConfigId ) );
 
   mHttpHeaders.updateUrlQuery( url );
 
@@ -864,7 +864,7 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
   else
   {
     // may be multiple
-    mParams.insert( key, QUrl::toPercentEncoding( value ) );
+    mParams.insert( key, value );
   }
 }
 
@@ -907,7 +907,7 @@ QString QgsDataSourceUri::param( const QString &key ) const
   else if ( key == QLatin1String( "authcfg" ) && !mAuthConfigId.isEmpty() )
     return mAuthConfigId;
 
-  return QUrl::fromPercentEncoding( mParams.value( key ).toUtf8() );
+  return mParams.value( key ).toUtf8();
 }
 
 QStringList QgsDataSourceUri::params( const QString &key ) const
