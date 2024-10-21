@@ -776,7 +776,9 @@ cmake -S . \
       -DSDK_PATH="path/to/vcpkg-export-[date]" \
       -DBUILD_WITH_QT6=ON \
       -DWITH_QTWEBKIT=OFF \
-      -DVCPKG_TARGET_TRIPLET=x64-windows-release
+      -DVCPKG_TARGET_TRIPLET=x64-windows-release \
+      -DFLEX_EXECUTABLE="path/to/flex-executable" \
+      -DBISON_EXECUTABLE="path/to/bison-executable"
 ```
 
 This will provide you with a configured project. You can either build it directly
