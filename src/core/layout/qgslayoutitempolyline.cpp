@@ -83,20 +83,15 @@ bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
 
 bool QgsLayoutItemPolyline::_removeNode( const int index )
 {
-  if ( index < 0 || index >= mPolygon.size() )
+  if ( index < 0 || index >= mPolygon.size() || mPolygon.size() <= 2 )
     return false;
-  
+
   mPolygon.remove( index );
 
-  if ( mPolygon.size() < 2 )
-    mPolygon.clear();
-  else
-  {
   int newSelectNode = index;
   if ( index >= mPolygon.size() )
     newSelectNode = mPolygon.size() - 1;
   setSelectedNode( newSelectNode );
-  }
 
   return true;
 }
@@ -348,12 +343,12 @@ bool QgsLayoutItemPolyline::isValid() const
 {
   QList<QPointF> uniquePoints;
   int seen = 0;
-  for (QPointF point: mPolygon)
+  for ( QPointF point : mPolygon )
   {
-    if( !uniquePoints.contains( point ) )
+    if ( !uniquePoints.contains( point ) )
     {
       uniquePoints.append( point );
-      if (++seen > 1)
+      if ( ++seen > 1 )
         return true;
     }
   }
