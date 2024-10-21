@@ -177,6 +177,11 @@ void QgsNmeaConnection::processStringBuffer()
         }
         emit nmeaSentenceReceived( substring );  // added to be able to save raw data
       }
+      else
+      {
+        //other text strings that do not start with '$'
+        mLastGPSInformation.satInfoComplete = true;
+      }
     }
     mStringBuffer.remove( 0, endSentenceIndex + 2 );
   }
