@@ -667,6 +667,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
   connect( mActionZoomToWidth, &QAction::triggered, mView, &QgsLayoutView::zoomWidth );
 
+  connect( mActionZoomLast, &QAction::triggered, mView, &QgsLayoutView::zoomLast );
+  connect( mActionZoomNext, &QAction::triggered, mView, &QgsLayoutView::zoomNext );
+  connect( mView, &QgsLayoutView::zoomLastStatusChanged, mActionZoomLast, &QAction::setEnabled );
+  connect( mView, &QgsLayoutView::zoomNextStatusChanged, mActionZoomNext, &QAction::setEnabled );
+
   connect( mActionSelectAll, &QAction::triggered, mView, &QgsLayoutView::selectAll );
   connect( mActionDeselectAll, &QAction::triggered, mView, &QgsLayoutView::deselectAll );
   connect( mActionInvertSelection, &QAction::triggered, mView, &QgsLayoutView::invertSelection );
@@ -4782,6 +4787,8 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionZoomOut->setEnabled( layoutAvailable );
   mActionZoomActual->setEnabled( layoutAvailable );
   mActionZoomToWidth->setEnabled( layoutAvailable );
+  mActionZoomLast->setEnabled( layoutAvailable );
+  mActionZoomNext->setEnabled( layoutAvailable );
   mActionAddPages->setEnabled( layoutAvailable );
   mActionShowGrid->setEnabled( layoutAvailable );
   mActionSnapGrid->setEnabled( layoutAvailable );

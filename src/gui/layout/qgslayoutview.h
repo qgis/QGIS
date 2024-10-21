@@ -295,6 +295,11 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void setSectionLabel( const QString &label );
 
+    /**
+     * Event filter to handle mouse release on scroll bars
+     */
+    bool eventFilter( QObject *object, QEvent *event ) override;
+
   public slots:
 
     /**
@@ -336,6 +341,20 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see zoomOut()
      */
     void zoomActual();
+
+    /**
+     * Zooms to the previous zoom level
+     * \since QGIS 3.42
+     */
+    void zoomLast();
+
+    /**
+     * Zooms to the next zoom level
+     * \since QGIS 3.42
+     */
+    void zoomNext();
+
+
 
     /**
      * Emits the zoomLevelChanged() signal. This should be called after
@@ -499,6 +518,11 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void zoomLevelChanged();
 
     /**
+     * Emitted whenever the extent of the displayed scene has changed
+     */
+    void extentChanged();
+
+    /**
      * Emitted when the mouse cursor coordinates change within the view.
      * The \a layoutPoint argument indicates the cursor position within
      * the layout coordinate system.
@@ -532,6 +556,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void willBeDeleted();
 
+
+    //! Emitted when zoom last status changed
+    void zoomLastStatusChanged( bool );
+
+    //! Emitted when zoom next status changed
+    void zoomNextStatusChanged( bool );
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
@@ -548,6 +579,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
   private slots:
 
     void invalidateCachedRenders();
+    void onExtentChanged();
 
   private:
 
@@ -584,6 +616,10 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     friend class QgsLayoutMouseHandles;
 
     QGraphicsLineItem *createSnapLine() const;
+
+    //! recently used extent
+    QList <QPair<QPointF, QTransform>> mLastTransform;
+    int mLastTransformIndex = -1;
 };
 
 
