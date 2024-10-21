@@ -1722,7 +1722,8 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   QVector<QDomNode> parallelLoading;
   QMap<QString, QgsDataProvider *> loadedProviders;
 
-  if ( QgsSettingsRegistryCore::settingsLayerParallelLoading->value() )
+  if ( !( flags & Qgis::ProjectReadFlag::DontResolveLayers ) &&
+       QgsSettingsRegistryCore::settingsLayerParallelLoading->value() )
   {
     profile.switchTask( tr( "Load providers in parallel" ) );
     for ( const QDomNode &node : sortedLayerNodes )
