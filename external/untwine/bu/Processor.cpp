@@ -28,6 +28,8 @@
 #include "Processor.hpp"
 #include "PyramidManager.hpp"
 
+#include <stringconv.hpp>  // untwine/os
+
 namespace untwine
 {
 namespace bu
@@ -50,14 +52,12 @@ void Processor::run()
     }
     catch (const std::exception& ex)
     {
-        std::cerr << "Exception: " << ex.what() << "\n";
         m_manager.queueWithError(m_vi.octant(), ex.what());
         return;
     }
     catch (...)
     {
         std::string msg = std::string("Unexpected error processing ") + m_vi.key().toString() + ".";
-        std::cerr << "Exception: " << msg << "\n";
         m_manager.queueWithError(m_vi.octant(), msg);
         return;
     }
@@ -245,7 +245,7 @@ void Processor::writeBinOutput(Index& index)
     // pass.
     std::string filename = m_vi.key().toString() + ".bin";
     std::string fullFilename = m_b.opts.tempDir + "/" + filename;
-    std::ofstream out(toNative(fullFilename), std::ios::binary | std::ios::trunc);
+    std::ofstream out(os::toNative(fullFilename), std::ios::binary | std::ios::trunc);
     if (!out)
         throw FatalError("Couldn't open '" + fullFilename + "' for output.");
     for (size_t i = 0; i < index.size(); ++i)
@@ -482,13 +482,13 @@ void Processor::createChunk(const VoxelKey& key, pdal::PointViewPtr view)
 
     uint64_t location = m_manager.newChunk(key, chunk.size(), (uint32_t)view->size());
 
-    std::ofstream out(toNative(m_b.opts.outputName),
+    std::ofstream out(os::toNative(m_b.opts.outputName),
         std::ios::out | std::ios::in | std::ios::binary);
     out.seekp(std::ofstream::pos_type(location));
     out.write(reinterpret_cast<const char *>(chunk.data()), chunk.size());
     out.close();
     if (!out)
-        throw FatalError("Failure writing to '" + m_b.opts.outputName + "'.");
+        throw FatalError("Failure writing to file '" + m_b.opts.outputName + "'.");
 }
 
 void Processor::fillPointBuf(pdal::PointRef& point, std::vector<char>& buf,
