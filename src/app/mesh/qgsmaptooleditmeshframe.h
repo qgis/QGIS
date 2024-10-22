@@ -78,6 +78,8 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
     QPushButton *mGetZValuesButton = nullptr;
     QCheckBox *mGetZValuesFromProjectElevationByDefaultCheckBox = nullptr;
+
+    friend class TestQgsMapToolEditMesh;
 };
 
 class QgsMeshEditForceByLineAction : public QWidgetAction

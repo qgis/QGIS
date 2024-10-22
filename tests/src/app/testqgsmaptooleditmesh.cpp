@@ -20,6 +20,9 @@
 #include "qgsmaptooleditmeshframe.h"
 #include "qgsmeshlayer.h"
 #include "qgsmesheditor.h"
+#include "qgsrasterlayer.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
 
 class TestQgsMapToolEditMesh : public QObject
 {
@@ -36,6 +39,9 @@ class TestQgsMapToolEditMesh : public QObject
     void hoverElements();
 
     void editMesh();
+
+    void testAssignVertexZValueFromTerrainOnCreation();
+    void testAssignVertexZValueFromTerrainOnButtonClick();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -386,6 +392,161 @@ void TestQgsMapToolEditMesh::editMesh()
 
   QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 1 );
   QCOMPARE( mEditMeshMapTool->mSelectedFaces.count(), 0 );
+}
+
+void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
+{
+  QgsCoordinateReferenceSystem crs3857;
+  crs3857.createFromString( "EPSG:3857" );
+
+  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
+  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+
+  QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
+  std::unique_ptr<QgsRasterLayer> terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  terrainLayer->setCrs( crs3857 );
+  QVERIFY( terrainLayer->isValid() );
+
+  std::unique_ptr< QgsRasterDemTerrainProvider > terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  terrain->setLayer( terrainLayer.get() );
+
+  QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.get() );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() << terrainLayer.get() );
+  mCanvas->setDestinationCrs( layer->crs() );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  // setup Z value widget
+  double defaultZ = -10.0;
+  mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
+
+  QgsPointXY point;
+  QgsMeshVertex vertex;
+
+  // test points outside of faces, should get defaultZ Z value
+  point = QgsPointXY( 1100, 3100 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 5 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QCOMPARE( vertex.z(), defaultZ );
+
+  point = QgsPointXY( 2500, 2700 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 7 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QCOMPARE( vertex.z(), defaultZ );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
+
+  // start editing again
+  layer->startFrameEditing( transform, error, false );
+
+  // set get Z from project elevation to true - Z values will be obtained from elevation provider
+  mEditMeshMapTool->mZValueWidget->mGetZValuesFromProjectElevationByDefaultCheckBox->setChecked( true );
+
+  // test points outside of faces
+  point = QgsPointXY( 1100, 3100 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 5 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 66.00578, 0.00001 );
+
+  point = QgsPointXY( 2500, 2700 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 7 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 4.100819, 0.000001 );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
+}
+
+void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
+{
+  QgsCoordinateReferenceSystem crs3857;
+  crs3857.createFromString( "EPSG:3857" );
+
+  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
+  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+
+  QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
+  std::unique_ptr<QgsRasterLayer> terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  terrainLayer->setCrs( crs3857 );
+  QVERIFY( terrainLayer->isValid() );
+
+  std::unique_ptr< QgsRasterDemTerrainProvider > terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  terrain->setLayer( terrainLayer.get() );
+
+  QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.get() );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() << terrainLayer.get() );
+  mCanvas->setDestinationCrs( layer->crs() );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  QList<int> selectedVertices;
+  selectedVertices << 1 << 2 << 3;
+
+  QgsPoint vertex;
+
+  // test vertices prior to assignment from elevation provider
+  vertex = mEditMeshMapTool->mapVertex( 1 );
+  QGSCOMPARENEAR( vertex.z(), 30, 0.01 );
+
+  vertex = mEditMeshMapTool->mapVertex( 2 );
+  QGSCOMPARENEAR( vertex.z(), 40, 0.01 );
+
+  vertex = mEditMeshMapTool->mapVertex( 3 );
+  QGSCOMPARENEAR( vertex.z(), 50, 0.01 );
+
+  // set selected vertices and press the button
+  mEditMeshMapTool->setSelectedVertices( selectedVertices, Qgis::SelectBehavior::SetSelection );
+  mEditMeshMapTool->mZValueWidget->mGetZValuesButton->click();
+
+  // test vertices prior to assignment from elevation provider
+  vertex = mEditMeshMapTool->mapVertex( 1 );
+  QGSCOMPARENEAR( vertex.z(), 18.244469, 0.000001 );
+
+  vertex = mEditMeshMapTool->mapVertex( 2 );
+  QGSCOMPARENEAR( vertex.z(), 14.353244, 0.000001 );
+
+  vertex = mEditMeshMapTool->mapVertex( 3 );
+  QGSCOMPARENEAR( vertex.z(), 54.627747, 0.000001 );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
 }
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )
