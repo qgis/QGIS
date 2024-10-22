@@ -1464,6 +1464,8 @@ QgsLineString *QgsLineString::reversed() const
   {
     std::reverse( copy->mM.begin(), copy->mM.end() );
   }
+
+  copy->mSummedUpArea = -mSummedUpArea;
   return copy;
 }
 
