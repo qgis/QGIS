@@ -59,12 +59,18 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   }
   mHandler.reset( handler );
 
+  // only a subset of data to be queried
+  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), mRenderContext.origin() );
+  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
+  // picked so that the coordinates are relatively small to avoid numerical precision issues
+  QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
+
   QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
   exprContext.setFields( layer->fields() );
   mRenderContext.setExpressionContext( exprContext );
 
   QSet<QString> attributeNames;
-  if ( !mHandler->prepare( mRenderContext, attributeNames ) )
+  if ( !mHandler->prepare( mRenderContext, attributeNames, chunkOrigin ) )
   {
     QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
     return;
@@ -76,9 +82,6 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
     QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() )
   );
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
-
-  // only a subset of data to be queried
-  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), mRenderContext.origin() );
   req.setFilterRect( rect );
 
   //

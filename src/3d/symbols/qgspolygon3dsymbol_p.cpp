@@ -54,7 +54,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast< QgsPolygon3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &f, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -79,6 +79,9 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
+    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
+    QgsVector3D mChunkOrigin;
+
     // outputs
     PolygonData outNormal;  //!< Features that are not selected
     PolygonData outSelected;  //!< Features that are selected
@@ -87,18 +90,20 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 };
 
 
-bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
+bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
 {
   outEdges.withAdjacency = true;
-  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context );
+  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, chunkOrigin );
+
+  mChunkOrigin = chunkOrigin;
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 
-  outNormal.tessellator.reset( new QgsTessellator( context.origin().x(), context.origin().y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false,
+  outNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false,
                                texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
                                mSymbol->renderedFacade(),
                                texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.origin().x(), context.origin().y(), true, mSymbol->invertNormals(),
+  outSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(),
                                  mSymbol->addBackFaces(), false,
                                  texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
                                  mSymbol->renderedFacade(),
@@ -253,9 +258,15 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
     renderer->setPrimitiveRestartEnabled( true );
     renderer->setRestartIndexValue( 0 );
 
+    // add transform (our geometry has coordinates relative to mChunkOrigin)
+    Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+    QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
+    tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+
     // make entity
     entity->addComponent( renderer );
     entity->addComponent( mat );
+    entity->addComponent( tr );
     entity->setParent( parent );
   }
 }
@@ -285,11 +296,17 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
 
+  // add transform (our geometry has coordinates relative to mChunkOrigin)
+  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
+  tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+
   // make entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
   entity->setObjectName( parent->objectName() + "_CHUNK_MESH" );
   entity->addComponent( renderer );
   entity->addComponent( mat );
+  entity->addComponent( tr );
   entity->setParent( parent );
 
   if ( !selected )

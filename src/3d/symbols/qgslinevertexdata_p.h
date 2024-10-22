@@ -80,11 +80,12 @@ struct QgsLineVertexData
   Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
   Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
   float baseHeight = 0;
-  Qgs3DRenderContext renderContext;
+  Qgs3DRenderContext renderContext;  // used for altitude clamping
+  QgsVector3D origin;                // all coordinates are relative to this origin (e.g. center of the chunk)
 
   QgsLineVertexData();
 
-  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DRenderContext &renderContext );
+  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DRenderContext &renderContext, const QgsVector3D &chunkOrigin );
 
   QByteArray createVertexBuffer();
   QByteArray createIndexBuffer();
