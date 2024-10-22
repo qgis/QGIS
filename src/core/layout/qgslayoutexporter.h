@@ -231,6 +231,14 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QVector<qreal> predefinedMapScales;
 
+
+      /**
+       * Image quality, typically used for JPEG compression (whose quality ranges from 0 to 100)
+       * if quality is set to -1, the default quality will be used.
+       * \since QGIS 3.42
+       */
+      int quality = -1;
+
     };
 
     /**
@@ -719,7 +727,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Saves an image to a file, possibly using format specific options (e.g. LZW compression for tiff)
     */
-    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata );
+    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata, int quality = -1 );
 
     /**
      * Computes a GDAL style geotransform for georeferencing a layout.

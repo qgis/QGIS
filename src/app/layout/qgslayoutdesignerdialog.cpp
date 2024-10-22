@@ -2296,7 +2296,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
 
   QgsLayoutExporter::ImageExportSettings settings;
   QSize imageSize;
-  if ( !getRasterExportSettings( settings, imageSize ) )
+  if ( !getRasterExportSettings( settings, imageSize, fileNExt.second ) )
     return;
 
   mView->setPaintingEnabled( false );
@@ -2999,7 +2999,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
   QgsLayoutExporter::ImageExportSettings settings;
   QSize imageSize;
-  if ( !getRasterExportSettings( settings, imageSize ) )
+  if ( !getRasterExportSettings( settings, imageSize, format ) )
     return;
 
   mView->setPaintingEnabled( false );
@@ -3532,7 +3532,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
   QgsLayoutExporter::ImageExportSettings settings;
   QSize imageSize;
-  if ( !getRasterExportSettings( settings, imageSize ) )
+  if ( !getRasterExportSettings( settings, imageSize, fileNExt.second ) )
     return;
 
   mView->setPaintingEnabled( false );
@@ -4336,7 +4336,7 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
   return true;
 }
 
-bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize )
+bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize, const QString &fileExtension )
 {
   QSizeF maxPageSize;
   bool hasUniformPageSizes = false;
@@ -4366,7 +4366,7 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     antialias = mLayout->customProperty( QStringLiteral( "imageAntialias" ), true ).toBool();
   }
 
-  QgsLayoutImageExportOptionsDialog imageDlg( this );
+  QgsLayoutImageExportOptionsDialog imageDlg( this, fileExtension );
   imageDlg.setImageSize( maxPageSize );
   imageDlg.setResolution( dpi );
   imageDlg.setCropToContents( cropToContents );
@@ -4408,6 +4408,8 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     settings.flags |= QgsLayoutRenderContext::FlagAntialiasing;
   else
     settings.flags &= ~QgsLayoutRenderContext::FlagAntialiasing;
+
+  settings.quality = imageDlg.quality();
 
   return true;
 }

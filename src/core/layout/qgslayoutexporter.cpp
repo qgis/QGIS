@@ -456,7 +456,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
       return MemoryError;
     }
 
-    if ( !saveImage( image, outputFilePath, pageDetails.extension, settings.exportMetadata ? mLayout->project() : nullptr ) )
+    if ( !saveImage( image, outputFilePath, pageDetails.extension, settings.exportMetadata ? mLayout->project() : nullptr, settings.quality ) )
     {
       mErrorFileName = outputFilePath;
       return FileError;
@@ -2216,13 +2216,17 @@ void QgsLayoutExporter::captureLabelingResults()
   }
 }
 
-bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata )
+bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata, int quality )
 {
   QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
   if ( imageFormat.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 || imageFormat.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 )
   {
     w.setCompression( 1 ); //use LZW compression
   }
+
+  // Set the quality for i.e. JPEG images. -1 means default quality.
+  w.setQuality( quality );
+
   if ( projectForMetadata )
   {
     w.setText( QStringLiteral( "Author" ), projectForMetadata->metadata().author() );
