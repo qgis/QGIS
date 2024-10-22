@@ -44,7 +44,7 @@
 #include "qgswindow3dengine.h"
 #include "qgsraycastingutils_p.h"
 #include "qgs3dwiredmesh_p.h"
-#include "framegraph/qgsframegraph.h"
+#include "qgsframegraph.h"
 #include "qgsabstractterrainsettings.h"
 
 Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, //
