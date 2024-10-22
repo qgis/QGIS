@@ -75,7 +75,7 @@
 #include "qgs3dsceneexporter.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgsmessageoutput.h"
-#include "framegraph/qgsframegraph.h"
+#include "qgsframegraph.h"
 #include "qgsabstractterrainsettings.h"
 
 #include "qgsskyboxentity.h"
@@ -83,7 +83,7 @@
 
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
-#include "framegraph/qgsshadowrenderview.h"
+#include "qgsshadowrenderview.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
