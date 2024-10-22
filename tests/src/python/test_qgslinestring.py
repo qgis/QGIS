@@ -389,6 +389,22 @@ class TestQgsLineString(QgisTestCase):
         self.assertEqual(p.simplifyByDistance(0).asWkt(),
                          'LineString (2 0, 2 2, 0 2, 0 0, 2 0)')
 
+    def test_orientation(self):
+        """
+        test orientation. From https://github.com/qgis/QGIS/issues/58333
+        """
+        geom = QgsLineString()
+        geom.fromWkt('LineString (1 1, 2 1, 2 2, 1 2, 1 1)')
+        self.assertEqual(geom.sumUpArea(), 1.0)
+        self.assertEqual(geom.orientation(), Qgis.AngularDirection.CounterClockwise)
+        geom.fromWkt('LineString (1 1, 1 2, 2 2, 2 1, 1 1)')
+        self.assertEqual(geom.sumUpArea(), -1.0)
+        self.assertEqual(geom.orientation(), Qgis.AngularDirection.Clockwise)
+        geom = geom.reversed()
+        self.assertEqual(geom.asWkt(), 'LineString (1 1, 2 1, 2 2, 1 2, 1 1)')
+        self.assertEqual(geom.sumUpArea(), 1.0)
+        self.assertEqual(geom.orientation(), Qgis.AngularDirection.CounterClockwise)
+
 
 if __name__ == '__main__':
     unittest.main()
