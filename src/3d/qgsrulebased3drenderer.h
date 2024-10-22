@@ -242,7 +242,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * call prepare() on handlers and populate attributeNames
          * \note not available in Python bindings
          */
-        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, RuleToHandlerMap &handlers ) const SIP_SKIP;
+        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, RuleToHandlerMap &handlers ) const SIP_SKIP;
 
         /**
          * register individual features

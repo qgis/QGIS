@@ -91,9 +91,6 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      */
     void setAddTextureCoords( bool add ) { mAddTextureCoords = add; }
 
-    //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
-    void setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
-
     /**
      * Initializes vertex buffer (and other members) from data that were already tessellated.
      * This is an alternative to setPolygons() - this method does not do any expensive work in the body.

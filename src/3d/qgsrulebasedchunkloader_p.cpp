@@ -50,6 +50,12 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
 
   QgsVectorLayer *layer = mFactory->mLayer;
 
+  // only a subset of data to be queried
+  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), mContext.origin() );
+  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
+  // picked so that the coordinates are relatively small to avoid numerical precision issues
+  QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
+
   QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
   exprContext.setFields( layer->fields() );
   mContext.setExpressionContext( exprContext );
@@ -63,15 +69,12 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   mRootRule->createHandlers( layer, mHandlers );
 
   QSet<QString> attributeNames;
-  mRootRule->prepare( mContext, attributeNames, mHandlers );
+  mRootRule->prepare( mContext, attributeNames, chunkOrigin, mHandlers );
 
   // build the feature request
   QgsFeatureRequest req;
   req.setDestinationCrs( mContext.crs(), mContext.transformContext() );
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
-
-  // only a subset of data to be queried
-  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), mContext.origin() );
   req.setFilterRect( rect );
 
   //
