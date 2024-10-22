@@ -19,8 +19,8 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 
-#include "framegraph/qgsabstractrenderview.h"
-#include "framegraph/qgspreviewquad.h"
+#include "qgsabstractrenderview.h"
+#include "qgspreviewquad.h"
 #include "qgs3dmapcanvas.h"
 
 #include "qgsframegraph.h"

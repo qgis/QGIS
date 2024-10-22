@@ -31,7 +31,7 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include <QtWidgets/QMenu>
-#include "framegraph/qgs3daxisrenderview.h"
+#include "qgs3daxisrenderview.h"
 #include "qgs3daxissettings.h"
 
 #define SIP_NO_FILE

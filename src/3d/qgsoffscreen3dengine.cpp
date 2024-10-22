@@ -16,7 +16,7 @@
 #include "qgsoffscreen3dengine.h"
 #include "moc_qgsoffscreen3dengine.cpp"
 
-#include "framegraph/qgsframegraph.h"
+#include "qgsframegraph.h"
 
 #include <QCoreApplication>
 #include <QOffscreenSurface>
