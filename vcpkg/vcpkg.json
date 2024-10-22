@@ -97,7 +97,6 @@
         "py-dateutil",
         "py-isort",
         "py-jinja2",
-        "py-lxml",
         "py-markupsafe",
         "py-numpy",
         "py-owslib",
