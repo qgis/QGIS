@@ -124,7 +124,7 @@ QgsStacCollection *QgsStacParser::collection()
 
     const QString id( QString::fromStdString( mData.at( "id" ) ) );
     const QString description( QString::fromStdString( mData.at( "description" ) ) );
-    const QString license( QString::fromStdString( mData.at( "license" ) ) );
+    const QString license( mData.at( "license" ).is_null() ? QString() : QString::fromStdString( mData.at( "license" ) ) );
 
     QgsStacExtent stacExtent;
     int totalExtents = 0;
