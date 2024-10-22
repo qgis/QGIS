@@ -58,7 +58,7 @@ QString QgsStacCatalog::toHtml() const
     html += QStringLiteral( "<ul>\n" );
     for ( const QString &cc : mConformanceClasses )
     {
-      html += QStringLiteral( "<li>%1<li>\n" ).arg( cc );
+      html += QStringLiteral( "<li>%1</li>\n" ).arg( cc );
     }
     html += QStringLiteral( "</ul>\n" );
   }
