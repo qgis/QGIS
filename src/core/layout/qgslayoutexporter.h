@@ -41,6 +41,7 @@ class QgsAbstractLayoutIterator;
 class QgsFeedback;
 class QgsLabelingResults;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
 
 /**
  * \ingroup core
@@ -60,6 +61,9 @@ class CORE_EXPORT QgsLayoutExporter
 
     //! Settings entry - Whether to automatically open svgs after exporting them \since QGIS 3.34
     static const QgsSettingsEntryBool *settingOpenAfterExportingSvg SIP_SKIP;
+
+    //! Settings entry - Image quality for lossy formats \since QGIS 3.42
+    static const QgsSettingsEntryInteger *settingImageQuality SIP_SKIP;
 
     //! Contains details of a page being exported by the class
     struct PageExportDetails

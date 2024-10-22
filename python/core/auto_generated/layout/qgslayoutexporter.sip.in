@@ -24,6 +24,7 @@ Handles rendering and exports of layouts to various formats.
 
 
 
+
     struct PageExportDetails
     {
       QString directory;

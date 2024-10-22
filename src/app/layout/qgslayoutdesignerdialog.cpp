@@ -4375,6 +4375,7 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
   imageDlg.setAntialiasing( antialias );
   imageDlg.setOpenAfterExporting( QgsLayoutExporter::settingOpenAfterExportingImage->value() );
+  imageDlg.setQuality( QgsLayoutExporter::settingImageQuality->value() );
 
   if ( !imageDlg.exec() )
     return false;
@@ -4410,6 +4411,10 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     settings.flags &= ~QgsLayoutRenderContext::FlagAntialiasing;
 
   settings.quality = imageDlg.quality();
+  if ( settings.quality != -1 )
+  {
+    QgsLayoutExporter::settingImageQuality->setValue( imageDlg.quality() );
+  }
 
   return true;
 }
