@@ -101,6 +101,7 @@ set(UNTWINE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine
   ${CMAKE_SOURCE_DIR}/external/untwine/epf
   ${CMAKE_SOURCE_DIR}/external/untwine/bu
+  ${CMAKE_SOURCE_DIR}/external/untwine
   ${CMAKE_SOURCE_DIR}/untwine/api
   ${CMAKE_BINARY_DIR}/untwine
 )
