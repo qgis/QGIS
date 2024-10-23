@@ -7,6 +7,7 @@ in vec3 pos;
 out vec3 worldPosition;
 out vec3 worldNormal;
 
+uniform mat4 modelMatrix;
 uniform mat4 modelView;
 uniform mat3 modelViewNormal;
 uniform mat4 modelViewProjection;
@@ -26,7 +27,7 @@ void main()
     vec4 offsetPos = inst * vec4(vertexPosition, 1.0) + vec4(pos, 0.0);
 
     worldNormal = normalize(mat3(instNormal) * vertexNormal);
-    worldPosition = vec3(offsetPos);
+    worldPosition = vec3(modelMatrix * offsetPos);
 
     gl_Position = modelViewProjection * offsetPos;
 
