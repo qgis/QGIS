@@ -1490,17 +1490,19 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnLength( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   // two variants, one for geometry, one for string
-  if ( values.at( 0 ).userType() == qMetaTypeId< QgsGeometry>() )
-  {
-    //geometry variant
-    QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-    if ( geom.type() != Qgis::GeometryType::Line )
-      return QVariant();
 
-    return QVariant( geom.length() );
+  //geometry variant
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( !geom.isNull() )
+  {
+    if ( geom.type() == Qgis::GeometryType::Line )
+      return QVariant( geom.length() );
+    else
+      return QVariant();
   }
 
   //otherwise fall back to string variant
+  parent->setEvalErrorString( QString() );  // clear error string saying geometry not found
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.length() );
 }
@@ -3696,15 +3698,10 @@ static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpre
   parts.reserve( list.size() );
   for ( const QVariant &value : std::as_const( list ) )
   {
-    if ( value.userType() == qMetaTypeId< QgsGeometry>() )
-    {
-      parts << value.value<QgsGeometry>();
-    }
-    else
-    {
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
+    QgsGeometry part = QgsExpressionUtils::getGeometry( value, parent );
+    if ( part.isNull() )
       return QgsGeometry();
-    }
+    parts << part;
   }
 
   return QgsGeometry::collectGeometry( parts );

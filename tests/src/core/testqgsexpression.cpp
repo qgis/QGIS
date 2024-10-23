@@ -3423,12 +3423,16 @@ class TestQgsExpression: public QObject
       QgsPolylineXY line;
       line << QgsPointXY( 1, 1 ) << QgsPointXY( 4, 2 ) << QgsPointXY( 3, 1 );
 
+      QgsGeometry lineGeometry = QgsGeometry::fromPolylineXY( line );
       QTest::newRow( "geom x" ) << "$x" << QgsGeometry( std::make_unique<QgsPoint>( point ) ) << false << QVariant( 123. );
       QTest::newRow( "geom y" ) << "$y" << QgsGeometry( std::make_unique<QgsPoint>( point ) ) << false << QVariant( 456. );
       QTest::newRow( "geom z" ) << "$z" << QgsGeometry( std::make_unique<QgsPoint>( point ) ) << false << QVariant( 789. );
-      QTest::newRow( "geom xat" ) << "xat(-1)" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 3. );
-      QTest::newRow( "geom yat" ) << "yat(1)" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 2. );
+      QTest::newRow( "geom xat" ) << "xat(-1)" << lineGeometry << false << QVariant( 3. );
+      QTest::newRow( "geom yat" ) << "yat(1)" << lineGeometry << false << QVariant( 2. );
+      QTest::newRow( "geom length" ) << "length($geometry)" << lineGeometry << false << QVariant( lineGeometry.length() );
+      QTest::newRow( "collected geometry" ) << "geom_to_wkt(collect_geometries($geometry, $geometry))" << lineGeometry << false << QVariant( QStringLiteral( "MultiLineString ((1 1, 4 2, 3 1),(1 1, 4 2, 3 1))" ) );
       QTest::newRow( "null geometry" ) << "$geometry" << QgsGeometry() << false << QVariant();
+      QTest::newRow( "empty geometry" ) << "geom_to_wkt($geometry)" << QgsGeometry().fromWkt( QStringLiteral( "Point()" ) ) << false << QVariant( QStringLiteral( "Point EMPTY" ) );
     }
 
     void eval_geometry()
@@ -3439,16 +3443,34 @@ class TestQgsExpression: public QObject
       QFETCH( QVariant, result );
 
       QgsFeature f;
-      f.setGeometry( geom );
+      QList<QgsGeometry> geometryList;
+      geometryList << geom <<  QgsReferencedGeometry( geom, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
-      QgsExpression exp( string );
-      QCOMPARE( exp.hasParserError(), false );
-      QCOMPARE( exp.needsGeometry(), true );
+      // With standard geometry
+      {
+        f.setGeometry( geom );
+        QgsExpression exp( string );
+        QCOMPARE( exp.hasParserError(), false );
+        QCOMPARE( exp.needsGeometry(), true );
 
-      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      QVariant out = exp.evaluate( &context );
-      QCOMPARE( exp.hasEvalError(), evalError );
-      QCOMPARE( out, result );
+        QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+        QVariant out = exp.evaluate( &context );
+        QCOMPARE( exp.hasEvalError(), evalError );
+        QCOMPARE( out, result );
+      }
+
+      // With referenced geometry
+      {
+        f.setGeometry( QgsReferencedGeometry( geom, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) );
+        QgsExpression exp( string );
+        QCOMPARE( exp.hasParserError(), false );
+        QCOMPARE( exp.needsGeometry(), true );
+
+        QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+        QVariant out = exp.evaluate( &context );
+        QCOMPARE( exp.hasEvalError(), evalError );
+        QCOMPARE( out, result );
+      }
     }
 
     void testGeometryFromContext()
