@@ -1428,7 +1428,7 @@ QVector<QgsProfileIdentifyResults> QgsElevationProfileCanvas::identify( const QR
 void QgsElevationProfileCanvas::clear()
 {
   setProfileCurve( nullptr );
-  mPlotItem->setRenderer( nullptr );
+  cancelJobs();
   mPlotItem->updatePlot();
 }
 
