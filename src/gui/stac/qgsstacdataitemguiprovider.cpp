@@ -217,9 +217,9 @@ void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemG
       connect( fetcher, &QgsNetworkContentFetcherTask::fetched, item, [fetcher, folder, context]
       {
         QNetworkReply *reply = fetcher->reply();
-        if ( !reply )
+        if ( !reply || reply->error() != QNetworkReply::NoError )
         {
-          // canceled
+          // canceled or failed
           return;
         }
         else
