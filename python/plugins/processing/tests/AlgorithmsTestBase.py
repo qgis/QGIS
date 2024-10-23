@@ -146,9 +146,6 @@ class AlgorithmsTest:
 
         print('Running alg: "{}"'.format(defs['algorithm']))
         alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
-        if alg is None:
-            print('Algorithm not found: {}'.format(defs['algorithm']))
-            return
 
         parameters = {}
         if isinstance(params, list):
