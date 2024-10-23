@@ -19,7 +19,12 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgsstacitem.h"
+#include "qgsstaclink.h"
+
+#include <QMap>
+#include <QUrl>
+
+class QgsStacItem;
 
 /**
  * \ingroup core
