@@ -19,6 +19,8 @@
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
+#include "qgsstaccollection.h"
+#include "qgsstaccollections.h"
 
 
 constexpr int MAX_DISPLAYED_ITEMS = 20;
@@ -332,6 +334,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
 
   // treat catalog/collection as static if it does not have a /items endpoint
   bool hasItemsEndpoint = false;
+  bool hasCollectionsEndpoint = false;
   if ( supportsApi )
   {
     for ( const auto &link : links )
@@ -339,8 +342,14 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       if ( link.relation() == QLatin1String( "items" ) )
       {
         hasItemsEndpoint = true;
-        break;
       }
+      else if ( link.relation() == QLatin1String( "data" ) &&
+                link.href().endsWith( QLatin1String( "/collections" ) ) )
+      {
+        hasCollectionsEndpoint = true;
+      }
+      if ( hasItemsEndpoint && hasCollectionsEndpoint )
+        break;
     }
   }
 
@@ -353,11 +362,29 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
          link.relation() == QLatin1String( "collection" ) )
       continue;
 
-    if ( link.relation() == QLatin1String( "child" ) )
+    if ( link.relation() == QLatin1String( "child" ) &&
+         !hasCollectionsEndpoint )
     {
       // may be either catalog or collection
       QgsStacCatalogItem *c = new QgsStacCatalogItem( this, link.title(), link.href() );
       contents.append( c );
+    }
+    else if ( link.relation() == QLatin1String( "data" ) &&
+              link.href().endsWith( QLatin1String( "/collections" ) ) )
+    {
+      // use /collections api
+      QString error;
+      std::unique_ptr< QgsStacCollections > cols( controller->fetchCollections( link.href(), &error ) );
+      if ( cols )
+      {
+        contents.append( createCollections( cols->takeCollections() ) );
+        itemsCount = cols->numberMatched();
+      }
+      else
+      {
+        // collection fetching failed
+        contents.append( new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) );
+      }
     }
     else if ( link.relation() == QLatin1String( "item" ) &&
               !hasItemsEndpoint )
@@ -370,8 +397,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       QgsStacItemItem *i = new QgsStacItemItem( this, link.title(), link.href() );
       contents.append( i );
     }
-    else if ( link.relation() == QLatin1String( "items" ) &&
-              hasItemsEndpoint )
+    else if ( link.relation() == QLatin1String( "items" ) )
     {
       // stac api items (ogcapi features)
       QString error;
@@ -465,6 +491,24 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
     QgsStacItemItem *i = new QgsStacItemItem( this, name, item->url() );
     i->setStacItem( item );
     i->setState( Qgis::BrowserItemState::Populated );
+    contents.append( i );
+  }
+  return contents;
+}
+
+QVector<QgsDataItem *> QgsStacCatalogItem::createCollections( const QVector<QgsStacCollection *> collections )
+{
+  QVector< QgsDataItem * > contents;
+  contents.reserve( collections.size() );
+  for ( QgsStacCollection *col : collections )
+  {
+    if ( !col )
+      continue;
+
+    const QString name = col->title().isEmpty() ? col->id() : col->title();
+
+    QgsStacCatalogItem *i = new QgsStacCatalogItem( this, name, col->url() );
+    i->setStacCatalog( col );
     contents.append( i );
   }
   return contents;

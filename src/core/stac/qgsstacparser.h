@@ -20,10 +20,15 @@
 
 #include <nlohmann/json.hpp>
 
-#include "qgsstacitem.h"
-#include "qgsstaccollection.h"
-#include "qgsstaccatalog.h"
-#include "qgsstacitemcollection.h"
+#include "qgsstacobject.h"
+#include "qgsstacasset.h"
+
+class QgsStacCatalog;
+class QgsStacCollection;
+class QgsStacCollections;
+class QgsStacItem;
+class QgsStacItemCollection;
+
 
 /**
  * \brief SpatioTemporal Asset Catalog JSON parser
@@ -70,6 +75,13 @@ class QgsStacParser
      */
     QgsStacItemCollection *itemCollection();
 
+    /**
+     * Returns the parsed STAC API Collections
+     * If parsing failed, NULLPTR is returned
+     * The caller takes ownership of the returned collections
+     */
+    QgsStacCollections *collections();
+
     //! Returns the type of the parsed object
     QgsStacObject::Type type() const;
 
@@ -84,6 +96,8 @@ class QgsStacParser
     static QVector< QgsStacLink > parseLinks( const nlohmann::json &data );
     static QMap< QString, QgsStacAsset > parseAssets( const nlohmann::json &data );
     static bool isSupportedStacVersion( const QString &version );
+    //! Returns a QString, treating null elements as empty strings
+    static QString getString( const nlohmann::json &data );
 
     nlohmann::json mData;
     QgsStacObject::Type mType = QgsStacObject::Type::Unknown;
