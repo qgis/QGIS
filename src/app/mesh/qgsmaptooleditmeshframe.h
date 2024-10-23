@@ -60,7 +60,10 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     //! Sets the current value \a z of the widget
     void setZValue( double z );
 
-    //! Should z value be extract from project elevation setting
+    /**
+     *  Should z value be extract from project elevation setting
+     * \since QGIS 3.42
+     */
     bool getZFromProjectElevationEnabled();
 
     /**
@@ -68,6 +71,13 @@ class APP_EXPORT QgsZValueWidget : public QWidget
      *  that is the value that is retrieve if the z value spin box is cleared
      */
     void setDefaultValue( double z );
+
+    /**
+     *  Get the default z value of the widget. Used as clear value
+     *
+     * \since QGIS 3.42
+     */
+    double getDefaultValue();
 
     QWidget *keyboardEntryWidget() const;
 

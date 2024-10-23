@@ -121,6 +121,11 @@ void QgsZValueWidget::setDefaultValue( double z )
   mZValueSpinBox->selectAll();
 }
 
+double QgsZValueWidget::getDefaultValue()
+{
+  return mZValueSpinBox->clearValue();
+}
+
 QWidget *QgsZValueWidget::keyboardEntryWidget() const
 {
   return mZValueSpinBox;
@@ -2809,7 +2814,7 @@ void QgsMapToolEditMeshFrame::addVertex(
       // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
       if ( std::isnan( zValue ) )
       {
-        zValue = currentZValue();
+        zValue = mZValueWidget->getDefaultValue();
       }
     }
     else
