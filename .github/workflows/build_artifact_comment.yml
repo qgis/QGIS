@@ -5,6 +5,7 @@ on:
     workflows: 
       - 🪟 MingW64 Windows 64bit Build
       - 🪟 Windows Qt6
+      - 🧮 Vcpkg report
     types:
       - completed
 
