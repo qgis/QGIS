@@ -169,7 +169,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     }
 
     if ( feedback )
-      feedback->setProgress( 100 * i / mNativeMesh.faceCount() );
+      feedback->setProgress( 100.0 * static_cast<double>( i ) / mNativeMesh.faceCount() );
   }
 
   if ( feedback )
@@ -197,7 +197,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     }
 
     if ( feedback )
-      feedback->setProgress( 100 * i / edges.size() );
+      feedback->setProgress( 100.0 * static_cast<double>( i ) / edges.size() );
 
     i++;
   }
