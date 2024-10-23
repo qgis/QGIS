@@ -41,6 +41,7 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
   mQualitySpinBox->setVisible( showQuality );
   mQualitySlider->setVisible( showQuality );
   mQualityLabel->setVisible( showQuality );
+  mQualityLabel->setText( tr( "%1 quality", "Image format" ).arg( mFileExtension.toUpper() ) );
 
   connect( mQualitySpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mQualitySlider, &QSlider::setValue );
   connect( mQualitySlider, &QSlider::valueChanged, mQualitySpinBox, &QSpinBox::setValue );

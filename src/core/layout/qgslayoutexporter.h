@@ -237,7 +237,7 @@ class CORE_EXPORT QgsLayoutExporter
 
 
       /**
-       * Image quality, typically used for JPEG compression (whose quality ranges from 0 to 100)
+       * Image quality, typically used for JPEG compression (whose quality ranges from 1 to 100)
        * if quality is set to -1, the default quality will be used.
        * \since QGIS 3.42
        */
