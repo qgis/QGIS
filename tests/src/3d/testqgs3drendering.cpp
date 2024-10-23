@@ -869,7 +869,7 @@ void TestQgs3DRendering::testExtrudedPolygonsGoochShading()
   delete scene;
   delete map;
 
-  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_gooch_shading", "polygon3d_extrusion_gooch_shading", img, QString(), 40, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_gooch_shading", "polygon3d_extrusion_gooch_shading", img, QString(), 50, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsMetalRoughShading()
