@@ -508,7 +508,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     return false;
   }
 
-  for ( QgsPointCloudIndex *pc : indexes )
+  for ( QgsPointCloudIndex *pc : std::as_const( indexes ) )
   {
     const IndexedPointCloudNode root = pc->root();
     const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
