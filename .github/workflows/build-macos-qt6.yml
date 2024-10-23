@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - macvcpkg
   pull_request:
   release:
     types: ['published']
@@ -76,7 +75,6 @@ jobs:
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
                 -D NUGET_USERNAME=${{ github.actor }} \
-                -D NUGET_SOURCE="https://nuget.pkg.github.com/m-kuhn/index.json" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
 
                 fdupes -r -1 build/vcpkg_installed/arm64-osx-dynamic/lib | grep libQt | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
