@@ -272,12 +272,9 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
   return mShapeProperties.value( property );
 }
 
-QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
+float QgsPoint3DSymbol::billboardHeight() const
 {
-  QMatrix4x4 billboardTransformMatrix;
-  billboardTransformMatrix.translate( QVector3D( 0, mTransform.data()[13], 0 ) );
-
-  return billboardTransformMatrix;
+  return mTransform.data()[13];
 }
 
 QgsAbstractMaterialSettings *QgsPoint3DSymbol::materialSettings() const

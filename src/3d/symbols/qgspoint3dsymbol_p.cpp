@@ -215,6 +215,7 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
   tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
 
@@ -568,7 +569,9 @@ Qt3DCore::QTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D positio
   tr->setMatrix( symbol->transform() );
   // position is relative to chunkOrigin
   QVector3D nodeTranslation = ( chunkOrigin - contextOrigin ).toVector3D();
-  tr->setTranslation( position + tr->translation() + QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  tr->setTranslation( tr->translation() +
+                      QVector3D( position.x(), position.z(), -position.y() ) +
+                      QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
   return tr;
 }
 
@@ -672,10 +675,11 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
-  billboardTransform->setMatrix( mSymbol->billboardTransform() );
+  billboardTransform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
+  QVector3D billboardHeightTranslation( 0, mSymbol->billboardHeight(), 0 );
   // our geometry has coordinates relative to mChunkOrigin
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  billboardTransform->setTranslation( billboardTransform->translation() + QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  billboardTransform->setTranslation( billboardHeightTranslation + QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
 
   // Build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
