@@ -502,6 +502,20 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
   QGSCOMPARENEAR( vertex.z(), defaultZ, 0.0000001 );
 
+  // set get Z from project elevation to false - Z values will be obtained Z widget
+  mEditMeshMapTool->mZValueWidget->mGetZValuesFromProjectElevationByDefaultCheckBox->setChecked( false );
+
+  // test points outside of faces
+  point = QgsPointXY( 2700, 1800 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 8 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 9 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), defaultZ, 0.0000001 );
+
+
   // remove edits
   layer->rollBackFrameEditing( transform, false );
 }
