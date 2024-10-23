@@ -1,5 +1,5 @@
 ---
-name: 🍎 Build - MacOS
+name: 🍎 Build - MacOS Qt6
 on:
   push:
     branches:
@@ -36,7 +36,7 @@ jobs:
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
-          cmakeVersion: 3.29.0
+          cmakeVersion: 3.30.4
 
       - name: 🎡 Setup vcpkg
         id: setup-vcpkg
@@ -71,6 +71,7 @@ jobs:
                 -D BUILD_WITH_QT6=ON \
                 -D WITH_QTWEBKIT=OFF \
                 -D WITH_BINDINGS=ON \
+                -D QGIS_MACAPP_FRAMEWORK=OFF \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
