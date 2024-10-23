@@ -513,7 +513,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
         h = terrainZ + geomZ;
         break;
     }
-    positions.append( QVector3D( pt.x() - chunkOrigin.x(), h, -( pt.y() - chunkOrigin.y() ) ) );
+    positions.append( QVector3D( pt.x() - chunkOrigin.x(), pt.y() - chunkOrigin.y(), h ) );
     QgsDebugMsgLevel( QStringLiteral( "%1 %2 %3" ).arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }
