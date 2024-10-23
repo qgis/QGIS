@@ -864,13 +864,7 @@ void QgsElevationProfileCanvas::refresh()
   if ( !mProject || !profileCurve() )
     return;
 
-  if ( mCurrentJob )
-  {
-    mPlotItem->setRenderer( nullptr );
-    disconnect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
-    mCurrentJob->deleteLater();
-    mCurrentJob = nullptr;
-  }
+  cancelJobs();
 
   QgsProfileRequest request( profileCurve()->clone() );
   request.setCrs( mCrs );
