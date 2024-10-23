@@ -35,7 +35,7 @@ void main()
     vec3 vertexPositionChunk = vertexPositionObject + pos;
 
     // Transform position and normal to world space
-    worldPosition = vec3(modelMatrix * vec4(vertexPositionObject, 1.0));
+    worldPosition = vec3(modelMatrix * vec4(vertexPositionChunk, 1.0));
     worldNormal = normalize(modelNormalMatrix * vertexNormalObject);
 
     // Calculate vertex position in clip coordinates
