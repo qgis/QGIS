@@ -554,6 +554,7 @@ void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
   materialSettings.setSpecular( QColor( 10, 10, 10 ) );
   materialSettings.setShininess( 1.0 );
   materialSettings.setDiffuseTexturePath( testDataPath( "/sample_image.png" ) );
+  materialSettings.setTextureScale( 0.05 );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
   symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
