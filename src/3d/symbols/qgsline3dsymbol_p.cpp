@@ -393,6 +393,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
   tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
 
