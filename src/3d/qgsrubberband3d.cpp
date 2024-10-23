@@ -80,6 +80,10 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
 
   mLineEntity->addComponent( mLineMaterial );
 
+  Qt3DCore::QTransform *lineTransform = new Qt3DCore::QTransform;
+  lineTransform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
+  mLineEntity->addComponent( lineTransform );
+
   // Rubberband vertex markers
   mMarkerEntity = new Qt3DCore::QEntity( parentEntity );
   mMarkerGeometry = new QgsBillboardGeometry();
@@ -99,6 +103,10 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
   mMarkerSymbol = QgsMarkerSymbol::createSimple( props );
   updateMarkerMaterial();
   mMarkerEntity->addComponent( mMarkerGeometryRenderer );
+
+  Qt3DCore::QTransform *markerTransform = new Qt3DCore::QTransform;
+  markerTransform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
+  mMarkerEntity->addComponent( markerTransform );
 }
 
 QgsRubberBand3D::~QgsRubberBand3D()
