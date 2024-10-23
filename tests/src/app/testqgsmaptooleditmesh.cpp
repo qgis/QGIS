@@ -457,6 +457,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
 
   // start editing again
   layer->startFrameEditing( transform, error, false );
+  mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
 
   // set get Z from project elevation to true - Z values will be obtained from elevation provider
   mEditMeshMapTool->mZValueWidget->mGetZValuesFromProjectElevationByDefaultCheckBox->setChecked( true );
@@ -479,6 +480,27 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
 
   vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
   QGSCOMPARENEAR( vertex.z(), 4.100819, 0.000001 );
+
+  // points inside faces are not affected - still interpolated from the mesh values
+  point = QgsPointXY( 1700, 2200 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 2 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 5 );
+
+  tool.mouseMove( point.x() - 1, point.y() - 1 );
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 31, 0.000001 );
+
+  // test points outside of terrain provider - should get default Z value from the widget
+  point = QgsPointXY( 3000, 4000 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 7 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 8 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), defaultZ, 0.0000001 );
 
   // remove edits
   layer->rollBackFrameEditing( transform, false );
