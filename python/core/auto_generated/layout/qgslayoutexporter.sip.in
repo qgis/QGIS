@@ -24,6 +24,7 @@ Handles rendering and exports of layouts to various formats.
 
 
 
+
     struct PageExportDetails
     {
       QString directory;
@@ -141,6 +142,9 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
       QgsLayoutRenderContext::Flags flags;
 
       QVector<qreal> predefinedMapScales;
+
+
+      int quality;
 
     };
 
