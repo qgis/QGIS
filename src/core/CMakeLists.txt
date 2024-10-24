@@ -19,6 +19,18 @@ if (WITH_PDF4QT)
   SUBDIRS(${CMAKE_SOURCE_DIR}/external/PDF4QT)
 endif()
 
+if(WITH_INTERNAL_MESHOPTIMIZER)
+  add_library(STATIC meshoptimizer::meshoptimizer 
+    ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
+  )
+
+  target_include_directories(meshoptimizer::meshoptimizer
+    ${CMAKE_SOURCE_DIR}/external/meshOptimizer
+  )
+else()
+  find_package(meshoptimizer CONFIG REQUIRED)
+endif()
+
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
 
@@ -29,8 +41,6 @@ set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/sentence.c
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
   ${CMAKE_SOURCE_DIR}/external/nmea/tok.c
-
-  ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
 
   ${FLEX_QgsExpressionLexer_OUTPUTS}
   ${BISON_QgsExpressionParser_OUTPUTS}
@@ -2434,7 +2444,6 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
-  ${CMAKE_SOURCE_DIR}/external/meshOptimizer
   ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
@@ -2549,6 +2558,7 @@ target_link_libraries(qgis_core
   ${EXIV2_LIBRARY}
   PROJ::proj
   nlohmann_json::nlohmann_json
+  meshoptimizer::meshoptimizer
 )
 
 if(BUILD_WITH_QT6)
