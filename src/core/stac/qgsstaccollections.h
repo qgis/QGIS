@@ -87,9 +87,13 @@ class CORE_EXPORT QgsStacCollections
      */
     QUrl nextUrl() const;
 
+    /**
+     * Returns the url of the collections' "prev" link
+     */
+    QUrl prevUrl() const;
+
   private:
     QVector< QgsStacCollection * > mCollections;
-    const QVector< QgsStacLink > mLinks;
     QMap< QString, QString > mUrls;
     int mNumberMatched = -1;
 };
