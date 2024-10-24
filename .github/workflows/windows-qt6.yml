@@ -76,8 +76,6 @@ jobs:
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
                 -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
-                -D PYUIC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyuic5.bat" \
-                -D PYRCC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyrcc5.bat" \
                 -D CMAKE_C_COMPILER_LAUNCHER=ccache \
                 -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
                 -D WITH_QTWEBKIT=OFF \

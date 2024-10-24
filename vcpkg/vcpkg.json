@@ -59,6 +59,8 @@
     },
     "libxml2",
     "libzip",
+    "meshoptimizer",
+    "nlohmann-json",
     "pdal",
     "proj",
     "protobuf",
