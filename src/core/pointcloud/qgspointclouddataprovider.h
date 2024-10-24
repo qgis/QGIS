@@ -385,6 +385,9 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
+    //! Identify in a specific index (used for sub-indexes)
+    QVector<QVariantMap> identify( QgsPointCloudIndex *index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
+
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
