@@ -53,6 +53,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QgsGeometry clipPath() const;
 
+    virtual bool isValid() const;
+
 
     QgsFillSymbol *symbol();
 %Docstring
