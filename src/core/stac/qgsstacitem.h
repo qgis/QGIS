@@ -45,7 +45,7 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
      * \param version The STAC version the Item implements.
      * \param geometry The full footprint of the asset represented by this item, in WGS84
      * \param properties A dictionary of additional metadata for the Item.
-     * \param links List of link objects to resources and related URLs.
+     * \param links List of link objects to resources and related URLs. Relative links will be converted to absolute according to the "self" link.
      * \param assets Dictionary of asset objects that can be downloaded, each with a unique key.
      * \param bbox Bounding Box of the asset represented by this Item. Required if geometry is not null
      */

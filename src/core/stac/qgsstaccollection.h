@@ -43,7 +43,7 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
      * \param id Identifier for the Collection that is unique across the provider.
      * \param version The STAC version the Collection implements.
      * \param description Detailed multi-line description to fully explain the Collection. CommonMark 0.29 syntax MAY be used for rich text representation.
-     * \param links A list of references to other documents.
+     * \param links A list of references to other documents. Relative links will be converted to absolute according to the "self" link.
      * \param license Collection's license(s), either a SPDX License identifier, various if multiple licenses apply or proprietary for all other cases.
      * \param extent Spatial and temporal extents of the collection.
      */

@@ -99,6 +99,9 @@ class CORE_EXPORT QgsStacObject
     QString mStacVersion;
     QStringList mStacExtensions;
     QVector< QgsStacLink > mLinks;
+
+  private:
+    void resolveRelativeLinks();
 };
 
 #endif // QGSSTACOBJECT_H

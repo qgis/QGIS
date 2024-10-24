@@ -15,12 +15,12 @@
 
 #include "qgsstacobject.h"
 
-
 QgsStacObject::QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links )
   : mId( id )
   , mStacVersion( version )
   , mLinks( links )
 {
+  resolveRelativeLinks();
 }
 
 QString QgsStacObject::stacVersion() const
@@ -93,4 +93,11 @@ QString QgsStacObject::parentUrl() const
   return QString();
 }
 
-
+void QgsStacObject::resolveRelativeLinks()
+{
+  const QString self = url();
+  for ( QgsStacLink &link : mLinks )
+  {
+    link.resolveRelative( self );
+  }
+}

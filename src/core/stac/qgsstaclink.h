@@ -54,6 +54,9 @@ class CORE_EXPORT QgsStacLink
     //! Returns a human readable title to be used in rendered displays of the link.
     QString title() const;
 
+    //! Updates a link that is relative to \a relativeTo and makes it absolute.
+    void resolveRelative( const QString &relativeTo );
+
   private:
     QString mHref;
     QString mRelation;

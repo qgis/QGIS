@@ -15,6 +15,8 @@
 
 #include "qgsstaclink.h"
 
+#include <QUrl>
+
 QgsStacLink::QgsStacLink( const QString &href, const QString &relation, const QString &mediaType, const QString &title )
   : mHref( href )
   , mRelation( relation )
@@ -41,4 +43,14 @@ QString QgsStacLink::title() const
 QString QgsStacLink::mediaType() const
 {
   return mMediaType;
+}
+
+void QgsStacLink::resolveRelative( const QString &relativeTo )
+{
+  const QUrl linkUrl( mHref );
+  if ( linkUrl.isRelative() )
+  {
+    const QUrl url( relativeTo );
+    mHref = url.resolved( linkUrl ).toString();
+  }
 }

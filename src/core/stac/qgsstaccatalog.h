@@ -43,7 +43,7 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
      * \param id A unique identifier for the catalog
      * \param version The STAC version the Catalog implements.
      * \param description Detailed multi-line description to fully explain the Catalog. CommonMark 0.29 syntax may be used for rich text representation.
-     * \param links A list of references to other documents.
+     * \param links A list of references to other documents. Relative links will be converted to absolute according to the "self" link.
      */
     QgsStacCatalog( const QString &id,
                     const QString &version,
