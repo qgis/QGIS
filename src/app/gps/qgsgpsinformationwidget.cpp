@@ -42,6 +42,7 @@
 #include <qwt_polar_grid.h>
 #include <qwt_polar_curve.h>
 #include <qwt_scale_engine.h>
+// #include <qwt_symbol.h>
 #endif
 
 #include <QMessageBox>
@@ -367,10 +368,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 {
   QVector<QPointF> data;
 
-  if ( mStackedWidget->currentIndex() == 1 && info.satInfoComplete ) //signal
-  {
-    mPlot->setAxisScale( QwtPlot::xBottom, 0, info.satellitesInView.size() );
-  } //signal
 #ifdef WITH_QWTPOLAR
   if ( mStackedWidget->currentIndex() == 2 && info.satInfoComplete ) //satellites
   {
@@ -401,7 +398,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       QColor bg( Qt::white ); // moved several items outside of the following if block to minimize loop time
       bg.setAlpha( 200 );
-      QColor myColor;
 
       // Add a marker to the polar plot
       if ( currentInfo.id > 0 )       // don't show satellite if id=0 (no satellite indication)
@@ -414,24 +410,63 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         mypMarker->setPosition( QwtPointPolar( currentInfo.azimuth, currentInfo.elevation ) );
 #endif
 #endif
-        if ( currentInfo.signal < 30 ) //weak signal
+#ifdef WITH_QWTPOLAR
+        // QBrush symbolBrush( Qt::black );
+        QSize markerSize( 10, 10 );
+        QBrush textBgBrush( bg );
+        QBrush symbolBrush;
+        QColor myColor( Qt::black );
+        QColor penColor( Qt::black );
+
+        QwtSymbol::Style symbolStyle;
+        if ( currentInfo.satType == 'P' )
         {
-          myColor = Qt::red;
+          symbolStyle = QwtSymbol::Ellipse; // GPS;
+          myColor = QColor( 50, 205, 20 ); //limegreen;
+        }
+        else if ( currentInfo.satType == 'L' )
+        {
+          symbolStyle = QwtSymbol::Rect; // GLONASS;
+          myColor = QColor( 255, 165, 0 ); //orange;
+        }
+        else if ( currentInfo.satType == 'B' )
+        {
+          symbolStyle = QwtSymbol::Diamond; // BEIDOU;
+          myColor = QColor( 128, 0, 128 ); //purple;
+        }
+        else if ( currentInfo.satType == 'A' )
+        {
+          symbolStyle = QwtSymbol::Triangle; //GALILEO
+          myColor = QColor( 0, 0, 255 ); //blue;
+        }
+        else if ( currentInfo.satType == 'Q' )
+        {
+          symbolStyle = QwtSymbol::Cross; // QZSS
+          myColor = QColor( 255, 0, 255 ); //magenta;
         }
         else
         {
-          myColor = Qt::black; //strong signal
+          symbolStyle = QwtSymbol::Ellipse; // N, S;
+          myColor = QColor( 128, 128, 128 ); //gray;
         }
-#ifdef WITH_QWTPOLAR
-        QBrush symbolBrush( Qt::black );
-        QSize markerSize( 9, 9 );
-        QBrush textBgBrush( bg );
+        penColor = myColor;
+        symbolBrush = QBrush( myColor );
+
+        if ( currentInfo.signal < 30 ) //weak signal
+        {
+          penColor = Qt::red; // red border;
+        }
+        if ( currentInfo.inUse )
+        {
+          penColor = Qt::black; // black border
+        }
+
 #if (QWT_POLAR_VERSION<0x010000)
-        mypMarker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,
-                                         symbolBrush, QPen( myColor ), markerSize ) );
+        mypMarker->setSymbol( QwtSymbol( symbolStyle,
+                                         symbolBrush, QPen( penColor ), markerSize ) );
 #else
-        mypMarker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,
-                                             symbolBrush, QPen( myColor ), markerSize ) );
+        mypMarker->setSymbol( new QwtSymbol( symbolStyle,
+                                             symbolBrush, QPen( penColor ), markerSize ) );
 #endif
 
         mypMarker->setLabelAlignment( Qt::AlignHCenter | Qt::AlignTop );
@@ -448,6 +483,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
   if ( mStackedWidget->currentIndex() == 1 && info.satInfoComplete ) //signal
   {
+    mPlot->setAxisScale( QwtPlot::xBottom, 0, info.satellitesInView.size() );
     mCurve->setSamples( data );
     mPlot->replot();
   } //signal
@@ -548,7 +584,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.qualityDescription() );
     mTxtSatellitesUsed->setText( tr( "%1 used (%2 in view)" ).arg( info.satellitesUsed ).arg( info.satellitesInView.size() ) );
-    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QString() );
+    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : tr( "Other (%1)" ).arg( info.status ) );
   }
 
   if ( mLastGpsPosition != myNewCenter )
