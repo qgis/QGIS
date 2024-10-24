@@ -73,6 +73,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1X->setToolTip( tr( "X coordinate" ) );
   mCircle1X->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle1X->setMaximum( std::numeric_limits<double>::max() );
+  mCircle1X->setDecimals( mCadDockWidget->constraintX()->precision() );
   mCircle1X->setClearValue( 0.0 );
   connect( mCircle1X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1X, 1, 1 );
@@ -84,6 +85,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Y->setToolTip( tr( "Y coordinate" ) );
   mCircle1Y->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle1Y->setMaximum( std::numeric_limits<double>::max() );
+  mCircle1Y->setDecimals( mCadDockWidget->constraintY()->precision() );
   mCircle1Y->setClearValue( 0.0 );
   connect( mCircle1Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1Y, 2, 1 );
@@ -122,6 +124,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2X->setToolTip( tr( "X coordinate" ) );
   mCircle2X->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle2X->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2X->setDecimals( mCadDockWidget->constraintX()->precision() );
   mCircle2X->setClearValue( 0.0 );
   connect( mCircle2X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2X, 5, 1 );
@@ -133,6 +136,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2Y->setToolTip( tr( "Y coordinate" ) );
   mCircle2Y->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle2Y->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2Y->setDecimals( mCadDockWidget->constraintY()->precision() );
   mCircle2Y->setClearValue( 0.0 );
   connect( mCircle2Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2Y, 6, 1 );
