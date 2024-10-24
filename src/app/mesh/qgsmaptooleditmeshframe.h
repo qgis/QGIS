@@ -36,6 +36,8 @@ class QgsSnapIndicator;
 class QgsMeshTransformCoordinatesDockWidget;
 class QComboBox;
 class QCheckBox;
+class QPushButton;
+class QCheckBox;
 class QgsUnitSelectionWidget;
 class QgsMapToolSelectionHandler;
 
@@ -59,15 +61,35 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     void setZValue( double z );
 
     /**
+     *  Should z value be extract from project elevation setting
+     * \since QGIS 3.42
+     */
+    bool getZFromProjectElevationEnabled();
+
+    /**
      *  Sets the current value of the widget and set it as the default one,
      *  that is the value that is retrieve if the z value spin box is cleared
      */
     void setDefaultValue( double z );
 
+    /**
+     *  Get the default z value of the widget. Used as clear value
+     *
+     * \since QGIS 3.42
+     */
+    double getDefaultValue();
+
     QWidget *keyboardEntryWidget() const;
+
+  signals:
+    void applyZValuesFromProjectElevation();
 
   private:
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
+    QPushButton *mGetZValuesButton = nullptr;
+    QCheckBox *mGetZValuesFromProjectElevationByDefaultCheckBox = nullptr;
+
+    friend class TestQgsMapToolEditMesh;
 };
 
 class QgsMeshEditForceByLineAction : public QWidgetAction
@@ -235,6 +257,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void selectTouchedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void selectContainedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void applyZValueOnSelectedVertices();
+    void applyZValueFromProjectTerrainOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
     void moveSelection( const QgsPointXY &destinationPoint );
