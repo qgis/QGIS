@@ -64,6 +64,7 @@ class GUI_EXPORT QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget,
     void symbolChanged();
     void excludeExportsToggled( bool checked );
     void refreshLayout();
+    void applyToAll();
 
   private:
 
