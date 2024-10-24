@@ -2638,14 +2638,14 @@ class TestQgsGeometry(QgisTestCase):
                     message += ' failed'
                 message_with_wkt = message + f'\nOriginal geom: {geoms[t].asWkt()}'
                 if type(parts[t]) is list:
-                    if type(parts[t][0]) == QgsPointXY:
+                    if isinstance(parts[t][0], QgsPointXY):
                         self.assertEqual(geoms[t].addPointsXY(parts[t], geom_type), expected_result, message_with_wkt)
-                    elif type(parts[t][0]) == QgsPoint:
+                    elif isinstance(parts[t][0], QgsPoint):
                         self.assertEqual(geoms[t].addPoints(parts[t]), expected_result, message_with_wkt)
                     else:
                         self.fail(message_with_wkt + '\n could not detect what Python method to use for add part')
                 else:
-                    if type(parts[t]) == QgsGeometry:
+                    if isinstance(parts[t], QgsGeometry):
                         self.assertEqual(geoms[t].addPartGeometry(parts[t]), expected_result, message)
                     else:
                         self.assertEqual(geoms[t].addPart(parts[t], geom_type), expected_result, message_with_wkt)
