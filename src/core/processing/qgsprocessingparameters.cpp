@@ -1882,7 +1882,13 @@ QStringList QgsProcessingParameters::parameterAsFileList( const QgsProcessingPar
       }
     }
     else if ( var.userType() == qMetaTypeId<QgsProperty>() )
+    {
       processVariant( var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() ) );
+    }
+    else if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
+    {
+      files << layer->source();
+    }
     else
     {
       files << var.toString();
@@ -2697,6 +2703,18 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
       return fromVar.toString( Qt::ISODate );
     }
 
+    if ( flags & ValueAsStringFlag::SkipCreatingLayerForSource )
+    {
+      if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) ) )
+      {
+        return layer->source();
+      }
+      else
+      {
+        return value;
+      }
+    }
+
     if ( flags & ValueAsStringFlag::AllowMapLayerValues )
     {
       // value may be a map layer
@@ -2873,6 +2891,18 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
       return QString();
 
     return fromVar.toString( Qt::ISODate );
+  }
+
+  if ( flags & ValueAsStringFlag::SkipCreatingLayerForSource )
+  {
+    if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) ) )
+    {
+      return layer->source();
+    }
+    else
+    {
+      return value.toString();
+    }
   }
 
   if ( flags & ValueAsStringFlag::AllowMapLayerValues )
@@ -4292,9 +4322,10 @@ QgsProcessingParameterMatrix *QgsProcessingParameterMatrix::fromScriptCode( cons
   return new QgsProcessingParameterMatrix( name, description, 0, false, QStringList(), definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( const QString &name, const QString &description, Qgis::ProcessingSourceType layerType, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( const QString &name, const QString &description, Qgis::ProcessingSourceType layerType, const QVariant &defaultValue, bool optional, bool sourceOnly )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mLayerType( layerType )
+  , mSourceOnly( sourceOnly )
 {
 
 }
@@ -4350,7 +4381,8 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    if ( mLayerType != Qgis::ProcessingSourceType::File )
+    if ( mLayerType != Qgis::ProcessingSourceType::File &&
+         ! mSourceOnly )
     {
       const auto constToList = input.toList();
       for ( const QVariant &v : constToList )
@@ -4375,7 +4407,8 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
     if ( !context )
       return true;
 
-    if ( mLayerType != Qgis::ProcessingSourceType::File )
+    if ( mLayerType != Qgis::ProcessingSourceType::File &&
+         ! mSourceOnly )
     {
       const auto constToStringList = input.toStringList();
       for ( const QString &v : constToStringList )
@@ -4397,7 +4430,8 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   if ( value.userType() == qMetaTypeId<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  if ( mLayerType == Qgis::ProcessingSourceType::File )
+  if ( mLayerType == Qgis::ProcessingSourceType::File ||
+       mSourceOnly )
   {
     QStringList parts;
     if ( value.userType() == QMetaType::Type::QStringList )
@@ -4412,7 +4446,16 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
       const QVariantList list = value.toList();
       parts.reserve( list.count() );
       for ( const QVariant &v : list )
-        parts <<  QgsProcessingUtils::stringToPythonLiteral( v.toString() );
+      {
+        if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
+        {
+          parts << QgsProcessingUtils::stringToPythonLiteral( layer->source() );
+        }
+        else
+        {
+          parts <<  QgsProcessingUtils::stringToPythonLiteral( v.toString() );
+        }
+      }
     }
     if ( !parts.isEmpty() )
       return parts.join( ',' ).prepend( '[' ).append( ']' );
@@ -4439,12 +4482,12 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
 
 QString QgsProcessingParameterMultipleLayers::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
-  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+  return valueAsStringPrivate( value, context, ok, mSourceOnly ? ValueAsStringFlag::SkipCreatingLayerForSource : ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QVariant QgsProcessingParameterMultipleLayers::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
 {
-  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
+  return valueAsJsonObjectPrivate( value, context, mSourceOnly ? ValueAsStringFlag::SkipCreatingLayerForSource : ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QString QgsProcessingParameterMultipleLayers::asScriptCode() const

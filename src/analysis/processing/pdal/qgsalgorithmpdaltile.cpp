@@ -74,7 +74,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
 {
   Q_UNUSED( feedback );
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QStringList layers = parameterAsFileList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -89,7 +89,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
   int length = parameterAsInt( parameters, QStringLiteral( "LENGTH" ), context );
 
   QStringList args;
-  args.reserve( layers.count() + 4 );
+  args.reserve( 7 );
 
   const QString tempDir = context.temporaryFolder().isEmpty() ? QgsProcessingUtils::tempFolder( &context ) : context.temporaryFolder();
 
@@ -117,10 +117,8 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   out.setCodec( "UTF-8" );
 #endif
-  for ( const QgsMapLayer *layer : std::as_const( layers ) )
-  {
-    out << layer->source() << "\n";
-  }
+
+  out << layers.join( '\n' );
 
   args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
 
