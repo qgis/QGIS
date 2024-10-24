@@ -1609,6 +1609,7 @@ static QVariant fcnRegexpReplace( const QVariantList &values, const QgsExpressio
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   QString after = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  bool isValid_after{ values.at( 2 ).isValid() };
 
   QRegularExpression re( regexp, QRegularExpression::UseUnicodePropertiesOption );
   if ( !re.isValid() )
@@ -1616,6 +1617,12 @@ static QVariant fcnRegexpReplace( const QVariantList &values, const QgsExpressio
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
     return QVariant();
   }
+
+  if ( ! isValid_after && str.contains( re ) ) // fix https://github.com/qgis/QGIS/issues/44274
+  {
+    return QVariant();
+  }
+
   return QVariant( str.replace( re, after ) );
 }
 
@@ -8546,7 +8553,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "length3D" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnLength3D, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "replace" ), -1, fcnReplace, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "regexp_replace" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "input_string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "regex" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "replacement" ) ), fcnRegexpReplace, QStringLiteral( "String" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "replacement" ) ), fcnRegexpReplace, QStringLiteral( "String" ),
+                                            QString(), false, QSet< QString >(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "regexp_substr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "input_string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "regex" ) ), fcnRegexpSubstr, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "substr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "start" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "length" ), true ), fcnSubstr, QStringLiteral( "String" ), QString(),
                                             false, QSet< QString >(), false, QStringList(), true )
