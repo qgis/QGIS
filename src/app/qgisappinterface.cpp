@@ -640,6 +640,12 @@ void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *
   qgis->unregisterDevToolFactory( factory );
 }
 
+void QgisAppInterface::showApiDocumentation( const QString &api, bool embedded, const QString &object, const QString &module )
+{
+  qgis->showApiDocumentation( api, embedded, object, module );
+}
+
+
 void QgisAppInterface::registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
 {
   qgis->registerApplicationExitBlocker( blocker );
