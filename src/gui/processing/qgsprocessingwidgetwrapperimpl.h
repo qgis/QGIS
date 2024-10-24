@@ -75,7 +75,6 @@ class QgsProcessingPointCloudExpressionLineEdit;
 class QgsProcessingRasterCalculatorExpressionLineEdit;
 class QgsRubberBand;
 class QgsHighlightableLineEdit;
-class QgsGeometryWidget;
 
 ///@cond PRIVATE
 
@@ -1239,7 +1238,7 @@ class GUI_EXPORT QgsProcessingGeometryParameterDefinitionWidget : public QgsProc
 
   private:
 
-    QgsGeometryWidget *mGeometryWidget = nullptr;
+    QLineEdit *mDefaultLineEdit = nullptr;
 
 };
 
@@ -1275,7 +1274,7 @@ class GUI_EXPORT QgsProcessingGeometryWidgetWrapper : public QgsAbstractProcessi
     QString modelerExpressionFormatString() const override;
   private:
 
-    QgsGeometryWidget *mGeometryWidget = nullptr;
+    QLineEdit *mLineEdit = nullptr;
 
     friend class TestProcessingGui;
 };
