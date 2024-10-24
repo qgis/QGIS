@@ -24,6 +24,8 @@
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
 #include "qgsstacitem.h"
+#include "qgsstacitemcollection.h"
+#include "qgsstaccollections.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgis.h"
@@ -48,6 +50,8 @@ class TestQgsStac : public QObject
     void testParseLocalCatalog();
     void testParseLocalCollection();
     void testParseLocalItem();
+    void testParseLocalItemCollection();
+    void testParseLocalCollections();
 
   private:
     QString mDataDir;
@@ -144,6 +148,51 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( item->assets().size(), 6 );
 
   delete item;
+}
+
+void TestQgsStac::testParseLocalItemCollection()
+{
+  const QString fileName = mDataDir + QStringLiteral( "itemcollection-sample-full.json" );
+  QgsStacController c;
+  QgsStacItemCollection *ic = c.fetchItemCollection( QStringLiteral( "file://%1" ).arg( fileName ) );
+  QVERIFY( ic );
+  QCOMPARE( ic->numberReturned(), 1 );
+  QCOMPARE( ic->numberMatched(), 10 );
+  QCOMPARE( ic->rootUrl().toString(), QLatin1String( "http://stac.example.com/" ) );
+
+  QVector<QgsStacItem *> items = ic->items();
+  QCOMPARE( items.size(), 1 );
+  QCOMPARE( items.first()->id(), QLatin1String( "cs3-20160503_132131_05" ) );
+  QCOMPARE( items.first()->stacVersion(), QLatin1String( "1.0.0" ) );
+  QCOMPARE( items.first()->links().size(), 3 );
+  QCOMPARE( items.first()->stacExtensions().size(), 0 );
+  QCOMPARE( items.first()->assets().size(), 2 );
+
+  delete ic;
+}
+
+void TestQgsStac::testParseLocalCollections()
+{
+  const QString fileName = mDataDir + QStringLiteral( "collectioncollection-sample-full.json" );
+  QgsStacController c;
+  QgsStacCollections *cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
+  QVERIFY( cols );
+  QCOMPARE( cols->numberReturned(), 1 );
+  QCOMPARE( cols->numberMatched(), 11 );
+  QCOMPARE( cols->rootUrl().toString(), QLatin1String( "http://stac.example.com/" ) );
+  QCOMPARE( cols->url().toString(), QLatin1String( "http://stac.example.com/collections?page=2" ) );
+  QCOMPARE( cols->nextUrl().toString(), QLatin1String( "http://stac.example.com/collections?page=3" ) );
+  QCOMPARE( cols->prevUrl().toString(), QLatin1String( "http://stac.example.com/collections?page=1" ) );
+
+  QCOMPARE( cols->collections().size(), 1 );
+
+  QgsStacCollection *col = cols->collections().first();
+  QCOMPARE( col->id(), QStringLiteral( "simple-collection" ) );
+  QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
+  QCOMPARE( col->links().size(), 3 );
+  QCOMPARE( col->stacExtensions().size(), 0 );
+
+  delete cols;
 }
 
 QGSTEST_MAIN( TestQgsStac )

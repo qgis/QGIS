@@ -17,14 +17,14 @@
 
 QgsStacCollections::QgsStacCollections( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched )
   : mCollections( collections )
-  , mLinks( links )
   , mNumberMatched( numberMatched )
 {
-  for ( const QgsStacLink &link : mLinks )
+  for ( const QgsStacLink &link : links )
   {
     if ( link.relation() == QLatin1String( "self" ) ||
          link.relation() == QLatin1String( "root" ) ||
-         link.relation() == QLatin1String( "next" ) )
+         link.relation() == QLatin1String( "next" ) ||
+         link.relation() == QLatin1String( "prev" ) )
       mUrls.insert( link.relation(), link.href() );
   }
 }
@@ -70,4 +70,9 @@ QUrl QgsStacCollections::rootUrl() const
 QUrl QgsStacCollections::nextUrl() const
 {
   return QUrl( mUrls.value( QStringLiteral( "next" ), QString() ) );
+}
+
+QUrl QgsStacCollections::prevUrl() const
+{
+  return QUrl( mUrls.value( QStringLiteral( "prev" ), QString() ) );
 }
