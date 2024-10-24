@@ -476,7 +476,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(QgisTestCase):
                                               QgsGeometry.fromWkt('Point(5 4)'),
                                               {0: QgsReferencedGeometry(QgsGeometry.fromWkt('LineString(5 6, 7 8)'), QgsCoordinateReferenceSystem("EPSG:4326"))})
         points.dataProvider().addFeature(f)
-        other_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '"other_geom"', 'outline_color': 'black', 'SymbolType': 'Line'})
+        other_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '"other_geom"', 'outline_color': 'black', 'SymbolType': 'Line', 'line_width': 2})
         points.renderer().symbol().changeSymbolLayer(0, other_layer)
 
         mapsettings = QgsMapSettings(self.mapsettings)
