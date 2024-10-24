@@ -19,18 +19,6 @@ if (WITH_PDF4QT)
   SUBDIRS(${CMAKE_SOURCE_DIR}/external/PDF4QT)
 endif()
 
-if(WITH_INTERNAL_MESHOPTIMIZER)
-  add_library(STATIC meshoptimizer::meshoptimizer 
-    ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
-  )
-
-  target_include_directories(meshoptimizer::meshoptimizer
-    ${CMAKE_SOURCE_DIR}/external/meshOptimizer
-  )
-else()
-  find_package(meshoptimizer CONFIG REQUIRED)
-endif()
-
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
 
@@ -2349,6 +2337,20 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
 
+# Add meshoptimizer
+if(WITH_INTERNAL_MESHOPTIMIZER)
+  target_sources(qgis_core PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
+  )
+
+  target_include_directories(qgis_core PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
+  )
+else()
+  find_package(meshoptimizer CONFIG REQUIRED)
+  target_link_libraries(qgis_core PRIVATE meshoptimizer::meshoptimizer)
+endif()
+
 # require c++17
 target_compile_features(qgis_core PRIVATE cxx_std_17)
 
@@ -2558,7 +2560,6 @@ target_link_libraries(qgis_core
   ${EXIV2_LIBRARY}
   PROJ::proj
   nlohmann_json::nlohmann_json
-  meshoptimizer::meshoptimizer
 )
 
 if(BUILD_WITH_QT6)
