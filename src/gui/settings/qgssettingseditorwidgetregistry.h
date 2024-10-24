@@ -55,7 +55,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetRegistry
     QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const SIP_FACTORY;
 
     //! Creates an editor widget for the given \a setting using the corresponding registered wrapper
-    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = nullptr ) const SIP_KEEPREFERENCE;
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = nullptr ) const SIP_TRANSFERBACK;
 
   private:
     QMap<QString, QgsSettingsEditorWidgetWrapper *> mWrappers;

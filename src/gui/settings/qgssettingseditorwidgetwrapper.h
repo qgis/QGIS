@@ -53,7 +53,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const = 0 SIP_FACTORY;
 
     //! Creates the editor widget for the given \a setting
-    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = nullptr ) SIP_KEEPREFERENCE;
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = nullptr ) SIP_TRANSFERBACK;
 
     //! Configures the \a editor according the setting
     bool configureEditor( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
 
   protected:
     //! Creates the widgets
-    virtual QWidget *createEditorPrivate( QWidget *parent = nullptr ) const = 0 SIP_KEEPREFERENCE SIP_FACTORY;
+    virtual QWidget *createEditorPrivate( QWidget *parent = nullptr ) const = 0 SIP_TRANSFERBACK;
 
     //! Configures an existing \a editor widget
     virtual bool configureEditorPrivate( QWidget *editor SIP_TRANSFERBACK, const QgsSettingsEntryBase *setting SIP_KEEPREFERENCE ) = 0;
