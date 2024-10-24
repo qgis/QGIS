@@ -251,7 +251,7 @@ tests:
     name: Create polygon from surface of Mesh layer
     params:
       INPUT: 
-        name: "quad_and_triangle.2dm"
+        name: quad_and_triangle.2dm
         type: mesh
     results:
       OUTPUT:
