@@ -446,9 +446,14 @@ const QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() const
 
 void QgsLayoutPageCollection::applyPropertiesToAllOtherPages( int sourcePage )
 {
+  QgsLayoutItemPage *referencePage = page( sourcePage );
+  if ( !referencePage )
+  {
+    return;
+  }
+
   mLayout->undoStack()->beginCommand( this, tr( "Apply page properties" ) );
   mBlockUndoCommands = true;
-  QgsLayoutItemPage *referencePage = page( sourcePage );
 
   for ( QgsLayoutItemPage *page : mPages )
   {
