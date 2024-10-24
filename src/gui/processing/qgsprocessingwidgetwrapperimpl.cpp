@@ -68,8 +68,6 @@
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
 #include "qgsunittypes.h"
-#include "qgsgeometrywidget.h"
-
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -4429,24 +4427,23 @@ QgsProcessingGeometryParameterDefinitionWidget::QgsProcessingGeometryParameterDe
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
-  mGeometryWidget = new QgsGeometryWidget();
+  mDefaultLineEdit = new QLineEdit();
+  mDefaultLineEdit->setToolTip( tr( "Geometry as WKT" ) );
+  mDefaultLineEdit->setPlaceholderText( tr( "Geometry as WKT" ) );
   if ( const QgsProcessingParameterGeometry *geometryParam = dynamic_cast<const QgsProcessingParameterGeometry *>( definition ) )
   {
     QgsGeometry g = QgsProcessingParameters::parameterAsGeometry( geometryParam, geometryParam->defaultValueForGui(), context );
     if ( !g.isNull() )
-    {
-      mGeometryWidget->setGeometryValue( QgsReferencedGeometry( g, QgsCoordinateReferenceSystem() ) );
-    }
+      mDefaultLineEdit->setText( g.asWkt() );
   }
 
-  vlayout->addWidget( mGeometryWidget );
+  vlayout->addWidget( mDefaultLineEdit );
   setLayout( vlayout );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingGeometryParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
-  const QgsReferencedGeometry geometry = mGeometryWidget->geometryValue();
-  auto param = std::make_unique< QgsProcessingParameterGeometry >( name, description, geometry.isEmpty() ? QVariant() : geometry.asWkt() );
+  auto param = std::make_unique< QgsProcessingParameterGeometry >( name, description, mDefaultLineEdit->text() );
   param->setFlags( flags );
   return param.release();
 }
@@ -4465,13 +4462,13 @@ QWidget *QgsProcessingGeometryWidgetWrapper::createWidget()
     case QgsProcessingGui::Modeler:
     case QgsProcessingGui::Batch:
     {
-      mGeometryWidget = new QgsGeometryWidget();
-      mGeometryWidget->setToolTip( parameterDefinition()->toolTip() );
-      connect( mGeometryWidget, &QgsGeometryWidget::geometryValueChanged, this, [ = ]( const QgsReferencedGeometry & )
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( parameterDefinition()->toolTip() );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
       {
         emit widgetValueHasChanged( this );
       } );
-      return mGeometryWidget;
+      return mLineEdit;
     }
   }
   return nullptr;
@@ -4479,31 +4476,22 @@ QWidget *QgsProcessingGeometryWidgetWrapper::createWidget()
 
 void QgsProcessingGeometryWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
-  if ( mGeometryWidget )
+  if ( mLineEdit )
   {
     QgsGeometry g = QgsProcessingParameters::parameterAsGeometry( parameterDefinition(), value, context );
     if ( !g.isNull() )
-    {
-      mGeometryWidget->setGeometryValue( QgsReferencedGeometry( g, QgsCoordinateReferenceSystem() ) );
-    }
+      mLineEdit->setText( g.asWkt() );
     else
-    {
-      mGeometryWidget->clearGeometry();
-    }
+      mLineEdit->clear();
   }
 }
 
 QVariant QgsProcessingGeometryWidgetWrapper::widgetValue() const
 {
-  if ( mGeometryWidget )
-  {
-    const QgsReferencedGeometry geometry = mGeometryWidget->geometryValue();
-    return geometry.isEmpty() ? QVariant() : geometry.asWkt();
-  }
+  if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
   else
-  {
     return QVariant();
-  }
 }
 
 QStringList QgsProcessingGeometryWidgetWrapper::compatibleParameterTypes() const
