@@ -1492,7 +1492,7 @@ static QVariant fcnLength( const QVariantList &values, const QgsExpressionContex
   // two variants, one for geometry, one for string
 
   //geometry variant
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent, true );
   if ( !geom.isNull() )
   {
     if ( geom.type() == Qgis::GeometryType::Line )
@@ -1502,7 +1502,6 @@ static QVariant fcnLength( const QVariantList &values, const QgsExpressionContex
   }
 
   //otherwise fall back to string variant
-  parent->setEvalErrorString( QString() );  // clear error string saying geometry not found
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.length() );
 }
