@@ -53,7 +53,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
                 defaultValueStr = self.__metaEnum.valueToKey(defaultValue)
             self.__enumFlagClass = defaultValue.__class__
 
-        if type(pluginName) == str:
+        if isinstance(pluginName, str):
             parent = QgsSettingsTree.createPluginTreeNode(pluginName)
         else:
             parent = pluginName
@@ -127,7 +127,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
                 QgsLogger.debug("Invalid enum/flag value '{0}'.".format(value))
                 return False
 
-        if type(dynamicKeyPart) == str:
+        if isinstance(dynamicKeyPart, str):
             dynamicKeyPart = [dynamicKeyPart]
         elif dynamicKeyPart is None:
             dynamicKeyPart = []
