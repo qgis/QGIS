@@ -129,6 +129,9 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void moveFieldsDown();
 
   private:
+    void mTypeBox_currentIndexChanged_formatShapeESRI( int index );
+
+  private:
     QPushButton *mOkButton = nullptr;
 
     void updateExtension();
