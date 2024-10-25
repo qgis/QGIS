@@ -265,9 +265,9 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerF
 
 /////////////////////////////////////////////////////////////////////////////
 
-std::unique_ptr<QgsGeometryEngine> QgsGeometryCheckerUtils::createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance )
+std::unique_ptr<QgsGeometryEngine> QgsGeometryCheckerUtils::createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance, Qgis::GeosCreationFlags flags )
 {
-  return std::make_unique<QgsGeos>( geometry, tolerance );
+  return std::make_unique<QgsGeos>( geometry, tolerance, flags );
 }
 
 QgsAbstractGeometry *QgsGeometryCheckerUtils::getGeomPart( QgsAbstractGeometry *geom, int partIdx )

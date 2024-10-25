@@ -2957,7 +2957,7 @@ geometry will retain the same dimensionality as the input geometry.
 :param maxAngle: maximum angle at node (0-180) at which smoothing will be applied
 %End
 
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0 ) /Factory/;
+    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) /Factory/;
 %Docstring
 Creates and returns a new geometry engine representing the specified ``geometry`` using ``precision`` on a grid. The ``precision`` argument was added in 3.36.
 
@@ -2971,6 +2971,8 @@ performance critical code instead of directly using the equivalent QgsGeometry m
 Many methods available in the :py:class:`QgsGeometryEngine` class can benefit from pre-preparing geometries. For instance, whenever
 a large number of spatial relationships will be tested (such as calling :py:func:`~QgsGeometry.intersects`, :py:func:`~QgsGeometry.within`, etc) then the
 geometry should first be prepared by calling :py:func:`~QgsGeometry.prepareGeometry` before performing the tests.
+
+The ``flags`` argument was added in QGIS 3.40 to allow control over the resultant GEOS geometry.
 
 Example
 -------------------------------------
