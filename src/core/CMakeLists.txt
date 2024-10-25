@@ -2344,7 +2344,7 @@ if(WITH_INTERNAL_MESHOPTIMIZER)
   )
 
   target_include_directories(qgis_core PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
+    ${CMAKE_SOURCE_DIR}/external/meshOptimizer
   )
 else()
   find_package(meshoptimizer CONFIG REQUIRED)
