@@ -44,7 +44,7 @@ void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeatu
       {
         ++nTested;
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
-        std::unique_ptr< QgsGeometryEngine > testGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( testGeom, mContext->reducedTolerance );
+        std::unique_ptr< QgsGeometryEngine > testGeomEngine( QgsGeometry::createGeometryEngine( testGeom, mContext->reducedTolerance ) );
         if ( !testGeomEngine->isValid() )
         {
           messages.append( tr( "Point in polygon check failed for (%1): the geometry is invalid" ).arg( checkFeature.id() ) );
