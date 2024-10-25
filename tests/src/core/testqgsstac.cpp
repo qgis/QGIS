@@ -73,9 +73,9 @@ void TestQgsStac::cleanupTestCase()
 
 void TestQgsStac::testParseLocalCatalog()
 {
-  const QString fileName = mDataDir + QStringLiteral( "catalog.json" );
+  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "catalog.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( QStringLiteral( "file://%1" ).arg( fileName ) );
+  QgsStacObject *obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
   QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
@@ -85,17 +85,27 @@ void TestQgsStac::testParseLocalCatalog()
   QCOMPARE( cat->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( cat->title(), QLatin1String( "Example Catalog" ) );
   QCOMPARE( cat->description(), QLatin1String( "This catalog is a simple demonstration of an example catalog that is used to organize a hierarchy of collections and their items." ) );
-  QCOMPARE( cat->links().size(), 6 );
   QVERIFY( cat->stacExtensions().isEmpty() );
+
+  // check that relative links are correctly resolved into absolute links
+  const QVector<QgsStacLink> links = cat->links();
+  QCOMPARE( links.size(), 6 );
+  const QString basePath = url.adjusted( QUrl::RemoveFilename ).toString();
+  QCOMPARE( links.at( 0 ).href(), QStringLiteral( "%1catalog.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 1 ).href(), QStringLiteral( "%1extensions-collection/collection.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 2 ).href(), QStringLiteral( "%1collection-only/collection.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 3 ).href(), QStringLiteral( "%1collection-only/collection-with-schemas.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 4 ).href(), QStringLiteral( "%1collectionless-item.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 5 ).href(), QStringLiteral( "https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/catalog.json" ) );
 
   delete cat;
 }
 
 void TestQgsStac::testParseLocalCollection()
 {
-  const QString fileName = mDataDir + QStringLiteral( "collection.json" );
+  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collection.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( QStringLiteral( "file://%1" ).arg( fileName ) );
+  QgsStacObject *obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
   QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj );
@@ -105,7 +115,17 @@ void TestQgsStac::testParseLocalCollection()
   QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( col->title(), QLatin1String( "Simple Example Collection" ) );
   QCOMPARE( col->description(), QLatin1String( "A simple collection demonstrating core catalog fields with links to a couple of items" ) );
-  QCOMPARE( col->links().size(), 5 );
+
+  // check that relative links are correctly resolved into absolute links
+  const QVector<QgsStacLink> links = col->links();
+  QCOMPARE( links.size(), 5 );
+  const QString basePath = url.adjusted( QUrl::RemoveFilename ).toString();
+  QCOMPARE( links.at( 0 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 1 ).href(), QStringLiteral( "%1simple-item.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 2 ).href(), QStringLiteral( "%1core-item.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 3 ).href(), QStringLiteral( "%1extended-item.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 4 ).href(), QStringLiteral( "https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/collection.json" ) );
+
   QCOMPARE( col->providers().size(), 1 );
   QCOMPARE( col->stacExtensions().size(), 3 );
   QCOMPARE( col->license(), QLatin1String( "CC-BY-4.0" ) );
@@ -133,9 +153,9 @@ void TestQgsStac::testParseLocalCollection()
 
 void TestQgsStac::testParseLocalItem()
 {
-  const QString fileName = mDataDir + QStringLiteral( "core-item.json" );
+  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "core-item.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( QStringLiteral( "file://%1" ).arg( fileName ) );
+  QgsStacObject *obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Item );
   QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj );
@@ -143,9 +163,23 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( item );
   QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
   QCOMPARE( item->stacVersion(), QLatin1String( "1.0.0" ) );
-  QCOMPARE( item->links().size(), 4 );
   QCOMPARE( item->stacExtensions().size(), 0 );
+
+  // check that relative links are correctly resolved into absolute links
+  const QVector<QgsStacLink> links = item->links();
+  QCOMPARE( links.size(), 4 );
+  const QString basePath = url.adjusted( QUrl::RemoveFilename ).toString();
+  QCOMPARE( links.at( 0 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 1 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 2 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
+  QCOMPARE( links.at( 3 ).href(), QStringLiteral( "http://remotedata.io/catalog/20201211_223832_CS2/index.html" ) );
+
   QCOMPARE( item->assets().size(), 6 );
+  QgsStacAsset asset = item->assets().value( QStringLiteral( "analytic" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QCOMPARE( asset.href(), basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
+
+  asset = item->assets().value( QStringLiteral( "thumbnail" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QCOMPARE( asset.href(), QStringLiteral( "https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.jpg" ) );
 
   delete item;
 }

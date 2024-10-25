@@ -100,6 +100,7 @@ void QgsStacController::handleStacObjectReply()
   const QByteArray data = reply->readAll();
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( reply->url() );
 
   QgsStacObject *object = nullptr;
   switch ( parser.type() )
@@ -143,6 +144,7 @@ void QgsStacController::handleItemCollectionReply()
   const QByteArray data = reply->readAll();
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( reply->url() );
 
   QgsStacItemCollection *fc = parser.itemCollection();
   mFetchedItemCollections.insert( requestId, fc );
@@ -177,6 +179,7 @@ QgsStacObject *QgsStacController::fetchStacObject( const QUrl &url, QString *err
 
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( url );
   QgsStacObject *object = nullptr;
   switch ( parser.type() )
   {
@@ -216,6 +219,7 @@ QgsStacItemCollection *QgsStacController::fetchItemCollection( const QUrl &url, 
 
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( url );
   QgsStacItemCollection *ic = parser.itemCollection();
 
   if ( error )
@@ -288,6 +292,7 @@ QgsStacCatalog *QgsStacController::openLocalCatalog( const QString &fileName ) c
 
   QgsStacParser parser;
   parser.setData( file.readAll() );
+  parser.setBaseUrl( fileName );
   return parser.catalog();
 }
 
@@ -304,6 +309,7 @@ QgsStacCollection *QgsStacController::openLocalCollection( const QString &fileNa
 
   QgsStacParser parser;
   parser.setData( file.readAll() );
+  parser.setBaseUrl( fileName );
   return parser.collection();
 }
 
@@ -319,6 +325,7 @@ QgsStacItem *QgsStacController::openLocalItem( const QString &fileName ) const
 
   QgsStacParser parser;
   parser.setData( file.readAll() );
+  parser.setBaseUrl( fileName );
   return parser.item();
 }
 
