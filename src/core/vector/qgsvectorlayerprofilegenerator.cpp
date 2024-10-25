@@ -181,7 +181,7 @@ QgsProfileSnapResult QgsVectorLayerProfileResults::snapPointToIndividualFeatures
   return res;
 }
 
-void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,  const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin )
+void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,  const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin ) const
 {
   // TODO -- add spatial index if performance is an issue
 
@@ -336,7 +336,7 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
   }
 }
 
-void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const std::function<void ( QgsFeatureId )> &visitor )
+void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const std::function<void ( QgsFeatureId )> &visitor ) const
 {
   // TODO -- add spatial index if performance is an issue
   const QgsRectangle profileRange( distanceRange.lower(), elevationRange.lower(), distanceRange.upper(), elevationRange.upper() );
@@ -1621,7 +1621,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   return true;
 }
 
-double QgsVectorLayerProfileGenerator::terrainHeight( double x, double y )
+double QgsVectorLayerProfileGenerator::terrainHeight( double x, double y ) const
 {
   if ( !mTerrainProvider )
     return std::numeric_limits<double>::quiet_NaN();
@@ -1640,7 +1640,7 @@ double QgsVectorLayerProfileGenerator::terrainHeight( double x, double y )
   return mTerrainProvider->heightAt( x, y );
 }
 
-double QgsVectorLayerProfileGenerator::featureZToHeight( double x, double y, double z, double offset )
+double QgsVectorLayerProfileGenerator::featureZToHeight( double x, double y, double z, double offset ) const
 {
   switch ( mClamping )
   {
@@ -1677,7 +1677,7 @@ double QgsVectorLayerProfileGenerator::featureZToHeight( double x, double y, dou
   return ( std::isnan( z ) ? 0 : z ) * mScale + offset;
 }
 
-void QgsVectorLayerProfileGenerator::clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset )
+void QgsVectorLayerProfileGenerator::clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset ) const
 {
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
@@ -1729,7 +1729,7 @@ void QgsVectorLayerProfileGenerator::clampAltitudes( QgsLineString *lineString, 
   }
 }
 
-bool QgsVectorLayerProfileGenerator::clampAltitudes( QgsPolygon *polygon, double offset )
+bool QgsVectorLayerProfileGenerator::clampAltitudes( QgsPolygon *polygon, double offset ) const
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
