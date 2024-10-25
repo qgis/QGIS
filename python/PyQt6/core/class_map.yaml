@@ -4884,7 +4884,7 @@ QgsGeometry.Error.hasWhere: src/core/geometry/qgsgeometry.h#L2776
 QgsGeometry.Error.what: src/core/geometry/qgsgeometry.h#L2766
 QgsGeometry.Error.where: src/core/geometry/qgsgeometry.h#L2771
 QgsGeometry.Error: src/core/geometry/qgsgeometry.h#L2747
-QgsGeometry.QVariant: src/core/geometry/qgsgeometry.h#L3183
+QgsGeometry.QVariant: src/core/geometry/qgsgeometry.h#L3185
 QgsGeometry.QgsGeometry: src/core/geometry/qgsgeometry.h#L184
 QgsGeometry.__repr__: src/core/geometry/qgsgeometry.h#L2185
 QgsGeometry.addPart: src/core/geometry/qgsgeometry.h#L930
@@ -4938,8 +4938,8 @@ QgsGeometry.contains: src/core/geometry/qgsgeometry.h#L1465
 QgsGeometry.contains: src/core/geometry/qgsgeometry.h#L1472
 QgsGeometry.contains: src/core/geometry/qgsgeometry.h#L1483
 QgsGeometry.convertGeometryCollectionToSubclass: src/core/geometry/qgsgeometry.h#L2609
-QgsGeometry.convertPointList: src/core/geometry/qgsgeometry.h#L3170
-QgsGeometry.convertPointList: src/core/geometry/qgsgeometry.h#L3177
+QgsGeometry.convertPointList: src/core/geometry/qgsgeometry.h#L3172
+QgsGeometry.convertPointList: src/core/geometry/qgsgeometry.h#L3179
 QgsGeometry.convertToCurvedMultiType: src/core/geometry/qgsgeometry.h#L2587
 QgsGeometry.convertToCurves: src/core/geometry/qgsgeometry.h#L1674
 QgsGeometry.convertToMultiType: src/core/geometry/qgsgeometry.h#L2570
@@ -4947,7 +4947,7 @@ QgsGeometry.convertToSingleType: src/core/geometry/qgsgeometry.h#L2598
 QgsGeometry.convertToStraightSegment: src/core/geometry/qgsgeometry.h#L2843
 QgsGeometry.convertToType: src/core/geometry/qgsgeometry.h#L2252
 QgsGeometry.convexHull: src/core/geometry/qgsgeometry.h#L1804
-QgsGeometry.createGeometryEngine: src/core/geometry/qgsgeometry.h#L3163
+QgsGeometry.createGeometryEngine: src/core/geometry/qgsgeometry.h#L3165
 QgsGeometry.createPolygonFromQPolygonF: src/core/geometry/qgsgeometry.h#L2952
 QgsGeometry.createPolylineFromQPolygonF: src/core/geometry/qgsgeometry.h#L2943
 QgsGeometry.createWedgeBuffer: src/core/geometry/qgsgeometry.h#L347
