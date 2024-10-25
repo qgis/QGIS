@@ -45,6 +45,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mExtrusionSpinBox->setClearValue( 0 );
+  mToleranceSpinBox->setClearValue( 0 );
 
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
@@ -78,6 +79,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mElevationLimitSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mExtrusionSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mExtrusionGroupBox, &QGroupBox::toggled, this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mToleranceSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::clampingChanged );
@@ -155,6 +157,8 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mElevationLimitSpinBox->setValue( props->elevationLimit() );
   mExtrusionGroupBox->setChecked( props->extrusionEnabled() );
   mExtrusionSpinBox->setValue( props->extrusionHeight() );
+  mToleranceGroupBox->setChecked( props->customToleranceEnabled() );
+  mToleranceSpinBox->setValue( props->customTolerance() );
   mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( static_cast<int>( props->type() ) ) );
   switch ( props->type() )
   {
@@ -234,6 +238,8 @@ void QgsVectorElevationPropertiesWidget::apply()
   props->setBinding( static_cast<Qgis::AltitudeBinding>( mComboBinding->currentData().toInt() ) );
   props->setExtrusionEnabled( mExtrusionGroupBox->isChecked() );
   props->setExtrusionHeight( mExtrusionSpinBox->value() );
+  props->setCustomToleranceEnabled( mToleranceGroupBox->isChecked() );
+  props->setCustomTolerance( mToleranceSpinBox->value() );
   if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
     props->setElevationLimit( mElevationLimitSpinBox->value() );
   else
