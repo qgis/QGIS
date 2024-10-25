@@ -27,7 +27,8 @@
 #include <QSlider>
 
 QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *parent, const QString &fileExtension, Qt::WindowFlags flags )
-  : QDialog( parent, flags ), mFileExtension( fileExtension )
+  : QDialog( parent, flags )
+  , mFileExtension( fileExtension )
 {
   setupUi( this );
   connect( mWidthSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged );
@@ -43,7 +44,7 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
   mQualityLabel->setVisible( showQuality );
   mQualityLabel->setText( tr( "%1 quality", "Image format" ).arg( mFileExtension.toUpper() ) );
 
-  connect( mQualitySpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mQualitySlider, &QSlider::setValue );
+  connect( mQualitySpinBox, qOverload< int >( &QSpinBox::valueChanged ), mQualitySlider, &QSlider::setValue );
   connect( mQualitySlider, &QSlider::valueChanged, mQualitySpinBox, &QSpinBox::setValue );
 
   QgsGui::enableAutoGeometryRestore( this );
