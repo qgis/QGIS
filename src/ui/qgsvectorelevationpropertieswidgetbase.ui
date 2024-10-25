@@ -280,6 +280,57 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="mToleranceGroupBox">
+     <property name="toolTip">
+      <string>If checked, the layer will use this tolerance instead of the one defined in the Elevation Profile widget.</string>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="title">
+      <string>Custom Tolerance</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">vectorgeneral</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_Tolerance">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_Tolerance">
+        <property name="text">
+         <string>Tolerance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mToleranceSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>99999999999.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="Line" name="line_Tolerance">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Profile Chart Appearance</string>
