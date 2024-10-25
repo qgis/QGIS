@@ -257,7 +257,7 @@ void QgsGeometryValidator::run()
         return;
       }
 
-      const QgsGeos geos( mGeometry.constGet() );
+      const QgsGeos geos( mGeometry.constGet(), 0, Qgis::GeosCreationFlags() );
       QString error;
       QgsGeometry errorLoc;
       if ( !geos.isValid( &error, true, &errorLoc ) )
