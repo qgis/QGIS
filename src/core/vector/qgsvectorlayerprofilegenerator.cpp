@@ -687,6 +687,8 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   , mBinding( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->binding() )
   , mExtrusionEnabled( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->extrusionEnabled() )
   , mExtrusionHeight( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->extrusionHeight() )
+  , mCustomToleranceEnabled( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->customToleranceEnabled() )
+  , mCustomTolerance( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->customTolerance() )
   , mExpressionContext( request.expressionContext() )
   , mFields( layer->fields() )
   , mDataDefinedProperties( layer->elevationProperties()->dataDefinedProperties() )
@@ -818,13 +820,13 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
   mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
   mProfileCurveEngine->prepareGeometry();
 
-  if ( mTolerance == 0.0 ) // geos does not handle very well buffer with 0 size
+  if ( tolerance() == 0.0 ) // geos does not handle very well buffer with 0 size
   {
     mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurve->clone() );
   }
   else
   {
-    mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+    mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( tolerance(), 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   }
 
   mProfileBufferedCurveEngine.reset( new QgsGeos( mProfileBufferedCurve.get() ) );
@@ -875,7 +877,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
   // get features from layer
   QgsFeatureRequest request;
   request.setCoordinateTransform( QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext ) );
-  request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
+  request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), tolerance() );
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
@@ -1038,9 +1040,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  if ( mTolerance > 0 )
+  if ( tolerance() > 0 )
   {
-    request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
+    request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), tolerance() );
   }
   else
   {
@@ -1330,9 +1332,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  if ( mTolerance > 0 )
+  if ( tolerance() > 0 )
   {
-    request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
+    request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), tolerance() );
   }
   else
   {
@@ -1403,7 +1405,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     if ( mFeedback->isCanceled() )
       return;
 
-    if ( mTolerance > 0.0 ) // if the tolerance is not 0.0 we will have a polygon / polygon intersection, we do not need tessellation
+    if ( tolerance() > 0.0 ) // if the tolerance is not 0.0 we will have a polygon / polygon intersection, we do not need tessellation
     {
       QString error;
       if ( mProfileBufferedCurveEngine->intersects( clampedPolygon.get(), &error ) )
@@ -1623,6 +1625,11 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     mResults->features[resultFeature.featureId].append( resultFeature );
   }
   return true;
+}
+
+double QgsVectorLayerProfileGenerator::tolerance() const
+{
+  return mCustomToleranceEnabled ? mCustomTolerance : mTolerance;
 }
 
 double QgsVectorLayerProfileGenerator::terrainHeight( double x, double y ) const
