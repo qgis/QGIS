@@ -7,9 +7,6 @@
   <title>QGIS News</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -28,13 +25,16 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -84,9 +84,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -148,10 +149,18 @@
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
 </head>
@@ -161,122 +170,424 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#whats-new-in-version-3.34-prizren">What’s new in Version
-3.34 ‘Prizren’?</a></li>
-<li><a href="#whats-new-in-version-3.32-lima">What’s new in Version 3.32
+<li><a href="#whats-new-in-version-3.40-bratislava"
+id="toc-whats-new-in-version-3.40-bratislava">What’s new in Version 3.40
+‘Bratislava’?</a></li>
+<li><a href="#whats-new-in-version-3.38-grenoble"
+id="toc-whats-new-in-version-3.38-grenoble">What’s new in Version 3.38
+‘Grenoble’?</a></li>
+<li><a href="#whats-new-in-version-3.36-maidenhead"
+id="toc-whats-new-in-version-3.36-maidenhead">What’s new in Version 3.36
+‘Maidenhead’?</a></li>
+<li><a href="#whats-new-in-version-3.34-prizren"
+id="toc-whats-new-in-version-3.34-prizren">What’s new in Version 3.34
+‘Prizren’?</a></li>
+<li><a href="#whats-new-in-version-3.32-lima"
+id="toc-whats-new-in-version-3.32-lima">What’s new in Version 3.32
 ‘Lima’?</a></li>
-<li><a href="#whats-new-in-version-3.30-s-hertogenbosch">What’s new in
-Version 3.30 ‘’s-Hertogenbosch’?</a></li>
-<li><a href="#whats-new-in-version-3.28-firenze">What’s new in Version
-3.28 ‘Firenze’?</a></li>
-<li><a href="#whats-new-in-version-3.26-buenos-aires">What’s new in
-Version 3.26 ‘Buenos Aires’?</a></li>
-<li><a href="#whats-new-in-version-3.24-tisler">What’s new in Version
-3.24 ‘Tisler’?</a></li>
-<li><a href="#whats-new-in-version-3.22-białowieża">What’s new in
-Version 3.22 ‘Białowieża’?</a></li>
-<li><a href="#whats-new-in-version-3.20-odense">What’s new in Version
-3.20 ‘Odense’?</a></li>
-<li><a href="#whats-new-in-version-3.18-zürich">What’s new in Version
-3.18 ‘Zürich’?</a></li>
-<li><a href="#whats-new-in-version-3.16-hannover">What’s new in Version
-3.16 ‘Hannover’?</a></li>
-<li><a href="#whats-new-in-version-3.14-pi">What’s new in Version 3.14
+<li><a href="#whats-new-in-version-3.30-s-hertogenbosch"
+id="toc-whats-new-in-version-3.30-s-hertogenbosch">What’s new in Version
+3.30 ‘’s-Hertogenbosch’?</a></li>
+<li><a href="#whats-new-in-version-3.28-firenze"
+id="toc-whats-new-in-version-3.28-firenze">What’s new in Version 3.28
+‘Firenze’?</a></li>
+<li><a href="#whats-new-in-version-3.26-buenos-aires"
+id="toc-whats-new-in-version-3.26-buenos-aires">What’s new in Version
+3.26 ‘Buenos Aires’?</a></li>
+<li><a href="#whats-new-in-version-3.24-tisler"
+id="toc-whats-new-in-version-3.24-tisler">What’s new in Version 3.24
+‘Tisler’?</a></li>
+<li><a href="#whats-new-in-version-3.22-białowieża"
+id="toc-whats-new-in-version-3.22-białowieża">What’s new in Version 3.22
+‘Białowieża’?</a></li>
+<li><a href="#whats-new-in-version-3.20-odense"
+id="toc-whats-new-in-version-3.20-odense">What’s new in Version 3.20
+‘Odense’?</a></li>
+<li><a href="#whats-new-in-version-3.18-zürich"
+id="toc-whats-new-in-version-3.18-zürich">What’s new in Version 3.18
+‘Zürich’?</a></li>
+<li><a href="#whats-new-in-version-3.16-hannover"
+id="toc-whats-new-in-version-3.16-hannover">What’s new in Version 3.16
+‘Hannover’?</a></li>
+<li><a href="#whats-new-in-version-3.14-pi"
+id="toc-whats-new-in-version-3.14-pi">What’s new in Version 3.14
 ‘Pi’?</a></li>
-<li><a href="#whats-new-in-version-3.12-bucurești">What’s new in Version
-3.12 ‘București’?</a></li>
-<li><a href="#whats-new-in-version-3.10-a-coruña">What’s new in Version
-3.10 ‘A Coruña’?</a></li>
-<li><a href="#whats-new-in-version-3.8-zanzibar">What’s new in Version
-3.8 ‘Zanzibar’?</a></li>
-<li><a href="#whats-new-in-version-3.6.0-noosa">What’s new in Version
-3.6.0 ‘Noosa’?</a></li>
-<li><a href="#whats-new-in-version-3.4-ltr-madeira">What’s new in
-Version 3.4-LTR ‘Madeira’?</a></li>
-<li><a href="#whats-new-in-version-3.2-bonn">What’s new in Version 3.2
+<li><a href="#whats-new-in-version-3.12-bucurești"
+id="toc-whats-new-in-version-3.12-bucurești">What’s new in Version 3.12
+‘București’?</a></li>
+<li><a href="#whats-new-in-version-3.10-a-coruña"
+id="toc-whats-new-in-version-3.10-a-coruña">What’s new in Version 3.10
+‘A Coruña’?</a></li>
+<li><a href="#whats-new-in-version-3.8-zanzibar"
+id="toc-whats-new-in-version-3.8-zanzibar">What’s new in Version 3.8
+‘Zanzibar’?</a></li>
+<li><a href="#whats-new-in-version-3.6.0-noosa"
+id="toc-whats-new-in-version-3.6.0-noosa">What’s new in Version 3.6.0
+‘Noosa’?</a></li>
+<li><a href="#whats-new-in-version-3.4-ltr-madeira"
+id="toc-whats-new-in-version-3.4-ltr-madeira">What’s new in Version
+3.4-LTR ‘Madeira’?</a></li>
+<li><a href="#whats-new-in-version-3.2-bonn"
+id="toc-whats-new-in-version-3.2-bonn">What’s new in Version 3.2
 ‘Bonn’?</a></li>
-<li><a href="#whats-new-in-version-3.0-girona">What’s new in Version 3.0
+<li><a href="#whats-new-in-version-3.0-girona"
+id="toc-whats-new-in-version-3.0-girona">What’s new in Version 3.0
 ‘Girona’?</a></li>
-<li><a href="#whats-new-in-version-2.18-las-palmas">What’s new in
-Version 2.18 ‘Las Palmas’?</a></li>
-<li><a href="#whats-new-in-version-2.16-nødebo">What’s new in Version
-2.16 ‘Nødebo’?</a></li>
-<li><a href="#whats-new-in-version-2.14-essen">What’s new in Version
-2.14 ‘Essen’?</a></li>
-<li><a href="#whats-new-in-version-2.12-lyon">What’s new in Version 2.12
+<li><a href="#whats-new-in-version-2.18-las-palmas"
+id="toc-whats-new-in-version-2.18-las-palmas">What’s new in Version 2.18
+‘Las Palmas’?</a></li>
+<li><a href="#whats-new-in-version-2.16-nødebo"
+id="toc-whats-new-in-version-2.16-nødebo">What’s new in Version 2.16
+‘Nødebo’?</a></li>
+<li><a href="#whats-new-in-version-2.14-essen"
+id="toc-whats-new-in-version-2.14-essen">What’s new in Version 2.14
+‘Essen’?</a></li>
+<li><a href="#whats-new-in-version-2.12-lyon"
+id="toc-whats-new-in-version-2.12-lyon">What’s new in Version 2.12
 ‘Lyon’?</a></li>
-<li><a href="#whats-new-in-version-2.10-pisa">What’s new in Version 2.10
+<li><a href="#whats-new-in-version-2.10-pisa"
+id="toc-whats-new-in-version-2.10-pisa">What’s new in Version 2.10
 ‘Pisa’?</a></li>
-<li><a href="#whats-new-in-version-2.8-wien">What’s new in Version 2.8
+<li><a href="#whats-new-in-version-2.8-wien"
+id="toc-whats-new-in-version-2.8-wien">What’s new in Version 2.8
 ‘Wien’?</a></li>
-<li><a href="#whats-new-in-version-2.6.0-brighton">What’s new in Version
-2.6.0 ‘Brighton’?</a></li>
-<li><a href="#whats-new-in-version-2.4.0-chugiak">What’s new in Version
-2.4.0 ‘Chugiak’?</a></li>
-<li><a href="#whats-new-in-version-2.2.0-valmiera">What’s new in Version
-2.2.0 ‘Valmiera’?</a></li>
-<li><a href="#whats-new-in-version-2.0.1-dufour">What’s new in Version
-2.0.1 ‘Dufour’?</a></li>
-<li><a href="#whats-new-in-version-2.0.0-dufour">What’s new in Version
-2.0.0 ‘Dufour’?</a></li>
-<li><a href="#whats-new-in-version-1.8.0-lisboa">What’s new in Version
-1.8.0 ‘Lisboa’?</a></li>
-<li><a href="#whats-new-in-version-1.7.2-wroclaw">What’s new in Version
-1.7.2 ‘Wroclaw’?</a></li>
-<li><a href="#whats-new-in-version-1.7.1-wroclaw">What’s new in Version
-1.7.1 ‘Wroclaw’?</a></li>
-<li><a href="#whats-new-in-version-1.7.0-wroclaw">What’s new in Version
-1.7.0 ‘Wroclaw’?</a></li>
-<li><a href="#whats-new-in-version-1.6.0-capiapo">What’s new in Version
-1.6.0 ‘Capiapo’?</a></li>
-<li><a href="#whats-new-in-version-1.5.0">What’s new in Version
+<li><a href="#whats-new-in-version-2.6.0-brighton"
+id="toc-whats-new-in-version-2.6.0-brighton">What’s new in Version 2.6.0
+‘Brighton’?</a></li>
+<li><a href="#whats-new-in-version-2.4.0-chugiak"
+id="toc-whats-new-in-version-2.4.0-chugiak">What’s new in Version 2.4.0
+‘Chugiak’?</a></li>
+<li><a href="#whats-new-in-version-2.2.0-valmiera"
+id="toc-whats-new-in-version-2.2.0-valmiera">What’s new in Version 2.2.0
+‘Valmiera’?</a></li>
+<li><a href="#whats-new-in-version-2.0.1-dufour"
+id="toc-whats-new-in-version-2.0.1-dufour">What’s new in Version 2.0.1
+‘Dufour’?</a></li>
+<li><a href="#whats-new-in-version-2.0.0-dufour"
+id="toc-whats-new-in-version-2.0.0-dufour">What’s new in Version 2.0.0
+‘Dufour’?</a></li>
+<li><a href="#whats-new-in-version-1.8.0-lisboa"
+id="toc-whats-new-in-version-1.8.0-lisboa">What’s new in Version 1.8.0
+‘Lisboa’?</a></li>
+<li><a href="#whats-new-in-version-1.7.2-wroclaw"
+id="toc-whats-new-in-version-1.7.2-wroclaw">What’s new in Version 1.7.2
+‘Wroclaw’?</a></li>
+<li><a href="#whats-new-in-version-1.7.1-wroclaw"
+id="toc-whats-new-in-version-1.7.1-wroclaw">What’s new in Version 1.7.1
+‘Wroclaw’?</a></li>
+<li><a href="#whats-new-in-version-1.7.0-wroclaw"
+id="toc-whats-new-in-version-1.7.0-wroclaw">What’s new in Version 1.7.0
+‘Wroclaw’?</a></li>
+<li><a href="#whats-new-in-version-1.6.0-capiapo"
+id="toc-whats-new-in-version-1.6.0-capiapo">What’s new in Version 1.6.0
+‘Capiapo’?</a></li>
+<li><a href="#whats-new-in-version-1.5.0"
+id="toc-whats-new-in-version-1.5.0">What’s new in Version
 1.5.0?</a></li>
-<li><a href="#whats-new-in-version-1.4.0-enceladus">What’s new in
-Version 1.4.0 ‘Enceladus’?</a></li>
-<li><a href="#whats-new-in-version-1.3.0-mimas">What’s new in Version
-1.3.0 ‘Mimas’?</a></li>
-<li><a href="#version-1.2.0-daphnis">Version 1.2.0 ‘Daphnis’</a></li>
-<li><a href="#version-1.1.0-pan">Version 1.1.0 ‘Pan’</a></li>
-<li><a href="#version-1.0.0-kore">Version 1.0.0 ‘Kore’</a></li>
-<li><a href="#version-0.11.0-metis">Version 0.11.0 ‘Metis’</a></li>
-<li><a href="#version-0.10.0-io">Version 0.10.0 ‘Io’</a></li>
-<li><a href="#version-0.9.2rc1-ganymede">Version 0.9.2rc1
-‘Ganymede’</a></li>
-<li><a href="#version-0.9.1-ganymede">Version 0.9.1 ‘Ganymede’</a></li>
-<li><a href="#version-0.9-ganymede">Version 0.9 ‘Ganymede’</a></li>
-<li><a href="#version-0.8-joesephine-.-development-version">Version 0.8
+<li><a href="#whats-new-in-version-1.4.0-enceladus"
+id="toc-whats-new-in-version-1.4.0-enceladus">What’s new in Version
+1.4.0 ‘Enceladus’?</a></li>
+<li><a href="#whats-new-in-version-1.3.0-mimas"
+id="toc-whats-new-in-version-1.3.0-mimas">What’s new in Version 1.3.0
+‘Mimas’?</a></li>
+<li><a href="#version-1.2.0-daphnis"
+id="toc-version-1.2.0-daphnis">Version 1.2.0 ‘Daphnis’</a></li>
+<li><a href="#version-1.1.0-pan" id="toc-version-1.1.0-pan">Version
+1.1.0 ‘Pan’</a></li>
+<li><a href="#version-1.0.0-kore" id="toc-version-1.0.0-kore">Version
+1.0.0 ‘Kore’</a></li>
+<li><a href="#version-0.11.0-metis"
+id="toc-version-0.11.0-metis">Version 0.11.0 ‘Metis’</a></li>
+<li><a href="#version-0.10.0-io" id="toc-version-0.10.0-io">Version
+0.10.0 ‘Io’</a></li>
+<li><a href="#version-0.9.2rc1-ganymede"
+id="toc-version-0.9.2rc1-ganymede">Version 0.9.2rc1 ‘Ganymede’</a></li>
+<li><a href="#version-0.9.1-ganymede"
+id="toc-version-0.9.1-ganymede">Version 0.9.1 ‘Ganymede’</a></li>
+<li><a href="#version-0.9-ganymede"
+id="toc-version-0.9-ganymede">Version 0.9 ‘Ganymede’</a></li>
+<li><a href="#version-0.8-joesephine-.-development-version"
+id="toc-version-0.8-joesephine-.-development-version">Version 0.8
 ‘Joesephine’ …. development version</a></li>
-<li><a href="#version-0.6-simon">Version 0.6 ‘Simon’</a></li>
-<li><a href="#version-0.5">Version 0.5</a></li>
-<li><a href="#version-0.1-moroz-february-25-2004">Version 0.1 ‘Moroz’
-February 25, 2004</a></li>
-<li><a href="#version-0.0.13-december-8-2003">Version 0.0.13 December 8,
+<li><a href="#version-0.6-simon" id="toc-version-0.6-simon">Version 0.6
+‘Simon’</a></li>
+<li><a href="#version-0.5" id="toc-version-0.5">Version 0.5</a></li>
+<li><a href="#version-0.1-moroz-february-25-2004"
+id="toc-version-0.1-moroz-february-25-2004">Version 0.1 ‘Moroz’ February
+25, 2004</a></li>
+<li><a href="#version-0.0.13-december-8-2003"
+id="toc-version-0.0.13-december-8-2003">Version 0.0.13 December 8,
 2003</a></li>
-<li><a href="#version-0.0.12-alpha-june-10-2003">Version 0.0.12-alpha
-June 10, 2003</a></li>
-<li><a href="#version-0.0.11-alpha-june-10-2003">Version 0.0.11-alpha
-June 10, 2003</a></li>
-<li><a href="#version-0.0.10-alpha-may-13-2003">Version 0.0.10-alpha May
-13, 2003</a></li>
-<li><a href="#version-0.0.9-alpha-january-25-2003">Version 0.0.9-alpha
-January 25, 2003</a></li>
-<li><a href="#version-0.0.8-alpha-december-11-2002">Version 0.0.8-alpha
+<li><a href="#version-0.0.12-alpha-june-10-2003"
+id="toc-version-0.0.12-alpha-june-10-2003">Version 0.0.12-alpha June 10,
+2003</a></li>
+<li><a href="#version-0.0.11-alpha-june-10-2003"
+id="toc-version-0.0.11-alpha-june-10-2003">Version 0.0.11-alpha June 10,
+2003</a></li>
+<li><a href="#version-0.0.10-alpha-may-13-2003"
+id="toc-version-0.0.10-alpha-may-13-2003">Version 0.0.10-alpha May 13,
+2003</a></li>
+<li><a href="#version-0.0.9-alpha-january-25-2003"
+id="toc-version-0.0.9-alpha-january-25-2003">Version 0.0.9-alpha January
+25, 2003</a></li>
+<li><a href="#version-0.0.8-alpha-december-11-2002"
+id="toc-version-0.0.8-alpha-december-11-2002">Version 0.0.8-alpha
 December 11, 2002</a></li>
-<li><a href="#version-0.0.7-alpha-november-30-2002">Version 0.0.7-alpha
+<li><a href="#version-0.0.7-alpha-november-30-2002"
+id="toc-version-0.0.7-alpha-november-30-2002">Version 0.0.7-alpha
 November 30, 2002</a></li>
-<li><a href="#version-0.0.6a-alpha-november-27-2002">Version
-0.0.6a-alpha November 27, 2002</a></li>
-<li><a href="#version-0.0.6-alpha-november-24-2002">Version 0.0.6-alpha
+<li><a href="#version-0.0.6a-alpha-november-27-2002"
+id="toc-version-0.0.6a-alpha-november-27-2002">Version 0.0.6a-alpha
+November 27, 2002</a></li>
+<li><a href="#version-0.0.6-alpha-november-24-2002"
+id="toc-version-0.0.6-alpha-november-24-2002">Version 0.0.6-alpha
 November 24, 2002</a></li>
-<li><a href="#version-0.0.5-alpha-october-5-2002">Version 0.0.5-alpha
-October 5, 2002</a></li>
-<li><a href="#version-0.0.4-alpha-august-15-2002">Version 0.0.4-alpha
-August 15, 2002</a></li>
-<li><a href="#version-0.0.3-alpha-august-10-2002">Version 0.0.3-alpha
-August 10, 2002</a></li>
+<li><a href="#version-0.0.5-alpha-october-5-2002"
+id="toc-version-0.0.5-alpha-october-5-2002">Version 0.0.5-alpha October
+5, 2002</a></li>
+<li><a href="#version-0.0.4-alpha-august-15-2002"
+id="toc-version-0.0.4-alpha-august-15-2002">Version 0.0.4-alpha August
+15, 2002</a></li>
+<li><a href="#version-0.0.3-alpha-august-10-2002"
+id="toc-version-0.0.3-alpha-august-10-2002">Version 0.0.3-alpha August
+10, 2002</a></li>
 </ul>
 </nav>
 <p>Change history for the QGIS Project</p>
+<h1 id="whats-new-in-version-3.40-bratislava">What’s new in Version 3.40
+‘Bratislava’?</h1>
+<p>This release has following new features:</p>
+<ul>
+<li>Map Tools: Respect layer/project vert datum in identify results</li>
+<li>Map Tools: Present referencing relations in info tool</li>
+<li>User Interface: Optionally autosize all columns by default when
+opening an attribute table</li>
+<li>User Interface: Actions Dialogue Duplicate Button</li>
+<li>Symbology: Provide style categories for raster layers</li>
+<li>Symbology: Add “Linear Referencing” symbol layer type</li>
+<li>Symbology: Implement color ramp interpolation for CMYK</li>
+<li>Symbology: CMYK color preview</li>
+<li>Symbology: Select color component as float</li>
+<li>Symbology: Allow end point marker symbols for balloon callout
+style</li>
+<li>Symbology: Buffers for marker symbols</li>
+<li>Symbology: Support tolerances for QgsRasterTransparency pixel
+values</li>
+<li>Annotations: Auto upgrade SVG and text annotations to annotation
+layer items on project load</li>
+<li>Annotations: Add support for callouts to point text, rect text and
+picture items</li>
+<li>Annotations: Add linked layer option for annotation layers</li>
+<li>Annotations: Text inside rectangle annotation item</li>
+<li>Annotations: Add picture annotation item type</li>
+<li>Labelling: Support horizontal alignment in HTML labels</li>
+<li>Labelling: HTML header formatting in HTML labels</li>
+<li>Labelling: Add support for word-spacing CSS in html labels</li>
+<li>Labelling: Implementation of labeling engine rules</li>
+<li>Diagrams: Introduce stacked diagrams</li>
+<li>Mesh: Add GUI for adding Quantized Mesh layers</li>
+<li>Rendering: Support multiple sources for vector tiles</li>
+<li>3D Features: Respect vector layer vertical CRS settings in 3D map
+views</li>
+<li>3D Features: 3D Scene Clip Distance</li>
+<li>Print Layouts: Add support merging cells in manual tables</li>
+<li>Print Layouts: Generate valid PDF/X-4 files</li>
+<li>Print Layouts: Add option to set geospatial PDF group name for
+items</li>
+<li>Print Layouts: Add Page Properties to layout main menu</li>
+<li>Print Layouts: Add scale method option for layout scale bars</li>
+<li>Expressions: Add ‘Custom Expression’ numeric format</li>
+<li>Expressions: Add line_interpolate_point_by_m and line_locate_m
+expressions</li>
+<li>Expressions: Extended color value support</li>
+<li>Expressions: Allow users to save expression functions in QGIS
+project file</li>
+<li>Expressions: Add info about usable “expression dialect” to filter
+dialog</li>
+<li>Expressions: Add project_color_object and ramp_color_object
+functions</li>
+<li>Digitising: Add circles intersection digitizing tool</li>
+<li>Digitising: Visual construction guides for advanced digitizing</li>
+<li>Data Management: Allow setting VSI credentials when loading OGR/GDAL
+layers</li>
+<li>Forms and Widgets: Allow reordering fields in new vector layer
+dialogs</li>
+<li>Forms and Widgets: Add metadata setting to override widget wrapper
+used for a parameter</li>
+<li>Forms and Widgets: Support img tags in HTML label text</li>
+<li>Processing: Open file or URL Algorithm</li>
+<li>Processing: Add processing parameter types for Area and Volume</li>
+<li>Processing: Updated “Vector information” algorithms</li>
+<li>Processing: Allow adding Processing tools to Favorites</li>
+<li>Processing: Add creation options support to some native raster
+Processing algorithms</li>
+<li>Processing: Support drag and drop for multi-layer parameters</li>
+<li>Application and Project Options: Smart cache size
+implementation</li>
+<li>Application and Project Options: Add vertical CRS selection widget
+to vector layer properties</li>
+<li>Application and Project Options: Project color mode properties
+widget</li>
+<li>Profile Plots: Change elevation profile name</li>
+<li>Profile Plots: Ensure vector layer elevation profiles respect
+layer/map vert datums</li>
+<li>Browser: add UX to load MVT layers from style URL only</li>
+<li>Browser: Add duplicate functionality to Browser connection
+items</li>
+<li>Browser: Adjust “Create Database” context menu actions on
+GeoPackage</li>
+<li>Browser: Add connections to cloud storage providers to browser</li>
+<li>Browser: STAC integration</li>
+<li>Data Providers: Support for polyhedral surface and TIN</li>
+<li>QGIS Server: WFS title definition for layers</li>
+<li>Programmability: Exceptions raised on QgsDistanceArea methods</li>
+<li>Programmability: Convert QgsRasterLayer to NumPy Array</li>
+<li>Programmability: Convert QgsGeometry to Shapely and NumPy</li>
+<li></li>
+</ul>
+<h1 id="whats-new-in-version-3.38-grenoble">What’s new in Version 3.38
+‘Grenoble’?</h1>
+<p>This release has following new features:</p>
+<ul>
+<li>Temporal: New temporal mode: pixel value as temporal datetime</li>
+<li>Map Tools: Add Elevation Controller for filtering vertical data in
+2d maps</li>
+<li>Map Tools: Add Z range support to map canvas / map settings
+items</li>
+<li>Map Tools: Add option to set a fixed elevation slice width for
+elevation controller</li>
+<li>User Interface: Add search option for regular expression based
+searching</li>
+<li>User Interface: Data defined override: use middle-click to open the
+Expression Builder dialog window</li>
+<li>Symbology: New single color renderer for rasters</li>
+<li>Symbology: Add support for Wind Barb rendering for mesh vector
+datasets</li>
+<li>Labelling: Add maximum distance setting for point labels</li>
+<li>Labelling: Add ‘over point’ placement option for cartographic label
+mode</li>
+<li>Rendering: Add data defined control over heatmap radius and maximum
+value</li>
+<li>Print Layouts: Tab character support for QgsTextFormat and
+QgsTextRenderer</li>
+<li>Print Layouts: Copy composer grids</li>
+<li>Print Layouts: Add z range filter option for layout maps</li>
+<li>Print Layouts: Add buttons to expand or collapse layout legend
+tree</li>
+<li>Expressions: Add <span class="citation"
+data-cites="map_z_range">@map_z_range</span> variables reflecting the
+map’s z range values</li>
+<li>Data Management: Duplicate policy on fields when duplicating
+features</li>
+<li>Data Management: Add “Fixed Time Range Per Band” mode for raster
+temporal control</li>
+<li>Data Management: Introduce fixed elevation range for raster
+layers</li>
+<li>Data Management: Introduce fixed elevation range for mesh
+layers</li>
+<li>Data Management: Add a “fixed range per band” elevation mode for
+rasters</li>
+<li>Data Management: Add “dynamic elevation range per band” mode for
+rasters</li>
+<li>Data Management: Add fixed elevation range per dataset group mode
+for mesh layers</li>
+<li>Data Management: Add option to export all lines with minimal width
+in dxf exports</li>
+<li>Data Management: Allow users to override the layer names exported to
+DXF</li>
+<li>Data Management: Create DXF blocks for point symbols with data
+defined properties</li>
+<li>Data Management: Add option ‘Use only selected features’ to DXF
+export</li>
+<li>Data Management: Import/ Export ‘DXF Export’ dialog settings</li>
+<li>Forms and Widgets: Add CMYK support for Color Widget</li>
+<li>Forms and Widgets: Add parent feature scope when adding/editing a
+child feature through the relation editor widget</li>
+<li>Forms and Widgets: Add “match contains” to autocompleter in value
+relation widget</li>
+<li>Forms and Widgets: Implement value relation’s grouping
+functionality</li>
+<li>Layer Legend: Show a color ramp legend for vector heatmap
+layers</li>
+<li>Layer Legend: Add layer tree filter for “Show Broken Layers
+Only”</li>
+<li>Processing: Show more detail in history dialog</li>
+<li>Processing: Add “Run Selected Steps” option to model designer</li>
+<li>Processing: Add “View Output Layers” option for model child
+algorithms</li>
+<li>Processing: Endpoint distance threshold for network analysis</li>
+<li>Processing: Add support for pure date and time decorators</li>
+<li>Application and Project Options: Add vertical crs option for
+projects</li>
+<li>Application and Project Options: Add elevation range to project
+properties</li>
+<li>Sensors: Support feature expansion</li>
+<li>Sensors: Add support for SensorThings Multidatastreams</li>
+<li>Sensors: Serial port sensor’s data frame delimiter</li>
+<li>Sensors: Add an optional feature limit setting</li>
+<li>Sensors: Implement subset string support for SensorThings</li>
+<li>Profile Plots: Add tolerance for lines and polygons</li>
+<li>Data Providers: Add extent based filtering for SensorThings
+layers</li>
+<li>Data Providers: Web proxy prefix support for ArcGIS URLs</li>
+<li>QGIS Server: Default limit for GetFeatureInfo results</li>
+<li>QGIS Server: Add crs information in WMS GetFeatureInfo output when
+it differs from WGS84</li>
+<li>Programmability: Add replace/ replace all functionality to
+QgsCodeEditorWidget</li>
+<li></li>
+</ul>
+<h1 id="whats-new-in-version-3.36-maidenhead">What’s new in Version 3.36
+‘Maidenhead’?</h1>
+<p>This release has following new features:</p>
+<ul>
+<li>Temporal: “Movie Mode” for the temporal controller</li>
+<li>User Interface: Add map layers custom properties to the information
+tab</li>
+<li>User Interface: Shortcut to define 3D scene extent on 2D canvas</li>
+<li>Symbology: Add height setting for raster fill symbol layer type</li>
+<li>Symbology: New “Filled line” symbol layer type</li>
+<li>Mesh: Mesh labeling</li>
+<li>3D Features: Allow data defined color control for simple 3d line
+rendering</li>
+<li>3D Features: Improved lighting controls for Phong Material</li>
+<li>3D Features: Physically based metal rough material</li>
+<li>Point Clouds: Size override for point cloud classification</li>
+<li>Point Clouds: Add “Render as a surface” option to 2D point cloud
+renderers</li>
+<li>Point Clouds: Faster point cloud rendering by caching decoded data
+blocks</li>
+<li>Expressions: Alias of minimum/maximum for min/max in aggregates</li>
+<li>Expressions: Counter variable in array_foreach expressions</li>
+<li>Expressions: Improved expression insertion</li>
+<li>Data Management: Add a Toggle Selection Button in the Organize
+columns window</li>
+<li>Processing: Add –skip-loading-plugins flag for qgis_process</li>
+<li>Processing: Click-through output paths in processing logs</li>
+<li>Processing: GEOS coverage simplify processing algorithm</li>
+<li>Processing: Processing algorithm to convert B3DM to GLTF</li>
+<li>Application and Project Options: Use “localhost” for OAuth2
+Redirects</li>
+<li>Application and Project Options: Support for serial port sensor
+baudrate selection</li>
+<li>Browser: Open layers with Datasource Manager from browser</li>
+<li>Data Providers: SensorThings Data Provider</li>
+<li>Data Providers: Drop OTB Processing provider</li>
+<li>Data Providers: WFS provider - Handle documents with Complex Feature
+schemas and JSON’ify content of complex properties</li>
+<li>QGIS Server: WMS GetMap in PDF Format</li>
+<li>QGIS Server: QGIS Server Properties Tab for Vector Tile Layers</li>
+<li>QGIS Server: GetLegendGraphics JSON rule</li>
+<li>QGIS Server: Add maptip for raster layer GetFeatureInfo</li>
+<li>QGIS Server: Add WMS parameter value to request only maptip for HTML
+feature info response</li>
+<li>QGIS Server: Option to skip “name” attribute for groups in WMS
+GetCapabilities</li>
+<li>Plugins: Use active layer when importing vector data with DB
+Manager</li>
+<li>Programmability: Expose 3D views to PyQGIS</li>
+<li></li>
+</ul>
 <h1 id="whats-new-in-version-3.34-prizren">What’s new in Version 3.34
 ‘Prizren’?</h1>
 <p>This release has following new features:</p>
