@@ -1626,6 +1626,15 @@ class PyQgsOGRProvider(QgisTestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
         self.assertEqual(encodedUri, uri)
 
+    @unittest.skipIf(gdal.GetDriverByName("GTFS") is None, "GTFS driver required")
+    def testDecodeGTFS(self):
+        """Test querySublayers() for GTFS .zip dataset"""
+
+        uri = os.path.join(TEST_DATA_DIR, "ogr", "gtfs_extract.zip")
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        res = metadata.querySublayers(uri)
+        self.assertEqual(len(res), 9)
+
     def testDecodeEncodeUriCredentialOptions(self):
         """Test decodeUri/encodeUri credential options support"""
 
