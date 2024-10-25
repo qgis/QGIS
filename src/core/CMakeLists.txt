@@ -2348,7 +2348,7 @@ if(WITH_INTERNAL_MESHOPTIMIZER)
   )
 else()
   find_package(meshoptimizer CONFIG REQUIRED)
-  target_link_libraries(qgis_core PRIVATE meshoptimizer::meshoptimizer)
+  target_link_libraries(qgis_core meshoptimizer::meshoptimizer)
 endif()
 
 # require c++17
