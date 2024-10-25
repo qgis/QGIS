@@ -1,0 +1,49 @@
+name: Compare vcpkg install changes
+description: Compares vcpkg install outputs between the base and head refs on pull requests and generates a report.
+
+inputs:
+  vcpkg-manifest-dir:
+    description: 'Directory containing the vcpkg.json manifest'
+    required: true
+    default: '.'
+    type: string
+  triplet:
+    description: 'Triplet to use for vcpkg installation'
+    required: true
+    default: 'x64-linux'
+    type: string
+
+outputs:
+  report:
+    description: 'The report of added and removed packages after vcpkg installation comparison'
+    value: ${{ steps.compare.outputs.report }}
+
+runs:
+  using: "composite"
+  steps:
+    # Run vcpkg install --dry-run on the head ref
+    - name: Run vcpkg install (HEAD)
+      shell: bash
+      run: |
+        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=${{ inputs.vcpkg-manifest-dir }} > /tmp/vcpkg-head-output.txt
+
+    # Run vcpkg install --dry-run on the base ref
+    - name: Run vcpkg install (BASE)
+      shell: bash
+      run: |
+        git worktree add .base-ref ${{ github.event.pull_request.base.sha }}
+        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=.base-ref/${{ inputs.vcpkg-manifest-dir }} > /tmp/vcpkg-base-output.txt
+
+
+    # Compare the outputs and generate a report
+    - name: Compare vcpkg outputs
+      shell: bash
+      id: compare
+      run: |
+        python3 ${GITHUB_ACTION_PATH}/vcpkg-diff.py > /tmp/vcpkg-report.txt
+        cat /tmp/vcpkg-report.txt
+        {
+          echo 'report<<EOF'
+          cat /tmp/vcpkg-report.txt
+          echo EOF
+        } >> "$GITHUB_OUTPUT"

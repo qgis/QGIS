@@ -463,7 +463,9 @@ class GrassUtils:
                     if 'r.out' in line or 'v.out' in line:
                         grassOutDone = True
                     loglines.append(line)
-                    if any([l in line for l in ['WARNING', 'ERROR']]):
+                    if any([l in line for l in ['WARNING', GrassUtils.tr('WARNING')]]):
+                        feedback.pushWarning(line.strip())
+                    elif any([l in line for l in ['ERROR', GrassUtils.tr('ERROR')]]):
                         feedback.reportError(line.strip())
                     elif 'Segmentation fault' in line:
                         feedback.reportError(line.strip())

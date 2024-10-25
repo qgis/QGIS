@@ -265,48 +265,33 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
 {
   QVector<QVariantMap> selectedPoints;
 
-  QgsPointCloudIndex *index = layer->dataProvider()->index();
-
-  if ( !index || !index->isValid() )
-    return selectedPoints;
-
-  const IndexedPointCloudNode root = index->root();
-
   const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
 
-  const QgsRectangle rootNodeExtentLayerCoords = index->nodeMapExtent( root );
-  QgsRectangle rootNodeExtentMapCoords;
+  const QgsRectangle layerExtentLayerCoords = layer->dataProvider()->extent();
+  QgsRectangle layerExtentMapCoords = layerExtentLayerCoords;
   if ( !renderContext.coordinateTransform().isShortCircuited() )
   {
     try
     {
       QgsCoordinateTransform extentTransform = renderContext.coordinateTransform();
       extentTransform.setBallparkTransformsAreAppropriate( true );
-      rootNodeExtentMapCoords = extentTransform.transformBoundingBox( rootNodeExtentLayerCoords );
+      layerExtentMapCoords = extentTransform.transformBoundingBox( layerExtentLayerCoords );
     }
     catch ( QgsCsException & )
     {
       QgsDebugError( QStringLiteral( "Could not transform node extent to map CRS" ) );
-      rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
     }
   }
-  else
-  {
-    rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
-  }
-
-  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
-  const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / index->span();
 
   const double mapUnitsPerPixel = renderContext.mapToPixel().mapUnitsPerPixel();
-  if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maxErrorPixels < 0.0 ) )
+  if ( ( mapUnitsPerPixel < 0.0 ) || ( maxErrorPixels < 0.0 ) )
   {
     QgsDebugError( QStringLiteral( "invalid screen error" ) );
     return selectedPoints;
   }
 
   const double maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
-  const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates * rootErrorInLayerCoordinates / rootErrorInMapCoordinates;
+  const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates * layerExtentLayerCoords.width() / layerExtentMapCoords.width();
 
   QgsGeometry selectionGeometry = geometry;
   if ( geometry.type() == Qgis::GeometryType::Point )

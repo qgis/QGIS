@@ -227,6 +227,30 @@ QgsStacItemCollection *QgsStacController::fetchItemCollection( const QUrl &url, 
   return ic;
 }
 
+QgsStacCollections *QgsStacController::fetchCollections( const QUrl &url, QString *error )
+{
+  QgsNetworkReplyContent content = fetchBlocking( url );
+
+  if ( content.error() != QNetworkReply::NoError )
+  {
+    if ( error )
+      *error = content.errorString();
+
+    return nullptr;
+  }
+
+  const QByteArray data = content.content();
+
+  QgsStacParser parser;
+  parser.setData( data );
+  QgsStacCollections *col = parser.collections();
+
+  if ( error )
+    *error = parser.error();
+
+  return col;
+}
+
 QgsNetworkReplyContent QgsStacController::fetchBlocking( const QUrl &url )
 {
   QNetworkRequest req( url );

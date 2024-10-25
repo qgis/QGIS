@@ -1022,10 +1022,10 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
   const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
-  if ( value.userType() == qMetaTypeId< QgsGeometry>() )
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( value, nullptr );
+  if ( !geom.isNull() )
   {
     //result is a geometry
-    QgsGeometry geom = value.value<QgsGeometry>();
     if ( geom.isNull() )
       return startToken + tr( "empty geometry" ) + endToken;
     else

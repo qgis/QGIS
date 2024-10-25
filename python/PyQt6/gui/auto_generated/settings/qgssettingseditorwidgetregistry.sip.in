@@ -34,12 +34,19 @@ Adds an editor widget ``wrapper`` to the registry
 If an editor widget with same id already exists, the wrapper is deleted and ``False`` is returned.
 %End
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const;
+    void addWrapperForSetting( QgsSettingsEditorWidgetWrapper *wrapper /Transfer/, const QgsSettingsEntryBase *setting /KeepReference/ );
+%Docstring
+Adds an editor widget ``wrapper`` for a specific setting to the registry
+
+.. versionadded:: 3.40
+%End
+
+    QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const /Factory/;
 %Docstring
 Returns a new instance of the editor widget for the given ``id``
 %End
 
-    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = 0 ) const /Factory/;
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = 0 ) const /TransferBack/;
 %Docstring
 Creates an editor widget for the given ``setting`` using the corresponding registered wrapper
 %End

@@ -28,6 +28,7 @@
 class QgsStacObject;
 class QgsStacCatalog;
 class QgsStacCollection;
+class QgsStacCollections;
 class QgsStacItem;
 class QgsStacItemCollection;
 class QNetworkReply;
@@ -82,6 +83,13 @@ class CORE_EXPORT QgsStacController : public QObject
      * The caller takes ownership of the returned feature collection
      */
     QgsStacItemCollection *fetchItemCollection( const QUrl &url, QString *error = nullptr );
+
+    /**
+     * Fetches collections from \a url using a blocking network request.
+     * An optional \a error parameter will be populated with any network error information.
+     * The caller takes ownership of the returned feature collection
+     */
+    QgsStacCollections *fetchCollections( const QUrl &url, QString *error = nullptr );
 
     /**
      * Initiates an asynchronous request for a STAC object using the \a url
