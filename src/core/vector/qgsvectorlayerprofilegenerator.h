@@ -136,6 +136,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     void processTriangleIntersectForLine( const QgsPolygon *triangle, const QgsLineString *intersect, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts );
     void processTriangleIntersectForPolygon( const QgsPolygon *triangle, const QgsPolygon *intersectionPolygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts );
 
+    double tolerance() const;
+
     double terrainHeight( double x, double y ) const;
     double featureZToHeight( double x, double y, double z, double offset ) const;
 
@@ -171,6 +173,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
     bool mExtrusionEnabled = false;
     double mExtrusionHeight = 0;
+    bool mCustomToleranceEnabled = false;
+    double mCustomTolerance = 0;
 
     QgsExpressionContext mExpressionContext;
     QgsFields mFields;
