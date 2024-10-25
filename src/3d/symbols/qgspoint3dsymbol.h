@@ -164,7 +164,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! Sets transform for individual objects represented by the symbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
 
-    //! Returns how nuch the billboard should be elevated upwards
+    //! Returns how much the billboard should be elevated upwards
     float billboardHeight() const;
 
     /**
