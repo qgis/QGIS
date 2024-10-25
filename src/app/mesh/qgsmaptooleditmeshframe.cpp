@@ -16,10 +16,12 @@
 #include "qgsmaptooleditmeshframe.h"
 
 #include <QMessageBox>
+#include <QLocale>
 
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsstatusbar.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsdoublespinbox.h"
@@ -45,6 +47,7 @@
 #include "qgsmeshselectbyexpressiondialog.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsidentifymenu.h"
+#include "qgsdistancearea.h"
 
 
 //
@@ -330,6 +333,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
     else if ( !mZValueWidget )
       createZValueWidget();
   } );
+
+  connect( this, &QgsMapToolEditMeshFrame::selectionChange, this, &QgsMapToolEditMeshFrame::updateStatusBarMessage );
 
   setAutoSnapEnabled( true );
 }
@@ -2840,4 +2845,66 @@ void QgsMapToolEditMeshFrame::showSelectByExpressionDialog()
   dialog->show();
   connect( dialog, &QgsMeshSelectByExpressionDialog::select, this, &QgsMapToolEditMeshFrame::selectByExpression );
   connect( dialog, &QgsMeshSelectByExpressionDialog::zoomToSelected, this, &QgsMapToolEditMeshFrame::onZoomToSelected );
+}
+
+void QgsMapToolEditMeshFrame::updateStatusBarMessage() const
+{
+  if ( ! mSelectedVertices.isEmpty() )
+  {
+    QString message;
+    if ( mSelectedVertices.count() == 1 )
+    {
+      const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
+      const int vertexId = mSelectedVertices.firstKey();
+      const QgsMeshVertex vertex = mesh.vertex( vertexId );
+
+      message = tr( "Selected mesh vertex ID: %1 at x: %2 y: %3 z: %4." ).arg( vertexId ).arg( QLocale().toString( vertex.x(), 'f' ) ).arg( QLocale().toString( vertex.y(), 'f' ) ).arg( QLocale().toString( vertex.z(), 'f' ) );
+    }
+    else if ( mSelectedVertices.count() == 2 )
+    {
+      const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
+      const int vertexId1 = mSelectedVertices.firstKey();
+      const int vertexId2 = mSelectedVertices.lastKey();
+      const QgsMeshVertex vertex1 = mesh.vertex( vertexId1 );
+      const QgsMeshVertex vertex2 = mesh.vertex( vertexId2 );
+
+      QString formattedDistance;
+      double distance;
+
+      // if crs is valid calculate using QgsDistanceArea otherwise calculate just as distance
+      if ( mCurrentLayer->crs().isValid() )
+      {
+        QgsDistanceArea distArea = QgsDistanceArea();
+        distArea.setSourceCrs( mCurrentLayer->crs(), QgsProject::instance()->transformContext() );
+        distArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
+        try
+        {
+          distance = distArea.measureLine( QgsPointXY( vertex1 ), QgsPointXY( vertex2 ) );
+          distance = distArea.convertLengthMeasurement( distance, QgsProject::instance()->distanceUnits() );
+          formattedDistance = distArea.formatDistance( distance, 6, QgsProject::instance()->distanceUnits() );
+        }
+        catch ( QgsCsException & ) {}
+      }
+
+      if ( formattedDistance.isEmpty() )
+      {
+        distance = vertex1.distance( vertex2 );
+        formattedDistance = QLocale().toString( distance, 'f' );
+      }
+
+      const double zDiff = vertex2.z() - vertex1.z();
+
+      message = tr( "Selected mesh vertices IDs: %1 and %2 with distance %3 and dZ %4." ).arg( vertexId1 ).arg( vertexId2 ).arg( formattedDistance ).arg( QLocale().toString( zDiff, 'f' ) );
+    }
+    else if ( mSelectedVertices.count() > 2 )
+    {
+      message = tr( "Selected %1 mesh vertices." ).arg( mSelectedVertices.count() );
+    }
+
+    QgisApp::instance()->statusBarIface()->showMessage( message );
+  }
+  else
+  {
+    QgisApp::instance()->statusBarIface()->clearMessage();
+  }
 }
