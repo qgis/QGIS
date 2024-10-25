@@ -54,6 +54,11 @@ void QgsStacParser::setData( const QByteArray &data )
   }
 }
 
+void QgsStacParser::setBaseUrl( const QUrl &url )
+{
+  mBaseUrl = url;
+}
+
 QgsStacObject::Type QgsStacParser::type() const
 {
   return mType;
@@ -390,7 +395,11 @@ QVector<QgsStacLink> QgsStacParser::parseLinks( const json &data )
   links.reserve( static_cast<int>( data.size() ) );
   for ( const auto &link : data )
   {
-    const QgsStacLink l( QString::fromStdString( link.at( "href" ) ),
+    QUrl linkUrl( QString::fromStdString( link.at( "href" ) ) );
+    if ( linkUrl.isRelative() )
+      linkUrl = mBaseUrl.resolved( linkUrl );
+
+    const QgsStacLink l( linkUrl.toString(),
                          QString::fromStdString( link.at( "rel" ) ),
                          link.contains( "type" ) ? getString( link["type"] ) : QString(),
                          link.contains( "title" ) ? getString( link["title"] ) : QString() );
@@ -405,7 +414,11 @@ QMap<QString, QgsStacAsset> QgsStacParser::parseAssets( const json &data )
   for ( const auto &asset : data.items() )
   {
     const json value = asset.value();
-    const QgsStacAsset a( QString::fromStdString( value.at( "href" ) ),
+    QUrl assetUrl( QString::fromStdString( value.at( "href" ) ) );
+    if ( assetUrl.isRelative() )
+      assetUrl = mBaseUrl.resolved( assetUrl );
+
+    const QgsStacAsset a( assetUrl.toString(),
                           value.contains( "title" ) ? getString( value["title"] ) : QString(),
                           value.contains( "description" ) ? getString( value["description"] ) : QString(),
                           value.contains( "type" ) ? getString( value["type"] ) : QString(),
