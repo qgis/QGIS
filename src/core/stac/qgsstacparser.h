@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include <nlohmann/json.hpp>
+#include <QUrl>
 
 #include "qgsstacobject.h"
 #include "qgsstacasset.h"
