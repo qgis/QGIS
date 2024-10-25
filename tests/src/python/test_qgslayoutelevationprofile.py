@@ -916,6 +916,10 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             f.setGeometry(QgsGeometry.fromWkt(line))
             self.assertTrue(vl.dataProvider().addFeature(f))
 
+        tolerance = 1
+
+        vl.elevationProperties().setCustomToleranceEnabled(True)
+        vl.elevationProperties().setCustomTolerance(tolerance)
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
         line_symbol = QgsLineSymbol.createSimple({"color": "#ff00ff", "width": "0.8"})
         line_symbol.setWidthUnit(Qgis.RenderUnit.MapUnits)
@@ -977,7 +981,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             )
         )
 
-        profile_item.setTolerance(1)
+        profile_item.setTolerance(tolerance)
         profile_item.setLayers([vl])
 
         self.assertTrue(
