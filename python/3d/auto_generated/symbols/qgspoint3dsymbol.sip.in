@@ -193,7 +193,7 @@ Sets transform for individual objects represented by the symbol
 
     float billboardHeight() const;
 %Docstring
-Returns how nuch the billboard should be elevated upwards
+Returns how much the billboard should be elevated upwards
 %End
 
   private:
