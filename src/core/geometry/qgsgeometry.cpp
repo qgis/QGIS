@@ -3483,7 +3483,7 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const Q
 
     case Qgis::GeometryValidationEngine::Geos:
     {
-      QgsGeos geos( d->geometry.get() );
+      QgsGeos geos( d->geometry.get(), 0, Qgis::GeosCreationFlags() );
       QString error;
       QgsGeometry errorLoc;
       if ( !geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, &errorLoc ) )
@@ -4467,9 +4467,9 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
   }
 }
 
-QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry, double precision )
+QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry, double precision, Qgis::GeosCreationFlags flags )
 {
-  return new QgsGeos( geometry, precision );
+  return new QgsGeos( geometry, precision, flags );
 }
 
 QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry )

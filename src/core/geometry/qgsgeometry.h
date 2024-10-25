@@ -3137,6 +3137,8 @@ class CORE_EXPORT QgsGeometry
      * a large number of spatial relationships will be tested (such as calling intersects(), within(), etc) then the
      * geometry should first be prepared by calling prepareGeometry() before performing the tests.
      *
+     * The \a flags argument was added in QGIS 3.40 to allow control over the resultant GEOS geometry.
+     *
      * ### Example
      *
      * \code{.py}
@@ -3160,7 +3162,7 @@ class CORE_EXPORT QgsGeometry
      *
      * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
      */
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0 ) SIP_FACTORY;
+    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) SIP_FACTORY;
 
     /**
      * Upgrades a point list from QgsPointXY to QgsPoint
