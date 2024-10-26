@@ -7906,8 +7906,9 @@ QgsLayoutObject.writeObjectPropertiesToElement: src/core/layout/qgslayoutobject.
 QgsLayoutObject: src/core/layout/qgslayoutobject.h#L38
 QgsLayoutPageCollection.QgsLayoutPageCollection: src/core/layout/qgslayoutpagecollection.h#L49
 QgsLayoutPageCollection.addPage: src/core/layout/qgslayoutpagecollection.h#L159
+QgsLayoutPageCollection.applyPropertiesToAllOtherPages: src/core/layout/qgslayoutpagecollection.h#L396
 QgsLayoutPageCollection.beginPageSizeChange: src/core/layout/qgslayoutpagecollection.h#L245
-QgsLayoutPageCollection.changed: src/core/layout/qgslayoutpagecollection.h#L403
+QgsLayoutPageCollection.changed: src/core/layout/qgslayoutpagecollection.h#L410
 QgsLayoutPageCollection.clear: src/core/layout/qgslayoutpagecollection.h#L216
 QgsLayoutPageCollection.deletePage: src/core/layout/qgslayoutpagecollection.h#L200
 QgsLayoutPageCollection.deletePage: src/core/layout/qgslayoutpagecollection.h#L210
@@ -7919,7 +7920,7 @@ QgsLayoutPageCollection.layout: src/core/layout/qgslayoutpagecollection.h#L54
 QgsLayoutPageCollection.maximumPageSize: src/core/layout/qgslayoutpagecollection.h#L275
 QgsLayoutPageCollection.maximumPageWidth: src/core/layout/qgslayoutpagecollection.h#L267
 QgsLayoutPageCollection.page: src/core/layout/qgslayoutpagecollection.h#L76
-QgsLayoutPageCollection.pageAboutToBeRemoved: src/core/layout/qgslayoutpagecollection.h#L411
+QgsLayoutPageCollection.pageAboutToBeRemoved: src/core/layout/qgslayoutpagecollection.h#L418
 QgsLayoutPageCollection.pageAtPoint: src/core/layout/qgslayoutpagecollection.h#L328
 QgsLayoutPageCollection.pageCount: src/core/layout/qgslayoutpagecollection.h#L67
 QgsLayoutPageCollection.pageIsEmpty: src/core/layout/qgslayoutpagecollection.h#L113
@@ -7932,7 +7933,7 @@ QgsLayoutPageCollection.pageStyleSymbol: src/core/layout/qgslayoutpagecollection
 QgsLayoutPageCollection.positionOnPage: src/core/layout/qgslayoutpagecollection.h#L347
 QgsLayoutPageCollection.predictPageNumberForPoint: src/core/layout/qgslayoutpagecollection.h#L316
 QgsLayoutPageCollection.readXml: src/core/layout/qgslayoutpagecollection.h#L379
-QgsLayoutPageCollection.redraw: src/core/layout/qgslayoutpagecollection.h#L396
+QgsLayoutPageCollection.redraw: src/core/layout/qgslayoutpagecollection.h#L403
 QgsLayoutPageCollection.reflow: src/core/layout/qgslayoutpagecollection.h#L259
 QgsLayoutPageCollection.resizeToContents: src/core/layout/qgslayoutpagecollection.h#L367
 QgsLayoutPageCollection.setPageStyleSymbol: src/core/layout/qgslayoutpagecollection.h#L229
