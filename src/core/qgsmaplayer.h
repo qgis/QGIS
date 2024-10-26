@@ -2486,7 +2486,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     friend class TestQgsMapLayer;
 };
 
-Q_DECLARE_METATYPE( QgsMapLayer * )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::LayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::StyleCategories )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::ReadFlags )
