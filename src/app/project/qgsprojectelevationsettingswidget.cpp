@@ -113,6 +113,9 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
   else
     whileBlocking( mElevationUpperSpin )->clear();
 
+  connect( mElevationLowerSpin, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsProjectElevationSettingsWidget::validate );
+  connect( mElevationUpperSpin, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsProjectElevationSettingsWidget::validate );
+
   updateVerticalCrsOptions();
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgsProjectElevationSettingsWidget::updateVerticalCrsOptions );
 
@@ -241,6 +244,15 @@ bool QgsProjectElevationSettingsWidget::validate()
       mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::MessageLevel::Critical );
     }
   }
+
+  // Show an error message if the lower value is greater than the upper one
+  // However, do not show the error message if one of the values is not set
+  if ( !mElevationLowerSpin->isCleared() && !mElevationUpperSpin->isCleared() && ( mElevationLowerSpin->value() >= mElevationUpperSpin->value() ) )
+  {
+    valid = false;
+    mMessageBar->pushMessage( tr( "Upper elevation range must be greater than the lower one" ), Qgis::MessageLevel::Critical );
+  }
+
   return valid;
 }
 
