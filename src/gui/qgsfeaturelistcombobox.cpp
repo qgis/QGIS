@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturelistcombobox.h"
-#include "moc_qgsfeaturelistcombobox.cpp"
 
 #include "qgsfeaturefiltermodel.h"
 #include "qgsanimatedicon.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "moc_qgsfeaturelistcombobox.cpp"
 
 #include <QCompleter>
 #include <QLineEdit>

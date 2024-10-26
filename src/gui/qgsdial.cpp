@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 #include "qgsdial.h"
-#include "moc_qgsdial.cpp"
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
+#include "moc_qgsdial.cpp"
 
 #include <QPaintEvent>
 #include <QPainter>

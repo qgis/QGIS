@@ -51,6 +51,9 @@ class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBas
     QString text() const { return mAngleLineEdit->text(); }
 
   private:
+    //! pointer to tool which owns this dialog
+    QgsMapTool *mTool = nullptr;
+
     //! The value we're showing
     double mValue = 0.0;
 };

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmapthemecollection.h"
-#include "moc_qgsmapthemecollection.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -23,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "moc_qgsmapthemecollection.cpp"
 
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )

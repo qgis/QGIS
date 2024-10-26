@@ -44,6 +44,8 @@ class QgsGeometryCheckerSetupTab : public QWidget
     void checkerFinished( bool );
 
   private:
+    QgisInterface *mIface = nullptr;
+    QDialog *mCheckerDialog;
     Ui::QgsGeometryCheckerSetupTab ui;
     QPushButton *mRunButton = nullptr;
     QPushButton *mAbortButton = nullptr;

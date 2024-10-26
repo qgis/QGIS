@@ -52,6 +52,7 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
   private:
     bool mReadOnly = false;
     QVariantList mLines;
+    QMetaType::Type mSubType;
 };
 ///@endcond
 #endif
