@@ -239,9 +239,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Map mime type labels to supported formats
     QMap<QString, QString> mMimeLabelMap;
 
-    //! Layer specific settings widget
-    QgsOWSSourceWidget *mSourceWidget = nullptr;
-
   private slots:
     void mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
     void mLayerUpButton_clicked();

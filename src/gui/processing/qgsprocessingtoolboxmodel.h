@@ -129,7 +129,6 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 
   private:
 
-    NodeType mNodeType = NodeType::Provider;
     QgsProcessingToolboxModelNode *mParent = nullptr;
     QList<QgsProcessingToolboxModelNode *> mChildren;
 

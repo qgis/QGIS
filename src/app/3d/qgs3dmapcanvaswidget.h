@@ -127,7 +127,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionMapThemes = nullptr;
     QAction *mActionCamera = nullptr;
     QAction *mActionEffects = nullptr;
-    QAction *mActionOptions = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;

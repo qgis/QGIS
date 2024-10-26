@@ -48,11 +48,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
      * ownership to the caller.
      */
     std::unique_ptr< QgsHighlight > createHighlight( QgsVectorLayer *layer, const QgsFeature &f );
-
-    /**
-     * Check if CaptureMode matches layer type. Default is TRUE.
-    */
-    bool mCheckGeometryType;
 };
 
 #endif // QGSMAPTOOLADDFEATURE_H

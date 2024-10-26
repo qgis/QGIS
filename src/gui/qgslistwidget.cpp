@@ -20,7 +20,6 @@
 QgsListWidget::QgsListWidget( QMetaType::Type subType, QWidget *parent )
   : QgsTableWidgetBase( parent )
   , mModel( subType, this )
-  , mSubType( subType )
 {
   init( &mModel );
 }
