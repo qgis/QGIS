@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "moc_qgsskyboxrenderingsettingswidget.cpp"
 
 #include <QCheckBox>
 #include <QLineEdit>

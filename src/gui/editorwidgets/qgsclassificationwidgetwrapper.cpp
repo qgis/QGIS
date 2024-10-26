@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsclassificationwidgetwrapper.h"
+#include "moc_qgsclassificationwidgetwrapper.cpp"
 
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"

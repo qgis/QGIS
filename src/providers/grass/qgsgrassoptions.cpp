@@ -20,6 +20,7 @@
 
 #include "qgsgrass.h"
 #include "qgsgrassoptions.h"
+#include "moc_qgsgrassoptions.cpp"
 #include "ui_qgsgrassoptionsbase.h"
 
 extern "C"

@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmapwidget.h"
+#include "moc_qgslayoutmapwidget.cpp"
 #include "qgssettingsregistrycore.h"
 #include "qgslayoutitemmap.h"
 #include "qgsproject.h"

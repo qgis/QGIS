@@ -18,6 +18,7 @@
 
 
 #include "qgsnewgeopackagelayerdialog.h"
+#include "moc_qgsnewgeopackagelayerdialog.cpp"
 
 #include "qgis.h"
 #include "qgsapplication.h"

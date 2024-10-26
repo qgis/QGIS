@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsterraintileloader.h"
+#include "moc_qgsterraintileloader.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"

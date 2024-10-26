@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
+#include "moc_qgsmaptoolcapture.cpp"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"

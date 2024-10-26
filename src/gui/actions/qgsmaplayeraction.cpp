@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayeraction.h"
+#include "moc_qgsmaplayeraction.cpp"
 #include "qgsgui.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaplayer.h"

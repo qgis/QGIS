@@ -16,6 +16,7 @@
 
 #include "qgsapplication.h"
 #include "qgscodeeditor.h"
+#include "moc_qgscodeeditor.cpp"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 #include "qgsgui.h"

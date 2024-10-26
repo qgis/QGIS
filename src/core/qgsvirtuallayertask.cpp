@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvirtuallayertask.h"
+#include "moc_qgsvirtuallayertask.cpp"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsruntimeprofiler.h"
+#include "moc_qgsruntimeprofiler.cpp"
 #include "qgslogger.h"
 #include "qgis.h"
 #include "qgsapplication.h"

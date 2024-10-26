@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
+#include "moc_qgsgml.cpp"
 #include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"

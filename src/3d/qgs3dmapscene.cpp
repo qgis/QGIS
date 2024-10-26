@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapscene.h"
+#include "moc_qgs3dmapscene.cpp"
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMesh>

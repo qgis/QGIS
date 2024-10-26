@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingutils.h"
+#include "moc_qgsprocessingutils.cpp"
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsprocessingcontext.h"

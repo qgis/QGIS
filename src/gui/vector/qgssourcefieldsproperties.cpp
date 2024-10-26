@@ -17,6 +17,7 @@
 #include "qgsaddattrdialog.h"
 #include "qgscheckablecombobox.h"
 #include "qgssourcefieldsproperties.h"
+#include "moc_qgssourcefieldsproperties.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"

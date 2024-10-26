@@ -17,6 +17,7 @@
 #include "qgsconfig.h"
 
 #include "qgssensorguiregistry.h"
+#include "moc_qgssensorguiregistry.cpp"
 #include "qgssensorwidget.h"
 
 QgsSensorGuiRegistry::QgsSensorGuiRegistry( QObject *parent )

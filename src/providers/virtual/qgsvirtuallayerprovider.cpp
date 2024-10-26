@@ -23,6 +23,7 @@ extern "C"
 #include <stdexcept>
 
 #include "qgsvirtuallayerprovider.h"
+#include "moc_qgsvirtuallayerprovider.cpp"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvirtuallayerfeatureiterator.h"
 #include "qgsvectorlayer.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsoracleconn.h"
+#include "moc_qgsoracleconn.cpp"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"

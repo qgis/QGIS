@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewlowaccuracyindicator.h"
+#include "moc_qgslayertreeviewlowaccuracyindicator.cpp"
 #include "qgsdatums.h"
 #include "qgssettings.h"
 #include "qgsgui.h"

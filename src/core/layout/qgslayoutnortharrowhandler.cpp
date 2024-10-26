@@ -16,6 +16,7 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgslayoutnortharrowhandler.h"
+#include "moc_qgslayoutnortharrowhandler.cpp"
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
 #include "qgsbearingutils.h"

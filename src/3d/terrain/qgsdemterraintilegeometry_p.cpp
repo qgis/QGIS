@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdemterraintilegeometry_p.h"
+#include "moc_qgsdemterraintilegeometry_p.cpp"
 #include <QMatrix4x4>
 
 

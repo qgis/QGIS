@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutattributeselectiondialog.h"
+#include "moc_qgslayoutattributeselectiondialog.cpp"
 #include "qgslayoutitemattributetable.h"
 #include "qgsvectorlayer.h"
 #include "qgsfieldexpressionwidget.h"

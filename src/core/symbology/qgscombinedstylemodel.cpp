@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscombinedstylemodel.h"
+#include "moc_qgscombinedstylemodel.cpp"
 #include "qgsstyle.h"
 #include "qgsstylemodel.h"
 #include "qgssingleitemmodel.h"

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgeopackageprojectstoragedialog.h"
+#include "moc_qgsgeopackageprojectstoragedialog.cpp"
 ///@cond PRIVATE
 
 #include "qgsgeopackageprojectstorage.h"

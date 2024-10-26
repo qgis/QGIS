@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsphongmaterialwidget.h"
+#include "moc_qgsphongmaterialwidget.cpp"
 
 #include "qgsphongmaterialsettings.h"
 #include "qgis.h"

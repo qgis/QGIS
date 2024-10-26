@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrasterelevationpropertieswidget.h"
+#include "moc_qgsrasterelevationpropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"

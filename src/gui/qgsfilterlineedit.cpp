@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsfilterlineedit.h"
+#include "moc_qgsfilterlineedit.cpp"
 #include "qgsapplication.h"
 #include "qgsanimatedicon.h"
 #include "qgis.h"

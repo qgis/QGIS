@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdemterraingenerator.h"
+#include "moc_qgsdemterraingenerator.cpp"
 
 #include "qgsdemterraintileloader_p.h"
 

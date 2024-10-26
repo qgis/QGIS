@@ -29,6 +29,7 @@
 ****************************************************************************/
 
 #include "qgsrichtexteditor.h"
+#include "moc_qgsrichtexteditor.cpp"
 #include "qgsguiutils.h"
 #include "qgscolorbutton.h"
 #include "qgscodeeditor.h"

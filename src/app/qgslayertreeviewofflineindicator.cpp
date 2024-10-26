@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewofflineindicator.h"
+#include "moc_qgslayertreeviewofflineindicator.cpp"
 #include "qgslayertreeview.h"
 #include "qgisapp.h"
 

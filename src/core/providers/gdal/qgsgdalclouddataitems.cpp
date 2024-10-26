@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgdalclouddataitems.h"
+#include "moc_qgsgdalclouddataitems.cpp"
 #include "qgsprovidermetadata.h"
 #include "qgsgdalcloudconnection.h"
 #include "qgsproviderregistry.h"

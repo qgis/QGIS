@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstooltipcombobox.h"
+#include "moc_qgstooltipcombobox.cpp"
 
 #include <QEvent>
 #include <QHelpEvent>

@@ -21,6 +21,7 @@ email                : tim@linfiniti.com
 
 // includes
 #include "qgsdecorationnortharrow.h"
+#include "moc_qgsdecorationnortharrow.cpp"
 
 #include "qgsdecorationnortharrowdialog.h"
 

@@ -17,6 +17,7 @@
 #include <QFont>
 
 #include "qgssettingstreemodel.h"
+#include "moc_qgssettingstreemodel.cpp"
 #include "qgssettingsentry.h"
 #include "qgssettingstreenode.h"
 #include "qgssettingseditorwidgetwrapper.h"

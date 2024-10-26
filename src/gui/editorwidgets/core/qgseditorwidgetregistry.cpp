@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetregistry.h"
+#include "moc_qgseditorwidgetregistry.cpp"
 
 #include "qgsattributeeditorcontext.h"
 #include "qgsmessagelog.h"

@@ -36,6 +36,7 @@
 #include "qgsquickmaptransform.h"
 #include "qgsquickelevationprofilecanvas.h"
 #include "qgsquickplugin.h"
+#include "moc_qgsquickplugin.cpp"
 #include "qgsquickutils.h"
 
 static QObject *buildUtilsSingleton( QQmlEngine *engine, QJSEngine *scriptEngine )

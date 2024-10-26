@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolidentify.h"
+#include "moc_qgsmaptoolidentify.cpp"
 #include "qgsmeshlayer.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterdataprovider.h"

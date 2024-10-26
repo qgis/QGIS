@@ -26,6 +26,7 @@
 #include <QRandomGenerator>
 
 #include "qgsstatusbarcoordinateswidget.h"
+#include "moc_qgsstatusbarcoordinateswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"

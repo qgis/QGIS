@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgschunkedentity.h"
+#include "moc_qgschunkedentity.cpp"
 
 #include <QElapsedTimer>
 #include <QVector4D>

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessinghistorywidget.h"
+#include "moc_qgsprocessinghistorywidget.cpp"
 #include "qgshistorywidget.h"
 #include "qgsgui.h"
 #include "qgshistoryproviderregistry.h"

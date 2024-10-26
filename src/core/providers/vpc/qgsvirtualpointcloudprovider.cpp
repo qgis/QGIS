@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsvirtualpointcloudprovider.h"
+#include "moc_qgsvirtualpointcloudprovider.cpp"
 #include "qgscopcpointcloudindex.h"
 #include "qgseptpointcloudindex.h"
 #include "qgsremotecopcpointcloudindex.h"

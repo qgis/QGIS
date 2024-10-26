@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfontmanager.h"
+#include "moc_qgsfontmanager.cpp"
 #include "qgsreadwritelocker.h"
 #include "qgsapplication.h"
 #include "qgsziputils.h"

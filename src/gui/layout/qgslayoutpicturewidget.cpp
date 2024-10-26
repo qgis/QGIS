@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpicturewidget.h"
+#include "moc_qgslayoutpicturewidget.cpp"
 #include "qgsapplication.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"

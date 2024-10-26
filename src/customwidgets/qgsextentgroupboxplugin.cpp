@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsextentgroupbox.h"
 #include "qgsextentgroupboxplugin.h"
+#include "moc_qgsextentgroupboxplugin.cpp"
 
 
 QgsExtentGroupBoxPlugin::QgsExtentGroupBoxPlugin( QObject *parent )

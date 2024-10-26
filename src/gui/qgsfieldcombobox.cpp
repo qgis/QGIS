@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsfieldcombobox.h"
+#include "moc_qgsfieldcombobox.cpp"
 #include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"

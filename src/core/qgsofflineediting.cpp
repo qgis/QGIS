@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 #include "qgsofflineediting.h"
+#include "moc_qgsofflineediting.cpp"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"

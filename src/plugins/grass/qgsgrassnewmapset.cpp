@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsgrassnewmapset.h"
+#include "moc_qgsgrassnewmapset.cpp"
 #include "qgsgrassplugin.h"
 #include "qgsgrass.h"
 #include "qgis.h"

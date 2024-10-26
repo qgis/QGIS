@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsfielddomainsitem.h"
+#include "moc_qgsfielddomainsitem.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsapplication.h"

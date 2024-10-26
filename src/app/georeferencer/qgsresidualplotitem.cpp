@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsresidualplotitem.h"
+#include "moc_qgsresidualplotitem.cpp"
 #include "qgsgeorefdatapoint.h"
 #include "qgslayoututils.h"
 #include <QPainter>

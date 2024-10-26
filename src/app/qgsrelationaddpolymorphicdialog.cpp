@@ -19,6 +19,7 @@
 #include <QComboBox>
 
 #include "qgsrelationaddpolymorphicdialog.h"
+#include "moc_qgsrelationaddpolymorphicdialog.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"

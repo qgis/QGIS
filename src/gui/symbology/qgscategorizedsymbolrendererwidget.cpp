@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscategorizedsymbolrendererwidget.h"
+#include "moc_qgscategorizedsymbolrendererwidget.cpp"
 #include "qgspanelwidget.h"
 
 #include "qgscategorizedsymbolrenderer.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitem3dmap.h"
+#include "moc_qgslayoutitem3dmap.cpp"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"

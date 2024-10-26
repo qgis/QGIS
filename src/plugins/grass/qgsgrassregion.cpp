@@ -16,6 +16,7 @@
 
 #include "qgis.h"
 #include "qgsgrassregion.h"
+#include "moc_qgsgrassregion.cpp"
 #include "qgsgrass.h"
 
 #include "qgisinterface.h"

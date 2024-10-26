@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgeopackageitemguiprovider.h"
+#include "moc_qgsgeopackageitemguiprovider.cpp"
 ///@cond PRIVATE
 
 #include <QAction>

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutundostack.h"
+#include "moc_qgslayoutundostack.cpp"
 #include "qgslayout.h"
 #include "qgsproject.h"
 #include <QUndoStack>

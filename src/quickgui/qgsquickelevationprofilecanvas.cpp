@@ -27,6 +27,7 @@
 #include "qgsprofilerequest.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsquickelevationprofilecanvas.h"
+#include "moc_qgsquickelevationprofilecanvas.cpp"
 #include "qgsterrainprovider.h"
 
 #include <QQuickWindow>

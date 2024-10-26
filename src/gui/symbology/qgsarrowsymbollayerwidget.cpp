@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsarrowsymbollayerwidget.h"
+#include "moc_qgsarrowsymbollayerwidget.cpp"
 #include "qgsarrowsymbollayer.h"
 #include "qgsvectorlayer.h"
 #include <QColorDialog>

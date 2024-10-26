@@ -17,6 +17,7 @@
 #include "qgshanaconnection.h"
 #include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
+#include "moc_qgshanadataitemguiprovider.cpp"
 #include "qgshananewconnection.h"
 #include "qgshanaprovider.h"
 #include "qgshanaproviderconnection.h"

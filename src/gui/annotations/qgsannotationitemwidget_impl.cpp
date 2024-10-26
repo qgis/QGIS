@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsannotationitemwidget_impl.h"
+#include "moc_qgsannotationitemwidget_impl.cpp"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsstyle.h"

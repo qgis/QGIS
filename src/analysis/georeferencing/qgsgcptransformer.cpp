@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgcptransformer.h"
+#include "moc_qgsgcptransformer.cpp"
 
 #include <gdal.h>
 #include <gdal_alg.h>

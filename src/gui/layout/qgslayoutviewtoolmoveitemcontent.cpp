@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolmoveitemcontent.h"
+#include "moc_qgslayoutviewtoolmoveitemcontent.cpp"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
 #include "qgslayout.h"

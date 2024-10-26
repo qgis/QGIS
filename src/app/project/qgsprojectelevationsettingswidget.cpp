@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprojectelevationsettingswidget.h"
+#include "moc_qgsprojectelevationsettingswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsterrainprovider.h"

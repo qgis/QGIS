@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenedataitems.h"
+#include "moc_qgstiledscenedataitems.cpp"
 #include "qgsprovidermetadata.h"
 #include "qgstiledsceneconnection.h"
 #include "qgsdataprovider.h"

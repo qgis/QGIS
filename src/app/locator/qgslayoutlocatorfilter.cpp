@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutlocatorfilter.h"
+#include "moc_qgslayoutlocatorfilter.cpp"
 #include "qgsproject.h"
 #include "qgsmasterlayoutinterface.h"
 #include "qgslayoutmanager.h"

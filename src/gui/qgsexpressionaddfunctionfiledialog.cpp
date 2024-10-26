@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionaddfunctionfiledialog.h"
+#include "moc_qgsexpressionaddfunctionfiledialog.cpp"
 
 #include <QPushButton>
 #include <QStandardItemModel>

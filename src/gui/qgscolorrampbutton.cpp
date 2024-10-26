@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorrampbutton.h"
+#include "moc_qgscolorrampbutton.cpp"
 #include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"

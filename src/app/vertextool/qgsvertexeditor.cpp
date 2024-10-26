@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsvertexeditor.h"
+#include "moc_qgsvertexeditor.cpp"
 #include "qgscoordinateutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"

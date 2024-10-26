@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dsymbolwidget.h"
+#include "moc_qgsmesh3dsymbolwidget.cpp"
 #include "qgs3dtypes.h"
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"

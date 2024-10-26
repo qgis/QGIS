@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslabelpointsettings.h"
+#include "moc_qgslabelpointsettings.cpp"
 #include "qgspropertycollection.h"
 #include "qgsexpressioncontext.h"
 #include "qgspallabeling.h"

@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "qgsfieldvalidator.h"
+#include "moc_qgsfieldvalidator.cpp"
 
 #include <QValidator>
 #include <QRegularExpression>

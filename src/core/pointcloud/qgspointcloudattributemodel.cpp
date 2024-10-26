@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudattributemodel.h"
+#include "moc_qgspointcloudattributemodel.cpp"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgsapplication.h"

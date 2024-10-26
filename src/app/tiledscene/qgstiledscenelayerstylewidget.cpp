@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerstylewidget.h"
+#include "moc_qgstiledscenelayerstylewidget.cpp"
 #include "qgstiledscenerendererpropertieswidget.h"
 #include "qgsstyle.h"
 #include "qgsapplication.h"

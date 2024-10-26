@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssinglebandgrayrendererwidget.h"
+#include "moc_qgssinglebandgrayrendererwidget.cpp"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"

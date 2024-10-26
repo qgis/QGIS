@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemhtml.h"
+#include "moc_qgslayoutitemhtml.cpp"
 #include "qgslayoutframe.h"
 #include "qgslayout.h"
 #include "qgsnetworkaccessmanager.h"

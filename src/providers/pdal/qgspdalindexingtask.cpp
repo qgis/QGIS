@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspdalindexingtask.h"
+#include "moc_qgspdalindexingtask.cpp"
 
 #include <vector>
 #include <string>

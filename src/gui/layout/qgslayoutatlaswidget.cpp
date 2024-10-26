@@ -18,6 +18,7 @@
 #include <QImageWriter>
 
 #include "qgslayoutatlaswidget.h"
+#include "moc_qgslayoutatlaswidget.cpp"
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgsexpressionbuilderdialog.h"

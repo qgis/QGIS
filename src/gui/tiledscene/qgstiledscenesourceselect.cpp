@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenesourceselect.h"
+#include "moc_qgstiledscenesourceselect.cpp"
 #include "qgstiledsceneconnection.h"
 #include "qgsgui.h"
 #include "qgsprovidermetadata.h"

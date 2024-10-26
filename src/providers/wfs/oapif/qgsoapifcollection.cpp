@@ -18,6 +18,7 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifcollection.h"
+#include "moc_qgsoapifcollection.cpp"
 #include "qgsoapifutils.h"
 #include "qgsoapifprovider.h"
 

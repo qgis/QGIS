@@ -200,6 +200,7 @@
 #include "qgscrashhandler.h"
 
 #include "qgisapp.h"
+#include "moc_qgisapp.cpp"
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
 #include "qgis.h"

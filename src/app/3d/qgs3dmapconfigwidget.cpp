@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapconfigwidget.h"
+#include "moc_qgs3dmapconfigwidget.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgsdemterraingenerator.h"

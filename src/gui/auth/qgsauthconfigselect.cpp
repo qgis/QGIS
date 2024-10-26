@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthconfigselect.h"
+#include "moc_qgsauthconfigselect.cpp"
 #include "ui_qgsauthconfigselect.h"
 
 #include "qgsauthconfig.h"

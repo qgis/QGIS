@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitempolygon.h"
+#include "moc_qgslayoutitempolygon.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoututils.h"
 #include "qgslayout.h"

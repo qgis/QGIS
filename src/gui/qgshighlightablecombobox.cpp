@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgshighlightablecombobox.h"
+#include "moc_qgshighlightablecombobox.cpp"
 #include <QPainter>
 
 QgsHighlightableComboBox::QgsHighlightableComboBox( QWidget *parent )

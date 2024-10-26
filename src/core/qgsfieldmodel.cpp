@@ -17,6 +17,7 @@
 #include <QIcon>
 
 #include "qgsfieldmodel.h"
+#include "moc_qgsfieldmodel.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 

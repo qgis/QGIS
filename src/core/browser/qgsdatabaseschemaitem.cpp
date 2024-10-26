@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdatabaseschemaitem.h"
+#include "moc_qgsdatabaseschemaitem.cpp"
 #include "qgsapplication.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsprovidermetadata.h"

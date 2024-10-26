@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmatrixparameterdialog.h"
+#include "moc_qgsprocessingmatrixparameterdialog.cpp"
 #include "qgsgui.h"
 #include <QStandardItemModel>
 #include <QStandardItem>

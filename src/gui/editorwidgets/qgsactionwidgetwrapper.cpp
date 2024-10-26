@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionwidgetwrapper.h"
+#include "moc_qgsactionwidgetwrapper.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsattributeform.h"
 

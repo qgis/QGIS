@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetablemodel.h"
+#include "moc_qgsrasterattributetablemodel.cpp"
 #include <QColor>
 #include <QFont>
 

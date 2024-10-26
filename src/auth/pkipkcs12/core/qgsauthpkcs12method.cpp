@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthpkcs12method.h"
+#include "moc_qgsauthpkcs12method.cpp"
 
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"

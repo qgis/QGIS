@@ -30,6 +30,7 @@
 #include <QMenu>
 
 #include "qgsexpressionbuilderwidget.h"
+#include "moc_qgsexpressionbuilderwidget.cpp"
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsexpressionfunction.h"

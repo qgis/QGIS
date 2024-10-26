@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsattributetypedialog.h"
+#include "moc_qgsattributetypedialog.cpp"
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsfieldformatterregistry.h"

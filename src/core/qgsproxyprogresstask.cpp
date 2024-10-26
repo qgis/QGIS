@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsproxyprogresstask.h"
+#include "moc_qgsproxyprogresstask.cpp"
 #include "qgsapplication.h"
 #include <QThreadPool>
 

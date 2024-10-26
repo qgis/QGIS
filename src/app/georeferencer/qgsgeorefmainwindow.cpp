@@ -64,6 +64,7 @@
 #include "qgstransformsettingsdialog.h"
 
 #include "qgsgeorefmainwindow.h"
+#include "moc_qgsgeorefmainwindow.cpp"
 #include "qgsmessagebar.h"
 #include "qgsvectorwarper.h"
 #include "qgsscreenhelper.h"

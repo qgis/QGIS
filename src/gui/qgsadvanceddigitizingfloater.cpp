@@ -18,6 +18,7 @@
 #include <QLocale>
 
 #include "qgsadvanceddigitizingfloater.h"
+#include "moc_qgsadvanceddigitizingfloater.cpp"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
 #include "qgsfocuswatcher.h"

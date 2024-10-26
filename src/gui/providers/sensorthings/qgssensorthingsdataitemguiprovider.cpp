@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingsdataitemguiprovider.h"
+#include "moc_qgssensorthingsdataitemguiprovider.cpp"
 #include "qgssensorthingsdataitems.h"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectiondialog.h"

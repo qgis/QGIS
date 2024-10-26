@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvectorfilewritertask.h"
+#include "moc_qgsvectorfilewritertask.cpp"
 #include "qgsvectorlayer.h"
 
 QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QgsFeatureSink::SinkFlags sinkFlags )

@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsgeometrywidget.h"
+#include "moc_qgsgeometrywidget.cpp"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgsjsonutils.h"

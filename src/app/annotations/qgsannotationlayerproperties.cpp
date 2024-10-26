@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerproperties.h"
+#include "moc_qgsannotationlayerproperties.cpp"
 #include "qgshelp.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsgui.h"

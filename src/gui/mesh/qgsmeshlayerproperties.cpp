@@ -26,6 +26,7 @@
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
+#include "moc_qgsmeshlayerproperties.cpp"
 #include "qgsmeshstaticdatasetwidget.h"
 #include "qgsproject.h"
 #include "qgsrenderermeshpropertieswidget.h"

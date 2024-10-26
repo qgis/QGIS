@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssvgselectorwidget.h"
+#include "moc_qgssvgselectorwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

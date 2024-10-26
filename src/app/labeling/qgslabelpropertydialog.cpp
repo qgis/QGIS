@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
+#include "moc_qgslabelpropertydialog.cpp"
 #include "qgscallout.h"
 #include "qgsfontutils.h"
 #include "qgslogger.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscrsdefinitionwidget.h"
+#include "moc_qgscrsdefinitionwidget.cpp"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprojutils.h"
 

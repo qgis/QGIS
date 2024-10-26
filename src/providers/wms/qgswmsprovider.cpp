@@ -26,6 +26,7 @@
 
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
+#include "moc_qgswmsprovider.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgswmsdataitems.h"
 #include "qgsdatasourceuri.h"

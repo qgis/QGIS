@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresdataitems.h"
+#include "moc_qgspostgresdataitems.cpp"
 
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"

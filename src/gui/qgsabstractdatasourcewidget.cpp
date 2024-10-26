@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsabstractdatasourcewidget.h"
+#include "moc_qgsabstractdatasourcewidget.cpp"
 #include <QPushButton>
 
 QgsAbstractDataSourceWidget::QgsAbstractDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):

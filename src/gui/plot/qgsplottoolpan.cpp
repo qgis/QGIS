@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsplottoolpan.h"
+#include "moc_qgsplottoolpan.cpp"
 #include "qgsplotcanvas.h"
 #include "qgsplotmouseevent.h"
 

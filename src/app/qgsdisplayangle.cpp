@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdisplayangle.h"
+#include "moc_qgsdisplayangle.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 #include "qgssettings.h"

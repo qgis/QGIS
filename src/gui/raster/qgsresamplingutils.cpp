@@ -20,6 +20,7 @@
 #include "qgsrasterresampler.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsresamplingutils.h"
+#include "moc_qgsresamplingutils.cpp"
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 

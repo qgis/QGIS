@@ -17,6 +17,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolsplitfeatures.h"
+#include "moc_qgsmaptoolsplitfeatures.cpp"
 #include "qgsproject.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"

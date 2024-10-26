@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsabstractrelationeditorwidget.h"
+#include "moc_qgsabstractrelationeditorwidget.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsexpression.h"

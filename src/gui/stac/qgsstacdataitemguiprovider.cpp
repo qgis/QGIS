@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacdataitemguiprovider.h"
+#include "moc_qgsstacdataitemguiprovider.cpp"
 #include "qgsnetworkcontentfetcherregistry.h"
 #include "qgsstaccontroller.h"
 #include "qgsstacdataitems.h"

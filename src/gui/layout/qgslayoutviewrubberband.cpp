@@ -15,6 +15,7 @@
 
 
 #include "qgslayoutviewrubberband.h"
+#include "moc_qgslayoutviewrubberband.cpp"
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgsunittypes.h"

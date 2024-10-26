@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdfeature.h"
+#include "moc_qgsmaptooladdfeature.cpp"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"

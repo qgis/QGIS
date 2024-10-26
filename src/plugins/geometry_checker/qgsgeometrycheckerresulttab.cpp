@@ -22,6 +22,7 @@
 #include <QPlainTextEdit>
 
 #include "qgsgeometrycheckerresulttab.h"
+#include "moc_qgsgeometrycheckerresulttab.cpp"
 #include "qgsgeometrycheckfixdialog.h"
 
 #include "qgsgeometrychecker.h"

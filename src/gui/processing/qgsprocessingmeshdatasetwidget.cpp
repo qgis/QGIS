@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmeshdatasetwidget.h"
+#include "moc_qgsprocessingmeshdatasetwidget.cpp"
 #include "qgsdatetimeedit.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingoutputs.h"

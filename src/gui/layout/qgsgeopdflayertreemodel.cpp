@@ -17,6 +17,7 @@
 #include <QDoubleSpinBox>
 
 #include "qgsgeopdflayertreemodel.h"
+#include "moc_qgsgeopdflayertreemodel.cpp"
 #include "qgslayertree.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"

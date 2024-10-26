@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationreferencesearchwidgetwrapper.h"
+#include "moc_qgsrelationreferencesearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsvaluerelationwidgetfactory.h"

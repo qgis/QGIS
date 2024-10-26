@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfontoptions.h"
+#include "moc_qgsfontoptions.cpp"
 
 #include "qgsbabelgpsdevice.h"
 #include "qgssettings.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdelimitedtextprovider.h"
+#include "moc_qgsdelimitedtextprovider.cpp"
 
 #include <QtGlobal>
 #include <QFile>

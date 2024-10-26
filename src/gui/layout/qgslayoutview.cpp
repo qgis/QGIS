@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutview.h"
+#include "moc_qgslayoutview.cpp"
 #include "qgslayoutframe.h"
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutviewtool.h"

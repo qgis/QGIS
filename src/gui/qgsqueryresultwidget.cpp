@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsqueryresultwidget.h"
+#include "moc_qgsqueryresultwidget.cpp"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsexpressionutils.h"
 #include "qgscodeeditorsql.h"

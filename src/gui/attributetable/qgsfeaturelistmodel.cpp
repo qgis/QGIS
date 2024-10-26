@@ -15,6 +15,7 @@
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeaturelistmodel.h"
+#include "moc_qgsfeaturelistmodel.cpp"
 #include "qgsattributetablemodel.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsattributetablefiltermodel.h"

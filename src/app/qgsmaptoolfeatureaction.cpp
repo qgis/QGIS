@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolfeatureaction.h"
+#include "moc_qgsmaptoolfeatureaction.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolchangelabelproperties.h"
+#include "moc_qgsmaptoolchangelabelproperties.cpp"
 #include "qgslabelpropertydialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"

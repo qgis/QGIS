@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "qgsauthoauth2method.h"
+#include "moc_qgsauthoauth2method.cpp"
 
 #include "o0globals.h"
 #include "o0requestparameter.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswmscapabilities.h"
+#include "moc_qgswmscapabilities.cpp"
 #include "qgswmsprovider.h"
 
 #include <QFile>

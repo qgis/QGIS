@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdataitemproviderregistry.h"
+#include "moc_qgsdataitemproviderregistry.cpp"
 
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"

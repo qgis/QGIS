@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswfsrequest.h"
+#include "moc_qgswfsrequest.cpp"
 
 #include "qgslogger.h"
 

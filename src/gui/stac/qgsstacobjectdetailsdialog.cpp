@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacobjectdetailsdialog.h"
+#include "moc_qgsstacobjectdetailsdialog.cpp"
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsstacitem.h"

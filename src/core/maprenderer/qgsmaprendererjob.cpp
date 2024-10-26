@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaprendererjob.h"
+#include "moc_qgsmaprendererjob.cpp"
 
 #include <QPainter>
 #include <QElapsedTimer>

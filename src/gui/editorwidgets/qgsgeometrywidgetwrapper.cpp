@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrywidgetwrapper.h"
+#include "moc_qgsgeometrywidgetwrapper.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsmessagebar.h"
 #include "qgsgeometrywidget.h"

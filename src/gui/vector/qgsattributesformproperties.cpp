@@ -18,6 +18,7 @@
 #include "qgsattributeeditorspacerelement.h"
 #include "qgsattributeeditortextelement.h"
 #include "qgsattributesformproperties.h"
+#include "moc_qgsattributesformproperties.cpp"
 #include "qgsattributetypedialog.h"
 #include "qgsattributeformcontaineredit.h"
 #include "qgsattributewidgetedit.h"

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorfieldsymbollayerwidget.h"
+#include "moc_qgsvectorfieldsymbollayerwidget.cpp"
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 

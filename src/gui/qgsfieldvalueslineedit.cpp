@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfieldvalueslineedit.h"
+#include "moc_qgsfieldvalueslineedit.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsfloatingwidget.h"
 

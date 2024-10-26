@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayer3drendererwidget.h"
+#include "moc_qgsvectorlayer3drendererwidget.cpp"
 
 #include "qgsrulebased3drenderer.h"
 #include "qgsrulebased3drendererwidget.h"

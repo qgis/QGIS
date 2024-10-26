@@ -15,6 +15,7 @@
 
 
 #include "qgssettingseditorwidgetwrapper.h"
+#include "moc_qgssettingseditorwidgetwrapper.cpp"
 
 #include "qgslogger.h"
 #include "qgssettingsentry.h"

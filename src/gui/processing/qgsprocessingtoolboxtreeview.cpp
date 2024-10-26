@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingtoolboxtreeview.h"
+#include "moc_qgsprocessingtoolboxtreeview.cpp"
 #include "qgsprocessingtoolboxmodel.h"
 
 #include <QKeyEvent>

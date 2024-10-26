@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsdatabasetablecombobox.h"
+#include "moc_qgsdatabasetablecombobox.cpp"
 #include "qgsdatabasetablemodel.h"
 #include "qgsapplication.h"
 #include "qgsabstractdatabaseproviderconnection.h"

@@ -20,6 +20,7 @@
 #include "qgsmaplayerutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayersaveasdialog.h"
+#include "moc_qgsrasterlayersaveasdialog.cpp"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterrenderer.h"

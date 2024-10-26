@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserguimodel.h"
+#include "moc_qgsbrowserguimodel.cpp"
 #include "qgslogger.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdataitemguiprovider.h"

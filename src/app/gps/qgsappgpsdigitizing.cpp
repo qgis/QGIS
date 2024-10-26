@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappgpsdigitizing.h"
+#include "moc_qgsappgpsdigitizing.cpp"
 #include "qgsrubberband.h"
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"

@@ -24,6 +24,7 @@
 #include <QVBoxLayout>
 
 #include "qgsrelationadddlg.h"
+#include "moc_qgsrelationadddlg.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"

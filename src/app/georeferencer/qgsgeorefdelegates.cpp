@@ -22,6 +22,7 @@
 
 #include "qgsgeorefvalidators.h"
 #include "qgsgeorefdelegates.h"
+#include "moc_qgsgeorefdelegates.cpp"
 #include <cmath>
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //

@@ -17,6 +17,7 @@
 
 
 #include "qgsfieldcalculator.h"
+#include "moc_qgsfieldcalculator.cpp"
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"

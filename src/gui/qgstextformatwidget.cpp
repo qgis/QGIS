@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstextformatwidget.h"
+#include "moc_qgstextformatwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgscharacterselectordialog.h"
 #include "qgslogger.h"

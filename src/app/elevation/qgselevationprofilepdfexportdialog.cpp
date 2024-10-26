@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgselevationprofilepdfexportdialog.h"
+#include "moc_qgselevationprofilepdfexportdialog.cpp"
 #include "qgsplot.h"
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
