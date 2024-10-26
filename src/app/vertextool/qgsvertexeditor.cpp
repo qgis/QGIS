@@ -52,8 +52,8 @@ static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent )
   : QAbstractTableModel( parent )
-  , mCanvas( canvas )
 {
+  Q_UNUSED( canvas )
   QWidget *parentWidget = qobject_cast< QWidget * >( parent );
   if ( parentWidget )
     mWidgetFont = parentWidget->font();

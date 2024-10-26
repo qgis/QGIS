@@ -599,7 +599,6 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
     QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mTable( table )
-  , mVectorLayer( vLayer )
 
 {
   setupUi( this );

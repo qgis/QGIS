@@ -308,8 +308,6 @@ class GUI_EXPORT QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;
 
-    const QgsVectorLayer *mVectorLayer = nullptr;
-
     QgsLayoutAttributeTableColumnModel *mColumnModel = nullptr;
     QgsLayoutColumnAlignmentDelegate *mColumnAlignmentDelegate = nullptr;
     QgsLayoutColumnSourceDelegate *mColumnSourceDelegate = nullptr;

@@ -28,7 +28,6 @@
 
 QgsDisplayAngle::QgsDisplayAngle( QgsMapTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
-  , mTool( tool )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );

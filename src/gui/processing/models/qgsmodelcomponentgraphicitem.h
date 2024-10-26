@@ -385,7 +385,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QFont mFont;
 
     bool mIsHovering = false;
-    bool mIsMoving = false;
     QSizeF mTempSize;
 
 };

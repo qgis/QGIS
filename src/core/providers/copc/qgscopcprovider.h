@@ -57,7 +57,6 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     std::unique_ptr<QgsPointCloudIndex> mIndex;
 
     QgsRectangle mExtent;
-    uint64_t mPointCount;
     QgsCoordinateReferenceSystem mCrs;
 };
 

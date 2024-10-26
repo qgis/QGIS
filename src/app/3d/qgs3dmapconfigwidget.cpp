@@ -41,8 +41,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   : QWidget( parent )
   , mMap( map )
   , mMainCanvas( mainCanvas )
-  , m3DMapCanvas( mapCanvas3D )
 {
+  Q_UNUSED( mapCanvas3D )
   setupUi( this );
 
   Q_ASSERT( map );

@@ -115,10 +115,8 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
     bool mAutoSetupOnFirstLayer;
 
-    bool mHasFirstLayer;
     bool mHasLayersLoaded;
     bool mHasValidLayersLoaded = false;
-    bool mUpdatingProjectLayerOrder = false;
 
     QgsCoordinateReferenceSystem mFirstCRS;
 };

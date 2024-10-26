@@ -22,9 +22,8 @@
 QgsCreateAnnotationItemMapToolHandler::QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent )
   : QObject( parent )
   , mMapCanvas( canvas )
-  , mCadDockWidget( cadDockWidget )
 {
-
+  Q_UNUSED( cadDockWidget )
 }
 
 QgsAnnotationItem *QgsCreateAnnotationItemMapToolHandler::takeCreatedItem()

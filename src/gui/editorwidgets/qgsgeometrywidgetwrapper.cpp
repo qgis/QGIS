@@ -29,8 +29,8 @@
 
 QgsGeometryWidgetWrapper::QgsGeometryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-  , mMessageBar( messageBar )
 {
+  Q_UNUSED( messageBar )
 }
 
 

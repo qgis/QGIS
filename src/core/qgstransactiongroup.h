@@ -86,7 +86,6 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     void onRollback();
 
   private:
-    bool mEditingStarting = false;
     bool mEditingStopping = false;
 
     void disableTransaction();
