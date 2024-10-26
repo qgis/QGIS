@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsconnectionregistry.h"
+#include "moc_qgsconnectionregistry.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include <QRegularExpression>

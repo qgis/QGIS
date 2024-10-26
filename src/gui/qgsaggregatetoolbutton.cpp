@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsaggregatetoolbutton.h"
+#include "moc_qgsaggregatetoolbutton.cpp"
 #include "qgsaggregatecalculator.h"
 #include "qgis.h"
 

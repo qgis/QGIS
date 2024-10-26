@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsfavoritesitem.h"
+#include "moc_qgsfavoritesitem.cpp"
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"

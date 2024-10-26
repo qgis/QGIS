@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssymbollevelsdialog.h"
+#include "moc_qgssymbollevelsdialog.cpp"
 
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayer.h"

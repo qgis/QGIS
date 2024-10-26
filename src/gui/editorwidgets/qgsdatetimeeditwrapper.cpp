@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatetimeeditwrapper.h"
+#include "moc_qgsdatetimeeditwrapper.cpp"
 #include "qgsdatetimeeditfactory.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsabstract3dengine.h"
+#include "moc_qgsabstract3dengine.cpp"
 
 #include "qgsframegraph.h"
 

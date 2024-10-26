@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrasterpyramidsoptionswidget.h"
+#include "moc_qgsrasterpyramidsoptionswidget.cpp"
 #include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 #include "qgssettings.h"

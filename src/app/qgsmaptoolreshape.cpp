@@ -15,6 +15,7 @@
 
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsmaptoolreshape.h"
+#include "moc_qgsmaptoolreshape.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"

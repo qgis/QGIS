@@ -21,6 +21,7 @@
 #include <QRegularExpression>
 
 #include "qgspgnewconnection.h"
+#include "moc_qgspgnewconnection.cpp"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgspostgresproviderconnection.h"

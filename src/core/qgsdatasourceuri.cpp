@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdatasourceuri.h"
+#include "moc_qgsdatasourceuri.cpp"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"

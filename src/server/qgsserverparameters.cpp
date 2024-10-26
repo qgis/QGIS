@@ -17,6 +17,7 @@
 
 #include "qgsblockingnetworkrequest.h"
 #include "qgsserverparameters.h"
+#include "moc_qgsserverparameters.cpp"
 #include "qgsserverexception.h"
 #include "qgsmessagelog.h"
 #include "qgsvariantutils.h"

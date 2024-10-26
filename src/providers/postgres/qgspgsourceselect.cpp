@@ -17,6 +17,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgspgsourceselect.h"
+#include "moc_qgspgsourceselect.cpp"
 
 #include "qgslogger.h"
 #include "qgsdbfilterproxymodel.h"

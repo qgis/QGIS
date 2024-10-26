@@ -16,6 +16,7 @@
 #include "qgssettings.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
+#include "moc_qgsbrowsertreeview.cpp"
 #include "qgslogger.h"
 #include "qgsguiutils.h"
 #include "qgsdataitem.h"

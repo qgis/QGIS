@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdevtoolwidget.h"
+#include "moc_qgsdevtoolwidget.cpp"
 
 QgsDevToolWidget::QgsDevToolWidget( QWidget *parent )
   : QgsPanelWidget( parent )

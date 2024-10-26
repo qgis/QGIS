@@ -17,6 +17,7 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgsoraclesourceselect.h"
+#include "moc_qgsoraclesourceselect.cpp"
 
 #include "qgslogger.h"
 #include "qgsapplication.h"

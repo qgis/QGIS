@@ -17,6 +17,7 @@
 
 
 #include "qgsprocessingwidgetwrapper.h"
+#include "moc_qgsprocessingwidgetwrapper.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgspropertyoverridebutton.h"

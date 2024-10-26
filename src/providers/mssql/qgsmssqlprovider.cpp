@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqlprovider.h"
+#include "moc_qgsmssqlprovider.cpp"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
 #include "qgsmssqlproviderconnection.h"

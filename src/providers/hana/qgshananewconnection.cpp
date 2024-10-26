@@ -19,6 +19,7 @@
 #include "qgshanadriver.h"
 #include "qgshanaconnection.h"
 #include "qgshananewconnection.h"
+#include "moc_qgshananewconnection.cpp"
 #include "qgshanasettings.h"
 #include "qgssettings.h"
 

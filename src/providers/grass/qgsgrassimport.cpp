@@ -25,6 +25,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasteriterator.h"
 #include "qgsgrassimport.h"
+#include "moc_qgsgrassimport.cpp"
 
 #include <QFileInfo>
 

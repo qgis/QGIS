@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluerelationconfigdlg.h"
+#include "moc_qgsvaluerelationconfigdlg.cpp"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"

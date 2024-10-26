@@ -19,6 +19,7 @@
 
 #include "qgssettings.h"
 #include "qgspanelwidget.h"
+#include "moc_qgspanelwidget.cpp"
 #include "qgslogger.h"
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )

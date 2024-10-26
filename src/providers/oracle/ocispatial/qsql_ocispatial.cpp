@@ -56,6 +56,7 @@
 #endif
 
 #include "qsql_ocispatial.h"
+#include "moc_qsql_ocispatial.cpp"
 #include "wkbptr.h"
 
 #include <qcoreapplication.h>

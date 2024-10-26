@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetcherregistry.h"
+#include "moc_qgsnetworkcontentfetcherregistry.cpp"
 
 #include "qgsapplication.h"
 #include <QUrl>

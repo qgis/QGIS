@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerserverproperties.h"
+#include "moc_qgsmaplayerserverproperties.cpp"
 #include "qgsmaplayer.h"
 #include "vector/qgsvectorlayer.h"
 

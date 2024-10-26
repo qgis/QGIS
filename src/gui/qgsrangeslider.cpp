@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrangeslider.h"
+#include "moc_qgsrangeslider.cpp"
 #include <QPainter>
 #include <QMouseEvent>
 

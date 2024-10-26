@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgotolocatorfilter.h"
+#include "moc_qgsgotolocatorfilter.cpp"
 #include "qgsfeedback.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"

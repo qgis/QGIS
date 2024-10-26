@@ -34,6 +34,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
+#include "moc_qgsrasterlayer.cpp"
 #include "qgsrasterlayerrenderer.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterrange.h"

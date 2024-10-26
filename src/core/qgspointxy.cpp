@@ -17,6 +17,7 @@
 
 
 #include "qgspointxy.h"
+#include "moc_qgspointxy.cpp"
 #include "qgspoint.h"
 
 #include <cmath>

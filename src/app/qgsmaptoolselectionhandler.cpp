@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolselectionhandler.h"
+#include "moc_qgsmaptoolselectionhandler.cpp"
 
 #include <QBoxLayout>
 #include <QKeyEvent>

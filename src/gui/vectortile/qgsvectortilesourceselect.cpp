@@ -19,6 +19,7 @@
 #include "qgsgui.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsvectortilesourceselect.h"
+#include "moc_qgsvectortilesourceselect.cpp"
 #include "qgsvectortileconnection.h"
 #include "qgsvectortileconnectiondialog.h"
 #include "qgsarcgisvectortileconnectiondialog.h"

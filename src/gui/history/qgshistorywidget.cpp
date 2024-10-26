@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgshistorywidget.h"
+#include "moc_qgshistorywidget.cpp"
 #include "qgsgui.h"
 #include "qgshistoryentrymodel.h"
 #include "qgshistoryentrynode.h"

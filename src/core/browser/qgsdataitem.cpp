@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgsdataitem.h"
+#include "moc_qgsdataitem.cpp"
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"

@@ -17,6 +17,7 @@
 #include "qgsrelationadddlg.h"
 #include "qgsrelationaddpolymorphicdialog.h"
 #include "qgsrelationmanagerdialog.h"
+#include "moc_qgsrelationmanagerdialog.cpp"
 #include "qgsrelationmanager.h"
 #include "qgspolymorphicrelation.h"
 #include "qgsvectorlayer.h"

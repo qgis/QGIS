@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolfillring.h"
+#include "moc_qgsmaptoolfillring.cpp"
 #include "qgsgeometry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"

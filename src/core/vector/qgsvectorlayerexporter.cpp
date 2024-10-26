@@ -25,6 +25,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
+#include "moc_qgsvectorlayerexporter.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudrgbrendererwidget.h"
+#include "moc_qgspointcloudrgbrendererwidget.cpp"
 #include "qgscontrastenhancement.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrgbrenderer.h"

@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgscustomprojectionoptions.h"
+#include "moc_qgscustomprojectionoptions.cpp"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystemregistry.h"
 

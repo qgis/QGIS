@@ -16,6 +16,7 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgscolumntypethread.h"
+#include "moc_qgscolumntypethread.cpp"
 #include "qgspostgresconnpool.h"
 #include "qgslogger.h"
 

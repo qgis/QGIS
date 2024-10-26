@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrulebasedchunkloader_p.h"
+#include "moc_qgsrulebasedchunkloader_p.cpp"
 #include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgs3dutils.h"

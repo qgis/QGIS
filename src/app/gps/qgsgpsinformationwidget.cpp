@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgpsinformationwidget.h"
+#include "moc_qgsgpsinformationwidget.cpp"
 
 #include "qgisapp.h"
 #include "qgsappgpsconnection.h"

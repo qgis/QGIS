@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool.h"
+#include "moc_qgscreateannotationitemmaptool.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationitem.h"

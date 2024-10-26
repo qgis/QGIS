@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditorwidget.h"
+#include "moc_qgscodeeditorwidget.cpp"
 #include "qgscodeeditor.h"
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"

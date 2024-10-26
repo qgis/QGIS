@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsoapifprovider.h"
+#include "moc_qgsoapifprovider.cpp"
 #include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"

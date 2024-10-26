@@ -16,6 +16,7 @@
 #include <math.h>
 
 #include "qgsmodelarrowitem.h"
+#include "moc_qgsmodelarrowitem.cpp"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"

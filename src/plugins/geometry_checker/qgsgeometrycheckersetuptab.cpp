@@ -17,6 +17,7 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
+#include "moc_qgsgeometrycheckersetuptab.cpp"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheckfactory.h"
 #include "qgsgeometrycheck.h"

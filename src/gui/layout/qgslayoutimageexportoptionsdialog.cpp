@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutimageexportoptionsdialog.h"
+#include "moc_qgslayoutimageexportoptionsdialog.cpp"
 #include "qgis.h"
 #include "qgssettings.h"
 #include "qgsgui.h"

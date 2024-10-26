@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbox3d.h"
+#include "moc_qgsbox3d.cpp"
 #include "qgspoint.h"
 #include "qgslogger.h"
 #include "qgsvector3d.h"

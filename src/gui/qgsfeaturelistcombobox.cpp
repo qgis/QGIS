@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturelistcombobox.h"
+#include "moc_qgsfeaturelistcombobox.cpp"
 
 #include "qgsfeaturefiltermodel.h"
 #include "qgsanimatedicon.h"

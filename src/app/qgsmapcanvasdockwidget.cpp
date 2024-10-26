@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
+#include "moc_qgsmapcanvasdockwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"
 #include "qgsprojectionselectiondialog.h"

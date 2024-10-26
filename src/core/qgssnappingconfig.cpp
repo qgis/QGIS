@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssnappingconfig.h"
+#include "moc_qgssnappingconfig.cpp"
 
 #include <QDomElement>
 #include <QHeaderView>

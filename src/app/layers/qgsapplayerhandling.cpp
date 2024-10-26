@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplayerhandling.h"
+#include "moc_qgsapplayerhandling.cpp"
 
 #include "qgsconfig.h"
 #include "qgsmaplayer.h"

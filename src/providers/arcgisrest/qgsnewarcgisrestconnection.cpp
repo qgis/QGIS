@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewarcgisrestconnection.h"
+#include "moc_qgsnewarcgisrestconnection.cpp"
 #include "qgsauthsettingswidget.h"
 #include "qgshelp.h"
 #include "qgsgui.h"

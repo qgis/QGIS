@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgschunkloader.h"
+#include "moc_qgschunkloader.cpp"
 #include "qgschunknode.h"
 
 #include <QVector>

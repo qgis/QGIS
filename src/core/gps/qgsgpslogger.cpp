@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgpslogger.h"
+#include "moc_qgsgpslogger.cpp"
 #include "qgsgpsconnection.h"
 #include "gmath.h"
 #include "qgsgeometry.h"

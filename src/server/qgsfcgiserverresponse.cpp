@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgsfcgiserverresponse.h"
+#include "moc_qgsfcgiserverresponse.cpp"
 #include "qgsmessagelog.h"
 #include <fcgi_stdio.h>
 #include <QDebug>

@@ -19,6 +19,7 @@
 #include "qgsgui.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingssourceselect.h"
+#include "moc_qgssensorthingssourceselect.cpp"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectionwidget.h"
 #include "qgssensorthingsconnectiondialog.h"

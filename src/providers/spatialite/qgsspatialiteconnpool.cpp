@@ -17,6 +17,7 @@
 #include <QMutexLocker>
 
 #include "qgsspatialiteconnpool.h"
+#include "moc_qgsspatialiteconnpool.cpp"
 
 QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::sInstance = nullptr;
 

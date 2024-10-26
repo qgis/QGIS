@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationeditorwidget.h"
+#include "moc_qgsrelationeditorwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"

@@ -27,6 +27,7 @@
 #include "qgsxmlutils.h"
 #include "qgsvectorlayer.h"
 #include "qgspostgresprovider.h"
+#include "moc_qgspostgresprovider.cpp"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresdataitems.h"

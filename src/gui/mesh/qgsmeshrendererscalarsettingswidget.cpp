@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshrendererscalarsettingswidget.h"
+#include "moc_qgsmeshrendererscalarsettingswidget.cpp"
 
 #include "QDialogButtonBox"
 

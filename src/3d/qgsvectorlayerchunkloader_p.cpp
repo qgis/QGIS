@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerchunkloader_p.h"
+#include "moc_qgsvectorlayerchunkloader_p.cpp"
 #include "qgs3dutils.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"

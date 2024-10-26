@@ -23,6 +23,7 @@
 #include "qgsnewnamedialog.h"
 
 #include "qgsuserprofileselectiondialog.h"
+#include "moc_qgsuserprofileselectiondialog.cpp"
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
   : QDialog( parent ), mManager( manager )

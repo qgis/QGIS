@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappcanvasfiltering.h"
+#include "moc_qgsappcanvasfiltering.cpp"
 #include "qgselevationcontrollerwidget.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsmapcanvas.h"

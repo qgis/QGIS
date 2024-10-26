@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsexpressioncalculatorlocatorfilter.h"
+#include "moc_qgsexpressioncalculatorlocatorfilter.cpp"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsproject.h"

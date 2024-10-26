@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircularstringradius.h"
+#include "moc_qgsmaptoolshapecircularstringradius.cpp"
 #include "qgisapp.h"
 #include "qgscircularstring.h"
 #include "qgsgeometryutils.h"

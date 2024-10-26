@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationprofiletoolmeasure.h"
+#include "moc_qgselevationprofiletoolmeasure.cpp"
 #include "qgselevationprofilecanvas.h"
 #include "qgsunittypes.h"
 #include "qgsplotmouseevent.h"

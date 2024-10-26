@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscustomization.h"
+#include "moc_qgscustomization.cpp"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"

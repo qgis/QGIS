@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappgpssettingsmenu.h"
+#include "moc_qgsappgpssettingsmenu.cpp"
 #include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgsfieldproxymodel.h"

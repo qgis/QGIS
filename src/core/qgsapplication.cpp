@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "moc_qgsapplication.cpp"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
 #include "qgslocalizeddatapathregistry.h"

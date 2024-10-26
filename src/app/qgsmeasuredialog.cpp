@@ -17,6 +17,7 @@
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
 #include "qgsmeasuredialog.h"
+#include "moc_qgsmeasuredialog.cpp"
 #include "qgsmeasuretool.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"

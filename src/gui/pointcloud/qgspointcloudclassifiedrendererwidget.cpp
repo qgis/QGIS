@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudclassifiedrendererwidget.h"
+#include "moc_qgspointcloudclassifiedrendererwidget.cpp"
 #include "qgscontrastenhancement.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudclassifiedrenderer.h"

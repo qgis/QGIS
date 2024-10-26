@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstableeditorformattingwidget.h"
+#include "moc_qgstableeditorformattingwidget.cpp"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgsnumericformat.h"
 #include "qgis.h"

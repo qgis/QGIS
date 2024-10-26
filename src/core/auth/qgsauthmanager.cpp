@@ -51,6 +51,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsauthmanager.h"
+#include "moc_qgsauthmanager.cpp"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthconfigurationstoragesqlite.h"
 #include "qgsvariantutils.h"

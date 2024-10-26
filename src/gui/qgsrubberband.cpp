@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrubberband.h"
+#include "moc_qgsrubberband.cpp"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"

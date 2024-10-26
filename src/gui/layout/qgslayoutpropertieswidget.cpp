@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpropertieswidget.h"
+#include "moc_qgslayoutpropertieswidget.cpp"
 #include "qgslayout.h"
 #include "qgslayoutsnapper.h"
 #include "qgslayoutpagecollection.h"

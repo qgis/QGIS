@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledownloadmanager.h"
+#include "moc_qgstiledownloadmanager.cpp"
 
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"

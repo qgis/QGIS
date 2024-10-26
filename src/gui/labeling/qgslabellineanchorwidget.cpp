@@ -15,6 +15,7 @@
 
 
 #include "qgslabellineanchorwidget.h"
+#include "moc_qgslabellineanchorwidget.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
 

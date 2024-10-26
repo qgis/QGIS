@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthpkipathsedit.h"
+#include "moc_qgsauthpkipathsedit.cpp"
 #include "ui_qgsauthpkipathsedit.h"
 
 #include <QDateTime>

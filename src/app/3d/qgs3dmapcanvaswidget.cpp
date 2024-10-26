@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapcanvaswidget.h"
+#include "moc_qgs3dmapcanvaswidget.cpp"
 
 #include <QBoxLayout>
 #include <QDialog>

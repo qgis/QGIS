@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexternalresourceconfigdlg.h"
+#include "moc_qgsexternalresourceconfigdlg.cpp"
 #include "qgsexternalresourcewidget.h"
 #include "qgsproject.h"
 #include "qgssettings.h"

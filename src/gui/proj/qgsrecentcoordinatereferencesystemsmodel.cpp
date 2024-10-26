@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrecentcoordinatereferencesystemsmodel.h"
+#include "moc_qgsrecentcoordinatereferencesystemsmodel.cpp"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsapplication.h"
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointlocator.h"
+#include "moc_qgspointlocator.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"

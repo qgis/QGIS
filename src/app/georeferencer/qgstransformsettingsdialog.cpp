@@ -19,6 +19,7 @@
 
 #include "qgsfilewidget.h"
 #include "qgstransformsettingsdialog.h"
+#include "moc_qgstransformsettingsdialog.cpp"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgui.h"
 #include "qgshelp.h"

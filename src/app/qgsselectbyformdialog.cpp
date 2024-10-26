@@ -16,6 +16,7 @@
 #include <QLayout>
 
 #include "qgsselectbyformdialog.h"
+#include "moc_qgsselectbyformdialog.cpp"
 #include "qgsattributeform.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"

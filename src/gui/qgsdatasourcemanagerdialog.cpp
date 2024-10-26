@@ -17,6 +17,7 @@
 #include <QListWidgetItem>
 
 #include "qgsdatasourcemanagerdialog.h"
+#include "moc_qgsdatasourcemanagerdialog.cpp"
 #include "ui_qgsdatasourcemanagerdialog.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgssettings.h"

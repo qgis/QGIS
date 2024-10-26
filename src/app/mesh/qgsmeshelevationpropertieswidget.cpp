@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshelevationpropertieswidget.h"
+#include "moc_qgsmeshelevationpropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshlayer.h"

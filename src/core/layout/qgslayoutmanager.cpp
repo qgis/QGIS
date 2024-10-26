@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmanager.h"
+#include "moc_qgslayoutmanager.cpp"
 #include "qgslayout.h"
 #include "qgsproject.h"
 #include "qgslogger.h"

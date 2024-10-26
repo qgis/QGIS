@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsdatabaseschemacombobox.h"
+#include "moc_qgsdatabaseschemacombobox.cpp"
 #include "qgsdatabaseschemamodel.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"

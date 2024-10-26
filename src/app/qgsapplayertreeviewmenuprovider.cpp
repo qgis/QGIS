@@ -17,6 +17,7 @@
 
 #include "qgisapp.h"
 #include "qgsapplayertreeviewmenuprovider.h"
+#include "moc_qgsapplayertreeviewmenuprovider.cpp"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
 #include "qgscolorschemeregistry.h"

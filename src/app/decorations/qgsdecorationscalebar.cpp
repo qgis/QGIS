@@ -20,6 +20,7 @@ email                : sbr00pwb@users.sourceforge.net
  ***************************************************************************/
 
 #include "qgsdecorationscalebar.h"
+#include "moc_qgsdecorationscalebar.cpp"
 
 #include "qgsdecorationscalebardialog.h"
 

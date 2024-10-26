@@ -22,6 +22,7 @@
 
 #include "qgssettings.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "moc_qgsmanageconnectionsdialog.cpp"
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
 #include "qgsvectortileconnection.h"

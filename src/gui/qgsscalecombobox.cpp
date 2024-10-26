@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsscalecombobox.h"
+#include "moc_qgsscalecombobox.cpp"
 #include "qgssettingsentryimpl.h"
 
 #include <QAbstractItemView>

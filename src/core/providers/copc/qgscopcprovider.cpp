@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgscopcprovider.h"
+#include "moc_qgscopcprovider.cpp"
 #include "qgscopcpointcloudindex.h"
 #include "qgsremotecopcpointcloudindex.h"
 #include "qgsruntimeprofiler.h"

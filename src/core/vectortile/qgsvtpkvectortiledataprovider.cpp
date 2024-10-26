@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvtpkvectortiledataprovider.h"
+#include "moc_qgsvtpkvectortiledataprovider.cpp"
 #include "qgsthreadingutils.h"
 #include "qgsvtpktiles.h"
 #include "qgsvectortileloader.h"

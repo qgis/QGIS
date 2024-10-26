@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerrenderer.h"
+#include "moc_qgsrasterlayerrenderer.cpp"
 
 #include "qgsmessagelog.h"
 #include "qgsrasterdataprovider.h"

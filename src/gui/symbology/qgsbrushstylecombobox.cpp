@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsbrushstylecombobox.h"
+#include "moc_qgsbrushstylecombobox.cpp"
 #include "qgsguiutils.h"
 
 #include <QList>

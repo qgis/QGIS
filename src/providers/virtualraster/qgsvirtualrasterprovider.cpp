@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvirtualrasterprovider.h"
+#include "moc_qgsvirtualrasterprovider.cpp"
 #include "qgsrastermatrix.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"

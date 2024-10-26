@@ -23,6 +23,7 @@
 #include "qgsgrasswin.h"
 #include "qgsgrassvectormap.h"
 #include "qgsgrassvectormaplayer.h"
+#include "moc_qgsgrassvectormaplayer.cpp"
 
 extern "C"
 {

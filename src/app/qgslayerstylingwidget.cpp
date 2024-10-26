@@ -25,6 +25,7 @@
 #include "qgsmaskingwidget.h"
 #include "qgsdiagramwidget.h"
 #include "qgslayerstylingwidget.h"
+#include "moc_qgslayerstylingwidget.cpp"
 #include "qgsrastertransparencywidget.h"
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsrendererrasterpropertieswidget.h"

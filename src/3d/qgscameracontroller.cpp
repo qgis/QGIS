@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
+#include "moc_qgscameracontroller.cpp"
 #include "qgsvector3d.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"

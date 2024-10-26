@@ -19,6 +19,7 @@
 #include <QScreen>
 
 #include "qgsmasksourceselectionwidget.h"
+#include "moc_qgsmasksourceselectionwidget.cpp"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "symbology/qgsrenderer.h"

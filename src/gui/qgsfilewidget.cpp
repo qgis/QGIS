@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsfilewidget.h"
+#include "moc_qgsfilewidget.cpp"
 
 #include <QLineEdit>
 #include <QToolButton>

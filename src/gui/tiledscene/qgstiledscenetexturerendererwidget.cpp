@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenetexturerendererwidget.h"
+#include "moc_qgstiledscenetexturerendererwidget.cpp"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenetexturerenderer.h"
 #include "qgsfillsymbol.h"

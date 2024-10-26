@@ -17,6 +17,7 @@
 
 
 #include "qgsinbuiltdataitemproviders.h"
+#include "moc_qgsinbuiltdataitemproviders.cpp"
 #include "qgsdataitem.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgssettings.h"

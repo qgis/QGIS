@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapsettings.h"
+#include "moc_qgs3dmapsettings.cpp"
 
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"

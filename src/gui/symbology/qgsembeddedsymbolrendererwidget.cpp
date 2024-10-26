@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsembeddedsymbolrendererwidget.h"
+#include "moc_qgsembeddedsymbolrendererwidget.cpp"
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbol.h"

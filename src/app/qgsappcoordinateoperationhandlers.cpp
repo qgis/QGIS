@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsappcoordinateoperationhandlers.h"
+#include "moc_qgsappcoordinateoperationhandlers.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"

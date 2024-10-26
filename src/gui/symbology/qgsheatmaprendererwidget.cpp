@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsheatmaprendererwidget.h"
+#include "moc_qgsheatmaprendererwidget.cpp"
 #include "qgsheatmaprenderer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstemporalcontroller.h"

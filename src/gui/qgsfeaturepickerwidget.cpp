@@ -18,6 +18,7 @@
 #include <QKeyEvent>
 
 #include "qgsfeaturepickerwidget.h"
+#include "moc_qgsfeaturepickerwidget.cpp"
 #include "qgsfilterlineedit.h"
 #include "qgsfeaturepickermodel.h"
 

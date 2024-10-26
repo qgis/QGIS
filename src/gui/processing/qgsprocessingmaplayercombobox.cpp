@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmaplayercombobox.h"
+#include "moc_qgsprocessingmaplayercombobox.cpp"
 #include "qgsmaplayercombobox.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingparameters.h"

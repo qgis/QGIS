@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsinstallgridshiftdialog.h"
+#include "moc_qgsinstallgridshiftdialog.cpp"
 #include "qgsgui.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"

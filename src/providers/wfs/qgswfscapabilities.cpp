@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswfscapabilities.h"
+#include "moc_qgswfscapabilities.cpp"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h"
 #include "qgslogger.h"

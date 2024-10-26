@@ -16,6 +16,7 @@
 
 #include "qgsauthcertificateinfo.h"
 #include "qgsauthsslerrorsdialog.h"
+#include "moc_qgsauthsslerrorsdialog.cpp"
 #include "qgsauthsslconfigwidget.h"
 
 #include <QDialogButtonBox>

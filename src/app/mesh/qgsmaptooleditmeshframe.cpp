@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptooleditmeshframe.h"
+#include "moc_qgsmaptooleditmeshframe.cpp"
 
 #include <QMessageBox>
 

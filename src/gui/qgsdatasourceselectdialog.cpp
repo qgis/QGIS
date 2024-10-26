@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsdatasourceselectdialog.h"
+#include "moc_qgsdatasourceselectdialog.cpp"
 
 #include "qgis.h"
 #include "qgsbrowsermodel.h"

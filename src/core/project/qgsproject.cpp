@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsproject.h"
+#include "moc_qgsproject.cpp"
 
 #include "qgsdatasourceuri.h"
 #include "qgslabelingenginesettings.h"

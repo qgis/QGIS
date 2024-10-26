@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportfieldgroupsectionwidget.h"
+#include "moc_qgsreportfieldgroupsectionwidget.cpp"
 #include "qgsreportsectionfieldgroup.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"

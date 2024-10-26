@@ -15,6 +15,7 @@
 
 
 #include "qgsmaptoolcapturelayergeometry.h"
+#include "moc_qgsmaptoolcapturelayergeometry.cpp"
 #include "qgsproject.h"
 #include "qgscurvepolygon.h"
 #include "qgscurve.h"

@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataresultsmodel.h"
+#include "moc_qgslayermetadataresultsmodel.cpp"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
 #include "qgslayermetadataproviderregistry.h"

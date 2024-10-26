@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewdefaultactions.h"
+#include "moc_qgslayertreeviewdefaultactions.cpp"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgslayertree.h"

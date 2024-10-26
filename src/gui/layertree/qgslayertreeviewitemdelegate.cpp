@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewitemdelegate.h"
+#include "moc_qgslayertreeviewitemdelegate.cpp"
 
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"

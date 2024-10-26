@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsabout.h"
+#include "moc_qgsabout.cpp"
 #include "qgsapplication.h"
 #include "qgsauthmethodregistry.h"
 #include "qgsproviderregistry.h"

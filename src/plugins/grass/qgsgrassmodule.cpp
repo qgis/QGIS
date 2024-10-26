@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgrassmodule.h"
+#include "moc_qgsgrassmodule.cpp"
 #include "qgsgrassmapcalc.h"
 #include "qgsgrassplugin.h"
 #include "qgsgrassselect.h"

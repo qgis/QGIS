@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssymbolanimationsettingswidget.h"
+#include "moc_qgssymbolanimationsettingswidget.cpp"
 #include "qgssymbol.h"
 
 #include <QDialogButtonBox>

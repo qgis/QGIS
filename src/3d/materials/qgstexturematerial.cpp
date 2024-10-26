@@ -24,6 +24,7 @@
 #include <Qt3DRender/QTexture>
 
 #include "qgstexturematerial.h"
+#include "moc_qgstexturematerial.cpp"
 
 ///@cond PRIVATE
 QgsTextureMaterial::QgsTextureMaterial( QNode *parent )

@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 
 #include "qgsprojectionselectiondialog.h"
+#include "moc_qgsprojectionselectiondialog.cpp"
 #include "qgshelp.h"
 #include <QDialogButtonBox>
 #include <QApplication>

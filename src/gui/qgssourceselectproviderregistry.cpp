@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgssourceselectprovider.h"
 #include "qgssourceselectproviderregistry.h"
+#include "moc_qgssourceselectproviderregistry.cpp"
 #include "qgsproviderguiregistry.h"
 
 #include <memory>

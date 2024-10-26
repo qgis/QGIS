@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdefaultsearchwidgetwrapper.h"
+#include "moc_qgsdefaultsearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"

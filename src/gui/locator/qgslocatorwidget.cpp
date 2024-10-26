@@ -18,6 +18,7 @@
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
 #include "qgslocatorwidget.h"
+#include "moc_qgslocatorwidget.cpp"
 #include "qgslocatormodelbridge.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"

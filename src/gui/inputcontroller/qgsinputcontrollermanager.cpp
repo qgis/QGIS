@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsinputcontrollermanager.h"
+#include "moc_qgsinputcontrollermanager.cpp"
 #include "qgs2dmapcontroller.h"
 #include "qgs3dmapcontroller.h"
 #include "qgsconfig.h"

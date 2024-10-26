@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewnonremovableindicator.h"
+#include "moc_qgslayertreeviewnonremovableindicator.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"

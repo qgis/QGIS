@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodeldesignerdialog.h"
+#include "moc_qgsmodeldesignerdialog.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsfileutils.h"

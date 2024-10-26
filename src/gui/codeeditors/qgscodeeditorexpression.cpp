@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditorexpression.h"
+#include "moc_qgscodeeditorexpression.cpp"
 #include "qgsexpression.h"
 
 #include <QString>

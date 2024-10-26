@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsannotationitemcommonpropertieswidget.h"
+#include "moc_qgsannotationitemcommonpropertieswidget.cpp"
 #include "qgsannotationitem.h"
 #include "qgscalloutpanelwidget.h"
 #include "qgsapplication.h"

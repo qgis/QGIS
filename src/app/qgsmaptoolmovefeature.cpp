@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolmovefeature.h"
+#include "moc_qgsmaptoolmovefeature.cpp"
 #include "qgsrubberband.h"
 #include "qgstolerance.h"
 #include "qgsvectorlayer.h"

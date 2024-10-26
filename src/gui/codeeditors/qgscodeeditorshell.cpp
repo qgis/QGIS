@@ -15,6 +15,7 @@
 
 
 #include "qgscodeeditorshell.h"
+#include "moc_qgscodeeditorshell.cpp"
 
 #include <QWidget>
 #include <QString>

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsformannotation.h"
+#include "moc_qgsformannotation.cpp"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"

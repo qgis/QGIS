@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthconfigedit.h"
+#include "moc_qgsauthconfigedit.cpp"
 
 #include <QPushButton>
 

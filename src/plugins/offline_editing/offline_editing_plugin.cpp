@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "offline_editing_plugin.h"
+#include "moc_offline_editing_plugin.cpp"
 #include "offline_editing_plugin_gui.h"
 #include "offline_editing_progress_dialog.h"
 

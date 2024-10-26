@@ -27,6 +27,7 @@
 #include <Qt3DRender/QCamera>
 
 #include "qgs3dmapcanvas.h"
+#include "moc_qgs3dmapcanvas.cpp"
 
 #include <Qt3DLogic/QFrameAction>
 #include "qgs3dmapscene.h"

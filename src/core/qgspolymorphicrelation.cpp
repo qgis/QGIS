@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspolymorphicrelation.h"
+#include "moc_qgspolymorphicrelation.cpp"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"

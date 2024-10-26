@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "qgsnetworkaccessmanager.h"
+#include "moc_qgsnetworkaccessmanager.cpp"
 
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"

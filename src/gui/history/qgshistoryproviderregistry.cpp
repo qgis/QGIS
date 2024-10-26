@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgshistoryproviderregistry.h"
+#include "moc_qgshistoryproviderregistry.cpp"
 #include "qgshistoryprovider.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"

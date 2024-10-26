@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolrotatelabel.h"
+#include "moc_qgsmaptoolrotatelabel.cpp"
 #include "qgsmapcanvas.h"
 #include "qgspallabeling.h"
 #include "qgspointrotationitem.h"

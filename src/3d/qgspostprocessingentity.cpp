@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspostprocessingentity.h"
+#include "moc_qgspostprocessingentity.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>

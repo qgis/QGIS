@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialitedataitems.h"
+#include "moc_qgsspatialitedataitems.cpp"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
 #include "qgsfieldsitem.h"

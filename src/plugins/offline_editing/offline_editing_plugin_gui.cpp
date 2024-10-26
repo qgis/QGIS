@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "offline_editing_plugin_gui.h"
+#include "moc_offline_editing_plugin_gui.cpp"
 
 #include "qgshelp.h"
 #include "qgslayertree.h"

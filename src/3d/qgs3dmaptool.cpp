@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmaptool.h"
+#include "moc_qgs3dmaptool.cpp"
 
 #include "qgs3dmapcanvas.h"
 

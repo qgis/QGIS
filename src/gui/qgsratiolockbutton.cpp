@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsratiolockbutton.h"
+#include "moc_qgsratiolockbutton.cpp"
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
 #include "qgis.h"

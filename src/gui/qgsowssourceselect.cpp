@@ -32,6 +32,7 @@
 #include "qgsowsconnection.h"
 #include "qgsdataprovider.h"
 #include "qgsowssourceselect.h"
+#include "moc_qgsowssourceselect.cpp"
 #include "qgssettings.h"
 #include "qgsgui.h"
 

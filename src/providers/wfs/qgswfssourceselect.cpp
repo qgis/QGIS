@@ -17,6 +17,7 @@
 
 #include "qgswfsconstants.h"
 #include "qgswfssourceselect.h"
+#include "moc_qgswfssourceselect.cpp"
 #include "qgswfsconnection.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsprovider.h"

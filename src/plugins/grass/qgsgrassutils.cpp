@@ -13,6 +13,7 @@
 *******************************************************************/
 
 #include "qgsgrassutils.h"
+#include "moc_qgsgrassutils.cpp"
 #include "qgsgrassselect.h"
 #include "qgsgrass.h"
 

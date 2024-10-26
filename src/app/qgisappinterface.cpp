@@ -26,6 +26,7 @@
 #include <QUiLoader>
 
 #include "qgisappinterface.h"
+#include "moc_qgisappinterface.cpp"
 #include "qgisappstylesheet.h"
 #include "qgisapp.h"
 #include "qgsapplayertreeviewmenuprovider.h"

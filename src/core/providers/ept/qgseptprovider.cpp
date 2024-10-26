@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgseptprovider.h"
+#include "moc_qgseptprovider.cpp"
 #include "qgseptpointcloudindex.h"
 #include "qgsremoteeptpointcloudindex.h"
 #include "qgsruntimeprofiler.h"

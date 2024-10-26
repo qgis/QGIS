@@ -20,6 +20,7 @@
 #include <QStyle>
 
 #include "qgisappstylesheet.h"
+#include "moc_qgisappstylesheet.cpp"
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsproxystyle.h"

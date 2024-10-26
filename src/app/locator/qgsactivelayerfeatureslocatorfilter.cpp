@@ -17,6 +17,7 @@
 
 #include "qgisapp.h"
 #include "qgsactivelayerfeatureslocatorfilter.h"
+#include "moc_qgsactivelayerfeatureslocatorfilter.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureaction.h"
 #include "qgsiconutils.h"

@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "qgso2.h"
+#include "moc_qgso2.cpp"
 
 #include "o0globals.h"
 #include "o0settingsstore.h"

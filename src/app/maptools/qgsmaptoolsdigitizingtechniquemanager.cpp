@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
+#include "moc_qgsmaptoolsdigitizingtechniquemanager.cpp"
 #include "qgisapp.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptoolshapecircle2points.h"

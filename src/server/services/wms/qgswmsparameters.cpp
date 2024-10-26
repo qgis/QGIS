@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmsparameters.h"
+#include "moc_qgswmsparameters.cpp"
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsmessagelog.h"

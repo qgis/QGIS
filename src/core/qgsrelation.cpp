@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelation.h"
+#include "moc_qgsrelation.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"

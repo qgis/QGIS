@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappquerylogger.h"
+#include "moc_qgsappquerylogger.cpp"
 #include "qgsdatabasequeryloggernode.h"
 #include "qgsapplication.h"
 #include "devtools/qgsdevtoolsmodelnode.h"

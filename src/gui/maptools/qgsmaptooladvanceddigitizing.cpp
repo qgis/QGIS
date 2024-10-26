@@ -15,6 +15,7 @@
 
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
+#include "moc_qgsmaptooladvanceddigitizing.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsvectorlayer.h"

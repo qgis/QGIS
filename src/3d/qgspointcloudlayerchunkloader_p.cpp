@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerchunkloader_p.h"
+#include "moc_qgspointcloudlayerchunkloader_p.cpp"
 
 #include "qgs3dutils.h"
 #include "qgspointcloudlayer3drenderer.h"

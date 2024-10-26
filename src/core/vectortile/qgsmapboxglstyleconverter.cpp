@@ -19,6 +19,7 @@
  */
 
 #include "qgsmapboxglstyleconverter.h"
+#include "moc_qgsmapboxglstyleconverter.cpp"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgssymbollayer.h"

@@ -18,6 +18,7 @@
 #include <QMessageBox>
 
 #include "qgspointcloudsourceselect.h"
+#include "moc_qgspointcloudsourceselect.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgshelp.h"

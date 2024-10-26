@@ -20,6 +20,7 @@
 #include <QPixmap>
 
 #include "qgsmaptoolzoom.h"
+#include "moc_qgsmaptoolzoom.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"

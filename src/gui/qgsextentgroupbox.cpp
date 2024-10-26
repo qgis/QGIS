@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsextentgroupbox.h"
+#include "moc_qgsextentgroupbox.cpp"
 #include "qgsextentwidget.h"
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )

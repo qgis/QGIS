@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstexteditwrapper.h"
+#include "moc_qgstexteditwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"

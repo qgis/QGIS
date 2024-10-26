@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscollapsiblegroupbox.h"
+#include "moc_qgscollapsiblegroupbox.cpp"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"

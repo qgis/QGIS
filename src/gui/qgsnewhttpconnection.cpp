@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
+#include "moc_qgsnewhttpconnection.cpp"
 #include "qgsauthsettingswidget.h"
 #include "qgssettings.h"
 #include "qgshelp.h"

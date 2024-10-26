@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationlayoutextent.h"
+#include "moc_qgsdecorationlayoutextent.cpp"
 #include "qgsdecorationlayoutextentdialog.h"
 
 #include "qgslayoutitemmap.h"

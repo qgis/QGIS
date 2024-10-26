@@ -17,6 +17,7 @@
 #include <QDomElement>
 
 #include "qgsmeshlabelingwidget.h"
+#include "moc_qgsmeshlabelingwidget.cpp"
 
 #include "qgslabelinggui.h"
 #include "qgsmeshlayer.h"

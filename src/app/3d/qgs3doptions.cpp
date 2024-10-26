@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3doptions.h"
+#include "moc_qgs3doptions.cpp"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgis.h"

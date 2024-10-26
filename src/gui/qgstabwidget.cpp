@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstabwidget.h"
+#include "moc_qgstabwidget.cpp"
 
 #include "qgslogger.h"
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dsceneexporter.h"
+#include "moc_qgs3dsceneexporter.cpp"
 
 #include <QVector>
 #include <Qt3DCore/QEntity>

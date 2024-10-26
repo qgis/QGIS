@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreport.h"
+#include "moc_qgsreport.cpp"
 #include "qgslayout.h"
 
 ///@cond NOT_STABLE

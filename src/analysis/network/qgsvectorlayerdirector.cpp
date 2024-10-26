@@ -19,6 +19,7 @@
  */
 
 #include "qgsvectorlayerdirector.h"
+#include "moc_qgsvectorlayerdirector.cpp"
 #include "qgsgraphbuilderinterface.h"
 
 #include "qgsfeatureiterator.h"

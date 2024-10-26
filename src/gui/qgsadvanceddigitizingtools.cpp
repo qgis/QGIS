@@ -18,6 +18,7 @@
 #include <QLocale>
 
 #include "qgsadvanceddigitizingtools.h"
+#include "moc_qgsadvanceddigitizingtools.cpp"
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"

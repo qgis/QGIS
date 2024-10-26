@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsremotecopcpointcloudindex.h"
+#include "moc_qgsremotecopcpointcloudindex.cpp"
 
 #include <QFile>
 #include <QFileInfo>

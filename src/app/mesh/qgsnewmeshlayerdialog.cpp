@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewmeshlayerdialog.h"
+#include "moc_qgsnewmeshlayerdialog.cpp"
 
 #include <QPushButton>
 #include <QMessageBox>
