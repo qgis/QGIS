@@ -38,11 +38,11 @@ def shouldExclude(root, path):
         return False  # No excludes provided
 
     assert root.startswith(args.root)
-    root = stripInitialSlash(root[len(args.root) :])
+    root = stripInitialSlash(root[len(args.root):])
 
     if args.headerPrefix:
         assert root.startswith(args.headerPrefix)
-        root = stripInitialSlash(root[len(args.headerPrefix) :])
+        root = stripInitialSlash(root[len(args.headerPrefix):])
 
     return (path in args.excludes) or (root + "/" + path in args.excludes)
 
@@ -64,11 +64,11 @@ def hasMacro(fileName):
 
 def matchingCPPFile(root, fileName):
     assert root.startswith(args.root)
-    root = stripInitialSlash(root[len(args.root) :])
+    root = stripInitialSlash(root[len(args.root):])
 
     if args.headerPrefix:
         assert root.startswith(args.headerPrefix)
-        root = stripInitialSlash(root[len(args.headerPrefix) :])
+        root = stripInitialSlash(root[len(args.headerPrefix):])
 
     if args.sourcePrefix:
         root = args.sourcePrefix + "/" + root
@@ -112,7 +112,7 @@ def trimExistingMocInclude(content, cppFileName):
     )
     match = mocStrRegex.search(content)
     if match:
-        return content[: match.start()] + content[match.end() :]
+        return content[: match.start()] + content[match.end():]
     return content
 
 
@@ -178,7 +178,7 @@ def logVerbose(content):
         print(content)
 
 
-################################ MAIN #################################
+# MAIN
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="""Script to add inclusion of mocs to files recursively.
