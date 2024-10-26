@@ -308,5 +308,4 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     friend class TestQgsProjectProperties;
 };
-
 #endif // QGSPROJECTPROPERTIES_H
