@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutview.h"
-#include "moc_qgslayoutview.cpp"
 #include "qgslayoutframe.h"
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutviewtool.h"
@@ -35,6 +34,7 @@
 #include "qgslayoutreportsectionlabel.h"
 #include "qgsreadwritecontext.h"
 #include "qgsscreenhelper.h"
+#include "moc_qgslayoutview.cpp"
 
 #include <memory>
 #include <QMenu>

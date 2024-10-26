@@ -15,7 +15,6 @@
 
 #include "qgsrelation.h"
 #include "qgspolymorphicrelation.h"
-#include "moc_qgsrelation.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -23,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrelation_p.h"
 #include "qgsrelationmanager.h"
+#include "moc_qgsrelation.cpp"
 
 #include <QApplication>
 
