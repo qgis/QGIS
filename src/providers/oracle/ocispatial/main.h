@@ -41,6 +41,9 @@
 **
 ****************************************************************************/
 
+#ifndef MAIN_H
+#define MAIN_H
+
 #include <qsqldriverplugin.h>
 #include "qsql_ocispatial.h"
 
@@ -54,3 +57,5 @@ class QOCISpatialDriverPlugin : public QSqlDriverPlugin
 
     QSqlDriver *create( const QString & ) override;
 };
+
+#endif // MAIN_H
