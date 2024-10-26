@@ -31,6 +31,7 @@ set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
 if(NOT SDK_PATH STREQUAL "")
   message(STATUS "Building with SDK -- ${SDK_PATH}")
   set(CMAKE_TOOLCHAIN_FILE "${SDK_PATH}/scripts/buildsystems/vcpkg.cmake")
+  set(VCPKG_INSTALL_PREFIX "${SDK_PATH}/installed")
   if(APPLE AND NOT VCPKG_TARGET_TRIPLET)
     set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
   endif()
@@ -43,7 +44,7 @@ else()
 endif()
 
 if(WITH_VCPKG)
-  list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/")
+  list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/tools/python3/Scripts/")
   set(PREFER_INTERNAL_LIBS FALSE)
 else()
   set(PREFER_INTERNAL_LIBS TRUE)
@@ -274,8 +275,8 @@ if(WITH_CORE)
   endif()
 
   # try to configure and build POLY2TRI support
-  set (WITH_INTERNAL_POLY2TRI PREFER_INTERNAL_LIBS CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
-  set (WITH_INTERNAL_MESHOPTIMIZER PREFER_INTERNAL_LIBS CACHE BOOL "Determines whether MESHOPTIMIZER should be built from internal copy")
+  set (WITH_INTERNAL_POLY2TRI ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
+  set (WITH_INTERNAL_MESHOPTIMIZER ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether MESHOPTIMIZER should be built from internal copy")
 
   # try to configure and build POSTGRESQL support
   set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
@@ -388,7 +389,7 @@ if(WITH_CORE)
   find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
-  set (WITH_INTERNAL_NLOHMANN_JSON PREFER_INTERNAL_LIBS CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
+  set (WITH_INTERNAL_NLOHMANN_JSON ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
   find_package(nlohmann_json REQUIRED)
 
   # The following bypasses the FindSQLite3 module introduced in CMake 3.14
