@@ -28,6 +28,7 @@
 //
 
 #include "qgsaabb.h"
+#include "qgsbox3d.h"
 
 #include "qgis.h"
 #include <QTime>
@@ -113,7 +114,9 @@ struct QgsChunkNodeId
  * This is currently used for rendering of terrain, but it is not limited to it and may be used for
  * other data as well.
  *
- * The data structure is essentially a quadtree: each node may have four child nodes. Nodes can exist
+ * The data structure is a tree: each node may have several child nodes, all child nodes should
+ * have their bounding box within the bounding box of their parent. Typically this is a quadtree,
+ * an octree, but it may be also more general structure (with variable number of children). Nodes can exist
  * in several states (e.g. skeleton or loaded state) and they keep being loaded and unloaded as necessary
  * by the 3D rendering.
  *
@@ -123,7 +126,7 @@ class QgsChunkNode
   public:
 
     //! constructs a skeleton chunk
-    QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
+    QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsBox3D &box3D, float error, QgsChunkNode *parent = nullptr );
 
     ~QgsChunkNode();
 
@@ -155,8 +158,8 @@ class QgsChunkNode
       Updating,         //!< Data are being updated right now
     };
 
-    //! Returns 3D bounding box of the chunk
-    QgsAABB bbox() const { return mBbox; }
+    //! Returns 3D bounding box (in map coordinates) of the chunk
+    QgsBox3D box3D() const { return mBox3D; }
     //! Returns measure geometric/texture error of the chunk (in world coordinates)
     float error() const { return mError; }
     //! Returns chunk tile coordinates of the tiling scheme
@@ -238,8 +241,8 @@ class QgsChunkNode
     //! mark node that it finished updating - back to loaded node
     void setUpdated();
 
-    //! called when bounding box
-    void setExactBbox( const QgsAABB &box );
+    //! called when the true bounding box is known so that we can use tighter bounding box
+    void setExactBox3D( const QgsBox3D &box3D );
 
     /**
      * Triggers a recursive update of the node's parent's bounding boxes to ensure
@@ -256,7 +259,7 @@ class QgsChunkNode
     bool hasData() const { return mHasData; }
 
   private:
-    QgsAABB mBbox;      //!< Bounding box in world coordinates
+    QgsBox3D mBox3D;   //!< Bounding box in map coordinates
     float mError;    //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
 
     QgsChunkNodeId mNodeId;  //!< Chunk coordinates (for use with a tiling scheme)

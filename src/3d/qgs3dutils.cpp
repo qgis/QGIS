@@ -633,6 +633,17 @@ QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, double zMin, d
   return rootBbox;
 }
 
+QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &mapOrigin )
+{
+  const QgsVector3D extentMin3D( box3D.xMinimum(), box3D.yMinimum(), box3D.zMinimum() );
+  const QgsVector3D extentMax3D( box3D.xMaximum(), box3D.yMaximum(), box3D.zMaximum() );
+  const QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
+  const QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
+  QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
+                    worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
+  return rootBbox;
+}
+
 QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin )
 {
   const QgsVector3D worldExtentMin3D = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( bbox.xMin, bbox.yMin, bbox.zMin ), mapOrigin );

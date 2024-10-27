@@ -79,8 +79,8 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! extent of the terrain's root chunk in terrain's CRS
     virtual QgsRectangle rootChunkExtent() const = 0;
 
-    //! Returns bounding box of the root chunk
-    virtual QgsAABB rootChunkBbox( const Qgs3DMapSettings &map ) const;
+    //! Returns 3D box (in map coordinates) of the root chunk
+    virtual QgsBox3D rootChunkBox3D( const Qgs3DMapSettings &map ) const;
 
     //! Returns error of the root chunk in world coordinates
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const;
