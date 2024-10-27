@@ -16,6 +16,7 @@
 #include "qgstiledscenechunkloader_p.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
@@ -168,32 +169,24 @@ QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode
   return new QgsTiledSceneChunkLoader( node, mIndex, *this, mZValueScale, mZValueOffset );
 }
 
-// converts box from map coordinates to world coords (also flips [X,Y] to [X,-Z])
-static QgsAABB aabbConvert( const QgsBox3D &b0, const QgsVector3D &sceneOriginTargetCrs )
-{
-  const QgsBox3D b = b0 - sceneOriginTargetCrs;
-  return QgsAABB( b.xMinimum(), b.zMinimum(), -b.yMaximum(), b.xMaximum(), b.zMaximum(), -b.yMinimum() );
-}
-
 QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const
 {
   QgsChunkNode *node = nullptr;
   if ( hasLargeBounds( t, mBoundsTransform ) )
   {
     // use the full extent of the scene
-    QgsVector3D v0 = mRenderContext.mapToWorldCoordinates( QgsVector3D( mRenderContext.extent().xMinimum(), mRenderContext.extent().yMinimum(), -100 ) );
-    QgsVector3D v1 = mRenderContext.mapToWorldCoordinates( QgsVector3D( mRenderContext.extent().xMaximum(), mRenderContext.extent().yMaximum(), +100 ) );
-    QgsAABB aabb( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
+    QgsVector3D v0( mRenderContext.extent().xMinimum(), mRenderContext.extent().yMinimum(), -100 );
+    QgsVector3D v1( mRenderContext.extent().xMaximum(), mRenderContext.extent().yMaximum(), +100 );
+    QgsBox3D box3D( v0, v1 );
     float err = std::min( 1e6, t.geometricError() );
-    node = new QgsChunkNode( nodeId, aabb, err, parent );
+    node = new QgsChunkNode( nodeId, box3D, err, parent );
   }
   else
   {
     QgsBox3D box = t.boundingVolume().bounds( mBoundsTransform );
     box.setZMinimum( box.zMinimum() * mZValueScale + mZValueOffset );
     box.setZMaximum( box.zMaximum() * mZValueScale + mZValueOffset );
-    const QgsAABB aabb = aabbConvert( box, mRenderContext.origin() );
-    node = new QgsChunkNode( nodeId, aabb, t.geometricError(), parent );
+    node = new QgsChunkNode( nodeId, box, t.geometricError(), parent );
   }
 
   node->setRefinementProcess( t.refinementProcess() );
@@ -376,9 +369,12 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
 #ifdef QGISDEBUG
     nodesAll++;
 #endif
+
+    QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
+
     if ( node->entity() &&
-         ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-         QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+         ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) &&
+         QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
     {
 #ifdef QGISDEBUG
       nodeUsed++;

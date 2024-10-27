@@ -175,6 +175,12 @@ class _3D_EXPORT Qgs3DUtils
     static QgsAABB mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin );
 
     /**
+     * Converts 3D box in map coordinates to AABB in world coordinates.
+     * \since QGIS 3.42
+     */
+    static QgsAABB mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &mapOrigin );
+
+    /**
      * Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
      * \since QGIS 3.12
      */

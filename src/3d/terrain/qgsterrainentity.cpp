@@ -120,9 +120,12 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
       const QList<QgsChunkNode *> activeNodes = this->activeNodes();
       for ( QgsChunkNode *node : activeNodes )
       {
+
+        QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
+
         if ( node->entity() &&
-             ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-             QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+             ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) &&
+             QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
         {
           Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
           auto *geom = rend->geometry();

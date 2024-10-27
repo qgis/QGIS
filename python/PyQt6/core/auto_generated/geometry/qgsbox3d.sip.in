@@ -110,6 +110,15 @@ the normalization step will not be applied automatically.
     }
 %End
 
+    QgsBox3D( const QgsVector3D &corner1, const QgsVector3D &corner2, bool normalize = true );
+%Docstring
+Constructs a QgsBox3D from two 3D vectors representing opposite corners of the box.
+The box is normalized after construction. If ``normalize`` is ``False`` then
+the normalization step will not be applied automatically.
+
+.. versionadded:: 3.42
+%End
+
     void set( double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, bool normalize = true );
 %Docstring
 Sets the box from a set of (x,y,z) minimum and maximum coordinates.
@@ -375,6 +384,13 @@ If no ``center`` point is specified then the current center of the box will be u
 Scale the rectangle around a center coordinates.
 
 .. versionadded:: 3.26
+%End
+
+    void grow( double delta );
+%Docstring
+Grows the box in place by the specified amount in all dimensions.
+
+.. versionadded:: 3.42
 %End
 
     bool isNull() const /HoldGIL/;
