@@ -431,6 +431,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mViewFrame->setLayout( viewLayout );
   mViewFrame->setContentsMargins( 0, 0, 0, 1 ); // 1 is deliberate!
   mView->setFrameShape( QFrame::NoFrame );
+  mView->setRenderHints( QPainter::Antialiasing );
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
 
