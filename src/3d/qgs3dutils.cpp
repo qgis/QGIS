@@ -42,6 +42,9 @@
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
+
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
@@ -973,4 +976,20 @@ void Qgs3DUtils::decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &
   scale = QVector3D( sx, sy, sz );
   rotation = QQuaternion::fromRotationMatrix( rot3x3 );
   translation = QVector3D( md[12], md[13], md[14] );
+}
+
+int Qgs3DUtils::openGlMaxClipPlanes( QSurface *surface )
+{
+  int numPlanes = 6;
+
+  QOpenGLContext context;
+  context.setFormat( QSurfaceFormat::defaultFormat() );
+  if ( context.create() )
+  {
+    context.makeCurrent( surface );
+    QOpenGLFunctions *funcs = context.functions();
+    funcs->glGetIntegerv( GL_MAX_CLIP_PLANES, &numPlanes );
+  }
+
+  return numPlanes;
 }

@@ -99,6 +99,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
 
+  // Get the maximum of clip planes available
+  mMaxClipPlanes = Qgs3DUtils::openGlMaxClipPlanes( mEngine->surface() );
+
   // Camera
   float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
   mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), aspectRatio, 10.f, 10000.0f );
@@ -1223,11 +1226,11 @@ void Qgs3DMapScene::handleClippingOnAllEntities() const
 
 void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
 {
-  if ( clipPlaneEquations.size() > 8 )
+  if ( clipPlaneEquations.size() > mMaxClipPlanes )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Qgs3DMapScene::enableClipping: it is not possible to use more than 8 clipping planes." ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Qgs3DMapScene::enableClipping: it is not possible to use more than %1 clipping planes." ).arg( mMaxClipPlanes ), 2 );
   }
-  mClipPlanesEquations = clipPlaneEquations.mid( 0, 8 );
+  mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
 
   // enable the clip planes on the framegraph
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
