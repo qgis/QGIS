@@ -611,6 +611,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   backSpace->setContext( Qt::WidgetWithChildrenShortcut );
 #endif
 
+  // Delete selection should be disabled when creating node item
+  connect( mAddNodeItemTool, &QgsLayoutViewTool::activated, this, [ this, backSpace ] { backSpace->setEnabled( false ); mActionDeleteSelection->setEnabled( false ); } );
+  connect( mAddNodeItemTool, &QgsLayoutViewTool::deactivated, this, [ this, backSpace ] { backSpace->setEnabled( true ); mActionDeleteSelection->setEnabled( true ); } );
+
+
   mActionPreviewModeOff->setChecked( true );
   connect( mActionPreviewModeOff, &QAction::triggered, this, [=] {
     mView->setPreviewModeEnabled( false );
