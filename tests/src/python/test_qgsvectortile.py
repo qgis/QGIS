@@ -106,7 +106,7 @@ class TestVectorTile(QgisTestCase):
 
         parts['path'] = '/my/new/file.mbtiles'
         uri = md.encodeUri(parts)
-        self.assertEqual(uri, 'type=mbtiles&url=/my/new/file.mbtiles')
+        self.assertEqual(uri, 'type=mbtiles&url=%2Fmy%2Fnew%2Ffile.mbtiles')
 
         uri = 'type=xyz&url=https://fake.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmin=0&zmax=2'
         parts = md.decodeUri(uri)

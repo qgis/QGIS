@@ -98,7 +98,7 @@ void TestQgsTiledSceneConnection::testConnections()
 
   // retrieve stored connection
   conn = QgsTiledSceneProviderConnection( QStringLiteral( "my connection" ) );
-  QCOMPARE( conn.uri(), QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
+  QCOMPARE( conn.uri(), QStringLiteral( "url=http%3A%2F%2Ftesturl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
   QCOMPARE( qgis::down_cast< QgsTiledSceneProviderConnection * >( &conn )->providerKey(), QStringLiteral( "test_provider" ) );
 
   // add a second connection

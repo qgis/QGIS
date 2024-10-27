@@ -338,7 +338,7 @@ void TestQgsVectorTileLayer::test_relativePathsMbTiles()
 
   // encode source: converting absolute paths to relative
   const QString srcMbtilesRel = layer->encodedSource( srcMbtiles, contextRel );
-  QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=./vector_tile/mbtiles_vt.mbtiles" ) );
+  QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=.%2Fvector_tile%2Fmbtiles_vt.mbtiles" ) );
 
   // encode source: keeping absolute paths
   QCOMPARE( layer->encodedSource( srcMbtiles, contextAbs ), srcMbtiles );

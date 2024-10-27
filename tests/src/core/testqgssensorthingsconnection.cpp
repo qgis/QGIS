@@ -94,7 +94,7 @@ void TestQgsSensorThingsConnection::testConnections()
 
   // retrieve stored connection
   conn = QgsSensorThingsProviderConnection( QStringLiteral( "my connection" ) );
-  QCOMPARE( conn.uri(), QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
+  QCOMPARE( conn.uri(), QStringLiteral( "url=http%3A%2F%2Ftesturl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
 
   // add a second connection
   QgsSensorThingsProviderConnection::Data data2;

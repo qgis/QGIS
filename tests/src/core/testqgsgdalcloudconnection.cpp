@@ -60,7 +60,7 @@ void TestQgsGdalCloudConnection::encodeDecode()
   data.rootPath = QStringLiteral( "some/path" );
   data.credentialOptions = QVariantMap{ {"pw", QStringLiteral( "xxxx" )}, {"key", QStringLiteral( "yyy" )} };
 
-  QCOMPARE( QgsGdalCloudProviderConnection::encodedUri( data ), QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some/path" ) );
+  QCOMPARE( QgsGdalCloudProviderConnection::encodedUri( data ), QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some%2Fpath" ) );
 
   const QgsGdalCloudProviderConnection::Data data2 = QgsGdalCloudProviderConnection::decodedUri( QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some/path" ) );
   QCOMPARE( data2.vsiHandler, QStringLiteral( "vsis3" ) );
@@ -95,7 +95,7 @@ void TestQgsGdalCloudConnection::testConnections()
 
   // retrieve stored connection
   conn = QgsGdalCloudProviderConnection( QStringLiteral( "my connection" ) );
-  QCOMPARE( conn.uri(), QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some/path" ) );
+  QCOMPARE( conn.uri(), QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some%2Fpath" ) );
 
   // add a second connection
   QgsGdalCloudProviderConnection::Data data2;
