@@ -44,6 +44,32 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
 
   add_custom_target (server_landingpage ALL DEPENDS ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp)
 
+  # add_custom_command does not support OUTPUT_QUIET, so we need to make a cmake subcommand first:
+  file(WRITE ${CMAKE_BINARY_DIR}/yarn_commands.cmake
+  "execute_process(
+      COMMAND ${YARN} install --frozen-lockfile
+      WORKING_DIRECTORY ${LANDINGPAGE_OUTPUT_PATH}
+      OUTPUT_QUIET
+      ERROR_FILE ${CMAKE_BINARY_DIR}/yarn_error.log
+      RESULT_VARIABLE YARN_RESULT
+  )
+  if(NOT YARN_RESULT EQUAL 0)
+      file(READ ${CMAKE_BINARY_DIR}/yarn_error.log ERROR_CONTENTS)
+      message(FATAL_ERROR \${ERROR_CONTENTS})
+  endif()
+
+  execute_process(
+      COMMAND ${YARN} build
+      WORKING_DIRECTORY ${LANDINGPAGE_OUTPUT_PATH}
+      OUTPUT_QUIET
+      ERROR_FILE ${CMAKE_BINARY_DIR}/yarn_error.log
+      RESULT_VARIABLE YARN_RESULT
+  )
+  if(NOT YARN_RESULT EQUAL 0)
+      file(READ ${CMAKE_BINARY_DIR}/yarn_error.log ERROR_CONTENTS)
+      message(FATAL_ERROR \${ERROR_CONTENTS})
+  endif()
+  ")
   add_custom_command(
     POST_BUILD
     OUTPUT ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
@@ -52,7 +78,7 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
     ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage/
     ${LANDINGPAGE_OUTPUT_PATH}/
     COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
-    COMMAND cd ${LANDINGPAGE_OUTPUT_PATH} && ${YARN} install --frozen-lockfile && ${YARN} build
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/yarn_commands.cmake
   )
 endif()
 
