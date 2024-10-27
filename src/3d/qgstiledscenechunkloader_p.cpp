@@ -412,10 +412,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
     QVariantMap vm;
     QgsTiledSceneTile tile = mIndex.getTile( minNode->tileId().uniqueId );
     // at this point this is mostly for debugging - we may want to change/rename what's returned here
-    vm["node_id"] = tile.id();
-    vm["node_error"] = tile.geometricError();
-    vm["node_content"] = tile.resources().value( QStringLiteral( "content" ) );
-    vm["triangle_index"] = minTriangleIndex;
+    vm[ QStringLiteral( "node_id" ) ] = tile.id();
+    vm[ QStringLiteral( "node_error" ) ] = tile.geometricError();
+    vm[ QStringLiteral( "node_content" ) ] = tile.resources().value( QStringLiteral( "content" ) );
+    vm[ QStringLiteral( "triangle_index" ) ] = minTriangleIndex;
     QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, FID_NULL, vm );
     result.append( hit );
   }
