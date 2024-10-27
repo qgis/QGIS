@@ -131,6 +131,7 @@ void QgsLayoutViewToolAddNodeItem::keyPressEvent( QKeyEvent *event )
       //remove last added vertex
       mPolygon.pop_back();
       setRubberBandNodes();
+      moveTemporaryNode( view()->mapToScene( view()->mapFromGlobal( QCursor::pos() ) ), event->modifiers() );
     }
     else
     {
