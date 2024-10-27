@@ -3930,6 +3930,11 @@ void QgsLayoutDesignerDialog::activateNewItemCreationTool( int id, bool nodeBase
     if ( mView )
       mView->setTool( mAddNodeItemTool );
   }
+
+  if ( mLayout )
+  {
+    mLayout->deselectAll();
+  }
 }
 
 void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
