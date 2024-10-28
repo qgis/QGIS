@@ -132,6 +132,7 @@ QgsGeometry QgsLayoutItemPolygon::clipPath() const
 
 bool QgsLayoutItemPolygon::isValid() const
 {
+  // A Polygon is valid if it has at least 3 unique points
   QList<QPointF> uniquePoints;
   int seen = 0;
   for ( QPointF point : mPolygon )
