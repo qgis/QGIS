@@ -2003,6 +2003,11 @@ QgsProcessingFeatureSink::QgsProcessingFeatureSink( QgsFeatureSink *originalSink
 
 QgsProcessingFeatureSink::~QgsProcessingFeatureSink()
 {
+  if ( !flushBuffer() && mContext.feedback() )
+  {
+    mContext.feedback()->reportError( lastError() );
+  }
+
   if ( mOwnsSink )
     delete destinationSink();
 }
