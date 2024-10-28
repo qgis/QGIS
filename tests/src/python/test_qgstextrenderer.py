@@ -3953,6 +3953,18 @@ class PyQgsTextRenderer(QgisTestCase):
             '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
             point=QPointF(50, 200)))
 
+    def testHtmlMixedMetricLineHeightCss(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('regular'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(0, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        format.setLineHeight(0.5)
+        self.assertTrue(self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_line_height_css', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p style="line-height: 75pt"><span style="color: red">s<span style="color: rgba(255,0,0,0.5); font-size:80pt">t</span></span></p><p style="line-height: 50%">third line</p>'],
+            point=QPointF(50, 300)))
+
     def testHtmlMixedMetricFormattingBuffer(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))

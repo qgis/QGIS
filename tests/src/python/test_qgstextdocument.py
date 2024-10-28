@@ -11,6 +11,8 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
+import math
+
 from qgis.PyQt.QtCore import QT_VERSION_STR, QSizeF
 from qgis.core import (
     Qgis,
@@ -199,6 +201,35 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[1][0].text(), 'b')
         self.assertTrue(doc[1][1].isTab())
         self.assertEqual(doc[1][2].text(), 'cdcd')
+
+        # with line heights
+        doc = QgsTextDocument.fromHtml(['<div>test</div><div style="line-height: 40pt">test2</div><div style="line-height: 20%">test3</div>'])
+        self.assertEqual(len(doc), 3)
+
+        self.assertEqual(len(doc[0]), 1)
+        self.assertEqual(doc[0][0].text(), 'test')
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().lineHeight()
+        ))
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().lineHeightPercentage()
+        ))
+
+        self.assertEqual(len(doc[1]), 1)
+        self.assertEqual(doc[1][0].text(), 'test2')
+        self.assertEqual(doc[1].blockFormat().lineHeight(), 40)
+        self.assertTrue(math.isnan(
+            doc[1].blockFormat().lineHeightPercentage()
+        ))
+
+        self.assertEqual(len(doc[2]), 1)
+        self.assertEqual(doc[2][0].text(), 'test3')
+        self.assertTrue(math.isnan(
+            doc[2].blockFormat().lineHeight()
+        ))
+        self.assertEqual(
+            doc[2].blockFormat().lineHeightPercentage(), 0.2
+        )
 
     def testFromTextAndFormat(self):
         format = QgsTextFormat()
