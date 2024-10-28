@@ -47,6 +47,7 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override { return mSink->addFeatures( features, flags ); }
     bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override { return mSink->addFeatures( iterator, flags ); }
     QString lastError() const override { return mSink->lastError(); }
+    bool flushBuffer() override { return mSink->flushBuffer(); }
 
     /**
      * Returns the destination QgsFeatureSink which the proxy will forward features to.
