@@ -662,10 +662,6 @@ except ModuleNotFoundError:
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
-
-
-
-
 QgsRasterBlock.as_numpy.__doc__ = """
 Returns the block data as a numpy array.
 
@@ -675,6 +671,7 @@ If `use_masking` is `True` then the returned array will be a numpy masked array,
 
 .. versionadded:: 3.40
 """
+
 QgsRasterLayer.as_numpy.__doc__ = """
 Returns the layer data as a numpy array.
 
@@ -686,6 +683,19 @@ If `bands` is provided, only the specified bands will be included in the returne
 
 .. versionadded:: 3.40
 """
-QgsGeometry.as_numpy.__doc__ = """Returns the geometry data as a numpy array or list of numpy arrays."""
 
-QgsGeometry.as_shapely.__doc__ = """Returns the geometry data as a shapely object."""
+QgsGeometry.as_numpy.__doc__ = """
+Returns the geometry data as a numpy array or list of numpy arrays.
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
+
+QgsGeometry.as_shapely.__doc__ = """
+Returns the geometry data as a shapely object.
+
+:raises QgsNotSupportedException: if shapely is not available on the system
+
+.. versionadded:: 3.40
+"""
