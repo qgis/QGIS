@@ -95,6 +95,31 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 13.0)
         self.assertEqual(box.zMaximum(), 5.0)
 
+        # constructor using two corners
+        box = QgsBox3d(QgsVector3D(3, 4, 5), QgsVector3D(8, 9, 10))
+        self.assertEqual(box.xMinimum(), 3.0)
+        self.assertEqual(box.yMinimum(), 4.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 8.0)
+        self.assertEqual(box.yMaximum(), 9.0)
+        self.assertEqual(box.zMaximum(), 10.0)
+
+        box = QgsBox3d(QgsVector3D(3, 4, 5), QgsVector3D(1, 2, 6))
+        self.assertEqual(box.xMinimum(), 1.0)
+        self.assertEqual(box.yMinimum(), 2.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 3.0)
+        self.assertEqual(box.yMaximum(), 4.0)
+        self.assertEqual(box.zMaximum(), 6.0)
+
+        box = QgsBox3d(QgsVector3D(3, 4, 5), QgsVector3D(1, 2, 6), False)
+        self.assertEqual(box.xMinimum(), 3.0)
+        self.assertEqual(box.yMinimum(), 4.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 1.0)
+        self.assertEqual(box.yMaximum(), 2.0)
+        self.assertEqual(box.zMaximum(), 6.0)
+
     def test_repr(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
         self.assertEqual(str(box), '<QgsBox3D(5, 6, 7, 10, 11, 12)>')
@@ -390,6 +415,16 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box3.xMinimum(), 1.0)
         self.assertEqual(box3.yMinimum(), -7.0)
         self.assertEqual(box3.zMinimum(), -3.0)
+
+    def testGrow(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box.grow(2.0)
+        self.assertEqual(box.xMinimum(), 3.0)
+        self.assertEqual(box.yMinimum(), 4.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 13.0)
+        self.assertEqual(box.yMaximum(), 15.0)
+        self.assertEqual(box.zMaximum(), 17.0)
 
     def testIsNull(self):
         box1 = QgsBox3d()
