@@ -341,6 +341,7 @@ QPainterPath QgsLayoutItemPolyline::shape() const
 
 bool QgsLayoutItemPolyline::isValid() const
 {
+  // A Polyline is valid if it has at least 2 unique points
   QList<QPointF> uniquePoints;
   int seen = 0;
   for ( QPointF point : mPolygon )

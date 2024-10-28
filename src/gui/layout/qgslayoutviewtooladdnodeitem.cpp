@@ -69,23 +69,22 @@ void QgsLayoutViewToolAddNodeItem::layoutPressEvent( QgsLayoutViewMouseEvent *ev
     // last (temporary) point is removed
     mPolygon.remove( mPolygon.count() - 1 );
 
-    QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() );
+    std::unique_ptr< QgsLayoutItem > item( QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() ) );
     if ( !item )
       return;
 
-    if ( QgsLayoutNodesItem *nodesItem = qobject_cast< QgsLayoutNodesItem * >( item ) )
+    if ( QgsLayoutNodesItem *nodesItem = qobject_cast< QgsLayoutNodesItem * >( item.get() ) )
     {
       nodesItem->setNodes( mPolygon );
       if ( !nodesItem->isValid() )
       {
-        nodesItem->deleteLater();
         mRubberBand.reset();
         return;
       }
     }
-
-    layout()->addLayoutItem( item );
-    layout()->setSelectedItem( item );
+    QgsLayoutItem *newItem = item.get();
+    layout()->addLayoutItem( item.release() );
+    layout()->setSelectedItem( newItem );
     emit createdItem();
   }
   else
