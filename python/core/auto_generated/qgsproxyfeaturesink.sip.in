@@ -35,6 +35,7 @@ Constructs a new QgsProxyFeatureSink which forwards features onto a destination 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
     virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
     virtual QString lastError() const;
+    virtual bool flushBuffer();
 
     QgsFeatureSink *destinationSink();
 %Docstring
