@@ -32,7 +32,6 @@ constexpr double SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 1.0 / 6.0;
 
 struct DocumentMetrics
 {
-  double lineHeightPainterUnits = 0;
   double tabStopDistancePainterUnits = 0;
   double width = 0;
   double heightLabelMode = 0;
@@ -76,6 +75,7 @@ struct BlockMetrics
   double maxBlockDescent = 0;
   double maxBlockMaxWidth = 0;
   double maxBlockLeading = 0;
+
   QList< QFont > fragmentFonts;
   QList< double > fragmentVerticalOffsets;
   QList< double > fragmentFixedHeights;
@@ -83,10 +83,42 @@ struct BlockMetrics
 
   QFont previousNonSuperSubScriptFont;
   bool isFirstNonTabFragment = true;
+
+  // non calculated properties
+  double lineHeightPainterUnits = 0;
+  double lineHeightPercentage = 0;
+
+  void resetCalculatedStats()
+  {
+    isFirstBlock = false;
+    isLastBlock = false;
+    maxLineSpacing = 0;
+    blockWidth = 0;
+    blockXMax = 0;
+    blockYMaxAdjustLabel = 0;
+    blockHeightUsingAscentAccountingForVerticalOffset = 0;
+    blockHeightVerticalOrientation = 0;
+    blockHeightUsingAscentDescent = 0;
+    blockHeightUsingLineSpacing = 0;
+    maxBlockFixedItemHeight = 0;
+    maxBlockAscentForTextFragments = 0;
+    maxBlockCapHeight = 0;
+    maxBlockAscent = 0;
+    maxBlockDescent = 0;
+    maxBlockMaxWidth = 0;
+    maxBlockLeading = 0;
+
+    fragmentFonts.clear();
+    fragmentVerticalOffsets.clear();
+    fragmentFixedHeights.clear();
+    fragmentHorizontalAdvance.clear();
+    previousNonSuperSubScriptFont = QFont();
+    isFirstNonTabFragment = true;
+  }
 };
 
 
-void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics )
+void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics )
 {
   if ( metrics.isFirstBlock )
   {
@@ -121,8 +153,8 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
   }
   else
   {
-    double thisLineHeightUsingAscentDescent = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * ( metrics.maxBlockAscent + metrics.maxBlockDescent ) ) : documentMetrics.lineHeightPainterUnits;
-    double thisLineHeightUsingLineSpacing = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * metrics.maxLineSpacing ) : documentMetrics.lineHeightPainterUnits;
+    double thisLineHeightUsingAscentDescent = metrics.lineHeightPercentage != 0 ? ( metrics.lineHeightPercentage * ( metrics.maxBlockAscent + metrics.maxBlockDescent ) ) : metrics.lineHeightPainterUnits;
+    double thisLineHeightUsingLineSpacing = metrics.lineHeightPercentage != 0 ? ( metrics.lineHeightPercentage * metrics.maxLineSpacing ) : metrics.lineHeightPainterUnits;
 
     thisLineHeightUsingAscentDescent = std::max( thisLineHeightUsingAscentDescent, metrics.maxBlockFixedItemHeight );
     thisLineHeightUsingLineSpacing = std::max( thisLineHeightUsingLineSpacing, metrics.maxBlockFixedItemHeight );
@@ -149,7 +181,7 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
       documentMetrics.outerYMaxLabel = metrics.blockYMaxAdjustLabel - metrics.maxBlockDescent;
   }
 
-  documentMetrics.blockVerticalLineSpacing << ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( metrics.maxBlockMaxWidth * format.lineHeight() ) : documentMetrics.lineHeightPainterUnits );
+  documentMetrics.blockVerticalLineSpacing << ( metrics.lineHeightPercentage != 0 ? ( metrics.maxBlockMaxWidth * metrics.lineHeightPercentage ) : metrics.lineHeightPainterUnits );
 
   res.mBlockHeights << metrics.blockHeightUsingLineSpacing;
 
@@ -179,7 +211,7 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
     documentMetrics.lastLineLeading = metrics.maxBlockLeading;
 
   // reset metrics for next block
-  metrics = BlockMetrics();
+  metrics.resetCalculatedStats();
 };
 
 
@@ -500,7 +532,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   DocumentMetrics documentMetrics;
 
   // for absolute line heights
-  documentMetrics.lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
+  const double documentLineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
 
   documentMetrics.tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
       ? format.tabStopDistance() * font.pixelSize() / scaleFactor
@@ -520,6 +552,21 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     const int fragmentSize = block.size();
 
     BlockMetrics thisBlockMetrics;
+    thisBlockMetrics.lineHeightPainterUnits = documentLineHeightPainterUnits;
+    // apply block line height if set
+    if ( !std::isnan( block.blockFormat().lineHeightPercentage() ) )
+    {
+      thisBlockMetrics.lineHeightPercentage = block.blockFormat().lineHeightPercentage();
+    }
+    else if ( !std::isnan( block.blockFormat().lineHeight() ) )
+    {
+      thisBlockMetrics.lineHeightPainterUnits = context.convertToPainterUnits( block.blockFormat().lineHeight(), Qgis::RenderUnit::Points );
+    }
+    else if ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage )
+    {
+      thisBlockMetrics.lineHeightPercentage = format.lineHeight();
+    }
+
     thisBlockMetrics.fragmentVerticalOffsets.reserve( fragmentSize );
     thisBlockMetrics.fragmentFonts.reserve( fragmentSize );
     thisBlockMetrics.fragmentHorizontalAdvance.reserve( fragmentSize );

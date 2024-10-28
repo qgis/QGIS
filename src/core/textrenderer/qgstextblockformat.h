@@ -111,6 +111,60 @@ class CORE_EXPORT QgsTextBlockFormat
     void setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment ) { mHorizontalAlign = alignment; }
 
     /**
+     * Returns the line height in points, or NaN if the line height is not set
+     * and should be auto calculated.
+     *
+     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
+     *
+     * \see lineHeightPercentage()
+     * \see setLineHeight()
+     *
+     * \since QGIS 3.42
+     */
+    double lineHeight() const;
+
+    /**
+     * Sets the font line \a height, in points.
+     *
+     * Set \a height to NaN if the line height is not set
+     * and should be auto calculated.
+     *
+     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
+     *
+     * \see lineHeight()
+     * \see setLineHeightPercentage()
+     *
+     * \since QGIS 3.42
+     */
+    void setLineHeight( double height );
+
+    /**
+     * Returns the line height percentage size (as fraction of font size from 0.0 to 1.0), or NaN if the line height percentage is not set.
+     *
+     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
+     *
+     * \see lineHeight()
+     * \see setLineHeightPercentage()
+     *
+     * \since QGIS 3.42
+     */
+    double lineHeightPercentage() const;
+
+    /**
+     * Sets the line height percentage \a height (as fraction of font size from 0.0 to 1.0).
+     *
+     * Set \a height to NaN if the line height percentange is not set.
+     *
+     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
+     *
+     * \see lineHeightPercentage()
+     * \see setLineHeight()
+     *
+     * \since QGIS 3.42
+     */
+    void setLineHeightPercentage( double height );
+
+    /**
      * Updates the specified \a font in place, applying block formatting options which
      * are applicable on a font level when rendered in the given \a context.
      *
@@ -122,6 +176,9 @@ class CORE_EXPORT QgsTextBlockFormat
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
   private:
+
+    double mLineHeight = std::numeric_limits< double >::quiet_NaN();
+    double mLineHeightPercentage = std::numeric_limits< double >::quiet_NaN();
 
     bool mHasHorizontalAlignSet = false;
     Qgis::TextHorizontalAlignment mHorizontalAlign = Qgis::TextHorizontalAlignment::Left;

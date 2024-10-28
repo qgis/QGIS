@@ -44,6 +44,8 @@ Qgis::TextHorizontalAlignment convertTextBlockFormatAlign( const QTextBlockForma
 }
 
 QgsTextBlockFormat::QgsTextBlockFormat( const QTextBlockFormat &format )
+  : mLineHeight( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() != QTextBlockFormat::ProportionalHeight ? format.lineHeight() : std::numeric_limits< double >::quiet_NaN() )
+  , mLineHeightPercentage( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() == QTextBlockFormat::ProportionalHeight ? ( format.lineHeight() / 100.0 ) : std::numeric_limits< double >::quiet_NaN() )
 {
   mHorizontalAlign = convertTextBlockFormatAlign( format, mHasHorizontalAlignSet );
 }
@@ -55,6 +57,31 @@ void QgsTextBlockFormat::overrideWith( const QgsTextBlockFormat &other )
     mHorizontalAlign = other.mHorizontalAlign;
     mHasHorizontalAlignSet = true;
   }
+
+  if ( std::isnan( mLineHeight ) )
+    mLineHeight = other.mLineHeight;
+  if ( std::isnan( mLineHeightPercentage ) )
+    mLineHeightPercentage = other.mLineHeightPercentage;
+}
+
+double QgsTextBlockFormat::lineHeight() const
+{
+  return mLineHeight;
+}
+
+void QgsTextBlockFormat::setLineHeight( double height )
+{
+  mLineHeight = height;
+}
+
+double QgsTextBlockFormat::lineHeightPercentage() const
+{
+  return mLineHeightPercentage;
+}
+
+void QgsTextBlockFormat::setLineHeightPercentage( double height )
+{
+  mLineHeightPercentage = height;
 }
 
 void QgsTextBlockFormat::updateFontForFormat( QFont &, const QgsRenderContext &, const double ) const

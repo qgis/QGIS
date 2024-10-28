@@ -101,6 +101,72 @@ This property is only respected if :py:func:`~QgsTextBlockFormat.hasHorizontalAl
 .. seealso:: :py:func:`horizontalAlignment`
 %End
 
+    double lineHeight() const;
+%Docstring
+Returns the line height in points, or NaN if the line height is not set
+and should be auto calculated.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeightPercentage`
+
+.. seealso:: :py:func:`setLineHeight`
+
+.. versionadded:: 3.42
+%End
+
+    void setLineHeight( double height );
+%Docstring
+Sets the font line ``height``, in points.
+
+Set ``height`` to NaN if the line height is not set
+and should be auto calculated.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeight`
+
+.. seealso:: :py:func:`setLineHeightPercentage`
+
+.. versionadded:: 3.42
+%End
+
+    double lineHeightPercentage() const;
+%Docstring
+Returns the line height percentage size (as fraction of font size from 0.0 to 1.0), or NaN if the line height percentage is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeight`
+
+.. seealso:: :py:func:`setLineHeightPercentage`
+
+.. versionadded:: 3.42
+%End
+
+    void setLineHeightPercentage( double height );
+%Docstring
+Sets the line height percentage ``height`` (as fraction of font size from 0.0 to 1.0).
+
+Set ``height`` to NaN if the line height percentange is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeightPercentage`
+
+.. seealso:: :py:func:`setLineHeight`
+
+.. versionadded:: 3.42
+%End
+
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Updates the specified ``font`` in place, applying block formatting options which

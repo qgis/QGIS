@@ -7,7 +7,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from qgis.PyQt.QtGui import QColor
+import math
+
 from qgis.core import (
     Qgis,
     QgsFontUtils,
@@ -29,11 +30,22 @@ class TestQgsTextBlockFormat(QgisTestCase):
         format = QgsTextBlockFormat()
         self.assertFalse(format.hasHorizontalAlignmentSet())
         self.assertEqual(format.horizontalAlignment(), Qgis.TextHorizontalAlignment.Left)
+        self.assertTrue(math.isnan(format.lineHeight()))
+        self.assertTrue(math.isnan(format.lineHeightPercentage()))
 
         format.setHasHorizontalAlignmentSet(True)
         self.assertTrue(format.hasHorizontalAlignmentSet())
         format.setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
         self.assertEqual(format.horizontalAlignment(), Qgis.TextHorizontalAlignment.Right)
+
+        format.setLineHeight(5)
+        self.assertEqual(format.lineHeight(), 5)
+        self.assertTrue(math.isnan(format.lineHeightPercentage()))
+
+        format = QgsTextBlockFormat()
+        format.setLineHeightPercentage(0.5)
+        self.assertEqual(format.lineHeightPercentage(), 0.5)
+        self.assertTrue(math.isnan(format.lineHeight()))
 
     def testUpdateFont(self):
         context = QgsRenderContext()
