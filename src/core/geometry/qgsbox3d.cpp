@@ -54,7 +54,7 @@ QgsBox3D::QgsBox3D( const QgsRectangle &rect, double zMin, double zMax, bool nor
 }
 
 QgsBox3D::QgsBox3D( const QgsVector3D &corner1, const QgsVector3D &corner2, bool normalize )
-  : mBounds2d( corner1.x(), corner1.y(), corner2.x(), corner2.y() )
+  : mBounds2d( corner1.x(), corner1.y(), corner2.x(), corner2.y(), false )
   , mZmin( corner1.z() )
   , mZmax( corner2.z() )
 {

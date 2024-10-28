@@ -62,6 +62,14 @@ class CORE_EXPORT QgsBox3D
     QgsBox3D( const QgsPoint &p1, const QgsPoint &p2, bool normalize = true );
 
     /**
+     * Constructs a QgsBox3D from two 3D vectors representing opposite corners of the box.
+     * The box is normalized after construction. If \a normalize is FALSE then
+     * the normalization step will not be applied automatically.
+     * \since QGIS 3.42
+     */
+    QgsBox3D( const QgsVector3D &corner1, const QgsVector3D &corner2, bool normalize = true );
+
+    /**
      * Constructs a QgsBox3D from a rectangle.
      * If \a normalize is FALSE then the normalization step will not be applied automatically.
      */
@@ -70,7 +78,7 @@ class CORE_EXPORT QgsBox3D
               bool normalize = true );
 
 #else
-    QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
+    QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
@@ -115,6 +123,30 @@ class CORE_EXPORT QgsBox3D
         }
       }
     }
+    else if ( sipCanConvertToType( a0, sipType_QgsVector3D, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsVector3D, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    {
+      int state;
+      sipIsErr = 0;
+
+      QgsVector3D *corner1 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a0, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( corner1, sipType_QgsVector3D, state );
+      }
+      else
+      {
+        QgsVector3D *corner2 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a1, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+        if ( sipIsErr )
+        {
+          sipReleaseType( corner2, sipType_QgsVector3D, state );
+        }
+        else
+        {
+          bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
+          sipCpp = new QgsBox3D( *corner1, *corner2, n );
+        }
+      }
+    }
     else if (
       ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
       ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
@@ -140,14 +172,6 @@ class CORE_EXPORT QgsBox3D
     }
     % End
 #endif
-
-    /**
-     * Constructs a QgsBox3D from two 3D vectors representing opposite corners of the box.
-     * The box is normalized after construction. If \a normalize is FALSE then
-     * the normalization step will not be applied automatically.
-     * \since QGIS 3.42
-     */
-    QgsBox3D( const QgsVector3D &corner1, const QgsVector3D &corner2, bool normalize = true );
 
     /**
      * Sets the box from a set of (x,y,z) minimum and maximum coordinates.
