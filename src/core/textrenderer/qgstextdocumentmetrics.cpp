@@ -33,6 +33,7 @@ constexpr double SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 1.0 / 6.0;
 struct DocumentMetrics
 {
   double tabStopDistancePainterUnits = 0;
+  QList< double > tabStopDistancesPainterUnits;
   double width = 0;
   double heightLabelMode = 0;
   double heightPointRectMode = 0;
@@ -260,7 +261,24 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
   if ( fragment.isTab() )
   {
     // special handling for tab characters
-    const double nextTabStop = ( std::floor( thisBlockMetrics.blockXMax / documentMetrics.tabStopDistancePainterUnits ) + 1 ) * documentMetrics.tabStopDistancePainterUnits;
+    double nextTabStop = 0;
+    if ( !documentMetrics.tabStopDistancesPainterUnits.isEmpty() )
+    {
+      // if we don't find a tab stop before the current length of line, we just ignore the tab character entirely
+      nextTabStop = thisBlockMetrics.blockXMax;
+      for ( const double tabStop : std::as_const( documentMetrics.tabStopDistancesPainterUnits ) )
+      {
+        if ( tabStop >= thisBlockMetrics.blockXMax )
+        {
+          nextTabStop = tabStop;
+          break;
+        }
+      }
+    }
+    else
+    {
+      nextTabStop = ( std::floor( thisBlockMetrics.blockXMax / documentMetrics.tabStopDistancePainterUnits ) + 1 ) * documentMetrics.tabStopDistancePainterUnits;
+    }
     const double fragmentWidth = nextTabStop - thisBlockMetrics.blockXMax;
 
     thisBlockMetrics.blockWidth += fragmentWidth;
@@ -577,6 +595,17 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   documentMetrics.tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
       ? format.tabStopDistance() * font.pixelSize() / scaleFactor
       : context.convertToPainterUnits( format.tabStopDistance(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() );
+
+  const QList< QgsTextFormat::Tab > tabPositions = format.tabPositions();
+  documentMetrics.tabStopDistancesPainterUnits.reserve( tabPositions.size() );
+  for ( const QgsTextFormat::Tab &tab : tabPositions )
+  {
+    documentMetrics.tabStopDistancesPainterUnits.append(
+      format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
+      ? tab.position() * font.pixelSize() / scaleFactor
+      : context.convertToPainterUnits( tab.position(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() )
+    );
+  }
 
   documentMetrics.blockSize = document.size();
   res.mDocument.reserve( documentMetrics.blockSize );

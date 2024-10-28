@@ -143,6 +143,10 @@ class PyQgsTextFormat(QgisTestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
+        t.setTabPositions([QgsTextFormat.Tab(4), QgsTextFormat.Tab(8)])
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
         t.setTabStopDistanceUnit(Qgis.RenderUnit.Points)
         self.assertTrue(t.isValid())
 
@@ -185,6 +189,12 @@ class PyQgsTextFormat(QgisTestCase):
         t = QgsTextFormat()
         t.setForcedItalic(True)
         self.assertTrue(t.isValid())
+
+    def test_tab(self):
+        pos = QgsTextFormat.Tab(4)
+        self.assertEqual(pos, QgsTextFormat.Tab(4))
+        self.assertNotEqual(pos, QgsTextFormat.Tab(14))
+        self.assertEqual(str(pos), '<QgsTextFormat.Tab: 4>')
 
     def createBufferSettings(self):
         s = QgsTextBufferSettings()
@@ -718,6 +728,7 @@ class PyQgsTextFormat(QgisTestCase):
         s.setForcedItalic(True)
 
         s.setTabStopDistance(4.5)
+        s.setTabPositions([QgsTextFormat.Tab(5), QgsTextFormat.Tab(17)])
         s.setTabStopDistanceUnit(Qgis.RenderUnit.RenderInches)
         s.setTabStopDistanceMapUnitScale(QgsMapUnitScale(11, 12))
 
@@ -845,6 +856,10 @@ class PyQgsTextFormat(QgisTestCase):
         self.assertNotEqual(s, s2)
 
         s = self.createFormatSettings()
+        s.setTabPositions([QgsTextFormat.Tab(11), QgsTextFormat.Tab(13)])
+        self.assertNotEqual(s, s2)
+
+        s = self.createFormatSettings()
         s.setTabStopDistanceUnit(Qgis.RenderUnit.Points)
         self.assertNotEqual(s, s2)
 
@@ -883,6 +898,7 @@ class PyQgsTextFormat(QgisTestCase):
         self.assertTrue(s.forcedBold())
         self.assertTrue(s.forcedItalic())
         self.assertEqual(s.tabStopDistance(), 4.5)
+        self.assertEqual(s.tabPositions(), [QgsTextFormat.Tab(5), QgsTextFormat.Tab(17)])
         self.assertEqual(s.tabStopDistanceUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(s.tabStopDistanceMapUnitScale(), QgsMapUnitScale(11, 12))
 
@@ -1401,6 +1417,15 @@ class PyQgsTextFormat(QgisTestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.TabStopDistance, QgsProperty.fromExpression("15"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.tabStopDistance(), 15)
+        self.assertFalse(f.tabPositions())
+
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.TabStopDistance, QgsProperty.fromValue([11, 14]))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.tabPositions(), [QgsTextFormat.Tab(11), QgsTextFormat.Tab(14)])
+
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.TabStopDistance, QgsProperty.fromValue(["13.5", "15.8"]))
+        f.updateDataDefinedProperties(context)
+        self.assertEqual(f.tabPositions(), [QgsTextFormat.Tab(13.5), QgsTextFormat.Tab(15.8)])
 
     def testFontFoundFromLayer(self):
         layer = createEmptyLayer()
