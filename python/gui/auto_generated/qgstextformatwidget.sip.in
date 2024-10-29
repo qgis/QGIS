@@ -166,6 +166,7 @@ when registering labels for the labeling settings currently defined by the widge
 
 
 
+
   protected slots:
 
     void updateLinePlacementOptions();

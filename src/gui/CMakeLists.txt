@@ -267,6 +267,7 @@ set(QGIS_GUI_SRCS
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
   labeling/qgsrulebasedlabelingwidget.cpp
+  labeling/qgstabpositionwidget.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -1245,6 +1246,7 @@ set(QGIS_GUI_HDRS
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
   labeling/qgsrulebasedlabelingwidget.h
+  labeling/qgstabpositionwidget.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
