@@ -55,6 +55,8 @@ class QgsTabPositionDialog : QDialog
 {
 %Docstring(signature="appended")
 A dialog to enter a custom dash space pattern for lines
+
+.. versionadded:: 3.42
 %End
 
 %TypeHeaderCode
