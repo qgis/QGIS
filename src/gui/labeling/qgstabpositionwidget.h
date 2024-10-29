@@ -70,6 +70,7 @@ class GUI_EXPORT QgsTabPositionWidget: public QgsPanelWidget, private Ui::QgsTab
 /**
  * \ingroup gui
  * \brief A dialog to enter a custom dash space pattern for lines
+  * \since QGIS 3.42
 */
 class GUI_EXPORT QgsTabPositionDialog : public QDialog
 {
