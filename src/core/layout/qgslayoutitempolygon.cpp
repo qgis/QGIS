@@ -129,6 +129,24 @@ QgsGeometry QgsLayoutItemPolygon::clipPath() const
   return QgsGeometry::fromQPolygonF( path );
 }
 
+
+bool QgsLayoutItemPolygon::isValid() const
+{
+  // A Polygon is valid if it has at least 3 unique points
+  QList<QPointF> uniquePoints;
+  int seen = 0;
+  for ( QPointF point : mPolygon )
+  {
+    if ( !uniquePoints.contains( point ) )
+    {
+      uniquePoints.append( point );
+      if ( ++seen > 2 )
+        return true;
+    }
+  }
+  return false;
+}
+
 QgsFillSymbol *QgsLayoutItemPolygon::symbol()
 {
   return mPolygonStyleSymbol.get();
@@ -177,20 +195,15 @@ void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt,
 
 bool QgsLayoutItemPolygon::_removeNode( const int index )
 {
-  if ( index < 0 || index >= mPolygon.size() )
+  if ( index < 0 || index >= mPolygon.size() || mPolygon.size() <= 3 )
     return false;
 
   mPolygon.remove( index );
 
-  if ( mPolygon.size() < 3 )
-    mPolygon.clear();
-  else
-  {
-    int newSelectNode = index;
-    if ( index == mPolygon.size() )
-      newSelectNode = 0;
-    setSelectedNode( newSelectNode );
-  }
+  int newSelectNode = index;
+  if ( index == mPolygon.size() )
+    newSelectNode = 0;
+  setSelectedNode( newSelectNode );
 
   return true;
 }

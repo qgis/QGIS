@@ -312,11 +312,34 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange &extentZRange, int pointsLimit )
 {
+  QVector<QVariantMap> acceptedPoints;
+
+  // Try sub-indexes first
+  for ( QgsPointCloudSubIndex &subidx : subIndexes() )
+  {
+    // Check if the sub-index is relevant and if it is loaded. We shouldn't
+    // need to identify points in unloaded indices.
+    if ( !subidx.index()
+         || ( !subidx.zRange().overlaps( extentZRange ) )
+         || !subidx.polygonBounds().intersects( extentGeometry ) )
+      continue;
+    acceptedPoints.append( identify( subidx.index(), maxError, extentGeometry, extentZRange, pointsLimit ) );
+  }
+
+  // Then look at main index
+  acceptedPoints.append( identify( index(), maxError, extentGeometry, extentZRange, pointsLimit ) );
+
+  return acceptedPoints;
+}
+
+QVector<QVariantMap> QgsPointCloudDataProvider::identify(
+  QgsPointCloudIndex *index, double maxError,
+  const QgsGeometry &extentGeometry,
+  const QgsDoubleRange &extentZRange, int pointsLimit )
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QVector<QVariantMap> acceptedPoints;
-
-  QgsPointCloudIndex *index = this->index();
 
   if ( !index || !index->isValid() )
     return acceptedPoints;

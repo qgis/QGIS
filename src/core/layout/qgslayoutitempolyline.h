@@ -66,6 +66,7 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     QIcon icon() const override;
     QString displayName() const override;
     QPainterPath shape() const override;
+    bool isValid() const override;
 
     /**
      * Returns the line symbol used to draw the shape.

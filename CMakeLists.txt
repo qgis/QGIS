@@ -26,18 +26,19 @@ set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be bui
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
-set(WITH_VCPKG TRUE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
 
 if(NOT SDK_PATH STREQUAL "")
   message(STATUS "Building with SDK -- ${SDK_PATH}")
   set(CMAKE_TOOLCHAIN_FILE "${SDK_PATH}/scripts/buildsystems/vcpkg.cmake")
+  set(VCPKG_INSTALL_PREFIX "${SDK_PATH}/installed")
   if(APPLE AND NOT VCPKG_TARGET_TRIPLET)
     message(FATAL_ERROR "VCPKG_TARGET_TRIPLET not set (set it to arm64-osx-dynamic-release or x64-osx-dynamic-release")
   endif()
   set(WITH_VCPKG ON)
 elseif(WITH_VCPKG)
   message(STATUS "Building local dependencies with VCPKG --")
+  set(VCPKG_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/vcpkg_installed")
   include(VcpkgToolchain)
 else()
   message(STATUS "Building with system libraries --")
@@ -49,6 +50,9 @@ if(WITH_VCPKG)
   else()
     list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/bin")
   endif()
+  set(PREFER_INTERNAL_LIBS FALSE)
+else()
+  set(PREFER_INTERNAL_LIBS TRUE)
 endif()
 
 #############################################################
@@ -276,7 +280,8 @@ if(WITH_CORE)
   endif()
 
   # try to configure and build POLY2TRI support
-  set (WITH_INTERNAL_POLY2TRI TRUE CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
+  set (WITH_INTERNAL_POLY2TRI ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
+  set (WITH_INTERNAL_MESHOPTIMIZER ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether MESHOPTIMIZER should be built from internal copy")
 
   # try to configure and build POSTGRESQL support
   set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
@@ -389,7 +394,7 @@ if(WITH_CORE)
   find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
-  set (WITH_INTERNAL_NLOHMANN_JSON ON CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
+  set (WITH_INTERNAL_NLOHMANN_JSON ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
   find_package(nlohmann_json REQUIRED)
 
   # The following bypasses the FindSQLite3 module introduced in CMake 3.14

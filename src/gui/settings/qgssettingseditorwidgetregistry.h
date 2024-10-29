@@ -45,14 +45,21 @@ class GUI_EXPORT QgsSettingsEditorWidgetRegistry
      */
     bool addWrapper( QgsSettingsEditorWidgetWrapper *wrapper SIP_TRANSFER );
 
+    /**
+     * Adds an editor widget \a wrapper for a specific setting to the registry
+     * \since QGIS 3.40
+     */
+    void addWrapperForSetting( QgsSettingsEditorWidgetWrapper *wrapper SIP_TRANSFER, const QgsSettingsEntryBase *setting SIP_KEEPREFERENCE );
+
     //! Returns a new instance of the editor widget for the given \a id
-    QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const;
+    QgsSettingsEditorWidgetWrapper *createWrapper( const QString &id, QObject *parent ) const SIP_FACTORY;
 
     //! Creates an editor widget for the given \a setting using the corresponding registered wrapper
-    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = nullptr ) const SIP_FACTORY;
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = nullptr ) const SIP_TRANSFERBACK;
 
   private:
     QMap<QString, QgsSettingsEditorWidgetWrapper *> mWrappers;
+    QMap<const QgsSettingsEntryBase *, QgsSettingsEditorWidgetWrapper *> mSpecificWrappers;
 };
 
 #endif // QGSSETTINGSEDITORREGISTRY_H

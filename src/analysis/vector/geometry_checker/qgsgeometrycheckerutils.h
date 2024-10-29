@@ -214,8 +214,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 
 #ifndef SIP_RUN
 
-    static std::unique_ptr<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );
-
     static QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx );
     static const QgsAbstractGeometry *getGeomPart( const QgsAbstractGeometry *geom, int partIdx );
 

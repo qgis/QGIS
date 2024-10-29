@@ -488,7 +488,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
+void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
@@ -513,7 +513,10 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
         h = terrainZ + geomZ;
         break;
     }
-    positions.append( QVector3D( pt.x() - context.origin().x(), h, -( pt.y() - context.origin().y() ) ) );
+    positions.append( QVector3D(
+                        static_cast<float>( pt.x() - chunkOrigin.x() ),
+                        static_cast<float>( pt.y() - chunkOrigin.y() ),
+                        h ) );
     QgsDebugMsgLevel( QStringLiteral( "%1 %2 %3" ).arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }
@@ -628,6 +631,21 @@ QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, double zMin, d
   QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
                     worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
   return rootBbox;
+}
+
+QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &mapOrigin )
+{
+  const QgsVector3D extentMin3D( box3D.xMinimum(), box3D.yMinimum(), box3D.zMinimum() );
+  const QgsVector3D extentMax3D( box3D.xMaximum(), box3D.yMaximum(), box3D.zMaximum() );
+  const QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
+  const QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
+  // casting to float should be ok, assuming that the map origin is not too far from the box
+  return QgsAABB( static_cast<float>( worldExtentMin3D.x() ),
+                  static_cast<float>( worldExtentMin3D.y() ),
+                  static_cast<float>( worldExtentMin3D.z() ),
+                  static_cast<float>( worldExtentMax3D.x() ),
+                  static_cast<float>( worldExtentMax3D.y() ),
+                  static_cast<float>( worldExtentMax3D.z() ) );
 }
 
 QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin )

@@ -22,8 +22,8 @@
 
 ///@cond PRIVATE
 
-QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent )
-  : mBbox( bbox )
+QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsBox3D &box3D, float error, QgsChunkNode *parent )
+  : mBox3D( box3D )
   , mError( error )
   , mNodeId( nodeId )
   , mParent( parent )
@@ -238,9 +238,9 @@ void QgsChunkNode::setUpdated()
   mState = QgsChunkNode::Loaded;
 }
 
-void QgsChunkNode::setExactBbox( const QgsAABB &box )
+void QgsChunkNode::setExactBox3D( const QgsBox3D &box3D )
 {
-  mBbox = box;
+  mBox3D = box3D;
 
   // TODO: propagate better estimate to children?
 }
@@ -251,40 +251,40 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
   while ( currentNode )
   {
     QgsChunkNode *const *currentNodeChildren = currentNode->children();
-    float xMin = std::numeric_limits< float >::max();
-    float xMax = -std::numeric_limits< float >::max();
-    float yMin = std::numeric_limits< float >::max();
-    float yMax = -std::numeric_limits< float >::max();
-    float zMin = std::numeric_limits< float >::max();
-    float zMax = -std::numeric_limits< float >::max();
+    double xMin = std::numeric_limits< double >::max();
+    double xMax = -std::numeric_limits< double >::max();
+    double yMin = std::numeric_limits< double >::max();
+    double yMax = -std::numeric_limits< double >::max();
+    double zMin = std::numeric_limits< double >::max();
+    double zMax = -std::numeric_limits< double >::max();
 
     for ( int i = 0; i < currentNode->childCount(); ++i )
     {
-      const QgsAABB childBBox = currentNodeChildren[i]->bbox();
+      const QgsBox3D childBox3D = currentNodeChildren[i]->box3D();
 
       // Nodes without data have an empty bbox and should be skipped
-      if ( childBBox.isEmpty() )
+      if ( childBox3D.isEmpty() )
         continue;
 
-      if ( childBBox.xMin < xMin )
-        xMin = childBBox.xMin;
-      if ( childBBox.yMin < yMin )
-        yMin = childBBox.yMin;
-      if ( childBBox.zMin < zMin )
-        zMin = childBBox.zMin;
-      if ( childBBox.xMax > xMax )
-        xMax = childBBox.xMax;
-      if ( childBBox.yMax > yMax )
-        yMax = childBBox.yMax;
-      if ( childBBox.zMax > zMax )
-        zMax = childBBox.zMax;
+      if ( childBox3D.xMinimum() < xMin )
+        xMin = childBox3D.xMinimum();
+      if ( childBox3D.yMinimum() < yMin )
+        yMin = childBox3D.yMinimum();
+      if ( childBox3D.zMinimum() < zMin )
+        zMin = childBox3D.zMinimum();
+      if ( childBox3D.xMaximum() > xMax )
+        xMax = childBox3D.xMaximum();
+      if ( childBox3D.yMaximum() > yMax )
+        yMax = childBox3D.yMaximum();
+      if ( childBox3D.zMaximum() > zMax )
+        zMax = childBox3D.zMaximum();
     }
 
-    // QgsAABB is normalized in its constructor, so that min values are always smaller than max.
+    // QgsBox3D is normalized in its constructor, so that min values are always smaller than max.
     // If all child bboxes were empty, we can end up with min > max, so let's have an empty bbox instead.
-    const QgsAABB currentNodeBbox = xMin > xMax || yMin > yMax || zMin > zMax ? QgsAABB() : QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax );
+    const QgsBox3D currentNodeBox3D = xMin > xMax || yMin > yMax || zMin > zMax ? QgsBox3D() : QgsBox3D( xMin, yMin, zMin, xMax, yMax, zMax );
 
-    currentNode->setExactBbox( currentNodeBbox );
+    currentNode->setExactBox3D( currentNodeBox3D );
     currentNode = currentNode->parent();
   }
 }

@@ -51,7 +51,7 @@ void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePoo
 
     const QgsGeometry geomA = layerFeatureA.geometry();
     const QgsRectangle bboxA = geomA.boundingBox();
-    std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( geomA.constGet(), mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngineA( QgsGeometry::createGeometryEngine( geomA.constGet(), mContext->tolerance, Qgis::GeosCreationFlags() ) );
     if ( !geomEngineA->isValid() )
     {
       messages.append( tr( "Duplicate check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
@@ -105,7 +105,7 @@ void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> 
   else if ( method == RemoveDuplicates )
   {
     const QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, mContext, true );
-    std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngineA( QgsGeometry::createGeometryEngine( layerFeatureA.geometry().constGet(), mContext->tolerance ) );
 
     QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
     const QMap<QString, QList<QgsFeatureId>> duplicates = duplicateError->duplicates();

@@ -6732,8 +6732,9 @@ QgsSettingsDoubleSpinBoxWrapper.setWidgetValue: src/gui/settings/qgssettingsedit
 QgsSettingsDoubleSpinBoxWrapper.valueFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L285
 QgsSettingsDoubleSpinBoxWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L267
 QgsSettingsEditorWidgetRegistry.addWrapper: src/gui/settings/qgssettingseditorwidgetregistry.h#L46
-QgsSettingsEditorWidgetRegistry.createEditor: src/gui/settings/qgssettingseditorwidgetregistry.h#L52
-QgsSettingsEditorWidgetRegistry.createWrapper: src/gui/settings/qgssettingseditorwidgetregistry.h#L49
+QgsSettingsEditorWidgetRegistry.addWrapperForSetting: src/gui/settings/qgssettingseditorwidgetregistry.h#L52
+QgsSettingsEditorWidgetRegistry.createEditor: src/gui/settings/qgssettingseditorwidgetregistry.h#L58
+QgsSettingsEditorWidgetRegistry.createWrapper: src/gui/settings/qgssettingseditorwidgetregistry.h#L55
 QgsSettingsEditorWidgetRegistry: src/gui/settings/qgssettingseditorwidgetregistry.h#L35
 QgsSettingsEditorWidgetWrapper.configureAutomaticUpdate: src/gui/settings/qgssettingseditorwidgetwrapper.h#L95
 QgsSettingsEditorWidgetWrapper.configureEditor: src/gui/settings/qgssettingseditorwidgetwrapper.h#L59

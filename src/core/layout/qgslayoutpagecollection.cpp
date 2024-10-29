@@ -444,6 +444,32 @@ const QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() const
   return *mGuideCollection;
 }
 
+void QgsLayoutPageCollection::applyPropertiesToAllOtherPages( int sourcePage )
+{
+  QgsLayoutItemPage *referencePage = page( sourcePage );
+  if ( !referencePage )
+  {
+    return;
+  }
+
+  mLayout->undoStack()->beginCommand( this, tr( "Apply page properties" ) );
+  mBlockUndoCommands = true;
+
+  for ( QgsLayoutItemPage *page : mPages )
+  {
+    if ( page == referencePage )
+    {
+      continue;
+    }
+    page->setPageSize( referencePage->pageSize() );
+    page->setPageStyleSymbol( referencePage->pageStyleSymbol()->clone() );
+  }
+
+  mLayout->undoStack()->endCommand();
+  mBlockUndoCommands = false;
+  mLayout->refresh();
+}
+
 void QgsLayoutPageCollection::redraw()
 {
   const auto constMPages = mPages;

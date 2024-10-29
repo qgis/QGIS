@@ -164,8 +164,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! Sets transform for individual objects represented by the symbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
 
-    //! Returns transform for billboards
-    QMatrix4x4 billboardTransform() const;
+    //! Returns how much the billboard should be elevated upwards
+    float billboardHeight() const;
 
     /**
      * Exports the geometries contained within the hierarchy of entity.

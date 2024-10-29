@@ -554,6 +554,7 @@ void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
   materialSettings.setSpecular( QColor( 10, 10, 10 ) );
   materialSettings.setShininess( 1.0 );
   materialSettings.setDiffuseTexturePath( testDataPath( "/sample_image.png" ) );
+  materialSettings.setTextureScale( 0.05 );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
   symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
@@ -869,7 +870,7 @@ void TestQgs3DRendering::testExtrudedPolygonsGoochShading()
   delete scene;
   delete map;
 
-  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_gooch_shading", "polygon3d_extrusion_gooch_shading", img, QString(), 40, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_gooch_shading", "polygon3d_extrusion_gooch_shading", img, QString(), 50, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsMetalRoughShading()

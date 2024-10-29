@@ -46,12 +46,13 @@ QgsLineVertexData::QgsLineVertexData()
   vertices << QVector3D();
 }
 
-void QgsLineVertexData::init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DRenderContext &context )
+void QgsLineVertexData::init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin )
 {
   altClamping = clamping;
   altBinding = binding;
   baseHeight = height;
   renderContext = context;
+  origin = chunkOrigin;
 }
 
 QByteArray QgsLineVertexData::createVertexBuffer()
@@ -135,9 +136,9 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     QgsPoint p = lineString.pointN( i );
     float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
 
-    vertices << QVector3D( static_cast< float >( p.x() - renderContext.origin().x() ),
-                           z,
-                           static_cast< float >( -( p.y() - renderContext.origin().y() ) ) );
+    vertices << QVector3D( static_cast< float >( p.x() - origin.x() ),
+                           static_cast< float >( p.y() - origin.y() ),
+                           z );
     indexes << vertices.count() - 1;
   }
 
@@ -168,13 +169,13 @@ void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float
     if ( withAdjacency )
       indexes << vertices.count();  // add the following vertex (for adjacency)
 
-    vertices << QVector3D( static_cast< float >( p.x() - renderContext.origin().x() ),
-                           z,
-                           static_cast< float >( -( p.y() - renderContext.origin().y() ) ) );
+    vertices << QVector3D( static_cast< float >( p.x() - origin.x() ),
+                           static_cast< float >( p.y() - origin.y() ),
+                           z );
     indexes << vertices.count() - 1;
-    vertices << QVector3D( static_cast< float >( p.x() - renderContext.origin().x() ),
-                           z2,
-                           static_cast< float >( -( p.y() - renderContext.origin().y() ) ) );
+    vertices << QVector3D( static_cast< float >( p.x() - origin.x() ),
+                           static_cast< float >( p.y() - origin.y() ),
+                           z2 );
     indexes << vertices.count() - 1;
 
     if ( withAdjacency )

@@ -471,10 +471,10 @@ void Qgs3DMapScene::createTerrainDeferred()
   {
     double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
-    QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
+    const QgsBox3D rootBox3D = mMap.terrainGenerator()->rootChunkBox3D( mMap );
     float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
-    const QgsAABB clippingBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), rootBbox.zMin, rootBbox.zMax, mMap.origin() );
-    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel, clippingBbox );
+    const QgsBox3D clippingBox3D( mMap.extent(), rootBox3D.zMinimum(), rootBox3D.zMaximum() );
+    mMap.terrainGenerator()->setupQuadtree( rootBox3D, rootError, maxZoomLevel, clippingBox3D );
 
     mTerrain = new QgsTerrainEntity( &mMap );
     mTerrain->setParent( this );
@@ -1069,9 +1069,9 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   double yMax = std::numeric_limits< double >::lowest();
   if ( mMap.terrainRenderingEnabled() && mTerrain )
   {
-    const QgsAABB bbox = mTerrain->rootNode()->bbox();
-    yMin = std::min( yMin, static_cast< double >( bbox.yMin ) );
-    yMax = std::max( yMax, static_cast< double >( bbox.yMax ) );
+    const QgsBox3D box3D = mTerrain->rootNode()->box3D();
+    yMin = std::min( yMin, box3D.zMinimum() );
+    yMax = std::max( yMax, box3D.zMaximum() );
   }
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )

@@ -368,6 +368,13 @@ Returns a reference to the collection's guide collection, which manages page sna
 %End
 
 
+    void applyPropertiesToAllOtherPages( int sourcePage );
+%Docstring
+Apply the source page properties (size & background color) to all other pages
+
+.. versionadded:: 3.42
+%End
+
   public slots:
 
     void redraw();

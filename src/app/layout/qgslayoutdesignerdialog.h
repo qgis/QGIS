@@ -564,7 +564,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void showForceVectorWarning();
 
     bool showFileSizeWarning();
-    bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
+    bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize, const QString &fileExtension );
     bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings );
     bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeospatialPdfExport = true, const QString &geospatialPdfReason = QString() );
 

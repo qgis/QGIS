@@ -2,14 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "7adc2e4d49e8d0efc07a369079faa6bc3dbb90f3",
-      "reference": "7adc2e4d49e8d0efc07a369079faa6bc3dbb90f3",
+      "baseline": "41626fd77bf42f29e8f7e43dc1f2f05780588cde",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "d4bc16c09fae1c10c74827ffe73b6c54b287021d",
+        "baseline": "02f0c7fc53be545969c4e400dec079af9c82240a",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -60,6 +59,8 @@
     },
     "libxml2",
     "libzip",
+    "meshoptimizer",
+    "nlohmann-json",
     "pdal",
     "proj",
     "protobuf",

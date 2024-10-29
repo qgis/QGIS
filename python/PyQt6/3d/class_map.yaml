@@ -425,8 +425,8 @@ QgsPhongTexturedMaterialSettings.type: src/3d/materials/qgsphongtexturedmaterial
 QgsPhongTexturedMaterialSettings.writeXml: src/3d/materials/qgsphongtexturedmaterialsettings.h#L127
 QgsPhongTexturedMaterialSettings: src/3d/materials/qgsphongtexturedmaterialsettings.h#L36
 QgsPoint3DSymbol.altitudeClamping: src/3d/symbols/qgspoint3dsymbol.h#L64
+QgsPoint3DSymbol.billboardHeight: src/3d/symbols/qgspoint3dsymbol.h#L168
 QgsPoint3DSymbol.billboardSymbol: src/3d/symbols/qgspoint3dsymbol.h#L158
-QgsPoint3DSymbol.billboardTransform: src/3d/symbols/qgspoint3dsymbol.h#L168
 QgsPoint3DSymbol.clone: src/3d/symbols/qgspoint3dsymbol.h#L56
 QgsPoint3DSymbol.create: src/3d/symbols/qgspoint3dsymbol.h#L53
 QgsPoint3DSymbol.materialSettings: src/3d/symbols/qgspoint3dsymbol.h#L69

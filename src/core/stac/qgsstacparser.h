@@ -19,11 +19,17 @@
 #define SIP_NO_FILE
 
 #include <nlohmann/json.hpp>
+#include <QUrl>
 
-#include "qgsstacitem.h"
-#include "qgsstaccollection.h"
-#include "qgsstaccatalog.h"
-#include "qgsstacitemcollection.h"
+#include "qgsstacobject.h"
+#include "qgsstacasset.h"
+
+class QgsStacCatalog;
+class QgsStacCollection;
+class QgsStacCollections;
+class QgsStacItem;
+class QgsStacItemCollection;
+
 
 /**
  * \brief SpatioTemporal Asset Catalog JSON parser
@@ -41,6 +47,12 @@ class QgsStacParser
 
     //! Sets the JSON \data to be parsed
     void setData( const QByteArray &data );
+
+    /**
+     *  Sets the base \a url that will be used to resolve relative links.
+     *  If not called, relative links will not be resolved to absolute links.
+     */
+    void setBaseUrl( const QUrl &url );
 
     /**
      * Returns the parsed STAC Catalog
@@ -70,6 +82,13 @@ class QgsStacParser
      */
     QgsStacItemCollection *itemCollection();
 
+    /**
+     * Returns the parsed STAC API Collections
+     * If parsing failed, NULLPTR is returned
+     * The caller takes ownership of the returned collections
+     */
+    QgsStacCollections *collections();
+
     //! Returns the type of the parsed object
     QgsStacObject::Type type() const;
 
@@ -81,15 +100,17 @@ class QgsStacParser
     QgsStacCatalog *parseCatalog( const nlohmann::json &data );
     QgsStacCollection *parseCollection( const nlohmann::json &data );
 
-    static QVector< QgsStacLink > parseLinks( const nlohmann::json &data );
-    static QMap< QString, QgsStacAsset > parseAssets( const nlohmann::json &data );
+    QVector< QgsStacLink > parseLinks( const nlohmann::json &data );
+    QMap< QString, QgsStacAsset > parseAssets( const nlohmann::json &data );
     static bool isSupportedStacVersion( const QString &version );
+    //! Returns a QString, treating null elements as empty strings
+    static QString getString( const nlohmann::json &data );
 
     nlohmann::json mData;
     QgsStacObject::Type mType = QgsStacObject::Type::Unknown;
     std::unique_ptr<QgsStacObject> mObject;
     QString mError;
-
+    QUrl mBaseUrl;
 };
 
 
