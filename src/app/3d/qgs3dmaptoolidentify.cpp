@@ -64,8 +64,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->size(), mCanvas->cameraController()->camera() );
   QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, QgsRayCastingUtils::RayCastContext( false, mCanvas->size(), mCanvas->cameraController()->camera()->farPlane() ) );
 
-  QHash<QgsPointCloudLayer *, QVector<QVariantMap>> pointCloudResults;
-
+  QList<QgsMapToolIdentify::IdentifyResult> tiledSceneIdentifyResults;
   QList<QgsMapToolIdentify::IdentifyResult> pointCloudIdentifyResults;
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   identifyTool2D->clearResults();
@@ -86,11 +85,12 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     // We need to restructure point cloud layer results to display them later. We may have multiple hits for each layer.
     else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
     {
-      pointCloudResults[ pclayer ] = QVector<QVariantMap>();
+      QVector<QVariantMap> pointCloudResults;
       for ( const QgsRayCastingUtils::RayHit &hit : it->second )
       {
-        pointCloudResults[ pclayer ].append( hit.attributes );
+        pointCloudResults.append( hit.attributes );
       }
+      identifyTool2D->fromPointCloudIdentificationToIdentifyResults( pclayer, pointCloudResults, pointCloudIdentifyResults );
     }
     else if ( QgsTiledSceneLayer *tslayer = qobject_cast<QgsTiledSceneLayer *>( it->first ) )
     {
@@ -121,11 +121,14 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       QString nodeId = derivedAttributes[ QStringLiteral( "node_id" ) ];
       // only derived attributes are supported for now, so attributes is empty
       QgsMapToolIdentify::IdentifyResult res( it->first, nodeId, {}, derivedAttributes );
-      identifyTool2D->showIdentifyResults( { res } );
+      tiledSceneIdentifyResults.append( res );
     }
   }
 
-  // We only handle terrain results if there were no vector layer results
+  // We only handle terrain results if there were no vector layer results because:
+  // a. terrain results will overwrite other existing results.
+  // b. terrain results use 2d identify logic and may contain results from vector layers that
+  // are not actually rendered on the terrain as they have a 3d renderer set.
   if ( showTerrainResults && allHits.contains( nullptr ) )
   {
     const QgsRayCastingUtils::RayHit hit = allHits.value( nullptr ).first();
@@ -162,14 +165,12 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
   }
 
+  // We need to show other layer type results AFTER terrain results so they don't get overwritten
+  identifyTool2D->showIdentifyResults( tiledSceneIdentifyResults );
+
   // Finally add all point cloud layers' results
   // We add those last as the list can be quite big.
-  for ( auto it = pointCloudResults.constKeyValueBegin(); it != pointCloudResults.constKeyValueEnd(); ++it )
-  {
-    QgsMapToolIdentify identifyTool( nullptr );
-    identifyTool.fromPointCloudIdentificationToIdentifyResults( it->first, it->second, pointCloudIdentifyResults );
-    identifyTool2D->showIdentifyResults( pointCloudIdentifyResults );
-  }
+  identifyTool2D->showIdentifyResults( pointCloudIdentifyResults );
 }
 
 void Qgs3DMapToolIdentify::activate()
