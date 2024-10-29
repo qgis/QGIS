@@ -2399,6 +2399,17 @@ class PyQgsTextRenderer(QgisTestCase):
                                          'text_tab_positions_fixed_size_more_tabs',
                                          text=['with\tmany\ttabs', 'a\tb\tc\td\te']))
 
+    def testDrawTabPositionsFixedSizeLongText(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(20)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabPositions([QgsTextFormat.Tab(15), QgsTextFormat.Tab(50)])
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
+        self.assertTrue(self.checkRender(format,
+                                         'text_tab_positions_fixed_size_long_text',
+                                         text=['with long\ttext\t2', 'a\tb\tc']))
+
     def testHtmlFormatting(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
