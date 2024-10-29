@@ -124,6 +124,12 @@ if the string could not be interpreted as margins.
 .. seealso:: :py:func:`toString`
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsMargins: %1 %2 %3 %4>" ).arg( sipCpp->left() ).arg( sipCpp->top() ).arg( sipCpp->right() ).arg( sipCpp->bottom() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 

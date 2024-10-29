@@ -34,6 +34,10 @@ class TestQgsOptional(unittest.TestCase):
         self.assertFalse(margins.isNull())
         self.assertEqual(margins, QgsMargins(5.5, 0.0, 5.5, 0.0))
 
+    def test_repr(self):
+        self.assertEqual(str(QgsMargins(12.1, 14.1, 16.1, 18.1)),
+                         '<QgsMargins: 12.1 14.1 16.1 18.1>')
+
     def testOperators(self):
         m1 = QgsMargins(12.1, 14.1, 16.1, 18.1)
         m2 = QgsMargins(2.1, 3.1, 4.1, 5.1)
