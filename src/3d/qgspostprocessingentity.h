@@ -59,7 +59,6 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     void setAmbientOcclusionEnabled( bool enabled );
 
   private:
-    QgsFrameGraph *mFrameGraph = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;
 
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
