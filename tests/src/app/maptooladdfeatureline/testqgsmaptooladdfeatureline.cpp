@@ -1006,6 +1006,15 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingDifferentCanvasCrs(
   snapConfig.project()->setTopologicalEditing( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
+  // Wait for indexing to complete
+  if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayerCRS3946Line ) )
+  {
+    if ( loc->isIndexing() )
+    {
+      loc->waitForIndexingFinished();
+    }
+  }
+
   // add a line with one vertex near the previous line
   utils.mouseClick( 10, 0, Qt::LeftButton );
   utils.mouseClick( 4.9, 5.1, Qt::LeftButton );
@@ -1085,6 +1094,15 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingWIthDiffLayerWithDi
   bool topologicalEditing = snapConfig.project()->topologicalEditing();
   snapConfig.project()->setTopologicalEditing( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // Wait for indexing to complete
+  if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayerCRS3945Line ) )
+  {
+    if ( loc->isIndexing() )
+    {
+      loc->waitForIndexingFinished();
+    }
+  }
 
   // test the topological editing
   utils.mouseClick( 0, 5, Qt::LeftButton );
