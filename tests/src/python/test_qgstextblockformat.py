@@ -9,11 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 """
 import math
 
+from qgis._core import QgsMargins
 from qgis.core import (
     Qgis,
     QgsFontUtils,
     QgsRenderContext,
     QgsTextBlockFormat,
+    QgsMargins
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -32,6 +34,10 @@ class TestQgsTextBlockFormat(QgisTestCase):
         self.assertEqual(format.horizontalAlignment(), Qgis.TextHorizontalAlignment.Left)
         self.assertTrue(math.isnan(format.lineHeight()))
         self.assertTrue(math.isnan(format.lineHeightPercentage()))
+        self.assertTrue(math.isnan(format.margins().top()))
+        self.assertTrue(math.isnan(format.margins().right()))
+        self.assertTrue(math.isnan(format.margins().left()))
+        self.assertTrue(math.isnan(format.margins().bottom()))
 
         format.setHasHorizontalAlignmentSet(True)
         self.assertTrue(format.hasHorizontalAlignmentSet())
@@ -46,6 +52,9 @@ class TestQgsTextBlockFormat(QgisTestCase):
         format.setLineHeightPercentage(0.5)
         self.assertEqual(format.lineHeightPercentage(), 0.5)
         self.assertTrue(math.isnan(format.lineHeight()))
+
+        format.setMargins(QgsMargins(1, 2, 3, 4))
+        self.assertEqual(format.margins(), QgsMargins(1, 2, 3, 4))
 
     def testUpdateFont(self):
         context = QgsRenderContext()

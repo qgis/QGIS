@@ -48,6 +48,12 @@ QgsTextBlockFormat::QgsTextBlockFormat( const QTextBlockFormat &format )
   , mLineHeightPercentage( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() == QTextBlockFormat::ProportionalHeight ? ( format.lineHeight() / 100.0 ) : std::numeric_limits< double >::quiet_NaN() )
 {
   mHorizontalAlign = convertTextBlockFormatAlign( format, mHasHorizontalAlignSet );
+
+  const double topMargin = format.hasProperty( QTextFormat::BlockTopMargin ) ? format.topMargin() : std::numeric_limits< double >::quiet_NaN();
+  const double leftMargin = format.hasProperty( QTextFormat::BlockLeftMargin ) ? format.leftMargin() : std::numeric_limits< double >::quiet_NaN();
+  const double rightMargin = format.hasProperty( QTextFormat::BlockRightMargin ) ? format.rightMargin() : std::numeric_limits< double >::quiet_NaN();
+  const double bottomMargin = format.hasProperty( QTextFormat::BlockBottomMargin ) ? format.bottomMargin() : std::numeric_limits< double >::quiet_NaN();
+  mMargins = QgsMargins( leftMargin, topMargin, rightMargin, bottomMargin );
 }
 
 void QgsTextBlockFormat::overrideWith( const QgsTextBlockFormat &other )
@@ -62,6 +68,15 @@ void QgsTextBlockFormat::overrideWith( const QgsTextBlockFormat &other )
     mLineHeight = other.mLineHeight;
   if ( std::isnan( mLineHeightPercentage ) )
     mLineHeightPercentage = other.mLineHeightPercentage;
+
+  if ( std::isnan( mMargins.left() ) )
+    mMargins.setLeft( other.mMargins.left() );
+  if ( std::isnan( mMargins.right() ) )
+    mMargins.setRight( other.mMargins.right() );
+  if ( std::isnan( mMargins.top() ) )
+    mMargins.setTop( other.mMargins.top() );
+  if ( std::isnan( mMargins.bottom() ) )
+    mMargins.setBottom( other.mMargins.bottom() );
 }
 
 double QgsTextBlockFormat::lineHeight() const

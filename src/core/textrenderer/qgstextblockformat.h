@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsmargins.h"
 
 #include <QFont>
 #include <QColor>
@@ -165,6 +166,22 @@ class CORE_EXPORT QgsTextBlockFormat
     void setLineHeightPercentage( double height );
 
     /**
+     * Returns the block margins, in points.
+     *
+     * \see setMargins()
+     * \since QGIS 3.42
+     */
+    QgsMargins margins() const { return mMargins; }
+
+    /**
+     * Sets the block margins, in points.
+     *
+     * \see margins()
+     * \since QGIS 3.42
+     */
+    void setMargins( const QgsMargins &margins ) { mMargins = margins; }
+
+    /**
      * Updates the specified \a font in place, applying block formatting options which
      * are applicable on a font level when rendered in the given \a context.
      *
@@ -183,6 +200,7 @@ class CORE_EXPORT QgsTextBlockFormat
     bool mHasHorizontalAlignSet = false;
     Qgis::TextHorizontalAlignment mHorizontalAlign = Qgis::TextHorizontalAlignment::Left;
 
+    QgsMargins mMargins { std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN() };
 };
 
 #endif // QGSTEXTBLOCKFORMAT_H

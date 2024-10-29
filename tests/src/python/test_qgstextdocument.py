@@ -22,7 +22,8 @@ from qgis.core import (
     QgsTextCharacterFormat,
     QgsTextDocument,
     QgsTextFragment,
-    QgsTextFormat
+    QgsTextFormat,
+    QgsMargins
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -230,6 +231,52 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(
             doc[2].blockFormat().lineHeightPercentage(), 0.2
         )
+
+        # with margins
+        doc = QgsTextDocument.fromHtml(['<div>test</div><div style="margin-left: 1pt; margin-right: 2pt; margin-top: 3pt; margin-bottom: 4pt">test2</div><div style="margin: 11pt 12pt 13pt 14pt">test3</div><div style="margin-left: 1pt; margin-right: 2pt;">test4</div>'])
+        self.assertEqual(len(doc), 4)
+
+        self.assertEqual(len(doc[0]), 1)
+        self.assertEqual(doc[0][0].text(), 'test')
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().left()
+        ))
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().right()
+        ))
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().top()
+        ))
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().bottom()
+        ))
+
+        self.assertEqual(len(doc[1]), 1)
+        self.assertEqual(doc[1][0].text(), 'test2')
+        self.assertEqual(
+            doc[1].blockFormat().margins(), QgsMargins(1, 3, 2, 4)
+        )
+
+        self.assertEqual(len(doc[2]), 1)
+        self.assertEqual(doc[2][0].text(), 'test3')
+        self.assertEqual(
+            doc[2].blockFormat().margins(), QgsMargins(14, 11, 12, 13)
+        )
+
+        self.assertEqual(len(doc[3]), 1)
+        self.assertEqual(doc[3][0].text(), 'test4')
+        self.assertEqual(
+            doc[3].blockFormat().margins().left(), 1
+        )
+        self.assertEqual(
+            doc[3].blockFormat().margins().right(), 2
+        )
+        self.assertTrue(math.isnan(
+            doc[3].blockFormat().margins().top()
+        ))
+        self.assertTrue(math.isnan(
+            doc[3].blockFormat().margins().bottom()
+        ))
 
     def testFromTextAndFormat(self):
         format = QgsTextFormat()
