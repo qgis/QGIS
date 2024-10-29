@@ -639,9 +639,13 @@ QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &
   const QgsVector3D extentMax3D( box3D.xMaximum(), box3D.yMaximum(), box3D.zMaximum() );
   const QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
   const QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
-  QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
-                    worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
-  return rootBbox;
+  // casting to float should be ok, assuming that the map origin is not too far from the box
+  return QgsAABB( static_cast<float>( worldExtentMin3D.x() ),
+                  static_cast<float>( worldExtentMin3D.y() ),
+                  static_cast<float>( worldExtentMin3D.z() ),
+                  static_cast<float>( worldExtentMax3D.x() ),
+                  static_cast<float>( worldExtentMax3D.y() ),
+                  static_cast<float>( worldExtentMax3D.z() ) );
 }
 
 QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin )

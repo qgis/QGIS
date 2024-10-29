@@ -180,12 +180,12 @@ int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) 
 
 QgsBox3D nodeBoundsToBox3D( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const QgsCoordinateTransform &coordinateTransform, double zValueOffset, double zValueScale )
 {
-  QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(),
-                           nodeBounds.yMin() * scale.y() + offset.y(),
-                           ( nodeBounds.zMin() * scale.z() + offset.z() ) * zValueScale + zValueOffset );
-  QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(),
-                           nodeBounds.yMax() * scale.y() + offset.y(),
-                           ( nodeBounds.zMax() * scale.z() + offset.z() ) * zValueScale + zValueOffset );
+  QgsVector3D extentMin3D( static_cast<double>( nodeBounds.xMin() ) * scale.x() + offset.x(),
+                           static_cast<double>( nodeBounds.yMin() ) * scale.y() + offset.y(),
+                           ( static_cast<double>( nodeBounds.zMin() ) * scale.z() + offset.z() ) * zValueScale + zValueOffset );
+  QgsVector3D extentMax3D( static_cast<double>( nodeBounds.xMax() ) * scale.x() + offset.x(),
+                           static_cast<double>( nodeBounds.yMax() ) * scale.y() + offset.y(),
+                           ( static_cast<double>( nodeBounds.zMax() ) * scale.z() + offset.z() ) * zValueScale + zValueOffset );
   QgsCoordinateTransform extentTransform = coordinateTransform;
   extentTransform.setBallparkTransformsAreAppropriate( true );
   try
