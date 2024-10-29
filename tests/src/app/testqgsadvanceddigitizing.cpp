@@ -16,7 +16,6 @@
 #include "qgstest.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
@@ -603,6 +602,16 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
   snapConfig.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
+  // move to trigger a re-indexing and wait for it to complete
+  utils.mouseMove( 0, 0 );
+  if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayer3950 ) )
+  {
+    if ( loc->isIndexing() )
+    {
+      loc->waitForIndexingFinished();
+    }
+  }
+
   // simple snap test
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseClick( 2.02, 2, Qt::LeftButton );
@@ -994,6 +1003,16 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanppingWithDiffCanvasCRS()
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // move to trigger a re-indexing and wait for it to complete
+  utils.mouseMove( 0, 0 );
+  if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayer4326 ) )
+  {
+    if ( loc->isIndexing() )
+    {
+      loc->waitForIndexingFinished();
+    }
+  }
 
   QCOMPARE( mCanvas->snappingUtils()->currentLayer(), mLayer4326 );
 
