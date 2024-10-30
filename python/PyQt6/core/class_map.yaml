@@ -17446,10 +17446,14 @@ QgsTextBlock.toPlainText: src/core/textrenderer/qgstextblock.h#L66
 QgsTextBlock: src/core/textrenderer/qgstextblock.h#L36
 QgsTextBlockFormat.hasHorizontalAlignmentSet: src/core/textrenderer/qgstextblockformat.h#L81
 QgsTextBlockFormat.horizontalAlignment: src/core/textrenderer/qgstextblockformat.h#L101
+QgsTextBlockFormat.lineHeight: src/core/textrenderer/qgstextblockformat.h#L124
+QgsTextBlockFormat.lineHeightPercentage: src/core/textrenderer/qgstextblockformat.h#L151
 QgsTextBlockFormat.overrideWith: src/core/textrenderer/qgstextblockformat.h#L71
 QgsTextBlockFormat.setHasHorizontalAlignmentSet: src/core/textrenderer/qgstextblockformat.h#L91
 QgsTextBlockFormat.setHorizontalAlignment: src/core/textrenderer/qgstextblockformat.h#L111
-QgsTextBlockFormat.updateFontForFormat: src/core/textrenderer/qgstextblockformat.h#L122
+QgsTextBlockFormat.setLineHeight: src/core/textrenderer/qgstextblockformat.h#L139
+QgsTextBlockFormat.setLineHeightPercentage: src/core/textrenderer/qgstextblockformat.h#L165
+QgsTextBlockFormat.updateFontForFormat: src/core/textrenderer/qgstextblockformat.h#L176
 QgsTextBlockFormat: src/core/textrenderer/qgstextblockformat.h#L41
 QgsTextBufferSettings.blendMode: src/core/textrenderer/qgstextbuffersettings.h#L177
 QgsTextBufferSettings.color: src/core/textrenderer/qgstextbuffersettings.h#L120
