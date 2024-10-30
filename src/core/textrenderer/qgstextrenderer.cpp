@@ -324,7 +324,11 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
   if ( placement->graphemePlacement.empty() )
     return;
 
-  std::vector< QgsTextRenderer::Component > components;
+  // We may have deliberately skipped over some graphemes during curved text placement (such as zero-width graphemes).
+  // So we need to use a hash of the original grapheme index to place generated components in, as there may accordingly
+  // be graphemes which don't result in components, and we can't just blindly assume the component array position
+  // will match the original grapheme index
+  QHash< int, QgsTextRenderer::Component > components;
   components.reserve( placement->graphemePlacement.size() );
   for ( const QgsTextRendererUtils::CurvedGraphemePlacement &grapheme : std::as_const( placement->graphemePlacement ) )
   {
@@ -340,7 +344,7 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
       component.origin.ry() += verticalOffset * std::sin( grapheme.angle + M_PI_2 );
     }
 
-    components.emplace_back( component );
+    components.insert( grapheme.graphemeIndex, component );
   }
 
   if ( format.background().enabled() )

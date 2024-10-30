@@ -3842,6 +3842,42 @@ class PyQgsTextRenderer(QgisTestCase):
         painter.end()
         self.assertTrue(self.image_check('text_on_line_at_start', 'text_on_line_at_start', image, 'text_on_line_at_start'))
 
+    def testDrawTextOnLineZeroWidthChar(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.background().setEnabled(True)
+
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.Flag.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(Qt.BrushStyle.NoBrush)
+        painter.setPen(QPen(QColor(0, 0, 0)))
+
+        line = QPolygonF([QPointF(50, 200), QPointF(350, 200)])
+        painter.drawPolygon(line)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.PenStyle.NoPen)
+
+        QgsTextRenderer.drawTextOnLine(line, 'b\r\na', context, format, 0)
+
+        painter.end()
+        self.assertTrue(self.image_check('text_on_curved_line_zero_width_char', 'text_on_curved_line_zero_width_char', image, 'text_on_curved_line_zero_width_char'))
+
     def testDrawTextOnLineAtOffset(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
