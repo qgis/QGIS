@@ -1,12 +1,12 @@
 ---
 name: 🍎 Build - MacOS Qt6
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-  release:
-    types: ['published']
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  # release:
+  #   types: ['published']
   workflow_dispatch:
 
 concurrency:
