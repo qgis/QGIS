@@ -189,8 +189,6 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
                                 QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassRegionBase()
-  , mX( 0 )
-  , mY( 0 )
   , mUpdatingGui( false )
 {
   QgsDebugMsgLevel( "QgsGrassRegion()", 3 );
