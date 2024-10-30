@@ -80,7 +80,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, map->terrainElevationOffset(), 0.0f ) );
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, 0.0f, map->terrainElevationOffset() ) );
   addComponent( mTerrainTransform );
 }
 
@@ -103,10 +103,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
   {
     case QgsTerrainGenerator::Flat:
     {
-      if ( ray.direction().y() == 0 )
+      if ( ray.direction().z() == 0 )
         break;  // the ray is parallel to the flat terrain
 
-      const float dist = static_cast<float>( mMapSettings->terrainElevationOffset() - ray.origin().y() ) / ray.direction().y();
+      const float dist = static_cast<float>( mMapSettings->terrainElevationOffset() - ray.origin().z() ) / ray.direction().z();
       const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMapSettings->origin() );
       if ( mMapSettings->extent().contains( mapCoords.x(), mapCoords.y() ) )
@@ -215,7 +215,7 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
 
 void QgsTerrainEntity::onTerrainElevationOffsetChanged( float newOffset )
 {
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
 float QgsTerrainEntity::terrainElevationOffset() const

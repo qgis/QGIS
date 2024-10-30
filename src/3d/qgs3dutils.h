@@ -151,9 +151,9 @@ class _3D_EXPORT Qgs3DUtils
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 
-    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts map coordinates to 3D world coordinates (applies offset)
     static QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin );
-    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts 3D world coordinates to map coordinates (applies offset)
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
     /**

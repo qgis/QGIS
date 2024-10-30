@@ -577,16 +577,16 @@ bool Qgs3DUtils::isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjecti
 QgsVector3D Qgs3DUtils::mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin )
 {
   return QgsVector3D( mapCoords.x() - origin.x(),
-                      mapCoords.z() - origin.z(),
-                      -( mapCoords.y() - origin.y() ) );
+                      mapCoords.y() - origin.y(),
+                      mapCoords.z() - origin.z() );
 
 }
 
 QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin )
 {
   return QgsVector3D( worldCoords.x() + origin.x(),
-                      -worldCoords.z() + origin.y(),
-                      worldCoords.y() + origin.z() );
+                      worldCoords.y() + origin.y(),
+                      worldCoords.z() + origin.z() );
 }
 
 QgsRectangle Qgs3DUtils::tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )

@@ -260,9 +260,8 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
 
     // add transform (our geometry has coordinates relative to mChunkOrigin)
     Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-    tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
     QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-    tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+    tr->setTranslation( nodeTranslation );
 
     // make entity
     entity->addComponent( renderer );
@@ -299,8 +298,9 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // flip (x,z,-y) to map (x,y,z)
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  tr->setTranslation( nodeTranslation );
 
   // make entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
