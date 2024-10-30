@@ -83,6 +83,10 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
     const thread_local QRegularExpression sRxMarginPixelsToPtFix( QStringLiteral( "margin:\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)" ) );
     line.replace( sRxMarginPixelsToPtFix, QStringLiteral( "margin: \\1px \\3px \\5px \\7px" ) );
 
+    // undo default margins on p, h1-6 elements. We didn't use to respect these and can't change the rendering
+    // of existing projects to suddenly start showing them...
+    line.prepend( QStringLiteral( "<style>p, h1, h2, h3, h4, h5, h6 { margin: 0pt; }</style>" ) );
+
     sourceDoc.setHtml( line );
 
     QTextBlock sourceBlock = sourceDoc.firstBlock();

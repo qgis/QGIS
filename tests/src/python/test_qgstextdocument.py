@@ -278,6 +278,62 @@ class TestQgsTextDocument(QgisTestCase):
             doc[3].blockFormat().margins().bottom()
         ))
 
+        # ensure that margins are NOT set for P / H1-6 elements
+        # we didn't use to respect these and cannot change the rendering of existing projects now
+        doc = QgsTextDocument.fromHtml(['<p>p</p><h1>h1</h1><h2>h2</h2><h6>h6</h6>'])
+        self.assertEqual(len(doc), 4)
+
+        self.assertEqual(len(doc[0]), 1)
+        self.assertEqual(doc[0][0].text(), 'p')
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().left()
+        ))
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().right()
+        ))
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().top()
+        ))
+        self.assertTrue(math.isnan(
+            doc[0].blockFormat().margins().bottom()
+        ))
+        self.assertTrue(math.isnan(
+            doc[1].blockFormat().margins().left()
+        ))
+        self.assertTrue(math.isnan(
+            doc[1].blockFormat().margins().right()
+        ))
+        self.assertTrue(math.isnan(
+            doc[1].blockFormat().margins().top()
+        ))
+        self.assertTrue(math.isnan(
+            doc[1].blockFormat().margins().bottom()
+        ))
+        self.assertTrue(math.isnan(
+            doc[2].blockFormat().margins().left()
+        ))
+        self.assertTrue(math.isnan(
+            doc[2].blockFormat().margins().right()
+        ))
+        self.assertTrue(math.isnan(
+            doc[2].blockFormat().margins().top()
+        ))
+        self.assertTrue(math.isnan(
+            doc[2].blockFormat().margins().bottom()
+        ))
+        self.assertTrue(math.isnan(
+            doc[3].blockFormat().margins().left()
+        ))
+        self.assertTrue(math.isnan(
+            doc[3].blockFormat().margins().right()
+        ))
+        self.assertTrue(math.isnan(
+            doc[3].blockFormat().margins().top()
+        ))
+        self.assertTrue(math.isnan(
+            doc[3].blockFormat().margins().bottom()
+        ))
+
     def testFromTextAndFormat(self):
         format = QgsTextFormat()
         format.setAllowHtmlFormatting(False)
