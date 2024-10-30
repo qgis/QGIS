@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloud3dsymbol_p.h"
+#include "moc_qgspointcloud3dsymbol_p.cpp"
 
 ///@cond PRIVATE
 

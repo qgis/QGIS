@@ -19,6 +19,7 @@
 #include <QtGlobal>
 
 #include "qgsserverogcapi.h"
+#include "moc_qgsserverogcapi.cpp"
 #include "qgsserverogcapihandler.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"

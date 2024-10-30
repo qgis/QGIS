@@ -45,6 +45,7 @@
 #include "qgspluginsortfilterproxymodel.h"
 #include "qgspythonrunner.h"
 #include "qgspluginmanager.h"
+#include "moc_qgspluginmanager.cpp"
 #include "qgisplugin.h"
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"

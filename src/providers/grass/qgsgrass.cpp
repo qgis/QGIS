@@ -31,6 +31,7 @@
 #endif
 
 #include "qgsgrass.h"
+#include "moc_qgsgrass.cpp"
 #include "qgsgrassvector.h"
 
 #ifdef HAVE_GUI

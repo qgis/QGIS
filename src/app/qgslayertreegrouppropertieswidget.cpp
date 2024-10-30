@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreegrouppropertieswidget.h"
+#include "moc_qgslayertreegrouppropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgspainteffect.h"

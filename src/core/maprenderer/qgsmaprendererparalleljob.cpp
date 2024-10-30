@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaprendererparalleljob.h"
+#include "moc_qgsmaprendererparalleljob.cpp"
 
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"

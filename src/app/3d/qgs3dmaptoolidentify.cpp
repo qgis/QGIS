@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmaptoolidentify.h"
+#include "moc_qgs3dmaptoolidentify.cpp"
 
 #include <QScreen>
 

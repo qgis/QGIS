@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpagepropertieswidget.h"
+#include "moc_qgslayoutpagepropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgspagesizeregistry.h"
 #include "qgslayoutitempage.h"

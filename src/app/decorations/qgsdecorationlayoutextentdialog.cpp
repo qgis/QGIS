@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationlayoutextentdialog.h"
+#include "moc_qgsdecorationlayoutextentdialog.cpp"
 
 #include "qgsdecorationlayoutextent.h"
 

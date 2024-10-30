@@ -60,9 +60,6 @@ class QgsSymbol3DWidget : public QWidget
     void updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol );
 
     QStackedWidget *widgetStack = nullptr;
-    QgsLine3DSymbolWidget *widgetLine = nullptr;
-    QgsPoint3DSymbolWidget *widgetPoint = nullptr;
-    QgsPolygon3DSymbolWidget *widgetPolygon = nullptr;
     QLabel *widgetUnsupported = nullptr;
 
     QgsStyleItemsListWidget *mStyleWidget = nullptr;

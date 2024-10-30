@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgpscanvasbridge.h"
+#include "moc_qgsgpscanvasbridge.cpp"
 #include "qgsgpsbearingitem.h"
 #include "qgsgpsmarker.h"
 #include "qgssymbollayerutils.h"

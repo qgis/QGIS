@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolpinlabels.h"
+#include "moc_qgsmaptoolpinlabels.cpp"
 
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"

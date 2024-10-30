@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswidgetwrapper.h"
+#include "moc_qgswidgetwrapper.cpp"
 #include "qgsvectorlayer.h"
 
 #include <QWidget>

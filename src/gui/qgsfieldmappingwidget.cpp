@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsfieldmappingwidget.h"
+#include "moc_qgsfieldmappingwidget.cpp"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsexpression.h"
 #include "qgsprocessingaggregatewidgets.h"

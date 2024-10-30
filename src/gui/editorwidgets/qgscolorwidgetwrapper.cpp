@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorwidgetwrapper.h"
+#include "moc_qgscolorwidgetwrapper.cpp"
 #include "qgscolorbutton.h"
 #include <QLayout>
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdxfexportdialog.h"
+#include "moc_qgsdxfexportdialog.cpp"
 
 #include "qgsmaplayer.h"
 #include "qgslayertree.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssettingslocatorfilter.h"
+#include "moc_qgssettingslocatorfilter.cpp"
 #include "qgisapp.h"
 
 

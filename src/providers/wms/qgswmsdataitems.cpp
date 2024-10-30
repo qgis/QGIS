@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswmsdataitems.h"
+#include "moc_qgswmsdataitems.cpp"
 
 #include "qgslogger.h"
 

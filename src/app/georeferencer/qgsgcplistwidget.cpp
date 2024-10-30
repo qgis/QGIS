@@ -24,6 +24,7 @@
 #include "qgsgeorefdatapoint.h"
 #include "qgsgcplist.h"
 #include "qgsgcplistwidget.h"
+#include "moc_qgsgcplistwidget.cpp"
 #include "qgsgcplistmodel.h"
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )

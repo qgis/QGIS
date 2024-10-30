@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmediawidget.h"
+#include "moc_qgsmediawidget.cpp"
 #include "qgsapplication.h"
 
 #include <QLabel>

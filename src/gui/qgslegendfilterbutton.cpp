@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslegendfilterbutton.h"
+#include "moc_qgslegendfilterbutton.cpp"
 
 #include <QMenu>
 #include <QAction>

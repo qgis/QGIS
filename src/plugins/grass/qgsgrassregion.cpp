@@ -16,6 +16,7 @@
 
 #include "qgis.h"
 #include "qgsgrassregion.h"
+#include "moc_qgsgrassregion.cpp"
 #include "qgsgrass.h"
 
 #include "qgisinterface.h"
@@ -188,8 +189,6 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
                                 QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassRegionBase()
-  , mX( 0 )
-  , mY( 0 )
   , mUpdatingGui( false )
 {
   QgsDebugMsgLevel( "QgsGrassRegion()", 3 );

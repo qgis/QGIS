@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeview.h"
+#include "moc_qgslayertreeview.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthbasicmethod.h"
+#include "moc_qgsauthbasicmethod.cpp"
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"

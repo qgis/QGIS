@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslinuxnative.h"
+#include "moc_qgslinuxnative.cpp"
 
 #include <QCoreApplication>
 #include <QUrl>

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturefiltermodel.h"
+#include "moc_qgsfeaturefiltermodel.cpp"
 #include "qgsfeatureexpressionvaluesgatherer.h"
 
 #include "qgsvectorlayer.h"

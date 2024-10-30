@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsdbqueryhistoryprovider.h"
+#include "moc_qgsdbqueryhistoryprovider.cpp"
 #include "qgscodeeditorsql.h"
 #include "qgshistoryentry.h"
 #include "qgsprovidermetadata.h"

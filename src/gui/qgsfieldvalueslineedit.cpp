@@ -16,6 +16,7 @@
 #include "qgsfieldvalueslineedit.h"
 #include "qgsvectorlayer.h"
 #include "qgsfloatingwidget.h"
+#include "moc_qgsfieldvalueslineedit.cpp"
 
 #include <QCompleter>
 #include <QStringListModel>

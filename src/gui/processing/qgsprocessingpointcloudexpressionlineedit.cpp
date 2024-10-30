@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingpointcloudexpressionlineedit.h"
+#include "moc_qgsprocessingpointcloudexpressionlineedit.cpp"
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"

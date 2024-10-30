@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmurlopener.h"
+#include "moc_qgsalgorithmurlopener.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
 

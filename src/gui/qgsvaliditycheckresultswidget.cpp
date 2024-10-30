@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaliditycheckresultswidget.h"
+#include "moc_qgsvaliditycheckresultswidget.cpp"
 #include "qgsvaliditycheckregistry.h"
 #include "qgsapplication.h"
 #include "qgsfeedback.h"

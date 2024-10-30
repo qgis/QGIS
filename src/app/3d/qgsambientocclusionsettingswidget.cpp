@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsambientocclusionsettingswidget.h"
+#include "moc_qgsambientocclusionsettingswidget.cpp"
 
 QgsAmbientOcclusionSettingsWidget::QgsAmbientOcclusionSettingsWidget( QWidget *parent )
   : QWidget( parent )

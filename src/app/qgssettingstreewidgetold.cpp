@@ -42,6 +42,7 @@
 #include <QEvent>
 
 #include "qgssettingstreewidgetold.h"
+#include "moc_qgssettingstreewidgetold.cpp"
 #include "qgsvariantdelegate.h"
 #include "qgslogger.h"
 #include "qgssettings.h"

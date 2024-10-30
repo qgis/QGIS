@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsludialog.h"
+#include "moc_qgsludialog.cpp"
 
 
 QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WindowFlags fl )

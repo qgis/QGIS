@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemshape.h"
+#include "moc_qgslayoutitemshape.cpp"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
 #include "qgssymbollayerutils.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsextentwidget.h"
+#include "moc_qgsextentwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"

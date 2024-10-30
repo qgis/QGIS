@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsformlabelformatwidget.h"
+#include "moc_qgsformlabelformatwidget.cpp"
 #include "qgsguiutils.h"
 #include "qgsfontutils.h"
 

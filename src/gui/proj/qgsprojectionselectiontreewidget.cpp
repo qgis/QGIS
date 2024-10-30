@@ -9,6 +9,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgsprojectionselectiontreewidget.h"
+#include "moc_qgsprojectionselectiontreewidget.cpp"
 
 //standard includes
 #include <sqlite3.h>

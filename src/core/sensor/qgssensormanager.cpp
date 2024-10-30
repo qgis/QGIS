@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssensormanager.h"
+#include "moc_qgssensormanager.cpp"
 
 #include "qgsapplication.h"
 #include "qgssensorregistry.h"

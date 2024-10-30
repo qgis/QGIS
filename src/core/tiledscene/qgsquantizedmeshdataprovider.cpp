@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshdataprovider.h"
+#include "moc_qgsquantizedmeshdataprovider.cpp"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"

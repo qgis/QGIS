@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationreferenceconfigdlg.h"
+#include "moc_qgsrelationreferenceconfigdlg.cpp"
 
 #include "qgsfields.h"
 #include "qgsproject.h"

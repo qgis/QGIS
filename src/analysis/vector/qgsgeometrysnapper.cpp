@@ -18,6 +18,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometrysnapper.h"
+#include "moc_qgsgeometrysnapper.cpp"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometryutils.h"
 #include "qgssurface.h"

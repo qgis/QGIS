@@ -19,6 +19,7 @@
 #include <QScreen>
 
 #include "qgssymbollayerselectionwidget.h"
+#include "moc_qgssymbollayerselectionwidget.cpp"
 #include "qgsvectorlayer.h"
 #include "symbology/qgsrenderer.h"
 #include "qgsstyleentityvisitor.h"

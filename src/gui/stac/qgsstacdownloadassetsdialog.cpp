@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacdownloadassetsdialog.h"
+#include "moc_qgsstacdownloadassetsdialog.cpp"
 #include "qgsgui.h"
 #include "qgssettings.h"
 #include "qgsproject.h"

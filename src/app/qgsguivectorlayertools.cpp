@@ -17,6 +17,7 @@
 #include <QToolButton>
 
 #include "qgsguivectorlayertools.h"
+#include "moc_qgsguivectorlayertools.cpp"
 
 #include "qgsavoidintersectionsoperation.h"
 #include "qgisapp.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluerelationwidgetwrapper.h"
+#include "moc_qgsvaluerelationwidgetwrapper.cpp"
 
 #include "qgis.h"
 #include "qgsfields.h"

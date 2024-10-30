@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayereditbuffer.h"
+#include "moc_qgsvectorlayereditbuffer.cpp"
 
 #include "qgsgeometry.h"
 #include "qgslogger.h"

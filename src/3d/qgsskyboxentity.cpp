@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsskyboxentity.h"
+#include "moc_qgsskyboxentity.cpp"
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QCuboidMesh>

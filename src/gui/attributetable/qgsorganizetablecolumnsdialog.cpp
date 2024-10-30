@@ -17,6 +17,7 @@
 #include <QMessageBox>
 
 #include "qgsorganizetablecolumnsdialog.h"
+#include "moc_qgsorganizetablecolumnsdialog.cpp"
 #include "qgsattributetableview.h"
 
 #include "qgsapplication.h"

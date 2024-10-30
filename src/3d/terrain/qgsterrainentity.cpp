@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsterrainentity.h"
+#include "moc_qgsterrainentity.cpp"
 
 #include "qgsaabb.h"
 #include "qgs3dmapsettings.h"

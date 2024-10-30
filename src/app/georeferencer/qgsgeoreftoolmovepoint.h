@@ -16,8 +16,6 @@
 #ifndef QGSGEOREFTOOLMOVEPOINT_H
 #define QGSGEOREFTOOLMOVEPOINT_H
 
-#include <QRubberBand>
-
 #include "qgsmaptool.h"
 #include "qgsrubberband.h"
 
@@ -42,9 +40,6 @@ class QgsGeorefToolMovePoint : public QgsMapTool
   private:
     //! Start point of the move in map coordinates
     QPoint mStartPointMapCoords;
-
-    //! Rubberband that shows the feature being moved
-    QRubberBand *mRubberBand = nullptr;
 };
 
 #endif // QGSGEOREFTOOLMOVEPOINT_H

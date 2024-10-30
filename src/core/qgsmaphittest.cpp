@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaphittest.h"
+#include "moc_qgsmaphittest.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsrendercontext.h"

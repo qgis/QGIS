@@ -20,6 +20,7 @@
 #include "qgsfeaturepickerwidget.h"
 #include "qgsfilterlineedit.h"
 #include "qgsfeaturepickermodel.h"
+#include "moc_qgsfeaturepickerwidget.cpp"
 
 QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   : QWidget( parent )

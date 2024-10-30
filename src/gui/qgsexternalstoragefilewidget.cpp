@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexternalstoragefilewidget.h"
+#include "moc_qgsexternalstoragefilewidget.cpp"
 
 #include <QLineEdit>
 #include <QToolButton>

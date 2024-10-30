@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgraphicsviewmousehandles.h"
+#include "moc_qgsgraphicsviewmousehandles.cpp"
 #include "qgsrendercontext.h"
 #include "qgis.h"
 #include <QGraphicsView>

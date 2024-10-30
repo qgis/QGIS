@@ -20,6 +20,7 @@
 #include <cmath>
 
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "moc_qgsadvanceddigitizingdockwidget.cpp"
 #include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsadvanceddigitizingtoolsregistry.h"

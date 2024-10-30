@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappgpsconnection.h"
+#include "moc_qgsappgpsconnection.cpp"
 #include "qgsapplication.h"
 #include "qgsgpsconnection.h"
 #include "qgsgpsconnectionregistry.h"

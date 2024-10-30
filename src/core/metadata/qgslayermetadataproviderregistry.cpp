@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataproviderregistry.h"
+#include "moc_qgslayermetadataproviderregistry.cpp"
 #include "qgsabstractlayermetadataprovider.h"
 #include "qgsfeedback.h"
 

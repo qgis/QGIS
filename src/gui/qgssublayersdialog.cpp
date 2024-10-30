@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssublayersdialog.h"
+#include "moc_qgssublayersdialog.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"

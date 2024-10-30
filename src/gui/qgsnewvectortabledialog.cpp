@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewvectortabledialog.h"
+#include "moc_qgsnewvectortabledialog.cpp"
 #include "qgslogger.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"

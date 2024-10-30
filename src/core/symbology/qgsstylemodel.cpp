@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstylemodel.h"
+#include "moc_qgsstylemodel.cpp"
 #include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"

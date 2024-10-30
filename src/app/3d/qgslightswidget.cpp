@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslightswidget.h"
+#include "moc_qgslightswidget.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"

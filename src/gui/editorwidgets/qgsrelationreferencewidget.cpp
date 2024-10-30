@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationreferencewidget.h"
+#include "moc_qgsrelationreferencewidget.cpp"
 
 #include <QPushButton>
 #include <QDialog>

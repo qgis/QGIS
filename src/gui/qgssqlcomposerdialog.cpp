@@ -19,6 +19,7 @@ email                : even.rouault at spatialys.com
  ***************************************************************************/
 
 #include "qgssqlcomposerdialog.h"
+#include "moc_qgssqlcomposerdialog.cpp"
 #include "qgssqlstatement.h"
 #include "qgshelp.h"
 #include "qgsvectorlayer.h"

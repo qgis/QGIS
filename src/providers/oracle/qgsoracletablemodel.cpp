@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsoracletablemodel.h"
+#include "moc_qgsoracletablemodel.cpp"
 #include "qgslogger.h"
 #include "qgsiconutils.h"
 

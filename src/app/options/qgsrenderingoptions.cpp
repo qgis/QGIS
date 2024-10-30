@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrenderingoptions.h"
+#include "moc_qgsrenderingoptions.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgssettingsregistrycore.h"

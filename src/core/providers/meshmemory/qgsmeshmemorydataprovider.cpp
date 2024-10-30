@@ -17,6 +17,7 @@
 ///@cond PRIVATE
 
 #include "qgsmeshmemorydataprovider.h"
+#include "moc_qgsmeshmemorydataprovider.cpp"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsapplication.h"
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygonabstract.h"
+#include "moc_qgsmaptoolshaperegularpolygonabstract.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"

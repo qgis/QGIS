@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayouthtmlwidget.h"
+#include "moc_qgslayouthtmlwidget.cpp"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayout.h"

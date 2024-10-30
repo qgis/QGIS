@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsellipsesymbollayerwidget.h"
+#include "moc_qgsellipsesymbollayerwidget.cpp"
 #include "qgsellipsesymbollayer.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"

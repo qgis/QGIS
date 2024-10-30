@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswelcomepage.h"
+#include "moc_qgswelcomepage.cpp"
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsversioninfo.h"

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecirclecenterpoint.h"
+#include "moc_qgsmaptoolshapecirclecenterpoint.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"

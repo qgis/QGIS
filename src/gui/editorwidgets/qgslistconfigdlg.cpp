@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslistconfigdlg.h"
+#include "moc_qgslistconfigdlg.cpp"
 
 QgsListConfigDlg::QgsListConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

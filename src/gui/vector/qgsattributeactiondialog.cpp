@@ -21,6 +21,7 @@ back to QgsVectorLayer.
  ***************************************************************************/
 
 #include "qgsattributeactiondialog.h"
+#include "moc_qgsattributeactiondialog.cpp"
 #include "qgsactionmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsaction.h"

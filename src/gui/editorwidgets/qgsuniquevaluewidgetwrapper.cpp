@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsuniquevaluewidgetwrapper.h"
+#include "moc_qgsuniquevaluewidgetwrapper.cpp"
 
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"

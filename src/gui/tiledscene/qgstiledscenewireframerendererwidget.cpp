@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenewireframerendererwidget.h"
+#include "moc_qgstiledscenewireframerendererwidget.cpp"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenewireframerenderer.h"
 #include "qgsfillsymbol.h"

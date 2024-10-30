@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsspatialitedataitemguiprovider.h"
+#include "moc_qgsspatialitedataitemguiprovider.cpp"
 #include "qgsspatialitedataitems.h"
 #include "qgsspatialitesourceselect.h"
 #include "qgsproviderregistry.h"

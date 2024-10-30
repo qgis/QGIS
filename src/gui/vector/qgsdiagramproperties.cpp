@@ -26,6 +26,7 @@
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"
 #include "qgsdiagramproperties.h"
+#include "moc_qgsdiagramproperties.cpp"
 #include "qgsdiagramrenderer.h"
 #include "qgsfeatureiterator.h"
 #include "qgssymbolselectordialog.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooladdnodeitem.h"
+#include "moc_qgslayoutviewtooladdnodeitem.cpp"
 #include "qgsapplication.h"
 #include "qgslayoutview.h"
 #include "qgslayout.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvscrollarea.h"
+#include "moc_qgsvscrollarea.cpp"
 #include <QEvent>
 #include <QScrollBar>
 

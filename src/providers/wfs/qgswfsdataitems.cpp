@@ -26,6 +26,7 @@
 #include "qgswfsconnection.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsdataitems.h"
+#include "moc_qgswfsdataitems.cpp"
 #include "qgswfsdatasourceuri.h"
 #include "qgswfsprovider.h"
 #include "qgssettings.h"

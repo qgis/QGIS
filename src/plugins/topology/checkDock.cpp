@@ -19,6 +19,7 @@
 #include <QProgressDialog>
 
 #include "checkDock.h"
+#include "moc_checkDock.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"

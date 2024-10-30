@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestsourceselect.h"
+#include "moc_qgsarcgisrestsourceselect.cpp"
 #include "qgsowsconnection.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"

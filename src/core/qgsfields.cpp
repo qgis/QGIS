@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsfields.h"
+#include "moc_qgsfields.cpp"
 #include "qgsfields_p.h"
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenechunkloader_p.h"
+#include "moc_qgstiledscenechunkloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"

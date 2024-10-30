@@ -17,6 +17,7 @@
 #include "qgsexception.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanaconnection.h"
+#include "moc_qgshanaconnection.cpp"
 #include "qgshanaconnectionstringbuilder.h"
 #include "qgshanadatatypes.h"
 #include "qgshanadriver.h"

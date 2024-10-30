@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgshistoryprovider.h"
+#include "moc_qgshistoryprovider.cpp"
 
 QgsAbstractHistoryProvider::~QgsAbstractHistoryProvider() = default;
 

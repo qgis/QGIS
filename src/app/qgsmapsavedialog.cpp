@@ -26,6 +26,7 @@
 #include <QUrl>
 
 #include "qgsmapsavedialog.h"
+#include "moc_qgsmapsavedialog.cpp"
 #include "qgsabstractgeopdfexporter.h"
 #include "qgsguiutils.h"
 #include "qgis.h"

@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscolorramplegendnode.h"
+#include "moc_qgscolorramplegendnode.cpp"
 #include "qgscolorrampimpl.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreemodel.h"

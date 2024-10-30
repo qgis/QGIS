@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsgrassaddfeature.h"
+#include "moc_qgsgrassaddfeature.cpp"
 
 #include "qgisapp.h"
 

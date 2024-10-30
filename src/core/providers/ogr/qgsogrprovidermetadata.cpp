@@ -15,6 +15,7 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsogrprovidermetadata.h"
+#include "moc_qgsogrprovidermetadata.cpp"
 #include "qgsogrprovider.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsmessagelog.h"

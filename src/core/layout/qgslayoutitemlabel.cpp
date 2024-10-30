@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemlabel.h"
+#include "moc_qgslayoutitemlabel.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoututils.h"
 #include "qgslayoutmodel.h"

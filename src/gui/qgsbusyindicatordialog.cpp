@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbusyindicatordialog.h"
+#include "moc_qgsbusyindicatordialog.cpp"
 
 #include <QDialog>
 #include <QLayout>

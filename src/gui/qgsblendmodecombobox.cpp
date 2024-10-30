@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgsblendmodecombobox.h"
+#include "moc_qgsblendmodecombobox.cpp"
 #include "qgspainting.h"
 
 #include <QAbstractItemView>

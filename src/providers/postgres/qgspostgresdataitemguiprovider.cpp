@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspostgresdataitemguiprovider.h"
+#include "moc_qgspostgresdataitemguiprovider.cpp"
 
 #include "qgsmanageconnectionsdialog.h"
 #include "qgspostgresdataitems.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstessellatedpolygongeometry.h"
+#include "moc_qgstessellatedpolygongeometry.cpp"
 #include "qgsraycastingutils_p.h"
 #include "qgsmessagelog.h"
 

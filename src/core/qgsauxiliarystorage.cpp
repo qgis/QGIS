@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsauxiliarystorage.h"
+#include "moc_qgsauxiliarystorage.cpp"
 #include "qgslogger.h"
 #include "qgssqliteutils.h"
 #include "qgsproject.h"

@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgis.h"
+#include "moc_qgis.cpp"
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif

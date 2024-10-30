@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitempolyline.h"
+#include "moc_qgslayoutitempolyline.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorutils.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfeaturepickermodelbase.h"
+#include "moc_qgsfeaturepickermodelbase.cpp"
 #include "qgsfeatureexpressionvaluesgatherer.h"
 
 #include "qgsvectorlayer.h"

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsserverquerystringparameter.h"
+#include "moc_qgsserverquerystringparameter.cpp"
 #include "qgsserverrequest.h"
 #include "qgsserverexception.h"
 #include "nlohmann/json.hpp"

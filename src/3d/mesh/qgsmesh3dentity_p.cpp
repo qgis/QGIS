@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dentity_p.h"
+#include "moc_qgsmesh3dentity_p.cpp"
 
 #include <Qt3DRender/QGeometryRenderer>
 

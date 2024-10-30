@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmeshterraingenerator.h"
+#include "moc_qgsmeshterraingenerator.cpp"
 #include "qgsmeshterraintileloader_p.h"
 
 #include "qgsmesh3dentity_p.h"

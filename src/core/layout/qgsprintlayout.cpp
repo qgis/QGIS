@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsprintlayout.h"
+#include "moc_qgsprintlayout.cpp"
 #include "qgslayoutatlas.h"
 #include "qgsreadwritecontext.h"
 #include "qgsexpressioncontextutils.h"

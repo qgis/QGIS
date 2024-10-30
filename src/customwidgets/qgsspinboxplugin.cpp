@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsspinboxplugin.h"
+#include "moc_qgsspinboxplugin.cpp"
 #include "qgsspinbox.h"
 
 

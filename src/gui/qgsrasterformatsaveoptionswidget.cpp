@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrasterformatsaveoptionswidget.h"
+#include "moc_qgsrasterformatsaveoptionswidget.cpp"
 #include "qgslogger.h"
 #include "qgsdialog.h"
 #include "qgsrasterlayer.h"

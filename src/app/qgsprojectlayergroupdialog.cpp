@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectlayergroupdialog.h"
+#include "moc_qgsprojectlayergroupdialog.cpp"
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"

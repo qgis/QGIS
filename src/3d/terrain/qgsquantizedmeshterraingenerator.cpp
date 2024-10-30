@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshterraingenerator.h"
+#include "moc_qgsquantizedmeshterraingenerator.cpp"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"

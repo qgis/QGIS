@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgseffectdrawmodecombobox.h"
+#include "moc_qgseffectdrawmodecombobox.cpp"
 #include "qgsapplication.h"
 
 #include <QList>

@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsloadrasterattributetabledialog.h"
+#include "moc_qgsloadrasterattributetabledialog.cpp"
 #include "qgsrasterattributetable.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"

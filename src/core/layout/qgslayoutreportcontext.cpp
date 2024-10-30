@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutreportcontext.h"
+#include "moc_qgslayoutreportcontext.cpp"
 #include "qgsfeature.h"
 #include "qgslayout.h"
 #include "qgsvectorlayer.h"

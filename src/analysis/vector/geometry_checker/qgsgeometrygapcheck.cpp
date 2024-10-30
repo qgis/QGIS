@@ -16,6 +16,7 @@
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrygapcheck.h"
+#include "moc_qgsgeometrygapcheck.cpp"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"

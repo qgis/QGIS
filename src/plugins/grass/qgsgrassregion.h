@@ -114,10 +114,6 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     // Set region values in GUI from mWindow
     void refreshGui();
 
-    //! First corner coordinates
-    double mX;
-    double mY;
-
     //! Currently updating GUI, don't run *Changed methods
     bool mUpdatingGui;
 

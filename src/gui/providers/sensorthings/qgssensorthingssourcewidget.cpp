@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingssourcewidget.h"
+#include "moc_qgssensorthingssourcewidget.cpp"
 ///@cond PRIVATE
 
 #include "qgsproviderregistry.h"

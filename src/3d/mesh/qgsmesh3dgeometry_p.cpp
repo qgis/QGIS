@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dgeometry_p.h"
+#include "moc_qgsmesh3dgeometry_p.cpp"
 
 #include <QFutureWatcher>
 #include <QtConcurrentRun>

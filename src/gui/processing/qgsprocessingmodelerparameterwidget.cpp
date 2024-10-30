@@ -17,6 +17,7 @@
 
 
 #include "qgsprocessingmodelerparameterwidget.h"
+#include "moc_qgsprocessingmodelerparameterwidget.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgsexpressionlineedit.h"
 #include "qgsprocessingguiregistry.h"

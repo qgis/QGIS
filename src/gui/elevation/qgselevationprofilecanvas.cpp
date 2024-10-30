@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgselevationprofilecanvas.h"
+#include "moc_qgselevationprofilecanvas.cpp"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsplotcanvasitem.h"
 #include "qgsprofilerequest.h"

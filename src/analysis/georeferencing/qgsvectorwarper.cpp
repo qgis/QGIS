@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorwarper.h"
+#include "moc_qgsvectorwarper.cpp"
 #include "qgsfeaturesink.h"
 #include "qgsfeedback.h"
 #include "qgsgcpgeometrytransformer.h"

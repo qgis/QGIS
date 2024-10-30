@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswkbtypes.h"
+#include "moc_qgswkbtypes.cpp"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

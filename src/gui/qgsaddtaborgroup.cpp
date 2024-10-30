@@ -18,6 +18,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsaddtaborgroup.h"
+#include "moc_qgsaddtaborgroup.cpp"
 #include "qgssettings.h"
 #include "qgshelp.h"
 

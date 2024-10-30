@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsautheditorwidgets.h"
+#include "moc_qgsautheditorwidgets.cpp"
 #include "qgsauthconfigurationstoragedb.h"
 #include "ui_qgsauthmethodplugins.h"
 

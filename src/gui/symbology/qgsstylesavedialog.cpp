@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsstylesavedialog.h"
+#include "moc_qgsstylesavedialog.cpp"
 
 #include "qgis.h"
 #include "qgsstyle.h"

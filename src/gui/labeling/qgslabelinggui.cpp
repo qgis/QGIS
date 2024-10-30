@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslabelinggui.h"
+#include "moc_qgslabelinggui.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"

@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsunitselectionwidget.h"
+#include "moc_qgsunitselectionwidget.cpp"
 #include "qgshelp.h"
 #include <QDialogButtonBox>
 

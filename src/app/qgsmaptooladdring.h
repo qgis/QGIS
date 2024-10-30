@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMAPTOOLADDRING_H
+#define QGSMAPTOOLADDRING_H
+
 #include "qgsmaptoolcapture.h"
 #include "qgis_app.h"
 
@@ -31,3 +34,5 @@ class APP_EXPORT QgsMapToolAddRing: public QgsMapToolCapture
     QgsVectorLayer *getCheckLayer();
     void polygonCaptured( const QgsCurvePolygon *polygon ) override;
 };
+
+#endif // QGSMAPTOOLADDRING_H

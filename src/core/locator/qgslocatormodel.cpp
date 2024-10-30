@@ -18,6 +18,7 @@
 #include <QFont>
 
 #include "qgslocatormodel.h"
+#include "moc_qgslocatormodel.cpp"
 #include "qgslocator.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"

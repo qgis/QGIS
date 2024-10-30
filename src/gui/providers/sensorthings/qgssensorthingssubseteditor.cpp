@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingssubseteditor.h"
+#include "moc_qgssensorthingssubseteditor.cpp"
 #include "qgsvectorlayer.h"
 #include "qgscodeeditor.h"
 #include "qgsfieldproxymodel.h"

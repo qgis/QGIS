@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaprenderercache.h"
+#include "moc_qgsmaprenderercache.cpp"
 
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils_p.h"

@@ -25,6 +25,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
+#include "moc_qgswcssourceselect.cpp"
 #include "qgswcscapabilities.h"
 #include "qgstreewidgetitem.h"
 

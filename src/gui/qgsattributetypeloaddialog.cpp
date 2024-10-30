@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsattributetypeloaddialog.h"
+#include "moc_qgsattributetypeloaddialog.cpp"
 
 #include "qgsmaplayer.h"
 #include "qgsfeatureiterator.h"

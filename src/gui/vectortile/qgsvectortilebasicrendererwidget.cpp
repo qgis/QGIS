@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectortilebasicrendererwidget.h"
+#include "moc_qgsvectortilebasicrendererwidget.cpp"
 
 #include "qgsguiutils.h"
 #include "qgssymbollayerutils.h"

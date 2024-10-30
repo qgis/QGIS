@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmergeattributesdialog.h"
+#include "moc_qgsmergeattributesdialog.cpp"
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"

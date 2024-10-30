@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbearingutils.h"
+#include "moc_qgsbearingutils.cpp"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgspointxy.h"

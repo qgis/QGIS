@@ -16,6 +16,7 @@
 #include <QSettings>
 
 #include "qgsrangewidgetwrapper.h"
+#include "moc_qgsrangewidgetwrapper.cpp"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 #include "qgsvectorlayer.h"

@@ -504,7 +504,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
-    QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;

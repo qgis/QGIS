@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscoordinatereferencesystemregistry.h"
+#include "moc_qgscoordinatereferencesystemregistry.cpp"
 #include "qgscoordinatereferencesystem_p.h"
 #include "qgscoordinatetransform.h"
 #include "qgsapplication.h"

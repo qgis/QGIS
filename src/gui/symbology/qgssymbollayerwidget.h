@@ -26,7 +26,6 @@
 #include <QStandardItemModel>
 
 class QgsVectorLayer;
-class QgsMapCanvas;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 
@@ -84,8 +83,6 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
-
-    QgsMapCanvas *mMapCanvas = nullptr;
 
   signals:
 

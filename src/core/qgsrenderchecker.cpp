@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrenderchecker.h"
+#include "moc_qgsrenderchecker.cpp"
 
 #include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"

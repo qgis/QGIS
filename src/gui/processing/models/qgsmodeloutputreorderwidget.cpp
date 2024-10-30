@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodeloutputreorderwidget.h"
+#include "moc_qgsmodeloutputreorderwidget.cpp"
 #include "qgsgui.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include <QDialogButtonBox>

@@ -30,8 +30,6 @@ class QgsRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsRe
     QgsRenderingOptionsWidget( QWidget *parent );
     QString helpKey() const override;
     void apply() override;
-  private:
-    bool mBlockStoringChanges = false;
 };
 
 

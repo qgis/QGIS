@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsopenclutils.h"
+#include "moc_qgsopenclutils.cpp"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"

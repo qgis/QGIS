@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
+#include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstylemanager.h"
+#include "moc_qgsmaplayerstylemanager.cpp"
 #include "qgsmaplayerstyle.h"
 #include "qgsmaplayer.h"
 

@@ -18,6 +18,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgshanaprimarykeys.h"
 #include "qgshanatablemodel.h"
+#include "moc_qgshanatablemodel.cpp"
 #include "qgshanasettings.h"
 #include "qgslogger.h"
 

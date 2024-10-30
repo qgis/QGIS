@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgsauthmanager.h"
 #include "qgsmaplayer.h"
+#include "moc_qgsmaplayer.cpp"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgspathresolver.h"

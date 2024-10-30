@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslabelengineconfigdialog.h"
+#include "moc_qgslabelengineconfigdialog.cpp"
 
 #include "qgslabelingenginesettings.h"
 #include "qgsproject.h"

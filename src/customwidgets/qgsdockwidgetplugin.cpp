@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsdockwidget.h"
 #include "qgsdockwidgetplugin.h"
+#include "moc_qgsdockwidgetplugin.cpp"
 
 
 QgsDockWidgetPlugin::QgsDockWidgetPlugin( QObject *parent )

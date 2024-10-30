@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrasterbandcombobox.h"
+#include "moc_qgsrasterbandcombobox.cpp"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 

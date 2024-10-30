@@ -15,6 +15,7 @@
 
 #include "qgsabstractdbtablemodel.h"
 #include "qgsabstractdbsourceselect.h"
+#include "moc_qgsabstractdbsourceselect.cpp"
 
 #include <QMenu>
 #include <QSortFilterProxyModel>

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayerpropertieswidget.h"
+#include "moc_qgslayerpropertieswidget.cpp"
 
 #include <QFile>
 #include <QStandardItem>

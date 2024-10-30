@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayercache.h"
+#include "moc_qgsvectorlayercache.cpp"
 #include "qgscacheindex.h"
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayerjoininfo.h"

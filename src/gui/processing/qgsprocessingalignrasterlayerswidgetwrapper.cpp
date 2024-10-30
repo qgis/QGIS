@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
+#include "moc_qgsprocessingalignrasterlayerswidgetwrapper.cpp"
 
 #include <QBoxLayout>
 #include <QLineEdit>

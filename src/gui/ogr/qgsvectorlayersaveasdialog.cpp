@@ -17,6 +17,7 @@
  ***************************************************************************/
 #include "qgslogger.h"
 #include "qgsvectorlayersaveasdialog.h"
+#include "moc_qgsvectorlayersaveasdialog.cpp"
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgseditorwidgetfactory.h"

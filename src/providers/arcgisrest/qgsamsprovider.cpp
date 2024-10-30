@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsamsprovider.h"
+#include "moc_qgsamsprovider.cpp"
 #include "qgsarcgisrestutils.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"

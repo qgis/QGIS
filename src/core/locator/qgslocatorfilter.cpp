@@ -18,6 +18,7 @@
 #include <QThread>
 
 #include "qgslocatorfilter.h"
+#include "moc_qgslocatorfilter.cpp"
 #include "qgsstringutils.h"
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"

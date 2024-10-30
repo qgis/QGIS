@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
+#include "moc_qgsmapcoordsdialog.cpp"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
 #include "qgsgui.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgdalcloudconnectiondialog.h"
+#include "moc_qgsgdalcloudconnectiondialog.cpp"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsgdalcredentialoptionswidget.h"

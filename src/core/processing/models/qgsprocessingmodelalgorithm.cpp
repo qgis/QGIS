@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelalgorithm.h"
+#include "moc_qgsprocessingmodelalgorithm.cpp"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"

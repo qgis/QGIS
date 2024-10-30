@@ -17,6 +17,7 @@
 
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
+#include "moc_qgsrasterdataprovider.cpp"
 #include "qgsrasteridentifyresult.h"
 #include "qgslogger.h"
 #include "qgspoint.h"

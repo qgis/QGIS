@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationitem.h"
+#include "moc_qgsdecorationitem.cpp"
 
 #include "qgisapp.h"
 #include "qgslogger.h"

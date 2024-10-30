@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsflatterraingenerator.h"
+#include "moc_qgsflatterraingenerator.cpp"
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DCore/QTransform>

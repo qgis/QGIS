@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstemplateprojectsmodel.h"
+#include "moc_qgstemplateprojectsmodel.cpp"
 #include "qgsziputils.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"

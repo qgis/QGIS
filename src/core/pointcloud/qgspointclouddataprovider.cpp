@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgspointclouddataprovider.h"
+#include "moc_qgspointclouddataprovider.cpp"
 #include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
 #include "qgspointcloudrequest.h"

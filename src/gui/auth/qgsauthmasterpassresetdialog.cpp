@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthmasterpassresetdialog.h"
+#include "moc_qgsauthmasterpassresetdialog.cpp"
 
 #include <QLineEdit>
 #include <QPushButton>

@@ -21,6 +21,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmaptooloffsetcurve.h"
+#include "moc_qgsmaptooloffsetcurve.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"

@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionscoperegistry.h"
+#include "moc_qgsactionscoperegistry.cpp"
 
 #include "qgsexpressioncontext.h"
 
