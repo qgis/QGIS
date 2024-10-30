@@ -598,6 +598,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       const int blockCount = document.size();
 
       double prevBlockBaseline = rect.bottom() - rect.top();
+      const double verticalAlignOffset = -metrics.blockVerticalMargin( document.size() - 1 );
 
       // draw block baselines
       for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
@@ -606,7 +607,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
         const QgsTextBlock &block = document.at( blockIndex );
         const int fragmentCount = block.size();
-        double left = 0;
+        double left = metrics.blockLeftMargin( blockIndex );
         for ( int fragmentIndex = 0; fragmentIndex < fragmentCount; ++fragmentIndex )
         {
           const double fragmentVerticalOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
@@ -619,14 +620,14 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
             painter->setPen( pen );
 
-            painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset ),
-                               QPointF( rect.left() + left, rect.top() + prevBlockBaseline ) );
+            painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ),
+                               QPointF( rect.left() + left, rect.top() + prevBlockBaseline + verticalAlignOffset ) );
 
           }
 
           painter->setPen( QColor( 0, 0, 255, 220 ) );
-          painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset ),
-                             QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset ) );
+          painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ),
+                             QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ) );
           left = right;
         }
         prevBlockBaseline = blockBaseLine;
@@ -801,6 +802,10 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
       case Qgis::LabelPlacement::OutsidePolygons:
       {
+        const double verticalAlignOffset = -documentMetrics->blockVerticalMargin( document->size() - 1 );
+
+        component.origin.ry() += verticalAlignOffset;
+
         QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, *document,
                                            *documentMetrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;

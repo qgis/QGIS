@@ -1799,22 +1799,27 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
   double verticalAlignOffset = 0;
 
-  if ( mode == Qgis::TextLayoutMode::Rectangle && vAlignment != Qgis::TextVerticalAlignment::Top )
+  if ( mode == Qgis::TextLayoutMode::Rectangle )
   {
     const double overallHeight = documentSize.height();
     switch ( vAlignment )
     {
       case Qgis::TextVerticalAlignment::Top:
+        verticalAlignOffset = metrics.blockVerticalMargin( - 1 );
         break;
 
       case Qgis::TextVerticalAlignment::VerticalCenter:
-        verticalAlignOffset = ( component.size.height() - overallHeight ) * 0.5;
+        verticalAlignOffset = ( component.size.height() - overallHeight ) * 0.5 + metrics.blockVerticalMargin( - 1 );
         break;
 
       case Qgis::TextVerticalAlignment::Bottom:
-        verticalAlignOffset = ( component.size.height() - overallHeight );
+        verticalAlignOffset = ( component.size.height() - overallHeight ) + metrics.blockVerticalMargin( - 1 );
         break;
     }
+  }
+  else if ( mode == Qgis::TextLayoutMode::Point )
+  {
+    verticalAlignOffset = - metrics.blockVerticalMargin( document.size() - 1 );
   }
 
   // should we use text or paths for this render?
@@ -1861,11 +1866,11 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       switch ( blockAlignment )
       {
         case Qgis::TextHorizontalAlignment::Center:
-          labelWidthDiff = ( labelWidest - blockWidth ) * 0.5;
+          labelWidthDiff = ( labelWidest - blockWidth - metrics.blockLeftMargin( blockIndex ) - metrics.blockRightMargin( blockIndex ) ) * 0.5 + metrics.blockLeftMargin( blockIndex );
           break;
 
         case Qgis::TextHorizontalAlignment::Right:
-          labelWidthDiff = labelWidest - blockWidth;
+          labelWidthDiff = labelWidest - blockWidth - metrics.blockRightMargin( blockIndex );
           break;
 
         case Qgis::TextHorizontalAlignment::Justify:
@@ -1874,9 +1879,11 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
             calculateExtraSpacingForLineJustification( labelWidest - blockWidth, block, extraWordSpace, extraLetterSpace );
             blockWidth = labelWidest;
           }
+          labelWidthDiff = metrics.blockLeftMargin( blockIndex );
           break;
 
         case Qgis::TextHorizontalAlignment::Left:
+          labelWidthDiff = metrics.blockLeftMargin( blockIndex );
           break;
       }
 
@@ -1903,11 +1910,16 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
             case Qgis::TextHorizontalAlignment::Left:
             case Qgis::TextHorizontalAlignment::Justify:
+              xMultiLineOffset = metrics.blockLeftMargin( blockIndex );
               break;
           }
         }
         break;
       }
+    }
+    else if ( blockAlignment == Qgis::TextHorizontalAlignment::Left || blockAlignment == Qgis::TextHorizontalAlignment::Justify )
+    {
+      xMultiLineOffset = metrics.blockLeftMargin( blockIndex );
     }
 
     const double baseLineOffset = metrics.baselineOffset( blockIndex, mode );

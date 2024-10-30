@@ -4129,6 +4129,116 @@ class PyQgsTextRenderer(QgisTestCase):
             '<p>Test some text</p><p>Short</p><p style="text-align: right">test</p><p align="left">test</p><center>center</center>'],
             rect=QRectF(10, 10, 300, 300), alignment=Qgis.TextHorizontalAlignment.Center))
 
+    def testHtmlMarginsRectLeftBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format, 'margins_rect_left', None, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="text-align: right; margin: 5pt 20pt 10pt 35pt">test</p><p align="center" style="margin: 5pt 20pt 10pt 35pt">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300)))
+
+    def testHtmlMarginsRectJustifyBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format, 'margins_rect_justify', None, alignment=QgsTextRenderer.HAlignment.AlignJustify, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="text-align: right; margin: 5pt 20pt 10pt 35pt">test</p><p align="center" style="margin: 5pt 20pt 10pt 35pt">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300)))
+
+    def testHtmlMarginsRectRightBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format, 'margins_rect_right', None, alignment=QgsTextRenderer.HAlignment.AlignRight, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="text-align: right; margin: 5pt 20pt 10pt 35pt">test</p><p align="center" style="margin: 5pt 20pt 10pt 35pt">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 350, 300)))
+
+    def testHtmlMarginsRectCenterBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format, 'margins_rect_center', None, alignment=QgsTextRenderer.HAlignment.AlignCenter, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="text-align: right; margin: 5pt 20pt 10pt 35pt">test</p><p align="center" style="margin: 5pt 20pt 10pt 35pt">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 350, 300)))
+
+    def testHtmlMarginsPointLeftBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRenderPoint(format, 'margins_point_left', None, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="margin: 5pt 20pt 10pt 35pt">test</p><p style="margin: 5pt 20pt 10pt 35pt">test</p>'],
+            point=QPointF(10, 350)))
+
+    def testHtmlMarginsPointJustifyBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRenderPoint(format, 'margins_point_justify', None, alignment=QgsTextRenderer.HAlignment.AlignJustify, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="margin: 5pt 20pt 10pt 35pt">test</p><p style="margin: 5pt 20pt 10pt 35pt">test</p>'],
+            point=QPointF(10, 350)))
+
+    def testHtmlMarginsPointRightBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRenderPoint(format, 'margins_point_right', None, alignment=QgsTextRenderer.HAlignment.AlignRight, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="margin: 5pt 20pt 10pt 35pt">test</p><p style="margin: 5pt 20pt 10pt 35pt">test</p>'],
+            point=QPointF(400, 350)))
+
+    def testHtmlMarginsPointCenterBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRenderPoint(format, 'margins_point_center', None, alignment=QgsTextRenderer.HAlignment.AlignCenter, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="margin: 5pt 20pt 10pt 35pt">test</p><p style="margin: 5pt 20pt 10pt 35pt">test</p>'],
+            point=QPointF(200, 350)))
+
+    def testHtmlMarginsRectMiddleBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format, 'margins_rect_middle', None, vAlignment=QgsTextRenderer.VAlignment.AlignVCenter, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="text-align: right; margin: 5pt 20pt 10pt 35pt">test</p><p align="center" style="margin: 5pt 20pt 10pt 35pt">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300)))
+
+    def testHtmlMarginsRectBottomBase(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setColor(QColor(255, 0, 0))
+        format.setAllowHtmlFormatting(True)
+        self.assertTrue(self.checkRender(format, 'margins_rect_bottom', None, vAlignment=QgsTextRenderer.VAlignment.AlignBottom, text=[
+            '<p style="margin: 15pt 20pt 20pt 25pt">Test some text</p><p style="margin: 35pt 40pt 10pt 35pt">Short</p><p style="text-align: right; margin: 5pt 20pt 10pt 35pt">test</p><p align="center" style="margin: 5pt 20pt 10pt 35pt">test</p><center>center</center>'],
+            rect=QRectF(10, 10, 300, 300)))
+
     def testHtmlImageAutoSize(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
