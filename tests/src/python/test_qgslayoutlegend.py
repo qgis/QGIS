@@ -735,30 +735,29 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
 
         layer = QgsProject.instance().addMapLayer(point_layer)
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
-
         counterTask = point_layer.countSymbolFeatures()
         counterTask.waitForFinished()
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
         legendnodes[0].setUserLabel('[% @symbol_id %]')
-        legendnodes[1].setUserLabel('[% @symbol_count %]')
+        legendnodes[1].setUserLabel('[% @legend_item_expression %]')
         legendnodes[2].setUserLabel('[% sum("Pilots") %]')
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
         self.assertEqual(label1, '0')
-        # self.assertEqual(label2, '5')
-        # self.assertEqual(label3, '12')
+        self.assertEqual(label2, '"Class" = \'Biplane\'')
+        self.assertEqual(label3, '34')
 
-        legendlayer.setLabelExpression("Concat(@symbol_label, @symbol_id)")
+        legendlayer.setLabelExpression("Concat(@symbol_label,sum(@id, filter:=eval(@legend_item_expression)))")
 
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
 
-        self.assertEqual(label1, ' @symbol_id 0')
-        # self.assertEqual(label2, '@symbol_count 1')
-        # self.assertEqual(label3, 'sum("Pilots") 2')
+        self.assertEqual(label1, ' @symbol_id 42')
+        self.assertEqual(label2, ' @legend_item_expression 27')
+        self.assertEqual(label3, ' sum("Pilots") 67')
 
         QgsProject.instance().clear()
 
@@ -972,6 +971,168 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(
             self.render_layout_check(
                 'composer_legend_theme', layout
+            )
+        )
+
+        QgsProject.instance().clear()
+
+    def testLegendExpressionWithStyles(self):
+        """
+        Test rendering legends linked to map themes
+        """
+        QgsProject.instance().removeAllMapLayers()
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        line_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_path, 'lines', 'ogr')
+        QgsProject.instance().clear()
+        QgsProject.instance().addMapLayers([point_layer, line_layer])
+
+        def_record = QgsMapThemeCollection.MapThemeRecord()
+        point_def_record = QgsMapThemeCollection.MapThemeLayerRecord(point_layer)
+        point_def_record.usingCurrentStyle = True
+        point_def_record.currentStyle = 'default'
+        def_record.addLayerRecord(point_def_record)
+        line_def_record = QgsMapThemeCollection.MapThemeLayerRecord(line_layer)
+        line_def_record.usingCurrentStyle = True
+        line_def_record.currentStyle = 'def'
+        def_record.addLayerRecord(line_def_record)
+        QgsProject.instance().mapThemeCollection().insert('def', red_record)
+
+        marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5'})
+        point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
+        point_layer.styleManager().addStyleFromLayer("red")
+
+        line_symbol = QgsLineSymbol.createSimple({'color': '#ff0000', 'line_width': '2'})
+        line_layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
+        line_layer.styleManager().addStyleFromLayer("red")
+
+
+
+        red_record = QgsMapThemeCollection.MapThemeRecord()
+        point_red_record = QgsMapThemeCollection.MapThemeLayerRecord(point_layer)
+        point_red_record.usingCurrentStyle = True
+        point_red_record.currentStyle = 'red'
+        red_record.addLayerRecord(point_red_record)
+        line_red_record = QgsMapThemeCollection.MapThemeLayerRecord(line_layer)
+        line_red_record.usingCurrentStyle = True
+        line_red_record.currentStyle = 'red'
+        red_record.addLayerRecord(line_red_record)
+        QgsProject.instance().mapThemeCollection().insert('red', red_record)
+
+        marker_symbol1 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no', 'size': '5'})
+        marker_symbol2 = QgsMarkerSymbol.createSimple(
+            {'color': '#0000ff', 'name': 'diamond', 'outline_style': 'no', 'size': '5'})
+        marker_symbol3 = QgsMarkerSymbol.createSimple(
+            {'color': '#0000ff', 'name': 'rectangle', 'outline_style': 'no', 'size': '5'})
+
+        point_layer.setRenderer(QgsCategorizedSymbolRenderer('Class', [QgsRendererCategory('B52', marker_symbol1, 'blue52'),
+                                                                       QgsRendererCategory('Biplane', marker_symbol2,
+                                                                                           'Bluplane'),
+                                                                       QgsRendererCategory('Jet', marker_symbol3, 'Blue_jet'),
+                                                                       ]))
+        point_layer.styleManager().addStyleFromLayer("blue")
+
+        line_symbol = QgsLineSymbol.createSimple({'color': '#0000ff', 'line_width': '2'})
+        line_layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
+        line_layer.styleManager().addStyleFromLayer("blue")
+
+        blue_record = QgsMapThemeCollection.MapThemeRecord()
+        point_blue_record = QgsMapThemeCollection.MapThemeLayerRecord(point_layer)
+        point_blue_record.usingCurrentStyle = True
+        point_blue_record.currentStyle = 'blue'
+        blue_record.addLayerRecord(point_blue_record)
+        line_blue_record = QgsMapThemeCollection.MapThemeLayerRecord(line_layer)
+        line_blue_record.usingCurrentStyle = True
+        line_blue_record.currentStyle = 'blue'
+        blue_record.addLayerRecord(line_blue_record)
+        QgsProject.instance().mapThemeCollection().insert('blue', blue_record)
+
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map1 = QgsLayoutItemMap(layout)
+        map1.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map1.setFrameEnabled(True)
+        map1.setLayers([point_layer, line_layer])
+        layout.addLayoutItem(map1)
+        map1.setExtent(point_layer.extent())
+        map1.setFollowVisibilityPreset(True)
+        map1.setFollowVisibilityPresetName('red')
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.attemptSetSceneRect(QRectF(20, 120, 80, 80))
+        map2.setFrameEnabled(True)
+        map2.setLayers([point_layer, line_layer])
+        layout.addLayoutItem(map2)
+        map2.setExtent(point_layer.extent())
+        map2.setFollowVisibilityPreset(True)
+        map2.setFollowVisibilityPresetName('blue')
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map1)
+        legend.setStyleFont(QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Style.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        legend2 = QgsLayoutItemLegend(layout)
+        legend2.setTitle("Legend")
+        legend2.attemptSetSceneRect(QRectF(120, 120, 80, 80))
+        legend2.setFrameEnabled(True)
+        legend2.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend2.setBackgroundColor(QColor(200, 200, 200))
+        legend2.setTitle('')
+        layout.addLayoutItem(legend2)
+        legend2.setLinkedMap(map2)
+        legend2.setStyleFont(QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Style.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Style.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Style.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        map3 = QgsLayoutItemMap(layout)
+        map3.attemptSetSceneRect(QRectF(200, 120, 80, 80))
+        map3.setFrameEnabled(True)
+        map3.setLayers([point_layer, line_layer])
+        layout.addLayoutItem(map3)
+        map3.setExtent(point_layer.extent())
+        map3.setFollowVisibilityPreset(True)
+        map3.setFollowVisibilityPresetName('def')
+
+        legend3 = QgsLayoutItemLegend(layout)
+        legend3.setTitle("Legend")
+        legend3.attemptSetSceneRect(QRectF(200, 200, 80, 80))
+        legend3.setFrameEnabled(True)
+        legend3.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend3.setBackgroundColor(QColor(200, 200, 200))
+        legend3.setTitle('')
+        layout.addLayoutItem(legend3)
+        legend3.setLinkedMap(map3)
+        legend3.setStyleFont(QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend3.setStyleFont(QgsLegendStyle.Style.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend3.setStyleFont(QgsLegendStyle.Style.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend3.setStyleFont(QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend3.setStyleFont(QgsLegendStyle.Style.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        for sublegend in [legend, legend2,legend3]:
+            legendlayer = sublegend.model().rootGroup().findLayer(point_layer.id())
+            legendlayer.setLabelExpression("@legend_item_expression")        
+            sublegend.model().refreshLayerLegend(legendlayer)
+
+
+        self.assertTrue(
+            self.render_layout_check(
+                'composer_legend_theme_expression_scope', layout
             )
         )
 

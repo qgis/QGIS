@@ -1197,7 +1197,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
       if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( legendNodes.first() ) )
       {
         legendContext.appendScope( symbolNode->createSymbolScope() );
-        highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
+        highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" ) << QStringLiteral( "legend_item_expression" );
       }
     }
   }
