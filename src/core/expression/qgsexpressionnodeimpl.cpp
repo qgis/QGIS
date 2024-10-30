@@ -694,6 +694,122 @@ QgsExpressionNode::NodeType QgsExpressionNodeBinaryOperator::nodeType() const
 
 bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
+
+  // if this is an OR, try to collapse the OR expression into an IN node
+  if ( mOp == boOr )
+  {
+
+    // First step: flatten OR chain and collect values
+    QMap<QString, QgsExpressionNode::NodeList> orValuesMap;
+    QList<QString> orFieldNames;
+
+    // Get a list of all the OR and IN nodes chained together
+    std::function<bool ( QgsExpressionNode * )> visitOrNodes = [&visitOrNodes, &orValuesMap, &orFieldNames]( QgsExpressionNode * node ) -> bool
+    {
+      if ( QgsExpressionNodeBinaryOperator *op = dynamic_cast<QgsExpressionNodeBinaryOperator *>( node ) )
+      {
+        if ( op->op() != boOr && op->op() != boEQ )
+        {
+          return false;
+        }
+
+        if ( op->op() == boEQ )
+        {
+          // If left is a column ref and right is a literal, collect
+          if ( dynamic_cast<QgsExpressionNodeColumnRef *>( op->opLeft() ) && dynamic_cast<QgsExpressionNodeLiteral *>( op->opRight() ) )
+          {
+            const QString fieldName = op->opLeft()->dump();
+            if ( !orValuesMap.contains( fieldName ) )
+            {
+              orFieldNames.append( fieldName );
+              orValuesMap.insert( fieldName, QgsExpressionNode::NodeList() );
+            }
+            orValuesMap[fieldName].append( op->opRight()->clone() );
+            return true;
+          }
+          return false;
+        }
+
+        if ( visitOrNodes( op->opLeft() ) && visitOrNodes( op->opRight() ) )
+        {
+          return true;
+        }
+
+      }
+      else if ( QgsExpressionNodeInOperator *inOp = dynamic_cast<QgsExpressionNodeInOperator *>( node ) )
+      {
+        if ( inOp->node()->nodeType() != QgsExpressionNode::ntColumnRef )
+        {
+          return false;
+        }
+
+        const QString fieldName = inOp->node()->dump();
+
+        // Check if all nodes are literals
+        const auto nodes = inOp->list()->list();
+        for ( const auto &valueNode : std::as_const( nodes ) )
+        {
+          if ( valueNode->nodeType() != QgsExpressionNode::ntLiteral )
+          {
+            return false;
+          }
+        }
+
+        if ( !orValuesMap.contains( fieldName ) )
+        {
+          orFieldNames.append( fieldName );
+          orValuesMap.insert( fieldName, *inOp->list()->clone() );
+        }
+        else
+        {
+          for ( const auto &valueNode : std::as_const( nodes ) )
+          {
+            orValuesMap[fieldName].append( valueNode->clone() );
+          }
+        }
+
+        return true;
+      }
+      return false;
+    };
+
+
+    // Second step: build the OR chain of IN operators
+    if ( visitOrNodes( this ) && ! orValuesMap.empty() )
+    {
+
+      // Recursively build the OR chain of IN operators
+      std::function<QgsExpressionNode* ( QList<QString>::const_iterator )> buildOrChain = [&buildOrChain, &orValuesMap, &orFieldNames]( QList<QString>::const_iterator fieldNameit ) -> QgsExpressionNode *
+      {
+
+        QgsExpressionNode *currentNode;
+        auto orValuesIt = orValuesMap.find( *fieldNameit );
+
+        if ( orValuesIt.value().count() == 1 )
+        {
+          currentNode = new QgsExpressionNodeBinaryOperator( boEQ, new QgsExpressionNodeColumnRef( orValuesIt.key() ), orValuesIt.value().at( 0 )->clone() );
+        }
+        else
+        {
+          currentNode = new QgsExpressionNodeInOperator( new QgsExpressionNodeColumnRef( orValuesIt.key() ), orValuesIt.value().clone() );
+        }
+
+        if ( fieldNameit + 1 == orFieldNames.cend() )
+        {
+          return currentNode;
+        }
+        else
+        {
+          QgsExpressionNode *nextNode = buildOrChain( fieldNameit + 1 );
+          return new QgsExpressionNodeBinaryOperator( boOr, currentNode, nextNode );
+        }
+      };
+
+      mCompiledSimplifiedNode.reset( buildOrChain( orFieldNames.cbegin() ) );
+    }
+
+  }
+
   bool resL = mOpLeft->prepare( parent, context );
   bool resR = mOpRight->prepare( parent, context );
   return resL && resR;

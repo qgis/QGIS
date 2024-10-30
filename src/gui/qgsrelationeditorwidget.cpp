@@ -626,8 +626,10 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
   QgsVectorLayer *layer = nullptr;
   if ( mNmRelation.isValid() )
   {
-    QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
     QgsFeature fet;
+    QgsFeatureRequest nmRequest;
+
+    QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
     QStringList filters;
 
     while ( it.nextFeature( fet ) )
@@ -636,8 +638,15 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
       filters << filter.prepend( '(' ).append( ')' );
     }
 
-    QgsFeatureRequest nmRequest;
-    nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
+    QString reducedExpression;
+    if ( QgsExpression::attemptReduceToInClause( filters, reducedExpression ) )
+    {
+      nmRequest.setFilterExpression( reducedExpression );
+    }
+    else
+    {
+      nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
+    }
 
     request = nmRequest;
     layer = mNmRelation.referencedLayer();
@@ -666,6 +675,8 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
 
     updateButtons();
   }
+
+  mFeatureRequest = request;
 }
 
 void QgsRelationEditorWidget::updateUiMultiEdit()
