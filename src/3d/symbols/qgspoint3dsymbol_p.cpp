@@ -215,9 +215,8 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  tr->setTranslation( nodeTranslation );
 
   // build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
@@ -565,13 +564,17 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
 
 Qt3DCore::QTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin, const QgsVector3D &contextOrigin )
 {
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  tr->setMatrix( symbol->transform() );
+  // symbol's transform is still using XZ as the base plane, so we need to flip axes
+  QMatrix4x4 flipAxes;
+  flipAxes.rotate( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) );  // flip (x,z,-y) to map (x,y,z)
+
   // position is relative to chunkOrigin
   QVector3D nodeTranslation = ( chunkOrigin - contextOrigin ).toVector3D();
-  tr->setTranslation( tr->translation() +
-                      QVector3D( position.x(), position.z(), -position.y() ) +
-                      QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  QMatrix4x4 translation;
+  translation.translate( nodeTranslation + position );
+
+  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  tr->setMatrix( translation * flipAxes * symbol->transform() );
   return tr;
 }
 
@@ -675,11 +678,10 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   // Billboard Transform
   Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
-  billboardTransform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
   QVector3D billboardHeightTranslation( 0, mSymbol->billboardHeight(), 0 );
   // our geometry has coordinates relative to mChunkOrigin
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  billboardTransform->setTranslation( billboardHeightTranslation + QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  billboardTransform->setTranslation( billboardHeightTranslation + nodeTranslation );
 
   // Build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;

@@ -308,8 +308,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // as map coordinates, so we need to rotate and translate entities to get them into world coordinates
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
   QVector3D nodeTranslation = ( out.positionsOrigin - context.origin() ).toVector3D();
-  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
-  tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  tr->setTranslation( nodeTranslation );
 
   // Material
   QgsMaterial *mat = new QgsMaterial;

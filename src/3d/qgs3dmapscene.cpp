@@ -247,9 +247,9 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
     const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : mEngine->size().width(), ( ( i >> 1 ) & 1 ) ? 0 : mEngine->size().height() );
     QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( p, mEngine->size(), camera );
     QVector3D dir = ray.direction();
-    if ( dir.y() == 0.0 )
-      dir.setY( 0.000001 );
-    double t = - ray.origin().y() / dir.y();
+    if ( dir.z() == 0.0 )
+      dir.setZ( 0.000001 );
+    double t = - ray.origin().z() / dir.z();
     if ( t < 0 )
     {
       // If the projected point is on the back of the camera we choose the farthest point in the front

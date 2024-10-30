@@ -76,8 +76,9 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   const double xMin = commonExtent.xMinimum() - map->origin().x();
   const double yMin = commonExtent.yMinimum() - map->origin().y();
 
+  transform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // QPlaneGeometry uses XZ as the base plane
   transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
-  transform->setTranslation( QVector3D( static_cast<float>( xMin + xSide / 2 ), 0, static_cast<float>( -( yMin + ySide / 2 ) ) ) );
+  transform->setTranslation( QVector3D( static_cast<float>( xMin + xSide / 2 ), static_cast<float>( yMin + ySide / 2 ), 0 ) );
 
   createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 

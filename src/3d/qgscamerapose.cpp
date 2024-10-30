@@ -73,13 +73,12 @@ void QgsCameraPose::setPitchAngle( float pitch )
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
-  // basic scene setup:
-  // - x grows to the right
-  // - z grows to the bottom
-  // - y grows towards camera
-  // so a point on the plane (x',y') is transformed to (x,-z) in our 3D world
-  camera->setUpVector( QVector3D( 0, 0, -1 ) );
-  camera->setPosition( QVector3D( mCenterPoint.x(), mDistanceFromCenterPoint + mCenterPoint.y(), mCenterPoint.z() ) );
-  camera->setViewCenter( QVector3D( mCenterPoint.x(), mCenterPoint.y(), mCenterPoint.z() ) );
-  camera->rotateAboutViewCenter( QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 ) );
+  // first rotate by pitch angle around X axis, then by heading angle around Z axis
+  // (we use two separate fromEulerAngles() calls because one would not do rotations in order we need)
+  QQuaternion q = QQuaternion::fromEulerAngles( 0, 0, mHeadingAngle ) *
+                  QQuaternion::fromEulerAngles( mPitchAngle, 0, 0 );
+  QVector3D cameraToCenter = q * QVector3D( 0, 0, -mDistanceFromCenterPoint );
+  camera->setUpVector( q * QVector3D( 0, 1, 0 ) );
+  camera->setPosition( mCenterPoint.toVector3D() - cameraToCenter );
+  camera->setViewCenter( mCenterPoint.toVector3D() );
 }
