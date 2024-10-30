@@ -214,6 +214,39 @@ class CORE_EXPORT QgsTextDocumentMetrics
      */
     double ascentOffset() const { return mFirstLineAscentOffset; }
 
+    /**
+     * Returns the vertical margin for the specified block index.
+     *
+     * If \a blockIndex >= 0 then the returned value will be the margin to place after the block.
+     * If \a blockIndex < 0 then the returned value will be the margin to place before the first block.
+     *
+     * \see blockLeftMargin()
+     * \see blockRightMargin()
+     *
+     * \since QGIS 3.42
+     */
+    double blockVerticalMargin( int blockIndex ) const;
+
+    /**
+     * Returns the margin for the left side of the specified block index.
+     *
+     * \see blockVerticalMargin()
+     * \see blockRightMargin()
+     *
+     * \since QGIS 3.42
+     */
+    double blockLeftMargin( int blockIndex ) const;
+
+    /**
+     * Returns the margin for the right side of the specified block index.
+     *
+     * \see blockVerticalMargin()
+     * \see blockLeftMargin()
+     *
+     * \since QGIS 3.42
+     */
+    double blockRightMargin( int blockIndex ) const;
+
   private:
 
     QgsTextDocument mDocument;
@@ -250,6 +283,10 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double mFirstLineAscentOffset = 0;
     double mLastLineAscentOffset = 0;
     double mFirstLineCapHeight = 0;
+
+    QVector< double > mVerticalMarginsBetweenBlocks;
+    QVector< double > mLeftBlockMargins;
+    QVector< double > mRightBlockMargins;
 
     static void finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics );
     static void processFragment( QgsTextDocumentMetrics &res, const QgsTextFormat &format, const QgsRenderContext &context, const QgsTextDocumentRenderContext &documentContext, double scaleFactor, DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment, QgsTextBlock &currentOutputBlock );

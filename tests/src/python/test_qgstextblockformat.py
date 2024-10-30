@@ -9,7 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 """
 import math
 
-from qgis._core import QgsMargins
 from qgis.core import (
     Qgis,
     QgsFontUtils,

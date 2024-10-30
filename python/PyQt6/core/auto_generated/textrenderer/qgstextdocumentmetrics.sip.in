@@ -199,6 +199,42 @@ Returns the calculated font for the fragment at the specified block and fragment
 Returns the ascent offset of the first block in the document.
 %End
 
+    double blockVerticalMargin( int blockIndex ) const;
+%Docstring
+Returns the vertical margin for the specified block index.
+
+If ``blockIndex`` >= 0 then the returned value will be the margin to place after the block.
+If ``blockIndex`` < 0 then the returned value will be the margin to place before the first block.
+
+.. seealso:: :py:func:`blockLeftMargin`
+
+.. seealso:: :py:func:`blockRightMargin`
+
+.. versionadded:: 3.42
+%End
+
+    double blockLeftMargin( int blockIndex ) const;
+%Docstring
+Returns the margin for the left side of the specified block index.
+
+.. seealso:: :py:func:`blockVerticalMargin`
+
+.. seealso:: :py:func:`blockRightMargin`
+
+.. versionadded:: 3.42
+%End
+
+    double blockRightMargin( int blockIndex ) const;
+%Docstring
+Returns the margin for the right side of the specified block index.
+
+.. seealso:: :py:func:`blockVerticalMargin`
+
+.. seealso:: :py:func:`blockLeftMargin`
+
+.. versionadded:: 3.42
+%End
+
 };
 
 /************************************************************************
