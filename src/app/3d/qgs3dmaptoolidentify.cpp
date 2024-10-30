@@ -69,6 +69,9 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   identifyTool2D->clearResults();
 
+  QgsMapCanvas *canvas2D = identifyTool2D->canvas();
+  const QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
+
   bool showTerrainResults = true;
 
   for ( auto it = allHits.constKeyValueBegin(); it != allHits.constKeyValueEnd(); ++it )
@@ -78,7 +81,18 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     {
       const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
-      const QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
+      QgsVector3D mapCoordsCanvas2D;
+      try
+      {
+        mapCoordsCanvas2D = ct.transform( mapCoords );
+      }
+      catch ( QgsException &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+      }
+
+      const QgsPoint pt( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y(), mapCoordsCanvas2D.z() );
       identifyTool2D->showResultsForFeature( vlayer, hit.fid, pt );
       showTerrainResults = false;
     }
@@ -105,7 +119,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       QgsCoordinateUtils::formatCoordinatePartsForProject(
         QgsProject::instance(),
         QgsPointXY( mapCoords.x(), mapCoords.y() ),
-        QgsProject::instance()->crs(),
+        mCanvas->mapSettings()->crs(),
         6, x, y
       );
 
@@ -139,14 +153,10 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
     const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
 
-    QgsMapCanvas *canvas2D = identifyTool2D->canvas();
-
-    // transform the point and search radius to CRS of the map canvas (if they are different)
-    const QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
-
     const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
     const QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
 
+    // transform the point and search radius to CRS of the map canvas (if they are different)
     QgsPointXY mapPointCanvas2D = mapPoint;
     double searchRadiusCanvas2D = searchRadiusMapUnits;
     try
