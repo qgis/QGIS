@@ -564,9 +564,6 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     //! Pointer to layer input
     QgsGrassModuleInput *mLayerInput = nullptr;
 
-    //! Currently connected layer
-    QgsVectorLayer *mVectorLayer = nullptr;
-
     //! Field type (integer,double,string,datetime)
     QString mType;
 
