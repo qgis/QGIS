@@ -181,6 +181,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrasterlayerproperties.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
+  processing/qgsalgorithmrasterminmax.cpp
   processing/qgsalgorithmrasterize.cpp
   processing/qgsalgorithmrastersampling.cpp
   processing/qgsalgorithmrasterstackposition.cpp
