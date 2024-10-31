@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "02f0c7fc53be545969c4e400dec079af9c82240a",
+        "baseline": "a068d5253821e7adfb8ac2513e9e1572bb025682",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -98,6 +98,7 @@
         "py-dateutil",
         "py-isort",
         "py-jinja2",
+        "py-lxml",
         "py-markupsafe",
         "py-numpy",
         "py-owslib",
