@@ -29,14 +29,14 @@
    <item row="0" column="0">
     <widget class="QTreeWidget" name="mTabPositionTreeWidget">
      <property name="headerHidden">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="columnCount">
       <number>1</number>
      </property>
      <column>
       <property name="text">
-       <string>Dash</string>
+       <string>Position</string>
       </property>
      </column>
     </widget>
