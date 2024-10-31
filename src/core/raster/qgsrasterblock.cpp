@@ -872,3 +872,293 @@ QRect QgsRasterBlock::subRect( const QgsRectangle &extent, int width, int height
   QgsDebugMsgLevel( QStringLiteral( "subRect: %1 %2 %3 %4" ).arg( subRect.x() ).arg( subRect.y() ).arg( subRect.width() ).arg( subRect.height() ), 4 );
   return subRect;
 }
+
+template<class T> bool findMaximum( const void *data, bool hasNoData, double noDataValue, int width, int height, double &maximum, std::size_t &offset )
+{
+  const T *castData = static_cast< const T * >( data );
+  auto end = castData + static_cast< std::size_t >( width ) * static_cast< std::size_t >( height );
+  if ( !hasNoData )
+  {
+    const auto maxElem = std::max_element( castData, end );
+    if ( maxElem != end )
+    {
+      offset = maxElem - castData;
+      maximum = *maxElem;
+      return true;
+    }
+    return false;
+  }
+  else
+  {
+    maximum = std::numeric_limits< double >::lowest();
+    bool found = false;
+    for ( auto it = castData; it != end; ++it )
+    {
+      const double value = static_cast< double >( *it );
+      if ( std::isnan( value ) || qgsDoubleNear( value, noDataValue ) )
+        continue;
+
+      if ( value > maximum || !found )
+      {
+        maximum = value;
+        offset = it - castData;
+        found = true;
+      }
+    }
+    return found;
+  }
+}
+
+template<class T> bool findMinimum( const void *data, bool hasNoData, double noDataValue, int width, int height, double &minimum, std::size_t &offset )
+{
+  const T *castData = static_cast< const T * >( data );
+  auto end = castData + static_cast< std::size_t >( width ) * static_cast< std::size_t >( height );
+  if ( !hasNoData )
+  {
+    const auto minElem = std::min_element( castData, end );
+    if ( minElem != end )
+    {
+      offset = minElem - castData;
+      minimum = *minElem;
+      return true;
+    }
+    return false;
+  }
+  else
+  {
+    minimum = std::numeric_limits< double >::max();
+    bool found = false;
+    for ( auto it = castData; it != end; ++it )
+    {
+      const double value = static_cast< double >( *it );
+      if ( std::isnan( value ) || qgsDoubleNear( value, noDataValue ) )
+        continue;
+
+      if ( value < minimum || !found )
+      {
+        minimum = value;
+        offset = it - castData;
+        found = true;
+      }
+    }
+    return found;
+  }
+}
+
+template<class T> bool findMinMax( const void *data, bool hasNoData, double noDataValue, int width, int height, double &minimum, std::size_t &minOffset, double &maximum, std::size_t &maxOffset )
+{
+  const T *castData = static_cast< const T * >( data );
+  auto end = castData + static_cast< std::size_t >( width ) * static_cast< std::size_t >( height );
+  if ( !hasNoData )
+  {
+    const auto minMaxElem = std::minmax_element( castData, end );
+    if ( minMaxElem.first != end )
+    {
+      minOffset = minMaxElem.first - castData;
+      minimum = *minMaxElem.first;
+      maxOffset = minMaxElem.second - castData;
+      maximum = *minMaxElem.second;
+      return true;
+    }
+    return false;
+  }
+  else
+  {
+    minimum = std::numeric_limits< double >::max();
+    maximum = std::numeric_limits< double >::lowest();
+    bool found = false;
+    for ( auto it = castData; it != end; ++it )
+    {
+      const double value = static_cast< double >( *it );
+      if ( std::isnan( value ) || qgsDoubleNear( value, noDataValue ) )
+        continue;
+
+      if ( value < minimum || !found )
+      {
+        minimum = value;
+        minOffset = it - castData;
+      }
+      if ( value > maximum || !found )
+      {
+        maximum = value;
+        maxOffset = it - castData;
+      }
+      found = true;
+    }
+    return found;
+  }
+}
+
+bool QgsRasterBlock::minimum( double &minimum, int &row, int &column ) const
+{
+  minimum = std::numeric_limits<double>::quiet_NaN();
+  if ( !mData )
+  {
+    return false;
+  }
+
+  std::size_t offset = 0;
+  bool found = false;
+  switch ( mDataType )
+  {
+    case Qgis::DataType::Byte:
+      found = findMinimum< quint8 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, offset );
+      break;
+    case Qgis::DataType::Int8:
+      found = findMinimum< qint8 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, offset );
+      break;
+    case Qgis::DataType::UInt16:
+      found = findMinimum< quint16 >( mData, mHasNoDataValue, mNoDataValue,  mWidth, mHeight, minimum, offset );
+      break;
+    case Qgis::DataType::Int16:
+      found = findMinimum< qint16 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, offset );
+      break;
+    case Qgis::DataType::UInt32:
+      found = findMinimum< quint32 >( mData, mHasNoDataValue, mNoDataValue,  mWidth, mHeight, minimum, offset );
+      break;
+    case Qgis::DataType::Int32:
+      found = findMinimum< qint32 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, offset );
+      break;
+    case Qgis::DataType::Float32:
+      found = findMinimum< float >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, offset );
+      break;
+    case Qgis::DataType::Float64:
+      found = findMinimum< double >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, offset );
+      break;
+
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
+      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( mDataType ) ) );
+      return false;
+  }
+
+  if ( found )
+  {
+    row = static_cast< int >( offset / mWidth );
+    column = static_cast< int >( offset % mWidth );
+  }
+
+  return found;
+}
+bool QgsRasterBlock::maximum( double &maximum SIP_OUT, int &row SIP_OUT, int &column SIP_OUT ) const
+{
+  maximum = std::numeric_limits<double>::quiet_NaN();
+  if ( !mData )
+  {
+    return false;
+  }
+
+  std::size_t offset = 0;
+  bool found = false;
+  switch ( mDataType )
+  {
+    case Qgis::DataType::Byte:
+      found = findMaximum< quint8 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, maximum, offset );
+      break;
+    case Qgis::DataType::Int8:
+      found = findMaximum< qint8 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, maximum, offset );
+      break;
+    case Qgis::DataType::UInt16:
+      found = findMaximum< quint16 >( mData, mHasNoDataValue, mNoDataValue,  mWidth, mHeight, maximum, offset );
+      break;
+    case Qgis::DataType::Int16:
+      found = findMaximum< qint16 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, maximum, offset );
+      break;
+    case Qgis::DataType::UInt32:
+      found = findMaximum< quint32 >( mData, mHasNoDataValue, mNoDataValue,  mWidth, mHeight, maximum, offset );
+      break;
+    case Qgis::DataType::Int32:
+      found = findMaximum< qint32 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, maximum, offset );
+      break;
+    case Qgis::DataType::Float32:
+      found = findMaximum< float >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, maximum, offset );
+      break;
+    case Qgis::DataType::Float64:
+      found = findMaximum< double >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, maximum, offset );
+      break;
+
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
+      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( mDataType ) ) );
+      return false;
+  }
+
+  if ( found )
+  {
+    row = static_cast< int >( offset / mWidth );
+    column = static_cast< int >( offset % mWidth );
+  }
+
+  return found;
+}
+
+bool QgsRasterBlock::minimumMaximum( double &minimum, int &minimumRow, int &minimumColumn, double &maximum, int &maximumRow, int &maximumColumn ) const
+{
+  minimum = std::numeric_limits<double>::quiet_NaN();
+  maximum = std::numeric_limits<double>::quiet_NaN();
+  if ( !mData )
+  {
+    return false;
+  }
+
+  std::size_t minOffset = 0;
+  std::size_t maxOffset = 0;
+  bool found = false;
+  switch ( mDataType )
+  {
+    case Qgis::DataType::Byte:
+      found = findMinMax< quint8 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+    case Qgis::DataType::Int8:
+      found = findMinMax< qint8 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+    case Qgis::DataType::UInt16:
+      found = findMinMax< quint16 >( mData, mHasNoDataValue, mNoDataValue,  mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+    case Qgis::DataType::Int16:
+      found = findMinMax< qint16 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+    case Qgis::DataType::UInt32:
+      found = findMinMax< quint32 >( mData, mHasNoDataValue, mNoDataValue,  mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+    case Qgis::DataType::Int32:
+      found = findMinMax< qint32 >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+    case Qgis::DataType::Float32:
+      found = findMinMax< float >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+    case Qgis::DataType::Float64:
+      found = findMinMax< double >( mData, mHasNoDataValue, mNoDataValue, mWidth, mHeight, minimum, minOffset, maximum, maxOffset );
+      break;
+
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
+      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( mDataType ) ) );
+      return false;
+  }
+
+  if ( found )
+  {
+    minimumRow = static_cast< int >( minOffset / mWidth );
+    minimumColumn = static_cast< int >( minOffset % mWidth );
+    maximumRow = static_cast< int >( maxOffset / mWidth );
+    maximumColumn = static_cast< int >( maxOffset % mWidth );
+  }
+
+  return found;
+}
