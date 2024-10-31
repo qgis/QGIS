@@ -287,7 +287,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -305,8 +305,8 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
   scene->cameraController()->resetView( 90 );
 
   QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, 0, 0.5, 1.0 )
-                                         << QVector4D( 0.5, 0, -0.866025, 0.5 );
+                                         << QVector4D( 0.866025, -0.5, 0, 1.0 )
+                                         << QVector4D( 0.5, 0.866025, 0, 0.5 );
   scene->enableClipping( clipPlanesEquations );
 
 
