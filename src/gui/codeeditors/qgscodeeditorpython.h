@@ -23,6 +23,7 @@
 
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryBool;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -62,8 +63,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     static const QgsSettingsEntryInteger *settingAutopep8Level;
     static const QgsSettingsEntryBool *settingBlackNormalizeQuotes;
     static const QgsSettingsEntryString *settingExternalPythonEditorCommand;
-    static const QgsSettingsEntryBool *settingContextHelpEmbedded;
-    static const QgsSettingsEntryBool *settingContextHelpPyQgis;
+    static const QgsSettingsEntryEnumFlag< Qgis::DocumentationBrowser > *settingContextHelpBrowser;
 ///@endcond PRIVATE
 #endif
 
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void searchSelectedTextInPyQGISDocs();
 
     /**
-     * Searches the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
+     * Displays the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
      *
      * \since QGIS 3.42
      */

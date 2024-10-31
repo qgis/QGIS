@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtWidgets import QWidget, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
-from qgis.core import QgsSettings, QgsApplication, QgsSettingsTree
+from qgis.core import QgsSettings, QgsApplication, QgsSettingsTree, Qgis
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
 from .console_compile_apis import PrepareAPIDialog
@@ -75,6 +75,10 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
             "SettingsDialogPythonConsole", "Python Console Settings"))
         self.parent = parent
         self.setupUi(self)
+
+        # Populate the documentation Browser combobox
+        self.contextHelpBrowser.addItem(QCoreApplication.translate("PythonConsole", "Embedded Webview (developer tools)"), Qgis.DocumentationBrowser.DeveloperToolsPanel)
+        self.contextHelpBrowser.addItem(QCoreApplication.translate("PythonConsole", "Default system web browser"), Qgis.DocumentationBrowser.SystemWebBrowser)
 
         self.autopep8Level.setClearValue(1)
         self.maxLineLength.setClearValue(80)
@@ -211,15 +215,17 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
 
         settings.setValue("pythonConsole/formatOnSave", self.formatOnSave.isChecked())
 
-        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+        codeEditorTreeNode = QgsSettingsTree.node("gui").childNode("code-editor")
+        pythonSettingsTreeNode = codeEditorTreeNode.childNode("python")
         pythonSettingsTreeNode.childSetting("sort-imports").setValue(self.sortImports.isChecked())
         pythonSettingsTreeNode.childSetting("formatter").setValue(self.formatter.currentText())
         pythonSettingsTreeNode.childSetting("autopep8-level").setValue(self.autopep8Level.value())
         pythonSettingsTreeNode.childSetting("black-normalize-quotes").setValue(self.blackNormalizeQuotes.isChecked())
         pythonSettingsTreeNode.childSetting("max-line-length").setValue(self.maxLineLength.value())
         pythonSettingsTreeNode.childSetting('external-editor').setValue(self.externalEditor.text())
-        pythonSettingsTreeNode.childSetting('context-help-embedded').setValue(self.contextHelpBrowser.currentIndex() == 0)
-        pythonSettingsTreeNode.childSetting('context-help-pyqgis').setValue(self.contextHelpApi.currentIndex() == 0)
+        pythonSettingsTreeNode.childSetting('context-help-browser').setVariantValue(self.contextHelpBrowser.currentData().name)
+
+        codeEditorTreeNode.childSetting('context-help-hover').setValue(self.contextHelpHover.isChecked())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -245,7 +251,8 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autoSurround.setChecked(settings.value("pythonConsole/autoSurround", True, type=bool))
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
-        pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
+        codeEditorTreeNode = QgsSettingsTree.node("gui").childNode("code-editor")
+        pythonSettingsTreeNode = codeEditorTreeNode.childNode("python")
 
         self.formatOnSave.setChecked(settings.value("pythonConsole/formatOnSave", False, type=bool))
         self.sortImports.setChecked(pythonSettingsTreeNode.childSetting("sort-imports").value())
@@ -253,8 +260,15 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.autopep8Level.setValue(pythonSettingsTreeNode.childSetting("autopep8-level").value())
         self.blackNormalizeQuotes.setChecked(pythonSettingsTreeNode.childSetting("black-normalize-quotes").value())
         self.maxLineLength.setValue(pythonSettingsTreeNode.childSetting("max-line-length").value())
-        self.contextHelpBrowser.setCurrentIndex(0 if pythonSettingsTreeNode.childSetting('context-help-embedded').value() else 1)
-        self.contextHelpApi.setCurrentIndex(0 if pythonSettingsTreeNode.childSetting('context-help-pyqgis').value() else 1)
+
+        browserName = pythonSettingsTreeNode.childSetting('context-help-browser').valueAsVariant()
+        try:
+            browser = Qgis.DocumentationBrowser[browserName]
+        except KeyError:
+            browser = Qgis.DocumentationBrowser.DeveloperToolsPanel
+
+        self.contextHelpBrowser.setCurrentIndex(self.contextHelpBrowser.findData(browser))
+        self.contextHelpHover.setChecked(codeEditorTreeNode.childSetting('context-help-hover').value())
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)

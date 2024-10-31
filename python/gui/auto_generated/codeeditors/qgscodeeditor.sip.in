@@ -520,9 +520,9 @@ Emitted when the persistent history of commands run in the editor is cleared.
 %End
 
 
-    void helpRequested( QString word );
+    void helpRequested( const QString &word );
 %Docstring
-Emitted whent the F1 key is pressed while hovering over a word
+Emitted when documentation was requested for the specified ``word``.
 
 .. versionadded:: 3.42
 %End

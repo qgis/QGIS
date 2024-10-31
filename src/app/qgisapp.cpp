@@ -12964,12 +12964,12 @@ void QgisApp::helpContents()
 
 void QgisApp::apiDocumentation()
 {
-  showApiDocumentation( "qgis", false );
+  showApiDocumentation( Qgis::DocumentationApi::CppQgis, Qgis::DocumentationBrowser::SystemWebBrowser );
 }
 
 void QgisApp::pyQgisApiDocumentation()
 {
-  showApiDocumentation( "pyqgis", false );
+  showApiDocumentation( Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser::SystemWebBrowser );
 }
 
 void QgisApp::reportaBug()
@@ -13114,93 +13114,9 @@ void QgisApp::unregisterDevToolFactory( QgsDevToolWidgetFactory *factory )
 }
 
 
-void QgisApp::showApiDocumentation( const QString &api, bool embedded, const QString &object, const QString &module )
+void QgisApp::showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object, const QString &module )
 {
-  bool useQgisDocDirectory = false;
-  QString baseUrl;
-  QString version;
-
-  if ( api == "qt" )
-  {
-    version = QString( qVersion() ).split( '.' ).mid( 0, 2 ).join( '.' );
-    baseUrl = QString( "https://doc.qt.io/qt-%1/" ).arg( version );
-  }
-  else if ( api.contains( "qgis" ) )
-  {
-    if ( Qgis::version().toLower().contains( QStringLiteral( "master" ) ) )
-    {
-      version = QStringLiteral( "master" );
-    }
-    else
-    {
-      version = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
-    }
-
-    if ( api.contains( "pyqgis" ) )
-    {
-      QgsSettings settings;
-      baseUrl = settings.value( QStringLiteral( "qgis/PyQgisApiUrl" ),
-                                QString( "https://qgis.org/pyqgis/%1/" ).arg( version ) ).toString();
-    }
-    else
-    {
-      if ( QFileInfo::exists( QgsApplication::pkgDataPath() + "/doc/api/index.html" ) )
-      {
-        useQgisDocDirectory = true;
-        baseUrl = "api/";
-      }
-      else
-      {
-        QgsSettings settings;
-        baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ),
-                                  QString( "https://qgis.org/api/%1/" ).arg( version ) ).toString();
-      }
-    }
-  }
-  else
-  {
-    messageBar()->pushWarning( tr( "Unknown API" ), api );
-    return;
-  }
-
-  QString url;
-  if ( object.isEmpty() )
-  {
-    url = baseUrl == "api/" ? baseUrl + "index.html" : baseUrl;
-  }
-  else
-  {
-    if ( api == QStringLiteral( "pyqgis" ) )
-    {
-      url = baseUrl + QString( "%1/%2.html" ).arg( module, object );
-    }
-    else if ( api == QStringLiteral( "pyqgis-search" ) )
-    {
-      url = baseUrl + QString( "search.html?q=%2" ).arg( object );
-    }
-    else if ( api == QStringLiteral( "qgis" ) )
-    {
-      url = baseUrl + QString( "class%1.html" ).arg( object );
-    }
-    else // Qt
-    {
-      url = baseUrl + QString( "%1.html" ).arg( object.toLower() );
-    }
-  }
-
-  if ( embedded )
-  {
-    if ( useQgisDocDirectory )
-    {
-      url = "file://" + QgsApplication::pkgDataPath() + "/doc/" + url;
-    }
-    mDevToolsDock->show();
-    mDevToolsWidget->showUrl( QUrl( url ) );
-  }
-  else
-  {
-    openURL( url, useQgisDocDirectory );
-  }
+  mDevToolsWidget->showApiDocumentation( api, browser, object, module );
 }
 
 void QgisApp::registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )

@@ -98,7 +98,7 @@ Searches the selected text in the official PyQGIS online documentation.
 
     virtual void showApiDocumentation( const QString &item );
 %Docstring
-Searches the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
+Displays the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
 
 .. versionadded:: 3.42
 %End

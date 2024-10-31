@@ -55,7 +55,7 @@
         <x>0</x>
         <y>0</y>
         <width>739</width>
-        <height>1242</height>
+        <height>1240</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -606,38 +606,13 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="contextHelpBrowser">
-            <item>
-             <property name="text">
-              <string>Embedded Webview (developer tools)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Default system web browser</string>
-             </property>
-            </item>
-           </widget>
+           <widget class="QComboBox" name="contextHelpBrowser"/>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="contextHelpHover">
             <property name="text">
-             <string>API</string>
+             <string>F1 works on hovered words</string>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="contextHelpApi">
-            <item>
-             <property name="text">
-              <string>PyQGIS</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>C++ QGIS</string>
-             </property>
-            </item>
            </widget>
           </item>
          </layout>
@@ -677,7 +652,6 @@
   <tabstop>autoSurround</tabstop>
   <tabstop>autoInsertImport</tabstop>
   <tabstop>contextHelpBrowser</tabstop>
-  <tabstop>contextHelpApi</tabstop>
   <tabstop>formatOnSave</tabstop>
   <tabstop>sortImports</tabstop>
   <tabstop>maxLineLength</tabstop>

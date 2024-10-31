@@ -641,9 +641,9 @@ void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *
   qgis->unregisterDevToolFactory( factory );
 }
 
-void QgisAppInterface::showApiDocumentation( const QString &api, bool embedded, const QString &object, const QString &module )
+void QgisAppInterface::showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object, const QString &module )
 {
-  qgis->showApiDocumentation( api, embedded, object, module );
+  qgis->showApiDocumentation( api, browser, object, module );
 }
 
 

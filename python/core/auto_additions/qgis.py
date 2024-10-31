@@ -10794,6 +10794,36 @@ Qgis.ColorModel.__doc__ = """Color model types
 """
 # --
 Qgis.ColorModel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DocumentationApi.PyQgis.__doc__ = "PyQgis API documentation"
+Qgis.DocumentationApi.PyQgisSearch.__doc__ = "Search in PyQgis API documentation"
+Qgis.DocumentationApi.CppQgis.__doc__ = "C++ QGIS API documentation"
+Qgis.DocumentationApi.Qt.__doc__ = "Qt API documentation"
+Qgis.DocumentationApi.__doc__ = """Documentation Api
+
+.. versionadded:: 3.42
+
+* ``PyQgis``: PyQgis API documentation
+* ``PyQgisSearch``: Search in PyQgis API documentation
+* ``CppQgis``: C++ QGIS API documentation
+* ``Qt``: Qt API documentation
+
+"""
+# --
+Qgis.DocumentationApi.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DocumentationBrowser.DeveloperToolsPanel.__doc__ = "Embedded webview in the DevTools panel"
+Qgis.DocumentationBrowser.SystemWebBrowser.__doc__ = "Default system web browser"
+Qgis.DocumentationBrowser.__doc__ = """Documentation API browser
+
+.. versionadded:: 3.42
+
+* ``DeveloperToolsPanel``: Embedded webview in the DevTools panel
+* ``SystemWebBrowser``: Default system web browser
+
+"""
+# --
+Qgis.DocumentationBrowser.baseClass = Qgis
 from enum import Enum
 
 

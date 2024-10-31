@@ -5580,6 +5580,32 @@ class CORE_EXPORT Qgis
     Q_ENUM( ColorModel )
 
     /**
+     * Documentation Api
+     *
+     * \since QGIS 3.42
+     */
+    enum class DocumentationApi : int
+    {
+      PyQgis, //!< PyQgis API documentation
+      PyQgisSearch, //!< Search in PyQgis API documentation
+      CppQgis, //!< C++ QGIS API documentation
+      Qt, //!< Qt API documentation
+    };
+    Q_ENUM( DocumentationApi )
+
+    /**
+     * Documentation API browser
+     *
+     * \since QGIS 3.42
+     */
+    enum class DocumentationBrowser : int
+    {
+      DeveloperToolsPanel, //!< Embedded webview in the DevTools panel
+      SystemWebBrowser, //!< Default system web browser
+    };
+    Q_ENUM( DocumentationBrowser )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;

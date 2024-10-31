@@ -24,6 +24,7 @@
 #include "qgscodeeditorhistorydialog.h"
 #include "qgsstringutils.h"
 #include "qgsfontutils.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -37,6 +38,12 @@
 #include <QScrollBar>
 #include <QMessageBox>
 #include "Qsci/qscilexer.h"
+
+///@cond PRIVATE
+const QgsSettingsEntryBool *QgsCodeEditor::settingContextHelpHover = new QgsSettingsEntryBool( QStringLiteral( "context-help-hover" ), sTreeCodeEditor, false, QStringLiteral( "Whether the context help should works on hovered words" ) );
+///@endcond PRIVATE
+
+
 
 QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
@@ -200,7 +207,7 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     QString text = selectedText();
 
     // Check if mouse is hovering over a word
-    if ( text.isEmpty() )
+    if ( text.isEmpty() && settingContextHelpHover->value() )
     {
       text = wordAtPoint( mapFromGlobal( QCursor::pos() ) );
     }

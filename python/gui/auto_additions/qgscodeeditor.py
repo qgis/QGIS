@@ -56,7 +56,7 @@ QgsCodeEditor.Flag.baseClass = QgsCodeEditor
 QgsCodeEditor.Flags.baseClass = QgsCodeEditor
 Flags = QgsCodeEditor  # dirty hack since SIP seems to introduce the flags in module
 try:
-    QgsCodeEditor.__attribute_docs__ = {'SEARCH_RESULT_INDICATOR': 'Indicator index for search results', 'sessionHistoryCleared': 'Emitted when the history of commands run in the current session is cleared.\n\n.. versionadded:: 3.30\n', 'persistentHistoryCleared': 'Emitted when the persistent history of commands run in the editor is cleared.\n\n.. versionadded:: 3.30\n', 'helpRequested': 'Emitted whent the F1 key is pressed while hovering over a word\n\n.. versionadded:: 3.42\n'}
+    QgsCodeEditor.__attribute_docs__ = {'SEARCH_RESULT_INDICATOR': 'Indicator index for search results', 'sessionHistoryCleared': 'Emitted when the history of commands run in the current session is cleared.\n\n.. versionadded:: 3.30\n', 'persistentHistoryCleared': 'Emitted when the persistent history of commands run in the editor is cleared.\n\n.. versionadded:: 3.30\n', 'helpRequested': 'Emitted when documentation was requested for the specified ``word``.\n\n.. versionadded:: 3.42\n'}
     QgsCodeEditor.languageToString = staticmethod(QgsCodeEditor.languageToString)
     QgsCodeEditor.defaultColor = staticmethod(QgsCodeEditor.defaultColor)
     QgsCodeEditor.color = staticmethod(QgsCodeEditor.color)
