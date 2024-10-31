@@ -82,7 +82,7 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     bool operator==( const QgsPointLightSettings &other );
 
   private:
-    QgsVector3D mPosition { 0, 1000, 0 };
+    QgsVector3D mPosition { 0, 0, 1000 };
     QColor mColor = Qt::white;
     float mIntensity = 1.0;
     float mConstantAttenuation = 1.0f;
