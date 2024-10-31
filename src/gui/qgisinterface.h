@@ -1282,13 +1282,13 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Show a page of the API documentation
-     * \param api "pyqgis" or "qgis" or "qt" or "pyqgis-search"
-     * \param embedded If TRUE, the documentation will be opened in the embedded devtools webview. Otherwise, use system web browser
+     * \param api Which API to display
+     * \param browser Web browser used to display the API documentation
      * \param object object to show in the documentation
-     * \param module used only if api = "pyqgis"
+     * \param module used only if api = Qgis::DocumentationApi::PyQgis
      * \since QGIS 3.42
     */
-    virtual void showApiDocumentation( const QString &api = QStringLiteral( "pyqgis" ), bool embedded = true, const QString &object = QString(), const QString &module = QString() ) = 0;
+    virtual void showApiDocumentation( Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel, const QString &object = QString(), const QString &module = QString() ) = 0;
 
     /**
      * Register a new application exit blocker, which can be used to prevent the QGIS application

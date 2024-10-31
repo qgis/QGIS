@@ -40,6 +40,13 @@ class APP_EXPORT QgsDevToolsPanelWidget : public QWidget, private Ui::QgsDevTool
 
     void setActiveTab( const QString &title );
 
+    void showApiDocumentation(
+      Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis,
+      Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel,
+      const QString &object = QString(),
+      const QString &module = QString()
+    );
+
     void showUrl( const QUrl &url );
 
   private slots:
@@ -49,7 +56,7 @@ class APP_EXPORT QgsDevToolsPanelWidget : public QWidget, private Ui::QgsDevTool
   private:
 
     QMap< QgsDevToolWidgetFactory *, int> mFactoryPages;
-    QgsDocumentationPanelWidget *mDocumentationPanel;
+    QgsDocumentationPanelWidget *mDocumentationPanel = nullptr;
 };
 
 #endif // QGSDEVTOOLSPANELWIDGET_H

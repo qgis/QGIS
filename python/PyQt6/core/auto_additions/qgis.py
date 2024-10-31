@@ -10883,6 +10883,36 @@ Qgis.ColorModel.__doc__ = """Color model types
 """
 # --
 Qgis.ColorModel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DocumentationApi.PyQgis.__doc__ = "PyQgis API documentation"
+Qgis.DocumentationApi.PyQgisSearch.__doc__ = "Search in PyQgis API documentation"
+Qgis.DocumentationApi.CppQgis.__doc__ = "C++ QGIS API documentation"
+Qgis.DocumentationApi.Qt.__doc__ = "Qt API documentation"
+Qgis.DocumentationApi.__doc__ = """Documentation Api
+
+.. versionadded:: 3.42
+
+* ``PyQgis``: PyQgis API documentation
+* ``PyQgisSearch``: Search in PyQgis API documentation
+* ``CppQgis``: C++ QGIS API documentation
+* ``Qt``: Qt API documentation
+
+"""
+# --
+Qgis.DocumentationApi.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DocumentationBrowser.DeveloperToolsPanel.__doc__ = "Embedded webview in the DevTools panel"
+Qgis.DocumentationBrowser.SystemWebBrowser.__doc__ = "Default system web browser"
+Qgis.DocumentationBrowser.__doc__ = """Documentation API browser
+
+.. versionadded:: 3.42
+
+* ``DeveloperToolsPanel``: Embedded webview in the DevTools panel
+* ``SystemWebBrowser``: Default system web browser
+
+"""
+# --
+Qgis.DocumentationBrowser.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.'}
     Qgis.version = staticmethod(Qgis.version)

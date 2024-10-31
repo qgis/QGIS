@@ -21,9 +21,9 @@
 /**
  * \ingroup app
  * \class QgsDocumentationPanelWidget
- * \brief A panel widget showing profiled startup times for debugging.
+ * \brief A panel widget showing the API documentation.
  *
- * \since QGIS 3.14
+ * \since QGIS 3.42
  */
 class QgsDocumentationPanelWidget : public QgsDevToolWidget, private Ui::QgsDocumentationPanelBase
 {

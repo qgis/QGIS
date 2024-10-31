@@ -3173,6 +3173,20 @@ The development version
       Cmyk,
     };
 
+    enum class DocumentationApi /BaseType=IntEnum/
+    {
+      PyQgis,
+      PyQgisSearch,
+      CppQgis,
+      Qt,
+    };
+
+    enum class DocumentationBrowser /BaseType=IntEnum/
+    {
+      DeveloperToolsPanel,
+      SystemWebBrowser,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

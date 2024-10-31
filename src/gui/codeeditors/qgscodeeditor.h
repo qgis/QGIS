@@ -33,6 +33,7 @@
 class QgsFilterLineEdit;
 class QToolButton;
 class QCheckBox;
+class QgsSettingsEntryBool;
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -107,6 +108,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 #ifndef SIP_RUN
 
     static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "code-editor" ) );
+    static const QgsSettingsEntryBool *settingContextHelpHover;
 #endif
 
     /**
@@ -553,11 +555,11 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
 
     /**
-     * Emitted whent the F1 key is pressed while hovering over a word
+     * Emitted when documentation was requested for the specified \a word.
      *
      * \since QGIS 3.42
      */
-    void helpRequested( QString word );
+    void helpRequested( const QString &word );
 
   protected:
 

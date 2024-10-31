@@ -22,6 +22,7 @@
 #include "qgspythonrunner.h"
 #include "qgsprocessingutils.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettings.h"
 #include <QWidget>
 #include <QString>
@@ -52,8 +53,7 @@ const QgsSettingsEntryBool *QgsCodeEditorPython::settingSortImports = new QgsSet
 const QgsSettingsEntryInteger *QgsCodeEditorPython::settingAutopep8Level = new QgsSettingsEntryInteger( QStringLiteral( "autopep8-level" ), sTreePythonCodeEditor, 1, QStringLiteral( "Autopep8 aggressive level" ) );
 const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = new QgsSettingsEntryBool( QStringLiteral( "black-normalize-quotes" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether quotes should be normalized when auto-formatting code using black" ) );
 const QgsSettingsEntryString *QgsCodeEditorPython::settingExternalPythonEditorCommand = new QgsSettingsEntryString( QStringLiteral( "external-editor" ), sTreePythonCodeEditor, QString(), QStringLiteral( "Command to launch an external Python code editor. Use the token <file> to insert the filename, <line> to insert line number, and <col> to insert the column number." ) );
-const QgsSettingsEntryBool *QgsCodeEditorPython::settingContextHelpEmbedded = new QgsSettingsEntryBool( QStringLiteral( "context-help-embedded" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether the context help should be displayed in an embedded webview in the devtools panel" ) );
-const QgsSettingsEntryBool *QgsCodeEditorPython::settingContextHelpPyQgis = new QgsSettingsEntryBool( QStringLiteral( "context-help-pyqgis" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether the context help should use the PyQGIS api instead of the C++ API" ) );
+const QgsSettingsEntryEnumFlag< Qgis::DocumentationBrowser > *QgsCodeEditorPython::settingContextHelpBrowser = new QgsSettingsEntryEnumFlag< Qgis::DocumentationBrowser >( QStringLiteral( "context-help-browser" ), sTreePythonCodeEditor, Qgis::DocumentationBrowser::DeveloperToolsPanel, QStringLiteral( "Web browser used to display the api documentation" ) );
 ///@endcond PRIVATE
 
 
@@ -730,35 +730,25 @@ void QgsCodeEditorPython::showApiDocumentation( const QString &text )
 {
   QString searchText = text;
   searchText = searchText.replace( QLatin1String( ">>> " ), QString() ).replace( QLatin1String( "... " ), QString() ).trimmed(); // removing prompts
-  QRegularExpression qgisExpression( "^Qgs[A-Z][a-zA-Z]" );
 
   QRegularExpression qtExpression( "^Q[A-Z][a-zA-Z]" );
 
-  bool pyQgis = QgsCodeEditorPython::settingContextHelpPyQgis->value();
-
-  const QString qgisVersion = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
-  const QString qtVersion = QString( qVersion() ).split( '.' ).mid( 0, 2 ).join( '.' );
-
-  QgsSettings settings;
-
-  if ( qgisExpression.match( searchText ).hasMatch() )
+  if ( qtExpression.match( searchText ).hasMatch() )
   {
-    if ( !pyQgis )
-    {
-
-      QString baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ),
-                                        QString( "https://qgis.org/api/%1" ).arg( qgisVersion ) ).toString();
-      QDesktopServices::openUrl( QUrl( QString( "%1/class%2.html" ).arg( baseUrl, searchText ) ) );
-      return;
-    }
-  }
-  else if ( qtExpression.match( searchText ).hasMatch() )
-  {
+    const QString qtVersion = QString( qVersion() ).split( '.' ).mid( 0, 2 ).join( '.' );
     QString baseUrl = QString( "https://doc.qt.io/qt-%1" ).arg( qtVersion );
     QDesktopServices::openUrl( QUrl( QStringLiteral( "%1/%2.html" ).arg( baseUrl, searchText.toLower() ) ) );
     return;
   }
-  QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( qgisVersion, searchText ) ) );
+  const QString qgisVersion = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
+  if ( searchText.isEmpty() )
+  {
+    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/" ).arg( qgisVersion ) ) );
+  }
+  else
+  {
+    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( qgisVersion, searchText ) ) );
+  }
 }
 
 void QgsCodeEditorPython::toggleComment()

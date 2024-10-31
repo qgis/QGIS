@@ -799,7 +799,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void unregisterDevToolFactory( QgsDevToolWidgetFactory *factory );
 
     //! Show a page of the API documentation
-    void showApiDocumentation( const QString &api, bool embedded, const QString &object = QString(), const QString &module = QString() );
+    void showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object = QString(), const QString &module = QString() );
 
     /**
      * Register a new application exit blocker, which can be used to prevent the QGIS application
