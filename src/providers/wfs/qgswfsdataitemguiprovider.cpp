@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsdataitemguiprovider.h"
+#include "moc_qgswfsdataitemguiprovider.cpp"
 
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswfsnewconnection.h"

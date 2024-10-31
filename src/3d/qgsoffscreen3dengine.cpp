@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsoffscreen3dengine.h"
+#include "moc_qgsoffscreen3dengine.cpp"
 
 #include "qgsframegraph.h"
 

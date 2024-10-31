@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudblockrequest.h"
+#include "moc_qgspointcloudblockrequest.cpp"
 
 //
 // QgsPointCloudBlockRequest

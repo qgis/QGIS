@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditorsql.h"
+#include "moc_qgscodeeditorsql.cpp"
 
 #include <QWidget>
 #include <QString>

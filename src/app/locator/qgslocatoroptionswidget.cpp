@@ -21,6 +21,7 @@
 #include <QHBoxLayout>
 
 #include "qgslocatoroptionswidget.h"
+#include "moc_qgslocatoroptionswidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgslocatorwidget.h"

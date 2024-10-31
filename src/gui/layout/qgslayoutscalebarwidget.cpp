@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutscalebarwidget.h"
+#include "moc_qgslayoutscalebarwidget.cpp"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgsscalebarrendererregistry.h"

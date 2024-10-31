@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstore.h"
+#include "moc_qgsmaplayerstore.cpp"
 #include "qgsmaplayer.h"
 #include "qgslogger.h"
 #include "qgsthreadingutils.h"

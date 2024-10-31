@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorbutton.h"
+#include "moc_qgscolorbutton.cpp"
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"

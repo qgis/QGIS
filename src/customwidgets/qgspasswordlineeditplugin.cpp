@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgspasswordlineedit.h"
 #include "qgspasswordlineeditplugin.h"
+#include "moc_qgspasswordlineeditplugin.cpp"
 
 
 QgsPasswordLineEditPlugin::QgsPasswordLineEditPlugin( QObject *parent )

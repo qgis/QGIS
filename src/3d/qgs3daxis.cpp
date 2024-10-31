@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3daxis.h"
+#include "moc_qgs3daxis.cpp"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QCylinderMesh>

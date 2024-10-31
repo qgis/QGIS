@@ -384,9 +384,6 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //QMap<int, int> mLayerParents;
     //QMap<int, QStringList> mLayerParentNames;
 
-    //! Errors counter
-    int mErrors = 0;
-
     //! http authorization details
     mutable QgsWcsAuthorization mAuth;
 

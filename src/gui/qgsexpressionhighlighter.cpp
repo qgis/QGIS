@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionhighlighter.h"
+#include "moc_qgsexpressionhighlighter.cpp"
 
 QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   : QSyntaxHighlighter( parent )

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsnumericformatwidget.h"
+#include "moc_qgsnumericformatwidget.cpp"
 #include "qgsbasicnumericformat.h"
 #include "qgscurrencynumericformat.h"
 #include "qgspercentagenumericformat.h"

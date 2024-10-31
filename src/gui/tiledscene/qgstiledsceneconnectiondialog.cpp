@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledsceneconnectiondialog.h"
+#include "moc_qgstiledsceneconnectiondialog.cpp"
 #include "qgstiledsceneconnection.h"
 #include "qgsgui.h"
 #include <QMessageBox>

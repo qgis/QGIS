@@ -97,7 +97,6 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
     QList<QgsAABB> mBboxes;
     QgsCoordinateTransform mCoordinateTransform;
-    QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mZValueScale = 1.0;
     double mZValueOffset = 0;

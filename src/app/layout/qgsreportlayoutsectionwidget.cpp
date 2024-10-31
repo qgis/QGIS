@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportlayoutsectionwidget.h"
+#include "moc_qgsreportlayoutsectionwidget.cpp"
 #include "qgsreportsectionlayout.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"

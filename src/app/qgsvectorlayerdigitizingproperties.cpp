@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerdigitizingproperties.h"
+#include "moc_qgsvectorlayerdigitizingproperties.cpp"
 #include "qgsanalysis.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdoublespinbox.h"

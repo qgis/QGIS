@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgpxsourceselect.h"
+#include "moc_qgsgpxsourceselect.cpp"
 #include "qgsproviderregistry.h"
 #include "qgshelp.h"
 

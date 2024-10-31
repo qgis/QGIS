@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmapviewsmanager.h"
+#include "moc_qgsmapviewsmanager.cpp"
 #include "qgsproject.h"
 
 QgsMapViewsManager::QgsMapViewsManager( QgsProject *project )

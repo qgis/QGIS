@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthserverseditor.h"
+#include "moc_qgsauthserverseditor.cpp"
 #include "ui_qgsauthserverseditor.h"
 #include "qgsauthsslimportdialog.h"
 

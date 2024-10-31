@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnativealgorithms.h"
+#include "moc_qgsnativealgorithms.cpp"
 #include "qgsruntimeprofiler.h"
 #include "qgsalgorithmaddincrementalfield.h"
 #include "qgsalgorithmaddtablefield.h"

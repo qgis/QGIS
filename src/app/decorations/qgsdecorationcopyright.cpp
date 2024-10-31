@@ -22,6 +22,7 @@ email                : tim@linfiniti.com
 // includes
 
 #include "qgsdecorationcopyright.h"
+#include "moc_qgsdecorationcopyright.cpp"
 #include "qgsdecorationcopyrightdialog.h"
 
 #include "qgisapp.h"

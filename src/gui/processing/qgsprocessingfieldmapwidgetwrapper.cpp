@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "moc_qgsprocessingfieldmapwidgetwrapper.cpp"
 
 #include <QBoxLayout>
 #include <QLineEdit>

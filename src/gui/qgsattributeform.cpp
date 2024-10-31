@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributeform.h"
+#include "moc_qgsattributeform.cpp"
 
 #include "qgsattributeeditorspacerelement.h"
 #include "qgsattributeforminterface.h"

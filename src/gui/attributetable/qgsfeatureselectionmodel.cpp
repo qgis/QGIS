@@ -16,6 +16,7 @@
 #include "qgsfeaturemodel.h"
 #include "qgsifeatureselectionmanager.h"
 #include "qgsfeatureselectionmodel.h"
+#include "moc_qgsfeatureselectionmodel.cpp"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 

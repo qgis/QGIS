@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooloffsetpointsymbol.h"
+#include "moc_qgsmaptooloffsetpointsymbol.cpp"
 #include "qgsmapcanvas.h"
 #include "qgspointmarkeritem.h"
 #include "qgssymbol.h"

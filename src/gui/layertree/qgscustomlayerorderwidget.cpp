@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscustomlayerorderwidget.h"
+#include "moc_qgscustomlayerorderwidget.cpp"
 
 #include <QCheckBox>
 #include <QListView>

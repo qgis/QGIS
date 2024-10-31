@@ -24,6 +24,7 @@
 #include "qgis.h" //for globals
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
+#include "moc_qgsvectorlayer.cpp"
 #include "qgsactionmanager.h"
 #include "qgsapplication.h"
 #include "qgsconditionalstyle.h"

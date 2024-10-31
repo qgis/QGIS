@@ -19,6 +19,7 @@
 #include <QRegularExpression>
 
 #include "qgsnewogrconnection.h"
+#include "moc_qgsnewogrconnection.cpp"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsgdalguiutils.h"

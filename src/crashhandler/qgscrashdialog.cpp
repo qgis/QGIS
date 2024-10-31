@@ -16,6 +16,7 @@
 
 
 #include "qgscrashdialog.h"
+#include "moc_qgscrashdialog.cpp"
 
 #include "qgscrashreport.h"
 

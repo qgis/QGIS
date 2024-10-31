@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspainteffectpropertieswidget.h"
+#include "moc_qgspainteffectpropertieswidget.cpp"
 
 #include <QFile>
 #include <QStandardItem>

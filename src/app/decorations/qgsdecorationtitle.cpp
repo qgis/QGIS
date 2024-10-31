@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationtitle.h"
+#include "moc_qgsdecorationtitle.cpp"
 #include "qgsdecorationtitledialog.h"
 
 #include "qgisapp.h"

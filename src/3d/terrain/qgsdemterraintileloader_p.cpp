@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdemterraintileloader_p.h"
+#include "moc_qgsdemterraintileloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgschunknode.h"

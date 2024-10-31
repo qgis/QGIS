@@ -67,6 +67,7 @@
 #include "qgsguiutils.h"
 #include "qgshighlight.h"
 #include "qgsidentifyresultsdialog.h"
+#include "moc_qgsidentifyresultsdialog.cpp"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayeractionregistry.h"

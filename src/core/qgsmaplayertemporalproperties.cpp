@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayertemporalproperties.h"
+#include "moc_qgsmaplayertemporalproperties.cpp"
 
 QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( QObject *parent, bool enabled )
   : QgsTemporalProperty( parent, enabled )

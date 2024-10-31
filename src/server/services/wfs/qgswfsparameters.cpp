@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswfsparameters.h"
+#include "moc_qgswfsparameters.cpp"
 #include "qgsmessagelog.h"
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>

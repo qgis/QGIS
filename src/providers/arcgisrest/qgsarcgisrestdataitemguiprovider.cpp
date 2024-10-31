@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestdataitemguiprovider.h"
+#include "moc_qgsarcgisrestdataitemguiprovider.cpp"
 #include "qgsarcgisrestdataitems.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"

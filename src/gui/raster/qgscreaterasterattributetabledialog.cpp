@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscreaterasterattributetabledialog.h"
+#include "moc_qgscreaterasterattributetabledialog.cpp"
 #include "qgsrasterlayer.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"

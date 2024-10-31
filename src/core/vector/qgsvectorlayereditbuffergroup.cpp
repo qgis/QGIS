@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayereditbuffergroup.h"
+#include "moc_qgsvectorlayereditbuffergroup.cpp"
 
 #include "qgsproject.h"
 #include "qgstransaction.h"

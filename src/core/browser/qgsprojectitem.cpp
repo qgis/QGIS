@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprojectitem.h"
+#include "moc_qgsprojectitem.cpp"
 #include <QDir>
 
 QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,

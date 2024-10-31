@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditorhtml.h"
+#include "moc_qgscodeeditorhtml.cpp"
 #include "qgspythonrunner.h"
 #include "qgsprocessingutils.h"
 

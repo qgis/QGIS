@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsambientocclusionrenderentity.h"
+#include "moc_qgsambientocclusionrenderentity.cpp"
 
 #include <random>
 

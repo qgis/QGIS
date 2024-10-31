@@ -13,6 +13,7 @@
 *                                                                         *
 ***************************************************************************/
 #include "qgsproviderconnectionmodel.h"
+#include "moc_qgsproviderconnectionmodel.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include <QIcon>

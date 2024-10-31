@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswinnative.h"
+#include "moc_qgswinnative.cpp"
 #include <QCoreApplication>
 #include <QDebug>
 #include <QString>

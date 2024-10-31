@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditordockwidget.h"
+#include "moc_qgscodeeditordockwidget.cpp"
 #include "qgsdockablewidgethelper.h"
 
 QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &windowGeometrySettingsKey, bool usePersistentWidget )

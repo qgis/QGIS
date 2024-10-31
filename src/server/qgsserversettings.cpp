@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsserversettings.h"
+#include "moc_qgsserversettings.cpp"
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgseptpointcloudindex.h"
+#include "moc_qgseptpointcloudindex.cpp"
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>

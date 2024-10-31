@@ -22,6 +22,7 @@
 #include "diagram/qgsstackeddiagram.h"
 
 #include "qgsdiagramwidget.h"
+#include "moc_qgsdiagramwidget.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"

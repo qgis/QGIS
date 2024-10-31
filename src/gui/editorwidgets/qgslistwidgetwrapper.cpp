@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslistwidgetwrapper.h"
+#include "moc_qgslistwidgetwrapper.cpp"
 #include "qgslistwidget.h"
 #include "qgsattributeform.h"
 

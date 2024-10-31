@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswidgetstatehelper_p.h"
+#include "moc_qgswidgetstatehelper_p.cpp"
 #include <QWindow>
 #include <QWidget>
 #include <QEvent>

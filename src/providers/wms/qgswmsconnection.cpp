@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
+#include "moc_qgswmsconnection.cpp"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 #include "qgsowsconnection.h"

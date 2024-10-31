@@ -200,6 +200,7 @@
 #include "qgscrashhandler.h"
 
 #include "qgisapp.h"
+#include "moc_qgisapp.cpp"
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
 #include "qgis.h"
@@ -13041,7 +13042,7 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
                                           reinterpret_cast<const UInt8 *>( url.toUtf8().constData() ), url.length(),
                                           kCFStringEncodingUTF8, nullptr );
   OSStatus status = LSOpenCFURLRef( urlRef, nullptr );
-  status = 0; //avoid compiler warning
+  Q_UNUSED( status )
   CFRelease( urlRef );
 #elif defined(Q_OS_WIN)
   if ( url.startsWith( "file://", Qt::CaseInsensitive ) )

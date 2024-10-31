@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingwidgetwrapperimpl.h"
+#include "moc_qgsprocessingwidgetwrapperimpl.cpp"
 #include "qgsprocessingparameters.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingoutputs.h"

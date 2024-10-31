@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqltablemodel.h"
+#include "moc_qgsmssqltablemodel.cpp"
 #include "qgsmssqlconnection.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"

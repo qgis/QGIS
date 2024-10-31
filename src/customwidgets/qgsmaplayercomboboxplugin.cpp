@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsmaplayercomboboxplugin.h"
+#include "moc_qgsmaplayercomboboxplugin.cpp"
 
 
 QgsMapLayerComboBoxPlugin::QgsMapLayerComboBoxPlugin( QObject *parent )

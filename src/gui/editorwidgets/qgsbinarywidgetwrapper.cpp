@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsbinarywidgetwrapper.h"
+#include "moc_qgsbinarywidgetwrapper.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfileutils.h"

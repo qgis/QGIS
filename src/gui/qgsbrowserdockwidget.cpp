@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserdockwidget.h"
+#include "moc_qgsbrowserdockwidget.cpp"
 #include "qgsbrowserdockwidget_p.h"
 #include "qgsbrowserwidget.h"
 #include "qgsbrowserproxymodel.h"

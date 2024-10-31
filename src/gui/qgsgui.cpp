@@ -20,6 +20,7 @@
 #include <QMessageBox>
 
 #include "qgsgui.h"
+#include "moc_qgsgui.cpp"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"

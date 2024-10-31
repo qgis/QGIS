@@ -15,6 +15,7 @@
 
 #include "qgsgcplist.h"
 #include "qgsgcplistmodel.h"
+#include "moc_qgsgcplistmodel.cpp"
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"

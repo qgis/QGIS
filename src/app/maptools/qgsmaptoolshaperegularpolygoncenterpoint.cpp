@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygoncenterpoint.h"
+#include "moc_qgsmaptoolshaperegularpolygoncenterpoint.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"

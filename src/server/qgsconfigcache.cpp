@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsconfigcache.h"
+#include "moc_qgsconfigcache.cpp"
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
 #include "qgsstorebadlayerinfo.h"

@@ -33,6 +33,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsquickmapcanvasmap.h"
+#include "moc_qgsquickmapcanvasmap.cpp"
 #include "qgsquickmapsettings.h"
 
 

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsspatialitetransaction.h"
+#include "moc_qgsspatialitetransaction.cpp"
 #include "qgslogger.h"
 #include <QDebug>
 

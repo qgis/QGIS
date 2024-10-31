@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidgetwrapper.h"
+#include "moc_qgsexternalresourcewidgetwrapper.cpp"
 
 #include <QPushButton>
 #include <QSettings>

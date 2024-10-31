@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutdesignerdialog.h"
+#include "moc_qgslayoutdesignerdialog.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgssettings.h"
 #include "qgisapp.h"

@@ -34,6 +34,7 @@
 #include "qgslayoutreportsectionlabel.h"
 #include "qgsreadwritecontext.h"
 #include "qgsscreenhelper.h"
+#include "moc_qgslayoutview.cpp"
 
 #include <memory>
 #include <QMenu>

@@ -17,6 +17,9 @@
  ***************************************************************************/
 
 
+#ifndef QGSPROJECTPROPERTIES_H
+#define QGSPROJECTPROPERTIES_H
+
 #include "ui_qgsprojectpropertiesbase.h"
 
 #include "qgsoptionsdialogbase.h"
@@ -305,3 +308,4 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     friend class TestQgsProjectProperties;
 };
+#endif // QGSPROJECTPROPERTIES_H

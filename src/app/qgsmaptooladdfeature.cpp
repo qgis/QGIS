@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdfeature.h"
+#include "moc_qgsmaptooladdfeature.cpp"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
@@ -30,7 +31,6 @@
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolDigitizeFeature( canvas, cadDockWidget, mode )
-  , mCheckGeometryType( true )
 {
   setLayer( canvas->currentLayer() );
 

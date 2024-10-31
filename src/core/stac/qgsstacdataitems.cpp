@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacdataitems.h"
+#include "moc_qgsstacdataitems.cpp"
 #include "qgsstacconnection.h"
 #include "qgsstaccontroller.h"
 #include "qgsstaccatalog.h"

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidget.h"
+#include "moc_qgsexternalresourcewidget.cpp"
 #include "qgspixmaplabel.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"

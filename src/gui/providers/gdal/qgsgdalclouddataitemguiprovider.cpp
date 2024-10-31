@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgdalclouddataitemguiprovider.h"
+#include "moc_qgsgdalclouddataitemguiprovider.cpp"
 #include "qgsgdalclouddataitems.h"
 #include "qgsgdalcloudconnection.h"
 #include "qgsmanageconnectionsdialog.h"

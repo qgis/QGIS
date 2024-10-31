@@ -25,6 +25,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsmaptoolrotatefeature.h"
+#include "moc_qgsmaptoolrotatefeature.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooldeletering.h"
+#include "moc_qgsmaptooldeletering.cpp"
 
 #include "qgsmapcanvas.h"
 #include "qgsfeatureiterator.h"

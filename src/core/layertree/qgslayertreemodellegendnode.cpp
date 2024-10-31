@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgslayertreemodellegendnode.h"
+#include "moc_qgslayertreemodellegendnode.cpp"
 
 #include "qgsdatadefinedsizelegend.h"
 #include "qgslayertreemodel.h"

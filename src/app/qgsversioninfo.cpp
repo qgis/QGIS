@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsversioninfo.h"
+#include "moc_qgsversioninfo.cpp"
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"

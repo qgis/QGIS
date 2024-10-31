@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsframegraph.h"
+#include "moc_qgsframegraph.cpp"
 #include "qgsdirectionallightsettings.h"
 #include "qgspostprocessingentity.h"
 #include "qgspreviewquad.h"

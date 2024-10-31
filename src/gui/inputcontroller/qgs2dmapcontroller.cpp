@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs2dmapcontroller.h"
+#include "moc_qgs2dmapcontroller.cpp"
 
 QgsAbstract2DMapController::QgsAbstract2DMapController( QObject *parent )
   : QgsAbstractInputController( parent )

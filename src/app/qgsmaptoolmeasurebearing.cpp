@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmeasurebearing.h"
+#include "moc_qgsmaptoolmeasurebearing.cpp"
 #include "qgsdisplayangle.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"

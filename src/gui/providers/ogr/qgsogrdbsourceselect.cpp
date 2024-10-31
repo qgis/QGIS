@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbsourceselect.h"
+#include "moc_qgsogrdbsourceselect.cpp"
 ///@cond PRIVATE
 
 #include "qgsogrdbconnection.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelcomponentgraphicitem.h"
+#include "moc_qgsmodelcomponentgraphicitem.cpp"
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildalgorithm.h"

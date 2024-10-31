@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstemporalnavigationobject.h"
+#include "moc_qgstemporalnavigationobject.cpp"
 #include "qgis.h"
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"

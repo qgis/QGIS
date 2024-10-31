@@ -44,6 +44,7 @@
 ****************************************************************************/
 
 #include "characterwidget.h"
+#include "moc_characterwidget.cpp"
 #include "qgsapplication.h"
 #include "qgsfontutils.h"
 

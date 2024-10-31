@@ -227,7 +227,6 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     QgsFilterLineEdit *mLineEdit;
     bool mPopupRequested = false;
     bool mIsCurrentlyEdited = false;
-    bool mHasStoredEditState = false;
     bool mShowBrowserButtons = false;
 };
 

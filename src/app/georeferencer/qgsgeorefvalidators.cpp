@@ -17,6 +17,7 @@
 #include <QRegularExpression>
 
 #include "qgsgeorefvalidators.h"
+#include "moc_qgsgeorefvalidators.cpp"
 
 QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject *parent )
   : QValidator( parent )

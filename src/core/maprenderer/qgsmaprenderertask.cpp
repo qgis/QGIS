@@ -18,6 +18,7 @@
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
 #include "qgsmaprenderertask.h"
+#include "moc_qgsmaprenderertask.cpp"
 #include "qgsmapsettingsutils.h"
 #include "qgsogrutils.h"
 #include "qgslogger.h"

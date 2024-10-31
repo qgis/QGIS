@@ -17,6 +17,7 @@
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
 #include "qgsnetworkloggerpanelwidget.h"
+#include "moc_qgsnetworkloggerpanelwidget.cpp"
 #include "qgsnetworkloggernode.h"
 #include "qgsnetworklogger.h"
 #include "qgssettings.h"

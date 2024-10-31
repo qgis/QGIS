@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdockablewidgethelper.h"
+#include "moc_qgsdockablewidgethelper.cpp"
 
 #include "qgsdockwidget.h"
 #include "qgsapplication.h"

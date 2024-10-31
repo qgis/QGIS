@@ -17,6 +17,7 @@
 #include <QPushButton>
 
 #include "qgs3dmeasuredialog.h"
+#include "moc_qgs3dmeasuredialog.cpp"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"

@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsstatisticalsummarydockwidget.h"
+#include "moc_qgsstatisticalsummarydockwidget.cpp"
 #include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
 #include "qgsstringstatisticalsummary.h"

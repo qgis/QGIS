@@ -19,6 +19,7 @@
 
 
 #include "qgsnewspatialitelayerdialog.h"
+#include "moc_qgsnewspatialitelayerdialog.cpp"
 
 #include "qgis.h"
 #include "qgsapplication.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsadvancedoptions.h"
+#include "moc_qgsadvancedoptions.cpp"
 #include "qgssettingstreewidget.h"
 #include "qgssettingstreewidgetold.h"
 #include "qgsapplication.h"

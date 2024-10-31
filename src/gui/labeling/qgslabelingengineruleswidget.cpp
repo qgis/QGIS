@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslabelingengineruleswidget.h"
+#include "moc_qgslabelingengineruleswidget.cpp"
 #include "qgsapplication.h"
 #include "qgslabelingengineruleregistry.h"
 #include "qgslabelingenginerule.h"

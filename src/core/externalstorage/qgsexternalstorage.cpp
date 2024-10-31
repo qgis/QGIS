@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexternalstorage.h"
+#include "moc_qgsexternalstorage.cpp"
 
 void QgsExternalStorageContent::reportError( const QString &errorMsg )
 {

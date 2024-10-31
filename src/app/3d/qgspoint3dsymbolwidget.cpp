@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspoint3dsymbolwidget.h"
+#include "moc_qgspoint3dsymbolwidget.cpp"
 #include <QFileDialog>
 #include <QMessageBox>
 #include "qgslayoututils.h"

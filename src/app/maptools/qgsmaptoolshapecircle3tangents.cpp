@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle3tangents.h"
+#include "moc_qgsmaptoolshapecircle3tangents.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgslinestring.h"

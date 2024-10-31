@@ -45,6 +45,7 @@
 #include <QRegularExpressionValidator>
 
 #include "qgsvariantdelegate.h"
+#include "moc_qgsvariantdelegate.cpp"
 
 QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
   : QItemDelegate( parent )

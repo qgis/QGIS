@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmeshtransformcoordinatesdockwidget.h"
+#include "moc_qgsmeshtransformcoordinatesdockwidget.cpp"
 
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"

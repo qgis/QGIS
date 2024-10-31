@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
+#include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
 
 #include <QFontMetrics>
 #include <QHBoxLayout>

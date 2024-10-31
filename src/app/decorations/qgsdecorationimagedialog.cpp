@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationimagedialog.h"
+#include "moc_qgsdecorationimagedialog.cpp"
 #include "qgsdecorationimage.h"
 #include "qgsimagecache.h"
 #include "qgshelp.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayer3drendererwidget.h"
+#include "moc_qgspointcloudlayer3drendererwidget.cpp"
 
 #include "qgspointcloud3dsymbolwidget.h"
 #include "qgspointcloudlayer3drenderer.h"

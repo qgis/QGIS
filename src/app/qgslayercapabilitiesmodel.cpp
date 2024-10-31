@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayercapabilitiesmodel.h"
+#include "moc_qgslayercapabilitiesmodel.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"

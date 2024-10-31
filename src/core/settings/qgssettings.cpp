@@ -21,6 +21,7 @@
 #include <QDir>
 
 #include "qgssettings.h"
+#include "moc_qgssettings.cpp"
 #include "qgsvariantutils.h"
 #include "qgssettingsproxy.h"
 

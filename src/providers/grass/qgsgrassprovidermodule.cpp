@@ -23,6 +23,7 @@
 #include "qgssettings.h"
 #include "qgsdataitemprovider.h"
 #include "qgsgrassprovidermodule.h"
+#include "moc_qgsgrassprovidermodule.cpp"
 #include "qgsgrassprovider.h"
 #include "qgsgrass.h"
 #include "qgsgrassvector.h"

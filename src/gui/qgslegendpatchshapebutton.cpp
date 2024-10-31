@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslegendpatchshapebutton.h"
+#include "moc_qgslegendpatchshapebutton.cpp"
 #include "qgslegendpatchshapewidget.h"
 #include "qgis.h"
 #include "qgsguiutils.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemattributetable.h"
+#include "moc_qgslayoutitemattributetable.cpp"
 #include "qgslayout.h"
 #include "qgslayouttablecolumn.h"
 #include "qgslayoutitemmap.h"

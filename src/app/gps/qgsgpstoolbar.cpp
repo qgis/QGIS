@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgpstoolbar.h"
+#include "moc_qgsgpstoolbar.cpp"
 #include "qgsappgpsconnection.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"

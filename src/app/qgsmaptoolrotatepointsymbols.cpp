@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolrotatepointsymbols.h"
+#include "moc_qgsmaptoolrotatepointsymbols.cpp"
 #include "qgsmapcanvas.h"
 #include "qgspointrotationitem.h"
 #include "qgssymbol.h"

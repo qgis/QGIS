@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsannotationitemwidget.h"
+#include "moc_qgsannotationitemwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrendereditemdetails.h"
 #include "qgsrendereditemresults.h"

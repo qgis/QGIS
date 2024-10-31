@@ -37,12 +37,6 @@ include_directories(SYSTEM
 ############################################################
 # qgis_quick_plugin module (QML) library
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_CPP(QGIS_QUICK_PLUGIN_MOC_SRCS ${QGIS_QUICK_PLUGIN_MOC_HDRS})
-else()
-  QT5_WRAP_CPP(QGIS_QUICK_PLUGIN_MOC_SRCS ${QGIS_QUICK_PLUGIN_MOC_HDRS})
-endif()
-
 if(MSVC)
   set_source_files_properties(${QGIS_QUICK_PLUGIN_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
 else()

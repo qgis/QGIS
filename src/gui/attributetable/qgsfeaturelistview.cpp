@@ -23,6 +23,7 @@
 #include "qgsfeaturelistmodel.h"
 #include "qgsfeaturelistviewdelegate.h"
 #include "qgsfeaturelistview.h"
+#include "moc_qgsfeaturelistview.cpp"
 #include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"

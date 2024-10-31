@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgskeyvaluewidgetwrapper.h"
+#include "moc_qgskeyvaluewidgetwrapper.cpp"
 #include "qgskeyvaluewidget.h"
 #include "qgsattributeform.h"
 

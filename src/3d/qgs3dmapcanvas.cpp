@@ -34,6 +34,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
 #include "qgstemporalcontroller.h"
+#include "moc_qgs3dmapcanvas.cpp"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )

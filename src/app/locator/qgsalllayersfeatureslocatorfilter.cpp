@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalllayersfeatureslocatorfilter.h"
+#include "moc_qgsalllayersfeatureslocatorfilter.cpp"
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"

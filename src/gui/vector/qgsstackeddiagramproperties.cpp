@@ -26,6 +26,7 @@
 #include "qgslabelengineconfigdialog.h"
 #include "qgsproject.h"
 #include "qgsstackeddiagramproperties.h"
+#include "moc_qgsstackeddiagramproperties.cpp"
 #include "qgsvectorlayer.h"
 #include "qgshelp.h"
 

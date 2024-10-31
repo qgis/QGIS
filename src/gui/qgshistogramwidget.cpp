@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgshistogramwidget.h"
+#include "moc_qgshistogramwidget.cpp"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"

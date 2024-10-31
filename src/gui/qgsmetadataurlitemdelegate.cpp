@@ -19,6 +19,7 @@
 #include <QStringListModel>
 
 #include "qgsmetadataurlitemdelegate.h"
+#include "moc_qgsmetadataurlitemdelegate.cpp"
 
 ///@cond PRIVATE
 

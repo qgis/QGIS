@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdevtoolspanelwidget.h"
+#include "moc_qgsdevtoolspanelwidget.cpp"
 #include "qgisapp.h"
 #include "qgsdevtoolwidgetfactory.h"
 #include "qgsdevtoolwidget.h"

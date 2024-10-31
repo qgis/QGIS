@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsmessagelog.h"
 #include "qgsvertextool.h"
+#include "moc_qgsvertextool.cpp"
 
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsadvanceddigitizingdockwidget.h"

@@ -20,6 +20,7 @@
 #include <QMenu>
 
 #include "qgsattributetabledialog.h"
+#include "moc_qgsattributetabledialog.cpp"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"

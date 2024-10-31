@@ -19,6 +19,7 @@
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "moc_qgsfeaturelistcombobox.cpp"
 
 #include <QCompleter>
 #include <QLineEdit>

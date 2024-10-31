@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspostprocessingentity.h"
+#include "moc_qgspostprocessingentity.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
@@ -44,8 +45,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
-  , mFrameGraph( frameGraph )
 {
+  Q_UNUSED( frameGraph )
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
   mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), frameGraph->shadowMapTexture() );

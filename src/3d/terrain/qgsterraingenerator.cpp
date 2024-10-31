@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsterraingenerator.h"
+#include "moc_qgsterraingenerator.cpp"
 
 #include "qgsaabb.h"
 #include "qgs3dmapsettings.h"

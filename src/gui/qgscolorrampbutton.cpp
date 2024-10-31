@@ -26,6 +26,7 @@
 #include "qgscolorbrewercolorrampdialog.h"
 #include "qgscptcitycolorrampdialog.h"
 #include "qgspresetcolorrampdialog.h"
+#include "moc_qgscolorrampbutton.cpp"
 
 #include <QAction>
 #include <QInputDialog>

@@ -24,6 +24,7 @@
 #include <QTableView>
 
 #include "qgsoptionsdialoghighlightwidget.h"
+#include "moc_qgsoptionsdialoghighlightwidget.cpp"
 #include "qgsmessagebaritem.h"
 #include "qgsfilterlineedit.h"
 

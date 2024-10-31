@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetabledialog.h"
+#include "moc_qgsrasterattributetabledialog.cpp"
 #include "qgsrasterlayer.h"
 
 

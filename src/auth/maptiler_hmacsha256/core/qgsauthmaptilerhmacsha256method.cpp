@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthmaptilerhmacsha256method.h"
+#include "moc_qgsauthmaptilerhmacsha256method.cpp"
 
 #include <QMessageAuthenticationCode>
 #include <QUrlQuery>

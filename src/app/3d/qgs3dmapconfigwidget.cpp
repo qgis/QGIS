@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapconfigwidget.h"
+#include "moc_qgs3dmapconfigwidget.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgsdemterraingenerator.h"
@@ -40,8 +41,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   : QWidget( parent )
   , mMap( map )
   , mMainCanvas( mainCanvas )
-  , m3DMapCanvas( mapCanvas3D )
 {
+  Q_UNUSED( mapCanvas3D )
   setupUi( this );
 
   Q_ASSERT( map );

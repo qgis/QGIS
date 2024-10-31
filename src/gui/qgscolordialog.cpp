@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgscolordialog.h"
+#include "moc_qgscolordialog.cpp"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"

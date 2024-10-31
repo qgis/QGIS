@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectortiledataitemguiprovider.h"
+#include "moc_qgsvectortiledataitemguiprovider.cpp"
 
 #include "qgsvectortiledataitems.h"
 #include "qgsvectortileconnectiondialog.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdialog.h"
+#include "moc_qgsdialog.cpp"
 
 QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
                       QDialogButtonBox::StandardButtons buttons,

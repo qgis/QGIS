@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerproperties.h"
+#include "moc_qgstiledscenelayerproperties.cpp"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgstiledscenelayer.h"
 #include "qgsmetadatawidget.h"

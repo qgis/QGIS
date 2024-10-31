@@ -18,6 +18,7 @@
 #include <string>
 
 #include "qgsmdalprovider.h"
+#include "moc_qgsmdalprovider.cpp"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"

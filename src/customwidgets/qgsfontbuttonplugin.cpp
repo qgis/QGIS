@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfontbuttonplugin.h"
+#include "moc_qgsfontbuttonplugin.cpp"
 #include "qgsfontbutton.h"
 
 

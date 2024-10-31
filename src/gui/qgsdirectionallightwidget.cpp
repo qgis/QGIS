@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdirectionallightwidget.h"
+#include "moc_qgsdirectionallightwidget.cpp"
 #include "ui_qgsdirectionallightwidget.h"
 
 #include "qgis.h"

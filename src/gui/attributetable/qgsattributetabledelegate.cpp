@@ -20,6 +20,7 @@
 #include <QToolButton>
 
 #include "qgsattributetabledelegate.h"
+#include "moc_qgsattributetabledelegate.cpp"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetableview.h"

@@ -15,6 +15,7 @@
 
 #include "qgslogger.h"
 #include "qgsoapifsingleitemrequest.h"
+#include "moc_qgsoapifsingleitemrequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"

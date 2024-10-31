@@ -22,6 +22,7 @@ email                : morb at ozemail dot com dot au
 
 #include "qgis.h"
 #include "qgsgeometry.h"
+#include "moc_qgsgeometry.cpp"
 #include "qgsabstractgeometry.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"

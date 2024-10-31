@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
+#include "moc_qgsprocessingrastercalculatorexpressionlineedit.cpp"
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"

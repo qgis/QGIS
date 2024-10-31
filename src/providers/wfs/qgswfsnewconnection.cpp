@@ -16,6 +16,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgswfsnewconnection.h"
+#include "moc_qgswfsnewconnection.cpp"
 #include "qgswfsguiutils.h"
 
 #include <QMessageBox>

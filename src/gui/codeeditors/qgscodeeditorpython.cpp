@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscodeeditorpython.h"
+#include "moc_qgscodeeditorpython.cpp"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
 #include "qgis.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewmemoryindicator.h"
+#include "moc_qgslayertreeviewmemoryindicator.cpp"
 #include "qgslayertreeview.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"

@@ -15,6 +15,7 @@
 
 #include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
+#include "moc_qgseditformconfig.cpp"
 #include "qgsnetworkcontentfetcherregistry.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"

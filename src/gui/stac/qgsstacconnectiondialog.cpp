@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacconnectiondialog.h"
+#include "moc_qgsstacconnectiondialog.cpp"
 #include "qgsstacconnection.h"
 #include "qgsgui.h"
 #include <QMessageBox>

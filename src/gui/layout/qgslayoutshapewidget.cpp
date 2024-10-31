@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutshapewidget.h"
+#include "moc_qgslayoutshapewidget.cpp"
 #include "qgslayoutitemshape.h"
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"

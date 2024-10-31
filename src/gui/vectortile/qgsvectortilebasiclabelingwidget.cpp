@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectortilebasiclabelingwidget.h"
+#include "moc_qgsvectortilebasiclabelingwidget.cpp"
 
 #include "qgis.h"
 #include "qgsapplication.h"

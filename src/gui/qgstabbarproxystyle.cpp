@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstabbarproxystyle.h"
+#include "moc_qgstabbarproxystyle.cpp"
 #include <QPainter>
 #include <QStyleOption>
 #include <QDebug>

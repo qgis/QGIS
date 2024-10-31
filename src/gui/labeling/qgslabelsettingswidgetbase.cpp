@@ -15,6 +15,7 @@
 
 
 #include "qgslabelsettingswidgetbase.h"
+#include "moc_qgslabelsettingswidgetbase.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsnewauxiliarylayerdialog.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsuserinputwidget.h"
+#include "moc_qgsuserinputwidget.cpp"
 
 #include <QFrame>
 

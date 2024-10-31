@@ -24,6 +24,7 @@
 #include <QGridLayout>
 
 #include "qgsgeometrycheckfixdialog.h"
+#include "moc_qgsgeometrycheckfixdialog.cpp"
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"

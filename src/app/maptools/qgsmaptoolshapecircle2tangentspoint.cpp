@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle2tangentspoint.h"
+#include "moc_qgsmaptoolshapecircle2tangentspoint.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgssnappingutils.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsquickmaptransform.h"
+#include "moc_qgsquickmaptransform.cpp"
 
 void QgsQuickMapTransform::applyTo( QMatrix4x4 *matrix ) const
 {

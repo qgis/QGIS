@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswcsdataitemguiprovider.h"
+#include "moc_qgswcsdataitemguiprovider.cpp"
 
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswcsdataitems.h"

@@ -16,6 +16,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
+#include "moc_qgsvectorlayertools.cpp"
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"

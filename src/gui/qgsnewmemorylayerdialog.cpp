@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnewmemorylayerdialog.h"
+#include "moc_qgsnewmemorylayerdialog.cpp"
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayer.h"

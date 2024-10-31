@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmstsettingswidget.h"
+#include "moc_qgswmstsettingswidget.cpp"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"

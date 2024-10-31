@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthauthoritieseditor.h"
+#include "moc_qgsauthauthoritieseditor.cpp"
 #include "ui_qgsauthauthoritieseditor.h"
 
 #include <QAction>

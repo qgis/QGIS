@@ -17,6 +17,7 @@
 
 
 #include "qgsnetworkdiskcache.h"
+#include "moc_qgsnetworkdiskcache.cpp"
 
 #include <QStorageInfo>
 #include <mutex>
