@@ -135,7 +135,7 @@ static QByteArray createPlaneVertexData( int res, float side, float vertScale, f
         else
           dj = zj0 - zj1;
 
-        n = QVector3D( di, dj, 2 * side / res );
+        n = QVector3D( di, -dj, 2 * side / res );
         n.normalize();
       }
 
