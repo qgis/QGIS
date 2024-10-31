@@ -2184,7 +2184,9 @@ if(MSVC)
   set_source_files_properties(
       ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
       ${CMAKE_CURRENT_BINARY_DIR}/qgis_core_autogen/mocs_compilation.cpp
+      expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
+      textrenderer/qgsfontmanager.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 else()

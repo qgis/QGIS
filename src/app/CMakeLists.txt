@@ -477,16 +477,21 @@ if(PEDANTIC)
 endif()
 
 if(MSVC)
-# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
-set_source_files_properties(
-  qgisapp.cpp
-  main.cpp
-  qgscrashhandler.cpp
-  PROPERTIES COMPILE_FLAGS -wd4091)
+  # -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
+  set_source_files_properties(
+    qgisapp.cpp
+    main.cpp
+    qgscrashhandler.cpp
+    PROPERTIES COMPILE_FLAGS -wd4091
+  )
+  set_source_files_properties(
+    qgisapp.cpp
+    PROPERTIES COMPILE_FLAGS "/bigobj"
+  )
 endif()
 
 if(HAVE_OPENCL)
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if(ENABLE_MODELTEST)
