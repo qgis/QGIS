@@ -286,7 +286,7 @@ void TestQgsRasterBlock::testPrintValueDouble()
 
 void TestQgsRasterBlock::testMinimumMaximum()
 {
-  QgsRasterLayer rl( testDataPath( QStringLiteral( "raster/dem.tif" ) ), QStringLiteral( "dem" ) );
+  QgsRasterLayer rl( copyTestData( QStringLiteral( "raster/dem.tif" ) ), QStringLiteral( "dem" ) );
   QVERIFY( rl.isValid() );
 
   QgsRasterDataProvider *provider = rl.dataProvider();
