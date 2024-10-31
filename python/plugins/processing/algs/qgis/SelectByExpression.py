@@ -87,6 +87,8 @@ class SelectByExpression(QgisAlgorithm):
         if qExp.hasParserError():
             raise QgsProcessingException(qExp.parserErrorString())
 
-        layer.selectByExpression(expression, behavior)
+        expression_context = self.createExpressionContext(parameters, context)
+
+        layer.selectByExpression(expression, behavior, expression_context)
 
         return {self.OUTPUT: parameters[self.INPUT]}
