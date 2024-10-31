@@ -153,7 +153,7 @@ void TestQgsMesh3DRendering::testMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -195,7 +195,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -308,7 +308,7 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -349,7 +349,7 @@ void TestQgsMesh3DRendering::testMeshClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
