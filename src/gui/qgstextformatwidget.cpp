@@ -2176,6 +2176,7 @@ void QgsTextFormatWidget::configureTabStops()
     QgsTabPositionWidget *widget = new QgsTabPositionWidget( panel );
     widget->setPanelTitle( tr( "Tab Positions" ) );
     widget->setPositions( mTabPositions );
+    widget->setUnit( mTabDistanceUnitWidget->unit() );
     connect( widget, &QgsTabPositionWidget::positionsChanged, this, [ = ]( const QList< QgsTextFormat::Tab > &positions )
     {
       mTabPositions = positions;
@@ -2188,6 +2189,7 @@ void QgsTextFormatWidget::configureTabStops()
   {
     QgsTabPositionDialog dlg( this );
     dlg.setPositions( mTabPositions );
+    dlg.setUnit( mTabDistanceUnitWidget->unit() );
     if ( dlg.exec() == QDialog::Accepted )
     {
       mTabPositions = dlg.positions();

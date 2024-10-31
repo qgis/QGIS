@@ -52,6 +52,11 @@ class GUI_EXPORT QgsTabPositionWidget: public QgsPanelWidget, private Ui::QgsTab
      */
     QList< QgsTextFormat::Tab > positions() const;
 
+    /**
+     * Sets the unit type used for the tab positions (used to update interface labels).
+    */
+    void setUnit( Qgis::RenderUnit unit );
+
   signals:
 
     /**
@@ -93,6 +98,11 @@ class GUI_EXPORT QgsTabPositionDialog : public QDialog
     * \see setPositions()
     */
     QList< QgsTextFormat::Tab > positions() const;
+
+    /**
+     * Sets the unit type used for the tab positions (used to update interface labels).
+    */
+    void setUnit( Qgis::RenderUnit unit );
 
   private:
 

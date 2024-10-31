@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgstabpositionwidget.h"
+#include "moc_qgstabpositionwidget.cpp"
 #include "qgsapplication.h"
 #include "qgsdoublevalidator.h"
+#include "qgsunittypes.h"
 
 #include <QDialogButtonBox>
 
@@ -26,6 +28,8 @@ QgsTabPositionWidget::QgsTabPositionWidget( QWidget *parent )
 
   mAddButton->setIcon( QgsApplication::getThemeIcon( "symbologyAdd.svg" ) );
   mRemoveButton->setIcon( QgsApplication::getThemeIcon( "symbologyRemove.svg" ) );
+
+  setUnit( Qgis::RenderUnit::Millimeters );
 
   connect( mAddButton, &QPushButton::clicked, this, &QgsTabPositionWidget::mAddButton_clicked );
   connect( mRemoveButton, &QPushButton::clicked, this, &QgsTabPositionWidget::mRemoveButton_clicked );
@@ -64,6 +68,12 @@ QList<QgsTextFormat::Tab> QgsTabPositionWidget::positions() const
   } );
 
   return result;
+}
+
+void QgsTabPositionWidget::setUnit( Qgis::RenderUnit unit )
+{
+  QTreeWidgetItem *headerItem = mTabPositionTreeWidget->headerItem();
+  headerItem->setText( 0, QStringLiteral( "%1 (%2)" ).arg( tr( "Position" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
 }
 
 void QgsTabPositionWidget::mAddButton_clicked()
@@ -120,4 +130,9 @@ void QgsTabPositionDialog::setPositions( const QList<QgsTextFormat::Tab> &positi
 QList<QgsTextFormat::Tab> QgsTabPositionDialog::positions() const
 {
   return mWidget->positions();
+}
+
+void QgsTabPositionDialog::setUnit( Qgis::RenderUnit unit )
+{
+  mWidget->setUnit( unit );
 }
