@@ -982,10 +982,6 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
 
     if ( vl )
     {
-      QgsMapLayerStyleOverride styleOverride( vl );
-      if ( modelstyles.contains( vl->id() ) )
-        styleOverride.setOverrideStyle( modelstyles.value( vl->id() ) );
-
       QgsFeatureRenderer *renderer = vl->renderer();
       if ( renderer )
       {
