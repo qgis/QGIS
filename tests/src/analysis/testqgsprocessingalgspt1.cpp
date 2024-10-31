@@ -4130,9 +4130,8 @@ void TestQgsProcessingAlgsPt1::roundRasterValues()
   QgsProject p;
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:roundrastervalues" ) ) );
 
-  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer = std::make_unique< QgsRasterLayer >( myDataPath + inputRaster, "inputDataset", "gdal" );
+  const QString rasterSource = copyTestData( inputRaster );
+  std::unique_ptr<QgsRasterLayer> inputRasterLayer = std::make_unique< QgsRasterLayer >( rasterSource, "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer->crs(), true );
@@ -4143,7 +4142,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues()
 
   QVariantMap parameters;
 
-  parameters.insert( QStringLiteral( "INPUT" ), QString( myDataPath + inputRaster ) );
+  parameters.insert( QStringLiteral( "INPUT" ), rasterSource );
   parameters.insert( QStringLiteral( "BAND" ), inputBand );
   parameters.insert( QStringLiteral( "ROUNDING_DIRECTION" ), roundingDirection );
   parameters.insert( QStringLiteral( "DECIMAL_PLACES" ), decimals );
@@ -4151,7 +4150,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique< QgsRasterLayer >( myDataPath + "/control_images/roundRasterValues/" + expectedRaster, "expectedDataset", "gdal" );
+  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique< QgsRasterLayer >( testDataPath( "/control_images/roundRasterValues/" + expectedRaster ), "expectedDataset", "gdal" );
   std::unique_ptr< QgsRasterInterface > expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
