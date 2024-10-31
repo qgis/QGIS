@@ -247,3 +247,41 @@ tests:
         name: expected/create_grid_negative_overlay.gml
         type: vector
 
+  - algorithm: native:rasterminmax
+    name: Raster min max
+    params:
+      BAND: 1
+      EXTRACT: 0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_min_max.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster min
+    params:
+      BAND: 1
+      EXTRACT: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_min.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster max
+    params:
+      BAND: 1
+      EXTRACT: 2
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_max.gml
+        type: vector
