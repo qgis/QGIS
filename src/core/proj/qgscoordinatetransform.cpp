@@ -634,9 +634,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // We're interfacing with C-style vectors in the
   // end, so let's do C-style vectors here too.
-  QVector<double> x( nXPoints * nYPoints );
-  QVector<double> y( nXPoints * nYPoints );
-  QVector<double> z( nXPoints * nYPoints );
+  std::vector<double> x( nXPoints * static_cast< std::size_t >( nYPoints ) );
+  std::vector<double> y( nXPoints * static_cast< std::size_t >( nYPoints ) );
+  std::vector<double> z( nXPoints * static_cast< std::size_t >( nYPoints ) );
 
   QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
 
