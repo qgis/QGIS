@@ -998,7 +998,7 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         line_def_record.usingCurrentStyle = True
         line_def_record.currentStyle = 'def'
         def_record.addLayerRecord(line_def_record)
-        QgsProject.instance().mapThemeCollection().insert('def', red_record)
+        QgsProject.instance().mapThemeCollection().insert('def', def_record)
 
         marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5'})
         point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
@@ -1007,8 +1007,6 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         line_symbol = QgsLineSymbol.createSimple({'color': '#ff0000', 'line_width': '2'})
         line_layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
         line_layer.styleManager().addStyleFromLayer("red")
-
-
 
         red_record = QgsMapThemeCollection.MapThemeRecord()
         point_red_record = QgsMapThemeCollection.MapThemeLayerRecord(point_layer)
@@ -1124,11 +1122,10 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         legend3.setStyleFont(QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
         legend3.setStyleFont(QgsLegendStyle.Style.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
-        for sublegend in [legend, legend2,legend3]:
+        for sublegend in [legend, legend2, legend3]:
             legendlayer = sublegend.model().rootGroup().findLayer(point_layer.id())
-            legendlayer.setLabelExpression("@legend_item_expression")        
+            legendlayer.setLabelExpression("@legend_item_expression")
             sublegend.model().refreshLayerLegend(legendlayer)
-
 
         self.assertTrue(
             self.render_layout_check(
