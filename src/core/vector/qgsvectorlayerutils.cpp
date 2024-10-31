@@ -1198,17 +1198,24 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
   // but adding hardcoded localized variants of the strings is encouraged.
   static QStringList sCandidates{ QStringLiteral( "name" ),
                                   QStringLiteral( "title" ),
-                                  QStringLiteral( "heibt" ),
                                   QStringLiteral( "desc" ),
-                                  QStringLiteral( "nom" ),
                                   QStringLiteral( "street" ),
                                   QStringLiteral( "road" ),
                                   QStringLiteral( "label" ),
                                   // German candidates
+                                  QStringLiteral( "heibt" ),  // heißt
                                   QStringLiteral( "titel" ),  //#spellok
                                   QStringLiteral( "beschreibung" ),
                                   QStringLiteral( "strasse" ),
-                                  QStringLiteral( "beschriftung" ) };
+                                  QStringLiteral( "beschriftung" ),
+                                  // French candidates
+                                  QStringLiteral( "nom" ),
+                                  QStringLiteral( "titre" ),
+                                  QStringLiteral( "libelle" ),
+                                  QStringLiteral( "libellé" ), //#spellok
+                                  QStringLiteral( "etiquette" ),
+                                  QStringLiteral( "étiquette" ),
+                                };
 
   // anti-names
   // this list of strings indicates parts of field names which make the name "less interesting".
