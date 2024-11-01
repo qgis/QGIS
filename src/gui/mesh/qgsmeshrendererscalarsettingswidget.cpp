@@ -287,7 +287,9 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMax()
     case QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas:
     case QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas:
     {
-      mCanvas->mapSettings().outputExtentToLayerExtent( mMeshLayer, searchExtent );
+      QgsCoordinateTransform ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mMeshLayer->crs(), QgsProject::instance() );
+      searchExtent = mCanvas->extent();
+      searchExtent = ct.transform( searchExtent );
       break;
     }
     default:
