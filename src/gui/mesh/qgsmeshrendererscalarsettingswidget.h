@@ -59,6 +59,7 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
+    //! Associates map canvas with the widget
     void setCanvas( QgsMapCanvas *canvas );
 
   signals:
