@@ -305,7 +305,7 @@ Loads a layer style from the provider storage, reporting its name.
 .. versionadded:: 3.30
 %End
 
-    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
+    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ );
 %Docstring
 Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 

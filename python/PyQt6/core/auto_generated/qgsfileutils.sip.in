@@ -116,7 +116,7 @@ Will check ``basepath`` in an outward spiral up to ``maxClimbs`` levels to check
 .. versionadded:: 3.12
 %End
 
-    static Qgis::DriveType driveType( const QString &path ) throw( QgsNotSupportedException );
+    static Qgis::DriveType driveType( const QString &path );
 %Docstring
 Returns the drive type for the given ``path``.
 

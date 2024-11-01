@@ -265,7 +265,7 @@ If ``magnified`` is ``False`` then scale lock settings will be ignored, and the 
 rectangle will ALWAYS be visible in the canvas.
 %End
 
-    bool setReferencedExtent( const QgsReferencedRectangle &extent ) throw( QgsCsException );
+    bool setReferencedExtent( const QgsReferencedRectangle &extent );
 %Docstring
 Sets the canvas to the specified ``extent``.
 
