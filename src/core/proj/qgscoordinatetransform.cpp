@@ -632,8 +632,6 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   QgsRectangle bb_rect;
   bb_rect.setNull();
 
-  // We're interfacing with C-style vectors in the
-  // end, so let's do C-style vectors here too.
   std::vector<double> x( nXPoints * static_cast< std::size_t >( nYPoints ) );
   std::vector<double> y( nXPoints * static_cast< std::size_t >( nYPoints ) );
   std::vector<double> z( nXPoints * static_cast< std::size_t >( nYPoints ) );
