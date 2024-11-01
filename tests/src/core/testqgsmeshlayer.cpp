@@ -2409,6 +2409,15 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
   QCOMPARE( min, 1 );
   QCOMPARE( max, 1 );
 
+  // cannot get data for vector dataset - index points to wrong dadataset index
+  datasetIndex = QgsMeshDatasetIndex( 2, 0 );
+  meta = mMdalLayer->datasetGroupMetadata( datasetIndex );
+  QCOMPARE( meta.name(), QStringLiteral( "VertexVectorDataset" ) );
+
+  extent = QgsRectangle( 900, 1900, 1100, 2100 );
+  found = mMdalLayer->minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QCOMPARE( found, false );
+
   // layer with several separated parts
   QgsMeshLayer layer(
     testDataPath( "mesh/several_parts.2dm" ),
@@ -2416,6 +2425,8 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
     QStringLiteral( "mdal" ) );
   QVERIFY( layer.isValid() );
   layer.updateTriangularMesh();
+
+  datasetIndex = QgsMeshDatasetIndex( 0, 0 );
 
   // tests for basic dataset
   extent = layer.extent();
